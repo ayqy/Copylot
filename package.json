@@ -14,6 +14,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,html}\"",
     "type-check": "tsc --noEmit",
     "generate-icons": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/generate-icons.ts",
+    "publish": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/publish.ts",
     "clean": "rm -rf dist"
   },
   "dependencies": {

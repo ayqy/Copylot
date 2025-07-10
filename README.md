@@ -94,6 +94,37 @@ src/
 - `npm run format`: Format code with Prettier
 - `npm run type-check`: TypeScript type checking
 
+### Publishing Process
+
+To create a new release of the extension, use the automated publish script:
+
+```bash
+npm run publish
+```
+
+This script will guide you through the following steps:
+
+1.  **Version Bump**: Automatically suggests a new version number (patch increment) based on `manifest.json`. You will be asked to confirm.
+2.  **Git Commit & Tag**: Commits the version change with a message like `chore: bump version to x.y.z` and creates a Git tag `vx.y.z`.
+3.  **Build**: Runs `npm run build` to generate the production-ready extension files in the `dist/` directory.
+4.  **Testing Confirmation**: Prompts you to confirm that you have tested the built extension.
+5.  **Packaging**: Zips the contents of the `dist/` directory into `plugin-vx.y.z.zip`. The full path to this zip file will be displayed.
+6.  **GitHub Release**:
+    *   If GitHub CLI (`gh`) is installed and configured, it will attempt to create a new GitHub Release, using the tag and uploading the zip file.
+    *   If `gh` is not available or fails, you will be prompted to create the GitHub Release manually. The script will provide the necessary tag name and the path to the zip file.
+7.  **Push to Remote**: Asks for final confirmation before pushing the commit and the new tag to the remote repository.
+
+**Dependencies for the publish script:**
+
+*   **Git**: Must be installed and available in your system's PATH.
+*   **zip**: The `zip` command-line utility must be installed.
+    *   On macOS: Usually pre-installed.
+    *   On Linux: `sudo apt-get install zip` (Debian/Ubuntu) or `sudo yum install zip` (Fedora/CentOS).
+    *   On Windows: You might need to install it separately (e.g., via [Git for Windows SDK](https://gitforwindows.org/) which includes common Unix tools, or other sources).
+*   **GitHub CLI (`gh`)** (Optional, for automatic GitHub Release creation):
+    *   Installation instructions can be found at [cli.github.com](https://cli.github.com/).
+    *   You'll need to authenticate `gh` with your GitHub account (e.g., using `gh auth login`).
+
 ### Testing
 
 Load the extension in Chrome's developer mode and test on various websites:
