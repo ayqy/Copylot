@@ -1,3 +1,4 @@
+import './popup.css';
 import { getSettings, saveSettings } from '../shared/settings-manager';
 import type { Settings } from '../shared/content-processor';
 
