@@ -1,171 +1,103 @@
-import type { Settings } from './content-processor';
+// Settings manager functionality
+export interface Settings {
+  outputFormat: 'markdown' | 'plaintext';
+  attachTitle: boolean;
+  attachURL: boolean;
+  language: 'system' | 'en' | 'zh';
+}
 
-// Storage key for extension settings
-const SETTINGS_KEY = 'copilot_settings';
+export const SETTINGS_KEY = 'copilot_settings';
 
-// Default settings
-const DEFAULT_SETTINGS: Settings = {
+export const DEFAULT_SETTINGS: Settings = {
   outputFormat: 'markdown',
   attachTitle: false,
   attachURL: false,
   language: 'system'
 };
 
-/**
- * Detect system language and return appropriate default
- */
-function getSystemLanguage(): 'system' | 'en' | 'zh' {
+export function getSystemLanguage(): 'system' | 'en' | 'zh' {
   try {
-    const uiLanguage = chrome.i18n.getUILanguage();
-    
-    // Check if language starts with 'zh' (Chinese variants)
-    if (uiLanguage.startsWith('zh')) {
-      return 'zh';
+    // Ensure chrome and chrome.i18n are available
+    if (typeof chrome !== "undefined" && chrome.i18n && chrome.i18n.getUILanguage) {
+      const uiLanguage = chrome.i18n.getUILanguage();
+      if (uiLanguage.startsWith('zh')) {
+        return 'zh';
+      }
+      return 'en';
     }
-    
-    // Default to English for other languages
+    // Fallback if chrome.i18n is not available (e.g., in a non-extension context or during tests)
+    console.warn('chrome.i18n.getUILanguage is not available, defaulting to English.');
     return 'en';
   } catch (error) {
     console.error('Error detecting system language:', error);
-    return 'en';
+    return 'en'; // Default to English on error
   }
 }
 
-/**
- * Get current settings from Chrome storage
- * 
- * @returns Promise that resolves to current settings
- */
 export async function getSettings(): Promise<Settings> {
   try {
-    const result = await chrome.storage.local.get(SETTINGS_KEY);
-    const storedSettings = result[SETTINGS_KEY];
-    
-    if (!storedSettings) {
-      // No settings found, return defaults with system language detection
-      const defaultWithLanguage = {
+    // Ensure chrome and chrome.storage are available
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+      const result = await chrome.storage.local.get(SETTINGS_KEY);
+      const storedSettings = result[SETTINGS_KEY];
+
+      let currentLanguage = getSystemLanguage(); // Get resolved system language
+
+      if (!storedSettings) {
+        // If no settings are stored, initialize with defaults including detected system language
+        const defaultWithLanguage: Settings = {
+          ...DEFAULT_SETTINGS,
+          language: currentLanguage // Initialize with resolved system language
+        };
+        await chrome.storage.local.set({ [SETTINGS_KEY]: defaultWithLanguage });
+        return defaultWithLanguage;
+      }
+
+      // Merge stored settings with defaults to ensure all keys are present
+      const mergedSettings: Settings = {
         ...DEFAULT_SETTINGS,
-        language: getSystemLanguage()
+        ...storedSettings
       };
       
-      // Save the detected defaults
-      await saveSettings(defaultWithLanguage);
-      return defaultWithLanguage;
+      // If language is 'system' or was not resolved properly before, resolve it now
+      if (mergedSettings.language === 'system') {
+        mergedSettings.language = currentLanguage;
+      }
+
+      return mergedSettings;
     }
-    
-    // Merge stored settings with defaults to handle new settings added in updates
-    const mergedSettings: Settings = {
-      ...DEFAULT_SETTINGS,
-      ...storedSettings
-    };
-    
-    // Handle language setting migration
-    if (mergedSettings.language === 'system') {
-      mergedSettings.language = getSystemLanguage();
-    }
-    
-    return mergedSettings;
-  } catch (error) {
-    console.error('Error getting settings:', error);
+    // Fallback if chrome.storage is not available
+    console.warn('chrome.storage.local is not available, returning default settings.');
     return {
       ...DEFAULT_SETTINGS,
-      language: getSystemLanguage()
+      language: getSystemLanguage() // Use resolved system language
+    };
+
+  } catch (error) {
+    console.error('Error getting settings:', error);
+    // Fallback to default settings with system language on error
+    return {
+      ...DEFAULT_SETTINGS,
+      language: getSystemLanguage() // Use resolved system language
     };
   }
 }
 
-/**
- * Save settings to Chrome storage
- * 
- * @param newSettings - Settings object or partial settings to save
- * @returns Promise that resolves when settings are saved
- */
-export async function saveSettings(newSettings: Partial<Settings>): Promise<void> {
+export async function saveSettings(settings: Settings): Promise<void> {
   try {
-    // Get current settings first
-    const currentSettings = await getSettings();
-    
-    // Merge with new settings
-    const updatedSettings: Settings = {
-      ...currentSettings,
-      ...newSettings
-    };
-    
-    // Validate settings
-    if (!['markdown', 'plaintext'].includes(updatedSettings.outputFormat)) {
-      updatedSettings.outputFormat = 'markdown';
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+      // Before saving, if the language is resolved (e.g., 'en' or 'zh'),
+      // and the intention is to store 'system' preference,
+      // we might want to convert it back to 'system' if it matches the current system language.
+      // However, typically, the popup would send the exact value to save ('system', 'en', or 'zh').
+      // For now, we'll save the settings object as is.
+      await chrome.storage.local.set({ [SETTINGS_KEY]: settings });
+      console.debug('Settings saved:', settings);
+    } else {
+      console.warn('chrome.storage.local is not available, settings not saved.');
     }
-    
-    if (!['system', 'en', 'zh'].includes(updatedSettings.language)) {
-      updatedSettings.language = 'system';
-    }
-    
-    // Save to storage
-    await chrome.storage.local.set({
-      [SETTINGS_KEY]: updatedSettings
-    });
-    
-    console.debug('Settings saved:', updatedSettings);
   } catch (error) {
     console.error('Error saving settings:', error);
-    throw error;
+    // Optionally re-throw or handle
   }
 }
-
-/**
- * Reset settings to defaults
- * 
- * @returns Promise that resolves when settings are reset
- */
-export async function resetSettings(): Promise<Settings> {
-  try {
-    const defaultWithLanguage = {
-      ...DEFAULT_SETTINGS,
-      language: getSystemLanguage()
-    };
-    
-    await chrome.storage.local.set({
-      [SETTINGS_KEY]: defaultWithLanguage
-    });
-    
-    console.debug('Settings reset to defaults');
-    return defaultWithLanguage;
-  } catch (error) {
-    console.error('Error resetting settings:', error);
-    throw error;
-  }
-}
-
-/**
- * Listen for settings changes
- * 
- * @param callback - Function to call when settings change
- * @returns Function to remove the listener
- */
-export function onSettingsChanged(callback: (settings: Settings) => void): () => void {
-  const listener = (changes: { [key: string]: chrome.storage.StorageChange }) => {
-    if (changes[SETTINGS_KEY]) {
-      const newSettings = changes[SETTINGS_KEY].newValue as Settings;
-      if (newSettings) {
-        callback(newSettings);
-      }
-    }
-  };
-  
-  chrome.storage.onChanged.addListener(listener);
-  
-  // Return cleanup function
-  return () => {
-    chrome.storage.onChanged.removeListener(listener);
-  };
-}
-
-/**
- * Get default settings (for reference)
- */
-export function getDefaultSettings(): Settings {
-  return {
-    ...DEFAULT_SETTINGS,
-    language: getSystemLanguage()
-  };
-} 

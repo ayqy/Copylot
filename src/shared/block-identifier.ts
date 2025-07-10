@@ -1,95 +1,163 @@
-// Black list of elements and their parents to exclude
-const BLACKLIST_TAGS = [
-  // Structural & semantic (exclude non-core content areas)
-  'header', 'footer', 'nav', 'aside', 'dialog', 'menu', 'form', 'fieldset', 'legend',
-  // Interactive & form (exclude functional controls)
-  'a', 'button', 'input', 'textarea', 'select', 'option', 'optgroup', 'label', 'details', 'summary',
-  // Media & embedded (exclude non-text content)
-  'img', 'iframe', 'video', 'audio', 'canvas', 'embed', 'object', 'picture', 'map', 'area',
-  // Metadata & script (exclude invisible elements)
-  'script', 'style', 'noscript', 'head', 'meta', 'link', 'template'
+// Block identifier functionality
+
+// Rule 3.2: Remove semantic tag filtering, keep truly invisible tags.
+// Rule 3.1 & 3.2: Interactive elements like 'a', 'button' are generally not "content blocks" for copying.
+// Retain 'iframe' in excluded as its content is a separate document.
+export const EXCLUDED_TAGS = [
+  // Tags that are generally containers and might be too broad if not leaf nodes with direct content.
+  // We will rely on content and leaf checks more.
+  // 'header', 'footer', 'nav', 'aside', 'dialog', 'menu', 'form', 'fieldset', 'legend', 'details', 'summary',
+
+  // Truly invisible or non-content elements
+  'script', 'style', 'noscript', 'head', 'meta', 'link', 'template', 'area', 'map',
+  // Interactive controls that are not primarily for displaying content for copying as a "block"
+  'a', 'button', 'input', 'textarea', 'select', 'option', 'optgroup', 'label',
+  // Iframe content is isolated and should not be targeted directly as a block this way.
+  'iframe',
 ];
 
-// Minimum requirements
-const MIN_TEXT_LENGTH = 50; // characters (excluding spaces)
-const MIN_WIDTH = 200; // pixels
-const MIN_HEIGHT = 40; // pixels
+export const MIN_TEXT_LENGTH = 10; // Adjusted for potentially smaller but valid content blocks
+export const MIN_WIDTH = 20;   // Adjusted for smaller icons or elements
+export const MIN_HEIGHT = 20;  // Adjusted for smaller icons or elements
 
-/**
- * Check if element or any of its parents is in the blacklist
- */
-function hasBlacklistedParent(element: HTMLElement): boolean {
-  let current: HTMLElement | null = element;
-  
+export function isElementVisible(element: Element): boolean {
+  if (!(element instanceof HTMLElement)) {
+    return true; // Non-HTMLElements like SVGElement are considered visible if attached
+  }
+  const style = window.getComputedStyle(element);
+  return style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0;
+}
+
+export function hasExcludedAncestor(element: Element): boolean {
+  let current = element.parentElement; // Start with the parent
   while (current && current !== document.body) {
-    if (BLACKLIST_TAGS.includes(current.tagName.toLowerCase())) {
+    if (EXCLUDED_TAGS.includes(current.tagName.toLowerCase())) {
       return true;
     }
     current = current.parentElement;
   }
-  
   return false;
 }
 
-/**
- * Check if element has sufficient text content
- */
-function hasMinimumTextContent(element: HTMLElement): boolean {
-  const text = element.innerText?.replace(/\s+/g, '') || '';
-  return text.length > MIN_TEXT_LENGTH;
-}
-
-/**
- * Check if element has sufficient rendered size
- */
-function hasMinimumSize(element: HTMLElement): boolean {
-  const rect = element.getBoundingClientRect();
-  return rect.width > MIN_WIDTH && rect.height > MIN_HEIGHT;
-}
-
-/**
- * Check if element itself is an interactive or media element
- */
-function isInteractiveOrMediaElement(element: HTMLElement): boolean {
-  const interactiveTypes = [
-    'a', 'button', 'img', 'input', 'video', 'audio', 'canvas', 'iframe',
-    'textarea', 'select', 'option', 'embed', 'object'
-  ];
-  
-  return interactiveTypes.includes(element.tagName.toLowerCase());
-}
-
-/**
- * Determine if a given DOM element is a "viable content block"
- * that can be copied by the extension.
- * 
- * @param element - The HTML element to check
- * @returns true if the element is viable for copying
- */
-export function isViableBlock(element: HTMLElement): boolean {
-  try {
-    // 1. Blacklist filtering: element and parents must not be blacklisted
-    if (hasBlacklistedParent(element)) {
-      return false;
-    }
-    
-    // 2. Content density filtering
-    if (!hasMinimumTextContent(element)) {
-      return false;
-    }
-    
-    if (!hasMinimumSize(element)) {
-      return false;
-    }
-    
-    // 3. Element type filtering: element itself should not be interactive/media
-    if (isInteractiveOrMediaElement(element)) {
-      return false;
-    }
-    
-    return true;
-  } catch (error) {
-    console.error('Error in isViableBlock:', error);
+// Rule 3.1: "has content" includes text, images, video etc.
+export function hasVisibleContent(element: Element): boolean {
+  if (!isElementVisible(element)) {
     return false;
   }
-} 
+
+  const tagName = element.tagName.toLowerCase();
+  // Check for specific media/embed tags that are inherently content
+  if (['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName)) {
+    // For img, check if it's loaded (naturalWidth/Height > 0 for img, or videoWidth/Height for video)
+    if (tagName === 'img' && (element as HTMLImageElement).naturalWidth > 0) return true;
+    if (tagName === 'video' && (element as HTMLVideoElement).readyState > 0) return true; // readyState > 0 means metadata loaded
+    if (['canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName)) return true; // Assume these have content if present
+    // Could add more specific checks for these if needed
+  }
+
+  // Check for text content, ignoring whitespace
+  const text = (element as HTMLElement).innerText?.trim() || '';
+  if (text.length > 0) { // Any text is now considered content, MIN_TEXT_LENGTH will be checked later if element is text-dominant
+    return true;
+  }
+
+  // Check if it has children that are visible and are themselves content elements (e.g. a div with an img inside)
+  // This makes a non-leaf container potentially "have content" due to its children.
+  // The "leaf node" aspect will be implicitly handled: if a child is a better target, it will be preferred.
+  for (let i = 0; i < element.children.length; i++) {
+    if (hasVisibleContent(element.children[i])) { // Recursive call, be cautious
+      return true;
+    }
+  }
+  return false;
+}
+
+export function meetsMinimumTextRequirement(element: Element): boolean {
+    // This function is now more specific for text-dominant blocks.
+    // Blocks that are primarily images/videos are handled by hasVisibleContent.
+    const tagName = element.tagName.toLowerCase();
+    if (['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName)) {
+        return true; // Media elements don't need text.
+    }
+    const text = (element as HTMLElement).innerText?.replace(/\s+/g, '') || '';
+    return text.length >= MIN_TEXT_LENGTH;
+}
+
+export function hasMinimumDimensions(element: Element): boolean {
+  const rect = element.getBoundingClientRect();
+  return rect.width >= MIN_WIDTH && rect.height >= MIN_HEIGHT;
+}
+
+// Rule 3.1: All contentful leaf nodes should be hoverable.
+// Rule 3.2: Remove semantic tag filtering, rely on visibility and content.
+// Rule 3.3: Text node hovering targets the parent element (handled in handlePointerMove).
+export function isViableBlock(element: Element): boolean {
+  try {
+    const tagName = element.tagName.toLowerCase();
+
+    // Rule 3.2: Filter out inherently invisible elements first.
+    if (['script', 'style', 'meta', 'head', 'link', 'template', 'noscript'].includes(tagName)) {
+      return false;
+    }
+
+    // Check visibility (covers display:none, visibility:hidden, opacity:0)
+    if (!isElementVisible(element)) {
+      return false;
+    }
+
+    // Rule 3.2: Check if element itself is an excluded tag type (e.g. a button, input)
+    if (EXCLUDED_TAGS.includes(tagName)) {
+        return false;
+    }
+
+    // Rule 3.2: Check if an ancestor is an excluded type that should prevent children from being blocks.
+    if (hasExcludedAncestor(element)) {
+      return false;
+    }
+
+    // Rule 3.1: Must have visible content (text, image, video, etc.)
+    if (!hasVisibleContent(element)) {
+      return false;
+    }
+
+    // Rule 3.1 / general usability: Must meet minimum dimensions.
+    if (!hasMinimumDimensions(element)) {
+      return false;
+    }
+
+    // Rule 3.1: If the element is primarily text-based, it should meet text length.
+    const isMedia = ['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName);
+    if (!isMedia && !meetsMinimumTextRequirement(element)) {
+        return false;
+    }
+
+    // Leaf node consideration (optimized):
+    const childElements = Array.from(element.children).filter(
+      c => c instanceof HTMLElement && !EXCLUDED_TAGS.includes(c.tagName.toLowerCase())
+    ) as HTMLElement[];
+
+    if (!isMedia && childElements.length > 0) {
+        for (const child of childElements) {
+            const childTagName = child.tagName.toLowerCase();
+
+            if (['img', 'video', 'canvas', 'svg'].includes(childTagName)) {
+                if (isElementVisible(child) && hasMinimumDimensions(child)) {
+                    return false;
+                }
+                continue;
+            }
+
+            if (meetsMinimumTextRequirement(child) && isElementVisible(child) && hasMinimumDimensions(child)) {
+                if (!hasExcludedAncestor(child)) { // This is still a potentially expensive check
+                     return false;
+                }
+            }
+        }
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error in isViableBlock:', error, element);
+    return false;
+  }
+}
