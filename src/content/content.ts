@@ -104,11 +104,12 @@ function handlePointerMove(event: PointerEvent): void {
 
 // Handles keydown for parent element selection.
 function handleKeyDown(event: KeyboardEvent): void {
-  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-  const isModifierPressed = (isMac && event.metaKey && !event.ctrlKey) || (!isMac && event.ctrlKey && !event.metaKey);
+  // const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0; // No longer needed for Alt/Option
+  // const isModifierPressed = (isMac && event.metaKey && !event.ctrlKey) || (!isMac && event.ctrlKey && !event.metaKey);
 
-  if (isModifierPressed && currentTarget && copyButtonElement) {
-    event.preventDefault(); // Prevent browser default actions (e.g., Ctrl+S)
+  // Use event.altKey for Option (OSX) / Alt (Windows)
+  if (event.altKey && currentTarget && copyButtonElement) {
+    event.preventDefault(); // Prevent browser default actions
     const parent = currentTarget.parentElement;
 
     // @ts-ignore: EXCLUDED_TAGS is available from inlined block-identifier.ts
