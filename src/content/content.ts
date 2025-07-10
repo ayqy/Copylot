@@ -432,6 +432,7 @@ let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 let copyButton: HTMLElement | null = null;
 let isInitialized = false;
 let userSettings: Settings | null = null;
+let lastMousePosition: { x: number; y: number } = { x: 0, y: 0 };
 
 function debounce<T extends (...args: any[]) => void>(func: T, delay: number): T {
   return ((...args: any[]) => {
@@ -449,28 +450,84 @@ function scheduleViabilityCheck(callback: () => void): void {
 }
 
 function handlePointerMove(event: PointerEvent): void {
+  lastMousePosition = { x: event.clientX, y: event.clientY };
   const target = event.target as Element;
   if (!target || target === currentTarget) return;
   
   if (copyButton && currentTarget && target !== currentTarget) {
-    hideButton(copyButton);
-    currentTarget = null;
+    // Clear border from old currentTarget if we are about to hide the button or switch targets
+    if (currentTarget instanceof HTMLElement) {
+      currentTarget.style.border = currentTarget.dataset.originalBorder || 'none';
+      delete currentTarget.dataset.originalBorder;
+    }
+    hideButton(copyButton); // This will also set currentTarget to null if we hide
+    // If hideButton didn't nullify currentTarget (e.g. due to some logic), ensure it's null before viability check
+    if (target !== currentTarget) { // Check again as hideButton might modify currentTarget
+        currentTarget = null;
+    }
   }
   
   scheduleViabilityCheck(() => {
     try {
       if (isViableBlock(target)) {
+        // If there was an old currentTarget (e.g. from keydown), clear its border
+        if (currentTarget && currentTarget !== target && currentTarget instanceof HTMLElement) {
+            currentTarget.style.border = currentTarget.dataset.originalBorder || 'none';
+            delete currentTarget.dataset.originalBorder;
+        }
+
         currentTarget = target;
         if (!copyButton) {
           copyButton = createButton();
           setupButtonClickHandler();
         }
+        // Ensure button is shown with new currentTarget
         showButton(copyButton, event.clientX, event.clientY);
+      } else if (copyButton && currentTarget === target) {
+        // If the current target is no longer viable (e.g. due to DOM change), hide button
+        hideButton(copyButton);
+        currentTarget = null;
       }
     } catch (error) {
       console.error('Error in viability check:', error);
     }
   });
+}
+
+function handleKeyDown(event: KeyboardEvent): void {
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  const isModifierPressed = (isMac && event.metaKey && !event.ctrlKey) || (!isMac && event.ctrlKey && !event.metaKey);
+
+  if (isModifierPressed && currentTarget && copyButton) {
+    event.preventDefault(); // Prevent browser shortcuts like Ctrl+S
+    const parent = currentTarget.parentElement;
+
+    if (parent && parent !== document.body && parent !== document.documentElement) {
+      // Basic check: don't expand to an excluded tag if it's the direct parent
+      // More sophisticated checks from isViableBlock could be added here if needed
+      if (EXCLUDED_TAGS.includes(parent.tagName.toLowerCase())) {
+        console.debug('Parent is an excluded tag, stopping expansion.');
+        return;
+      }
+
+      // Clear border from the old currentTarget
+      if (currentTarget instanceof HTMLElement) {
+        currentTarget.style.border = currentTarget.dataset.originalBorder || 'none';
+        delete currentTarget.dataset.originalBorder;
+      }
+
+      currentTarget = parent;
+
+      // Reset button state to 'copy' as the target has changed
+      updateButtonState(copyButton, 'copy');
+
+      // Show button and border on the new currentTarget
+      // We use lastMousePosition as keydown events don't have clientX/clientY
+      showButton(copyButton, lastMousePosition.x, lastMousePosition.y);
+    } else {
+      console.debug('No valid parent to expand to.');
+    }
+  }
 }
 
 function setupButtonClickHandler(): void {
@@ -561,6 +618,7 @@ async function initializeContentScript(): Promise<void> {
     const debouncedPointerMove = debounce(handlePointerMove, HOVER_DEBOUNCE_DELAY);
     document.addEventListener('pointermove', debouncedPointerMove, { passive: true });
     document.addEventListener('mouseleave', handleMouseLeave, { passive: true });
+    document.addEventListener('keydown', handleKeyDown, { passive: true });
     
     chrome.storage.onChanged.addListener((changes) => {
       if (changes.copilot_settings) {
