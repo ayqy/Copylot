@@ -8,6 +8,7 @@ A Chrome browser extension that intelligently copies web page content in AI-frie
 - 📝 **Multiple Output Formats**: Copy content as Markdown or plain text
 - 🌍 **Internationalization**: Supports English and Chinese interfaces
 - ⚙️ **Customizable Settings**: Configure output format, additional info, and language preferences
+- ✨ **Hover-to-Copy for Media**: Instantly activate Magic Copy by hovering over images (`<img>`, `<picture>`), videos (`<video>`), SVGs (`<svg>`), canvases (`<canvas>`), and other embedded content (`<embed>`, `<object>`).
 - 🎨 **Modern UI**: Beautiful and responsive popup interface
 - 🚀 **High Performance**: Uses RequestIdleCallback for optimal performance
 
@@ -42,14 +43,16 @@ Download the latest release from the Chrome Web Store (coming soon).
 
 ## Usage
 
-1. **Click on content**: Click directly on any text content on a web page that you wish to copy.
-2. **See the copy button**: A blue copy button will appear near your cursor, and the selected content block will be highlighted with a border.
-3. **Expand selection (Optional)**:
-    - If the initial selection is too small (e.g., just a single word or paragraph), press and hold the `Alt` key (or `Option` key on macOS).
-    - The highlighted selection will expand to its parent block. You can press `Alt` multiple times to expand further.
-    - The copy button's position **will not change** during this process; it remains where you initially clicked.
-4. **Click to copy**: Click the blue button to copy the content of the currently highlighted block in your preferred format.
-5. **Configure settings**: Click the extension icon to open settings and customize behavior (output format, language, etc.).
+1.  **Click on content**: Click directly on any text content on a web page that you wish to copy.
+2.  **Hover over media (New!)**: Alternatively, simply hover your mouse cursor over images, videos, SVGs, canvases, or other embedded objects (`<img>`, `<picture>`, `<video>`, `<svg>`, `<canvas>`, `<embed>`, `<object>`).
+3.  **See the copy button**: A blue copy button will appear near your cursor, and the selected content block (either clicked text or hovered media) will be highlighted with a border.
+    *   For hovered media, the content will be copied in a suitable Markdown format (e.g., `![alt](src)` for images, poster images or links for videos, SVG code for SVGs, and placeholders or links for other embedded content).
+4.  **Expand selection (Optional, for clicked text blocks)**:
+    *   If the initial clicked selection is too small (e.g., just a single word or paragraph), press and hold the `Alt` key (or `Option` key on macOS).
+    *   The highlighted selection will expand to its parent block. You can press `Alt` multiple times to expand further.
+    *   The copy button's position **will not change** during this process; it remains where you initially interacted (clicked or hovered).
+5.  **Click to copy**: Click the blue button to copy the content of the currently highlighted block in your preferred format.
+6.  **Configure settings**: Click the extension icon to open settings and customize behavior (output format, language, etc.).
 
 ## Settings
 
@@ -144,9 +147,19 @@ Load the extension in Chrome's developer mode and test on various websites:
     - Crucially, verify the copy button **does not change its position** during Alt-key usage.
     - Press `Alt`/`Option` multiple times to see further expansion, ensuring the button position remains static.
     - After expanding, click the copy button and verify it copies the content of the larger, expanded block.
-4. **Copy Functionality**: Verify content is copied correctly with different settings (Markdown/Plain Text, include title/URL).
-5. **Settings Panel**: Test all options in the popup settings panel and ensure they apply correctly.
-6. **Internationalization**: Test by changing language settings in the popup and verifying UI text updates.
+4. **Hover-to-Copy Functionality (New!)**:
+    - Hover over images (`<img>`, `<picture>`), videos (`<video>`), SVGs (`<svg>`), canvases (`<canvas>`), `embed` and `object` elements.
+    - Verify the copy button appears and the element is bordered.
+    - Click the copy button and verify the content is copied in the expected Markdown format:
+        - Images/Pictures: `![alt](src)`
+        - Videos: `![alt](poster_url)` or `[Video Source](video_src_url)`
+        - SVGs: ```svg\n<svg>...</svg>\n```
+        - Canvas: `[Canvas Element (id: '...', class: '...')]`
+        - Embed/Object: `[Embedded/Object Content (type: '...')](src_or_data)` or placeholder.
+    - Verify that hovering over non-target elements (e.g., plain text paragraphs, general divs) does not trigger the copy button unless they are clicked.
+5. **Copy Functionality (General)**: Verify content is copied correctly with different settings (Markdown/Plain Text, include title/URL) for both clicked and hovered content.
+6. **Settings Panel**: Test all options in the popup settings panel and ensure they apply correctly.
+7. **Internationalization**: Test by changing language settings in the popup and verifying UI text updates.
 
 ## Browser Compatibility
 
