@@ -42,10 +42,14 @@ Download the latest release from the Chrome Web Store (coming soon).
 
 ## Usage
 
-1. **Hover over content**: Move your mouse over any content on a web page
-2. **See the copy button**: A blue copy button will appear near your cursor for viable content blocks
-3. **Click to copy**: Click the button to copy the content in your preferred format
-4. **Configure settings**: Click the extension icon to open settings and customize behavior
+1. **Click on content**: Click directly on any text content on a web page that you wish to copy.
+2. **See the copy button**: A blue copy button will appear near your cursor, and the selected content block will be highlighted with a border.
+3. **Expand selection (Optional)**:
+    - If the initial selection is too small (e.g., just a single word or paragraph), press and hold the `Alt` key (or `Option` key on macOS).
+    - The highlighted selection will expand to its parent block. You can press `Alt` multiple times to expand further.
+    - The copy button's position **will not change** during this process; it remains where you initially clicked.
+4. **Click to copy**: Click the blue button to copy the content of the currently highlighted block in your preferred format.
+5. **Configure settings**: Click the extension icon to open settings and customize behavior (output format, language, etc.).
 
 ## Settings
 
@@ -129,10 +133,20 @@ This script will guide you through the following steps:
 
 Load the extension in Chrome's developer mode and test on various websites:
 
-1. Visit different types of websites (news, blogs, documentation)
-2. Test hover detection on different content blocks
-3. Verify copy functionality with different settings
-4. Test internationalization by changing language settings
+1. Visit different types of websites (news, blogs, documentation).
+2. **Click-to-activate**:
+    - Click on various text elements. Verify the copy button appears near the cursor and the element gets a border.
+    - Click on non-viable areas. Verify the button and border (if previously visible) disappear.
+    - Click from one viable element to another. Verify the button and border move correctly.
+3. **Alt/Option Key for Selection Expansion**:
+    - Click on a small text element to show the button and border.
+    - Press `Alt`/`Option` key. Verify the selected block expands to its parent and the border updates.
+    - Crucially, verify the copy button **does not change its position** during Alt-key usage.
+    - Press `Alt`/`Option` multiple times to see further expansion, ensuring the button position remains static.
+    - After expanding, click the copy button and verify it copies the content of the larger, expanded block.
+4. **Copy Functionality**: Verify content is copied correctly with different settings (Markdown/Plain Text, include title/URL).
+5. **Settings Panel**: Test all options in the popup settings panel and ensure they apply correctly.
+6. **Internationalization**: Test by changing language settings in the popup and verifying UI text updates.
 
 ## Browser Compatibility
 
