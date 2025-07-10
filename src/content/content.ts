@@ -161,34 +161,35 @@ function isViableBlock(element: Element): boolean {
         return false;
     }
 
-    // Leaf node consideration (simplified):
+    // Leaf node consideration (optimized):
     // Avoid selecting a parent if it has children that are themselves viable blocks.
     // This helps in selecting the most specific content block.
-    // This is a basic check; more complex scenarios might need refinement.
-    // We only check direct children that are HTMLElements.
-    const childElements = Array.from(element.children).filter(c => c instanceof HTMLElement) as HTMLElement[];
-    if (childElements.length > 0) {
-        // If any child is independently a viable block, then this parent is likely a container, not a leaf.
-        // Exception: if the parent itself is a special tag like <img> (which has no children but is a leaf).
-        // The current logic already handles <img>, <video> etc. as potentially viable.
-        // This helps to prefer children like <p> inside a <div> over the <div> itself, if <p> is viable.
-        // This is a computationally intensive check if not careful.
-        // Let's only apply this if the element isn't an obvious content leaf itself (like img, video).
-        if (!isMedia) {
-            for (const child of childElements) {
-                // Pass `false` to `isCheckingChild` to prevent infinite recursion if `isViableBlock` called itself.
-                // For this version, we'll make a simplified check to avoid full recursion here.
-                // A simpler heuristic: if a child has significant text or is media, prefer the child.
-                const childTagName = child.tagName.toLowerCase();
-                if (['img', 'video', 'canvas', 'svg'].includes(childTagName) && isElementVisible(child) && hasMinimumDimensions(child)) {
-                    return false; // Prefer the media child.
+    // Filter childElements to only include HTMLElements that are not themselves EXCLUDED_TAGS.
+    const childElements = Array.from(element.children).filter(
+      c => c instanceof HTMLElement && !EXCLUDED_TAGS.includes(c.tagName.toLowerCase())
+    ) as HTMLElement[];
+
+    // Only proceed with child checks if the parent is not media and there are potential child candidates.
+    if (!isMedia && childElements.length > 0) {
+        for (const child of childElements) {
+            const childTagName = child.tagName.toLowerCase();
+
+            // Check if child is a directly preferable media type
+            if (['img', 'video', 'canvas', 'svg'].includes(childTagName)) {
+                if (isElementVisible(child) && hasMinimumDimensions(child)) {
+                    return false; // Prefer the visible media child
                 }
-                if (meetsMinimumTextRequirement(child) && isElementVisible(child) && hasMinimumDimensions(child)) {
-                    // If a child has enough text and is visible, it's a better candidate.
-                    // We must ensure this child isn't excluded itself.
-                    if (!EXCLUDED_TAGS.includes(childTagName) && !hasExcludedAncestor(child)) {
-                         return false; // Prefer the text-rich child.
-                    }
+                // If this media child is not visible or too small, it doesn't disqualify the parent based on this rule.
+                // Continue to the next child.
+                continue;
+            }
+
+            // Check if child is a text-rich element that isn't excluded by an ancestor.
+            // We already filtered out children that are themselves EXCLUDED_TAGS.
+            // Now, we only need to check for hasExcludedAncestor for these potentially viable children.
+            if (meetsMinimumTextRequirement(child) && isElementVisible(child) && hasMinimumDimensions(child)) {
+                if (!hasExcludedAncestor(child)) { // This is still a potentially expensive check
+                     return false; // Prefer this text-rich, non-excluded child
                 }
             }
         }
@@ -573,7 +574,7 @@ function processContent(element: Element, settings: Settings): string {
 }
 
 // Main content script logic
-const HOVER_DEBOUNCE_DELAY = 300;
+const HOVER_DEBOUNCE_DELAY = 100;
 
 let currentTarget: Element | null = null;
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -590,11 +591,11 @@ function debounce<T extends (...args: any[]) => void>(func: T, delay: number): T
 }
 
 function scheduleViabilityCheck(callback: () => void): void {
-  if ('requestIdleCallback' in window) {
-    requestIdleCallback(callback, { timeout: 100 });
-  } else {
-    setTimeout(callback, 0);
-  }
+  // Using requestAnimationFrame to schedule the check.
+  // This aligns the check with the browser's rendering cycle,
+  // potentially providing a smoother experience than direct execution
+  // and more timely execution than requestIdleCallback or setTimeout(0).
+  requestAnimationFrame(callback);
 }
 
 function handlePointerMove(event: PointerEvent): void {
