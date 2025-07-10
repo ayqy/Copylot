@@ -12,7 +12,7 @@ import type { Settings } from '../shared/settings-manager';
 /* INLINE:content-processor */
 
 // Main content script logic
-const HOVER_DEBOUNCE_DELAY = 100;
+const HOVER_DEBOUNCE_DELAY = 30;
 
 let currentTarget: Element | null = null;
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -80,7 +80,7 @@ function handlePointerMove(event: PointerEvent): void {
           setupButtonClickHandler(); // Set up once
         }
         // @ts-ignore: showButton is available from inlined ui-injector.ts
-        showButton(copyButtonElement, event.clientX, event.clientY, currentTarget instanceof HTMLElement ? currentTarget : null);
+        showButton(copyButtonElement, lastMousePosition.x, lastMousePosition.y, currentTarget instanceof HTMLElement ? currentTarget : null);
       } else {
         // Target is not viable. If a button is shown for this (now non-viable) target, or any previous target, hide it.
         if (copyButtonElement && (currentTarget === target || currentTarget !== null)) {
