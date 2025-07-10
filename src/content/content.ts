@@ -12,123 +12,102 @@ import type { Settings } from '../shared/settings-manager';
 /* INLINE:content-processor */
 
 // Main content script logic
-const HOVER_DEBOUNCE_DELAY = 30;
 
 let currentTarget: Element | null = null;
-let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 let copyButtonElement: HTMLElement | null = null; // Holds the button instance from ui-injector
 let isInitialized = false;
 let userSettings: Settings | null = null; // Will be populated by getSettings()
-let lastMousePosition: { x: number; y: number } = { x: 0, y: 0 };
+let lastClickPosition: { x: number; y: number } | null = null;
 
-// Debounce utility
-function debounce<T extends (...args: any[]) => void>(func: T, delay: number): T {
-  return ((...args: any[]) => {
-    if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => func(...args), delay);
-  }) as T;
-}
+// Handles document click to identify potential target elements and show/hide the button.
+function handleDocumentClick(event: MouseEvent): void {
+  let potentialTargetNode = event.target as Node;
 
-// Schedules a callback using requestAnimationFrame for smoother UI updates.
-function scheduleViabilityCheck(callback: () => void): void {
-  requestAnimationFrame(callback);
-}
-
-// Handles pointer movement to identify potential target elements.
-function handlePointerMove(event: PointerEvent): void {
-  lastMousePosition = { x: event.clientX, y: event.clientY };
-  let potentialTargetElement = event.target as Node;
-
-  // If hovering over a text node, use its parent element.
-  if (potentialTargetElement.nodeType === Node.TEXT_NODE) {
-    potentialTargetElement = potentialTargetElement.parentElement || potentialTargetElement;
-  }
-
-  if (!(potentialTargetElement instanceof Element) || potentialTargetElement === copyButtonElement) {
-    // If target is not an element or is the button itself, do nothing.
-    // (The button check prevents the button from becoming a target for itself)
+  // If the click is on the copy button itself, do nothing.
+  if (copyButtonElement && copyButtonElement.contains(potentialTargetNode)) {
     return;
   }
 
-  const target = potentialTargetElement;
-
-  if (target === currentTarget) return; // No change in target
-
-  // If a button exists and we are definitely changing targets, hide it from the old target.
-  if (copyButtonElement && currentTarget && target !== currentTarget) {
-    // @ts-ignore: hideButton is available from inlined ui-injector.ts
-    hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
-    // currentTarget will be updated or nulled out below.
+  // If clicking over a text node, use its parent element.
+  if (potentialTargetNode.nodeType === Node.TEXT_NODE) {
+    potentialTargetNode = potentialTargetNode.parentElement || potentialTargetNode;
   }
-  
-  scheduleViabilityCheck(() => {
-    try {
-      // @ts-ignore: isViableBlock is available from inlined block-identifier.ts
-      if (isViableBlock(target)) {
-        // Clear border from previous target if it was different
-        if (currentTarget && currentTarget !== target && currentTarget instanceof HTMLElement) {
-          if (currentTarget.dataset.originalBorder !== undefined) {
-            currentTarget.style.border = currentTarget.dataset.originalBorder || 'none';
-            delete currentTarget.dataset.originalBorder;
-          }
-        }
 
-        currentTarget = target;
-        if (!copyButtonElement) {
-          // @ts-ignore: createButton is available from inlined ui-injector.ts
-          copyButtonElement = createButton();
-          setupButtonClickHandler(); // Set up once
-        }
-        // @ts-ignore: showButton is available from inlined ui-injector.ts
-        showButton(copyButtonElement, lastMousePosition.x, lastMousePosition.y, currentTarget instanceof HTMLElement ? currentTarget : null);
-      } else {
-        // Target is not viable. If a button is shown for this (now non-viable) target, or any previous target, hide it.
-        if (copyButtonElement && (currentTarget === target || currentTarget !== null)) {
-            // @ts-ignore: hideButton is available from inlined ui-injector.ts
-            hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
-        }
-        if (currentTarget === target) { // Only nullify if the non-viable target was the current one
-            currentTarget = null;
-        }
-      }
-    } catch (error) {
-      console.error('Error in viability check or button display:', error);
-      if (copyButtonElement) {
-        // @ts-ignore: hideButton is available from inlined ui-injector.ts
-        hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
-      }
+  if (!(potentialTargetNode instanceof Element)) {
+    // Clicked on something that isn't an element (e.g., document background)
+    // If a button is shown, hide it.
+    if (copyButtonElement && currentTarget) {
+      // @ts-ignore: hideButton is available from inlined ui-injector.ts
+      hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
       currentTarget = null;
     }
-  });
+    return;
+  }
+
+  const clickedElement = potentialTargetNode;
+
+  // @ts-ignore: isViableBlock is available from inlined block-identifier.ts
+  if (isViableBlock(clickedElement)) {
+    // If there was a previous target and it's different from the new one, hide the button from it.
+    if (currentTarget && currentTarget !== clickedElement && copyButtonElement) {
+      // @ts-ignore: hideButton is available from inlined ui-injector.ts
+      hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
+    }
+
+    currentTarget = clickedElement;
+
+    if (!copyButtonElement) {
+      // @ts-ignore: createButton is available from inlined ui-injector.ts
+      copyButtonElement = createButton();
+      setupButtonClickHandler(); // Set up once
+    }
+    // @ts-ignore: showButton is available from inlined ui-injector.ts
+    showButton(copyButtonElement, event.clientX, event.clientY, currentTarget instanceof HTMLElement ? currentTarget : null);
+    lastClickPosition = { x: event.clientX, y: event.clientY };
+  } else {
+    // Clicked element is not viable. If a button is currently shown, hide it.
+    if (copyButtonElement && currentTarget) {
+      // @ts-ignore: hideButton is available from inlined ui-injector.ts
+      hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
+      currentTarget = null;
+    }
+  }
 }
 
 // Handles keydown for parent element selection.
 function handleKeyDown(event: KeyboardEvent): void {
-  // Check if Alt/Option key is pressed without other command modifiers
   const isOnlyAltPressed = event.altKey && !event.metaKey && !event.ctrlKey && !event.shiftKey;
 
-  if (isOnlyAltPressed && currentTarget && copyButtonElement) {
-    // event.preventDefault(); // Prevent browser default actions - REMOVED to allow event propagation
+  if (isOnlyAltPressed && currentTarget && copyButtonElement && lastClickPosition) { // Ensure lastClickPosition is available
+    const oldTarget = currentTarget;
     const parent = currentTarget.parentElement;
 
     // @ts-ignore: EXCLUDED_TAGS is available from inlined block-identifier.ts
     if (parent && parent !== document.body && parent !== document.documentElement && !EXCLUDED_TAGS.includes(parent.tagName.toLowerCase())) {
-      if (currentTarget instanceof HTMLElement) { // Clear border from the old currentTarget
-        currentTarget.style.border = currentTarget.dataset.originalBorder || 'none';
-        delete currentTarget.dataset.originalBorder;
+      // 1. Clear border from the old currentTarget (child)
+      if (oldTarget instanceof HTMLElement && oldTarget.dataset.originalBorder !== undefined) {
+        oldTarget.style.border = oldTarget.dataset.originalBorder || 'none';
+        delete oldTarget.dataset.originalBorder;
       }
-      currentTarget = parent; // Update currentTarget to the parent
-      // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
-      updateButtonState(copyButtonElement, 'copy'); // Reset button state
-      // @ts-ignore: showButton is available from inlined ui-injector.ts
-      showButton(copyButtonElement, lastMousePosition.x, lastMousePosition.y, currentTarget instanceof HTMLElement ? currentTarget : null);
 
-      // It's important to consider if preventDefault() should be called here
-      // conditionally, only if the block expansion actually happened.
-      // For now, per requirement, we are not calling it to ensure event propagation.
+      // 2. Update currentTarget to the new parent
+      currentTarget = parent;
+
+      // 3. Apply border to the new currentTarget (parent)
+      if (currentTarget instanceof HTMLElement) {
+        currentTarget.dataset.originalBorder = currentTarget.style.border;
+        currentTarget.style.border = '1px solid #4F46E5'; // Using the same border style as in ui-injector
+      }
+
+      // 4. Reset button state (e.g., from "Copied!" back to copy icon)
+      // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+      updateButtonState(copyButtonElement, 'copy');
+
+      // 5. Crucially, DO NOT reposition the button. It stays at lastClickPosition.
+      // The button should already be visible. If we need to ensure it (e.g. if some other flow could hide it),
+      // we might call `copyButtonElement.style.display = 'flex'`, but typically it would remain visible.
     }
   }
-  // Always allow the event to propagate by not calling event.stopPropagation() or event.preventDefault() globally here.
 }
 
 // Sets up the click handler for the copy button.
@@ -182,15 +161,6 @@ function setupButtonClickHandler(): void {
   });
 }
 
-// Handles mouse leaving the document viewport.
-function handleMouseLeaveDocument(): void {
-  if (copyButtonElement && currentTarget) {
-    // @ts-ignore: hideButton is available from inlined ui-injector.ts
-    hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
-    currentTarget = null;
-  }
-}
-
 // Loads settings and stores them in userSettings.
 async function loadSettingsAndApply(): Promise<void> {
   try {
@@ -213,9 +183,7 @@ async function initializeContentScript(): Promise<void> {
     // @ts-ignore: injectStyles is available from inlined ui-injector.ts
     injectStyles();
     
-    const debouncedPointerMove = debounce(handlePointerMove, HOVER_DEBOUNCE_DELAY);
-    document.addEventListener('pointermove', debouncedPointerMove, { passive: true });
-    document.documentElement.addEventListener('mouseleave', handleMouseLeaveDocument, { passive: true });
+    document.addEventListener('click', handleDocumentClick, { passive: true });
     document.addEventListener('keydown', handleKeyDown, { passive: false }); // passive: false to allow preventDefault
     
     // Listen for settings changes from the popup/options page.
