@@ -71,16 +71,79 @@ function cleanText(text: string): string {
 export function convertToMarkdown(element: Element): string {
   const turndown = getTurndownService();
   try {
-    // Clone the element to avoid modifying the original DOM
-    const clonedElement = element.cloneNode(true) as Element;
-    // Remove the copy button from the cloned element before conversion
-    clonedElement.querySelectorAll('#ai-copilot-copy-btn').forEach(btn => btn.remove());
-    
-    // Convert the innerHTML of the cloned element to Markdown
-    let markdown = turndown.turndown(clonedElement.innerHTML);
-    return markdown.trim(); // Trim final output
+    if (element instanceof HTMLImageElement) {
+      const imgElement = element as HTMLImageElement;
+      let sourceUrl = imgElement.dataset.src || imgElement.src;
+      if (sourceUrl && !sourceUrl.startsWith('http') && !sourceUrl.startsWith('data:')) {
+        sourceUrl = imgElement.src; // Fallback to resolved .src for relative data-src
+      }
+      const altText = imgElement.alt || '';
+      if (!sourceUrl || sourceUrl === window.location.href) {
+        return cleanText(imgElement.innerText || '');
+      }
+      return `![${altText}](${sourceUrl})`;
+
+    } else if (element instanceof HTMLPictureElement) {
+      const pictureElement = element as HTMLPictureElement;
+      const img = pictureElement.querySelector('img');
+      if (img) {
+        return convertToMarkdown(img); // Delegate to HTMLImageElement handling
+      }
+      return '[Picture Element - No image found]';
+
+    } else if (element instanceof HTMLVideoElement) {
+      const videoElement = element as HTMLVideoElement;
+      const posterUrl = videoElement.poster;
+      const videoSrc = videoElement.src || (videoElement.querySelector('source') ? videoElement.querySelector('source')!.src : '');
+      const title = videoElement.title || videoElement.ariaLabel || '';
+
+      if (posterUrl) {
+        const altText = title || 'Video Poster';
+        return `![${altText}](${posterUrl})`;
+      } else if (videoSrc) {
+        const linkText = title || `Video Source`;
+        return `[${linkText}](${videoSrc})`;
+      }
+      return `[Video: ${title || 'No source or poster'}]`;
+
+    } else if (element instanceof SVGSVGElement) {
+      const svgOuterHTML = element.outerHTML;
+      return `\`\`\`svg\n${svgOuterHTML}\n\`\`\``;
+
+    } else if (element instanceof HTMLCanvasElement) {
+      const canvasElement = element as HTMLCanvasElement;
+      const id = canvasElement.id ? `id: '${canvasElement.id}'` : '';
+      const classes = canvasElement.className ? `class: '${canvasElement.className}'` : '';
+      const attributes = [id, classes].filter(Boolean).join(', ');
+      return `[Canvas Element${attributes ? ` (${attributes})` : ''}]`;
+
+    } else if (element instanceof HTMLEmbedElement) {
+      const embedElement = element as HTMLEmbedElement;
+      const src = embedElement.src;
+      const type = embedElement.type;
+      if (src) {
+        return `[Embedded Content${type ? ` (type: ${type})` : ''}](${src})`;
+      }
+      return `[Embedded Content${type ? ` (type: ${type})` : ''}]`;
+
+    } else if (element instanceof HTMLObjectElement) {
+      const objectElement = element as HTMLObjectElement;
+      const data = objectElement.data;
+      const type = objectElement.type;
+      if (data) {
+        return `[Object Content${type ? ` (type: ${type})` : ''}](${data})`;
+      }
+      return `[Object Content${type ? ` (type: ${type})` : ''}]`;
+
+    } else {
+      // Default handling for other elements
+      const clonedElement = element.cloneNode(true) as Element;
+      clonedElement.querySelectorAll('#ai-copilot-copy-btn').forEach(btn => btn.remove());
+      let markdown = turndown.turndown(clonedElement.innerHTML);
+      return markdown.trim();
+    }
   } catch (error) {
-    console.error('Error converting to Markdown:', error);
+    console.error('Error converting to Markdown:', error, element);
     // Fallback to plain text extraction if Markdown conversion fails
     return cleanText((element as HTMLElement).innerText || '');
   }

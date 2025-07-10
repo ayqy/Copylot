@@ -19,6 +19,57 @@ let isInitialized = false;
 let userSettings: Settings | null = null; // Will be populated by getSettings()
 let lastClickPosition: { x: number; y: number } | null = null;
 
+// Unified function to show Magic Copy
+function showMagicCopy(element: Element, event?: MouseEvent): void {
+  if (!element) return;
+
+  // @ts-ignore: hideButton is available from inlined ui-injector.ts
+  if (currentTarget && currentTarget !== element && copyButtonElement) {
+    // Hide from previous target if different
+    hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
+  }
+
+  currentTarget = element;
+
+  if (!copyButtonElement) {
+    // @ts-ignore: createButton is available from inlined ui-injector.ts
+    copyButtonElement = createButton();
+    setupButtonClickHandler(); // Set up once
+  }
+
+  let x, y;
+  if (event) {
+    x = event.clientX;
+    y = event.clientY;
+    lastClickPosition = { x, y }; // Update lastClickPosition for consistency if needed by other features like Alt key
+  } else {
+    // Fallback positioning if no event (e.g. called programmatically without mouse context)
+    // Position near the element's top-left corner or center.
+    // This might need adjustment based on how showButton positions relative to x,y.
+    const rect = element.getBoundingClientRect();
+    x = rect.left + rect.width / 2;
+    y = rect.top + rect.height / 2;
+    // Ensure button is within viewport, showButton might also do this
+    x = Math.max(0, Math.min(x, window.innerWidth));
+    y = Math.max(0, Math.min(y, window.innerHeight));
+  }
+
+  // @ts-ignore: showButton is available from inlined ui-injector.ts
+  showButton(copyButtonElement, x, y, currentTarget instanceof HTMLElement ? currentTarget : null);
+}
+
+// Unified function to hide Magic Copy
+function hideMagicCopy(): void {
+  if (copyButtonElement && currentTarget) {
+    // @ts-ignore: hideButton is available from inlined ui-injector.ts
+    hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
+  }
+  currentTarget = null;
+  // lastClickPosition = null; // Clearing lastClickPosition might be too aggressive if Alt key needs it.
+                           // Let's keep it unless it causes issues.
+}
+
+
 // Handles document click to identify potential target elements and show/hide the button.
 function handleDocumentClick(event: MouseEvent): void {
   let potentialTargetNode = event.target as Node;
@@ -28,6 +79,9 @@ function handleDocumentClick(event: MouseEvent): void {
     return;
   }
 
+  // Always hide any existing Magic Copy first (click or hover)
+  hideMagicCopy();
+
   // If clicking over a text node, use its parent element.
   if (potentialTargetNode.nodeType === Node.TEXT_NODE) {
     potentialTargetNode = potentialTargetNode.parentElement || potentialTargetNode;
@@ -35,12 +89,7 @@ function handleDocumentClick(event: MouseEvent): void {
 
   if (!(potentialTargetNode instanceof Element)) {
     // Clicked on something that isn't an element (e.g., document background)
-    // If a button is shown, hide it.
-    if (copyButtonElement && currentTarget) {
-      // @ts-ignore: hideButton is available from inlined ui-injector.ts
-      hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
-      currentTarget = null;
-    }
+    // Magic copy is already hidden by hideMagicCopy() above.
     return;
   }
 
@@ -48,30 +97,9 @@ function handleDocumentClick(event: MouseEvent): void {
 
   // @ts-ignore: isViableBlock is available from inlined block-identifier.ts
   if (isViableBlock(clickedElement)) {
-    // If there was a previous target and it's different from the new one, hide the button from it.
-    if (currentTarget && currentTarget !== clickedElement && copyButtonElement) {
-      // @ts-ignore: hideButton is available from inlined ui-injector.ts
-      hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
-    }
-
-    currentTarget = clickedElement;
-
-    if (!copyButtonElement) {
-      // @ts-ignore: createButton is available from inlined ui-injector.ts
-      copyButtonElement = createButton();
-      setupButtonClickHandler(); // Set up once
-    }
-    // @ts-ignore: showButton is available from inlined ui-injector.ts
-    showButton(copyButtonElement, event.clientX, event.clientY, currentTarget instanceof HTMLElement ? currentTarget : null);
-    lastClickPosition = { x: event.clientX, y: event.clientY };
-  } else {
-    // Clicked element is not viable. If a button is currently shown, hide it.
-    if (copyButtonElement && currentTarget) {
-      // @ts-ignore: hideButton is available from inlined ui-injector.ts
-      hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
-      currentTarget = null;
-    }
+    showMagicCopy(clickedElement, event);
   }
+  // If not a viable block, Magic Copy remains hidden (already called hideMagicCopy).
 }
 
 // Handles keydown for parent element selection.
@@ -173,6 +201,55 @@ async function loadSettingsAndApply(): Promise<void> {
   }
 }
 
+// Target elements for hover-triggered Magic Copy
+const HOVER_TARGET_TAGS = ['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'];
+
+// Handles mouseover events to show Magic Copy
+function handleMouseOver(event: MouseEvent): void {
+  const targetElement = event.target as Element;
+
+  if (!targetElement || !(targetElement instanceof Element)) return;
+
+  // Do not trigger hover if the mouse is over the copy button itself
+  if (copyButtonElement && copyButtonElement.contains(targetElement)) {
+    return;
+  }
+
+  const tagName = targetElement.tagName.toLowerCase();
+  if (HOVER_TARGET_TAGS.includes(tagName)) {
+    // If a different Magic Copy is already shown (e.g. from a click), hide it first.
+    // Or if it's the same target, this effectively refreshes its position if mouse moved significantly.
+    if (currentTarget !== targetElement) {
+        hideMagicCopy(); // Hide previous before showing new, or if currentTarget is null this does nothing
+    }
+    showMagicCopy(targetElement, event);
+  }
+}
+
+// Handles mouseout events to hide Magic Copy
+function handleMouseOut(event: MouseEvent): void {
+  const targetElement = event.target as Element;
+  const relatedTarget = event.relatedTarget as Element;
+
+  if (!currentTarget || !(targetElement instanceof Element)) return;
+
+  // If the mouse is moving to the copy button, don't hide.
+  if (copyButtonElement && relatedTarget && copyButtonElement.contains(relatedTarget)) {
+    return;
+  }
+
+  // If the mouse is moving to a child of the currentTarget, don't hide.
+  if (currentTarget.contains(relatedTarget)) {
+    return;
+  }
+
+  // Hide if the mouse is leaving the currentTarget and not entering the button or a child.
+  if (targetElement === currentTarget) {
+    hideMagicCopy();
+  }
+}
+
+
 // Initializes the content script.
 async function initializeContentScript(): Promise<void> {
   if (isInitialized) return;
@@ -185,6 +262,8 @@ async function initializeContentScript(): Promise<void> {
     
     document.addEventListener('click', handleDocumentClick, { passive: true });
     document.addEventListener('keydown', handleKeyDown, { passive: false }); // passive: false to allow preventDefault
+    document.addEventListener('mouseover', handleMouseOver, { passive: true });
+    document.addEventListener('mouseout', handleMouseOut, { passive: true });
     
     // Listen for settings changes from the popup/options page.
     if (chrome.storage && chrome.storage.onChanged) {
