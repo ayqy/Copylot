@@ -104,12 +104,11 @@ function handlePointerMove(event: PointerEvent): void {
 
 // Handles keydown for parent element selection.
 function handleKeyDown(event: KeyboardEvent): void {
-  // const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0; // No longer needed for Alt/Option
-  // const isModifierPressed = (isMac && event.metaKey && !event.ctrlKey) || (!isMac && event.ctrlKey && !event.metaKey);
+  // Check if Alt/Option key is pressed without other command modifiers
+  const isOnlyAltPressed = event.altKey && !event.metaKey && !event.ctrlKey && !event.shiftKey;
 
-  // Use event.altKey for Option (OSX) / Alt (Windows)
-  if (event.altKey && currentTarget && copyButtonElement) {
-    event.preventDefault(); // Prevent browser default actions
+  if (isOnlyAltPressed && currentTarget && copyButtonElement) {
+    // event.preventDefault(); // Prevent browser default actions - REMOVED to allow event propagation
     const parent = currentTarget.parentElement;
 
     // @ts-ignore: EXCLUDED_TAGS is available from inlined block-identifier.ts
@@ -123,8 +122,13 @@ function handleKeyDown(event: KeyboardEvent): void {
       updateButtonState(copyButtonElement, 'copy'); // Reset button state
       // @ts-ignore: showButton is available from inlined ui-injector.ts
       showButton(copyButtonElement, lastMousePosition.x, lastMousePosition.y, currentTarget instanceof HTMLElement ? currentTarget : null);
+
+      // It's important to consider if preventDefault() should be called here
+      // conditionally, only if the block expansion actually happened.
+      // For now, per requirement, we are not calling it to ensure event propagation.
     }
   }
+  // Always allow the event to propagate by not calling event.stopPropagation() or event.preventDefault() globally here.
 }
 
 // Sets up the click handler for the copy button.
