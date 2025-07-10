@@ -41,14 +41,27 @@ function isInteractiveElement(element: Element): boolean {
 
 function isViableBlock(element: Element): boolean {
   try {
-    return !(
-      hasExcludedAncestor(element) ||
-      !hasMinimumTextContent(element) ||
-      !hasMinimumDimensions(element) ||
-      isInteractiveElement(element)
-    );
+    // Reordered checks: from potentially cheaper to more expensive.
+    // 1. Check if it's an interactive element (usually quick tag check).
+    if (isInteractiveElement(element)) {
+      return false;
+    }
+    // 2. Check for excluded ancestors.
+    if (hasExcludedAncestor(element)) {
+      return false;
+    }
+    // 3. Check dimensions (can cause layout calculations).
+    if (!hasMinimumDimensions(element)) {
+      return false;
+    }
+    // 4. Check text content (can be expensive due to innerText).
+    if (!hasMinimumTextContent(element)) {
+      return false;
+    }
+    // If all checks pass, it's a viable block.
+    return true;
   } catch (error) {
-    console.error('Error in isViableBlock:', error);
+    // console.error('Error in isViableBlock:', error); // Optionally log, but can be noisy
     return false;
   }
 }
@@ -425,22 +438,63 @@ function processContent(element: Element, settings: Settings): string {
 }
 
 // Main content script logic
-const HOVER_DEBOUNCE_DELAY = 300;
+const HOVER_DEBOUNCE_DELAY = 100; // milliseconds
 
 let currentTarget: Element | null = null;
-let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+let hoverTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let copyButton: HTMLElement | null = null;
 let isInitialized = false;
 let userSettings: Settings | null = null;
+let lastPointerEvent: PointerEvent | null = null;
 
-function debounce<T extends (...args: any[]) => void>(func: T, delay: number): T {
-  return ((...args: any[]) => {
-    if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => func(...args), delay);
-  }) as T;
+// No longer using the generic debounce function from before,
+// as the logic is now more integrated into handlePointerMove.
+
+function performViabilityCheck() {
+  if (!lastPointerEvent) return;
+
+  const target = lastPointerEvent.target as Element;
+  if (!target) return;
+
+  // If the button is visible and the target hasn't changed, do nothing.
+  // This can happen if performViabilityCheck is called multiple times for the same target.
+  if (copyButton && copyButton.style.display === 'flex' && target === currentTarget) {
+    return;
+  }
+
+  // If the mouse has moved to a different element while waiting for the timeout,
+  // or if the current target is no longer viable, hide the button.
+  if (copyButton && currentTarget && target !== currentTarget) {
+    hideButton(copyButton);
+    // currentTarget will be updated below if the new target is viable
+  }
+
+  if (isViableBlock(target)) {
+    currentTarget = target;
+    if (!copyButton) {
+      copyButton = createButton();
+      setupButtonClickHandler(); // Ensure handler is set up only once or can be called multiple times safely
+    }
+    showButton(copyButton, lastPointerEvent.clientX, lastPointerEvent.clientY);
+  } else {
+    // If the target is not viable and the button is visible (perhaps for a previous element), hide it.
+    if (copyButton && copyButton.style.display === 'flex') {
+      hideButton(copyButton);
+    }
+    currentTarget = null;
+  }
 }
 
-function scheduleViabilityCheck(callback: () => void): void {
+function scheduleViabilityCheck() {
+  // Schedules the actual check using requestIdleCallback or setTimeout
+  const callback = () => {
+    try {
+      performViabilityCheck();
+    } catch (error) {
+      console.error('Error in scheduled viability check:', error);
+    }
+  };
+
   if ('requestIdleCallback' in window) {
     requestIdleCallback(callback, { timeout: 100 });
   } else {
@@ -449,32 +503,48 @@ function scheduleViabilityCheck(callback: () => void): void {
 }
 
 function handlePointerMove(event: PointerEvent): void {
+  // Store the latest pointer event
+  lastPointerEvent = event;
   const target = event.target as Element;
-  if (!target || target === currentTarget) return;
-  
-  if (copyButton && currentTarget && target !== currentTarget) {
-    hideButton(copyButton);
-    currentTarget = null;
+
+  if (!target) return;
+
+  // If the target is the button itself or its descendant, do nothing.
+  if (copyButton && copyButton.contains(target)) {
+    return;
   }
   
-  scheduleViabilityCheck(() => {
-    try {
-      if (isViableBlock(target)) {
-        currentTarget = target;
-        if (!copyButton) {
-          copyButton = createButton();
-          setupButtonClickHandler();
-        }
-        showButton(copyButton, event.clientX, event.clientY);
-      }
-    } catch (error) {
-      console.error('Error in viability check:', error);
+  // Clear any existing timeout to debounce
+  if (hoverTimeoutId) {
+    clearTimeout(hoverTimeoutId);
+  }
+
+  // Set a new timeout
+  hoverTimeoutId = setTimeout(() => {
+    // Only schedule the viability check if the mouse is still over the same target (or a child of it)
+    // This check helps if the mouse briefly moves out and back in quickly.
+    // For simplicity, we'll use the lastPointerEvent's target directly,
+    // as the more complex check for "still over" might be overkill if scheduleViabilityCheck is efficient.
+    if (lastPointerEvent && (lastPointerEvent.target as Element) === target) {
+      scheduleViabilityCheck();
+    } else if (copyButton && copyButton.style.display === 'flex' && currentTarget !== target) {
+      // If the mouse has moved to a clearly different target before debounce triggers,
+      // and the button is visible for a previous element, hide it.
+      // This handles cases where the mouse moves away from a viable block before the debounce delay for that block finishes.
+      hideButton(copyButton);
+      currentTarget = null;
     }
-  });
+  }, HOVER_DEBOUNCE_DELAY);
 }
+
 
 function setupButtonClickHandler(): void {
   if (!copyButton) return;
+  // To prevent multiple listeners, check if one already exists or remove it first.
+  // A simple way is to replace the button or use a flag.
+  // For now, assuming createButton() returns the same instance or this is handled.
+  // If createButton always makes a new one, this needs adjustment.
+  // Given `buttonInstance` in createButton, it should be fine.
   
   copyButton.addEventListener('click', async (event: Event) => {
     event.preventDefault();
@@ -558,8 +628,8 @@ async function initializeContentScript(): Promise<void> {
     await loadSettings();
     injectStyles();
     
-    const debouncedPointerMove = debounce(handlePointerMove, HOVER_DEBOUNCE_DELAY);
-    document.addEventListener('pointermove', debouncedPointerMove, { passive: true });
+    // Directly use handlePointerMove, as it now incorporates its own debouncing logic.
+    document.addEventListener('pointermove', handlePointerMove, { passive: true });
     document.addEventListener('mouseleave', handleMouseLeave, { passive: true });
     
     chrome.storage.onChanged.addListener((changes) => {
