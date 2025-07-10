@@ -16,7 +16,7 @@ export const EXCLUDED_TAGS = [
   'iframe',
 ];
 
-export const MIN_TEXT_LENGTH = 10; // Adjusted for potentially smaller but valid content blocks
+export const MIN_TEXT_LENGTH = 1; // Adjusted for potentially smaller but valid content blocks
 export const MIN_WIDTH = 20;   // Adjusted for smaller icons or elements
 export const MIN_HEIGHT = 20;  // Adjusted for smaller icons or elements
 
@@ -132,6 +132,7 @@ export function isViableBlock(element: Element): boolean {
     }
 
     // Leaf node consideration (optimized):
+    // This logic checks if a child element is a more specific target.
     const childElements = Array.from(element.children).filter(
       c => c instanceof HTMLElement && !EXCLUDED_TAGS.includes(c.tagName.toLowerCase())
     ) as HTMLElement[];
@@ -140,18 +141,20 @@ export function isViableBlock(element: Element): boolean {
         for (const child of childElements) {
             const childTagName = child.tagName.toLowerCase();
 
+            // If a child is a visible media element with dimensions, the parent is not viable,
+            // as the media element itself is a better target.
             if (['img', 'video', 'canvas', 'svg'].includes(childTagName)) {
                 if (isElementVisible(child) && hasMinimumDimensions(child)) {
-                    return false;
+                    return false; // Parent is not viable if a media child is a better target
                 }
-                continue;
+                continue; // Check next child
             }
 
-            if (meetsMinimumTextRequirement(child) && isElementVisible(child) && hasMinimumDimensions(child)) {
-                if (!hasExcludedAncestor(child)) { // This is still a potentially expensive check
-                     return false;
-                }
-            }
+            // Previously, there was a check here for non-media children.
+            // This check was removed based on user feedback to allow parent elements
+            // (like a <p> containing a <strong> and other text) to be viable targets
+            // even if a text-based child could also be a target.
+            // The goal is to make the directly clicked or containing block selectable.
         }
     }
 
