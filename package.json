@@ -1,0 +1,57 @@
+{
+  "name": "ai-copilot-extension",
+  "private": true,
+  "version": "1.1.0",
+  "description": "A browser extension to copy web page content as AI-friendly format",
+  "type": "module",
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "node scripts/inline-build.ts",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,html}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,html}\"",
+    "type-check": "tsc --noEmit",
+    "generate-icons": "ts-node scripts/generate-icons.ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "turndown": "^7.1.2"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@types/node": "^20.14.8",
+    "@types/turndown": "^5.0.4",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
+    "@typescript-eslint/parser": "^7.13.1",
+    "@vitejs/plugin-legacy": "^5.4.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "prettier": "^3.3.2",
+    "sharp": "^0.33.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.2.2",
+    "vite": "^5.3.1"
+  },
+  "keywords": [
+    "chrome-extension",
+    "ai",
+    "copilot",
+    "copy",
+    "markdown",
+    "web-scraping",
+    "content-extraction"
+  ],
+  "author": "AI Copilot Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ayqy/copy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ayqy/copy/issues"
+  },
+  "homepage": "https://github.com/ayqy/copy#readme"
+}

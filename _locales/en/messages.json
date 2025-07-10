@@ -1,0 +1,66 @@
+{
+  "appName": {
+    "message": "AI Copilot – MagicCopy",
+    "description": "Extension name"
+  },
+  "appDescription": {
+    "message": "A browser extension to copy web page content as AI-friendly format.",
+    "description": "Extension description"
+  },
+  "copy": {
+    "message": "Copy",
+    "description": "Copy button text"
+  },
+  "copied": {
+    "message": "Copied!",
+    "description": "Copied confirmation text"
+  },
+  "outputFormat": {
+    "message": "Output Format:",
+    "description": "Output format label"
+  },
+  "markdown": {
+    "message": "Markdown",
+    "description": "Markdown format option"
+  },
+  "plaintext": {
+    "message": "Plain Text",
+    "description": "Plain text format option"
+  },
+  "additionalInfo": {
+    "message": "Additional Info:",
+    "description": "Additional info section label"
+  },
+  "attachTitle": {
+    "message": "Attach page title",
+    "description": "Attach title checkbox label"
+  },
+  "attachURL": {
+    "message": "Attach source URL",
+    "description": "Attach URL checkbox label"
+  },
+  "language": {
+    "message": "Language:",
+    "description": "Language selection label"
+  },
+  "system": {
+    "message": "System",
+    "description": "System language option"
+  },
+  "english": {
+    "message": "English",
+    "description": "English language option"
+  },
+  "chinese": {
+    "message": "中文",
+    "description": "Chinese language option"
+  },
+  "feedback": {
+    "message": "Feedback & Suggestions",
+    "description": "Feedback link text"
+  },
+  "source": {
+    "message": "Source",
+    "description": "Source prefix for copied content"
+  }
+} 

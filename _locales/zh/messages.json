@@ -1,0 +1,66 @@
+{
+  "appName": {
+    "message": "AI Copilot – MagicCopy",
+    "description": "Extension name"
+  },
+  "appDescription": {
+    "message": "智能复制网页内容为AI友好格式的浏览器插件。",
+    "description": "Extension description"
+  },
+  "copy": {
+    "message": "复制",
+    "description": "Copy button text"
+  },
+  "copied": {
+    "message": "已复制！",
+    "description": "Copied confirmation text"
+  },
+  "outputFormat": {
+    "message": "输出格式：",
+    "description": "Output format label"
+  },
+  "markdown": {
+    "message": "Markdown",
+    "description": "Markdown format option"
+  },
+  "plaintext": {
+    "message": "纯文本",
+    "description": "Plain text format option"
+  },
+  "additionalInfo": {
+    "message": "附加信息：",
+    "description": "Additional info section label"
+  },
+  "attachTitle": {
+    "message": "附加页面标题",
+    "description": "Attach title checkbox label"
+  },
+  "attachURL": {
+    "message": "附加来源URL",
+    "description": "Attach URL checkbox label"
+  },
+  "language": {
+    "message": "语言：",
+    "description": "Language selection label"
+  },
+  "system": {
+    "message": "系统",
+    "description": "System language option"
+  },
+  "english": {
+    "message": "English",
+    "description": "English language option"
+  },
+  "chinese": {
+    "message": "中文",
+    "description": "Chinese language option"
+  },
+  "feedback": {
+    "message": "反馈与建议",
+    "description": "Feedback link text"
+  },
+  "source": {
+    "message": "来源",
+    "description": "Source prefix for copied content"
+  }
+} 

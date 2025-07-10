@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="#4F46E5" stroke="#312E81" stroke-width="2"/>
+  
+  <!-- Clipboard body -->
+  <rect x="42" y="35" width="32" height="44" rx="4" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+  
+  <!-- Clipboard clip -->
+  <rect x="52" y="30" width="12" height="8" rx="2" fill="#9CA3AF"/>
+  <rect x="54" y="32" width="8" height="4" rx="1" fill="#FFFFFF"/>
+  
+  <!-- Content lines on clipboard -->
+  <line x1="47" y1="45" x2="69" y2="45" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="47" y1="51" x2="65" y2="51" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="47" y1="57" x2="67" y2="57" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="47" y1="63" x2="62" y2="63" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Magic wand -->
+  <g transform="translate(75, 50) rotate(25)">
+    <!-- Wand body -->
+    <rect x="0" y="8" width="2" height="20" fill="#FBBF24" rx="1"/>
+    <!-- Wand tip -->
+    <circle cx="1" cy="6" r="2" fill="#F59E0B"/>
+    <!-- Magic sparkles -->
+    <g fill="#FEF3C7">
+      <circle cx="-3" cy="3" r="1"/>
+      <circle cx="5" cy="1" r="0.8"/>
+      <circle cx="2" cy="-2" r="0.6"/>
+      <circle cx="-1" cy="32" r="1.2"/>
+      <circle cx="4" cy="30" r="0.7"/>
+    </g>
+  </g>
+  
+  <!-- Additional sparkles around the icon -->
+  <g fill="#FEF3C7" opacity="0.8">
+    <circle cx="25" cy="45" r="1.5"/>
+    <circle cx="95" cy="35" r="1"/>
+    <circle cx="100" cy="75" r="1.2"/>
+    <circle cx="30" cy="85" r="0.8"/>
+  </g>
+</svg> 
