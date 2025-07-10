@@ -1,7 +1,5 @@
 // UI injector functionality
 
-export const BUTTON_OFFSET_X = 8;
-export const BUTTON_OFFSET_Y = 8;
 export const BUTTON_SIZE = 32;
 export const MAX_Z_INDEX = 2147483647;
 
@@ -88,19 +86,28 @@ export function positionButton(button: HTMLElement, x: number, y: number): void 
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
   
-  let left = x + BUTTON_OFFSET_X;
-  let top = y + BUTTON_OFFSET_Y;
+  // Calculate initial position for center alignment
+  let left = x - BUTTON_SIZE / 2;
+  let top = y - BUTTON_SIZE / 2;
   
+  // Adjust if button goes off screen
+  // Check right edge
   if (left + BUTTON_SIZE > viewportWidth) {
-    left = x - BUTTON_SIZE - BUTTON_OFFSET_X;
+    left = viewportWidth - BUTTON_SIZE - 8; // Place it with a small margin from the edge
+  }
+  // Check left edge
+  if (left < 0) {
+    left = 8; // Place it with a small margin from the edge
   }
   
+  // Check bottom edge
   if (top + BUTTON_SIZE > viewportHeight) {
-    top = y - BUTTON_SIZE - BUTTON_OFFSET_Y;
+    top = viewportHeight - BUTTON_SIZE - 8; // Place it with a small margin from the edge
   }
-  
-  left = Math.max(8, Math.min(left, viewportWidth - BUTTON_SIZE - 8));
-  top = Math.max(8, Math.min(top, viewportHeight - BUTTON_SIZE - 8));
+  // Check top edge
+  if (top < 0) {
+    top = 8; // Place it with a small margin from the edge
+  }
   
   button.style.left = `${left}px`;
   button.style.top = `${top}px`;
