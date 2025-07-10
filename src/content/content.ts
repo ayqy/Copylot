@@ -1,588 +1,27 @@
-// Block identifier functionality
-// Rule 3.2: Remove semantic tag filtering, keep truly invisible tags.
-// Rule 3.1 & 3.2: Interactive elements like 'a', 'button' are generally not "content blocks" for copying.
-// Retain 'iframe' in excluded as its content is a separate document.
-const EXCLUDED_TAGS = [
-  // Tags that are generally containers and might be too broad if not leaf nodes with direct content.
-  // We will rely on content and leaf checks more.
-  // 'header', 'footer', 'nav', 'aside', 'dialog', 'menu', 'form', 'fieldset', 'legend', 'details', 'summary',
+// Import types and specific functions/constants that might be needed by the outer shell
+// before inlining. This helps with TypeScript checking for the main script file.
+// The actual functions/constants from these modules will be globally available after inlining.
+import type { Settings } from '../shared/settings-manager';
+// No need to import specific functions like isViableBlock, createButton etc. here,
+// as they will be part of the global scope after the inline build step.
+// The /* INLINE:... */ comments will bring their definitions directly into this file.
 
-  // Truly invisible or non-content elements
-  'script', 'style', 'noscript', 'head', 'meta', 'link', 'template', 'area', 'map',
-  // Interactive controls that are not primarily for displaying content for copying as a "block"
-  'a', 'button', 'input', 'textarea', 'select', 'option', 'optgroup', 'label',
-  // Iframe content is isolated and should not be targeted directly as a block this way.
-  'iframe',
-];
-
-const MIN_TEXT_LENGTH = 10; // Adjusted for potentially smaller but valid content blocks
-const MIN_WIDTH = 20;   // Adjusted for smaller icons or elements
-const MIN_HEIGHT = 20;  // Adjusted for smaller icons or elements
-
-function isElementVisible(element: Element): boolean {
-  if (!(element instanceof HTMLElement)) {
-    return true; // Non-HTMLElements like SVGElement are considered visible if attached
-  }
-  const style = window.getComputedStyle(element);
-  return style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0;
-}
-
-function hasExcludedAncestor(element: Element): boolean {
-  let current = element.parentElement; // Start with the parent
-  while (current && current !== document.body) {
-    if (EXCLUDED_TAGS.includes(current.tagName.toLowerCase())) {
-      return true;
-    }
-    current = current.parentElement;
-  }
-  return false;
-}
-
-// Rule 3.1: "has content" includes text, images, video etc.
-function hasVisibleContent(element: Element): boolean {
-  if (!isElementVisible(element)) {
-    return false;
-  }
-
-  const tagName = element.tagName.toLowerCase();
-  // Check for specific media/embed tags that are inherently content
-  if (['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName)) {
-    // For img, check if it's loaded (naturalWidth/Height > 0 for img, or videoWidth/Height for video)
-    if (tagName === 'img' && (element as HTMLImageElement).naturalWidth > 0) return true;
-    if (tagName === 'video' && (element as HTMLVideoElement).readyState > 0) return true; // readyState > 0 means metadata loaded
-    if (['canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName)) return true; // Assume these have content if present
-    // Could add more specific checks for these if needed
-  }
-
-  // Check for text content, ignoring whitespace
-  const text = (element as HTMLElement).innerText?.trim() || '';
-  if (text.length > 0) { // Any text is now considered content, MIN_TEXT_LENGTH will be checked later if element is text-dominant
-    return true;
-  }
-
-  // Check if it has children that are visible and are themselves content elements (e.g. a div with an img inside)
-  // This makes a non-leaf container potentially "have content" due to its children.
-  // The "leaf node" aspect will be implicitly handled: if a child is a better target, it will be preferred.
-  for (let i = 0; i < element.children.length; i++) {
-    if (hasVisibleContent(element.children[i])) { // Recursive call, be cautious
-      return true;
-    }
-  }
-  return false;
-}
-
-
-function meetsMinimumTextRequirement(element: Element): boolean {
-    // This function is now more specific for text-dominant blocks.
-    // Blocks that are primarily images/videos are handled by hasVisibleContent.
-    const tagName = element.tagName.toLowerCase();
-    if (['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName)) {
-        return true; // Media elements don't need text.
-    }
-    const text = (element as HTMLElement).innerText?.replace(/\s+/g, '') || '';
-    return text.length >= MIN_TEXT_LENGTH;
-}
-
-
-function hasMinimumDimensions(element: Element): boolean {
-  const rect = element.getBoundingClientRect();
-  return rect.width >= MIN_WIDTH && rect.height >= MIN_HEIGHT;
-}
-
-// Rule 3.2: "all visible tags, if they have content, support hover"
-// This means we don't filter by "interactive" in the same way if it's a leaf with content.
-// However, we still want to avoid making typical UI controls like buttons primary copy targets
-// unless they are the *only* content.
-// The EXCLUDED_TAGS list will handle typical non-content interactive elements.
-// This function can be simplified or removed if EXCLUDED_TAGS is comprehensive.
-function isNonContentInteractiveElement(element: Element): boolean {
-  const tagName = element.tagName.toLowerCase();
-  // These are typically interactive but not primarily for displaying stand-alone content blocks.
-  // 'a' can be tricky, as it might wrap a large content block.
-  // For now, let's assume 'a' tags are excluded by EXCLUDED_TAGS if they are not the target themselves.
-  const nonContentInteractiveTags = [
-     // 'a', // Re-evaluating 'a' based on EXCLUDED_TAGS
-     // 'button', // Already in EXCLUDED_TAGS
-     // 'input', // Already in EXCLUDED_TAGS
-     // 'textarea', // Already in EXCLUDED_TAGS
-     // 'select', // Already in EXCLUDED_TAGS
-     // 'option', // Already in EXCLUDED_TAGS
-     // 'details', // Can be a content block container
-  ];
-  return nonContentInteractiveTags.includes(tagName);
-}
-
-// Rule 3.1: All contentful leaf nodes should be hoverable.
-// Rule 3.2: Remove semantic tag filtering, rely on visibility and content.
-// Rule 3.3: Text node hovering targets the parent element (handled in handlePointerMove).
-function isViableBlock(element: Element): boolean {
-  try {
-    const tagName = element.tagName.toLowerCase();
-
-    // Rule 3.2: Filter out inherently invisible elements first.
-    if (['script', 'style', 'meta', 'head', 'link', 'template', 'noscript'].includes(tagName)) {
-      return false;
-    }
-
-    // Check visibility (covers display:none, visibility:hidden, opacity:0)
-    if (!isElementVisible(element)) {
-      return false;
-    }
-
-    // Rule 3.2: Check if element itself is an excluded tag type (e.g. a button, input)
-    // This is a more direct check than hasExcludedAncestor for the element itself.
-    if (EXCLUDED_TAGS.includes(tagName)) {
-        // Exception: if an excluded tag (e.g. 'div' if we were to add it) has direct image/video content
-        // and no other viable children, it might be considered.
-        // For now, if it's in EXCLUDED_TAGS, it's out.
-        return false;
-    }
-
-    // Rule 3.2: Check if an ancestor is an excluded type that should prevent children from being blocks.
-    // For example, we don't want blocks inside a button.
-    if (hasExcludedAncestor(element)) {
-      return false;
-    }
-
-    // Rule 3.1: Must have visible content (text, image, video, etc.)
-    if (!hasVisibleContent(element)) {
-      return false;
-    }
-
-    // Rule 3.1 / general usability: Must meet minimum dimensions.
-    if (!hasMinimumDimensions(element)) {
-      return false;
-    }
-
-    // Rule 3.1: If the element is primarily text-based, it should meet text length.
-    // This check is separated from hasVisibleContent to allow media to pass without text.
-    const isMedia = ['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName);
-    if (!isMedia && !meetsMinimumTextRequirement(element)) {
-        return false;
-    }
-
-    // Leaf node consideration (optimized):
-    // Avoid selecting a parent if it has children that are themselves viable blocks.
-    // This helps in selecting the most specific content block.
-    // Filter childElements to only include HTMLElements that are not themselves EXCLUDED_TAGS.
-    const childElements = Array.from(element.children).filter(
-      c => c instanceof HTMLElement && !EXCLUDED_TAGS.includes(c.tagName.toLowerCase())
-    ) as HTMLElement[];
-
-    // Only proceed with child checks if the parent is not media and there are potential child candidates.
-    if (!isMedia && childElements.length > 0) {
-        for (const child of childElements) {
-            const childTagName = child.tagName.toLowerCase();
-
-            // Check if child is a directly preferable media type
-            if (['img', 'video', 'canvas', 'svg'].includes(childTagName)) {
-                if (isElementVisible(child) && hasMinimumDimensions(child)) {
-                    return false; // Prefer the visible media child
-                }
-                // If this media child is not visible or too small, it doesn't disqualify the parent based on this rule.
-                // Continue to the next child.
-                continue;
-            }
-
-            // Check if child is a text-rich element that isn't excluded by an ancestor.
-            // We already filtered out children that are themselves EXCLUDED_TAGS.
-            // Now, we only need to check for hasExcludedAncestor for these potentially viable children.
-            if (meetsMinimumTextRequirement(child) && isElementVisible(child) && hasMinimumDimensions(child)) {
-                if (!hasExcludedAncestor(child)) { // This is still a potentially expensive check
-                     return false; // Prefer this text-rich, non-excluded child
-                }
-            }
-        }
-    }
-
-    return true;
-  } catch (error) {
-    console.error('Error in isViableBlock:', error, element);
-    return false;
-  }
-}
-
-// Settings manager functionality
-interface Settings {
-  outputFormat: 'markdown' | 'plaintext';
-  attachTitle: boolean;
-  attachURL: boolean;
-  language: 'system' | 'en' | 'zh';
-}
-
-const SETTINGS_KEY = 'copilot_settings';
-
-const DEFAULT_SETTINGS: Settings = {
-  outputFormat: 'markdown',
-  attachTitle: false,
-  attachURL: false,
-  language: 'system'
-};
-
-function getSystemLanguage(): 'system' | 'en' | 'zh' {
-  try {
-    const uiLanguage = chrome.i18n.getUILanguage();
-    if (uiLanguage.startsWith('zh')) {
-      return 'zh';
-    }
-    return 'en';
-  } catch (error) {
-    console.error('Error detecting system language:', error);
-    return 'en';
-  }
-}
-
-async function getSettings(): Promise<Settings> {
-  try {
-    const result = await chrome.storage.local.get(SETTINGS_KEY);
-    const storedSettings = result[SETTINGS_KEY];
-    
-    if (!storedSettings) {
-      const defaultWithLanguage = {
-        ...DEFAULT_SETTINGS,
-        language: getSystemLanguage()
-      };
-      await chrome.storage.local.set({ [SETTINGS_KEY]: defaultWithLanguage });
-      return defaultWithLanguage;
-    }
-    
-    const mergedSettings: Settings = {
-      ...DEFAULT_SETTINGS,
-      ...storedSettings
-    };
-    
-    if (mergedSettings.language === 'system') {
-      mergedSettings.language = getSystemLanguage();
-    }
-    
-    return mergedSettings;
-  } catch (error) {
-    console.error('Error getting settings:', error);
-    return {
-      ...DEFAULT_SETTINGS,
-      language: getSystemLanguage()
-    };
-  }
-}
-
-// UI injector functionality
-const BUTTON_OFFSET_X = 8;
-const BUTTON_OFFSET_Y = 8;
-const BUTTON_SIZE = 32;
-const MAX_Z_INDEX = 2147483647;
-
-let buttonInstance: HTMLElement | null = null;
-
-function getMessage(key: string): string {
-  return chrome.i18n.getMessage(key) || key;
-}
-
-function getCopyIcon(): string {
-  return `
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-    </svg>
-  `;
-}
-
-function getCopiedIcon(): string {
-  return `
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polyline points="20,6 9,17 4,12"></polyline>
-    </svg>
-  `;
-}
-
-function createButton(): HTMLElement {
-  if (buttonInstance) return buttonInstance;
-  
-  const button = document.createElement('div');
-  button.id = 'ai-copilot-copy-btn';
-  
-  Object.assign(button.style, {
-    position: 'fixed',
-    width: `${BUTTON_SIZE}px`,
-    height: `${BUTTON_SIZE}px`,
-    backgroundColor: '#4F46E5',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    display: 'none',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: MAX_Z_INDEX.toString(),
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-    transition: 'all 0.2s ease',
-    userSelect: 'none',
-    pointerEvents: 'auto'
-  });
-  
-  button.innerHTML = getCopyIcon();
-  button.title = getMessage('copy');
-  
-  button.addEventListener('mouseenter', () => {
-    if (button.dataset.state !== 'copied') {
-      button.style.backgroundColor = '#3730A3';
-      button.style.transform = 'scale(1.05)';
-    }
-  });
-  
-  button.addEventListener('mouseleave', () => {
-    if (button.dataset.state !== 'copied') {
-      button.style.backgroundColor = '#4F46E5';
-      button.style.transform = 'scale(1)';
-    }
-  });
-  
-  document.body.appendChild(button);
-  buttonInstance = button;
-  return button;
-}
-
-function positionButton(button: HTMLElement, x: number, y: number): void {
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-  
-  let left = x + BUTTON_OFFSET_X;
-  let top = y + BUTTON_OFFSET_Y;
-  
-  if (left + BUTTON_SIZE > viewportWidth) {
-    left = x - BUTTON_SIZE - BUTTON_OFFSET_X;
-  }
-  
-  if (top + BUTTON_SIZE > viewportHeight) {
-    top = y - BUTTON_SIZE - BUTTON_OFFSET_Y;
-  }
-  
-  left = Math.max(8, Math.min(left, viewportWidth - BUTTON_SIZE - 8));
-  top = Math.max(8, Math.min(top, viewportHeight - BUTTON_SIZE - 8));
-  
-  button.style.left = `${left}px`;
-  button.style.top = `${top}px`;
-}
-
-function showButton(button: HTMLElement, x: number, y: number): void {
-  positionButton(button, x, y);
-  button.style.display = 'flex';
-  
-  // Add border to current target element
-  if (currentTarget && currentTarget instanceof HTMLElement) {
-    // Store original border if exists
-    currentTarget.dataset.originalBorder = currentTarget.style.border;
-    currentTarget.style.border = '1px solid #4F46E5';
-  }
-}
-
-function hideButton(button: HTMLElement): void {
-  button.style.display = 'none';
-  updateButtonState(button, 'copy');
-  
-  // Restore original border of current target element
-  if (currentTarget && currentTarget instanceof HTMLElement) {
-    currentTarget.style.border = currentTarget.dataset.originalBorder || 'none';
-    delete currentTarget.dataset.originalBorder;
-  }
-}
-
-function updateButtonState(button: HTMLElement, state: 'copy' | 'copied'): void {
-  button.dataset.state = state;
-  
-  if (state === 'copy') {
-    button.innerHTML = getCopyIcon();
-    button.title = getMessage('copy');
-    button.style.backgroundColor = '#4F46E5';
-    button.style.transform = 'scale(1)';
-  } else if (state === 'copied') {
-    button.innerHTML = getCopiedIcon();
-    button.title = getMessage('copied');
-    button.style.backgroundColor = '#059669';
-    button.style.transform = 'scale(1.1)';
-    button.style.animation = 'none';
-    button.offsetHeight; // Force reflow
-    button.style.animation = 'ai-copilot-success 0.8s ease-out';
-  }
-}
-
-function injectStyles(): void {
-  if (document.getElementById('ai-copilot-styles')) return;
-  
-  const style = document.createElement('style');
-  style.id = 'ai-copilot-styles';
-  style.textContent = `
-    @keyframes ai-copilot-success {
-      0% {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      }
-      50% {
-        box-shadow: 0 4px 20px rgba(5, 150, 105, 0.4), 0 0 0 4px rgba(5, 150, 105, 0.2);
-      }
-      100% {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      }
-    }
-    
-    #ai-copilot-copy-btn {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-  `;
-  
-  document.head.appendChild(style);
-}
-
-function cleanup(): void {
-  if (buttonInstance && buttonInstance.parentNode) {
-    buttonInstance.parentNode.removeChild(buttonInstance);
-    buttonInstance = null;
-  }
-  
-  const styles = document.getElementById('ai-copilot-styles');
-  if (styles && styles.parentNode) {
-    styles.parentNode.removeChild(styles);
-  }
-}
-
-// Content processor functionality (using TurndownService from global scope)
-declare const TurndownService: any;
-
-let turndownInstance: any = null;
-
-function getTurndownService() {
-  if (!turndownInstance) {
-    turndownInstance = new TurndownService({
-      headingStyle: 'atx',
-      hr: '---',
-      bulletListMarker: '-',
-      codeBlockStyle: 'fenced',
-      fence: '```',
-      emDelimiter: '*',
-      strongDelimiter: '**',
-      linkStyle: 'inlined',
-      linkReferenceStyle: 'full'
-    });
-    
-    turndownInstance.addRule('preserveLineBreaks', {
-      filter: ['br'],
-      replacement: () => '\n'
-    });
-    
-    turndownInstance.remove(['script', 'style', 'noscript']);
-  }
-  
-  return turndownInstance;
-}
-
-function getI18nMessage(key: string, language?: string): string {
-  if (language && language !== 'system') {
-    const messages: Record<string, Record<string, string>> = {
-      en: { source: 'Source' },
-      zh: { source: '来源' }
-    };
-    return messages[language]?.[key] || chrome.i18n.getMessage(key) || key;
-  }
-  return chrome.i18n.getMessage(key) || key;
-}
-
-function cleanText(text: string): string {
-  let cleaned = text.replace(/\s+/g, ' ');
-  cleaned = cleaned.replace(/\n\s*\n/g, '\n\n');
-  cleaned = cleaned.trim();
-  return cleaned;
-}
-
-function convertToMarkdown(element: Element): string {
-  const turndown = getTurndownService();
-  
-  try {
-    const clonedElement = element.cloneNode(true) as Element;
-    clonedElement.querySelectorAll('#ai-copilot-copy-btn').forEach(btn => btn.remove());
-    return turndown.turndown(clonedElement.innerHTML).trim();
-  } catch (error) {
-    console.error('Error converting to Markdown:', error);
-    return cleanText((element as HTMLElement).innerText || '');
-  }
-}
-
-function convertToPlainText(element: Element): string {
-  try {
-    const text = (element as HTMLElement).innerText || '';
-    return cleanText(text);
-  } catch (error) {
-    console.error('Error processing plain text:', error);
-    return '';
-  }
-}
-
-function getPageInfo() {
-  return {
-    title: document.title || '',
-    url: window.location.href
-  };
-}
-
-function formatAdditionalInfo(settings: Settings, pageInfo: { title: string; url: string }): string {
-  if (!settings.attachTitle && !settings.attachURL) {
-    return '';
-  }
-  
-  const sourceLabel = getI18nMessage('source', settings.language);
-  let additionalInfo = '\n\n---\n';
-  
-  if (settings.outputFormat === 'markdown') {
-    if (settings.attachTitle && settings.attachURL) {
-      additionalInfo += `${sourceLabel}: [${pageInfo.title}](${pageInfo.url})`;
-    } else if (settings.attachTitle) {
-      additionalInfo += `${sourceLabel}: ${pageInfo.title}`;
-    } else if (settings.attachURL) {
-      additionalInfo += `${sourceLabel}: ${pageInfo.url}`;
-    }
-  } else {
-    if (settings.attachTitle && settings.attachURL) {
-      additionalInfo += `${sourceLabel}: ${pageInfo.title} (${pageInfo.url})`;
-    } else if (settings.attachTitle) {
-      additionalInfo += `${sourceLabel}: ${pageInfo.title}`;
-    } else if (settings.attachURL) {
-      additionalInfo += `${sourceLabel}: ${pageInfo.url}`;
-    }
-  }
-  
-  return additionalInfo;
-}
-
-function processContent(element: Element, settings: Settings): string {
-  try {
-    let content: string;
-    
-    if (settings.outputFormat === 'markdown') {
-      content = convertToMarkdown(element);
-      if (settings.attachTitle || settings.attachURL) {
-        content = `> ${content.replace(/\n/g, '\n> ')}`;
-      }
-    } else {
-      content = convertToPlainText(element);
-    }
-    
-    const pageInfo = getPageInfo();
-    const additionalInfo = formatAdditionalInfo(settings, pageInfo);
-    
-    return content + additionalInfo;
-  } catch (error) {
-    console.error('Error in processContent:', error);
-    return (element as HTMLElement).innerText || '';
-  }
-}
+/* INLINE:block-identifier */
+/* INLINE:settings-manager */
+/* INLINE:ui-injector */
+/* INLINE:content-processor */
 
 // Main content script logic
 const HOVER_DEBOUNCE_DELAY = 100;
 
 let currentTarget: Element | null = null;
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-let copyButton: HTMLElement | null = null;
+let copyButtonElement: HTMLElement | null = null; // Holds the button instance from ui-injector
 let isInitialized = false;
-let userSettings: Settings | null = null;
+let userSettings: Settings | null = null; // Will be populated by getSettings()
 let lastMousePosition: { x: number; y: number } = { x: 0, y: 0 };
 
+// Debounce utility
 function debounce<T extends (...args: any[]) => void>(func: T, delay: number): T {
   return ((...args: any[]) => {
     if (debounceTimer) clearTimeout(debounceTimer);
@@ -590,234 +29,235 @@ function debounce<T extends (...args: any[]) => void>(func: T, delay: number): T
   }) as T;
 }
 
+// Schedules a callback using requestAnimationFrame for smoother UI updates.
 function scheduleViabilityCheck(callback: () => void): void {
-  // Using requestAnimationFrame to schedule the check.
-  // This aligns the check with the browser's rendering cycle,
-  // potentially providing a smoother experience than direct execution
-  // and more timely execution than requestIdleCallback or setTimeout(0).
   requestAnimationFrame(callback);
 }
 
+// Handles pointer movement to identify potential target elements.
 function handlePointerMove(event: PointerEvent): void {
   lastMousePosition = { x: event.clientX, y: event.clientY };
-
   let potentialTargetElement = event.target as Node;
 
-  // Rule 3.3: If hovering over a text node, use its parent element as the target.
+  // If hovering over a text node, use its parent element.
   if (potentialTargetElement.nodeType === Node.TEXT_NODE) {
-    if (potentialTargetElement.parentElement) {
-      potentialTargetElement = potentialTargetElement.parentElement;
-    } else {
-      // Text node without a parent, should not happen in normal DOM but good to guard.
-      return;
-    }
+    potentialTargetElement = potentialTargetElement.parentElement || potentialTargetElement;
   }
 
-  // Ensure we are working with an Element type for further checks
-  if (!(potentialTargetElement instanceof Element)) {
+  if (!(potentialTargetElement instanceof Element) || potentialTargetElement === copyButtonElement) {
+    // If target is not an element or is the button itself, do nothing.
+    // (The button check prevents the button from becoming a target for itself)
     return;
   }
 
-  const target = potentialTargetElement as Element; // Now we know it's an Element
+  const target = potentialTargetElement;
 
-  if (!target || target === currentTarget) return;
-  
-  if (copyButton && currentTarget && target !== currentTarget) {
-    // Clear border from old currentTarget if we are about to hide the button or switch targets
-    if (currentTarget instanceof HTMLElement) {
-      currentTarget.style.border = currentTarget.dataset.originalBorder || 'none';
-      delete currentTarget.dataset.originalBorder;
-    }
-    hideButton(copyButton); // This will also set currentTarget to null if we hide
-    // If hideButton didn't nullify currentTarget (e.g. due to some logic), ensure it's null before viability check
-    if (target !== currentTarget) { // Check again as hideButton might modify currentTarget
-        currentTarget = null;
-    }
+  if (target === currentTarget) return; // No change in target
+
+  // If a button exists and we are definitely changing targets, hide it from the old target.
+  if (copyButtonElement && currentTarget && target !== currentTarget) {
+    // @ts-ignore: hideButton is available from inlined ui-injector.ts
+    hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
+    // currentTarget will be updated or nulled out below.
   }
   
   scheduleViabilityCheck(() => {
     try {
+      // @ts-ignore: isViableBlock is available from inlined block-identifier.ts
       if (isViableBlock(target)) {
-        // If there was an old currentTarget (e.g. from keydown), clear its border
+        // Clear border from previous target if it was different
         if (currentTarget && currentTarget !== target && currentTarget instanceof HTMLElement) {
+          if (currentTarget.dataset.originalBorder !== undefined) {
             currentTarget.style.border = currentTarget.dataset.originalBorder || 'none';
             delete currentTarget.dataset.originalBorder;
+          }
         }
 
         currentTarget = target;
-        if (!copyButton) {
-          copyButton = createButton();
-          setupButtonClickHandler();
+        if (!copyButtonElement) {
+          // @ts-ignore: createButton is available from inlined ui-injector.ts
+          copyButtonElement = createButton();
+          setupButtonClickHandler(); // Set up once
         }
-        // Ensure button is shown with new currentTarget
-        showButton(copyButton, event.clientX, event.clientY);
-      } else if (copyButton && currentTarget === target) {
-        // If the current target is no longer viable (e.g. due to DOM change), hide button
-        hideButton(copyButton);
-        currentTarget = null;
+        // @ts-ignore: showButton is available from inlined ui-injector.ts
+        showButton(copyButtonElement, event.clientX, event.clientY, currentTarget instanceof HTMLElement ? currentTarget : null);
+      } else {
+        // Target is not viable. If a button is shown for this (now non-viable) target, or any previous target, hide it.
+        if (copyButtonElement && (currentTarget === target || currentTarget !== null)) {
+            // @ts-ignore: hideButton is available from inlined ui-injector.ts
+            hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
+        }
+        if (currentTarget === target) { // Only nullify if the non-viable target was the current one
+            currentTarget = null;
+        }
       }
     } catch (error) {
-      console.error('Error in viability check:', error);
+      console.error('Error in viability check or button display:', error);
+      if (copyButtonElement) {
+        // @ts-ignore: hideButton is available from inlined ui-injector.ts
+        hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
+      }
+      currentTarget = null;
     }
   });
 }
 
+// Handles keydown for parent element selection.
 function handleKeyDown(event: KeyboardEvent): void {
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
   const isModifierPressed = (isMac && event.metaKey && !event.ctrlKey) || (!isMac && event.ctrlKey && !event.metaKey);
 
-  if (isModifierPressed && currentTarget && copyButton) {
-    event.preventDefault(); // Prevent browser shortcuts like Ctrl+S
+  if (isModifierPressed && currentTarget && copyButtonElement) {
+    event.preventDefault(); // Prevent browser default actions (e.g., Ctrl+S)
     const parent = currentTarget.parentElement;
 
-    if (parent && parent !== document.body && parent !== document.documentElement) {
-      // Basic check: don't expand to an excluded tag if it's the direct parent
-      // More sophisticated checks from isViableBlock could be added here if needed
-      if (EXCLUDED_TAGS.includes(parent.tagName.toLowerCase())) {
-        console.debug('Parent is an excluded tag, stopping expansion.');
-        return;
-      }
-
-      // Clear border from the old currentTarget
-      if (currentTarget instanceof HTMLElement) {
+    // @ts-ignore: EXCLUDED_TAGS is available from inlined block-identifier.ts
+    if (parent && parent !== document.body && parent !== document.documentElement && !EXCLUDED_TAGS.includes(parent.tagName.toLowerCase())) {
+      if (currentTarget instanceof HTMLElement) { // Clear border from the old currentTarget
         currentTarget.style.border = currentTarget.dataset.originalBorder || 'none';
         delete currentTarget.dataset.originalBorder;
       }
-
-      currentTarget = parent;
-
-      // Reset button state to 'copy' as the target has changed
-      updateButtonState(copyButton, 'copy');
-
-      // Show button and border on the new currentTarget
-      // We use lastMousePosition as keydown events don't have clientX/clientY
-      showButton(copyButton, lastMousePosition.x, lastMousePosition.y);
-    } else {
-      console.debug('No valid parent to expand to.');
+      currentTarget = parent; // Update currentTarget to the parent
+      // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+      updateButtonState(copyButtonElement, 'copy'); // Reset button state
+      // @ts-ignore: showButton is available from inlined ui-injector.ts
+      showButton(copyButtonElement, lastMousePosition.x, lastMousePosition.y, currentTarget instanceof HTMLElement ? currentTarget : null);
     }
   }
 }
 
+// Sets up the click handler for the copy button.
 function setupButtonClickHandler(): void {
-  if (!copyButton) return;
+  if (!copyButtonElement) return;
   
-  copyButton.addEventListener('click', async (event: Event) => {
+  copyButtonElement.addEventListener('click', async (event: Event) => {
     event.preventDefault();
     event.stopPropagation();
     
-    if (!currentTarget || !userSettings) {
-      console.error('No target element or settings available');
-      return;
-    }
+    if (!currentTarget || !userSettings) return;
     
     try {
+      // @ts-ignore: processContent is available from inlined content-processor.ts
       const content = processContent(currentTarget, userSettings);
-      if (!content.trim()) {
-        console.warn('No content to copy');
-        return;
-      }
+      if (!content.trim()) return;
       
       await navigator.clipboard.writeText(content);
-      updateButtonState(copyButton!, 'copied');
+      // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+      updateButtonState(copyButtonElement!, 'copied');
       
       setTimeout(() => {
-        if (copyButton) {
-          updateButtonState(copyButton, 'copy');
+        if (copyButtonElement) {
+          // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+          updateButtonState(copyButtonElement, 'copy');
         }
       }, 1500);
-      
-      console.debug('Content copied successfully:', content.substring(0, 100) + '...');
     } catch (error) {
       console.error('Error copying content:', error);
-      
+      // Fallback copy mechanism
       try {
         const textarea = document.createElement('textarea');
-        const content = processContent(currentTarget, userSettings!);
-        textarea.value = content;
+        // @ts-ignore: processContent is available from inlined content-processor.ts
+        textarea.value = processContent(currentTarget, userSettings!);
         document.body.appendChild(textarea);
         textarea.select();
         document.execCommand('copy');
         document.body.removeChild(textarea);
-        
-        updateButtonState(copyButton!, 'copied');
+        // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+        updateButtonState(copyButtonElement!, 'copied');
         setTimeout(() => {
-          if (copyButton) {
-            updateButtonState(copyButton, 'copy');
+          if (copyButtonElement) {
+            // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+            updateButtonState(copyButtonElement, 'copy');
           }
         }, 1500);
       } catch (fallbackError) {
-        console.error('Fallback copy also failed:', fallbackError);
+        console.error('Fallback copy method also failed:', fallbackError);
       }
     }
   });
 }
 
-function handleMouseLeave(): void {
-  if (copyButton && currentTarget) {
-    hideButton(copyButton);
+// Handles mouse leaving the document viewport.
+function handleMouseLeaveDocument(): void {
+  if (copyButtonElement && currentTarget) {
+    // @ts-ignore: hideButton is available from inlined ui-injector.ts
+    hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
     currentTarget = null;
   }
 }
 
-async function loadSettings(): Promise<void> {
+// Loads settings and stores them in userSettings.
+async function loadSettingsAndApply(): Promise<void> {
   try {
+    // @ts-ignore: getSettings, DEFAULT_SETTINGS, getSystemLanguage are from inlined settings-manager.ts
     userSettings = await getSettings();
-    console.debug('Settings loaded:', userSettings);
   } catch (error) {
-    console.error('Error loading settings:', error);
-    userSettings = {
-      outputFormat: 'markdown',
-      attachTitle: false,
-      attachURL: false,
-      language: 'en'
-    };
+    console.error('Error loading settings, using defaults:', error);
+    // @ts-ignore
+    userSettings = { ...DEFAULT_SETTINGS, language: getSystemLanguage() };
   }
 }
 
+// Initializes the content script.
 async function initializeContentScript(): Promise<void> {
   if (isInitialized) return;
   
   try {
-    console.debug('AI Copilot: Initializing content script');
-    
-    await loadSettings();
+    console.debug('AI Copilot: Initializing content script...');
+    await loadSettingsAndApply();
+    // @ts-ignore: injectStyles is available from inlined ui-injector.ts
     injectStyles();
     
     const debouncedPointerMove = debounce(handlePointerMove, HOVER_DEBOUNCE_DELAY);
     document.addEventListener('pointermove', debouncedPointerMove, { passive: true });
-    document.addEventListener('mouseleave', handleMouseLeave, { passive: true });
-    document.addEventListener('keydown', handleKeyDown, { passive: true });
+    document.documentElement.addEventListener('mouseleave', handleMouseLeaveDocument, { passive: true });
+    document.addEventListener('keydown', handleKeyDown, { passive: false }); // passive: false to allow preventDefault
     
-    chrome.storage.onChanged.addListener((changes) => {
-      if (changes.copilot_settings) {
-        userSettings = changes.copilot_settings.newValue;
-        console.debug('Settings updated:', userSettings);
-      }
-    });
+    // Listen for settings changes from the popup/options page.
+    if (chrome.storage && chrome.storage.onChanged) {
+      chrome.storage.onChanged.addListener((changes, areaName) => {
+        // @ts-ignore: SETTINGS_KEY, getSystemLanguage are from inlined settings-manager.ts
+        if (areaName === 'local' && changes[SETTINGS_KEY]) {
+          const newSettings = changes[SETTINGS_KEY].newValue as Settings;
+          if (newSettings.language === 'system') {
+            // @ts-ignore
+            newSettings.language = getSystemLanguage();
+          }
+          userSettings = newSettings;
+          console.debug('AI Copilot: Settings updated through storage listener.', userSettings);
+        }
+      });
+    }
     
+    // @ts-ignore: cleanup is available from inlined ui-injector.ts
     window.addEventListener('beforeunload', cleanup);
-    
     isInitialized = true;
-    console.debug('AI Copilot: Content script initialized successfully');
+    console.debug('AI Copilot: Content script initialized successfully.');
   } catch (error) {
-    console.error('Error initializing content script:', error);
+    console.error('AI Copilot: Error initializing content script:', error);
   }
 }
 
+// Determines if the content script should run on the current page.
 function shouldInitialize(): boolean {
-  return !(
-    window.location.protocol === 'chrome:' ||
-    window.location.protocol === 'chrome-extension:' ||
-    window.location.protocol === 'moz-extension:' ||
-    window.location.href.includes('ai-copilot')
-  );
+  // Avoid running on chrome://, chrome-extension://, moz-extension:// pages
+  const restrictedProtocols = ['chrome:', 'chrome-extension:', 'moz-extension:'];
+  if (restrictedProtocols.includes(window.location.protocol)) {
+    return false;
+  }
+  // Add any other specific conditions if needed, e.g., avoiding specific hostnames
+  // if (window.frameElement && window.frameElement.tagName === "IFRAME") {
+  //   console.debug("AI Copilot: Content script not initializing in an iframe.");
+  //   return false; // Example: disable in iframes, though current code allows it.
+  // }
+  return true;
 }
 
-// Initialize when page is ready
+// Entry point for the content script.
 if (shouldInitialize()) {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeContentScript);
   } else {
     initializeContentScript();
   }
-} 
+}

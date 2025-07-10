@@ -1,30 +1,26 @@
-// Button states
-export type ButtonState = 'copy' | 'copied';
+// UI injector functionality
 
-// Offset from cursor position
-const CURSOR_OFFSET_X = 8;
-const CURSOR_OFFSET_Y = 8;
+export const BUTTON_OFFSET_X = 8;
+export const BUTTON_OFFSET_Y = 8;
+export const BUTTON_SIZE = 32;
+export const MAX_Z_INDEX = 2147483647;
 
-// Button dimensions
-const BUTTON_SIZE = 32;
+let buttonInstance: HTMLElement | null = null;
 
-// Z-index to ensure button appears above other content
-const BUTTON_Z_INDEX = 2147483647;
-
-// Singleton button instance
-let copyButton: HTMLElement | null = null;
-
-/**
- * Get localized message
- */
-function getMessage(key: string): string {
-  return chrome.i18n.getMessage(key) || key;
+// This function relies on chrome.i18n.getMessage.
+// It's specific to the extension environment.
+export function getMessage(key: string): string {
+  try {
+    if (typeof chrome !== "undefined" && chrome.i18n && chrome.i18n.getMessage) {
+      return chrome.i18n.getMessage(key) || key;
+    }
+    return key; // Fallback if API not available
+  } catch (e) {
+    return key; // Fallback on error
+  }
 }
 
-/**
- * Create SVG icon for copy state
- */
-function createCopyIcon(): string {
+export function getCopyIcon(): string {
   return `
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -33,10 +29,7 @@ function createCopyIcon(): string {
   `;
 }
 
-/**
- * Create SVG icon for copied state
- */
-function createCopiedIcon(): string {
+export function getCopiedIcon(): string {
   return `
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <polyline points="20,6 9,17 4,12"></polyline>
@@ -44,18 +37,12 @@ function createCopiedIcon(): string {
   `;
 }
 
-/**
- * Create the copy button element
- */
-export function createCopyButton(): HTMLElement {
-  if (copyButton) {
-    return copyButton;
-  }
+export function createButton(): HTMLElement {
+  if (buttonInstance) return buttonInstance;
 
   const button = document.createElement('div');
   button.id = 'ai-copilot-copy-btn';
   
-  // Button styles
   Object.assign(button.style, {
     position: 'fixed',
     width: `${BUTTON_SIZE}px`,
@@ -68,18 +55,16 @@ export function createCopyButton(): HTMLElement {
     display: 'none',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: BUTTON_Z_INDEX.toString(),
+    zIndex: MAX_Z_INDEX.toString(),
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
     transition: 'all 0.2s ease',
     userSelect: 'none',
-    pointerEvents: 'auto'
+    pointerEvents: 'auto' // Important for the button to be clickable
   });
-
-  // Set initial state
-  button.innerHTML = createCopyIcon();
-  button.title = getMessage('copy');
   
-  // Hover effects
+  button.innerHTML = getCopyIcon();
+  button.title = getMessage('copy'); // Use getMessage for title
+
   button.addEventListener('mouseenter', () => {
     if (button.dataset.state !== 'copied') {
       button.style.backgroundColor = '#3730A3';
@@ -93,35 +78,27 @@ export function createCopyButton(): HTMLElement {
       button.style.transform = 'scale(1)';
     }
   });
-
-  // Add to document
-  document.body.appendChild(button);
-  copyButton = button;
   
+  document.body.appendChild(button);
+  buttonInstance = button;
   return button;
 }
 
-/**
- * Position button near cursor position
- */
-export function moveButtonToCursor(button: HTMLElement, x: number, y: number): void {
+export function positionButton(button: HTMLElement, x: number, y: number): void {
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
   
-  // Calculate position with offset
-  let left = x + CURSOR_OFFSET_X;
-  let top = y + CURSOR_OFFSET_Y;
+  let left = x + BUTTON_OFFSET_X;
+  let top = y + BUTTON_OFFSET_Y;
   
-  // Ensure button stays within viewport
   if (left + BUTTON_SIZE > viewportWidth) {
-    left = x - BUTTON_SIZE - CURSOR_OFFSET_X;
+    left = x - BUTTON_SIZE - BUTTON_OFFSET_X;
   }
   
   if (top + BUTTON_SIZE > viewportHeight) {
-    top = y - BUTTON_SIZE - CURSOR_OFFSET_Y;
+    top = y - BUTTON_SIZE - BUTTON_OFFSET_Y;
   }
   
-  // Ensure minimum distance from viewport edges
   left = Math.max(8, Math.min(left, viewportWidth - BUTTON_SIZE - 8));
   top = Math.max(8, Math.min(top, viewportHeight - BUTTON_SIZE - 8));
   
@@ -129,55 +106,50 @@ export function moveButtonToCursor(button: HTMLElement, x: number, y: number): v
   button.style.top = `${top}px`;
 }
 
-/**
- * Show the copy button
- */
-export function showButton(button: HTMLElement, x: number, y: number): void {
-  moveButtonToCursor(button, x, y);
+// showButton and hideButton interact with `currentTarget` from the main script's scope
+// This dependency will be resolved by the inlining process.
+export function showButton(button: HTMLElement, x: number, y: number, currentTargetElement: HTMLElement | null): void {
+  positionButton(button, x, y);
   button.style.display = 'flex';
+
+  if (currentTargetElement) {
+    currentTargetElement.dataset.originalBorder = currentTargetElement.style.border;
+    currentTargetElement.style.border = '1px solid #4F46E5';
+  }
 }
 
-/**
- * Hide the copy button
- */
-export function hideButton(button: HTMLElement): void {
+export function hideButton(button: HTMLElement, currentTargetElement: HTMLElement | null): void {
   button.style.display = 'none';
-  // Reset state when hiding
-  setButtonState(button, 'copy');
+  updateButtonState(button, 'copy'); // Reset to default state
+
+  if (currentTargetElement) {
+    currentTargetElement.style.border = currentTargetElement.dataset.originalBorder || 'none'; // Use 'none' as a fallback
+    delete currentTargetElement.dataset.originalBorder;
+  }
 }
 
-/**
- * Set button state (copy or copied)
- */
-export function setButtonState(button: HTMLElement, state: ButtonState): void {
+export function updateButtonState(button: HTMLElement, state: 'copy' | 'copied'): void {
   button.dataset.state = state;
   
   if (state === 'copy') {
-    button.innerHTML = createCopyIcon();
+    button.innerHTML = getCopyIcon();
     button.title = getMessage('copy');
     button.style.backgroundColor = '#4F46E5';
     button.style.transform = 'scale(1)';
   } else if (state === 'copied') {
-    button.innerHTML = createCopiedIcon();
+    button.innerHTML = getCopiedIcon();
     button.title = getMessage('copied');
     button.style.backgroundColor = '#059669';
     button.style.transform = 'scale(1.1)';
-    
-    // Add success animation
+    // Ensure animation restarts correctly
     button.style.animation = 'none';
-    // Force reflow
-    button.offsetHeight;
+    button.offsetHeight; // Trigger reflow
     button.style.animation = 'ai-copilot-success 0.8s ease-out';
   }
 }
 
-/**
- * Add success animation styles to document
- */
-export function injectAnimationStyles(): void {
-  if (document.getElementById('ai-copilot-styles')) {
-    return;
-  }
+export function injectStyles(): void {
+  if (document.getElementById('ai-copilot-styles')) return;
   
   const style = document.createElement('style');
   style.id = 'ai-copilot-styles';
@@ -202,17 +174,14 @@ export function injectAnimationStyles(): void {
   document.head.appendChild(style);
 }
 
-/**
- * Remove button and styles from DOM
- */
 export function cleanup(): void {
-  if (copyButton && copyButton.parentNode) {
-    copyButton.parentNode.removeChild(copyButton);
-    copyButton = null;
+  if (buttonInstance && buttonInstance.parentNode) {
+    buttonInstance.parentNode.removeChild(buttonInstance);
+    buttonInstance = null;
   }
   
   const styles = document.getElementById('ai-copilot-styles');
   if (styles && styles.parentNode) {
     styles.parentNode.removeChild(styles);
   }
-} 
+}
