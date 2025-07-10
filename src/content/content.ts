@@ -1,54 +1,202 @@
 // Block identifier functionality
+// Rule 3.2: Remove semantic tag filtering, keep truly invisible tags.
+// Rule 3.1 & 3.2: Interactive elements like 'a', 'button' are generally not "content blocks" for copying.
+// Retain 'iframe' in excluded as its content is a separate document.
 const EXCLUDED_TAGS = [
-  'header', 'footer', 'nav', 'aside', 'dialog', 'menu', 'form', 'fieldset', 'legend',
+  // Tags that are generally containers and might be too broad if not leaf nodes with direct content.
+  // We will rely on content and leaf checks more.
+  // 'header', 'footer', 'nav', 'aside', 'dialog', 'menu', 'form', 'fieldset', 'legend', 'details', 'summary',
+
+  // Truly invisible or non-content elements
+  'script', 'style', 'noscript', 'head', 'meta', 'link', 'template', 'area', 'map',
+  // Interactive controls that are not primarily for displaying content for copying as a "block"
   'a', 'button', 'input', 'textarea', 'select', 'option', 'optgroup', 'label',
-  'details', 'summary', 'img', 'iframe', 'video', 'audio', 'canvas', 'embed', 'object',
-  'picture', 'map', 'area', 'script', 'style', 'noscript', 'head', 'meta', 'link', 'template'
+  // Iframe content is isolated and should not be targeted directly as a block this way.
+  'iframe',
 ];
 
-const MIN_TEXT_LENGTH = 50;
-const MIN_WIDTH = 200;
-const MIN_HEIGHT = 40;
+const MIN_TEXT_LENGTH = 10; // Adjusted for potentially smaller but valid content blocks
+const MIN_WIDTH = 20;   // Adjusted for smaller icons or elements
+const MIN_HEIGHT = 20;  // Adjusted for smaller icons or elements
+
+function isElementVisible(element: Element): boolean {
+  if (!(element instanceof HTMLElement)) {
+    return true; // Non-HTMLElements like SVGElement are considered visible if attached
+  }
+  const style = window.getComputedStyle(element);
+  return style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0;
+}
 
 function hasExcludedAncestor(element: Element): boolean {
-  let current = element;
+  let current = element.parentElement; // Start with the parent
   while (current && current !== document.body) {
     if (EXCLUDED_TAGS.includes(current.tagName.toLowerCase())) {
       return true;
     }
-    current = current.parentElement!;
+    current = current.parentElement;
   }
   return false;
 }
 
-function hasMinimumTextContent(element: Element): boolean {
-  const text = (element as HTMLElement).innerText?.replace(/\s+/g, '') || '';
-  return text.length > MIN_TEXT_LENGTH;
+// Rule 3.1: "has content" includes text, images, video etc.
+function hasVisibleContent(element: Element): boolean {
+  if (!isElementVisible(element)) {
+    return false;
+  }
+
+  const tagName = element.tagName.toLowerCase();
+  // Check for specific media/embed tags that are inherently content
+  if (['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName)) {
+    // For img, check if it's loaded (naturalWidth/Height > 0 for img, or videoWidth/Height for video)
+    if (tagName === 'img' && (element as HTMLImageElement).naturalWidth > 0) return true;
+    if (tagName === 'video' && (element as HTMLVideoElement).readyState > 0) return true; // readyState > 0 means metadata loaded
+    if (['canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName)) return true; // Assume these have content if present
+    // Could add more specific checks for these if needed
+  }
+
+  // Check for text content, ignoring whitespace
+  const text = (element as HTMLElement).innerText?.trim() || '';
+  if (text.length > 0) { // Any text is now considered content, MIN_TEXT_LENGTH will be checked later if element is text-dominant
+    return true;
+  }
+
+  // Check if it has children that are visible and are themselves content elements (e.g. a div with an img inside)
+  // This makes a non-leaf container potentially "have content" due to its children.
+  // The "leaf node" aspect will be implicitly handled: if a child is a better target, it will be preferred.
+  for (let i = 0; i < element.children.length; i++) {
+    if (hasVisibleContent(element.children[i])) { // Recursive call, be cautious
+      return true;
+    }
+  }
+  return false;
 }
+
+
+function meetsMinimumTextRequirement(element: Element): boolean {
+    // This function is now more specific for text-dominant blocks.
+    // Blocks that are primarily images/videos are handled by hasVisibleContent.
+    const tagName = element.tagName.toLowerCase();
+    if (['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName)) {
+        return true; // Media elements don't need text.
+    }
+    const text = (element as HTMLElement).innerText?.replace(/\s+/g, '') || '';
+    return text.length >= MIN_TEXT_LENGTH;
+}
+
 
 function hasMinimumDimensions(element: Element): boolean {
   const rect = element.getBoundingClientRect();
-  return rect.width > MIN_WIDTH && rect.height > MIN_HEIGHT;
+  return rect.width >= MIN_WIDTH && rect.height >= MIN_HEIGHT;
 }
 
-function isInteractiveElement(element: Element): boolean {
-  const interactiveTags = [
-    'a', 'button', 'img', 'input', 'video', 'audio', 'canvas', 'iframe',
-    'textarea', 'select', 'option', 'embed', 'object'
+// Rule 3.2: "all visible tags, if they have content, support hover"
+// This means we don't filter by "interactive" in the same way if it's a leaf with content.
+// However, we still want to avoid making typical UI controls like buttons primary copy targets
+// unless they are the *only* content.
+// The EXCLUDED_TAGS list will handle typical non-content interactive elements.
+// This function can be simplified or removed if EXCLUDED_TAGS is comprehensive.
+function isNonContentInteractiveElement(element: Element): boolean {
+  const tagName = element.tagName.toLowerCase();
+  // These are typically interactive but not primarily for displaying stand-alone content blocks.
+  // 'a' can be tricky, as it might wrap a large content block.
+  // For now, let's assume 'a' tags are excluded by EXCLUDED_TAGS if they are not the target themselves.
+  const nonContentInteractiveTags = [
+     // 'a', // Re-evaluating 'a' based on EXCLUDED_TAGS
+     // 'button', // Already in EXCLUDED_TAGS
+     // 'input', // Already in EXCLUDED_TAGS
+     // 'textarea', // Already in EXCLUDED_TAGS
+     // 'select', // Already in EXCLUDED_TAGS
+     // 'option', // Already in EXCLUDED_TAGS
+     // 'details', // Can be a content block container
   ];
-  return interactiveTags.includes(element.tagName.toLowerCase());
+  return nonContentInteractiveTags.includes(tagName);
 }
 
+// Rule 3.1: All contentful leaf nodes should be hoverable.
+// Rule 3.2: Remove semantic tag filtering, rely on visibility and content.
+// Rule 3.3: Text node hovering targets the parent element (handled in handlePointerMove).
 function isViableBlock(element: Element): boolean {
   try {
-    return !(
-      hasExcludedAncestor(element) ||
-      !hasMinimumTextContent(element) ||
-      !hasMinimumDimensions(element) ||
-      isInteractiveElement(element)
-    );
+    const tagName = element.tagName.toLowerCase();
+
+    // Rule 3.2: Filter out inherently invisible elements first.
+    if (['script', 'style', 'meta', 'head', 'link', 'template', 'noscript'].includes(tagName)) {
+      return false;
+    }
+
+    // Check visibility (covers display:none, visibility:hidden, opacity:0)
+    if (!isElementVisible(element)) {
+      return false;
+    }
+
+    // Rule 3.2: Check if element itself is an excluded tag type (e.g. a button, input)
+    // This is a more direct check than hasExcludedAncestor for the element itself.
+    if (EXCLUDED_TAGS.includes(tagName)) {
+        // Exception: if an excluded tag (e.g. 'div' if we were to add it) has direct image/video content
+        // and no other viable children, it might be considered.
+        // For now, if it's in EXCLUDED_TAGS, it's out.
+        return false;
+    }
+
+    // Rule 3.2: Check if an ancestor is an excluded type that should prevent children from being blocks.
+    // For example, we don't want blocks inside a button.
+    if (hasExcludedAncestor(element)) {
+      return false;
+    }
+
+    // Rule 3.1: Must have visible content (text, image, video, etc.)
+    if (!hasVisibleContent(element)) {
+      return false;
+    }
+
+    // Rule 3.1 / general usability: Must meet minimum dimensions.
+    if (!hasMinimumDimensions(element)) {
+      return false;
+    }
+
+    // Rule 3.1: If the element is primarily text-based, it should meet text length.
+    // This check is separated from hasVisibleContent to allow media to pass without text.
+    const isMedia = ['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName);
+    if (!isMedia && !meetsMinimumTextRequirement(element)) {
+        return false;
+    }
+
+    // Leaf node consideration (simplified):
+    // Avoid selecting a parent if it has children that are themselves viable blocks.
+    // This helps in selecting the most specific content block.
+    // This is a basic check; more complex scenarios might need refinement.
+    // We only check direct children that are HTMLElements.
+    const childElements = Array.from(element.children).filter(c => c instanceof HTMLElement) as HTMLElement[];
+    if (childElements.length > 0) {
+        // If any child is independently a viable block, then this parent is likely a container, not a leaf.
+        // Exception: if the parent itself is a special tag like <img> (which has no children but is a leaf).
+        // The current logic already handles <img>, <video> etc. as potentially viable.
+        // This helps to prefer children like <p> inside a <div> over the <div> itself, if <p> is viable.
+        // This is a computationally intensive check if not careful.
+        // Let's only apply this if the element isn't an obvious content leaf itself (like img, video).
+        if (!isMedia) {
+            for (const child of childElements) {
+                // Pass `false` to `isCheckingChild` to prevent infinite recursion if `isViableBlock` called itself.
+                // For this version, we'll make a simplified check to avoid full recursion here.
+                // A simpler heuristic: if a child has significant text or is media, prefer the child.
+                const childTagName = child.tagName.toLowerCase();
+                if (['img', 'video', 'canvas', 'svg'].includes(childTagName) && isElementVisible(child) && hasMinimumDimensions(child)) {
+                    return false; // Prefer the media child.
+                }
+                if (meetsMinimumTextRequirement(child) && isElementVisible(child) && hasMinimumDimensions(child)) {
+                    // If a child has enough text and is visible, it's a better candidate.
+                    // We must ensure this child isn't excluded itself.
+                    if (!EXCLUDED_TAGS.includes(childTagName) && !hasExcludedAncestor(child)) {
+                         return false; // Prefer the text-rich child.
+                    }
+                }
+            }
+        }
+    }
+
+    return true;
   } catch (error) {
-    console.error('Error in isViableBlock:', error);
+    console.error('Error in isViableBlock:', error, element);
     return false;
   }
 }
@@ -451,7 +599,26 @@ function scheduleViabilityCheck(callback: () => void): void {
 
 function handlePointerMove(event: PointerEvent): void {
   lastMousePosition = { x: event.clientX, y: event.clientY };
-  const target = event.target as Element;
+
+  let potentialTargetElement = event.target as Node;
+
+  // Rule 3.3: If hovering over a text node, use its parent element as the target.
+  if (potentialTargetElement.nodeType === Node.TEXT_NODE) {
+    if (potentialTargetElement.parentElement) {
+      potentialTargetElement = potentialTargetElement.parentElement;
+    } else {
+      // Text node without a parent, should not happen in normal DOM but good to guard.
+      return;
+    }
+  }
+
+  // Ensure we are working with an Element type for further checks
+  if (!(potentialTargetElement instanceof Element)) {
+    return;
+  }
+
+  const target = potentialTargetElement as Element; // Now we know it's an Element
+
   if (!target || target === currentTarget) return;
   
   if (copyButton && currentTarget && target !== currentTarget) {
