@@ -217,11 +217,24 @@ function positionButton(button: HTMLElement, x: number, y: number): void {
 function showButton(button: HTMLElement, x: number, y: number): void {
   positionButton(button, x, y);
   button.style.display = 'flex';
+  
+  // Add border to current target element
+  if (currentTarget && currentTarget instanceof HTMLElement) {
+    // Store original border if exists
+    currentTarget.dataset.originalBorder = currentTarget.style.border;
+    currentTarget.style.border = '1px solid #4F46E5';
+  }
 }
 
 function hideButton(button: HTMLElement): void {
   button.style.display = 'none';
   updateButtonState(button, 'copy');
+  
+  // Restore original border of current target element
+  if (currentTarget && currentTarget instanceof HTMLElement) {
+    currentTarget.style.border = currentTarget.dataset.originalBorder || 'none';
+    delete currentTarget.dataset.originalBorder;
+  }
 }
 
 function updateButtonState(button: HTMLElement, state: 'copy' | 'copied'): void {
