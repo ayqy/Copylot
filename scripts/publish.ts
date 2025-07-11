@@ -254,6 +254,20 @@ async function main() {
     execSync('git push', { stdio: 'inherit' });
     execSync('git push --tags', { stdio: 'inherit' });
     log.success("Commit 和 tag 已成功推送到远程仓库。");
+
+    // --- 步骤 15: 可选发布到 Chrome Web Store ---
+    const cwsConfirm = await askQuestion(`${colors.yellow}是否现在上传并发布到 Chrome Web Store? (y/N): ${colors.reset}`);
+    if (cwsConfirm.toLowerCase() === 'y' || cwsConfirm.toLowerCase() === 'yes') {
+      try {
+        execSync('npm run publish:cws', { stdio: 'inherit' });
+        log.success('Chrome Web Store 发布流程完成。');
+      } catch (cwsError) {
+        log.error('Chrome Web Store 发布流程失败。');
+        console.error(cwsError);
+      }
+    } else {
+      log.info('已跳过 Chrome Web Store 发布。您可稍后手动运行 "npm run publish:cws"。');
+    }
   } catch (error) {
     log.error("git push 执行失败。");
     console.error(error);
