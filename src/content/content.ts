@@ -217,6 +217,35 @@ function handleMouseOver(event: MouseEvent): void {
 
   const tagName = targetElement.tagName.toLowerCase();
   if (HOVER_TARGET_TAGS.includes(tagName)) {
+    let width = 0;
+    let height = 0;
+
+    if (targetElement instanceof HTMLElement) {
+      width = targetElement.clientWidth;
+      height = targetElement.clientHeight;
+    } else if (targetElement instanceof SVGElement) {
+      const rect = targetElement.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+    } else {
+      // For other element types that might be in HOVER_TARGET_TAGS but are not HTMLElement or SVGElement
+      // (e.g. <canvas> which is an HTMLCanvasElement, a subtype of HTMLElement, so covered)
+      // We can use getBoundingClientRect as a fallback if needed, or assume they behave like HTMLElements.
+      // For now, this path is less likely given current HOVER_TARGET_TAGS.
+      const rect = targetElement.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+    }
+
+    if (width < 50 && height < 50) {
+      // If the element is too small, also ensure any existing button is hidden,
+      // especially if the mouse quickly moved from a valid target to a small icon.
+      if (currentTarget === targetElement) {
+           hideMagicCopy();
+      }
+      return; // Do not show Magic Copy for small elements
+    }
+
     // If a different Magic Copy is already shown (e.g. from a click), hide it first.
     // Or if it's the same target, this effectively refreshes its position if mouse moved significantly.
     if (currentTarget !== targetElement) {
