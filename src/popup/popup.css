@@ -233,9 +233,87 @@ body {
 
 /* Focus States */
 .radio-option:focus-within .radio-custom,
-.checkbox-option:focus-within .checkbox-custom {
+.checkbox-option:focus-within .checkbox-custom,
+.switch input:focus + .slider { /* Added for switch focus */
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
+
+/* Switch Control Styles */
+.switch-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px; /* Adjusted padding to align with other option items */
+  margin-left: -4px; /* Negative margin to align text with other labels if needed */
+  margin-right: -4px; /* Counter negative margin for switch */
+}
+
+.switch-label {
+  font-size: 14px; /* Matches general font size */
+  color: #374151; /* Matches body text color */
+  /* If you want it to behave like .checkbox-option text, ensure padding and alignment match */
+}
+
+/* The switch - a container for the input and the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px; /* Slightly smaller for a more compact look */
+  height: 22px; /* Slightly smaller */
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider track */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #d1d5db; /* Default track color (gray) */
+  -webkit-transition: .3s;
+  transition: .3s;
+}
+
+/* The slider thumb */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px; /* Thumb height */
+  width: 16px;  /* Thumb width */
+  left: 3px;   /* Thumb position from left (padding inside track) */
+  bottom: 3px; /* Thumb position from bottom */
+  background-color: white;
+  -webkit-transition: .3s;
+  transition: .3s;
+}
+
+input:checked + .slider {
+  background-color: #4F46E5; /* Active color (theme purple) */
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(18px); /* Move thumb for checked state (width - thumb_width - 2*padding) = 40-16-2*3 = 18 */
+  -ms-transform: translateX(18px);
+  transform: translateX(18px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 22px; /* Rounded track (height of switch) */
+}
+
+.slider.round:before {
+  border-radius: 50%; /* Rounded thumb */
+}
+
 
 /* Animation for transitions */
 .radio-custom,

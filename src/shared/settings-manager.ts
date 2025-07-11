@@ -1,5 +1,6 @@
 // Settings manager functionality
 export interface Settings {
+  isMagicCopyEnabled: boolean; // Added this line
   outputFormat: 'markdown' | 'plaintext';
   attachTitle: boolean;
   attachURL: boolean;
@@ -9,6 +10,7 @@ export interface Settings {
 export const SETTINGS_KEY = 'copilot_settings';
 
 export const DEFAULT_SETTINGS: Settings = {
+  isMagicCopyEnabled: true, // Added this line
   outputFormat: 'markdown',
   attachTitle: false,
   attachURL: false,
