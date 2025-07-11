@@ -8,7 +8,6 @@ interface PopupElements {
   formatPlaintext: HTMLInputElement;
   attachTitle: HTMLInputElement;
   attachURL: HTMLInputElement;
-  languageSelect: HTMLSelectElement;
 }
 
 let elements: PopupElements;
@@ -22,8 +21,7 @@ function getElements(): PopupElements {
     formatMarkdown: document.getElementById('format-markdown') as HTMLInputElement,
     formatPlaintext: document.getElementById('format-plaintext') as HTMLInputElement,
     attachTitle: document.getElementById('attach-title') as HTMLInputElement,
-    attachURL: document.getElementById('attach-url') as HTMLInputElement,
-    languageSelect: document.getElementById('language-select') as HTMLSelectElement
+    attachURL: document.getElementById('attach-url') as HTMLInputElement
   };
 }
 
@@ -80,8 +78,7 @@ function updateUIFromSettings(settings: Settings) {
   elements.attachTitle.checked = settings.attachTitle;
   elements.attachURL.checked = settings.attachURL;
   
-  // Language
-  elements.languageSelect.value = settings.language;
+  // language field removed from UI; keep default stored value
 }
 
 /**
@@ -92,7 +89,7 @@ function getSettingsFromUI(): Partial<Settings> {
     outputFormat: elements.formatMarkdown.checked ? 'markdown' : 'plaintext',
     attachTitle: elements.attachTitle.checked,
     attachURL: elements.attachURL.checked,
-    language: elements.languageSelect.value as 'system' | 'en' | 'zh'
+    // language field removed from UI; keep default stored value
   };
 }
 
@@ -125,15 +122,7 @@ function setupEventListeners() {
   elements.attachTitle.addEventListener('change', saveCurrentSettings);
   elements.attachURL.addEventListener('change', saveCurrentSettings);
   
-  // Language select
-  elements.languageSelect.addEventListener('change', async () => {
-    await saveCurrentSettings();
-    
-    // If language changed to system or a specific language, reload localization
-    // Note: For full language switching, we'd need to reload the popup
-    // For now, we just save the preference
-    console.debug('Language preference updated');
-  });
+  // Language select removed
 }
 
 /**
