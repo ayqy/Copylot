@@ -16,8 +16,79 @@ import type { Settings } from '../shared/settings-manager';
 let currentTarget: Element | null = null;
 let copyButtonElement: HTMLElement | null = null; // Holds the button instance from ui-injector
 let isInitialized = false;
+let isActive = false; // Tracks if Magic Copy features are currently active
 let userSettings: Settings | null = null; // Will be populated by getSettings()
 let lastClickPosition: { x: number; y: number } | null = null;
+
+// Function to add all event listeners and inject UI
+function enableMagicCopyFeatures(): void {
+  if (isActive) return; // Already active
+
+  // @ts-ignore: injectStyles is available from inlined ui-injector.ts
+  injectStyles();
+
+  // Ensure button is created if it was removed by disableMagicCopyFeatures
+  if (!copyButtonElement) {
+    // @ts-ignore: createButton is available from inlined ui-injector.ts
+    copyButtonElement = createButton();
+    setupButtonClickHandler(); // Re-setup click handler if button is recreated
+  }
+
+  document.addEventListener('click', handleDocumentClick, { passive: true });
+  document.addEventListener('keydown', handleKeyDown, { passive: false });
+  document.addEventListener('mouseover', handleMouseOver, { passive: true });
+  document.addEventListener('mouseout', handleMouseOut, { passive: true });
+
+  // The main 'cleanup' (which removes button and styles) is now handled by disableMagicCopyFeatures.
+  // We might still want a specific beforeunload listener for other tasks if needed,
+  // but the one from ui-injector.ts is for its own elements.
+  // Let's assume the original intent for 'beforeunload' in content.ts was for ui-injector's cleanup.
+  // This event listener is added here, and removeEventListener is in disableMagicCopyFeatures.
+  // @ts-ignore: cleanup (from ui-injector) handles button and style tag removal
+  window.addEventListener('beforeunload', cleanup);
+
+
+  isActive = true;
+  console.debug('AI Copilot: Magic Copy features enabled.');
+}
+
+// Function to remove all event listeners and UI elements
+function disableMagicCopyFeatures(): void {
+  if (!isActive) return; // Already inactive
+
+  hideMagicCopy(); // Hide button if visible
+
+  // @ts-ignore: cleanup function from ui-injector.ts will remove the button and styles
+  if (typeof cleanup === 'function') {
+    // @ts-ignore
+    cleanup();
+    copyButtonElement = null; // Ensure our reference is cleared as cleanup() removes it from DOM
+  } else {
+    // Fallback if cleanup is somehow not defined (should not happen with inlining)
+    if (copyButtonElement) {
+      copyButtonElement.remove();
+      copyButtonElement = null;
+    }
+    const styleTag = document.getElementById('ai-copilot-styles'); // Corrected ID
+    if (styleTag) {
+      styleTag.remove();
+    }
+    console.warn('AI Copilot: ui-injector.cleanup() not found, attempting manual removal.');
+  }
+
+  document.removeEventListener('click', handleDocumentClick);
+  document.removeEventListener('keydown', handleKeyDown);
+  document.removeEventListener('mouseover', handleMouseOver);
+  document.removeEventListener('mouseout', handleMouseOut);
+
+  // @ts-ignore: Remove the specific beforeunload listener added by enableMagicCopyFeatures
+  window.removeEventListener('beforeunload', cleanup);
+
+  currentTarget = null; // Clear current target
+  isActive = false;
+  console.debug('AI Copilot: Magic Copy features disabled.');
+}
+
 
 // Unified function to show Magic Copy
 function showMagicCopy(element: Element, event?: MouseEvent): void {
@@ -256,35 +327,45 @@ async function initializeContentScript(): Promise<void> {
   
   try {
     console.debug('AI Copilot: Initializing content script...');
-    await loadSettingsAndApply();
-    // @ts-ignore: injectStyles is available from inlined ui-injector.ts
-    injectStyles();
-    
-    document.addEventListener('click', handleDocumentClick, { passive: true });
-    document.addEventListener('keydown', handleKeyDown, { passive: false }); // passive: false to allow preventDefault
-    document.addEventListener('mouseover', handleMouseOver, { passive: true });
-    document.addEventListener('mouseout', handleMouseOut, { passive: true });
+    await loadSettingsAndApply(); // Loads userSettings
+
+    if (userSettings && userSettings.isMagicCopyEnabled) {
+      enableMagicCopyFeatures();
+    } else {
+      // Ensure features are disabled if setting is false on init
+      disableMagicCopyFeatures();
+    }
     
     // Listen for settings changes from the popup/options page.
     if (chrome.storage && chrome.storage.onChanged) {
       chrome.storage.onChanged.addListener((changes, areaName) => {
         // @ts-ignore: SETTINGS_KEY, getSystemLanguage are from inlined settings-manager.ts
         if (areaName === 'local' && changes[SETTINGS_KEY]) {
-          const newSettings = changes[SETTINGS_KEY].newValue as Settings;
-          if (newSettings.language === 'system') {
+          const oldSettings = userSettings ? { ...userSettings } : null;
+          const newSettingsValue = changes[SETTINGS_KEY].newValue as Settings;
+
+          // Resolve language if 'system'
+          if (newSettingsValue.language === 'system') {
             // @ts-ignore
-            newSettings.language = getSystemLanguage();
+            newSettingsValue.language = getSystemLanguage();
           }
-          userSettings = newSettings;
+          userSettings = newSettingsValue;
           console.debug('AI Copilot: Settings updated through storage listener.', userSettings);
+
+          // Check if the isMagicCopyEnabled setting has changed
+          if (oldSettings?.isMagicCopyEnabled !== userSettings.isMagicCopyEnabled) {
+            if (userSettings.isMagicCopyEnabled) {
+              enableMagicCopyFeatures();
+            } else {
+              disableMagicCopyFeatures();
+            }
+          }
         }
       });
     }
     
-    // @ts-ignore: cleanup is available from inlined ui-injector.ts
-    window.addEventListener('beforeunload', cleanup);
-    isInitialized = true;
-    console.debug('AI Copilot: Content script initialized successfully.');
+    isInitialized = true; // Mark as initialized regardless of feature state
+    console.debug('AI Copilot: Content script initialized successfully. Magic Copy enabled state:', isActive);
   } catch (error) {
     console.error('AI Copilot: Error initializing content script:', error);
   }

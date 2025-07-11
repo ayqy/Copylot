@@ -4,6 +4,7 @@ import type { Settings } from '../shared/content-processor';
 
 // DOM Elements
 interface PopupElements {
+  enableMagicCopySwitch: HTMLInputElement; // Added this line
   formatMarkdown: HTMLInputElement;
   formatPlaintext: HTMLInputElement;
   attachTitle: HTMLInputElement;
@@ -18,6 +19,7 @@ let currentSettings: Settings;
  */
 function getElements(): PopupElements {
   return {
+    enableMagicCopySwitch: document.getElementById('enable-magic-copy-switch') as HTMLInputElement, // Added this line
     formatMarkdown: document.getElementById('format-markdown') as HTMLInputElement,
     formatPlaintext: document.getElementById('format-plaintext') as HTMLInputElement,
     attachTitle: document.getElementById('attach-title') as HTMLInputElement,
@@ -67,6 +69,9 @@ async function loadSettings() {
  * Update UI elements based on settings
  */
 function updateUIFromSettings(settings: Settings) {
+  // Enable/Disable Magic Copy
+  elements.enableMagicCopySwitch.checked = settings.isMagicCopyEnabled; // Added this line
+
   // Output format
   if (settings.outputFormat === 'markdown') {
     elements.formatMarkdown.checked = true;
@@ -86,6 +91,7 @@ function updateUIFromSettings(settings: Settings) {
  */
 function getSettingsFromUI(): Partial<Settings> {
   return {
+    isMagicCopyEnabled: elements.enableMagicCopySwitch.checked, // Added this line
     outputFormat: elements.formatMarkdown.checked ? 'markdown' : 'plaintext',
     attachTitle: elements.attachTitle.checked,
     attachURL: elements.attachURL.checked,
@@ -121,6 +127,9 @@ function setupEventListeners() {
   // Additional info checkboxes
   elements.attachTitle.addEventListener('change', saveCurrentSettings);
   elements.attachURL.addEventListener('change', saveCurrentSettings);
+
+  // Enable/Disable Magic Copy switch
+  elements.enableMagicCopySwitch.addEventListener('change', saveCurrentSettings); // Added this line
   
   // Language select removed
 }
