@@ -2,6 +2,7 @@
 // ^-- 这个 "shebang" 允许脚本作为可执行文件直接运行
 
 import fs from 'fs/promises';
+import fsSync from 'fs';
 import path from 'path';
 import { execSync } from 'child_process'; // 用于执行 git 命令等
 import readline from 'readline'; // 用于用户交互
@@ -198,8 +199,8 @@ async function main() {
 
   log.info(`准备将 ${buildDir} 打包为 ${zipFileName}...`);
   try {
-    if (fs.existsSync(zipFilePath)) {
-      // fs.existsSync is sync, but ok here for a pre-check
+    if (fsSync.existsSync(zipFilePath)) {
+      // fsSync.existsSync is sync, but ok here for a pre-check
       await fs.unlink(zipFilePath);
     }
     execSync(`cd ${buildDir} && zip -r ../${zipFileName} . && cd ..`, { cwd: process.cwd() });
