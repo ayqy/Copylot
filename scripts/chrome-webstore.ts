@@ -7,9 +7,9 @@
 */
 
 import 'dotenv/config';
-import path from 'path';
-import fs from 'fs/promises';
-import { existsSync } from 'fs';
+import * as path from 'path';
+import * as fs from 'fs/promises';
+import { existsSync, createReadStream } from 'fs';
 import { execSync } from 'child_process';
 import webstoreUpload from 'chrome-webstore-upload';
 
@@ -31,6 +31,52 @@ function logError(msg: string) {
   console.error(`${colors.red}[CWS] ${msg}${colors.reset}`);
 }
 
+// 改进的错误显示函数
+function displayError(error: any, context: string = '') {
+  logError(`${context}发生错误：`);
+  
+  if (error instanceof Error) {
+    console.error(`错误类型: ${error.constructor.name}`);
+    console.error(`错误消息: ${error.message}`);
+    if (error.stack) {
+      console.error(`错误堆栈:\n${error.stack}`);
+    }
+    
+    // 显示错误的其他属性
+    const errorProps = Object.getOwnPropertyNames(error).filter(prop => 
+      !['name', 'message', 'stack'].includes(prop)
+    );
+    if (errorProps.length > 0) {
+      console.error('错误详细信息:');
+      errorProps.forEach(prop => {
+        try {
+          const value = (error as any)[prop];
+          console.error(`  ${prop}: ${JSON.stringify(value, null, 2)}`);
+        } catch (e) {
+          console.error(`  ${prop}: [无法序列化]`);
+        }
+      });
+    }
+    
+    // 特殊处理网络错误
+    if (error.message.includes('fetch failed') || error.message.includes('timeout')) {
+      console.error('\n网络连接问题诊断:');
+      console.error('- 检查网络连接是否正常');
+      console.error('- 确认是否能够访问 Google 服务');
+      console.error('- 如果在中国大陆，可能需要配置代理或 VPN');
+      console.error('- 检查防火墙设置');
+    }
+  } else {
+    console.error('错误对象类型:', typeof error);
+    try {
+      console.error('错误内容:', JSON.stringify(error, null, 2));
+    } catch (e) {
+      console.error('错误内容: [无法序列化的对象]');
+      console.error('错误对象:', error);
+    }
+  }
+}
+
 async function ensureZipExists(version: string): Promise<string> {
   const rootDir = process.cwd();
   const distDir = path.resolve(rootDir, 'dist');
@@ -38,6 +84,7 @@ async function ensureZipExists(version: string): Promise<string> {
   const zipFilePath = path.resolve(rootDir, zipFileName);
 
   if (existsSync(zipFilePath)) {
+    logInfo(`找到现有的 zip 文件: ${zipFilePath}`);
     return zipFilePath;
   }
 
@@ -46,7 +93,7 @@ async function ensureZipExists(version: string): Promise<string> {
   try {
     execSync('npm run build', { stdio: 'inherit' });
   } catch (err) {
-    logError('构建失败，无法继续。');
+    displayError(err, '构建');
     throw err;
   }
 
@@ -57,12 +104,13 @@ async function ensureZipExists(version: string): Promise<string> {
   try {
     execSync(`cd ${distDir} && zip -r ../${zipFileName} . && cd ..`, { stdio: 'inherit' });
   } catch (err) {
-    logError('打包 dist 目录失败。');
+    displayError(err, '打包');
     throw err;
   }
   if (!existsSync(zipFilePath)) {
     throw new Error('zip 文件生成失败。');
   }
+  logInfo(`成功创建 zip 文件: ${zipFilePath}`);
   return zipFilePath;
 }
 
@@ -76,10 +124,18 @@ async function main() {
     CWS_REFRESH_TOKEN: refreshToken
   } = process.env as Record<string, string | undefined>;
 
+  // 调试信息
+  logInfo('环境变量检查:');
+  console.log(`  CWS_EXTENSION_ID: ${extensionId ? '已设置' : '未设置'}`);
+  console.log(`  CWS_CLIENT_ID: ${clientId ? '已设置' : '未设置'}`);
+  console.log(`  CWS_CLIENT_SECRET: ${clientSecret ? '已设置' : '未设置'}`);
+  console.log(`  CWS_REFRESH_TOKEN: ${refreshToken ? '已设置' : '未设置'}`);
+
   if (!extensionId || !clientId || !clientSecret || !refreshToken) {
     logError(
       '缺少必需的环境变量 (CWS_EXTENSION_ID, CWS_CLIENT_ID, CWS_CLIENT_SECRET, CWS_REFRESH_TOKEN)。'
     );
+    logError('请检查 .env 文件是否正确配置。');
     process.exit(1);
   }
 
@@ -89,15 +145,23 @@ async function main() {
   try {
     const raw = await fs.readFile(manifestPath, 'utf-8');
     version = JSON.parse(raw).version ?? 'unknown';
-  } catch {
-    logError('读取 manifest.json 失败，无法确定版本号。');
+    logInfo(`当前版本: ${version}`);
+  } catch (err) {
+    displayError(err, '读取 manifest.json');
     process.exit(1);
   }
 
   // 确保 zip 文件存在
-  const zipFilePath = await ensureZipExists(version);
+  let zipFilePath: string;
+  try {
+    zipFilePath = await ensureZipExists(version);
+  } catch (err) {
+    displayError(err, '准备 zip 文件');
+    process.exit(1);
+  }
 
   // 初始化 webstore client
+  logInfo('初始化 Chrome Web Store 客户端…');
   const webstore = webstoreUpload({
     extensionId,
     clientId,
@@ -108,21 +172,22 @@ async function main() {
   // 上传并发布
   try {
     logInfo('上传 zip 到 Chrome Web Store…');
-    await webstore.uploadExisting(zipFilePath);
+    logInfo(`正在上传文件: ${zipFilePath}`);
+    const zipStream = createReadStream(zipFilePath);
+    await webstore.uploadExisting(zipStream);
     logSuccess('上传成功');
 
     logInfo('立即发布 (publish) 到公开通道…');
     await webstore.publish('default');
     logSuccess('发布成功 🎉');
   } catch (err) {
-    logError('上传或发布过程出错：');
-    console.error(err);
+    displayError(err, '上传或发布');
     process.exit(1);
   }
 }
 
+// 改进的主函数错误处理
 main().catch((err) => {
-  logError('未捕获的异常：');
-  console.error(err);
+  displayError(err, '主程序');
   process.exit(1);
 });
