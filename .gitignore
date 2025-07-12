@@ -23,8 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
+.env
 .tmp_build/
 
 # Build artifacts from publish script
-*.zip
 plugin-*.zip
