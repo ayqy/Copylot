@@ -89,7 +89,7 @@ src/
 - **Custom Inlining Script**: `scripts/inline-build.ts` preprocesses `src/content/content.ts` by inlining shared modules (from `src/shared/`) directly into it. This creates a single, cohesive content script ready for Vite.
 - **Vite**: Modern build tool then compiles the preprocessed content script and other assets (popup, background script).
 - **ESLint + Prettier**: Code quality and formatting.
-- **Sharp**: Icon generation from SVG.
+- **Sharp**: Icon generation from PNG/SVG (auto-detects source format).
 
 ## Development
 

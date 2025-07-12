@@ -7,12 +7,30 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const sizes = [16, 32, 48, 128];
+const inputPng = join(__dirname, '../src/assets/icon.png');
 const inputSvg = join(__dirname, '../src/assets/icon.svg');
 const outputDir = join(__dirname, '../public/icons');
 
 export async function generateIcons() {
   console.log('Generating icons...');
-  console.log('Input SVG:', inputSvg);
+  
+  // Auto-detect source file
+  let sourceType: 'png' | 'svg' | null = null;
+  let sourcePath = '';
+  
+  if (existsSync(inputPng)) {
+    sourceType = 'png';
+    sourcePath = inputPng;
+    console.log('Using icon.png as source');
+  } else if (existsSync(inputSvg)) {
+    sourceType = 'svg';
+    sourcePath = inputSvg;
+    console.log('Using icon.svg as source');
+  } else {
+    throw new Error('Neither icon.png nor icon.svg found in src/assets');
+  }
+  
+  console.log('Source file:', sourcePath);
   console.log('Output dir:', outputDir);
   
   // Ensure output directory exists
@@ -21,13 +39,14 @@ export async function generateIcons() {
     console.log('Created output directory');
   }
 
-  // Check if SVG file exists
-  if (!existsSync(inputSvg)) {
-    throw new Error(`SVG file not found: ${inputSvg}`);
+  // Prepare source buffer for SVG or direct path for PNG
+  let sourceBuffer: Buffer | undefined;
+  if (sourceType === 'svg') {
+    sourceBuffer = readFileSync(sourcePath);
+    console.log(`SVG file read successfully, size: ${sourceBuffer.length} bytes`);
+  } else {
+    console.log('PNG file will be read directly by sharp');
   }
-
-  const svgBuffer = readFileSync(inputSvg);
-  console.log(`SVG file read successfully, size: ${svgBuffer.length} bytes`);
 
   // Generate PNGs for each size
   for (const size of sizes) {
@@ -36,9 +55,16 @@ export async function generateIcons() {
     try {
       console.log(`Processing ${size}x${size} icon...`);
       
-      await sharp(svgBuffer, {
-        density: 300
-      })
+      let sharpPipeline;
+      if (sourceType === 'svg') {
+        sharpPipeline = sharp(sourceBuffer!, {
+          density: 300
+        });
+      } else {
+        sharpPipeline = sharp(sourcePath);
+      }
+      
+      await sharpPipeline
         .resize(size, size, {
           fit: 'contain',
           background: { r: 0, g: 0, b: 0, alpha: 0 }
