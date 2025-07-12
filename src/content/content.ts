@@ -47,7 +47,6 @@ function enableMagicCopyFeatures(): void {
   // @ts-ignore: cleanup (from ui-injector) handles button and style tag removal
   window.addEventListener('beforeunload', cleanup);
 
-
   isActive = true;
   console.debug('AI Copilot: Magic Copy features enabled.');
 }
@@ -88,7 +87,6 @@ function disableMagicCopyFeatures(): void {
   isActive = false;
   console.debug('AI Copilot: Magic Copy features disabled.');
 }
-
 
 // Unified function to show Magic Copy
 function showMagicCopy(element: Element, event?: MouseEvent): void {
@@ -138,9 +136,8 @@ function hideMagicCopy(): void {
   }
   currentTarget = null;
   // lastClickPosition = null; // Clearing lastClickPosition might be too aggressive if Alt key needs it.
-                           // Let's keep it unless it causes issues.
+  // Let's keep it unless it causes issues.
 }
-
 
 // Handles document click to identify potential target elements and show/hide the button.
 function handleDocumentClick(event: MouseEvent): void {
@@ -178,12 +175,18 @@ function handleDocumentClick(event: MouseEvent): void {
 function handleKeyDown(event: KeyboardEvent): void {
   const isOnlyAltPressed = event.altKey && !event.metaKey && !event.ctrlKey && !event.shiftKey;
 
-  if (isOnlyAltPressed && currentTarget && copyButtonElement && lastClickPosition) { // Ensure lastClickPosition is available
+  if (isOnlyAltPressed && currentTarget && copyButtonElement && lastClickPosition) {
+    // Ensure lastClickPosition is available
     const oldTarget = currentTarget;
     const parent = currentTarget.parentElement;
 
     // @ts-ignore: EXCLUDED_TAGS is available from inlined block-identifier.ts
-    if (parent && parent !== document.body && parent !== document.documentElement && !EXCLUDED_TAGS.includes(parent.tagName.toLowerCase())) {
+    if (
+      parent &&
+      parent !== document.body &&
+      parent !== document.documentElement &&
+      !EXCLUDED_TAGS.includes(parent.tagName.toLowerCase())
+    ) {
       // 1. Clear border from the old currentTarget (child)
       if (oldTarget instanceof HTMLElement && oldTarget.dataset.originalBorder !== undefined) {
         oldTarget.style.border = oldTarget.dataset.originalBorder || 'none';
@@ -213,22 +216,22 @@ function handleKeyDown(event: KeyboardEvent): void {
 // Sets up the click handler for the copy button.
 function setupButtonClickHandler(): void {
   if (!copyButtonElement) return;
-  
+
   copyButtonElement.addEventListener('click', async (event: Event) => {
     event.preventDefault();
     event.stopPropagation();
-    
+
     if (!currentTarget || !userSettings) return;
-    
+
     try {
       // @ts-ignore: processContent is available from inlined content-processor.ts
       const content = processContent(currentTarget, userSettings);
       if (!content.trim()) return;
-      
+
       await navigator.clipboard.writeText(content);
       // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
       updateButtonState(copyButtonElement!, 'copied');
-      
+
       setTimeout(() => {
         if (copyButtonElement) {
           // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
@@ -313,7 +316,7 @@ function handleMouseOver(event: MouseEvent): void {
       // If the element is too small, also ensure any existing button is hidden,
       // especially if the mouse quickly moved from a valid target to a small icon.
       if (currentTarget === targetElement) {
-           hideMagicCopy();
+        hideMagicCopy();
       }
       return; // Do not show Magic Copy for small elements
     }
@@ -321,7 +324,7 @@ function handleMouseOver(event: MouseEvent): void {
     // If a different Magic Copy is already shown (e.g. from a click), hide it first.
     // Or if it's the same target, this effectively refreshes its position if mouse moved significantly.
     if (currentTarget !== targetElement) {
-        hideMagicCopy(); // Hide previous before showing new, or if currentTarget is null this does nothing
+      hideMagicCopy(); // Hide previous before showing new, or if currentTarget is null this does nothing
     }
     showMagicCopy(targetElement, event);
   }
@@ -350,11 +353,10 @@ function handleMouseOut(event: MouseEvent): void {
   }
 }
 
-
 // Initializes the content script.
 async function initializeContentScript(): Promise<void> {
   if (isInitialized) return;
-  
+
   try {
     console.debug('AI Copilot: Initializing content script...');
     await loadSettingsAndApply(); // Loads userSettings
@@ -365,7 +367,7 @@ async function initializeContentScript(): Promise<void> {
       // Ensure features are disabled if setting is false on init
       disableMagicCopyFeatures();
     }
-    
+
     // Listen for settings changes from the popup/options page.
     if (chrome.storage && chrome.storage.onChanged) {
       chrome.storage.onChanged.addListener((changes, areaName) => {
@@ -394,9 +396,12 @@ async function initializeContentScript(): Promise<void> {
         }
       });
     }
-    
+
     isInitialized = true; // Mark as initialized regardless of feature state
-    console.debug('AI Copilot: Content script initialized successfully. Magic Copy enabled state:', isActive);
+    console.debug(
+      'AI Copilot: Content script initialized successfully. Magic Copy enabled state:',
+      isActive
+    );
   } catch (error) {
     console.error('AI Copilot: Error initializing content script:', error);
   }

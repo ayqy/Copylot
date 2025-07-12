@@ -91,7 +91,7 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
       const currentSettings = await getSettings();
       // Merge with new settings
       const mergedSettings = { ...currentSettings, ...settings };
-      
+
       await chrome.storage.local.set({ [SETTINGS_KEY]: mergedSettings });
       console.debug('Settings saved:', mergedSettings);
     } else {

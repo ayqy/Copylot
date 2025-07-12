@@ -33,7 +33,7 @@ function getElements(): PopupElements {
 function localizeUI() {
   // Find all elements with data-i18n attribute
   const i18nElements = document.querySelectorAll('[data-i18n]');
-  
+
   i18nElements.forEach((element) => {
     const key = element.getAttribute('data-i18n');
     if (key) {
@@ -47,7 +47,7 @@ function localizeUI() {
       }
     }
   });
-  
+
   // Set page title
   document.title = chrome.i18n.getMessage('appName') || 'AI Copilot Settings';
 }
@@ -78,11 +78,11 @@ function updateUIFromSettings(settings: Settings) {
   } else {
     elements.formatPlaintext.checked = true;
   }
-  
+
   // Additional info
   elements.attachTitle.checked = settings.attachTitle;
   elements.attachURL.checked = settings.attachURL;
-  
+
   // language field removed from UI; keep default stored value
 }
 
@@ -94,7 +94,7 @@ function getSettingsFromUI(): Partial<Settings> {
     isMagicCopyEnabled: elements.enableMagicCopySwitch.checked, // Added this line
     outputFormat: elements.formatMarkdown.checked ? 'markdown' : 'plaintext',
     attachTitle: elements.attachTitle.checked,
-    attachURL: elements.attachURL.checked,
+    attachURL: elements.attachURL.checked
     // language field removed from UI; keep default stored value
   };
 }
@@ -106,10 +106,10 @@ async function saveCurrentSettings() {
   try {
     const newSettings = getSettingsFromUI();
     await saveSettings(newSettings);
-    
+
     // Update current settings
     currentSettings = { ...currentSettings, ...newSettings };
-    
+
     console.debug('Settings saved:', newSettings);
   } catch (error) {
     console.error('Error saving settings:', error);
@@ -123,14 +123,14 @@ function setupEventListeners() {
   // Output format radio buttons
   elements.formatMarkdown.addEventListener('change', saveCurrentSettings);
   elements.formatPlaintext.addEventListener('change', saveCurrentSettings);
-  
+
   // Additional info checkboxes
   elements.attachTitle.addEventListener('change', saveCurrentSettings);
   elements.attachURL.addEventListener('change', saveCurrentSettings);
 
   // Enable/Disable Magic Copy switch
   elements.enableMagicCopySwitch.addEventListener('change', saveCurrentSettings); // Added this line
-  
+
   // Language select removed
 }
 
@@ -153,10 +153,11 @@ function setupKeyboardNavigation() {
   // Allow Enter/Space to toggle radio and checkbox options
   document.addEventListener('keydown', (event) => {
     const target = event.target as HTMLElement;
-    
-    if ((event.key === 'Enter' || event.key === ' ') && 
-        target.classList.contains('radio-option') || target.classList.contains('checkbox-option')) {
-      
+
+    if (
+      ((event.key === 'Enter' || event.key === ' ') && target.classList.contains('radio-option')) ||
+      target.classList.contains('checkbox-option')
+    ) {
       const input = target.querySelector('input') as HTMLInputElement;
       if (input) {
         input.click();
@@ -176,7 +177,7 @@ function setupAccessibility() {
     option.setAttribute('role', 'radio');
     option.setAttribute('tabindex', index === 0 ? '0' : '-1');
   });
-  
+
   const checkboxOptions = document.querySelectorAll('.checkbox-option');
   checkboxOptions.forEach((option) => {
     option.setAttribute('role', 'checkbox');
@@ -190,24 +191,23 @@ function setupAccessibility() {
 async function initialize() {
   try {
     console.debug('Initializing popup...');
-    
+
     // Get DOM elements
     elements = getElements();
-    
+
     // Localize UI
     localizeUI();
-    
+
     // Load and display current settings
     await loadSettings();
-    
+
     // Setup event handlers
     setupEventListeners();
     setupFormHandler();
     setupKeyboardNavigation();
     setupAccessibility();
-    
+
     console.debug('Popup initialized successfully');
-    
   } catch (error) {
     console.error('Error initializing popup:', error);
   }
@@ -218,4 +218,4 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initialize);
 } else {
   initialize();
-} 
+}
