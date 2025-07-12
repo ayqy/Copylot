@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .tmp_build/
+
+# Build artifacts from publish script
+*.zip
+plugin-*.zip

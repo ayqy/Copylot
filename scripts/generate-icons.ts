@@ -13,11 +13,11 @@ const outputDir = join(__dirname, '../public/icons');
 
 export async function generateIcons() {
   console.log('Generating icons...');
-  
+
   // Auto-detect source file
   let sourceType: 'png' | 'svg' | null = null;
   let sourcePath = '';
-  
+
   if (existsSync(inputPng)) {
     sourceType = 'png';
     sourcePath = inputPng;
@@ -29,10 +29,10 @@ export async function generateIcons() {
   } else {
     throw new Error('Neither icon.png nor icon.svg found in src/assets');
   }
-  
+
   console.log('Source file:', sourcePath);
   console.log('Output dir:', outputDir);
-  
+
   // Ensure output directory exists
   if (!existsSync(outputDir)) {
     mkdirSync(outputDir, { recursive: true });
@@ -51,10 +51,10 @@ export async function generateIcons() {
   // Generate PNGs for each size
   for (const size of sizes) {
     const outputPath = join(outputDir, `icon-${size}.png`);
-    
+
     try {
       console.log(`Processing ${size}x${size} icon...`);
-      
+
       let sharpPipeline;
       if (sourceType === 'svg') {
         sharpPipeline = sharp(sourceBuffer!, {
@@ -63,7 +63,7 @@ export async function generateIcons() {
       } else {
         sharpPipeline = sharp(sourcePath);
       }
-      
+
       await sharpPipeline
         .resize(size, size, {
           fit: 'contain',
@@ -74,16 +74,15 @@ export async function generateIcons() {
           compressionLevel: 9
         })
         .toFile(outputPath);
-      
+
       console.log(`✅ Generated ${outputPath}`);
-      
     } catch (error) {
       console.error(`❌ Failed to generate ${size}px icon:`, error);
-      
+
       // Fallback: create a simple colored square PNG
       try {
         console.log(`Generating fallback ${size}px icon...`);
-        
+
         await sharp({
           create: {
             width: size,
@@ -92,20 +91,20 @@ export async function generateIcons() {
             background: { r: 79, g: 70, b: 229, alpha: 1 }
           }
         })
-        .png()
-        .toFile(outputPath);
-        
+          .png()
+          .toFile(outputPath);
+
         console.log(`✅ Generated fallback ${size}px icon`);
       } catch (fallbackError) {
         console.error(`❌ Failed to generate fallback ${size}px icon:`, fallbackError);
       }
     }
   }
-  
+
   console.log('Icon generation completed');
 }
 
 // Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   generateIcons().catch(console.error);
-} 
+}

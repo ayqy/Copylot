@@ -61,10 +61,10 @@ export default defineConfig({
           } catch (error) {
             console.warn('Warning: Could not copy manifest.json:', error.message);
           }
-          
+
           // Copy locales
           const locales = ['en', 'zh'];
-          locales.forEach(locale => {
+          locales.forEach((locale) => {
             try {
               const messagesContent = readFileSync(`./_locales/${locale}/messages.json`, 'utf-8');
               this.emitFile({
@@ -76,7 +76,7 @@ export default defineConfig({
               console.warn(`Warning: Could not copy locale ${locale}:`, error.message);
             }
           });
-          
+
           // Copy popup HTML
           try {
             const popupHtml = readFileSync('./src/popup/popup.html', 'utf-8');
@@ -112,7 +112,7 @@ function getSingleScriptConfig(script: string) {
         format: 'iife',
         name: 'AICopilotContent',
         file: 'dist/src/content/content.js',
-        inlineDynamicImports: true,
+        inlineDynamicImports: true
       }
     },
     popup: {
@@ -121,7 +121,7 @@ function getSingleScriptConfig(script: string) {
         format: 'umd',
         name: 'AICopilotPopup',
         file: 'dist/src/popup/popup.js',
-        inlineDynamicImports: true,
+        inlineDynamicImports: true
       }
     },
     background: {
@@ -130,11 +130,11 @@ function getSingleScriptConfig(script: string) {
         format: 'umd',
         name: 'AICopilotBackground',
         file: 'dist/src/background.js',
-        inlineDynamicImports: true,
+        inlineDynamicImports: true
       }
     }
   };
-  
+
   return configs[script] || configs.content;
 }
 
@@ -144,7 +144,7 @@ function getAllScriptsConfig() {
     input: {
       content: resolve(__dirname, 'src/content/content.ts'),
       popup: resolve(__dirname, 'src/popup/popup.ts'),
-      background: resolve(__dirname, 'src/background.ts'),
+      background: resolve(__dirname, 'src/background.ts')
     },
     output: {
       format: 'es',
@@ -166,4 +166,4 @@ function getAllScriptsConfig() {
       }
     }
   };
-} 
+}

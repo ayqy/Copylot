@@ -20,7 +20,7 @@ export const DEFAULT_SETTINGS: Settings = {
 export function getSystemLanguage(): 'system' | 'en' | 'zh' {
   try {
     // Ensure chrome and chrome.i18n are available
-    if (typeof chrome !== "undefined" && chrome.i18n && chrome.i18n.getUILanguage) {
+    if (typeof chrome !== 'undefined' && chrome.i18n && chrome.i18n.getUILanguage) {
       const uiLanguage = chrome.i18n.getUILanguage();
       if (uiLanguage.startsWith('zh')) {
         return 'zh';
@@ -39,11 +39,11 @@ export function getSystemLanguage(): 'system' | 'en' | 'zh' {
 export async function getSettings(): Promise<Settings> {
   try {
     // Ensure chrome and chrome.storage are available
-    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
       const result = await chrome.storage.local.get(SETTINGS_KEY);
       const storedSettings = result[SETTINGS_KEY];
 
-      let currentLanguage = getSystemLanguage(); // Get resolved system language
+      const currentLanguage = getSystemLanguage(); // Get resolved system language
 
       if (!storedSettings) {
         // If no settings are stored, initialize with defaults including detected system language
@@ -60,7 +60,7 @@ export async function getSettings(): Promise<Settings> {
         ...DEFAULT_SETTINGS,
         ...storedSettings
       };
-      
+
       // If language is 'system' or was not resolved properly before, resolve it now
       if (mergedSettings.language === 'system') {
         mergedSettings.language = currentLanguage;
@@ -74,7 +74,6 @@ export async function getSettings(): Promise<Settings> {
       ...DEFAULT_SETTINGS,
       language: getSystemLanguage() // Use resolved system language
     };
-
   } catch (error) {
     console.error('Error getting settings:', error);
     // Fallback to default settings with system language on error
@@ -85,16 +84,16 @@ export async function getSettings(): Promise<Settings> {
   }
 }
 
-export async function saveSettings(settings: Settings): Promise<void> {
+export async function saveSettings(settings: Partial<Settings>): Promise<void> {
   try {
-    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
-      // Before saving, if the language is resolved (e.g., 'en' or 'zh'),
-      // and the intention is to store 'system' preference,
-      // we might want to convert it back to 'system' if it matches the current system language.
-      // However, typically, the popup would send the exact value to save ('system', 'en', or 'zh').
-      // For now, we'll save the settings object as is.
-      await chrome.storage.local.set({ [SETTINGS_KEY]: settings });
-      console.debug('Settings saved:', settings);
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      // Get current settings first
+      const currentSettings = await getSettings();
+      // Merge with new settings
+      const mergedSettings = { ...currentSettings, ...settings };
+      
+      await chrome.storage.local.set({ [SETTINGS_KEY]: mergedSettings });
+      console.debug('Settings saved:', mergedSettings);
     } else {
       console.warn('chrome.storage.local is not available, settings not saved.');
     }

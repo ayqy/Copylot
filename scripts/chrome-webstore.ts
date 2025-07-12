@@ -14,11 +14,11 @@ import { execSync } from 'child_process';
 import webstoreUpload from 'chrome-webstore-upload';
 
 const colors = {
-  reset: "\x1b[0m",
-  red: "\x1b[31m",
-  green: "\x1b[32m",
-  yellow: "\x1b[33m",
-  blue: "\x1b[34m",
+  reset: '\x1b[0m',
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m'
 };
 
 function logInfo(msg: string) {
@@ -73,11 +73,13 @@ async function main() {
     CWS_EXTENSION_ID: extensionId,
     CWS_CLIENT_ID: clientId,
     CWS_CLIENT_SECRET: clientSecret,
-    CWS_REFRESH_TOKEN: refreshToken,
+    CWS_REFRESH_TOKEN: refreshToken
   } = process.env as Record<string, string | undefined>;
 
   if (!extensionId || !clientId || !clientSecret || !refreshToken) {
-    logError('缺少必需的环境变量 (CWS_EXTENSION_ID, CWS_CLIENT_ID, CWS_CLIENT_SECRET, CWS_REFRESH_TOKEN)。');
+    logError(
+      '缺少必需的环境变量 (CWS_EXTENSION_ID, CWS_CLIENT_ID, CWS_CLIENT_SECRET, CWS_REFRESH_TOKEN)。'
+    );
     process.exit(1);
   }
 
@@ -100,7 +102,7 @@ async function main() {
     extensionId,
     clientId,
     clientSecret,
-    refreshToken,
+    refreshToken
   });
 
   // 上传并发布
@@ -119,8 +121,8 @@ async function main() {
   }
 }
 
-main().catch(err => {
+main().catch((err) => {
   logError('未捕获的异常：');
   console.error(err);
   process.exit(1);
-}); 
+});

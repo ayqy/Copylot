@@ -8,13 +8,13 @@ import readline from 'readline'; // 用于用户交互
 
 // ANSI Color Codes
 const colors = {
-  reset: "\x1b[0m",
-  red: "\x1b[31m",
-  green: "\x1b[32m",
-  yellow: "\x1b[33m",
-  blue: "\x1b[34m",
-  magenta: "\x1b[35m",
-  cyan: "\x1b[36m",
+  reset: '\x1b[0m',
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  magenta: '\x1b[35m',
+  cyan: '\x1b[36m'
 };
 
 // Colored log functions
@@ -23,7 +23,7 @@ const log = {
   info: (msg: string) => console.info(`${colors.blue}[INFO] ${msg}${colors.reset}`),
   warn: (msg: string) => console.warn(`${colors.yellow}[WARN] ${msg}${colors.reset}`),
   error: (msg: string) => console.error(`${colors.red}[ERROR] ${msg}${colors.reset}`),
-  success: (msg: string) => console.log(`${colors.green}[SUCCESS] ${msg}${colors.reset}`),
+  success: (msg: string) => console.log(`${colors.green}[SUCCESS] ${msg}${colors.reset}`)
 };
 
 // Helper function to ask user a question
@@ -31,13 +31,15 @@ function askQuestion(query: string): Promise<string> {
   // Ensure question also uses default color, but input is not colored.
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout,
+    output: process.stdout
   });
 
-  return new Promise(resolve => rl.question(query, ans => {
-    rl.close();
-    resolve(ans.trim());
-  }));
+  return new Promise((resolve) =>
+    rl.question(query, (ans) => {
+      rl.close();
+      resolve(ans.trim());
+    })
+  );
 }
 
 async function getRepoUrlPath(): Promise<string> {
@@ -56,7 +58,7 @@ async function getRepoUrlPath(): Promise<string> {
       }
     }
   } catch (e) {
-    log.warn("读取 package.json 或解析 repository.url 失败。");
+    log.warn('读取 package.json 或解析 repository.url 失败。');
   }
 
   // 2. Try git remote if package.json didn't yield a result
@@ -78,14 +80,14 @@ async function getRepoUrlPath(): Promise<string> {
   }
 
   if (!repoPath) {
-    log.error("无法自动获取 GitHub 仓库路径。请在提示 URL 时手动确认。");
+    log.error('无法自动获取 GitHub 仓库路径。请在提示 URL 时手动确认。');
     return 'your_username/your_repo'; // Fallback
   }
   return repoPath;
 }
 
 async function main() {
-  log.info("开始发布流程...");
+  log.info('开始发布流程...');
 
   // --- 步骤 4: 获取当前版本号 ---
   const manifestPath = path.resolve(process.cwd(), 'manifest.json');
@@ -119,16 +121,18 @@ async function main() {
   log.info(`建议新版本号: ${newVersion}`);
 
   // --- 步骤 6: 用户确认新版本号 ---
-  const confirmation = await askQuestion(`${colors.yellow}您确定要将版本号从 ${currentVersion} 更新到 ${newVersion} 吗? (y/N): ${colors.reset}`);
+  const confirmation = await askQuestion(
+    `${colors.yellow}您确定要将版本号从 ${currentVersion} 更新到 ${newVersion} 吗? (y/N): ${colors.reset}`
+  );
   if (confirmation.toLowerCase() !== 'y' && confirmation.toLowerCase() !== 'yes') {
-    log.warn("操作已取消。");
+    log.warn('操作已取消。');
     process.exit(0);
   }
 
   // --- 步骤 7: 更新 Manifest 文件 ---
   manifestContent.version = newVersion;
   try {
-    await fs.writeFile(manifestPath, JSON.stringify(manifestContent, null, 2) + '\n', 'utf-8');
+    await fs.writeFile(manifestPath, `${JSON.stringify(manifestContent, null, 2)}\n`, 'utf-8');
     log.success(`manifest.json 已更新至版本 ${newVersion}`);
   } catch (error) {
     log.error(`写入 manifest.json 出错 (${manifestPath})。`);
@@ -143,7 +147,7 @@ async function main() {
     execSync(`git commit -m "${commitMessage}"`);
     log.success(`已创建 commit: "${commitMessage}"`);
   } catch (error) {
-    log.error("git commit 执行失败。");
+    log.error('git commit 执行失败。');
     console.error(error);
     // TODO: 考虑在这里添加 git reset 或者其他恢复操作的提示
     process.exit(1);
@@ -162,22 +166,28 @@ async function main() {
   }
 
   // --- 步骤 10: 构建生产环境插件 ---
-  log.info("开始构建生产环境插件...");
+  log.info('开始构建生产环境插件...');
   try {
     execSync('npm run build', { stdio: 'inherit' });
-    log.success("生产环境插件构建完成。");
+    log.success('生产环境插件构建完成。');
   } catch (error) {
-    log.error("构建生产环境插件失败。");
+    log.error('构建生产环境插件失败。');
     console.error(error);
-    log.warn(`提醒：您可能需要手动执行 'git tag -d ${tagName}' 和 'git reset HEAD~1' 来撤销版本更新和标签。`);
+    log.warn(
+      `提醒：您可能需要手动执行 'git tag -d ${tagName}' 和 'git reset HEAD~1' 来撤销版本更新和标签。`
+    );
     process.exit(1);
   }
 
   // --- 步骤 11: 用户确认测试是否通过 ---
-  const testConfirmation = await askQuestion(`${colors.yellow}请确认您已完成插件测试并且测试通过。是否继续发布? (y/N): ${colors.reset}`);
+  const testConfirmation = await askQuestion(
+    `${colors.yellow}请确认您已完成插件测试并且测试通过。是否继续发布? (y/N): ${colors.reset}`
+  );
   if (testConfirmation.toLowerCase() !== 'y' && testConfirmation.toLowerCase() !== 'yes') {
-    log.warn("操作已取消。提醒：生产插件已构建，但未发布。");
-    log.warn(`提醒：您可能需要手动执行 'git tag -d ${tagName}' 和 'git reset HEAD~1' 来撤销版本更新和标签。`);
+    log.warn('操作已取消。提醒：生产插件已构建，但未发布。');
+    log.warn(
+      `提醒：您可能需要手动执行 'git tag -d ${tagName}' 和 'git reset HEAD~1' 来撤销版本更新和标签。`
+    );
     process.exit(0);
   }
 
@@ -188,16 +198,21 @@ async function main() {
 
   log.info(`准备将 ${buildDir} 打包为 ${zipFileName}...`);
   try {
-    if (fs.existsSync(zipFilePath)) { // fs.existsSync is sync, but ok here for a pre-check
+    if (fs.existsSync(zipFilePath)) {
+      // fs.existsSync is sync, but ok here for a pre-check
       await fs.unlink(zipFilePath);
     }
     execSync(`cd ${buildDir} && zip -r ../${zipFileName} . && cd ..`, { cwd: process.cwd() });
     log.success(`构建产物已打包到: ${zipFilePath}`);
     log.info(`您可以使用此文件进行手动上传或测试：${colors.cyan}${zipFilePath}${colors.reset}`);
   } catch (error) {
-    log.error(`打包构建产物 (${buildDir} to ${zipFilePath}) 失败。请确保 'zip' 命令已安装并可用，并且 dist 目录存在。`);
+    log.error(
+      `打包构建产物 (${buildDir} to ${zipFilePath}) 失败。请确保 'zip' 命令已安装并可用，并且 dist 目录存在。`
+    );
     console.error(error);
-    log.warn(`提醒：您可能需要手动执行 'git tag -d ${tagName}' 和 'git reset HEAD~1' 来撤销版本更新和标签。`);
+    log.warn(
+      `提醒：您可能需要手动执行 'git tag -d ${tagName}' 和 'git reset HEAD~1' 来撤销版本更新和标签。`
+    );
     process.exit(1);
   }
 
@@ -206,25 +221,30 @@ async function main() {
     execSync('gh --version', { stdio: 'ignore' });
     ghAvailable = true;
   } catch (e) {
-    log.warn("GitHub CLI (gh) 命令未找到或无法执行。您可能需要手动创建 GitHub Release。");
+    log.warn('GitHub CLI (gh) 命令未找到或无法执行。您可能需要手动创建 GitHub Release。');
   }
 
   if (ghAvailable) {
-    log.info("尝试使用 GitHub CLI (gh) 创建 Release...");
+    log.info('尝试使用 GitHub CLI (gh) 创建 Release...');
     try {
-      execSync(`gh release create ${tagName} "${zipFilePath}" --generate-notes --title "Release ${tagName}"`, { stdio: 'inherit' });
+      execSync(
+        `gh release create ${tagName} "${zipFilePath}" --generate-notes --title "Release ${tagName}"`,
+        { stdio: 'inherit' }
+      );
       log.success(`GitHub Release ${tagName} 创建成功，并上传了 ${zipFileName}。`);
     } catch (error) {
-      log.error("使用 gh CLI 创建 GitHub Release 失败。");
+      log.error('使用 gh CLI 创建 GitHub Release 失败。');
       console.error(error);
 
       const repoUrlPath = await getRepoUrlPath();
 
       log.info(`请手动访问 https://github.com/${repoUrlPath}/releases/new`);
       log.info(`创建一个新的 Release，标签为 ${tagName}，并将 ${zipFilePath} 文件上传。`);
-      const trotzdemFortfahren = await askQuestion(`${colors.yellow}gh release 创建失败。是否仍要继续推送到 git? (y/N): ${colors.reset}`);
+      const trotzdemFortfahren = await askQuestion(
+        `${colors.yellow}gh release 创建失败。是否仍要继续推送到 git? (y/N): ${colors.reset}`
+      );
       if (trotzdemFortfahren.toLowerCase() !== 'y' && trotzdemFortfahren.toLowerCase() !== 'yes') {
-        log.warn("操作已取消。");
+        log.warn('操作已取消。');
         process.exit(0);
       }
     }
@@ -232,17 +252,24 @@ async function main() {
     const repoUrlPath = await getRepoUrlPath();
     log.info(`请手动访问 https://github.com/${repoUrlPath}/releases/new`);
     log.info(`创建一个新的 Release，标签为 ${tagName}，并将 ${zipFilePath} 文件上传。`);
-    const manualReleaseConfirmation = await askQuestion(`${colors.cyan}请在浏览器中完成上述手动 Release 创建和文件上传操作。完成后，请按 'y' 继续: ${colors.reset}`);
-    if (manualReleaseConfirmation.toLowerCase() !== 'y' && manualReleaseConfirmation.toLowerCase() !== 'yes') {
-        log.warn("操作已取消。");
-        process.exit(0);
+    const manualReleaseConfirmation = await askQuestion(
+      `${colors.cyan}请在浏览器中完成上述手动 Release 创建和文件上传操作。完成后，请按 'y' 继续: ${colors.reset}`
+    );
+    if (
+      manualReleaseConfirmation.toLowerCase() !== 'y' &&
+      manualReleaseConfirmation.toLowerCase() !== 'yes'
+    ) {
+      log.warn('操作已取消。');
+      process.exit(0);
     }
   }
 
   // --- 步骤 13: 用户确认是否 push ---
-  const pushConfirmation = await askQuestion(`${colors.yellow}即将推送 commit 和 tag (${tagName}) 到远程仓库。是否继续? (y/N): ${colors.reset}`);
+  const pushConfirmation = await askQuestion(
+    `${colors.yellow}即将推送 commit 和 tag (${tagName}) 到远程仓库。是否继续? (y/N): ${colors.reset}`
+  );
   if (pushConfirmation.toLowerCase() !== 'y' && pushConfirmation.toLowerCase() !== 'yes') {
-    log.warn("操作已取消。Commit 和 tag 已在本地创建但未推送。");
+    log.warn('操作已取消。Commit 和 tag 已在本地创建但未推送。');
     log.info(`提示：您之后可以手动运行 'git push && git push --tags'。`);
     log.info(`如果您想完全回滚本地更改：git reset HEAD~1 --hard && git tag -d ${tagName}`);
     process.exit(0);
@@ -250,13 +277,15 @@ async function main() {
 
   // --- 步骤 14: Git push commit 和 tag ---
   try {
-    log.info("正在推送 commit 和 tag 到远程仓库...");
+    log.info('正在推送 commit 和 tag 到远程仓库...');
     execSync('git push', { stdio: 'inherit' });
     execSync('git push --tags', { stdio: 'inherit' });
-    log.success("Commit 和 tag 已成功推送到远程仓库。");
+    log.success('Commit 和 tag 已成功推送到远程仓库。');
 
     // --- 步骤 15: 可选发布到 Chrome Web Store ---
-    const cwsConfirm = await askQuestion(`${colors.yellow}是否现在上传并发布到 Chrome Web Store? (y/N): ${colors.reset}`);
+    const cwsConfirm = await askQuestion(
+      `${colors.yellow}是否现在上传并发布到 Chrome Web Store? (y/N): ${colors.reset}`
+    );
     if (cwsConfirm.toLowerCase() === 'y' || cwsConfirm.toLowerCase() === 'yes') {
       try {
         execSync('npm run publish:cws', { stdio: 'inherit' });
@@ -269,19 +298,19 @@ async function main() {
       log.info('已跳过 Chrome Web Store 发布。您可稍后手动运行 "npm run publish:cws"。');
     }
   } catch (error) {
-    log.error("git push 执行失败。");
+    log.error('git push 执行失败。');
     console.error(error);
-    log.info("请检查您的网络连接和远程仓库权限。");
+    log.info('请检查您的网络连接和远程仓库权限。');
     log.info(`提示：Commit 和 tag (${tagName}) 已在本地创建，但未成功推送到远程。`);
     log.info(`您可以稍后手动运行 'git push && git push --tags'。`);
     process.exit(1);
   }
 
-  log.success("发布流程顺利完成！🎉");
+  log.success('发布流程顺利完成！🎉');
 }
 
-main().catch(error => {
-  log.error("发布过程中发生未捕获的错误:");
+main().catch((error) => {
+  log.error('发布过程中发生未捕获的错误:');
   console.error(error); // Log the actual error object
   process.exit(1);
 });

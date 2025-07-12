@@ -97,6 +97,7 @@ function showMagicCopy(element: Element, event?: MouseEvent): void {
   // @ts-ignore: hideButton is available from inlined ui-injector.ts
   if (currentTarget && currentTarget !== element && copyButtonElement) {
     // Hide from previous target if different
+    // @ts-ignore: hideButton function is available from inlined ui-injector.ts
     hideButton(copyButtonElement, currentTarget instanceof HTMLElement ? currentTarget : null);
   }
 
@@ -371,6 +372,7 @@ async function initializeContentScript(): Promise<void> {
         // @ts-ignore: SETTINGS_KEY, getSystemLanguage are from inlined settings-manager.ts
         if (areaName === 'local' && changes[SETTINGS_KEY]) {
           const oldSettings = userSettings ? { ...userSettings } : null;
+          // @ts-ignore: SETTINGS_KEY is available from inlined settings-manager.ts
           const newSettingsValue = changes[SETTINGS_KEY].newValue as Settings;
 
           // Resolve language if 'system'

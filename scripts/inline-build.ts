@@ -129,4 +129,4 @@ if (existsSync(TURNDOWN_SRC)) {
 
 log('Moved build output to ./dist');
 
-log('✅ Build finished successfully'); 
+log('✅ Build finished successfully');

@@ -9,7 +9,7 @@ let buttonInstance: HTMLElement | null = null;
 // It's specific to the extension environment.
 export function getMessage(key: string): string {
   try {
-    if (typeof chrome !== "undefined" && chrome.i18n && chrome.i18n.getMessage) {
+    if (typeof chrome !== 'undefined' && chrome.i18n && chrome.i18n.getMessage) {
       return chrome.i18n.getMessage(key) || key;
     }
     return key; // Fallback if API not available
@@ -40,7 +40,7 @@ export function createButton(): HTMLElement {
 
   const button = document.createElement('div');
   button.id = 'ai-copilot-copy-btn';
-  
+
   Object.assign(button.style, {
     position: 'fixed',
     width: `${BUTTON_SIZE}px`,
@@ -59,7 +59,7 @@ export function createButton(): HTMLElement {
     userSelect: 'none',
     pointerEvents: 'auto' // Important for the button to be clickable
   });
-  
+
   button.innerHTML = getCopyIcon();
   button.title = getMessage('copy'); // Use getMessage for title
 
@@ -69,14 +69,14 @@ export function createButton(): HTMLElement {
       button.style.transform = 'scale(1.05)';
     }
   });
-  
+
   button.addEventListener('mouseleave', () => {
     if (button.dataset.state !== 'copied') {
       button.style.backgroundColor = '#4F46E5';
       button.style.transform = 'scale(1)';
     }
   });
-  
+
   document.body.appendChild(button);
   buttonInstance = button;
   return button;
@@ -85,11 +85,11 @@ export function createButton(): HTMLElement {
 export function positionButton(button: HTMLElement, x: number, y: number): void {
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
-  
+
   // Calculate initial position for center alignment
   let left = x - BUTTON_SIZE / 2;
   let top = y - BUTTON_SIZE / 2;
-  
+
   // Adjust if button goes off screen
   // Check right edge
   if (left + BUTTON_SIZE > viewportWidth) {
@@ -99,7 +99,7 @@ export function positionButton(button: HTMLElement, x: number, y: number): void 
   if (left < 0) {
     left = 8; // Place it with a small margin from the edge
   }
-  
+
   // Check bottom edge
   if (top + BUTTON_SIZE > viewportHeight) {
     top = viewportHeight - BUTTON_SIZE - 8; // Place it with a small margin from the edge
@@ -108,14 +108,19 @@ export function positionButton(button: HTMLElement, x: number, y: number): void 
   if (top < 0) {
     top = 8; // Place it with a small margin from the edge
   }
-  
+
   button.style.left = `${left}px`;
   button.style.top = `${top}px`;
 }
 
 // showButton and hideButton interact with `currentTarget` from the main script's scope
 // This dependency will be resolved by the inlining process.
-export function showButton(button: HTMLElement, x: number, y: number, currentTargetElement: HTMLElement | null): void {
+export function showButton(
+  button: HTMLElement,
+  x: number,
+  y: number,
+  currentTargetElement: HTMLElement | null
+): void {
   positionButton(button, x, y);
   button.style.display = 'flex';
 
@@ -137,7 +142,7 @@ export function hideButton(button: HTMLElement, currentTargetElement: HTMLElemen
 
 export function updateButtonState(button: HTMLElement, state: 'copy' | 'copied'): void {
   button.dataset.state = state;
-  
+
   if (state === 'copy') {
     button.innerHTML = getCopyIcon();
     button.title = getMessage('copy');
@@ -157,7 +162,7 @@ export function updateButtonState(button: HTMLElement, state: 'copy' | 'copied')
 
 export function injectStyles(): void {
   if (document.getElementById('ai-copilot-styles')) return;
-  
+
   const style = document.createElement('style');
   style.id = 'ai-copilot-styles';
   style.textContent = `
@@ -177,7 +182,7 @@ export function injectStyles(): void {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
   `;
-  
+
   document.head.appendChild(style);
 }
 
@@ -186,7 +191,7 @@ export function cleanup(): void {
     buttonInstance.parentNode.removeChild(buttonInstance);
     buttonInstance = null;
   }
-  
+
   const styles = document.getElementById('ai-copilot-styles');
   if (styles && styles.parentNode) {
     styles.parentNode.removeChild(styles);

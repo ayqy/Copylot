@@ -1,8 +1,10 @@
 // Content processor functionality (using TurndownService from global scope)
 import type { Settings } from './settings-manager'; // Import type for Settings
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const TurndownService: any; // Assume TurndownService is loaded globally
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let turndownInstance: any = null;
 
 function getTurndownService() {
@@ -23,13 +25,13 @@ function getTurndownService() {
       linkStyle: 'inlined',
       linkReferenceStyle: 'full'
     });
-    
+
     // Preserve line breaks (<br>)
     turndownInstance.addRule('preserveLineBreaks', {
       filter: ['br'],
       replacement: () => '\n'
     });
-    
+
     // Remove script, style, and noscript tags during conversion
     turndownInstance.remove(['script', 'style', 'noscript', '#ai-copilot-copy-btn']);
   }
@@ -40,19 +42,20 @@ function getTurndownService() {
 function getI18nMessage(key: string, language?: string): string {
   // Use specific language bundle if provided and not 'system'
   // This is a simplified example; a real implementation might load JSON files.
-  if (language && language !== 'system' && language !== 'en') { // Assuming 'en' is default/fallback for chrome.i18n
+  if (language && language !== 'system' && language !== 'en') {
+    // Assuming 'en' is default/fallback for chrome.i18n
     const messages: Record<string, Record<string, string>> = {
       // 'en': { source: 'Source' }, // Example, assuming chrome.i18n handles English
-      'zh': { source: '来源' } // Example for Chinese
+      zh: { source: '来源' } // Example for Chinese
     };
     if (messages[language] && messages[language][key]) {
       return messages[language][key];
     }
   }
-  
+
   // Fallback to chrome.i18n.getMessage if available
   try {
-    if (typeof chrome !== "undefined" && chrome.i18n && chrome.i18n.getMessage) {
+    if (typeof chrome !== 'undefined' && chrome.i18n && chrome.i18n.getMessage) {
       return chrome.i18n.getMessage(key) || key;
     }
   } catch (e) {
@@ -82,7 +85,6 @@ export function convertToMarkdown(element: Element): string {
         return cleanText(imgElement.innerText || '');
       }
       return `![${altText}](${sourceUrl})`;
-
     } else if (element instanceof HTMLPictureElement) {
       const pictureElement = element as HTMLPictureElement;
       const img = pictureElement.querySelector('img');
@@ -90,11 +92,12 @@ export function convertToMarkdown(element: Element): string {
         return convertToMarkdown(img); // Delegate to HTMLImageElement handling
       }
       return '[Picture Element - No image found]';
-
     } else if (element instanceof HTMLVideoElement) {
       const videoElement = element as HTMLVideoElement;
       const posterUrl = videoElement.poster;
-      const videoSrc = videoElement.src || (videoElement.querySelector('source') ? videoElement.querySelector('source')!.src : '');
+      const videoSrc =
+        videoElement.src ||
+        (videoElement.querySelector('source') ? videoElement.querySelector('source')!.src : '');
       const title = videoElement.title || videoElement.ariaLabel || '';
 
       if (posterUrl) {
@@ -105,18 +108,15 @@ export function convertToMarkdown(element: Element): string {
         return `[${linkText}](${videoSrc})`;
       }
       return `[Video: ${title || 'No source or poster'}]`;
-
     } else if (element instanceof SVGSVGElement) {
       const svgOuterHTML = element.outerHTML;
       return `\`\`\`svg\n${svgOuterHTML}\n\`\`\``;
-
     } else if (element instanceof HTMLCanvasElement) {
       const canvasElement = element as HTMLCanvasElement;
       const id = canvasElement.id ? `id: '${canvasElement.id}'` : '';
       const classes = canvasElement.className ? `class: '${canvasElement.className}'` : '';
       const attributes = [id, classes].filter(Boolean).join(', ');
       return `[Canvas Element${attributes ? ` (${attributes})` : ''}]`;
-
     } else if (element instanceof HTMLEmbedElement) {
       const embedElement = element as HTMLEmbedElement;
       const src = embedElement.src;
@@ -125,7 +125,6 @@ export function convertToMarkdown(element: Element): string {
         return `[Embedded Content${type ? ` (type: ${type})` : ''}](${src})`;
       }
       return `[Embedded Content${type ? ` (type: ${type})` : ''}]`;
-
     } else if (element instanceof HTMLObjectElement) {
       const objectElement = element as HTMLObjectElement;
       const data = objectElement.data;
@@ -134,12 +133,11 @@ export function convertToMarkdown(element: Element): string {
         return `[Object Content${type ? ` (type: ${type})` : ''}](${data})`;
       }
       return `[Object Content${type ? ` (type: ${type})` : ''}]`;
-
     } else {
       // Default handling for other elements
       const clonedElement = element.cloneNode(true) as Element;
-      clonedElement.querySelectorAll('#ai-copilot-copy-btn').forEach(btn => btn.remove());
-      let markdown = turndown.turndown(clonedElement.innerHTML);
+      clonedElement.querySelectorAll('#ai-copilot-copy-btn').forEach((btn) => btn.remove());
+      const markdown = turndown.turndown(clonedElement.innerHTML);
       return markdown.trim();
     }
   } catch (error) {
@@ -154,7 +152,7 @@ export function convertToPlainText(element: Element): string {
     // Clone the element to avoid modifying the original DOM (though less critical for innerText)
     const clonedElement = element.cloneNode(true) as Element;
     // Remove the copy button from the cloned element
-    clonedElement.querySelectorAll('#ai-copilot-copy-btn').forEach(btn => btn.remove());
+    clonedElement.querySelectorAll('#ai-copilot-copy-btn').forEach((btn) => btn.remove());
 
     const text = (clonedElement as HTMLElement).innerText || '';
     return cleanText(text);
@@ -171,14 +169,17 @@ export function getPageInfo(): { title: string; url: string } {
   };
 }
 
-export function formatAdditionalInfo(settings: Settings, pageInfo: { title: string; url: string }): string {
+export function formatAdditionalInfo(
+  settings: Settings,
+  pageInfo: { title: string; url: string }
+): string {
   if (!settings.attachTitle && !settings.attachURL) {
     return '';
   }
-  
+
   const sourceLabel = getI18nMessage('source', settings.language);
   let additionalInfo = '\n\n---\n'; // Start with a separator
-  
+
   if (settings.outputFormat === 'markdown') {
     if (settings.attachTitle && settings.attachURL) {
       additionalInfo += `${sourceLabel}: [${pageInfo.title}](${pageInfo.url})`;
@@ -187,7 +188,8 @@ export function formatAdditionalInfo(settings: Settings, pageInfo: { title: stri
     } else if (settings.attachURL) {
       additionalInfo += `${sourceLabel}: <${pageInfo.url}>`; // Use < > for plain URLs in Markdown
     }
-  } else { // Plaintext
+  } else {
+    // Plaintext
     if (settings.attachTitle && settings.attachURL) {
       additionalInfo += `${sourceLabel}: ${pageInfo.title} (${pageInfo.url})`;
     } else if (settings.attachTitle) {
@@ -196,47 +198,47 @@ export function formatAdditionalInfo(settings: Settings, pageInfo: { title: stri
       additionalInfo += `${sourceLabel}: ${pageInfo.url}`;
     }
   }
-  
+
   return additionalInfo;
 }
 
 export function processContent(element: Element, settings: Settings): string {
   try {
     let content: string;
-    
+
     if (settings.outputFormat === 'markdown') {
       content = convertToMarkdown(element);
       // Apply blockquote styling if additional info is to be attached,
       // or if markdown content itself should be blockquoted by default.
       // Current behavior: blockquote only if title/URL is attached.
       if (settings.attachTitle || settings.attachURL) {
-         // Ensure content is not empty before adding blockquote
+        // Ensure content is not empty before adding blockquote
         if (content) {
-            content = `> ${content.replace(/\n/g, '\n> ')}`;
+          content = `> ${content.replace(/\n/g, '\n> ')}`;
         }
       }
     } else {
       content = convertToPlainText(element);
     }
-    
+
     const pageInfo = getPageInfo();
     const additionalInfo = formatAdditionalInfo(settings, pageInfo);
-    
+
     // Ensure there's a space between content and additional info if both exist
     if (content && additionalInfo) {
-        return content + additionalInfo; // additionalInfo already starts with newlines
+      return content + additionalInfo; // additionalInfo already starts with newlines
     } else if (content) {
-        return content;
-    } else { // Only additionalInfo (e.g. copying an empty block but attaching source)
-        // We might want to reconsider if copying an "empty" block should still yield source info.
-        // For now, let's assume if content is empty, the result is empty unless explicitly changed.
-        // To include source even for empty content, return additionalInfo.trim() here.
-        // Based on current logic, if content is empty, this returns empty.
-        // Let's adjust to return additionalInfo if content is empty but attachURL/Title is true.
-        if (additionalInfo.trim()) return additionalInfo.trim();
-        return '';
+      return content;
+    } else {
+      // Only additionalInfo (e.g. copying an empty block but attaching source)
+      // We might want to reconsider if copying an "empty" block should still yield source info.
+      // For now, let's assume if content is empty, the result is empty unless explicitly changed.
+      // To include source even for empty content, return additionalInfo.trim() here.
+      // Based on current logic, if content is empty, this returns empty.
+      // Let's adjust to return additionalInfo if content is empty but attachURL/Title is true.
+      if (additionalInfo.trim()) return additionalInfo.trim();
+      return '';
     }
-
   } catch (error) {
     console.error('Error in processContent:', error);
     // Fallback to basic innerText on critical error

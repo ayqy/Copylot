@@ -9,16 +9,31 @@ export const EXCLUDED_TAGS = [
   // 'header', 'footer', 'nav', 'aside', 'dialog', 'menu', 'form', 'fieldset', 'legend', 'details', 'summary',
 
   // Truly invisible or non-content elements
-  'script', 'style', 'noscript', 'head', 'meta', 'link', 'template', 'area', 'map',
+  'script',
+  'style',
+  'noscript',
+  'head',
+  'meta',
+  'link',
+  'template',
+  'area',
+  'map',
   // Interactive controls that are not primarily for displaying content for copying as a "block"
-  'a', 'button', 'input', 'textarea', 'select', 'option', 'optgroup', 'label',
+  'a',
+  'button',
+  'input',
+  'textarea',
+  'select',
+  'option',
+  'optgroup',
+  'label',
   // Iframe content is isolated and should not be targeted directly as a block this way.
-  'iframe',
+  'iframe'
 ];
 
 export const MIN_TEXT_LENGTH = 1; // Adjusted for potentially smaller but valid content blocks
-export const MIN_WIDTH = 20;   // Adjusted for smaller icons or elements
-export const MIN_HEIGHT = 20;  // Adjusted for smaller icons or elements
+export const MIN_WIDTH = 20; // Adjusted for smaller icons or elements
+export const MIN_HEIGHT = 20; // Adjusted for smaller icons or elements
 
 export function isElementVisible(element: Element): boolean {
   if (!(element instanceof HTMLElement)) {
@@ -57,7 +72,8 @@ export function hasVisibleContent(element: Element): boolean {
 
   // Check for text content, ignoring whitespace
   const text = (element as HTMLElement).innerText?.trim() || '';
-  if (text.length > 0) { // Any text is now considered content, MIN_TEXT_LENGTH will be checked later if element is text-dominant
+  if (text.length > 0) {
+    // Any text is now considered content, MIN_TEXT_LENGTH will be checked later if element is text-dominant
     return true;
   }
 
@@ -65,7 +81,8 @@ export function hasVisibleContent(element: Element): boolean {
   // This makes a non-leaf container potentially "have content" due to its children.
   // The "leaf node" aspect will be implicitly handled: if a child is a better target, it will be preferred.
   for (let i = 0; i < element.children.length; i++) {
-    if (hasVisibleContent(element.children[i])) { // Recursive call, be cautious
+    if (hasVisibleContent(element.children[i])) {
+      // Recursive call, be cautious
       return true;
     }
   }
@@ -73,14 +90,14 @@ export function hasVisibleContent(element: Element): boolean {
 }
 
 export function meetsMinimumTextRequirement(element: Element): boolean {
-    // This function is now more specific for text-dominant blocks.
-    // Blocks that are primarily images/videos are handled by hasVisibleContent.
-    const tagName = element.tagName.toLowerCase();
-    if (['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName)) {
-        return true; // Media elements don't need text.
-    }
-    const text = (element as HTMLElement).innerText?.replace(/\s+/g, '') || '';
-    return text.length >= MIN_TEXT_LENGTH;
+  // This function is now more specific for text-dominant blocks.
+  // Blocks that are primarily images/videos are handled by hasVisibleContent.
+  const tagName = element.tagName.toLowerCase();
+  if (['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName)) {
+    return true; // Media elements don't need text.
+  }
+  const text = (element as HTMLElement).innerText?.replace(/\s+/g, '') || '';
+  return text.length >= MIN_TEXT_LENGTH;
 }
 
 export function hasMinimumDimensions(element: Element): boolean {
@@ -107,7 +124,7 @@ export function isViableBlock(element: Element): boolean {
 
     // Rule 3.2: Check if element itself is an excluded tag type (e.g. a button, input)
     if (EXCLUDED_TAGS.includes(tagName)) {
-        return false;
+      return false;
     }
 
     // Rule 3.2: Check if an ancestor is an excluded type that should prevent children from being blocks.
@@ -126,36 +143,38 @@ export function isViableBlock(element: Element): boolean {
     }
 
     // Rule 3.1: If the element is primarily text-based, it should meet text length.
-    const isMedia = ['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'].includes(tagName);
+    const isMedia = ['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'].includes(
+      tagName
+    );
     if (!isMedia && !meetsMinimumTextRequirement(element)) {
-        return false;
+      return false;
     }
 
     // Leaf node consideration (optimized):
     // This logic checks if a child element is a more specific target.
     const childElements = Array.from(element.children).filter(
-      c => c instanceof HTMLElement && !EXCLUDED_TAGS.includes(c.tagName.toLowerCase())
+      (c) => c instanceof HTMLElement && !EXCLUDED_TAGS.includes(c.tagName.toLowerCase())
     ) as HTMLElement[];
 
     if (!isMedia && childElements.length > 0) {
-        for (const child of childElements) {
-            const childTagName = child.tagName.toLowerCase();
+      for (const child of childElements) {
+        const childTagName = child.tagName.toLowerCase();
 
-            // If a child is a visible media element with dimensions, the parent is not viable,
-            // as the media element itself is a better target.
-            if (['img', 'video', 'canvas', 'svg'].includes(childTagName)) {
-                if (isElementVisible(child) && hasMinimumDimensions(child)) {
-                    return false; // Parent is not viable if a media child is a better target
-                }
-                continue; // Check next child
-            }
-
-            // Previously, there was a check here for non-media children.
-            // This check was removed based on user feedback to allow parent elements
-            // (like a <p> containing a <strong> and other text) to be viable targets
-            // even if a text-based child could also be a target.
-            // The goal is to make the directly clicked or containing block selectable.
+        // If a child is a visible media element with dimensions, the parent is not viable,
+        // as the media element itself is a better target.
+        if (['img', 'video', 'canvas', 'svg'].includes(childTagName)) {
+          if (isElementVisible(child) && hasMinimumDimensions(child)) {
+            return false; // Parent is not viable if a media child is a better target
+          }
+          continue; // Check next child
         }
+
+        // Previously, there was a check here for non-media children.
+        // This check was removed based on user feedback to allow parent elements
+        // (like a <p> containing a <strong> and other text) to be viable targets
+        // even if a text-based child could also be a target.
+        // The goal is to make the directly clicked or containing block selectable.
+      }
     }
 
     return true;
