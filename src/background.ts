@@ -47,15 +47,27 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case 'copy-to-clipboard':
       {
         const { text } = message;
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        sendResponse({ success: true });
+        // Forward the message to the content script in the active tab
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          if (tabs[0] && tabs[0].id) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+              type: 'copy-to-clipboard-from-background',
+              text: text
+            }, (response) => {
+              if (chrome.runtime.lastError) {
+                console.error('Error sending message to content script:', chrome.runtime.lastError.message);
+                sendResponse({ success: false, error: chrome.runtime.lastError.message });
+              } else {
+                sendResponse(response);
+              }
+            });
+          } else {
+            console.error('No active tab found to send the message to.');
+            sendResponse({ success: false, error: 'No active tab found.' });
+          }
+        });
+        return true; // Indicate that the response is asynchronous
       }
-      break;
 
     case 'ping':
       sendResponse({ success: true, message: 'pong' });
