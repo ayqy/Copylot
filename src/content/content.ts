@@ -430,6 +430,28 @@ async function initializeContentScript(): Promise<void> {
       });
     }
 
+    // Listener for messages from background script or popup
+    chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+      if (message.type === 'CONVERT_PAGE') {
+        if (!userSettings) {
+          await loadSettingsAndApply();
+        }
+        if (userSettings) {
+          // @ts-ignore: processContent is available from inlined content-processor.ts
+          const content = processContent(document.body, userSettings);
+          if (content.trim()) {
+            await navigator.clipboard.writeText(content);
+            sendResponse({ success: true });
+          } else {
+            sendResponse({ success: false, error: 'No content to copy' });
+          }
+        } else {
+          sendResponse({ success: false, error: 'Settings not loaded' });
+        }
+        return true; // Indicates async response
+      }
+    });
+
     isInitialized = true; // Mark as initialized regardless of feature state
     console.debug(
       'AI Copilot: Content script initialized successfully. Magic Copy enabled state:',

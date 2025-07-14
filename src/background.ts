@@ -65,6 +65,22 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
   }
 });
 
+// Create context menu for one-click conversion
+chrome.contextMenus.create({
+  id: 'convert-page-to-ai-friendly-format',
+  title: chrome.i18n.getMessage('convertPage') || 'Convert Page to AI-Friendly Format',
+  contexts: ['page']
+});
+
+// Handle context menu click
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === 'convert-page-to-ai-friendly-format' && tab && tab.id) {
+    chrome.tabs.sendMessage(tab.id, {
+      type: 'CONVERT_PAGE'
+    });
+  }
+});
+
 // Performance monitoring (development only)
 if (process.env.NODE_ENV === 'development') {
   // Monitor performance and log any issues
