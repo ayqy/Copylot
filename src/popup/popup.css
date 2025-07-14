@@ -63,7 +63,7 @@ body {
 }
 
 .section {
-  margin-bottom: 24px;
+  margin-bottom: 16px; /* Reduced margin */
 }
 
 .section:last-child {
@@ -81,8 +81,9 @@ body {
 /* Radio Group */
 .radio-group {
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Changed to row */
   gap: 8px;
+  justify-content: space-between; /* Distribute items evenly */
 }
 
 .radio-option {
@@ -93,6 +94,8 @@ body {
   padding: 8px 12px;
   border-radius: 8px;
   transition: background-color 0.2s ease;
+  flex-grow: 1; /* Allow items to grow */
+  justify-content: center; /* Center content */
 }
 
 .radio-option:hover {
@@ -132,8 +135,9 @@ body {
 /* Checkbox Group */
 .checkbox-group {
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Changed to row */
   gap: 8px;
+  justify-content: space-between; /* Distribute items evenly */
 }
 
 .checkbox-option {
@@ -144,6 +148,8 @@ body {
   padding: 8px 12px;
   border-radius: 8px;
   transition: background-color 0.2s ease;
+  flex-grow: 1; /* Allow items to grow */
+  justify-content: center; /* Center content */
 }
 
 .checkbox-option:hover {
@@ -318,6 +324,11 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%; /* Rounded thumb */
+}
+
+/* Conversion Button Section */
+.conversion-section {
+  padding: 0 20px; /* Add horizontal padding */
 }
 
 /* Conversion Button */
