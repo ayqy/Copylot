@@ -1,6 +1,11 @@
 // @ts-ignore: CSS import for build process
 import './popup.css';
-import { getSettings, saveSettings, type Settings } from '../shared/settings-manager';
+import {
+  getSettings,
+  saveSettings,
+  type Settings,
+  FORCE_UI_LANGUAGE
+} from '../shared/settings-manager';
 
 // DOM Elements
 interface PopupElements {
@@ -35,6 +40,10 @@ function getElements(): PopupElements {
  * Localize the UI based on current locale
  */
 function localizeUI() {
+  if (FORCE_UI_LANGUAGE) {
+    document.documentElement.lang = FORCE_UI_LANGUAGE;
+  }
+
   // Find all elements with data-i18n attribute
   const i18nElements = document.querySelectorAll('[data-i18n]');
 

@@ -1,3 +1,7 @@
+// For debugging: force a specific UI language, e.g., 'en', 'zh'
+// Leave empty to use the browser's default language
+export const FORCE_UI_LANGUAGE = '';
+
 // Settings manager functionality
 export interface Settings {
   isMagicCopyEnabled: boolean; // Added this line
