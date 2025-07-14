@@ -459,6 +459,15 @@ async function initializeContentScript(): Promise<void> {
           sendResponse({ success: false, error: 'Settings not loaded' });
         }
         return true; // Indicates async response
+      } else if (message.type === 'copy-to-clipboard-from-background') {
+        try {
+          await navigator.clipboard.writeText(message.text);
+          sendResponse({ success: true });
+        } catch (err) {
+          console.error('Failed to copy text from content script:', err);
+          sendResponse({ success: false, error: err.message });
+        }
+        return true; // Indicates async response
       }
     });
 
