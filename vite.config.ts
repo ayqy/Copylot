@@ -88,6 +88,30 @@ export default defineConfig({
           } catch (error) {
             console.warn('Warning: Could not copy popup.html:', error.message);
           }
+
+          // Copy devtools HTML
+          try {
+            const devtoolsHtml = readFileSync('./src/devtools/devtools.html', 'utf-8');
+            this.emitFile({
+              type: 'asset',
+              fileName: 'src/devtools/devtools.html',
+              source: devtoolsHtml
+            });
+          } catch (error) {
+            console.warn('Warning: Could not copy devtools.html:', error.message);
+          }
+
+          // Copy sidebar HTML
+          try {
+            const sidebarHtml = readFileSync('./src/devtools/sidebar.html', 'utf-8');
+            this.emitFile({
+              type: 'asset',
+              fileName: 'src/devtools/sidebar.html',
+              source: sidebarHtml
+            });
+          } catch (error) {
+            console.warn('Warning: Could not copy sidebar.html:', error.message);
+          }
         }
       }
     }
@@ -144,7 +168,9 @@ function getAllScriptsConfig() {
     input: {
       content: resolve(__dirname, 'src/content/content.ts'),
       popup: resolve(__dirname, 'src/popup/popup.ts'),
-      background: resolve(__dirname, 'src/background.ts')
+      background: resolve(__dirname, 'src/background.ts'),
+      devtools: resolve(__dirname, 'src/devtools/devtools.js'),
+      sidebar: resolve(__dirname, 'src/devtools/sidebar.js')
     },
     output: {
       format: 'es',
@@ -153,6 +179,8 @@ function getAllScriptsConfig() {
         if (name === 'content') return 'src/content/content.js';
         if (name === 'popup') return 'src/popup/popup.js';
         if (name === 'background') return 'src/background.js';
+        if (name === 'devtools') return 'src/devtools/devtools.js';
+        if (name === 'sidebar') return 'src/devtools/sidebar.js';
         return '[name].js';
       },
       chunkFileNames: 'chunks/[name]-[hash].js',
@@ -160,6 +188,7 @@ function getAllScriptsConfig() {
         const name = assetInfo.name || '';
         if (name.endsWith('.css')) {
           if (name.includes('popup')) return 'src/popup/popup.css';
+          if (name.includes('sidebar')) return 'src/devtools/sidebar.css';
           return 'src/[name].[ext]';
         }
         return 'assets/[name]-[hash].[ext]';
