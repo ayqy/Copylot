@@ -320,6 +320,36 @@ input:checked + .slider:before {
   border-radius: 50%; /* Rounded thumb */
 }
 
+/* Conversion Button */
+.convert-button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+  text-align: center;
+}
+
+.convert-button:hover {
+  background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+}
+
+.convert-button:active {
+  transform: translateY(1px);
+}
+
+.convert-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
 /* Animation for transitions */
 .radio-custom,
 .checkbox-custom,

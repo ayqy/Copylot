@@ -17,6 +17,7 @@ interface PopupElements {
   formatPlaintext: HTMLInputElement;
   attachTitle: HTMLInputElement;
   attachURL: HTMLInputElement;
+  convertButton: HTMLButtonElement;
 }
 
 let elements: PopupElements;
@@ -36,7 +37,8 @@ function getElements(): PopupElements {
     formatMarkdown: document.getElementById('format-markdown') as HTMLInputElement,
     formatPlaintext: document.getElementById('format-plaintext') as HTMLInputElement,
     attachTitle: document.getElementById('attach-title') as HTMLInputElement,
-    attachURL: document.getElementById('attach-url') as HTMLInputElement
+    attachURL: document.getElementById('attach-url') as HTMLInputElement,
+    convertButton: document.getElementById('convert-button') as HTMLButtonElement
   };
 }
 
@@ -162,6 +164,18 @@ function setupEventListeners() {
   // Enable/Disable Magic Copy switch
   elements.enableMagicCopySwitch.addEventListener('change', saveCurrentSettings); // Added this line
   elements.enableHoverMagicCopySwitch.addEventListener('change', saveCurrentSettings);
+
+  // Conversion button
+  elements.convertButton.addEventListener('click', () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0] && tabs[0].id) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          type: 'CONVERT_PAGE'
+        });
+        window.close(); // Close popup after clicking
+      }
+    });
+  });
 
   // Language select removed
 }
