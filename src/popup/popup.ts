@@ -5,6 +5,8 @@ import { getSettings, saveSettings, type Settings } from '../shared/settings-man
 // DOM Elements
 interface PopupElements {
   enableMagicCopySwitch: HTMLInputElement; // Added this line
+  interactionClick: HTMLInputElement;
+  interactionDblClick: HTMLInputElement;
   formatMarkdown: HTMLInputElement;
   formatPlaintext: HTMLInputElement;
   attachTitle: HTMLInputElement;
@@ -20,6 +22,8 @@ let currentSettings: Settings;
 function getElements(): PopupElements {
   return {
     enableMagicCopySwitch: document.getElementById('enable-magic-copy-switch') as HTMLInputElement, // Added this line
+    interactionClick: document.getElementById('interaction-click') as HTMLInputElement,
+    interactionDblClick: document.getElementById('interaction-dblclick') as HTMLInputElement,
     formatMarkdown: document.getElementById('format-markdown') as HTMLInputElement,
     formatPlaintext: document.getElementById('format-plaintext') as HTMLInputElement,
     attachTitle: document.getElementById('attach-title') as HTMLInputElement,
@@ -72,6 +76,13 @@ function updateUIFromSettings(settings: Settings) {
   // Enable/Disable Magic Copy
   elements.enableMagicCopySwitch.checked = settings.isMagicCopyEnabled; // Added this line
 
+  // Interaction mode
+  if (settings.interactionMode === 'click') {
+    elements.interactionClick.checked = true;
+  } else {
+    elements.interactionDblClick.checked = true;
+  }
+
   // Output format
   if (settings.outputFormat === 'markdown') {
     elements.formatMarkdown.checked = true;
@@ -92,6 +103,7 @@ function updateUIFromSettings(settings: Settings) {
 function getSettingsFromUI(): Partial<Settings> {
   return {
     isMagicCopyEnabled: elements.enableMagicCopySwitch.checked, // Added this line
+    interactionMode: elements.interactionClick.checked ? 'click' : 'dblclick',
     outputFormat: elements.formatMarkdown.checked ? 'markdown' : 'plaintext',
     attachTitle: elements.attachTitle.checked,
     attachURL: elements.attachURL.checked
@@ -120,6 +132,10 @@ async function saveCurrentSettings() {
  * Setup event listeners for form elements
  */
 function setupEventListeners() {
+  // Interaction mode radio buttons
+  elements.interactionClick.addEventListener('change', saveCurrentSettings);
+  elements.interactionDblClick.addEventListener('change', saveCurrentSettings);
+
   // Output format radio buttons
   elements.formatMarkdown.addEventListener('change', saveCurrentSettings);
   elements.formatPlaintext.addEventListener('change', saveCurrentSettings);

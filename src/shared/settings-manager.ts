@@ -5,6 +5,7 @@ export interface Settings {
   attachTitle: boolean;
   attachURL: boolean;
   language: 'system' | 'en' | 'zh';
+  interactionMode: 'click' | 'dblclick';
 }
 
 export const SETTINGS_KEY = 'copilot_settings';
@@ -14,7 +15,8 @@ export const DEFAULT_SETTINGS: Settings = {
   outputFormat: 'markdown',
   attachTitle: false,
   attachURL: false,
-  language: 'system'
+  language: 'system',
+  interactionMode: 'dblclick'
 };
 
 export function getSystemLanguage(): 'system' | 'en' | 'zh' {
