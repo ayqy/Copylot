@@ -1,8 +1,19 @@
 const jsonContainer = document.getElementById('json-container');
 const copyButton = document.getElementById('copy-button');
 
+const originalButtonText = chrome.i18n.getMessage("devtoolsCopyButton");
+copyButton.textContent = originalButtonText;
+
 copyButton.addEventListener('click', () => {
-  navigator.clipboard.writeText(jsonContainer.value);
+  chrome.runtime.sendMessage({
+    type: 'copy-to-clipboard',
+    text: jsonContainer.value
+  }, () => {
+    copyButton.textContent = chrome.i18n.getMessage("copied");
+    setTimeout(() => {
+      copyButton.textContent = originalButtonText;
+    }, 2000);
+  });
 });
 
 function getElementJson(element) {

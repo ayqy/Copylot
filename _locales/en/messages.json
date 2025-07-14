@@ -98,5 +98,8 @@
   },
   "devtoolsCopyButton": {
     "message": "Copy"
+  },
+  "copied": {
+    "message": "Copied!"
   }
 }

@@ -44,6 +44,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   // Handle different message types
   switch (message.type) {
+    case 'copy-to-clipboard':
+      {
+        const { text } = message;
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        sendResponse({ success: true });
+      }
+      break;
+
     case 'ping':
       sendResponse({ success: true, message: 'pong' });
       break;
