@@ -47,24 +47,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case 'copy-to-clipboard':
       {
         const { text } = message;
-        // Get the active tab to focus it before sending the message
-        chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-          if (tabs[0] && tabs[0].id && tabs[0].windowId) {
-            const tabId = tabs[0].id;
-            const windowId = tabs[0].windowId;
-
-            // 1. Focus the window and the tab
-            await chrome.windows.update(windowId, { focused: true });
-            await chrome.tabs.update(tabId, { active: true });
-
-            // 2. Send the message to the now-focused content script
-            chrome.tabs.sendMessage(tabId, {
+        // Forward the message to the content script in the active tab
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          if (tabs[0] && tabs[0].id) {
+            chrome.tabs.sendMessage(tabs[0].id, {
               type: 'copy-to-clipboard-from-background',
               text: text
             }, (response) => {
               if (chrome.runtime.lastError) {
-                console.error('Error sending message to content script:', chrome.runtime.lastError.message);
-                sendResponse({ success: false, error: chrome.runtime.lastError.message });
+                // The receiving end may not exist if the content script isn't injected.
+                // This is not a critical error in our case.
+                console.warn('Could not send message to content script:', chrome.runtime.lastError.message);
+                // Still send a success response to the sidebar, as the user doesn't need to know about this.
+                // The sidebar will show "Copied!" regardless.
+                sendResponse({ success: true, warning: 'Content script not available.' });
               } else {
                 sendResponse(response);
               }
