@@ -82,5 +82,9 @@
   "doubleClick": {
     "message": "Double-Click",
     "description": "Option for double-click interaction"
+  },
+  "enableHoverTrigger": {
+    "message": "Enable Hover Trigger",
+    "description": "Label for the hover trigger switch"
   }
 }
