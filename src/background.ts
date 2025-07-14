@@ -5,6 +5,13 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   console.log('AI Copilot extension installed/updated:', details.reason);
 
   try {
+    // Create context menu for one-click conversion
+    chrome.contextMenus.create({
+      id: 'convert-page-to-ai-friendly-format',
+      title: chrome.i18n.getMessage('convertPage') || 'Convert Page to AI-Friendly Format',
+      contexts: ['page']
+    });
+
     // Initialize settings on first install
     if (details.reason === 'install') {
       console.log('First install - initializing settings...');
@@ -63,13 +70,6 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
   if (changes.copilot_settings) {
     console.debug('Settings updated:', changes.copilot_settings.newValue);
   }
-});
-
-// Create context menu for one-click conversion
-chrome.contextMenus.create({
-  id: 'convert-page-to-ai-friendly-format',
-  title: chrome.i18n.getMessage('convertPage') || 'Convert Page to AI-Friendly Format',
-  contexts: ['page']
 });
 
 // Handle context menu click
