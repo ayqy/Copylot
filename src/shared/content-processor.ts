@@ -137,7 +137,33 @@ export function convertToMarkdown(element: Element): string {
       // Default handling for other elements
       const clonedElement = element.cloneNode(true) as Element;
       clonedElement.querySelectorAll('#ai-copilot-copy-btn').forEach((btn) => btn.remove());
-      const markdown = turndown.turndown(clonedElement.innerHTML);
+
+      // Pre-process links containing images or SVGs
+      clonedElement.querySelectorAll('a').forEach((a) => {
+        const img = a.querySelector('img');
+        if (img) {
+          const alt = img.alt.trim();
+          if (alt) {
+            a.replaceWith(document.createTextNode(alt));
+          } else {
+            a.replaceWith(document.createTextNode(a.href));
+          }
+          return; // Move to the next 'a' tag
+        }
+
+        const svg = a.querySelector('svg');
+        if (svg) {
+          const title = svg.querySelector('title');
+          if (title && title.textContent) {
+            a.replaceWith(document.createTextNode(title.textContent.trim()));
+          } else {
+            a.replaceWith(document.createTextNode(a.href));
+          }
+        }
+      });
+
+      let markdown = turndown.turndown(clonedElement.innerHTML);
+      markdown = markdown.replace(/\[\s*\]\(#\)/g, ''); // Clean up empty links like `[ ](#)`
       return markdown.trim();
     }
   } catch (error) {
