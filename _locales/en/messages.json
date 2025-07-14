@@ -62,5 +62,25 @@
   "source": {
     "message": "Source",
     "description": "Source prefix for copied content"
+  },
+  "enableMagicCopy": {
+    "message": "Enable Magic Copy:",
+    "description": "Label for the master switch to enable/disable the feature"
+  },
+  "enableFeature": {
+    "message": "Enable Feature",
+    "description": "Label for the feature switch"
+  },
+  "interactionMode": {
+    "message": "Interaction Mode:",
+    "description": "Label for interaction mode setting"
+  },
+  "singleClick": {
+    "message": "Single-Click",
+    "description": "Option for single-click interaction"
+  },
+  "doubleClick": {
+    "message": "Double-Click",
+    "description": "Option for double-click interaction"
   }
-} 
+}
