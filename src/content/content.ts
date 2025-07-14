@@ -460,11 +460,24 @@ async function initializeContentScript(): Promise<void> {
         }
         return true; // Indicates async response
       } else if (message.type === 'copy-to-clipboard-from-background') {
+        const { text } = message;
         try {
-          await navigator.clipboard.writeText(message.text);
-          sendResponse({ success: true });
+          const textarea = document.createElement('textarea');
+          textarea.style.position = 'fixed';
+          textarea.style.top = '-100px';
+          textarea.value = text;
+          document.body.appendChild(textarea);
+          textarea.select();
+          const success = document.execCommand('copy');
+          document.body.removeChild(textarea);
+
+          if (success) {
+            sendResponse({ success: true });
+          } else {
+            throw new Error('document.execCommand("copy") returned false.');
+          }
         } catch (err) {
-          console.error('Failed to copy text from content script:', err);
+          console.error('Failed to copy text from content script using execCommand:', err);
           sendResponse({ success: false, error: err.message });
         }
         return true; // Indicates async response
