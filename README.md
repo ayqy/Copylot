@@ -4,13 +4,18 @@ A Chrome browser extension that intelligently copies web page content in AI-frie
 
 ## Features
 
-- 🎯 **Smart Content Detection**: Automatically identifies viable content blocks on web pages
-- 📝 **Multiple Output Formats**: Copy content as Markdown or plain text
-- 🌍 **Internationalization**: Supports English and Chinese interfaces
-- ⚙️ **Customizable Settings**: Configure output format, additional info, and language preferences
-- ✨ **Hover-to-Copy for Media**: Instantly activate Magic Copy by hovering over images (`<img>`, `<picture>`), videos (`<video>`), SVGs (`<svg>`), canvases (`<canvas>`), and other embedded content (`<embed>`, `<object>`).
-- 🎨 **Modern UI**: Beautiful and responsive popup interface
-- 🚀 **High Performance**: Uses RequestIdleCallback for optimal performance
+- 🎯 **Smart Content Detection**: Automatically identifies viable content blocks on web pages.
+- 📝 **Multiple Output Formats**: Copy content as clean Markdown or plain text.
+- 🖱️ **Flexible Interaction Modes**: Activate by single-click or double-click, configurable via settings.
+- ✨ **Hover-to-Copy for Media**: Instantly copy images, videos, and other media elements just by hovering over them.
+- 🌐 **Full Page Conversion**: Convert the entire page content with a single click from the context menu.
+- 🔧 **Developer Tools**: Inspect element details, including selectors and attributes, directly in Chrome DevTools.
+- 🌍 **Internationalization**: Supports English and Chinese interfaces.
+- ⚙️ **Customizable & Controllable**:
+  - Enable or disable the Magic Copy feature entirely with a single switch.
+  - Configure output format, what metadata to attach (title, URL), and interaction preferences.
+- 🎨 **Modern UI**: Beautiful and responsive popup interface.
+- 🚀 **High Performance**: Built with performance in mind, ensuring a smooth user experience.
 
 ## Installation
 
@@ -43,16 +48,38 @@ Download the latest release from the Chrome Web Store (coming soon).
 
 ## Usage
 
-1.  **Click on content**: Click directly on any text content on a web page that you wish to copy.
-2.  **Hover over media (New!)**: Alternatively, simply hover your mouse cursor over images, videos, SVGs, canvases, or other embedded objects (`<img>`, `<picture>`, `<video>`, `<svg>`, `<canvas>`, `<embed>`, `<object>`).
-3.  **See the copy button**: A blue copy button will appear near your cursor, and the selected content block (either clicked text or hovered media) will be highlighted with a border.
-    *   For hovered media, the content will be copied in a suitable Markdown format (e.g., `![alt](src)` for images, poster images or links for videos, SVG code for SVGs, and placeholders or links for other embedded content).
-4.  **Expand selection (Optional, for clicked text blocks)**:
-    *   If the initial clicked selection is too small (e.g., just a single word or paragraph), press and hold the `Alt` key (or `Option` key on macOS).
+There are three main ways to use Magic Copy:
+
+### 1. On-Page Interaction (Click or Hover)
+
+This is the primary way to copy specific content blocks.
+
+1.  **Activate**:
+    *   **Click/Double-Click**: Click (or double-click, depending on your settings) on any text content you wish to copy.
+    *   **Hover**: Alternatively, hover your mouse over images, videos, SVGs, canvases, or other media elements.
+2.  **See the Copy Button**: A blue copy button will appear near your cursor, and the targeted content block will be highlighted with a border.
+3.  **Expand Selection (for Text)**:
+    *   If the initial selection is too narrow (e.g., a single word), press and hold the `Alt` key (`Option` on macOS).
     *   The highlighted selection will expand to its parent block. You can press `Alt` multiple times to expand further.
-    *   The copy button's position **will not change** during this process; it remains where you initially interacted (clicked or hovered).
-5.  **Click to copy**: Click the blue button to copy the content of the currently highlighted block in your preferred format.
-6.  **Configure settings**: Click the extension icon to open settings and customize behavior (output format, language, etc.).
+    *   The copy button's position **will not change** during this process.
+4.  **Click to Copy**: Click the blue button to copy the content of the currently highlighted block.
+
+### 2. Full Page Conversion (Context Menu)
+
+To copy the entire content of a page in a clean format:
+
+1.  **Right-click** anywhere on the page.
+2.  Select **"Convert Page to AI-Friendly Format"** from the context menu.
+3.  The entire page's content will be instantly copied to your clipboard.
+
+### 3. Configure Settings
+
+Click the extension icon in the Chrome toolbar to open the popup, where you can:
+- Enable or disable Magic Copy entirely.
+- Switch between single-click and double-click activation.
+- Enable or disable the hover-to-copy feature for media.
+- Choose your preferred output format (Markdown/Plain Text).
+- Decide whether to include the page title and URL in the copied content.
 
 ## Settings
 
@@ -132,34 +159,43 @@ This script will guide you through the following steps:
     *   Installation instructions can be found at [cli.github.com](https://cli.github.com/).
     *   You'll need to authenticate `gh` with your GitHub account (e.g., using `gh auth login`).
 
+## Developer Tools
+
+For web developers and QA engineers, Magic Copy includes a handy DevTools panel.
+
+1.  **Open DevTools**: Press `F12` or right-click on the page and select "Inspect".
+2.  **Go to Elements Panel**: Select the "Elements" tab.
+3.  **Find MagicCopy Sidebar**: In the right-hand pane (where you usually see Styles, Computed, etc.), find and click on the "MagicCopy" tab.
+4.  **Inspect Elements**: As you select different elements in the Elements panel, the MagicCopy sidebar will display a structured JSON object containing:
+    - `tagName`
+    - Important `attributes` (like `id`, `class`, `data-*`, etc.)
+    - `innerText`
+    - `selectors` (including CSS, XPath, and a stable selector)
+5.  **Copy Details**: Click the "Copy" button in the sidebar to copy the complete JSON object to your clipboard.
+
 ### Testing
 
-Load the extension in Chrome's developer mode and test on various websites:
+Load the extension in Chrome's developer mode and test on various websites.
 
-1. Visit different types of websites (news, blogs, documentation).
-2. **Click-to-activate**:
-    - Click on various text elements. Verify the copy button appears near the cursor and the element gets a border.
-    - Click on non-viable areas. Verify the button and border (if previously visible) disappear.
-    - Click from one viable element to another. Verify the button and border move correctly.
-3. **Alt/Option Key for Selection Expansion**:
-    - Click on a small text element to show the button and border.
-    - Press `Alt`/`Option` key. Verify the selected block expands to its parent and the border updates.
-    - Crucially, verify the copy button **does not change its position** during Alt-key usage.
-    - Press `Alt`/`Option` multiple times to see further expansion, ensuring the button position remains static.
-    - After expanding, click the copy button and verify it copies the content of the larger, expanded block.
-4. **Hover-to-Copy Functionality (New!)**:
-    - Hover over images (`<img>`, `<picture>`), videos (`<video>`), SVGs (`<svg>`), canvases (`<canvas>`), `embed` and `object` elements.
-    - Verify the copy button appears and the element is bordered.
-    - Click the copy button and verify the content is copied in the expected Markdown format:
-        - Images/Pictures: `![alt](src)`
-        - Videos: `![alt](poster_url)` or `[Video Source](video_src_url)`
-        - SVGs: ```svg\n<svg>...</svg>\n```
-        - Canvas: `[Canvas Element (id: '...', class: '...')]`
-        - Embed/Object: `[Embedded/Object Content (type: '...')](src_or_data)` or placeholder.
-    - Verify that hovering over non-target elements (e.g., plain text paragraphs, general divs) does not trigger the copy button unless they are clicked.
-5. **Copy Functionality (General)**: Verify content is copied correctly with different settings (Markdown/Plain Text, include title/URL) for both clicked and hovered content.
-6. **Settings Panel**: Test all options in the popup settings panel and ensure they apply correctly.
-7. **Internationalization**: Test by changing language settings in the popup and verifying UI text updates.
+1.  **Settings Panel**:
+    - Toggle the main "Enable Magic Copy" switch. Verify all on-page features (click, hover) are disabled/enabled.
+    - Switch between "Single Click" and "Double Click" interaction modes and test the activation behavior on text elements.
+    - Toggle "Enable Hover-to-Copy". Verify that hovering over media elements does/does not activate the copy button.
+    - Test all other settings (output format, attach info) and ensure they are applied correctly.
+
+2.  **On-Page Functionality**:
+    - **Click/Dbl-Click**: Test on various text elements. Verify the button appears and the element is bordered. Check that it doesn't appear on non-viable elements.
+    - **Selection Expansion**: On a small text element, use the `Alt`/`Option` key to expand the selection. Verify the border updates while the button position remains static.
+    - **Hover-to-Copy**: Hover over images, videos, SVGs, etc. Verify the button appears and content is copied correctly. Ensure it doesn't trigger for very small media elements.
+
+3.  **Context Menu**:
+    - Right-click on a page and select "Convert Page to AI-Friendly Format".
+    - Paste the content and verify it represents the entire page's text in the correct format.
+
+4.  **DevTools Panel**:
+    - Open the DevTools and navigate to the MagicCopy sidebar in the Elements panel.
+    - Select various elements on the page and confirm the JSON details are displayed correctly.
+    - Test the "Copy" button in the sidebar.
 
 ## Browser Compatibility
 
