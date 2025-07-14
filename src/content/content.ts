@@ -440,8 +440,18 @@ async function initializeContentScript(): Promise<void> {
           // @ts-ignore: processContent is available from inlined content-processor.ts
           const content = processContent(document.body, userSettings);
           if (content.trim()) {
-            await navigator.clipboard.writeText(content);
-            sendResponse({ success: true });
+            try {
+              const textarea = document.createElement('textarea');
+              textarea.value = content;
+              document.body.appendChild(textarea);
+              textarea.select();
+              document.execCommand('copy');
+              document.body.removeChild(textarea);
+              sendResponse({ success: true });
+            } catch (error) {
+              console.error('Error copying to clipboard:', error);
+              sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+            }
           } else {
             sendResponse({ success: false, error: 'No content to copy' });
           }
