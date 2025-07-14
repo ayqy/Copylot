@@ -5,6 +5,7 @@ export const FORCE_UI_LANGUAGE = '';
 // Settings manager functionality
 export interface Settings {
   isMagicCopyEnabled: boolean; // Added this line
+  isHoverMagicCopyEnabled: boolean;
   outputFormat: 'markdown' | 'plaintext';
   attachTitle: boolean;
   attachURL: boolean;
@@ -16,6 +17,7 @@ export const SETTINGS_KEY = 'copilot_settings';
 
 export const DEFAULT_SETTINGS: Settings = {
   isMagicCopyEnabled: true, // Added this line
+  isHoverMagicCopyEnabled: false,
   outputFormat: 'markdown',
   attachTitle: false,
   attachURL: false,

@@ -304,6 +304,10 @@ const HOVER_TARGET_TAGS = ['img', 'video', 'canvas', 'svg', 'picture', 'embed', 
 
 // Handles mouseover events to show Magic Copy
 function handleMouseOver(event: MouseEvent): void {
+  if (!userSettings?.isHoverMagicCopyEnabled) {
+    return;
+  }
+
   const targetElement = event.target as Element;
 
   if (!targetElement || !(targetElement instanceof Element)) return;

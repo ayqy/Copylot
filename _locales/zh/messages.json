@@ -82,5 +82,9 @@
   "doubleClick": {
     "message": "双击",
     "description": "双击交互选项"
+  },
+  "enableHoverTrigger": {
+    "message": "启用悬停触发",
+    "description": "悬停触发开关的标签"
   }
 }
