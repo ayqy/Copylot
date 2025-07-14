@@ -19,6 +19,9 @@ let isInitialized = false;
 let isActive = false; // Tracks if Magic Copy features are currently active
 let userSettings: Settings | null = null; // Will be populated by getSettings()
 let lastClickPosition: { x: number; y: number } | null = null;
+let clickTimer: number | null = null;
+let lastClickTimestamp = 0;
+const DOUBLE_CLICK_THRESHOLD = 300; // ms
 
 // Function to add all event listeners and inject UI
 function enableMagicCopyFeatures(): void {
@@ -143,22 +146,43 @@ function hideMagicCopy(): void {
 function handleDocumentClick(event: MouseEvent): void {
   let potentialTargetNode = event.target as Node;
 
-  // If the click is on the copy button itself, do nothing.
   if (copyButtonElement && copyButtonElement.contains(potentialTargetNode)) {
     return;
   }
 
-  // Always hide any existing Magic Copy first (click or hover)
+  if (userSettings?.interactionMode === 'dblclick') {
+    const now = Date.now();
+    if (now - lastClickTimestamp < DOUBLE_CLICK_THRESHOLD) {
+      if (clickTimer) {
+        clearTimeout(clickTimer);
+        clickTimer = null;
+      }
+      // Double-click detected
+      handleInteraction(event, potentialTargetNode);
+      lastClickTimestamp = 0; // Reset timestamp
+    } else {
+      // First click, wait for a potential second click
+      lastClickTimestamp = now;
+      clickTimer = window.setTimeout(() => {
+        // Timer expired, treat as single click (which does nothing in dblclick mode)
+        hideMagicCopy();
+        clickTimer = null;
+      }, DOUBLE_CLICK_THRESHOLD);
+    }
+  } else {
+    // Single-click mode
+    handleInteraction(event, potentialTargetNode);
+  }
+}
+
+function handleInteraction(event: MouseEvent, potentialTargetNode: Node) {
   hideMagicCopy();
 
-  // If clicking over a text node, use its parent element.
   if (potentialTargetNode.nodeType === Node.TEXT_NODE) {
     potentialTargetNode = potentialTargetNode.parentElement || potentialTargetNode;
   }
 
   if (!(potentialTargetNode instanceof Element)) {
-    // Clicked on something that isn't an element (e.g., document background)
-    // Magic copy is already hidden by hideMagicCopy() above.
     return;
   }
 
@@ -168,7 +192,6 @@ function handleDocumentClick(event: MouseEvent): void {
   if (isViableBlock(clickedElement)) {
     showMagicCopy(clickedElement, event);
   }
-  // If not a viable block, Magic Copy remains hidden (already called hideMagicCopy).
 }
 
 // Handles keydown for parent element selection.
@@ -392,6 +415,12 @@ async function initializeContentScript(): Promise<void> {
             } else {
               disableMagicCopyFeatures();
             }
+          }
+
+          // Check if the interactionMode has changed
+          if (oldSettings?.interactionMode !== userSettings.interactionMode) {
+            // No need to enable/disable features, just log the change
+            console.debug('AI Copilot: Interaction mode changed to', userSettings.interactionMode);
           }
         }
       });
