@@ -92,5 +92,11 @@
   },
   "convertPage": {
     "message": "Convert Page to AI-Friendly Format"
+  },
+  "devtoolsPanelTitle": {
+    "message": "Structural JSON"
+  },
+  "devtoolsCopyButton": {
+    "message": "Copy"
   }
 }

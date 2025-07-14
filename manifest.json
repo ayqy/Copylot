@@ -42,6 +42,9 @@
     "service_worker": "src/background.js",
     "type": "module"
   },
+  "devtools_page": "src/devtools/devtools.html",
+  "name": "__MSG_appName__",
+  "description": "__MSG_appDescription__",
   "web_accessible_resources": [
     {
       "resources": [

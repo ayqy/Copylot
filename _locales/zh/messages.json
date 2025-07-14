@@ -92,5 +92,11 @@
   },
   "convertPage": {
     "message": "将页面转换为AI友好格式"
+  },
+  "devtoolsPanelTitle": {
+    "message": "结构化JSON"
+  },
+  "devtoolsCopyButton": {
+    "message": "复制"
   }
 }
