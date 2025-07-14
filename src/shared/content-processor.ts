@@ -149,13 +149,51 @@ export function convertToMarkdown(element: Element): string {
 
 export function convertToPlainText(element: Element): string {
   try {
-    // Clone the element to avoid modifying the original DOM (though less critical for innerText)
+    // Clone the element to avoid modifying the original DOM
     const clonedElement = element.cloneNode(true) as Element;
     // Remove the copy button from the cloned element
     clonedElement.querySelectorAll('#ai-copilot-copy-btn').forEach((btn) => btn.remove());
 
-    const text = (clonedElement as HTMLElement).innerText || '';
-    return cleanText(text);
+    if (element instanceof HTMLImageElement) {
+      const imgElement = element as HTMLImageElement;
+      let sourceUrl = imgElement.dataset.src || imgElement.src;
+      if (sourceUrl && !sourceUrl.startsWith('http') && !sourceUrl.startsWith('data:')) {
+        sourceUrl = imgElement.src;
+      }
+      return sourceUrl || '';
+    } else if (element instanceof HTMLPictureElement) {
+      const pictureElement = element as HTMLPictureElement;
+      const img = pictureElement.querySelector('img');
+      if (img) {
+        return convertToPlainText(img); // Delegate to HTMLImageElement handling
+      }
+      return '';
+    } else if (element instanceof HTMLVideoElement) {
+      const videoElement = element as HTMLVideoElement;
+      const videoSrc =
+        videoElement.src ||
+        (videoElement.querySelector('source') ? videoElement.querySelector('source')!.src : '');
+      if (videoSrc) {
+        return videoSrc;
+      }
+      // Fallback to poster URL if no video source
+      return videoElement.poster || '';
+    } else if (element instanceof SVGSVGElement) {
+      return element.outerHTML;
+    } else if (element instanceof HTMLCanvasElement) {
+      const canvasElement = element as HTMLCanvasElement;
+      const id = canvasElement.id ? `id: '${canvasElement.id}'` : '';
+      const classes = canvasElement.className ? `class: '${canvasElement.className}'` : '';
+      const attributes = [id, classes].filter(Boolean).join(', ');
+      return `[Canvas Element${attributes ? ` (${attributes})` : ''}]`;
+    } else if (element instanceof HTMLEmbedElement) {
+      return element.src || '[Embedded Content]';
+    } else if (element instanceof HTMLObjectElement) {
+      return element.data || '[Object Content]';
+    } else {
+      const text = (clonedElement as HTMLElement).innerText || '';
+      return cleanText(text);
+    }
   } catch (error) {
     console.error('Error processing plain text:', error);
     return ''; // Return empty string on error
