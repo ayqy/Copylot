@@ -52,9 +52,9 @@ We **do not share any data** with third parties because:
 
 Our extension requests the following Chrome permissions:
 
-- **activeTab**: To access content on the currently active tab for copying functionality
 - **storage**: To save your preferences locally on your device
-- **clipboardWrite**: To copy processed content to your clipboard
+- **clipboardWrite**: To copy formatted content to your clipboard
+- **contextMenus**: To provide right-click context menu options for page conversion
 
 These permissions are used solely for the extension's core functionality and not for data collection.
 
