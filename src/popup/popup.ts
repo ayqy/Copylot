@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 interface PopupElements {
   enableMagicCopySwitch: HTMLInputElement; // Added this line
   enableHoverMagicCopySwitch: HTMLInputElement;
+  enableClipboardAccumulatorSwitch: HTMLInputElement;
   interactionClick: HTMLInputElement;
   interactionDblClick: HTMLInputElement;
   formatMarkdown: HTMLInputElement;
@@ -45,6 +46,9 @@ function getElements(): PopupElements {
     enableMagicCopySwitch: document.getElementById('enable-magic-copy-switch') as HTMLInputElement, // Added this line
     enableHoverMagicCopySwitch: document.getElementById(
       'enable-hover-magic-copy-switch'
+    ) as HTMLInputElement,
+    enableClipboardAccumulatorSwitch: document.getElementById(
+      'enable-clipboard-accumulator-switch'
     ) as HTMLInputElement,
     interactionClick: document.getElementById('interaction-click') as HTMLInputElement,
     interactionDblClick: document.getElementById('interaction-dblclick') as HTMLInputElement,
@@ -117,6 +121,7 @@ function updateUIFromSettings(settings: Settings) {
   // Enable/Disable Magic Copy
   elements.enableMagicCopySwitch.checked = settings.isMagicCopyEnabled; // Added this line
   elements.enableHoverMagicCopySwitch.checked = settings.isHoverMagicCopyEnabled;
+  elements.enableClipboardAccumulatorSwitch.checked = settings.isClipboardAccumulatorEnabled;
 
   // Interaction mode
   if (settings.interactionMode === 'click') {
@@ -178,6 +183,7 @@ function getSettingsFromUI(): Partial<Settings> {
   return {
     isMagicCopyEnabled: elements.enableMagicCopySwitch.checked, // Added this line
     isHoverMagicCopyEnabled: elements.enableHoverMagicCopySwitch.checked,
+    isClipboardAccumulatorEnabled: elements.enableClipboardAccumulatorSwitch.checked,
     interactionMode: elements.interactionClick.checked ? 'click' : 'dblclick',
     outputFormat: elements.formatMarkdown.checked ? 'markdown' : 'plaintext',
     attachTitle: elements.attachTitle.checked,
@@ -222,6 +228,7 @@ function setupEventListeners() {
   // Enable/Disable Magic Copy switch
   elements.enableMagicCopySwitch.addEventListener('change', saveCurrentSettings); // Added this line
   elements.enableHoverMagicCopySwitch.addEventListener('change', saveCurrentSettings);
+  elements.enableClipboardAccumulatorSwitch.addEventListener('change', saveCurrentSettings);
 
   // Conversion button
   elements.convertButton.addEventListener('click', () => {

@@ -83,7 +83,7 @@ body {
   display: flex;
   flex-direction: row; /* Changed to row */
   gap: 8px;
-  justify-content: space-between; /* Distribute items evenly */
+  justify-content: flex-start; /* Equal space with left alignment */
 }
 
 .radio-option {
@@ -94,8 +94,8 @@ body {
   padding: 8px 12px;
   border-radius: 8px;
   transition: background-color 0.2s ease;
-  flex-grow: 1; /* Allow items to grow */
-  justify-content: center; /* Center content */
+  flex: 1; /* Allow items to grow */
+  justify-content: flex-start; /* Left align content */
 }
 
 .radio-option:hover {
@@ -148,8 +148,8 @@ body {
   padding: 8px 12px;
   border-radius: 8px;
   transition: background-color 0.2s ease;
-  flex-grow: 1; /* Allow items to grow */
-  justify-content: center; /* Center content */
+  flex: 1; /* Allow items to grow */
+  justify-content: flex-start; /* Left align content */
 }
 
 .checkbox-option:hover {
@@ -260,7 +260,7 @@ body {
 
 .switch-label {
   font-size: 14px; /* Matches general font size */
-  color: #374151; /* Matches body text color */
+  color: #ffffff; /* Changed to white color */
   /* If you want it to behave like .checkbox-option text, ensure padding and alignment match */
 }
 

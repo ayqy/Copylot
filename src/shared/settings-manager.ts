@@ -18,19 +18,22 @@ export interface Settings {
   language: 'system' | 'en' | 'zh';
   interactionMode: 'click' | 'dblclick';
   userPrompts: Prompt[];
+  isClipboardAccumulatorEnabled: boolean;
 }
 
 export const SETTINGS_KEY = 'copilot_settings';
 
 export const DEFAULT_SETTINGS: Settings = {
   isMagicCopyEnabled: true, // Added this line
-  isHoverMagicCopyEnabled: false,
+  isHoverMagicCopyEnabled: true,
   outputFormat: 'markdown',
   attachTitle: false,
   attachURL: false,
   language: 'system',
   interactionMode: 'dblclick',
   userPrompts: []
+  interactionMode: 'click',
+  isClipboardAccumulatorEnabled: false,
 };
 
 export function getSystemLanguage(): 'system' | 'en' | 'zh' {

@@ -124,5 +124,5 @@
     *   **API:** 使用 `navigator.clipboard.writeText()` API。
 
 *   **隐私与安全 (Privacy \u0026 Security):**
-    *   **权限:** `manifest.json`中只申请最小权限：`activeTab` 和 `storage`。
+    *   **权限:** `manifest.json`中只申请最小权限：`storage`、`clipboardWrite` 和 `contextMenus`。
     *   **数据:** 严格遵守PRD，所有操作均在客户端本地进行，无任何数据上报服务器。

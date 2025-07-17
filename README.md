@@ -17,6 +17,7 @@ A Chrome browser extension that intelligently copies web page content in AI-frie
   - Configure output format, what metadata to attach (title, URL), and interaction preferences.
 - 🎨 **Modern UI**: Beautiful and responsive popup interface.
 - 🚀 **High Performance**: Built with performance in mind, ensuring a smooth user experience.
+- ➕ **Clipboard Accumulator**: Consecutively copy multiple blocks of content and merge them into a single clipboard entry.
 
 ## Installation
 
@@ -95,6 +96,7 @@ Click the extension icon in the Chrome toolbar to open the popup, where you can:
 - **Output Format**: Choose between Markdown and Plain Text
 - **Additional Info**: Optionally attach page title and/or source URL
 - **Language**: Select interface language (System, English, or Chinese)
+- **Clipboard Accumulator**: Enable or disable the clipboard accumulator feature. When enabled, holding `Shift` while clicking the copy button will append the content to a temporary stack. A regular click will merge all stacked content and copy it to the clipboard.
 
 ## Technical Details
 
