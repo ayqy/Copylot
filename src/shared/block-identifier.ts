@@ -43,6 +43,17 @@ export function isElementVisible(element: Element): boolean {
   return style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0;
 }
 
+export function getTableAncestor(element: Element): HTMLTableElement | null {
+  let current = element;
+  while (current && current !== document.body) {
+    if (current.tagName.toLowerCase() === 'table') {
+      return current as HTMLTableElement;
+    }
+    current = current.parentElement as Element;
+  }
+  return null;
+}
+
 export function hasExcludedAncestor(element: Element): boolean {
   let current = element.parentElement; // Start with the parent
   while (current && current !== document.body) {
@@ -182,4 +193,18 @@ export function isViableBlock(element: Element): boolean {
     console.error('Error in isViableBlock:', error, element);
     return false;
   }
+}
+
+export function findViableBlock(clickedElement: Element): Element | null {
+  const tableAncestor = getTableAncestor(clickedElement);
+  if (tableAncestor && isViableBlock(tableAncestor)) {
+    return tableAncestor;
+  }
+
+  // If no table is found, or the table is not viable, return the original element if it's viable.
+  if (isViableBlock(clickedElement)) {
+    return clickedElement;
+  }
+
+  return null;
 }

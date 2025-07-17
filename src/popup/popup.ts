@@ -9,12 +9,14 @@ import {
 
 // DOM Elements
 interface PopupElements {
-  enableMagicCopySwitch: HTMLInputElement; // Added this line
+  enableMagicCopySwitch: HTMLInputElement;
   enableHoverMagicCopySwitch: HTMLInputElement;
   interactionClick: HTMLInputElement;
   interactionDblClick: HTMLInputElement;
   formatMarkdown: HTMLInputElement;
   formatPlaintext: HTMLInputElement;
+  tableFormatMarkdown: HTMLInputElement; // Added for table format
+  tableFormatCsv: HTMLInputElement; // Added for table format
   attachTitle: HTMLInputElement;
   attachURL: HTMLInputElement;
   convertButton: HTMLButtonElement;
@@ -28,7 +30,7 @@ let currentSettings: Settings;
  */
 function getElements(): PopupElements {
   return {
-    enableMagicCopySwitch: document.getElementById('enable-magic-copy-switch') as HTMLInputElement, // Added this line
+    enableMagicCopySwitch: document.getElementById('enable-magic-copy-switch') as HTMLInputElement,
     enableHoverMagicCopySwitch: document.getElementById(
       'enable-hover-magic-copy-switch'
     ) as HTMLInputElement,
@@ -36,6 +38,8 @@ function getElements(): PopupElements {
     interactionDblClick: document.getElementById('interaction-dblclick') as HTMLInputElement,
     formatMarkdown: document.getElementById('format-markdown') as HTMLInputElement,
     formatPlaintext: document.getElementById('format-plaintext') as HTMLInputElement,
+    tableFormatMarkdown: document.getElementById('table-format-markdown') as HTMLInputElement, // Added
+    tableFormatCsv: document.getElementById('table-format-csv') as HTMLInputElement, // Added
     attachTitle: document.getElementById('attach-title') as HTMLInputElement,
     attachURL: document.getElementById('attach-url') as HTMLInputElement,
     convertButton: document.getElementById('convert-button') as HTMLButtonElement
@@ -89,7 +93,7 @@ async function loadSettings() {
  */
 function updateUIFromSettings(settings: Settings) {
   // Enable/Disable Magic Copy
-  elements.enableMagicCopySwitch.checked = settings.isMagicCopyEnabled; // Added this line
+  elements.enableMagicCopySwitch.checked = settings.isMagicCopyEnabled;
   elements.enableHoverMagicCopySwitch.checked = settings.isHoverMagicCopyEnabled;
 
   // Interaction mode
@@ -106,6 +110,13 @@ function updateUIFromSettings(settings: Settings) {
     elements.formatPlaintext.checked = true;
   }
 
+  // Table output format
+  if (settings.tableOutputFormat === 'markdown') {
+    elements.tableFormatMarkdown.checked = true;
+  } else {
+    elements.tableFormatCsv.checked = true;
+  }
+
   // Additional info
   elements.attachTitle.checked = settings.attachTitle;
   elements.attachURL.checked = settings.attachURL;
@@ -118,10 +129,11 @@ function updateUIFromSettings(settings: Settings) {
  */
 function getSettingsFromUI(): Partial<Settings> {
   return {
-    isMagicCopyEnabled: elements.enableMagicCopySwitch.checked, // Added this line
+    isMagicCopyEnabled: elements.enableMagicCopySwitch.checked,
     isHoverMagicCopyEnabled: elements.enableHoverMagicCopySwitch.checked,
     interactionMode: elements.interactionClick.checked ? 'click' : 'dblclick',
     outputFormat: elements.formatMarkdown.checked ? 'markdown' : 'plaintext',
+    tableOutputFormat: elements.tableFormatMarkdown.checked ? 'markdown' : 'csv', // Added
     attachTitle: elements.attachTitle.checked,
     attachURL: elements.attachURL.checked
     // language field removed from UI; keep default stored value
@@ -157,12 +169,16 @@ function setupEventListeners() {
   elements.formatMarkdown.addEventListener('change', saveCurrentSettings);
   elements.formatPlaintext.addEventListener('change', saveCurrentSettings);
 
+  // Table output format radio buttons
+  elements.tableFormatMarkdown.addEventListener('change', saveCurrentSettings);
+  elements.tableFormatCsv.addEventListener('change', saveCurrentSettings);
+
   // Additional info checkboxes
   elements.attachTitle.addEventListener('change', saveCurrentSettings);
   elements.attachURL.addEventListener('change', saveCurrentSettings);
 
   // Enable/Disable Magic Copy switch
-  elements.enableMagicCopySwitch.addEventListener('change', saveCurrentSettings); // Added this line
+  elements.enableMagicCopySwitch.addEventListener('change', saveCurrentSettings);
   elements.enableHoverMagicCopySwitch.addEventListener('change', saveCurrentSettings);
 
   // Conversion button

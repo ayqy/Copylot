@@ -186,11 +186,11 @@ function handleInteraction(event: MouseEvent, potentialTargetNode: Node) {
     return;
   }
 
-  const clickedElement = potentialTargetNode;
+  // @ts-ignore: findViableBlock is available from inlined block-identifier.ts
+  const viableElement = findViableBlock(potentialTargetNode);
 
-  // @ts-ignore: isViableBlock is available from inlined block-identifier.ts
-  if (isViableBlock(clickedElement)) {
-    showMagicCopy(clickedElement, event);
+  if (viableElement) {
+    showMagicCopy(viableElement, event);
   }
 }
 

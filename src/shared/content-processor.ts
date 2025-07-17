@@ -71,10 +71,34 @@ function cleanText(text: string): string {
   return cleaned;
 }
 
+function convertTableToCSV(element: HTMLTableElement): string {
+  const rows = Array.from(element.querySelectorAll('tr'));
+  return rows
+    .map((row) => {
+      const cells = Array.from(row.querySelectorAll('th, td'));
+      return cells
+        .map((cell) => {
+          const text = (cell as HTMLElement).innerText.trim();
+          // Escape quotes by doubling them
+          const escapedText = text.replace(/"/g, '""');
+          // Quote fields containing commas or quotes
+          if (text.includes(',') || text.includes('"')) {
+            return `"${escapedText}"`;
+          }
+          return escapedText;
+        })
+        .join(',');
+    })
+    .join('\n');
+}
+
 export function convertToMarkdown(element: Element): string {
   const turndown = getTurndownService();
   try {
-    if (element instanceof HTMLImageElement) {
+    if (element instanceof HTMLTableElement) {
+      // For tables, use Turndown's default table handling
+      return turndown.turndown(element.outerHTML);
+    } else if (element instanceof HTMLImageElement) {
       const imgElement = element as HTMLImageElement;
       let sourceUrl = imgElement.dataset.src || imgElement.src;
       if (sourceUrl && !sourceUrl.startsWith('http') && !sourceUrl.startsWith('data:')) {
@@ -270,42 +294,48 @@ export function processContent(element: Element, settings: Settings): string {
   try {
     let content: string;
 
-    if (settings.outputFormat === 'markdown') {
-      content = convertToMarkdown(element);
-      // Apply blockquote styling if additional info is to be attached,
-      // or if markdown content itself should be blockquoted by default.
-      // Current behavior: blockquote only if title/URL is attached.
+    // Handle table content separately based on tableOutputFormat setting
+    if (element instanceof HTMLTableElement) {
+      if (settings.tableOutputFormat === 'csv') {
+        content = convertTableToCSV(element);
+      } else {
+        // Default to Markdown for tables if not CSV
+        content = convertToMarkdown(element);
+      }
+    } else {
+      // Handle non-table content based on the general outputFormat setting
+      if (settings.outputFormat === 'markdown') {
+        content = convertToMarkdown(element);
+      } else {
+        content = convertToPlainText(element);
+      }
+    }
+
+    // Apply blockquote styling for Markdown output if additional info is attached
+    if (
+      settings.outputFormat === 'markdown' &&
+      !(element instanceof HTMLTableElement && settings.tableOutputFormat === 'csv')
+    ) {
       if (settings.attachTitle || settings.attachURL) {
-        // Ensure content is not empty before adding blockquote
         if (content) {
           content = `> ${content.replace(/\n/g, '\n> ')}`;
         }
       }
-    } else {
-      content = convertToPlainText(element);
     }
 
     const pageInfo = getPageInfo();
     const additionalInfo = formatAdditionalInfo(settings, pageInfo);
 
-    // Ensure there's a space between content and additional info if both exist
     if (content && additionalInfo) {
-      return content + additionalInfo; // additionalInfo already starts with newlines
+      return content + additionalInfo;
     } else if (content) {
       return content;
-    } else {
-      // Only additionalInfo (e.g. copying an empty block but attaching source)
-      // We might want to reconsider if copying an "empty" block should still yield source info.
-      // For now, let's assume if content is empty, the result is empty unless explicitly changed.
-      // To include source even for empty content, return additionalInfo.trim() here.
-      // Based on current logic, if content is empty, this returns empty.
-      // Let's adjust to return additionalInfo if content is empty but attachURL/Title is true.
-      if (additionalInfo.trim()) return additionalInfo.trim();
-      return '';
+    } else if (additionalInfo.trim()) {
+      return additionalInfo.trim();
     }
+    return '';
   } catch (error) {
     console.error('Error in processContent:', error);
-    // Fallback to basic innerText on critical error
     return (element as HTMLElement).innerText || '';
   }
 }

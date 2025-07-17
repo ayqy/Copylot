@@ -4,9 +4,10 @@ export const FORCE_UI_LANGUAGE = '';
 
 // Settings manager functionality
 export interface Settings {
-  isMagicCopyEnabled: boolean; // Added this line
+  isMagicCopyEnabled: boolean;
   isHoverMagicCopyEnabled: boolean;
   outputFormat: 'markdown' | 'plaintext';
+  tableOutputFormat: 'markdown' | 'csv'; // Added for table format
   attachTitle: boolean;
   attachURL: boolean;
   language: 'system' | 'en' | 'zh';
@@ -16,9 +17,10 @@ export interface Settings {
 export const SETTINGS_KEY = 'copilot_settings';
 
 export const DEFAULT_SETTINGS: Settings = {
-  isMagicCopyEnabled: true, // Added this line
+  isMagicCopyEnabled: true,
   isHoverMagicCopyEnabled: false,
   outputFormat: 'markdown',
+  tableOutputFormat: 'markdown', // Default table format
   attachTitle: false,
   attachURL: false,
   language: 'system',

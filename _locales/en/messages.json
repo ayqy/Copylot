@@ -101,5 +101,13 @@
   },
   "copied": {
     "message": "Copied!"
+  },
+  "tableOutputFormat": {
+    "message": "Table Copy Format:",
+    "description": "Table output format label"
+  },
+  "csv": {
+    "message": "CSV",
+    "description": "CSV format option"
   }
 }
