@@ -226,6 +226,26 @@ async function main() {
   }
 
   if (ghAvailable) {
+    // 推送标签到远程仓库（GitHub Release 需要远程标签）
+    const pushTagConfirmation = await askQuestion(
+      `${colors.yellow}需要先推送标签 ${tagName} 到远程仓库才能创建 GitHub Release。是否继续? (y/N): ${colors.reset}`
+    );
+    if (pushTagConfirmation.toLowerCase() !== 'y' && pushTagConfirmation.toLowerCase() !== 'yes') {
+      log.warn('操作已取消。');
+      process.exit(0);
+    }
+
+    try {
+      log.info(`正在推送标签 ${tagName} 到远程仓库...`);
+      execSync('git push --tags', { stdio: 'inherit' });
+      log.success(`标签 ${tagName} 已成功推送到远程仓库。`);
+    } catch (error) {
+      log.error('推送标签到远程仓库失败。');
+      console.error(error);
+      log.warn(`提醒：您可能需要手动执行 'git tag -d ${tagName}' 和 'git reset HEAD~1' 来撤销版本更新和标签。`);
+      process.exit(1);
+    }
+
     log.info('尝试使用 GitHub CLI (gh) 创建 Release...');
     try {
       execSync(
@@ -267,21 +287,20 @@ async function main() {
 
   // --- 步骤 13: 用户确认是否 push ---
   const pushConfirmation = await askQuestion(
-    `${colors.yellow}即将推送 commit 和 tag (${tagName}) 到远程仓库。是否继续? (y/N): ${colors.reset}`
+    `${colors.yellow}即将推送 commit 到远程仓库。是否继续? (y/N): ${colors.reset}`
   );
   if (pushConfirmation.toLowerCase() !== 'y' && pushConfirmation.toLowerCase() !== 'yes') {
-    log.warn('操作已取消。Commit 和 tag 已在本地创建但未推送。');
-    log.info(`提示：您之后可以手动运行 'git push && git push --tags'。`);
+    log.warn('操作已取消。Commit 已在本地创建但未推送。');
+    log.info(`提示：您之后可以手动运行 'git push'。`);
     log.info(`如果您想完全回滚本地更改：git reset HEAD~1 --hard && git tag -d ${tagName}`);
     process.exit(0);
   }
 
-  // --- 步骤 14: Git push commit 和 tag ---
+  // --- 步骤 14: Git push commit ---
   try {
-    log.info('正在推送 commit 和 tag 到远程仓库...');
+    log.info('正在推送 commit 到远程仓库...');
     execSync('git push', { stdio: 'inherit' });
-    execSync('git push --tags', { stdio: 'inherit' });
-    log.success('Commit 和 tag 已成功推送到远程仓库。');
+    log.success('Commit 已成功推送到远程仓库。');
 
     // --- 步骤 15: 可选发布到 Chrome Web Store ---
     const cwsConfirm = await askQuestion(
@@ -302,8 +321,8 @@ async function main() {
     log.error('git push 执行失败。');
     console.error(error);
     log.info('请检查您的网络连接和远程仓库权限。');
-    log.info(`提示：Commit 和 tag (${tagName}) 已在本地创建，但未成功推送到远程。`);
-    log.info(`您可以稍后手动运行 'git push && git push --tags'。`);
+    log.info(`提示：Commit 已在本地创建，但未成功推送到远程。`);
+    log.info(`您可以稍后手动运行 'git push'。`);
     process.exit(1);
   }
 

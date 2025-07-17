@@ -19,12 +19,15 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "turndown": "^7.1.2"
+    "turndown": "^7.1.2",
+    "uuid": "^11.1.0",
+    "undici": "^7.11.0"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268",
     "@types/node": "^20.14.8",
     "@types/turndown": "^5.0.4",
+    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "@vitejs/plugin-legacy": "^5.4.1",
