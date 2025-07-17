@@ -5,6 +5,7 @@ A Chrome browser extension that intelligently copies web page content in AI-frie
 ## Features
 
 - 🎯 **Smart Content Detection**: Automatically identifies viable content blocks on web pages.
+- ✨ **Smart Table Conversion**: Intelligently copies tables into Markdown or CSV formats.
 - 📝 **Multiple Output Formats**: Copy content as clean Markdown or plain text.
 - ✨ **Professional Code Block Cleaning**: Automatically removes line numbers, prompts, and other "clutter" from copied code blocks, delivering clean, runnable code.
 - 🔄 **Customizable Prompts**: Create, manage, and use your own prompts to format copied text for AI models.
@@ -89,12 +90,14 @@ Click the extension icon in the Chrome toolbar to open the popup, where you can:
 - Switch between single-click and double-click activation.
 - Enable or disable the hover-to-copy feature for media.
 - Choose your preferred output format (Markdown/Plain Text).
+- **For tables, choose between Markdown and CSV format.**
 - Decide whether to include the page title and URL in the copied content.
 - **Manage Prompts**: Add, edit, delete, and reorder your custom prompts.
 
 ## Settings
 
 - **Output Format**: Choose between Markdown and Plain Text
+- **Table Copy Format**: Choose between Markdown and CSV
 - **Additional Info**: Optionally attach page title and/or source URL
 - **Language**: Select interface language (System, English, or Chinese)
 - **Clipboard Accumulator**: Enable or disable the clipboard accumulator feature. When enabled, holding `Shift` while clicking the copy button will append the content to a temporary stack. A regular click will merge all stacked content and copy it to the clipboard.
@@ -197,6 +200,7 @@ Load the extension in Chrome's developer mode and test on various websites.
 
 2.  **On-Page Functionality**:
     - **Click/Dbl-Click**: Test on various text elements. Verify the button appears and the element is bordered. Check that it doesn't appear on non-viable elements.
+- **Table Selection**: Click inside any part of a table (`<td>`, `<th>`, `<tr>`). The entire `<table>` should be highlighted and become the copy target.
     - **Selection Expansion**: On a small text element, use the `Alt`/`Option` key to expand the selection. Verify the border updates while the button position remains static.
     - **Hover-to-Copy**: Hover over images, videos, SVGs, etc. Verify the button appears and content is copied correctly. Ensure it doesn't trigger for very small media elements.
 

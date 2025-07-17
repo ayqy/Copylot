@@ -10,9 +10,10 @@ export interface Prompt {
 }
 
 export interface Settings {
-  isMagicCopyEnabled: boolean; // Added this line
+  isMagicCopyEnabled: boolean;
   isHoverMagicCopyEnabled: boolean;
   outputFormat: 'markdown' | 'plaintext';
+  tableOutputFormat: 'markdown' | 'csv'; // Added for table format
   attachTitle: boolean;
   attachURL: boolean;
   language: 'system' | 'en' | 'zh';
@@ -27,6 +28,7 @@ export const DEFAULT_SETTINGS: Settings = {
   isMagicCopyEnabled: true, // Added this line
   isHoverMagicCopyEnabled: true,
   outputFormat: 'markdown',
+  tableOutputFormat: 'markdown', // Default table format
   attachTitle: false,
   attachURL: false,
   language: 'system',

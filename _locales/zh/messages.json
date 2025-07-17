@@ -102,6 +102,14 @@
   "copied": {
     "message": "已复制！"
   },
+  "tableOutputFormat": {
+    "message": "表格复制格式：",
+    "description": "表格输出格式标签"
+  },
+  "csv": {
+    "message": "CSV",
+    "description": "CSV 格式选项"
+  },
   "promptManager": {
     "message": "私人 Prompt 管理器"
   },
