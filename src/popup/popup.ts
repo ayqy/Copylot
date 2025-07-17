@@ -4,8 +4,10 @@ import {
   getSettings,
   saveSettings,
   type Settings,
+  type Prompt,
   FORCE_UI_LANGUAGE
 } from '../shared/settings-manager';
+import { v4 as uuidv4 } from 'uuid';
 
 // DOM Elements
 interface PopupElements {
@@ -18,6 +20,18 @@ interface PopupElements {
   attachTitle: HTMLInputElement;
   attachURL: HTMLInputElement;
   convertButton: HTMLButtonElement;
+  promptList: HTMLElement;
+  addPromptButton: HTMLButtonElement;
+  promptModal: HTMLElement;
+  promptForm: HTMLFormElement;
+  modalTitle: HTMLElement;
+  promptId: HTMLInputElement;
+  promptTitle: HTMLInputElement;
+  promptTemplate: HTMLTextAreaElement;
+  savePromptButton: HTMLButtonElement;
+  cancelPromptButton: HTMLButtonElement;
+  closeModalButton: HTMLElement;
+  popupContent: HTMLElement;
 }
 
 let elements: PopupElements;
@@ -38,7 +52,19 @@ function getElements(): PopupElements {
     formatPlaintext: document.getElementById('format-plaintext') as HTMLInputElement,
     attachTitle: document.getElementById('attach-title') as HTMLInputElement,
     attachURL: document.getElementById('attach-url') as HTMLInputElement,
-    convertButton: document.getElementById('convert-button') as HTMLButtonElement
+    convertButton: document.getElementById('convert-button') as HTMLButtonElement,
+    promptList: document.getElementById('prompt-list') as HTMLElement,
+    addPromptButton: document.getElementById('add-prompt-button') as HTMLButtonElement,
+    promptModal: document.getElementById('prompt-modal') as HTMLElement,
+    promptForm: document.getElementById('prompt-form') as HTMLFormElement,
+    modalTitle: document.getElementById('modal-title') as HTMLElement,
+    promptId: document.getElementById('prompt-id') as HTMLInputElement,
+    promptTitle: document.getElementById('prompt-title') as HTMLInputElement,
+    promptTemplate: document.getElementById('prompt-template') as HTMLTextAreaElement,
+    savePromptButton: document.getElementById('save-prompt-button') as HTMLButtonElement,
+    cancelPromptButton: document.getElementById('cancel-prompt-button') as HTMLButtonElement,
+    closeModalButton: document.querySelector('.close-button') as HTMLElement,
+    popupContent: document.getElementById('popup-content') as HTMLElement
   };
 }
 
@@ -111,6 +137,38 @@ function updateUIFromSettings(settings: Settings) {
   elements.attachURL.checked = settings.attachURL;
 
   // language field removed from UI; keep default stored value
+
+  renderPrompts(settings.userPrompts);
+}
+
+/**
+ * Render the list of prompts
+ */
+function renderPrompts(prompts: Prompt[]) {
+  elements.promptList.innerHTML = '';
+  if (!prompts) return;
+
+  prompts.forEach((prompt) => {
+    const promptItem = document.createElement('div');
+    promptItem.className = 'prompt-item';
+    promptItem.setAttribute('data-id', prompt.id);
+    promptItem.innerHTML = `
+      <span class="prompt-title">${prompt.title}</span>
+      <div class="prompt-actions">
+        <button class="edit-prompt-button">✏️</button>
+        <button class="delete-prompt-button">🗑️</button>
+      </div>
+    `;
+    elements.promptList.appendChild(promptItem);
+  });
+
+  // Add event listeners for edit/delete buttons
+  document.querySelectorAll('.edit-prompt-button').forEach((button) => {
+    button.addEventListener('click', handleEditPrompt);
+  });
+  document.querySelectorAll('.delete-prompt-button').forEach((button) => {
+    button.addEventListener('click', handleDeletePrompt);
+  });
 }
 
 /**
@@ -177,7 +235,16 @@ function setupEventListeners() {
     });
   });
 
-  // Language select removed
+  // Prompt manager event listeners
+  elements.addPromptButton.addEventListener('click', handleAddPrompt);
+  elements.promptForm.addEventListener('submit', handleSavePrompt);
+  elements.cancelPromptButton.addEventListener('click', closeModal);
+  elements.closeModalButton.addEventListener('click', closeModal);
+  window.addEventListener('click', (event) => {
+    if (event.target == elements.promptModal) {
+      closeModal();
+    }
+  });
 }
 
 /**
@@ -229,6 +296,78 @@ function setupAccessibility() {
     option.setAttribute('role', 'checkbox');
     option.setAttribute('tabindex', '0');
   });
+}
+
+function handleAddPrompt() {
+  openModal();
+}
+
+function handleEditPrompt(event: MouseEvent) {
+  const button = event.currentTarget as HTMLElement;
+  const promptItem = button.closest('.prompt-item') as HTMLElement;
+  const promptId = promptItem.dataset.id;
+  const prompt = currentSettings.userPrompts.find((p) => p.id === promptId);
+  if (prompt) {
+    openModal(prompt);
+  }
+}
+
+async function handleDeletePrompt(event: MouseEvent) {
+  const button = event.currentTarget as HTMLElement;
+  const promptItem = button.closest('.prompt-item') as HTMLElement;
+  const promptId = promptItem.dataset.id;
+  currentSettings.userPrompts = currentSettings.userPrompts.filter((p) => p.id !== promptId);
+  await saveSettings({ userPrompts: currentSettings.userPrompts });
+  renderPrompts(currentSettings.userPrompts);
+  notifyBackgroundScript();
+}
+
+async function handleSavePrompt(event: Event) {
+  event.preventDefault();
+  const id = elements.promptId.value;
+  const title = elements.promptTitle.value;
+  const template = elements.promptTemplate.value;
+
+  if (id) {
+    // Editing existing prompt
+    const prompt = currentSettings.userPrompts.find((p) => p.id === id);
+    if (prompt) {
+      prompt.title = title;
+      prompt.template = template;
+    }
+  } else {
+    // Adding new prompt
+    currentSettings.userPrompts.push({ id: uuidv4(), title, template });
+  }
+
+  await saveSettings({ userPrompts: currentSettings.userPrompts });
+  renderPrompts(currentSettings.userPrompts);
+  notifyBackgroundScript();
+  closeModal();
+}
+
+function openModal(prompt: Prompt | null = null) {
+  elements.popupContent.style.filter = 'blur(5px)';
+  if (prompt) {
+    elements.modalTitle.textContent = 'Edit Prompt';
+    elements.promptId.value = prompt.id;
+    elements.promptTitle.value = prompt.title;
+    elements.promptTemplate.value = prompt.template;
+  } else {
+    elements.modalTitle.textContent = 'Add New Prompt';
+    elements.promptForm.reset();
+    elements.promptId.value = '';
+  }
+  elements.promptModal.style.display = 'block';
+}
+
+function closeModal() {
+  elements.promptModal.style.display = 'none';
+  elements.popupContent.style.filter = 'none';
+}
+
+function notifyBackgroundScript() {
+  chrome.runtime.sendMessage({ type: 'update-context-menu' });
 }
 
 /**

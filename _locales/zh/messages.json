@@ -101,5 +101,29 @@
   },
   "copied": {
     "message": "已复制！"
+  },
+  "promptManager": {
+    "message": "私人 Prompt 管理器"
+  },
+  "addPrompt": {
+    "message": "添加新 Prompt"
+  },
+  "promptEditor": {
+    "message": "Prompt 编辑器"
+  },
+  "promptTitle": {
+    "message": "标题"
+  },
+  "promptTemplate": {
+    "message": "模板"
+  },
+  "promptTemplateHint": {
+    "message": "使用 {content} 作为复制文本的占位符。"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "cancel": {
+    "message": "取消"
   }
 }

@@ -3,6 +3,12 @@
 export const FORCE_UI_LANGUAGE = '';
 
 // Settings manager functionality
+export interface Prompt {
+  id: string;
+  title: string;
+  template: string;
+}
+
 export interface Settings {
   isMagicCopyEnabled: boolean; // Added this line
   isHoverMagicCopyEnabled: boolean;
@@ -11,6 +17,7 @@ export interface Settings {
   attachURL: boolean;
   language: 'system' | 'en' | 'zh';
   interactionMode: 'click' | 'dblclick';
+  userPrompts: Prompt[];
 }
 
 export const SETTINGS_KEY = 'copilot_settings';
@@ -22,7 +29,8 @@ export const DEFAULT_SETTINGS: Settings = {
   attachTitle: false,
   attachURL: false,
   language: 'system',
-  interactionMode: 'dblclick'
+  interactionMode: 'dblclick',
+  userPrompts: []
 };
 
 export function getSystemLanguage(): 'system' | 'en' | 'zh' {
