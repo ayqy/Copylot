@@ -1,5 +1,7 @@
 import { getSettings } from './shared/settings-manager';
 
+let clipboardStack: string[] = [];
+
 // Extension lifecycle events
 chrome.runtime.onInstalled.addListener(async (details) => {
   console.log('AI Copilot extension installed/updated:', details.reason);
@@ -46,30 +48,40 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   switch (message.type) {
     case 'copy-to-clipboard':
       {
-        const { text } = message;
-        // Forward the message to the content script in the active tab
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          if (tabs[0] && tabs[0].id) {
-            chrome.tabs.sendMessage(tabs[0].id, {
-              type: 'copy-to-clipboard-from-background',
-              text: text
-            }, (response) => {
-              if (chrome.runtime.lastError) {
-                // The receiving end may not exist if the content script isn't injected.
-                // This is not a critical error in our case.
-                console.warn('Could not send message to content script:', chrome.runtime.lastError.message);
-                // Still send a success response to the sidebar, as the user doesn't need to know about this.
-                // The sidebar will show "Copied!" regardless.
-                sendResponse({ success: true, warning: 'Content script not available.' });
-              } else {
-                sendResponse(response);
-              }
-            });
-          } else {
-            console.error('No active tab found to send the message to.');
-            sendResponse({ success: false, error: 'No active tab found.' });
-          }
-        });
+        const { text, isShiftPressed } = message;
+        if (isShiftPressed) {
+          clipboardStack.push(text);
+          chrome.action.setBadgeText({ text: clipboardStack.length.toString() });
+          sendResponse({ success: true, action: 'appended' });
+        } else {
+          const combinedText = clipboardStack.length > 0 ? [...clipboardStack, text].join('\n\n---\n\n') : text;
+          clipboardStack = [];
+          chrome.action.setBadgeText({ text: '' });
+
+          // Forward the message to the content script in the active tab
+          chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0] && tabs[0].id) {
+              chrome.tabs.sendMessage(
+                tabs[0].id,
+                {
+                  type: 'copy-to-clipboard-from-background',
+                  text: combinedText
+                },
+                (response) => {
+                  if (chrome.runtime.lastError) {
+                    console.warn('Could not send message to content script:', chrome.runtime.lastError.message);
+                    sendResponse({ success: true, warning: 'Content script not available.' });
+                  } else {
+                    sendResponse(response);
+                  }
+                }
+              );
+            } else {
+              console.error('No active tab found to send the message to.');
+              sendResponse({ success: false, error: 'No active tab found.' });
+            }
+          });
+        }
         return true; // Indicate that the response is asynchronous
       }
 
