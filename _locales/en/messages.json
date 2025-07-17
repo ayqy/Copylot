@@ -102,6 +102,30 @@
   "copied": {
     "message": "Copied!"
   },
+  "promptManager": {
+    "message": "Prompt Manager"
+  },
+  "addPrompt": {
+    "message": "Add New Prompt"
+  },
+  "promptEditor": {
+    "message": "Prompt Editor"
+  },
+  "promptTitle": {
+    "message": "Title"
+  },
+  "promptTemplate": {
+    "message": "Template"
+  },
+  "promptTemplateHint": {
+    "message": "Use {content} as a placeholder for the copied text."
+  },
+  "save": {
+    "message": "Save"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
   "clipboardAccumulator": {
     "message": "Clipboard Accumulator:",
     "description": "Label for the clipboard accumulator section"

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
+    <div id="popup-content">
     <div class="popup-container">
       <!-- Header -->
       <div class="header">
@@ -132,6 +133,40 @@
         </button>
       </div>
 
+      <!-- Prompt Manager -->
+      <div class="section-divider"></div>
+      <h2 data-i18n="promptManager">Prompt Manager</h2>
+      <div id="prompt-list" class="prompt-list">
+        <!-- Prompt items will be injected here -->
+      </div>
+      <div class="setting-item">
+        <button id="add-prompt-button" class="button" data-i18n="addPrompt">Add New Prompt</button>
+      </div>
+
+      <!-- Prompt Modal -->
+      <div id="prompt-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <span class="close-button">&times;</span>
+          <h3 id="modal-title" data-i18n="promptEditor">Prompt Editor</h3>
+          <form id="prompt-form">
+            <input type="hidden" id="prompt-id">
+            <div class="form-group">
+              <label for="prompt-title" data-i18n="promptTitle">Title</label>
+              <input type="text" id="prompt-title" required>
+            </div>
+            <div class="form-group">
+              <label for="prompt-template" data-i18n="promptTemplate">Template</label>
+              <textarea id="prompt-template" rows="5" required></textarea>
+              <p class="template-hint" data-i18n="promptTemplateHint">Use {content} as a placeholder for the copied text.</p>
+            </div>
+            <div class="form-actions">
+              <button type="submit" id="save-prompt-button" class="button" data-i18n="save">Save</button>
+              <button type="button" id="cancel-prompt-button" class="button secondary" data-i18n="cancel">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <!-- Footer -->
       <div class="footer">
         <a href="https://github.com/ayqy/copy/issues/new" target="_blank" class="feedback-link">
@@ -153,5 +188,6 @@
     </div>
 
     <script type="module" src="popup.js"></script>
+    </div>
   </body>
 </html>
