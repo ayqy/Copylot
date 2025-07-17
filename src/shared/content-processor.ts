@@ -64,6 +64,22 @@ function getI18nMessage(key: string, language?: string): string {
   return key; // Absolute fallback
 }
 
+function cleanCodeBlock(text: string): string {
+  const lines = text.split('\n');
+  const cleanedLines = lines.map((line) => {
+    // 移除行号, e.g., "1. ", "1 ", "1. "
+    let cleanedLine = line.replace(/^(\s*)?[0-9]+\.?\s/, '$1');
+    // 移除 shell 提示符, e.g., "$ ", "> "
+    cleanedLine = cleanedLine.replace(/^(\s*)?[\$\>]\s/, '$1');
+    return cleanedLine;
+  });
+
+  // 移除“复制”按钮文本, 常见于代码块右上角
+  const result = cleanedLines.join('\n').replace(/(Copy|复制代码)\s*$/, '');
+
+  return result;
+}
+
 function cleanText(text: string): string {
   let cleaned = text.replace(/\s+/g, ' '); // Replace multiple spaces/newlines with a single space
   cleaned = cleaned.replace(/\n\s*\n/g, '\n\n'); // Normalize multiple newlines to double newlines
@@ -164,6 +180,11 @@ export function convertToMarkdown(element: Element): string {
 
       let markdown = turndown.turndown(clonedElement.innerHTML);
       markdown = markdown.replace(/\[\s*\]\(#\)/g, ''); // Clean up empty links like `[ ](#)`
+
+      if (element.tagName.toLowerCase() === 'pre' || element.tagName.toLowerCase() === 'code') {
+        return cleanCodeBlock(markdown);
+      }
+
       return markdown.trim();
     }
   } catch (error) {
@@ -217,7 +238,10 @@ export function convertToPlainText(element: Element): string {
     } else if (element instanceof HTMLObjectElement) {
       return element.data || '[Object Content]';
     } else {
-      const text = (clonedElement as HTMLElement).innerText || '';
+      let text = (clonedElement as HTMLElement).innerText || '';
+      if (element.tagName.toLowerCase() === 'pre' || element.tagName.toLowerCase() === 'code') {
+        text = cleanCodeBlock(text);
+      }
       return cleanText(text);
     }
   } catch (error) {

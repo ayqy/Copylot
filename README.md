@@ -6,6 +6,7 @@ A Chrome browser extension that intelligently copies web page content in AI-frie
 
 - 🎯 **Smart Content Detection**: Automatically identifies viable content blocks on web pages.
 - 📝 **Multiple Output Formats**: Copy content as clean Markdown or plain text.
+- ✨ **Professional Code Block Cleaning**: Automatically removes line numbers, prompts, and other "clutter" from copied code blocks, delivering clean, runnable code.
 - 🖱️ **Flexible Interaction Modes**: Activate by single-click or double-click, configurable via settings.
 - ✨ **Hover-to-Copy for Media**: Instantly copy images, videos, and other media elements just by hovering over them.
 - 🌐 **Full Page Conversion**: Convert the entire page content with a single click from the context menu.
