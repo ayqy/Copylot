@@ -32,9 +32,8 @@ export const DEFAULT_SETTINGS: Settings = {
   attachTitle: false,
   attachURL: false,
   language: 'system',
-  interactionMode: 'dblclick',
-  userPrompts: []
   interactionMode: 'click',
+  userPrompts: [],
   isClipboardAccumulatorEnabled: false,
 };
 

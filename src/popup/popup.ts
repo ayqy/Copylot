@@ -7,7 +7,14 @@ import {
   type Prompt,
   FORCE_UI_LANGUAGE
 } from '../shared/settings-manager';
-import { v4 as uuidv4 } from 'uuid';
+// Simple UUID generator for Chrome extension
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
 // DOM Elements
 interface PopupElements {
@@ -360,7 +367,7 @@ async function handleSavePrompt(event: Event) {
     }
   } else {
     // Adding new prompt
-    currentSettings.userPrompts.push({ id: uuidv4(), title, template });
+    currentSettings.userPrompts.push({ id: generateUUID(), title, template });
   }
 
   await saveSettings({ userPrompts: currentSettings.userPrompts });

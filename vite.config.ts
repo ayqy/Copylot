@@ -118,7 +118,7 @@ export default defineConfig({
   ],
   // Optimize dependencies
   optimizeDeps: {
-    include: ['turndown']
+    include: ['turndown', 'uuid']
   },
   // Development server (not used for extension, but useful for testing components)
   server: {
