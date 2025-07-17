@@ -13,6 +13,30 @@ import { existsSync, createReadStream } from 'fs';
 import { execSync } from 'child_process';
 import webstoreUpload from 'chrome-webstore-upload';
 
+// 配置undici代理支持
+import { setGlobalDispatcher, ProxyAgent } from 'undici';
+
+// 设置代理配置
+function setupProxy() {
+  const proxyUrl = process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy;
+  
+  if (proxyUrl) {
+    console.log(`[CWS] 检测到代理设置: ${proxyUrl}`);
+    try {
+      const proxyAgent = new ProxyAgent(proxyUrl);
+      setGlobalDispatcher(proxyAgent);
+      console.log(`[CWS] 代理已配置成功`);
+    } catch (error) {
+      console.error(`[CWS] 代理配置失败:`, error);
+    }
+  } else {
+    console.log(`[CWS] 未检测到代理设置`);
+  }
+}
+
+// 初始化代理设置
+setupProxy();
+
 const colors = {
   reset: '\x1b[0m',
   red: '\x1b[31m',

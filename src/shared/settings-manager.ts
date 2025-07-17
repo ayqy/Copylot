@@ -18,12 +18,12 @@ export const SETTINGS_KEY = 'copilot_settings';
 
 export const DEFAULT_SETTINGS: Settings = {
   isMagicCopyEnabled: true, // Added this line
-  isHoverMagicCopyEnabled: false,
+  isHoverMagicCopyEnabled: true,
   outputFormat: 'markdown',
   attachTitle: false,
   attachURL: false,
   language: 'system',
-  interactionMode: 'dblclick',
+  interactionMode: 'click',
   isClipboardAccumulatorEnabled: false
 };
 
