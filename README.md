@@ -171,8 +171,13 @@ This script will guide you through the following steps:
     *   On Linux: `sudo apt-get install zip` (Debian/Ubuntu) or `sudo yum install zip` (Fedora/CentOS).
     *   On Windows: You might need to install it separately (e.g., via [Git for Windows SDK](https://gitforwindows.org/) which includes common Unix tools, or other sources).
 *   **GitHub CLI (`gh`)** (Optional, for automatic GitHub Release creation):
-    *   Installation instructions can be found at [cli.github.com](https://cli.github.com/).
-    *   You'll need to authenticate `gh` with your GitHub account (e.g., using `gh auth login`).
+    *   **Installation**:
+        *   On macOS: `brew install gh`
+        *   On Linux: See [installation guide](https://cli.github.com/manual/installation)
+        *   On Windows: See [installation guide](https://cli.github.com/manual/installation)
+    *   **Authentication**: After installation, you need to authenticate with your GitHub account:
+        *   Run `gh auth login` and follow the prompts
+        *   For detailed authentication options, see the [official documentation](https://cli.github.com/manual/gh_auth_login)
 
 ## Developer Tools
 
