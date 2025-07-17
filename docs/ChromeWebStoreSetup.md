@@ -1,5 +1,10 @@
 # Chrome Web Store Setup Guide
 
+https://developer.chrome.com/docs/webstore/using-api
+
+**直接看官方文档，不要看底下这些**
+
+
 > 本文档将指导你完成获取并配置 Chrome Web Store Publishing API 所需的四个变量：
 >
 > * `CWS_EXTENSION_ID`

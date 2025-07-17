@@ -7,54 +7,30 @@
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
+    <div id="popup-content">
     <div class="popup-container">
       <!-- Header -->
       <div class="header">
         <div class="logo">
-          <svg width="24" height="24" viewBox="0 0 128 128">
-            <circle cx="64" cy="64" r="60" fill="#4F46E5" stroke="#312E81" stroke-width="2" />
-            <rect
-              x="42"
-              y="35"
-              width="32"
-              height="44"
-              rx="4"
-              fill="#FFFFFF"
-              stroke="#E5E7EB"
-              stroke-width="1.5"
-            />
-            <rect x="52" y="30" width="12" height="8" rx="2" fill="#9CA3AF" />
-            <rect x="54" y="32" width="8" height="4" rx="1" fill="#FFFFFF" />
-            <line
-              x1="47"
-              y1="45"
-              x2="69"
-              y2="45"
-              stroke="#6B7280"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-            <line
-              x1="47"
-              y1="51"
-              x2="65"
-              y2="51"
-              stroke="#6B7280"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-            <line
-              x1="47"
-              y1="57"
-              x2="67"
-              y2="57"
-              stroke="#6B7280"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-            <g transform="translate(75, 50) rotate(25)">
-              <rect x="0" y="8" width="2" height="20" fill="#FBBF24" rx="1" />
-              <circle cx="1" cy="6" r="2" fill="#F59E0B" />
+          <svg width="24" height="24" viewBox="0 0 32 32">
+            <!-- 定义阴影滤镜 -->
+            <defs>
+              <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0, 0, 0, 0.15)"/>
+              </filter>
+            </defs>
+            
+            <!-- 透明边距区域 (2px) -->
+            <!-- 紫色背景矩形，带圆角和阴影 -->
+            <rect x="2" y="2" width="28" height="28" rx="8" ry="8" fill="#4F46E5" filter="url(#shadow)"/>
+            
+            <!-- 白色复制图标，居中在背景矩形内 -->
+            <g transform="translate(16, 16)" fill="none" stroke="white" stroke-width="1.5">
+              <!-- 调整图标大小，增大尺寸 -->
+              <g transform="scale(0.8) translate(-12, -12)">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </g>
             </g>
           </svg>
           <span data-i18n="appName">AI Copilot – MagicCopy</span>
@@ -78,6 +54,18 @@
             <span class="switch-label" data-i18n="enableHoverTrigger">Enable Hover Trigger</span>
             <label class="switch">
               <input type="checkbox" id="enable-hover-magic-copy-switch" />
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Clipboard Accumulator Section -->
+        <div class="section">
+          <label class="section-title" data-i18n="clipboardAccumulator">Clipboard Accumulator:</label>
+          <div class="switch-control">
+            <span class="switch-label" data-i18n="enableClipboardAccumulator">Enable Accumulator</span>
+            <label class="switch">
+              <input type="checkbox" id="enable-clipboard-accumulator-switch" />
               <span class="slider round"></span>
             </label>
           </div>
@@ -169,6 +157,40 @@
         </button>
       </div>
 
+      <!-- Prompt Manager -->
+      <div class="section-divider"></div>
+      <h2 data-i18n="promptManager">Prompt Manager</h2>
+      <div id="prompt-list" class="prompt-list">
+        <!-- Prompt items will be injected here -->
+      </div>
+      <div class="setting-item">
+        <button id="add-prompt-button" class="button" data-i18n="addPrompt">Add New Prompt</button>
+      </div>
+
+      <!-- Prompt Modal -->
+      <div id="prompt-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <span class="close-button">&times;</span>
+          <h3 id="modal-title" data-i18n="promptEditor">Prompt Editor</h3>
+          <form id="prompt-form">
+            <input type="hidden" id="prompt-id">
+            <div class="form-group">
+              <label for="prompt-title" data-i18n="promptTitle">Title</label>
+              <input type="text" id="prompt-title" required>
+            </div>
+            <div class="form-group">
+              <label for="prompt-template" data-i18n="promptTemplate">Template</label>
+              <textarea id="prompt-template" rows="5" required></textarea>
+              <p class="template-hint" data-i18n="promptTemplateHint">Use {content} as a placeholder for the copied text.</p>
+            </div>
+            <div class="form-actions">
+              <button type="submit" id="save-prompt-button" class="button" data-i18n="save">Save</button>
+              <button type="button" id="cancel-prompt-button" class="button secondary" data-i18n="cancel">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <!-- Footer -->
       <div class="footer">
         <a href="https://github.com/ayqy/copy/issues/new" target="_blank" class="feedback-link">
@@ -190,5 +212,6 @@
     </div>
 
     <script type="module" src="popup.js"></script>
+    </div>
   </body>
 </html>

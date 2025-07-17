@@ -109,5 +109,41 @@
   "csv": {
     "message": "CSV",
     "description": "CSV 格式选项"
+  },
+  "promptManager": {
+    "message": "私人 Prompt 管理器"
+  },
+  "addPrompt": {
+    "message": "添加新 Prompt"
+  },
+  "promptEditor": {
+    "message": "Prompt 编辑器"
+  },
+  "promptTitle": {
+    "message": "标题"
+  },
+  "promptTemplate": {
+    "message": "模板"
+  },
+  "promptTemplateHint": {
+    "message": "使用 {content} 作为复制文本的占位符。"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "cancel": {
+    "message": "取消"
+  },
+  "clipboardAccumulator": {
+    "message": "剪贴板累加器：",
+    "description": "剪贴板累加器部分的标签"
+  },
+  "enableClipboardAccumulator": {
+    "message": "启用累加器",
+    "description": "用于启用剪贴板累加器的开关标签"
+  },
+  "appended": {
+    "message": "已追加！",
+    "description": "追加成功后的确认文本"
   }
 }

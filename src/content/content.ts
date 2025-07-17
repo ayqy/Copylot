@@ -240,7 +240,7 @@ function handleKeyDown(event: KeyboardEvent): void {
 function setupButtonClickHandler(): void {
   if (!copyButtonElement) return;
 
-  copyButtonElement.addEventListener('click', async (event: Event) => {
+  copyButtonElement.addEventListener('click', async (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -251,27 +251,30 @@ function setupButtonClickHandler(): void {
       const content = processContent(currentTarget, userSettings);
       if (!content.trim()) return;
 
-      await navigator.clipboard.writeText(content);
-      // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
-      updateButtonState(copyButtonElement!, 'copied');
+      const isShiftPressed = event.shiftKey;
 
-      setTimeout(() => {
-        if (copyButtonElement) {
-          // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
-          updateButtonState(copyButtonElement, 'copy');
-        }
-      }, 1500);
-    } catch (error) {
-      console.error('Error copying content:', error);
-      // Fallback copy mechanism
-      try {
-        const textarea = document.createElement('textarea');
-        // @ts-ignore: processContent is available from inlined content-processor.ts
-        textarea.value = processContent(currentTarget, userSettings!);
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
+      if (userSettings.isClipboardAccumulatorEnabled) {
+        chrome.runtime.sendMessage({
+          type: 'copy-to-clipboard',
+          text: content,
+          isShiftPressed: isShiftPressed
+        }, (response) => {
+          if (response.success) {
+            // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+            updateButtonState(copyButtonElement!, response.action === 'appended' ? 'appended' : 'copied');
+          } else {
+            // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+            updateButtonState(copyButtonElement!, 'error');
+          }
+          setTimeout(() => {
+            if (copyButtonElement) {
+              // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+              updateButtonState(copyButtonElement, 'copy');
+            }
+          }, 1500);
+        });
+      } else {
+        await navigator.clipboard.writeText(content);
         // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
         updateButtonState(copyButtonElement!, 'copied');
         setTimeout(() => {
@@ -280,9 +283,17 @@ function setupButtonClickHandler(): void {
             updateButtonState(copyButtonElement, 'copy');
           }
         }, 1500);
-      } catch (fallbackError) {
-        console.error('Fallback copy method also failed:', fallbackError);
       }
+    } catch (error) {
+      console.error('Error copying content:', error);
+      // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+      updateButtonState(copyButtonElement!, 'error');
+      setTimeout(() => {
+        if (copyButtonElement) {
+          // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+          updateButtonState(copyButtonElement, 'copy');
+        }
+      }, 1500);
     }
   });
 }

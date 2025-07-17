@@ -7,6 +7,8 @@ A Chrome browser extension that intelligently copies web page content in AI-frie
 - 🎯 **Smart Content Detection**: Automatically identifies viable content blocks on web pages.
 - ✨ **Smart Table Conversion**: Intelligently copies tables into Markdown or CSV formats.
 - 📝 **Multiple Output Formats**: Copy content as clean Markdown or plain text.
+- ✨ **Professional Code Block Cleaning**: Automatically removes line numbers, prompts, and other "clutter" from copied code blocks, delivering clean, runnable code.
+- 🔄 **Customizable Prompts**: Create, manage, and use your own prompts to format copied text for AI models.
 - 🖱️ **Flexible Interaction Modes**: Activate by single-click or double-click, configurable via settings.
 - ✨ **Hover-to-Copy for Media**: Instantly copy images, videos, and other media elements just by hovering over them.
 - 🌐 **Full Page Conversion**: Convert the entire page content with a single click from the context menu.
@@ -17,6 +19,7 @@ A Chrome browser extension that intelligently copies web page content in AI-frie
   - Configure output format, what metadata to attach (title, URL), and interaction preferences.
 - 🎨 **Modern UI**: Beautiful and responsive popup interface.
 - 🚀 **High Performance**: Built with performance in mind, ensuring a smooth user experience.
+- ➕ **Clipboard Accumulator**: Consecutively copy multiple blocks of content and merge them into a single clipboard entry.
 
 ## Installation
 
@@ -73,7 +76,14 @@ To copy the entire content of a page in a clean format:
 2.  Select **"Convert Page to AI-Friendly Format"** from the context menu.
 3.  The entire page's content will be instantly copied to your clipboard.
 
-### 3. Configure Settings
+### 3. Using Custom Prompts (Context Menu)
+
+1.  **Select Text**: Highlight any text on a web page.
+2.  **Right-click**: Open the context menu.
+3.  **Choose Prompt**: Navigate to "Magic Copy with Prompt" and select one of your custom prompts.
+4.  **Formatted Text is Copied**: The selected text will be inserted into your prompt template, and the final result is copied to your clipboard.
+
+### 4. Configure Settings & Manage Prompts
 
 Click the extension icon in the Chrome toolbar to open the popup, where you can:
 - Enable or disable Magic Copy entirely.
@@ -82,6 +92,7 @@ Click the extension icon in the Chrome toolbar to open the popup, where you can:
 - Choose your preferred output format (Markdown/Plain Text).
 - **For tables, choose between Markdown and CSV format.**
 - Decide whether to include the page title and URL in the copied content.
+- **Manage Prompts**: Add, edit, delete, and reorder your custom prompts.
 
 ## Settings
 
@@ -89,6 +100,7 @@ Click the extension icon in the Chrome toolbar to open the popup, where you can:
 - **Table Copy Format**: Choose between Markdown and CSV
 - **Additional Info**: Optionally attach page title and/or source URL
 - **Language**: Select interface language (System, English, or Chinese)
+- **Clipboard Accumulator**: Enable or disable the clipboard accumulator feature. When enabled, holding `Shift` while clicking the copy button will append the content to a temporary stack. A regular click will merge all stacked content and copy it to the clipboard.
 
 ## Technical Details
 
