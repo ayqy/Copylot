@@ -35,6 +35,25 @@ export function getCopiedIcon(): string {
   `;
 }
 
+export function getAppendModeIcon(): string {
+  return `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="12" y1="5" x2="12" y2="19"></line>
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+    </svg>
+  `;
+}
+
+export function getErrorIcon(): string {
+  return `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="15" y1="9" x2="9" y2="15"></line>
+      <line x1="9" y1="9" x2="15" y2="15"></line>
+    </svg>
+  `;
+}
+
 export function createButton(): HTMLElement {
   if (buttonInstance) return buttonInstance;
 
@@ -64,14 +83,14 @@ export function createButton(): HTMLElement {
   button.title = getMessage('copy'); // Use getMessage for title
 
   button.addEventListener('mouseenter', () => {
-    if (button.dataset.state !== 'copied') {
+    if (button.dataset.state !== 'copied' && button.dataset.state !== 'append-mode') {
       button.style.backgroundColor = '#3730A3';
       button.style.transform = 'scale(1.05)';
     }
   });
 
   button.addEventListener('mouseleave', () => {
-    if (button.dataset.state !== 'copied') {
+    if (button.dataset.state !== 'copied' && button.dataset.state !== 'append-mode') {
       button.style.backgroundColor = '#4F46E5';
       button.style.transform = 'scale(1)';
     }
@@ -140,7 +159,7 @@ export function hideButton(button: HTMLElement, currentTargetElement: HTMLElemen
   }
 }
 
-export function updateButtonState(button: HTMLElement, state: 'copy' | 'copied'): void {
+export function updateButtonState(button: HTMLElement, state: 'copy' | 'copied' | 'error' | 'append-mode'): void {
   button.dataset.state = state;
 
   if (state === 'copy') {
@@ -157,6 +176,24 @@ export function updateButtonState(button: HTMLElement, state: 'copy' | 'copied')
     button.style.animation = 'none';
     button.offsetHeight; // Trigger reflow
     button.style.animation = 'ai-copilot-success 0.8s ease-out';
+  } else if (state === 'error') {
+    button.innerHTML = getErrorIcon();
+    button.title = getMessage('error');
+    button.style.backgroundColor = '#DC2626';
+    button.style.transform = 'scale(1.1)';
+    // Ensure animation restarts correctly
+    button.style.animation = 'none';
+    button.offsetHeight; // Trigger reflow
+    button.style.animation = 'ai-copilot-error 0.8s ease-out';
+  } else if (state === 'append-mode') {
+    button.innerHTML = getAppendModeIcon();
+    button.title = getMessage('appendMode');
+    // Force orange background with higher priority
+    button.style.setProperty('background-color', '#D97706', 'important');
+    button.style.setProperty('transform', 'scale(1.05)', 'important');
+    button.style.animation = 'none';
+    // Ensure the button is visible and styled correctly
+    button.style.setProperty('color', 'white', 'important');
   }
 }
 
@@ -172,6 +209,19 @@ export function injectStyles(): void {
       }
       50% {
         box-shadow: 0 4px 20px rgba(5, 150, 105, 0.4), 0 0 0 4px rgba(5, 150, 105, 0.2);
+      }
+      100% {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    }
+    
+
+    @keyframes ai-copilot-error {
+      0% {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      50% {
+        box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4), 0 0 0 4px rgba(220, 38, 38, 0.2);
       }
       100% {
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);

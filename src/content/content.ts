@@ -21,6 +21,7 @@ let userSettings: Settings | null = null; // Will be populated by getSettings()
 let lastClickPosition: { x: number; y: number } | null = null;
 let clickTimer: number | null = null;
 let lastClickTimestamp = 0;
+let isShiftPressed = false; // Tracks if Shift key is currently pressed
 const DOUBLE_CLICK_THRESHOLD = 300; // ms
 
 // Function to add all event listeners and inject UI
@@ -39,6 +40,7 @@ function enableMagicCopyFeatures(): void {
 
   document.addEventListener('click', handleDocumentClick, { passive: true });
   document.addEventListener('keydown', handleKeyDown, { passive: false });
+  document.addEventListener('keyup', handleKeyUp, { passive: false });
   document.addEventListener('mouseover', handleMouseOver, { passive: true });
   document.addEventListener('mouseout', handleMouseOut, { passive: true });
 
@@ -80,6 +82,7 @@ function disableMagicCopyFeatures(): void {
 
   document.removeEventListener('click', handleDocumentClick);
   document.removeEventListener('keydown', handleKeyDown);
+  document.removeEventListener('keyup', handleKeyUp);
   document.removeEventListener('mouseover', handleMouseOver);
   document.removeEventListener('mouseout', handleMouseOut);
 
@@ -194,8 +197,20 @@ function handleInteraction(event: MouseEvent, potentialTargetNode: Node) {
   }
 }
 
-// Handles keydown for parent element selection.
+// Handles keydown for parent element selection and Shift key detection.
 function handleKeyDown(event: KeyboardEvent): void {
+  // Handle Shift key press for append mode
+  if (event.key === 'Shift' && !isShiftPressed) {
+    // Only respond to Shift key if clipboard accumulator is enabled
+    if (!userSettings?.isClipboardAccumulatorEnabled) return;
+    
+    isShiftPressed = true;
+    if (copyButtonElement && copyButtonElement.style.display === 'flex') {
+      // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+      updateButtonState(copyButtonElement, 'append-mode');
+    }
+  }
+
   const isOnlyAltPressed = event.altKey && !event.metaKey && !event.ctrlKey && !event.shiftKey;
 
   if (isOnlyAltPressed && currentTarget && copyButtonElement && lastClickPosition) {
@@ -208,6 +223,7 @@ function handleKeyDown(event: KeyboardEvent): void {
       parent &&
       parent !== document.body &&
       parent !== document.documentElement &&
+      // @ts-ignore: EXCLUDED_TAGS is available from inlined block-identifier.ts
       !EXCLUDED_TAGS.includes(parent.tagName.toLowerCase())
     ) {
       // 1. Clear border from the old currentTarget (child)
@@ -227,11 +243,26 @@ function handleKeyDown(event: KeyboardEvent): void {
 
       // 4. Reset button state (e.g., from "Copied!" back to copy icon)
       // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
-      updateButtonState(copyButtonElement, 'copy');
+      updateButtonState(copyButtonElement, isShiftPressed ? 'append-mode' : 'copy');
 
       // 5. Crucially, DO NOT reposition the button. It stays at lastClickPosition.
       // The button should already be visible. If we need to ensure it (e.g. if some other flow could hide it),
       // we might call `copyButtonElement.style.display = 'flex'`, but typically it would remain visible.
+    }
+  }
+}
+
+// Handles keyup for Shift key detection.
+function handleKeyUp(event: KeyboardEvent): void {
+  // Handle Shift key release
+  if (event.key === 'Shift' && isShiftPressed) {
+    // Only respond to Shift key if clipboard accumulator is enabled
+    if (!userSettings?.isClipboardAccumulatorEnabled) return;
+    
+    isShiftPressed = false;
+    if (copyButtonElement && copyButtonElement.style.display === 'flex') {
+      // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+      updateButtonState(copyButtonElement, 'copy');
     }
   }
 }
@@ -251,8 +282,6 @@ function setupButtonClickHandler(): void {
       const content = processContent(currentTarget, userSettings);
       if (!content.trim()) return;
 
-      const isShiftPressed = event.shiftKey;
-
       if (userSettings.isClipboardAccumulatorEnabled) {
         chrome.runtime.sendMessage({
           type: 'copy-to-clipboard',
@@ -261,7 +290,7 @@ function setupButtonClickHandler(): void {
         }, (response) => {
           if (response.success) {
             // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
-            updateButtonState(copyButtonElement!, response.action === 'appended' ? 'appended' : 'copied');
+            updateButtonState(copyButtonElement!, 'copied');
           } else {
             // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
             updateButtonState(copyButtonElement!, 'error');
@@ -489,7 +518,7 @@ async function initializeContentScript(): Promise<void> {
           }
         } catch (err) {
           console.error('Failed to copy text from content script using execCommand:', err);
-          sendResponse({ success: false, error: err.message });
+          sendResponse({ success: false, error: err instanceof Error ? err.message : String(err) });
         }
         return true; // Indicates async response
       }

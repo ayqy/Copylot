@@ -135,15 +135,20 @@
     "message": "Cancel"
   },
   "clipboardAccumulator": {
-    "message": "Clipboard Accumulator:",
-    "description": "Label for the clipboard accumulator section"
+    "message": "Append Mode:",
+    "description": "Label for the append mode section"
   },
   "enableClipboardAccumulator": {
-    "message": "Enable Accumulator",
-    "description": "Label for the switch to enable the clipboard accumulator"
+    "message": "Enable Append Mode",
+    "description": "Label for the switch to enable the append mode"
   },
-  "appended": {
-    "message": "Appended!",
-    "description": "Appended confirmation text"
+
+  "error": {
+    "message": "Error!",
+    "description": "Error confirmation text"
+  },
+  "appendMode": {
+    "message": "Append Mode",
+    "description": "Append mode tooltip text"
   }
 }

@@ -72,39 +72,48 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case 'copy-to-clipboard':
       {
         const { text, isShiftPressed } = message;
-        if (isShiftPressed) {
-          clipboardStack.push(text);
-          chrome.action.setBadgeText({ text: clipboardStack.length.toString() });
-          sendResponse({ success: true, action: 'appended' });
-        } else {
-          const combinedText = clipboardStack.length > 0 ? [...clipboardStack, text].join('\n\n---\n\n') : text;
-          clipboardStack = [];
-          chrome.action.setBadgeText({ text: '' });
-
-          // Forward the message to the content script in the active tab
-          chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs[0] && tabs[0].id) {
-              chrome.tabs.sendMessage(
-                tabs[0].id,
-                {
-                  type: 'copy-to-clipboard-from-background',
-                  text: combinedText
-                },
-                (response) => {
-                  if (chrome.runtime.lastError) {
-                    console.warn('Could not send message to content script:', chrome.runtime.lastError.message);
-                    sendResponse({ success: true, warning: 'Content script not available.' });
-                  } else {
-                    sendResponse(response);
-                  }
-                }
-              );
+        
+        // Forward the message to the content script in the active tab
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          if (tabs[0] && tabs[0].id) {
+            let textToSend: string;
+            
+            if (isShiftPressed) {
+              // Append mode: add to clipboard stack and combine with existing content
+              clipboardStack.push(text);
+              chrome.action.setBadgeText({ text: clipboardStack.length.toString() });
+              textToSend = clipboardStack.join('\n\n---\n\n');
             } else {
-              console.error('No active tab found to send the message to.');
-              sendResponse({ success: false, error: 'No active tab found.' });
+              // Normal mode: clear the stack and copy just the current text
+              clipboardStack = [text];
+              chrome.action.setBadgeText({ text: '' });
+              textToSend = text;
             }
-          });
-        }
+            
+            chrome.tabs.sendMessage(
+              tabs[0].id,
+              {
+                type: 'copy-to-clipboard-from-background',
+                text: textToSend
+              },
+              (response) => {
+                if (chrome.runtime.lastError) {
+                  console.warn('Could not send message to content script:', chrome.runtime.lastError.message);
+                  sendResponse({ success: true, warning: 'Content script not available.' });
+                } else {
+                  sendResponse({ 
+                    success: response.success, 
+                    action: isShiftPressed ? 'appended' : 'copied',
+                    error: response.error 
+                  });
+                }
+              }
+            );
+          } else {
+            console.error('No active tab found to send the message to.');
+            sendResponse({ success: false, error: 'No active tab found.' });
+          }
+        });
         return true; // Indicate that the response is asynchronous
       }
 
@@ -114,6 +123,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     case 'update-context-menu':
       updateContextMenu();
+      sendResponse({ success: true });
+      break;
+
+    case 'clear-clipboard-stack':
+      clipboardStack = [];
+      chrome.action.setBadgeText({ text: '' });
       sendResponse({ success: true });
       break;
 
@@ -149,7 +164,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     return;
   }
 
-  if (info.parentMenuItemId === PARENT_MENU_ID && info.selectionText) {
+  if (info.parentMenuItemId === PARENT_MENU_ID && info.selectionText && tab && tab.id) {
     const { userPrompts } = await getSettings();
     const prompt = userPrompts.find((p: Prompt) => p.id === info.menuItemId);
     if (prompt) {
