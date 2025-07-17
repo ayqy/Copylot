@@ -101,5 +101,17 @@
   },
   "copied": {
     "message": "Copied!"
+  },
+  "clipboardAccumulator": {
+    "message": "Clipboard Accumulator:",
+    "description": "Label for the clipboard accumulator section"
+  },
+  "enableClipboardAccumulator": {
+    "message": "Enable Accumulator",
+    "description": "Label for the switch to enable the clipboard accumulator"
+  },
+  "appended": {
+    "message": "Appended!",
+    "description": "Appended confirmation text"
   }
 }

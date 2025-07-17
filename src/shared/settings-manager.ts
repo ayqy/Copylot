@@ -11,6 +11,7 @@ export interface Settings {
   attachURL: boolean;
   language: 'system' | 'en' | 'zh';
   interactionMode: 'click' | 'dblclick';
+  isClipboardAccumulatorEnabled: boolean;
 }
 
 export const SETTINGS_KEY = 'copilot_settings';
@@ -22,7 +23,8 @@ export const DEFAULT_SETTINGS: Settings = {
   attachTitle: false,
   attachURL: false,
   language: 'system',
-  interactionMode: 'click'
+  interactionMode: 'click',
+  isClipboardAccumulatorEnabled: false
 };
 
 export function getSystemLanguage(): 'system' | 'en' | 'zh' {
