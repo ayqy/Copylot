@@ -226,19 +226,19 @@ function handleKeyDown(event: KeyboardEvent): void {
       // @ts-ignore: EXCLUDED_TAGS is available from inlined block-identifier.ts
       !EXCLUDED_TAGS.includes(parent.tagName.toLowerCase())
     ) {
-      // 1. Clear border from the old currentTarget (child)
-      if (oldTarget instanceof HTMLElement && oldTarget.dataset.originalBorder !== undefined) {
-        oldTarget.style.border = oldTarget.dataset.originalBorder || 'none';
-        delete oldTarget.dataset.originalBorder;
+      // 1. Clear outline from the old currentTarget (child)
+      if (oldTarget instanceof HTMLElement && oldTarget.dataset.originalOutline !== undefined) {
+        oldTarget.style.outline = oldTarget.dataset.originalOutline || 'none';
+        delete oldTarget.dataset.originalOutline;
       }
 
       // 2. Update currentTarget to the new parent
       currentTarget = parent;
 
-      // 3. Apply border to the new currentTarget (parent)
+      // 3. Apply outline to the new currentTarget (parent)
       if (currentTarget instanceof HTMLElement) {
-        currentTarget.dataset.originalBorder = currentTarget.style.border;
-        currentTarget.style.border = '1px solid #4F46E5'; // Using the same border style as in ui-injector
+        currentTarget.dataset.originalOutline = currentTarget.style.outline;
+        currentTarget.style.outline = '2px solid #4F46E5'; // Using the same outline style as in ui-injector
       }
 
       // 4. Reset button state (e.g., from "Copied!" back to copy icon)

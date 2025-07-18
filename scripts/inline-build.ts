@@ -81,10 +81,12 @@ writeFileSync(contentPath, contentSrc, 'utf8');
 log('Finished inlining modules into content script');
 
 // ---------------------------------------------------------------------------
-// Step 4: Copy turndown.js into temporary root so it ends up in dist
+// Step 4: Copy turndown.js and turndown-plugin-gfm into temporary root so they end up in dist
 // ---------------------------------------------------------------------------
 const TURNDOWN_SRC = join(ROOT_DIR, 'node_modules/turndown/dist/turndown.js');
+const TURNDOWN_PLUGIN_SRC = join(ROOT_DIR, 'node_modules/turndown-plugin-gfm/dist/turndown-plugin-gfm.js');
 const turndownTmpDest = join(TMP_DIR, 'src/turndown.js');
+const turndownPluginTmpDest = join(TMP_DIR, 'src/turndown-plugin-gfm.js');
 
 if (existsSync(TURNDOWN_SRC)) {
   // Copy to temp build dir for Vite
@@ -92,6 +94,14 @@ if (existsSync(TURNDOWN_SRC)) {
   log('Copied turndown.js to temporary build directory');
 } else {
   log('⚠️  turndown.js not found; make sure turndown is installed');
+}
+
+if (existsSync(TURNDOWN_PLUGIN_SRC)) {
+  // Copy to temp build dir for Vite
+  cpSync(TURNDOWN_PLUGIN_SRC, turndownPluginTmpDest);
+  log('Copied turndown-plugin-gfm.js to temporary build directory');
+} else {
+  log('⚠️  turndown-plugin-gfm.js not found; make sure turndown-plugin-gfm is installed');
 }
 
 // ---------------------------------------------------------------------------
@@ -114,6 +124,7 @@ cpSync(join(TMP_DIR, 'dist'), DIST_DIR, { recursive: true });
 
 // Ensure turndown.js is in the final dist directory
 const turndownDist = join(DIST_DIR, 'src/turndown.js');
+const turndownPluginDist = join(DIST_DIR, 'src/turndown-plugin-gfm.js');
 const distSrcDir = join(DIST_DIR, 'src');
 
 if (!existsSync(distSrcDir)) {
@@ -125,6 +136,13 @@ if (existsSync(TURNDOWN_SRC)) {
   log('Copied turndown.js to final dist directory');
 } else {
   log('⚠️  turndown.js not found in final copy step');
+}
+
+if (existsSync(TURNDOWN_PLUGIN_SRC)) {
+  cpSync(TURNDOWN_PLUGIN_SRC, turndownPluginDist);
+  log('Copied turndown-plugin-gfm.js to final dist directory');
+} else {
+  log('⚠️  turndown-plugin-gfm.js not found in final copy step');
 }
 
 log('Moved build output to ./dist');

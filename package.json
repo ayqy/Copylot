@@ -19,9 +19,10 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "turndown": "^7.1.2",
-    "uuid": "^11.1.0",
-    "undici": "^7.11.0"
+    "turndown": "^7.2.0",
+    "turndown-plugin-gfm": "^1.0.2",
+    "undici": "^7.11.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268",

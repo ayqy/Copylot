@@ -144,8 +144,15 @@ export function showButton(
   button.style.display = 'flex';
 
   if (currentTargetElement) {
-    currentTargetElement.dataset.originalBorder = currentTargetElement.style.border;
-    currentTargetElement.style.border = '1px solid #4F46E5';
+    // Use requestAnimationFrame to ensure DOM updates are complete
+    requestAnimationFrame(() => {
+      if (currentTargetElement) {
+        // Save original outline instead of border
+        currentTargetElement.dataset.originalOutline = currentTargetElement.style.outline;
+        // Use outline instead of border to avoid being covered by cell borders
+        currentTargetElement.style.setProperty('outline', '2px solid #4F46E5', 'important');
+      }
+    });
   }
 }
 
@@ -154,8 +161,12 @@ export function hideButton(button: HTMLElement, currentTargetElement: HTMLElemen
   updateButtonState(button, 'copy'); // Reset to default state
 
   if (currentTargetElement) {
-    currentTargetElement.style.border = currentTargetElement.dataset.originalBorder || 'none'; // Use 'none' as a fallback
-    delete currentTargetElement.dataset.originalBorder;
+    // Remove the forced outline style and restore original
+    currentTargetElement.style.removeProperty('outline');
+    if (currentTargetElement.dataset.originalOutline) {
+      currentTargetElement.style.outline = currentTargetElement.dataset.originalOutline;
+      delete currentTargetElement.dataset.originalOutline;
+    }
   }
 }
 

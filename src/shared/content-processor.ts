@@ -6,6 +6,8 @@ declare const TurndownService: any; // Assume TurndownService is loaded globally
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let turndownInstance: any = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let gfmTurndownInstance: any = null;
 
 function getTurndownService() {
   if (!turndownInstance) {
@@ -32,10 +34,64 @@ function getTurndownService() {
       replacement: () => '\n'
     });
 
+    // Enhanced rule for handling nested tags within table cells (like <code>, <font>, etc.)
+    turndownInstance.addRule('simplifyNestedTags', {
+      filter: ['font', 'span'],
+      replacement: (content: string) => {
+        // Just return the content without the wrapper tags
+        return content;
+      }
+    });
+
     // Remove script, style, and noscript tags during conversion
     turndownInstance.remove(['script', 'style', 'noscript', '#ai-copilot-copy-btn']);
   }
   return turndownInstance;
+}
+
+function getGfmTurndownService() {
+  if (!gfmTurndownInstance) {
+    if (typeof TurndownService === 'undefined') {
+      console.error('TurndownService is not available. Markdown conversion will fail.');
+      return { turndown: (html: string) => html }; // Basic fallback
+    }
+    
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const turndownPluginGfm = (window as any).turndownPluginGfm;
+    if (!turndownPluginGfm) {
+      console.error('turndown-plugin-gfm is not available. Using basic turndown.');
+      return getTurndownService();
+    }
+
+    gfmTurndownInstance = new TurndownService({
+      headingStyle: 'atx',
+      bulletListMarker: '-',
+      codeBlockStyle: 'fenced',
+      fence: '```',
+      emDelimiter: '*',
+      strongDelimiter: '**',
+      linkStyle: 'inlined'
+    });
+
+    // 启用GitHub Flavored Markdown插件
+    gfmTurndownInstance.use(turndownPluginGfm.gfm);
+  }
+  return gfmTurndownInstance;
+}
+
+/**
+ * 将HTML转换为Markdown格式
+ * @param html - 要转换的HTML字符串
+ * @returns 转换后的Markdown字符串
+ */
+function convertHtmlToMarkdown(html: string): string {
+  try {
+    const turndown = getGfmTurndownService();
+    return turndown.turndown(html);
+  } catch (error) {
+    console.error('HTML转Markdown转换失败:', error);
+    return html; // 转换失败时返回原HTML
+  }
 }
 
 // i18n message retrieval, checking for chrome API availability
@@ -94,26 +150,49 @@ function convertTableToCSV(element: HTMLTableElement): string {
       const cells = Array.from(row.querySelectorAll('th, td'));
       return cells
         .map((cell) => {
-          const text = (cell as HTMLElement).innerText.trim();
-          // Escape quotes by doubling them
-          const escapedText = text.replace(/"/g, '""');
-          // Quote fields containing commas or quotes
-          if (text.includes(',') || text.includes('"')) {
-            return `"${escapedText}"`;
-          }
-          return escapedText;
+          // Get text content, preserving spaces as per RFC 4180
+          const text = (cell as HTMLElement).innerText;
+          
+          // RFC 4180 compliant field processing
+          return formatCSVField(text);
         })
         .join(',');
     })
     .join('\n');
 }
 
+/**
+ * Format a single CSV field according to RFC 4180 standard
+ * @param text The field text content
+ * @returns Properly escaped CSV field
+ */
+function formatCSVField(text: string): string {
+  // Clean the text: replace line breaks with escaped \n
+  let cleanText = text.replace(/[\r\n]+/g, '\\n').replace(/\s+/g, ' ').trim();
+  
+  // Check if field contains characters that require quoting:
+  // - comma (,)
+  // - double quote (")
+  // - escaped newlines (\\n)
+  const needsQuoting = cleanText.includes(',') || cleanText.includes('"') || cleanText.includes('\\n');
+  
+  if (needsQuoting) {
+    // Escape any double quotes by doubling them
+    const escapedText = cleanText.replace(/"/g, '""');
+    // Wrap the field in double quotes
+    return `"${escapedText}"`;
+  }
+  
+  // Return field as-is if no special characters
+  return cleanText;
+}
+
 export function convertToMarkdown(element: Element): string {
   const turndown = getTurndownService();
   try {
     if (element instanceof HTMLTableElement) {
-      // For tables, use Turndown's default table handling
-      return turndown.turndown(element.outerHTML);
+      // Use the new HTML to Markdown converter for tables
+      return convertHtmlToMarkdown(element.outerHTML);
     } else if (element instanceof HTMLImageElement) {
       const imgElement = element as HTMLImageElement;
       let sourceUrl = imgElement.dataset.src || imgElement.src;

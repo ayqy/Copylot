@@ -32,6 +32,7 @@
       ],
       "js": [
         "src/turndown.js",
+        "src/turndown-plugin-gfm.js",
         "src/content/content.js"
       ],
       "run_at": "document_idle"
