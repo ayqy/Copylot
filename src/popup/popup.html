@@ -57,13 +57,8 @@
               <span class="slider round"></span>
             </label>
           </div>
-        </div>
-
-        <!-- Clipboard Accumulator Section -->
-        <div class="section">
-          <label class="section-title" data-i18n="clipboardAccumulator">Clipboard Accumulator:</label>
           <div class="switch-control">
-            <span class="switch-label" data-i18n="enableClipboardAccumulator">Enable Accumulator</span>
+            <span class="switch-label" data-i18n="enableClipboardAccumulator">Enable Append Mode</span>
             <label class="switch">
               <input type="checkbox" id="enable-clipboard-accumulator-switch" />
               <span class="slider round"></span>
@@ -71,78 +66,86 @@
           </div>
         </div>
 
+
+
         <!-- Interaction Mode Section -->
-        <div class="section">
-          <label class="section-title" data-i18n="interactionMode">Interaction Mode:</label>
-          <div class="radio-group">
-            <label class="radio-option">
-              <input type="radio" name="interactionMode" value="click" id="interaction-click" />
-              <span class="radio-custom"></span>
-              <span data-i18n="singleClick">Single-Click</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="interactionMode" value="dblclick" id="interaction-dblclick" />
-              <span class="radio-custom"></span>
-              <span data-i18n="doubleClick">Double-Click</span>
-            </label>
+        <div class="inline-section">
+          <label class="inline-title" data-i18n="interactionMode">Mode:</label>
+          <div class="inline-options">
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="interactionMode" value="click" id="interaction-click" />
+                <span class="radio-custom"></span>
+                <span data-i18n="singleClick">Single-Click</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="interactionMode" value="dblclick" id="interaction-dblclick" />
+                <span class="radio-custom"></span>
+                <span data-i18n="doubleClick">Double-Click</span>
+              </label>
+            </div>
           </div>
         </div>
 
         <!-- Output Format Section -->
-        <div class="section">
-          <label class="section-title" data-i18n="outputFormat">Output Format:</label>
-          <div class="radio-group">
-            <label class="radio-option">
-              <input type="radio" name="outputFormat" value="markdown" id="format-markdown" />
-              <span class="radio-custom"></span>
-              <span data-i18n="markdown">Markdown</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="outputFormat" value="plaintext" id="format-plaintext" />
-              <span class="radio-custom"></span>
-              <span data-i18n="plaintext">Plain Text</span>
-            </label>
+        <div class="inline-section">
+          <label class="inline-title" data-i18n="outputFormat">Format:</label>
+          <div class="inline-options">
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="outputFormat" value="markdown" id="format-markdown" />
+                <span class="radio-custom"></span>
+                <span data-i18n="markdown">MD</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="outputFormat" value="plaintext" id="format-plaintext" />
+                <span class="radio-custom"></span>
+                <span data-i18n="plaintext">Plain Text</span>
+              </label>
+            </div>
           </div>
         </div>
 
         <!-- Table Output Format Section -->
-        <div class="section">
-          <label class="section-title" data-i18n="tableOutputFormat"
-            >Table Copy Format:</label
-          >
-          <div class="radio-group">
-            <label class="radio-option">
-              <input
-                type="radio"
-                name="tableOutputFormat"
-                value="markdown"
-                id="table-format-markdown"
-              />
-              <span class="radio-custom"></span>
-              <span data-i18n="markdown">Markdown</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="tableOutputFormat" value="csv" id="table-format-csv" />
-              <span class="radio-custom"></span>
-              <span data-i18n="csv">CSV</span>
-            </label>
+        <div class="inline-section">
+          <label class="inline-title" data-i18n="tableOutputFormat">Table:</label>
+          <div class="inline-options">
+            <div class="radio-group">
+              <label class="radio-option">
+                <input
+                  type="radio"
+                  name="tableOutputFormat"
+                  value="markdown"
+                  id="table-format-markdown"
+                />
+                <span class="radio-custom"></span>
+                <span data-i18n="markdown">MD</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="tableOutputFormat" value="csv" id="table-format-csv" />
+                <span class="radio-custom"></span>
+                <span data-i18n="csv">CSV</span>
+              </label>
+            </div>
           </div>
         </div>
 
         <!-- Additional Info Section -->
-        <div class="section">
-          <label class="section-title" data-i18n="additionalInfo">Additional Info:</label>
-          <div class="checkbox-group">
-            <label class="checkbox-option">
-              <input type="checkbox" id="attach-title" />
-              <span class="checkbox-custom"></span>
-              <span data-i18n="attachTitle">Attach page title</span>
-            </label>
-            <label class="checkbox-option">
-              <input type="checkbox" id="attach-url" />
-              <span class="checkbox-custom"></span>
-              <span data-i18n="attachURL">Attach source URL</span>
-            </label>
+        <div class="inline-section">
+          <label class="inline-title" data-i18n="additionalInfo">Extra:</label>
+          <div class="inline-options">
+            <div class="checkbox-group">
+              <label class="checkbox-option">
+                <input type="checkbox" id="attach-title" />
+                <span class="checkbox-custom"></span>
+                <span data-i18n="attachTitle">Page title</span>
+              </label>
+              <label class="checkbox-option">
+                <input type="checkbox" id="attach-url" />
+                <span class="checkbox-custom"></span>
+                <span data-i18n="attachURL">Source URL</span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -150,21 +153,17 @@
         <!-- section removed -->
       </form>
 
-      <!-- Conversion Button Section -->
-      <div class="section conversion-section">
+      <!-- Button Group Section -->
+      <div class="button-group">
         <button id="convert-button" class="convert-button" data-i18n="convertButton">
-          Convert to AI-Friendly Format
+          AI Convert
         </button>
+        <button id="add-prompt-button" class="button-secondary" data-i18n="addPrompt">New</button>
       </div>
 
       <!-- Prompt Manager -->
-      <div class="section-divider"></div>
-      <h2 data-i18n="promptManager">Prompt Manager</h2>
       <div id="prompt-list" class="prompt-list">
         <!-- Prompt items will be injected here -->
-      </div>
-      <div class="setting-item">
-        <button id="add-prompt-button" class="button" data-i18n="addPrompt">Add New Prompt</button>
       </div>
 
       <!-- Prompt Modal -->

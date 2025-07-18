@@ -16,11 +16,11 @@
     "description": "Copied confirmation text"
   },
   "outputFormat": {
-    "message": "Output Format:",
+    "message": "Format:",
     "description": "Output format label"
   },
   "markdown": {
-    "message": "Markdown",
+    "message": "MD",
     "description": "Markdown format option"
   },
   "plaintext": {
@@ -28,15 +28,15 @@
     "description": "Plain text format option"
   },
   "additionalInfo": {
-    "message": "Additional Info:",
+    "message": "Extra:",
     "description": "Additional info section label"
   },
   "attachTitle": {
-    "message": "Attach page title",
+    "message": "Page title",
     "description": "Attach title checkbox label"
   },
   "attachURL": {
-    "message": "Attach source URL",
+    "message": "Source URL",
     "description": "Attach URL checkbox label"
   },
   "language": {
@@ -72,7 +72,7 @@
     "description": "Label for the feature switch"
   },
   "interactionMode": {
-    "message": "Interaction Mode:",
+    "message": "Mode:",
     "description": "Label for interaction mode setting"
   },
   "singleClick": {
@@ -88,7 +88,7 @@
     "description": "Label for the hover trigger switch"
   },
   "convertButton": {
-    "message": "Convert to AI-Friendly Format"
+    "message": "AI Convert"
   },
   "convertPage": {
     "message": "Convert Page to AI-Friendly Format"
@@ -103,18 +103,15 @@
     "message": "Copied!"
   },
   "tableOutputFormat": {
-    "message": "Table Copy Format:",
+    "message": "Table:",
     "description": "Table output format label"
   },
   "csv": {
     "message": "CSV",
     "description": "CSV format option"
   },
-  "promptManager": {
-    "message": "Prompt Manager"
-  },
   "addPrompt": {
-    "message": "Add New Prompt"
+    "message": "Custom Prompt"
   },
   "promptEditor": {
     "message": "Prompt Editor"
@@ -133,10 +130,6 @@
   },
   "cancel": {
     "message": "Cancel"
-  },
-  "clipboardAccumulator": {
-    "message": "Append Mode:",
-    "description": "Label for the append mode section"
   },
   "enableClipboardAccumulator": {
     "message": "Enable Append Mode",

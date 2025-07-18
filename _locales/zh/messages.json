@@ -16,11 +16,11 @@
     "description": "Copied confirmation text"
   },
   "outputFormat": {
-    "message": "输出格式：",
+    "message": "格式：",
     "description": "Output format label"
   },
   "markdown": {
-    "message": "Markdown",
+    "message": "MD",
     "description": "Markdown format option"
   },
   "plaintext": {
@@ -28,15 +28,15 @@
     "description": "Plain text format option"
   },
   "additionalInfo": {
-    "message": "附加信息：",
+    "message": "附加：",
     "description": "Additional info section label"
   },
   "attachTitle": {
-    "message": "附加页面标题",
+    "message": "页面标题",
     "description": "Attach title checkbox label"
   },
   "attachURL": {
-    "message": "附加来源URL",
+    "message": "来源URL",
     "description": "Attach URL checkbox label"
   },
   "language": {
@@ -72,7 +72,7 @@
     "description": "功能开关的标签"
   },
   "interactionMode": {
-    "message": "交互模式：",
+    "message": "交互：",
     "description": "交互模式设置的标签"
   },
   "singleClick": {
@@ -88,7 +88,7 @@
     "description": "悬停触发开关的标签"
   },
   "convertButton": {
-    "message": "转换为AI友好格式"
+    "message": "AI转换"
   },
   "convertPage": {
     "message": "将页面转换为AI友好格式"
@@ -103,18 +103,15 @@
     "message": "已复制！"
   },
   "tableOutputFormat": {
-    "message": "表格复制格式：",
+    "message": "表格：",
     "description": "表格输出格式标签"
   },
   "csv": {
     "message": "CSV",
     "description": "CSV 格式选项"
   },
-  "promptManager": {
-    "message": "私人 Prompt 管理器"
-  },
   "addPrompt": {
-    "message": "添加新 Prompt"
+    "message": "私人prompt"
   },
   "promptEditor": {
     "message": "Prompt 编辑器"
@@ -133,10 +130,6 @@
   },
   "cancel": {
     "message": "取消"
-  },
-  "clipboardAccumulator": {
-    "message": "追加模式：",
-    "description": "追加模式部分的标签"
   },
   "enableClipboardAccumulator": {
     "message": "启用追加模式",
