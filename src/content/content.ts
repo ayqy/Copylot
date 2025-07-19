@@ -24,6 +24,81 @@ let lastClickTimestamp = 0;
 let isShiftPressed = false; // Tracks if Shift key is currently pressed
 const DOUBLE_CLICK_THRESHOLD = 300; // ms
 
+/**
+ * 获取用户选择的元素
+ * @returns 选择的元素或null
+ */
+function getSelectedElement(): Element | null {
+  const selection = window.getSelection();
+  if (!selection || selection.rangeCount === 0) {
+    return null;
+  }
+  
+  const range = selection.getRangeAt(0);
+  const commonAncestor = range.commonAncestorContainer;
+  
+  if (commonAncestor.nodeType === Node.TEXT_NODE) {
+    return commonAncestor.parentElement;
+  } else if (commonAncestor instanceof Element) {
+    return commonAncestor;
+  }
+  
+  return null;
+}
+
+/**
+ * 获取选择内容的最佳元素
+ * @returns 最适合处理的元素或null
+ */
+function getSelectionContent(): Element | null {
+  const selection = window.getSelection();
+  if (!selection || selection.rangeCount === 0 || selection.toString().trim() === '') {
+    // 没有选择任何内容
+    return null;
+  }
+  
+  const selectedElement = getSelectedElement();
+  if (!selectedElement) {
+    return null;
+  }
+  
+  console.debug('AI Copilot: Selected element:', selectedElement.tagName, selectedElement);
+  
+  // @ts-ignore: getTableAncestor is available from inlined block-identifier.ts
+  const tableAncestor = getTableAncestor(selectedElement);
+  if (tableAncestor) {
+    console.debug('AI Copilot: Found table ancestor:', tableAncestor);
+    return tableAncestor;
+  }
+  
+  // 检查选择的元素是否包含表格
+  const tables = selectedElement.querySelectorAll('table');
+  if (tables.length > 0) {
+    console.debug('AI Copilot: Selected element contains tables:', tables.length);
+    return selectedElement;
+  }
+  
+  console.debug('AI Copilot: Using selected element as is');
+  return selectedElement;
+}
+
+/**
+ * 复制文本到剪贴板
+ * @param text 要复制的文本
+ */
+async function copyToClipboard(text: string): Promise<void> {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  document.body.appendChild(textarea);
+  textarea.select();
+  const success = document.execCommand('copy');
+  document.body.removeChild(textarea);
+  
+  if (!success) {
+    throw new Error('Failed to copy to clipboard');
+  }
+}
+
 // Function to add all event listeners and inject UI
 function enableMagicCopyFeatures(): void {
   if (isActive) return; // Already active
@@ -499,7 +574,87 @@ async function initializeContentScript(): Promise<void> {
           sendResponse({ success: false, error: 'Settings not loaded' });
         }
         return true; // Indicates async response
-      } else if (message.type === 'copy-to-clipboard-from-background') {
+      }
+
+      if (message.type === 'CONVERT_PAGE_WITH_SELECTION') {
+        if (!userSettings) {
+          await loadSettingsAndApply();
+        }
+        if (userSettings) {
+          // 优先处理用户选择的内容
+          const selectedElement = getSelectionContent();
+          let content: string;
+          
+          if (selectedElement) {
+            console.debug('AI Copilot: Processing selected content');
+            // @ts-ignore: processElementWithTableDetection is available from inlined content-processor.ts
+            content = processElementWithTableDetection(selectedElement, userSettings);
+          } else {
+            console.debug('AI Copilot: No selection found, processing entire page');
+            // @ts-ignore: processContent is available from inlined content-processor.ts
+            content = processContent(document.body, userSettings);
+          }
+          
+          if (content.trim()) {
+            try {
+              await copyToClipboard(content);
+              sendResponse({ success: true });
+            } catch (error) {
+              console.error('Error copying to clipboard:', error);
+              sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+            }
+          } else {
+            sendResponse({ success: false, error: 'No content to copy' });
+          }
+        } else {
+          sendResponse({ success: false, error: 'Settings not loaded' });
+        }
+        return true; // Indicates async response
+      }
+
+      if (message.type === 'PROCESS_SELECTION_WITH_PROMPT') {
+        if (!userSettings) {
+          await loadSettingsAndApply();
+        }
+        if (userSettings) {
+          const selectedElement = getSelectionContent();
+          if (selectedElement) {
+            console.debug('AI Copilot: Processing selected content with prompt');
+            // @ts-ignore: processElementWithTableDetection is available from inlined content-processor.ts
+            const content = processElementWithTableDetection(selectedElement, userSettings);
+            const finalText = message.promptTemplate.replace('{content}', content);
+            
+            try {
+              await copyToClipboard(finalText);
+              sendResponse({ success: true });
+            } catch (error) {
+              console.error('Error copying to clipboard:', error);
+              sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+            }
+          } else {
+            console.debug('AI Copilot: No DOM selection found, using text selection');
+            // 回退到原有逻辑，使用纯文本
+            const selection = window.getSelection();
+            const selectedText = selection ? selection.toString() : '';
+            if (selectedText) {
+              const finalText = message.promptTemplate.replace('{content}', selectedText);
+              try {
+                await copyToClipboard(finalText);
+                sendResponse({ success: true });
+              } catch (error) {
+                sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+              }
+            } else {
+              sendResponse({ success: false, error: 'No content selected' });
+            }
+          }
+        } else {
+          sendResponse({ success: false, error: 'Settings not loaded' });
+        }
+        return true; // Indicates async response
+      }
+
+      if (message.type === 'copy-to-clipboard-from-background') {
         const { text } = message;
         try {
           const textarea = document.createElement('textarea');

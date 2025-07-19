@@ -9,6 +9,145 @@ let turndownInstance: any = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let gfmTurndownInstance: any = null;
 
+/**
+ * 检测元素中的表格
+ * @param element - 要检测的元素
+ * @returns 表格元素数组
+ */
+function detectTablesInElement(element: Element): HTMLTableElement[] {
+  if (element instanceof HTMLTableElement) {
+    return [element];
+  }
+  return Array.from(element.querySelectorAll('table'));
+}
+
+/**
+ * 带表格检测的元素处理函数
+ * @param element - 要处理的元素
+ * @param settings - 用户设置
+ * @returns 处理后的内容
+ */
+export function processElementWithTableDetection(element: Element, settings: Settings): string {
+  const tables = detectTablesInElement(element);
+  
+  if (tables.length === 1 && element instanceof HTMLTableElement) {
+    // 单纯的表格元素，直接处理
+    return processContent(element, settings);
+  } else if (tables.length > 0 && !(element instanceof HTMLTableElement)) {
+    // 包含表格的复合元素，需要特殊处理
+    return processElementWithMixedContent(element, tables, settings);
+  } else {
+    // 不包含表格，正常处理
+    return processContent(element, settings);
+  }
+}
+
+/**
+ * 处理包含表格的混合内容
+ * @param element - 包含表格的元素
+ * @param tables - 表格元素数组
+ * @param settings - 用户设置
+ * @returns 处理后的内容
+ */
+function processElementWithMixedContent(element: Element, tables: HTMLTableElement[], settings: Settings): string {
+  console.debug('AI Copilot: processElementWithMixedContent - Start', {
+    elementTag: element.tagName,
+    tablesCount: tables.length,
+    tableOutputFormat: settings.tableOutputFormat,
+    outputFormat: settings.outputFormat
+  });
+  
+  // 克隆元素以避免修改原DOM
+  const clonedElement = element.cloneNode(true) as Element;
+  
+  // 存储表格内容和对应的placeholder信息
+  const tableReplacements: { 
+    originalPlaceholder: string; 
+    processedPlaceholder: string; 
+    content: string 
+  }[] = [];
+  
+  // 处理每个表格，生成对应的内容和placeholder
+  tables.forEach((originalTable, index) => {
+    let tableContent: string;
+    
+    if (settings.tableOutputFormat === 'csv') {
+      tableContent = convertTableToCSV(originalTable);
+      console.debug(`AI Copilot: Table ${index} CSV content:`, tableContent);
+    } else {
+      tableContent = convertHtmlToMarkdown(originalTable.outerHTML);
+      console.debug(`AI Copilot: Table ${index} Markdown content:`, tableContent);
+    }
+    
+    // 创建唯一的placeholder
+    const originalPlaceholder = `__MAGIC_COPY_TABLE_${index}__`;
+    
+    // 用turndown处理placeholder，看看它会变成什么样
+    let processedPlaceholder: string;
+    if (settings.outputFormat === 'markdown') {
+      const tempDiv = document.createElement('div');
+      tempDiv.textContent = originalPlaceholder;
+      processedPlaceholder = convertToMarkdown(tempDiv);
+    } else {
+      const tempDiv = document.createElement('div');
+      tempDiv.textContent = originalPlaceholder;
+      processedPlaceholder = convertToPlainText(tempDiv);
+    }
+    
+    tableReplacements.push({ 
+      originalPlaceholder, 
+      processedPlaceholder, 
+      content: tableContent 
+    });
+    
+    console.debug(`AI Copilot: Table ${index} placeholders:`, {
+      original: originalPlaceholder,
+      processed: processedPlaceholder
+    });
+  });
+  
+  console.debug('AI Copilot: Table replacements:', tableReplacements);
+  
+  // 在克隆元素中用placeholder替换表格
+  const clonedTables = Array.from(clonedElement.querySelectorAll('table'));
+  clonedTables.forEach((table, index) => {
+    if (index < tableReplacements.length) {
+      // 创建文本节点替换表格
+      const textNode = document.createTextNode(tableReplacements[index].originalPlaceholder);
+      table.parentNode?.replaceChild(textNode, table);
+      console.debug(`AI Copilot: Replaced table ${index} with placeholder:`, tableReplacements[index].originalPlaceholder);
+    }
+  });
+  
+  // 处理剩余内容（现在包含placeholder）
+  let content: string;
+  if (settings.outputFormat === 'markdown') {
+    content = convertToMarkdown(clonedElement);
+  } else {
+    content = convertToPlainText(clonedElement);
+  }
+  
+  console.debug('AI Copilot: Content with placeholders:', content);
+  
+  // 将处理后的placeholder替换为实际的表格内容
+  tableReplacements.forEach((replacement, index) => {
+    const beforeReplacement = content;
+    // 使用处理后的placeholder进行替换
+    content = content.replace(replacement.processedPlaceholder, replacement.content);
+    console.debug(`AI Copilot: Replaced processed placeholder ${index}:`, {
+      originalPlaceholder: replacement.originalPlaceholder,
+      processedPlaceholder: replacement.processedPlaceholder,
+      content: replacement.content,
+      beforeReplacement: beforeReplacement,
+      afterReplacement: content,
+      found: beforeReplacement !== content
+    });
+  });
+  
+  console.debug('AI Copilot: processElementWithMixedContent - End, returning:', content);
+  return content;
+}
+
 function getTurndownService() {
   if (!turndownInstance) {
     if (typeof TurndownService === 'undefined') {
@@ -397,20 +536,27 @@ export function processContent(element: Element, settings: Settings): string {
   try {
     let content: string;
 
-    // Handle table content separately based on tableOutputFormat setting
+    // 检查是否为单纯的表格元素
     if (element instanceof HTMLTableElement) {
       if (settings.tableOutputFormat === 'csv') {
         content = convertTableToCSV(element);
       } else {
-        // Default to Markdown for tables if not CSV
         content = convertToMarkdown(element);
       }
     } else {
-      // Handle non-table content based on the general outputFormat setting
-      if (settings.outputFormat === 'markdown') {
-        content = convertToMarkdown(element);
+      // 检查元素中是否包含表格
+      const tables = detectTablesInElement(element);
+      
+      if (tables.length > 0) {
+        // 包含表格的复合内容，使用特殊处理
+        content = processElementWithMixedContent(element, tables, settings);
       } else {
-        content = convertToPlainText(element);
+        // 不包含表格，正常处理
+        if (settings.outputFormat === 'markdown') {
+          content = convertToMarkdown(element);
+        } else {
+          content = convertToPlainText(element);
+        }
       }
     }
 

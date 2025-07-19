@@ -159,7 +159,7 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === 'convert-page-to-ai-friendly-format' && tab && tab.id) {
     chrome.tabs.sendMessage(tab.id, {
-      type: 'CONVERT_PAGE'
+      type: 'CONVERT_PAGE_WITH_SELECTION'  // 使用新的消息类型
     });
     return;
   }
@@ -168,10 +168,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     const { userPrompts } = await getSettings();
     const prompt = userPrompts.find((p: Prompt) => p.id === info.menuItemId);
     if (prompt) {
-      const finalText = prompt.template.replace('{content}', info.selectionText);
       chrome.tabs.sendMessage(tab.id, {
-        type: 'copy-to-clipboard-from-background',
-        text: finalText
+        type: 'PROCESS_SELECTION_WITH_PROMPT',  // 使用新的消息类型
+        promptTemplate: prompt.template
       });
     }
   }

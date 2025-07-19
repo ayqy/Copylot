@@ -258,7 +258,7 @@ function setupEventListeners() {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0] && tabs[0].id) {
         chrome.tabs.sendMessage(tabs[0].id, {
-          type: 'CONVERT_PAGE'
+          type: 'CONVERT_PAGE_WITH_SELECTION'  // 使用新的消息类型
         });
         window.close(); // Close popup after clicking
       }
