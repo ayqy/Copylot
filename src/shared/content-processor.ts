@@ -469,7 +469,7 @@ export function convertToMarkdown(element: Element): string {
       return `[Object Content${type ? ` (type: ${type})` : ''}]`;
     } else if (element.tagName.toLowerCase() === 'pre' || element.tagName.toLowerCase() === 'code') {
       // 当用户直接复制code或pre元素时，说明用户想要纯代码内容，不包裹任何markdown语法
-      return cleanCodeBlockTextConservatively((element as HTMLElement).innerText || element.textContent || '');
+      return cleanCodeBlockTextConservatively((element as HTMLElement).innerText || element.textContent || '').replace(/\n+$/, '');
     } else {
       // Default handling for other elements
       const clonedElement = element.cloneNode(true) as Element;
