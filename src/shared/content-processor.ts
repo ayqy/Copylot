@@ -318,6 +318,66 @@ function convertHtmlToMarkdown(html: string): string {
   }
 }
 
+/**
+ * 验证URL是否为有效的链接
+ * @param url - 要验证的URL
+ * @returns 是否为有效链接
+ */
+function isValidUrl(url: string): boolean {
+  if (!url || url.trim() === '') return false;
+  
+  // 过滤掉无效的链接协议和模式
+  const invalidPatterns = [
+    /^javascript:/i,
+    /^#.*$/,           // 纯锚点链接
+    /^#$/,             // 空锚点
+    /^\s*$/,           // 空白字符串
+    /^void\(0\)$/i,    // void(0)
+    /^about:blank$/i   // about:blank
+  ];
+  
+  for (const pattern of invalidPatterns) {
+    if (pattern.test(url.trim())) {
+      return false;
+    }
+  }
+  
+  // 检查是否为有效的URL格式
+  try {
+    // 对于相对路径和绝对路径的基本检查
+    if (url.startsWith('/') || url.startsWith('./') || url.startsWith('../')) {
+      return true;
+    }
+    
+    // 检查是否包含有效的协议
+    if (url.includes('://')) {
+      const urlObj = new URL(url);
+      return ['http:', 'https:', 'ftp:', 'ftps:', 'mailto:', 'tel:'].includes(urlObj.protocol);
+    }
+    
+    // 对于不包含协议的URL，进行基本格式检查
+    return /^[a-zA-Z0-9][a-zA-Z0-9-_.]*[a-zA-Z0-9](\.[a-zA-Z]{2,}|:[0-9]+)/.test(url);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * 清理Markdown文本中的无效链接
+ * @param markdown - 原始markdown文本
+ * @returns 清理后的markdown文本
+ */
+function cleanInvalidLinks(markdown: string): string {
+  // 匹配markdown链接格式 [text](url)
+  return markdown.replace(/\[([^\]]*)\]\(([^)]*)\)/g, (match, text, url) => {
+    // 如果URL无效，只保留文本内容
+    if (!isValidUrl(url)) {
+      return text.trim() || ''; // 如果文本为空，则完全移除
+    }
+    return match; // 保留有效链接
+  });
+}
+
 // i18n message retrieval, checking for chrome API availability
 function getI18nMessage(key: string, language?: string): string {
   // Use specific language bundle if provided and not 'system'
@@ -501,6 +561,7 @@ export function convertToMarkdown(element: Element): string {
 
       let markdown = turndown.turndown(clonedElement.innerHTML);
       markdown = markdown.replace(/\[\s*\]\(#\)/g, ''); // Clean up empty links like `[ ](#)`
+      markdown = cleanInvalidLinks(markdown); // 清理Markdown文本中的无效链接
 
       return markdown.trim();
     }
