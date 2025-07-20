@@ -10,6 +10,55 @@ let turndownInstance: any = null;
 let gfmTurndownInstance: any = null;
 
 /**
+ * 用于Turndown的代码块处理函数，专门处理混合内容中的代码块
+ * @param node - DOM节点
+ * @returns 处理后的代码块内容（带markdown标签）
+ */
+function processCodeBlock(node: any): string {
+  // 直接使用innerText获取纯文本内容，避免手动解析span等标签
+  const text = node.innerText || node.textContent || '';
+  
+  // 对文本进行轻量级后处理，只处理确实必要的情况
+  const cleanedText = cleanCodeBlockTextConservatively(text);
+  
+  // 对于混合内容中的代码块，包裹相应的markdown标签
+  if (node.tagName.toLowerCase() === 'pre') {
+    const className = node.className || '';
+    const languageMatch = className.match(/language-(\w+)/);
+    const language = languageMatch ? languageMatch[1] : '';
+    
+    return '\n\n```' + language + '\n' + cleanedText + '\n```\n\n';
+  } else {
+    // 对于混合内容中的内联code元素，使用内联代码语法
+    return '`' + cleanedText + '`';
+  }
+}
+
+/**
+ * 保守的代码块文本清理，只处理确实有问题且安全的情况
+ * @param text - 原始文本
+ * @returns 清理后的文本
+ */
+function cleanCodeBlockTextConservatively(text: string): string {
+  // 只移除"复制"按钮文本，这是最安全的处理
+  let result = text.replace(/(Copy|复制代码|Copy to clipboard|复制)\s*$/, '');
+  
+  // 只反转义明显的Markdown转义字符，且只在确实需要的情况下
+  result = result
+    .replace(/\\#/g, '#')       // 反转义井号
+    .replace(/\\=/g, '=')       // 反转义等号
+    .replace(/\\\*/g, '*')      // 反转义星号
+    .replace(/\\\[/g, '[')      // 反转义左方括号
+    .replace(/\\\]/g, ']')      // 反转义右方括号
+    .replace(/\\\(/g, '(')      // 反转义左圆括号
+    .replace(/\\\)/g, ')');     // 反转义右圆括号
+      
+  return result;
+}
+
+
+
+/**
  * 检测元素中的表格
  * @param element - 要检测的元素
  * @returns 表格元素数组
@@ -184,6 +233,14 @@ function getTurndownService() {
 
     // Remove script, style, and noscript tags during conversion
     turndownInstance.remove(['script', 'style', 'noscript', '#ai-copilot-copy-btn']);
+
+    // 使用公共的代码块处理函数
+    turndownInstance.addRule('codeBlock', {
+      filter: ['pre', 'code'],
+      replacement: function (content: string, node: any, options: any) {
+        return processCodeBlock(node);
+      }
+    });
   }
   return turndownInstance;
 }
@@ -214,6 +271,14 @@ function getGfmTurndownService() {
 
     // 启用GitHub Flavored Markdown插件
     gfmTurndownInstance.use(turndownPluginGfm.gfm);
+
+    // 使用公共的代码块处理函数
+    gfmTurndownInstance.addRule('codeBlock', {
+      filter: ['pre', 'code'],
+      replacement: function (content: string, node: any, options: any) {
+        return processCodeBlock(node);
+      }
+    });
   }
   return gfmTurndownInstance;
 }
@@ -260,19 +325,8 @@ function getI18nMessage(key: string, language?: string): string {
 }
 
 function cleanCodeBlock(text: string): string {
-  const lines = text.split('\n');
-  const cleanedLines = lines.map((line) => {
-    // 移除行号, e.g., "1. ", "1 ", "1. "
-    let cleanedLine = line.replace(/^(\s*)?[0-9]+\.?\s/, '$1');
-    // 移除 shell 提示符, e.g., "$ ", "> "
-    cleanedLine = cleanedLine.replace(/^(\s*)?[\$\>]\s/, '$1');
-    return cleanedLine;
-  });
-
-  // 移除“复制”按钮文本, 常见于代码块右上角
-  const result = cleanedLines.join('\n').replace(/(Copy|复制代码)\s*$/, '');
-
-  return result;
+  // 使用新的清理函数
+  return cleanCodeBlockTextConservatively(text);
 }
 
 function cleanText(text: string): string {
@@ -325,6 +379,8 @@ function formatCSVField(text: string): string {
   // Return field as-is if no special characters
   return cleanText;
 }
+
+
 
 export function convertToMarkdown(element: Element): string {
   const turndown = getTurndownService();
@@ -391,6 +447,9 @@ export function convertToMarkdown(element: Element): string {
         return `[Object Content${type ? ` (type: ${type})` : ''}](${data})`;
       }
       return `[Object Content${type ? ` (type: ${type})` : ''}]`;
+    } else if (element.tagName.toLowerCase() === 'pre' || element.tagName.toLowerCase() === 'code') {
+      // 当用户直接复制code或pre元素时，说明用户想要纯代码内容，不包裹任何markdown语法
+      return cleanCodeBlockTextConservatively((element as HTMLElement).innerText || element.textContent || '');
     } else {
       // Default handling for other elements
       const clonedElement = element.cloneNode(true) as Element;
@@ -422,10 +481,6 @@ export function convertToMarkdown(element: Element): string {
 
       let markdown = turndown.turndown(clonedElement.innerHTML);
       markdown = markdown.replace(/\[\s*\]\(#\)/g, ''); // Clean up empty links like `[ ](#)`
-
-      if (element.tagName.toLowerCase() === 'pre' || element.tagName.toLowerCase() === 'code') {
-        return cleanCodeBlock(markdown);
-      }
 
       return markdown.trim();
     }
@@ -479,11 +534,11 @@ export function convertToPlainText(element: Element): string {
       return element.src || '[Embedded Content]';
     } else if (element instanceof HTMLObjectElement) {
       return element.data || '[Object Content]';
+    } else if (element.tagName.toLowerCase() === 'pre' || element.tagName.toLowerCase() === 'code') {
+      // 对于代码块，使用简化处理直接返回清理后的文本
+      return cleanCodeBlockTextConservatively((element as HTMLElement).innerText || element.textContent || '');
     } else {
       let text = (clonedElement as HTMLElement).innerText || '';
-      if (element.tagName.toLowerCase() === 'pre' || element.tagName.toLowerCase() === 'code') {
-        text = cleanCodeBlock(text);
-      }
       return cleanText(text);
     }
   } catch (error) {
