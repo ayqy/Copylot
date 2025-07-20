@@ -91,16 +91,22 @@
     "message": "AI Convert"
   },
   "convertPage": {
-    "message": "Convert Page to AI-Friendly Format"
+    "message": "Convert to AI-Friendly Format",
+    "description": "Context menu item to convert page content"
+  },
+  "magicCopyWithPrompt": {
+    "message": "Magic Copy with Prompt",
+    "description": "Context menu item for Magic Copy with custom prompts"
+  },
+  "hoverForPrompts": {
+    "message": "Hover for prompts",
+    "description": "Tooltip text for prompt menu functionality"
   },
   "devtoolsPanelTitle": {
     "message": "Structural JSON"
   },
   "devtoolsCopyButton": {
     "message": "Copy"
-  },
-  "copied": {
-    "message": "Copied!"
   },
   "tableOutputFormat": {
     "message": "Table:",
@@ -112,6 +118,69 @@
   },
   "addPrompt": {
     "message": "Custom Prompt"
+  },
+  "managePrompts": {
+    "message": "Manage Prompts"
+  },
+  "optionsTitle": {
+    "message": "Prompt Manager - AI Copilot"
+  },
+  "promptManagerTitle": {
+    "message": "Private Prompt Manager"
+  },
+  "promptManagerSubtitle": {
+    "message": "Manage your AI assistant instruction templates"
+  },
+  "searchPlaceholder": {
+    "message": "Search prompts..."
+  },
+  "allCategories": {
+    "message": "All Types"
+  },
+  "categorySummarize": {
+    "message": "Summary"
+  },
+  "categoryTranslate": {
+    "message": "Translation"
+  },
+  "categoryCoding": {
+    "message": "Coding"
+  },
+  "categoryWriting": {
+    "message": "Writing"
+  },
+  "categoryCustom": {
+    "message": "Custom"
+  },
+  "addNewPrompt": {
+    "message": "New Prompt"
+  },
+  "batchActions": {
+    "message": "Batch Actions"
+  },
+  "emptyStateTitle": {
+    "message": "No Prompts Yet"
+  },
+  "emptyStateDescription": {
+    "message": "Create your first prompt template to help AI assistants understand your needs more efficiently"
+  },
+  "createFirstPrompt": {
+    "message": "Create First Prompt"
+  },
+  "editPrompt": {
+    "message": "Edit Prompt"
+  },
+  "promptCategory": {
+    "message": "Category"
+  },
+  "templateHint": {
+    "message": "Use {content} as a placeholder for the copied text"
+  },
+  "syncStatusConnected": {
+    "message": "Synced"
+  },
+  "importExport": {
+    "message": "Import/Export"
   },
   "promptEditor": {
     "message": "Prompt Editor"
@@ -143,5 +212,17 @@
   "appendMode": {
     "message": "Append Mode",
     "description": "Append mode tooltip text"
+  },
+  "selectAll": {
+    "message": "Select All",
+    "description": "Select all prompts button text"
+  },
+  "deselectAll": {
+    "message": "Deselect All",
+    "description": "Deselect all prompts button text"
+  },
+  "deleteSelected": {
+    "message": "Delete Selected",
+    "description": "Delete selected prompts button text"
   }
 }

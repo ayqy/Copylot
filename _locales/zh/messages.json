@@ -91,16 +91,22 @@
     "message": "AI转换"
   },
   "convertPage": {
-    "message": "将页面转换为AI友好格式"
+    "message": "转换为AI友好格式",
+    "description": "将页面内容转换为AI友好格式的上下文菜单项"
+  },
+  "magicCopyWithPrompt": {
+    "message": "智能复制+自定义提示",
+    "description": "使用自定义提示词进行智能复制的上下文菜单项"
+  },
+  "hoverForPrompts": {
+    "message": "悬停查看提示词",
+    "description": "提示词菜单功能的工具提示文本"
   },
   "devtoolsPanelTitle": {
     "message": "结构化JSON"
   },
   "devtoolsCopyButton": {
     "message": "复制"
-  },
-  "copied": {
-    "message": "已复制！"
   },
   "tableOutputFormat": {
     "message": "表格：",
@@ -112,6 +118,69 @@
   },
   "addPrompt": {
     "message": "私人prompt"
+  },
+  "managePrompts": {
+    "message": "管理Prompts"
+  },
+  "optionsTitle": {
+    "message": "Prompt管理器 - AI Copilot"
+  },
+  "promptManagerTitle": {
+    "message": "私人Prompt管理器"
+  },
+  "promptManagerSubtitle": {
+    "message": "管理您的AI助手指令模板"
+  },
+  "searchPlaceholder": {
+    "message": "搜索prompt..."
+  },
+  "allCategories": {
+    "message": "全部类型"
+  },
+  "categorySummarize": {
+    "message": "总结"
+  },
+  "categoryTranslate": {
+    "message": "翻译"
+  },
+  "categoryCoding": {
+    "message": "编程"
+  },
+  "categoryWriting": {
+    "message": "写作"
+  },
+  "categoryCustom": {
+    "message": "自定义"
+  },
+  "addNewPrompt": {
+    "message": "新建Prompt"
+  },
+  "batchActions": {
+    "message": "批量操作"
+  },
+  "emptyStateTitle": {
+    "message": "还没有任何Prompt"
+  },
+  "emptyStateDescription": {
+    "message": "创建您的第一个Prompt模板，让AI助手更高效地理解您的需求"
+  },
+  "createFirstPrompt": {
+    "message": "创建第一个Prompt"
+  },
+  "editPrompt": {
+    "message": "编辑Prompt"
+  },
+  "promptCategory": {
+    "message": "类型"
+  },
+  "templateHint": {
+    "message": "使用 {content} 作为复制内容的占位符"
+  },
+  "syncStatusConnected": {
+    "message": "已同步"
+  },
+  "importExport": {
+    "message": "导入/导出"
   },
   "promptEditor": {
     "message": "Prompt 编辑器"
@@ -143,5 +212,17 @@
   "appendMode": {
     "message": "追加模式",
     "description": "追加模式提示文本"
+  },
+  "selectAll": {
+    "message": "全选",
+    "description": "Select all prompts button text"
+  },
+  "deselectAll": {
+    "message": "取消全选",
+    "description": "Deselect all prompts button text"
+  },
+  "deleteSelected": {
+    "message": "批量删除",
+    "description": "Delete selected prompts button text"
   }
 }

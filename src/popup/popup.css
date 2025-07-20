@@ -501,55 +501,7 @@ input:checked + .slider:before {
   }
 }
 
-/* Prompt List Styles */
-.prompt-list {
-  padding: 0 20px;
-  margin-bottom: 16px;
-}
 
-.prompt-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px;
-  background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  transition: background-color 0.2s ease;
-}
-
-.prompt-item:hover {
-  background-color: #f3f4f6;
-}
-
-.prompt-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: #374151;
-  flex: 1;
-}
-
-.prompt-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.edit-prompt-button,
-.delete-prompt-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 4px;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
-}
-
-.edit-prompt-button:hover,
-.delete-prompt-button:hover {
-  background-color: #e5e7eb;
-}
 
 /* Modal Styles */
 .modal {
@@ -662,24 +614,6 @@ input:checked + .slider:before {
 
 /* Dark mode support for new elements */
 @media (prefers-color-scheme: dark) {
-  .prompt-item {
-    background-color: #374151;
-    border-color: #4b5563;
-  }
-
-  .prompt-item:hover {
-    background-color: #4b5563;
-  }
-
-  .prompt-title {
-    color: #f9fafb;
-  }
-
-  .edit-prompt-button:hover,
-  .delete-prompt-button:hover {
-    background-color: #4b5563;
-  }
-
   .modal-content {
     background-color: #1f2937;
     color: #f9fafb;

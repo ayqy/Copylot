@@ -30,7 +30,6 @@ interface PopupElements {
   attachTitle: HTMLInputElement;
   attachURL: HTMLInputElement;
   convertButton: HTMLButtonElement;
-  promptList: HTMLElement;
   addPromptButton: HTMLButtonElement;
   promptModal: HTMLElement;
   promptForm: HTMLFormElement;
@@ -68,7 +67,6 @@ function getElements(): PopupElements {
     attachTitle: document.getElementById('attach-title') as HTMLInputElement,
     attachURL: document.getElementById('attach-url') as HTMLInputElement,
     convertButton: document.getElementById('convert-button') as HTMLButtonElement,
-    promptList: document.getElementById('prompt-list') as HTMLElement,
     addPromptButton: document.getElementById('add-prompt-button') as HTMLButtonElement,
     promptModal: document.getElementById('prompt-modal') as HTMLElement,
     promptForm: document.getElementById('prompt-form') as HTMLFormElement,
@@ -160,39 +158,9 @@ function updateUIFromSettings(settings: Settings) {
   elements.attachURL.checked = settings.attachURL;
 
   // language field removed from UI; keep default stored value
-
-  renderPrompts(settings.userPrompts);
 }
 
-/**
- * Render the list of prompts
- */
-function renderPrompts(prompts: Prompt[]) {
-  elements.promptList.innerHTML = '';
-  if (!prompts) return;
 
-  prompts.forEach((prompt) => {
-    const promptItem = document.createElement('div');
-    promptItem.className = 'prompt-item';
-    promptItem.setAttribute('data-id', prompt.id);
-    promptItem.innerHTML = `
-      <span class="prompt-title">${prompt.title}</span>
-      <div class="prompt-actions">
-        <button class="edit-prompt-button">✏️</button>
-        <button class="delete-prompt-button">🗑️</button>
-      </div>
-    `;
-    elements.promptList.appendChild(promptItem);
-  });
-
-  // Add event listeners for edit/delete buttons
-  document.querySelectorAll('.edit-prompt-button').forEach((button) => {
-    button.addEventListener('click', handleEditPrompt);
-  });
-  document.querySelectorAll('.delete-prompt-button').forEach((button) => {
-    button.addEventListener('click', handleDeletePrompt);
-  });
-}
 
 /**
  * Get settings from UI
@@ -265,16 +233,20 @@ function setupEventListeners() {
     });
   });
 
-  // Prompt manager event listeners
-  elements.addPromptButton.addEventListener('click', handleAddPrompt);
-  elements.promptForm.addEventListener('submit', handleSavePrompt);
-  elements.cancelPromptButton.addEventListener('click', closeModal);
-  elements.closeModalButton.addEventListener('click', closeModal);
-  window.addEventListener('click', (event) => {
-    if (event.target == elements.promptModal) {
-      closeModal();
-    }
+  // Prompt manager event listeners - now opens options page
+  elements.addPromptButton.addEventListener('click', () => {
+    chrome.runtime.openOptionsPage();
+    window.close();
   });
+  // Remove old modal handlers as we're redirecting to options page
+  // elements.promptForm.addEventListener('submit', handleSavePrompt);
+  // elements.cancelPromptButton.addEventListener('click', closeModal);
+  // elements.closeModalButton.addEventListener('click', closeModal);
+  // window.addEventListener('click', (event) => {
+  //   if (event.target == elements.promptModal) {
+  //     closeModal();
+  //   }
+  // });
 }
 
 /**
@@ -328,29 +300,7 @@ function setupAccessibility() {
   });
 }
 
-function handleAddPrompt() {
-  openModal();
-}
 
-function handleEditPrompt(event: MouseEvent) {
-  const button = event.currentTarget as HTMLElement;
-  const promptItem = button.closest('.prompt-item') as HTMLElement;
-  const promptId = promptItem.dataset.id;
-  const prompt = currentSettings.userPrompts.find((p) => p.id === promptId);
-  if (prompt) {
-    openModal(prompt);
-  }
-}
-
-async function handleDeletePrompt(event: MouseEvent) {
-  const button = event.currentTarget as HTMLElement;
-  const promptItem = button.closest('.prompt-item') as HTMLElement;
-  const promptId = promptItem.dataset.id;
-  currentSettings.userPrompts = currentSettings.userPrompts.filter((p) => p.id !== promptId);
-  await saveSettings({ userPrompts: currentSettings.userPrompts });
-  renderPrompts(currentSettings.userPrompts);
-  notifyBackgroundScript();
-}
 
 async function handleSavePrompt(event: Event) {
   event.preventDefault();
@@ -371,7 +321,6 @@ async function handleSavePrompt(event: Event) {
   }
 
   await saveSettings({ userPrompts: currentSettings.userPrompts });
-  renderPrompts(currentSettings.userPrompts);
   notifyBackgroundScript();
   closeModal();
 }

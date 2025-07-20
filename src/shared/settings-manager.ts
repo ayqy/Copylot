@@ -7,6 +7,10 @@ export interface Prompt {
   id: string;
   title: string;
   template: string;
+  category?: string;
+  usageCount?: number;
+  createdAt?: number;
+  lastUsedAt?: number;
 }
 
 export interface Settings {
@@ -56,11 +60,15 @@ export function getSystemLanguage(): 'system' | 'en' | 'zh' {
   }
 }
 
+// Chrome sync storage limits
+const SYNC_QUOTA_BYTES = 102400; // 100KB
+const SYNC_QUOTA_BYTES_PER_ITEM = 8192; // 8KB per item
+
 export async function getSettings(): Promise<Settings> {
   try {
     // Ensure chrome and chrome.storage are available
-    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      const result = await chrome.storage.local.get(SETTINGS_KEY);
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync) {
+      const result = await chrome.storage.sync.get(SETTINGS_KEY);
       const storedSettings = result[SETTINGS_KEY];
 
       const currentLanguage = getSystemLanguage(); // Get resolved system language
@@ -71,7 +79,7 @@ export async function getSettings(): Promise<Settings> {
           ...DEFAULT_SETTINGS,
           language: currentLanguage // Initialize with resolved system language
         };
-        await chrome.storage.local.set({ [SETTINGS_KEY]: defaultWithLanguage });
+        await saveSettings(defaultWithLanguage);
         return defaultWithLanguage;
       }
 
@@ -89,7 +97,7 @@ export async function getSettings(): Promise<Settings> {
       return mergedSettings;
     }
     // Fallback if chrome.storage is not available
-    console.warn('chrome.storage.local is not available, returning default settings.');
+    console.warn('chrome.storage.sync is not available, returning default settings.');
     return {
       ...DEFAULT_SETTINGS,
       language: getSystemLanguage() // Use resolved system language
@@ -106,19 +114,59 @@ export async function getSettings(): Promise<Settings> {
 
 export async function saveSettings(settings: Partial<Settings>): Promise<void> {
   try {
-    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      // Get current settings first
-      const currentSettings = await getSettings();
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync) {
+      // Get current settings first (but avoid infinite recursion)
+      let currentSettings: Settings;
+      try {
+        const result = await chrome.storage.sync.get(SETTINGS_KEY);
+        currentSettings = result[SETTINGS_KEY] || DEFAULT_SETTINGS;
+      } catch {
+        currentSettings = DEFAULT_SETTINGS;
+      }
+      
       // Merge with new settings
       const mergedSettings = { ...currentSettings, ...settings };
 
-      await chrome.storage.local.set({ [SETTINGS_KEY]: mergedSettings });
-      console.debug('Settings saved:', mergedSettings);
+      // Check storage size limits
+      const dataString = JSON.stringify({ [SETTINGS_KEY]: mergedSettings });
+      const dataSize = new Blob([dataString]).size;
+      
+      if (dataSize > SYNC_QUOTA_BYTES_PER_ITEM) {
+        console.warn('Settings data too large for chrome.storage.sync, attempting to optimize...');
+        // Try to optimize by removing non-essential data or compressing
+        const optimizedSettings = await optimizeSettingsForSync(mergedSettings);
+        await chrome.storage.sync.set({ [SETTINGS_KEY]: optimizedSettings });
+        console.debug('Optimized settings saved:', optimizedSettings);
+      } else {
+        await chrome.storage.sync.set({ [SETTINGS_KEY]: mergedSettings });
+        console.debug('Settings saved:', mergedSettings);
+      }
     } else {
-      console.warn('chrome.storage.local is not available, settings not saved.');
+      console.warn('chrome.storage.sync is not available, settings not saved.');
     }
   } catch (error) {
     console.error('Error saving settings:', error);
-    // Optionally re-throw or handle
+    if (error instanceof Error && error.message?.includes('QUOTA_BYTES')) {
+      console.error('Storage quota exceeded. Consider reducing the number of prompts or their size.');
+      throw new Error('Storage quota exceeded. Please reduce the number or size of your prompts.');
+    }
+    throw error;
   }
+}
+
+// Helper function to optimize settings for sync storage
+async function optimizeSettingsForSync(settings: Settings): Promise<Settings> {
+  const optimized = { ...settings };
+  
+  // Truncate very long prompt templates
+  if (optimized.userPrompts) {
+    optimized.userPrompts = optimized.userPrompts.map(prompt => ({
+      ...prompt,
+      template: prompt.template.length > 1000 ? 
+        prompt.template.substring(0, 1000) + '...[truncated]' : 
+        prompt.template
+    }));
+  }
+  
+  return optimized;
 }

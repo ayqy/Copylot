@@ -205,6 +205,12 @@ function showMagicCopy(element: Element, event?: MouseEvent): void {
     y = Math.max(0, Math.min(y, window.innerHeight));
   }
 
+  // Update prompt menu with current user prompts
+  if (userSettings && userSettings.userPrompts) {
+    // @ts-ignore: updatePromptMenu is available from inlined ui-injector.ts
+    updatePromptMenu(copyButtonElement, userSettings.userPrompts);
+  }
+
   // @ts-ignore: showButton is available from inlined ui-injector.ts
   showButton(copyButtonElement, x, y, currentTarget instanceof HTMLElement ? currentTarget : null);
 }
@@ -346,52 +352,75 @@ function handleKeyUp(event: KeyboardEvent): void {
 function setupButtonClickHandler(): void {
   if (!copyButtonElement) return;
 
+  // Handle click events
   copyButtonElement.addEventListener('click', async (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
-    if (!currentTarget || !userSettings) return;
+    const target = event.target as HTMLElement;
+    const promptItem = target.closest('.ai-copilot-prompt-item') as HTMLElement;
+    
+    // Check if click was on a prompt menu item
+    if (promptItem && promptItem.dataset.promptId) {
+      const promptId = promptItem.dataset.promptId;
+      await handlePromptClick(promptId);
+      return;
+    }
 
+    // Otherwise handle as main copy click (original functionality)
+    await handleMainCopyClick(event);
+  });
+
+  // Handle hover to show prompt menu
+  copyButtonElement.addEventListener('mouseenter', async () => {
+    if (!userSettings) return;
+    
     try {
-      // @ts-ignore: processContent is available from inlined content-processor.ts
-      const content = processContent(currentTarget, userSettings);
-      if (!content.trim()) return;
+      const { userPrompts } = userSettings;
+      if (userPrompts && userPrompts.length > 0) {
+        // @ts-ignore: updatePromptMenu is available from inlined ui-injector.ts
+        updatePromptMenu(copyButtonElement!, userPrompts);
+        // @ts-ignore: showPromptMenu is available from inlined ui-injector.ts
+        showPromptMenu(copyButtonElement!);
+      }
+    } catch (error) {
+      console.error('Error loading prompts for menu:', error);
+    }
+  });
+}
 
-      if (userSettings.isClipboardAccumulatorEnabled) {
-        chrome.runtime.sendMessage({
-          type: 'copy-to-clipboard',
-          text: content,
-          isShiftPressed: isShiftPressed
-        }, (response) => {
-          if (response.success) {
-            // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
-            updateButtonState(copyButtonElement!, 'copied');
-          } else {
-            // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
-            updateButtonState(copyButtonElement!, 'error');
-          }
-          setTimeout(() => {
-            if (copyButtonElement) {
-              // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
-              updateButtonState(copyButtonElement, 'copy');
-            }
-          }, 1500);
-        });
-      } else {
-        await navigator.clipboard.writeText(content);
-        // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
-        updateButtonState(copyButtonElement!, 'copied');
+async function handleMainCopyClick(event: MouseEvent): Promise<void> {
+  if (!currentTarget || !userSettings) return;
+
+  try {
+    // @ts-ignore: processContent is available from inlined content-processor.ts
+    const content = processContent(currentTarget, userSettings);
+    if (!content.trim()) return;
+
+    if (userSettings.isClipboardAccumulatorEnabled) {
+      chrome.runtime.sendMessage({
+        type: 'copy-to-clipboard',
+        text: content,
+        isShiftPressed: isShiftPressed
+      }, (response) => {
+        if (response.success) {
+          // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+          updateButtonState(copyButtonElement!, 'copied');
+        } else {
+          // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+          updateButtonState(copyButtonElement!, 'error');
+        }
         setTimeout(() => {
           if (copyButtonElement) {
             // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
             updateButtonState(copyButtonElement, 'copy');
           }
         }, 1500);
-      }
-    } catch (error) {
-      console.error('Error copying content:', error);
+      });
+    } else {
+      await navigator.clipboard.writeText(content);
       // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
-      updateButtonState(copyButtonElement!, 'error');
+      updateButtonState(copyButtonElement!, 'copied');
       setTimeout(() => {
         if (copyButtonElement) {
           // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
@@ -399,7 +428,72 @@ function setupButtonClickHandler(): void {
         }
       }, 1500);
     }
-  });
+  } catch (error) {
+    console.error('Error in handleMainCopyClick:', error);
+    // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+    updateButtonState(copyButtonElement!, 'error');
+    setTimeout(() => {
+      if (copyButtonElement) {
+        // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+        updateButtonState(copyButtonElement, 'copy');
+      }
+    }, 1500);
+  }
+}
+
+async function handlePromptClick(promptId: string): Promise<void> {
+  if (!currentTarget || !userSettings) return;
+
+  try {
+    const { userPrompts } = userSettings;
+    const prompt = userPrompts.find((p: any) => p.id === promptId);
+    if (!prompt) return;
+
+    // @ts-ignore: processContent is available from inlined content-processor.ts
+    const content = processContent(currentTarget, userSettings);
+    if (!content.trim()) return;
+
+    const finalText = prompt.template.replace('{content}', content);
+    await navigator.clipboard.writeText(finalText);
+    
+    // 更新使用次数
+    prompt.usageCount = (prompt.usageCount || 0) + 1;
+    prompt.lastUsedAt = Date.now();
+    
+    // 保存更新后的设置
+    try {
+      await chrome.runtime.sendMessage({
+        type: 'update-prompt-usage',
+        promptId: promptId,
+        usageCount: prompt.usageCount,
+        lastUsedAt: prompt.lastUsedAt
+      });
+    } catch (error) {
+      console.warn('Failed to update prompt usage count:', error);
+    }
+    
+    // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+    updateButtonState(copyButtonElement!, 'copied');
+    // @ts-ignore: hidePromptMenu is available from inlined ui-injector.ts
+    hidePromptMenu(copyButtonElement!);
+    
+    setTimeout(() => {
+      if (copyButtonElement) {
+        // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+        updateButtonState(copyButtonElement, 'copy');
+      }
+    }, 1500);
+  } catch (error) {
+    console.error('Error in handlePromptClick:', error);
+    // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+    updateButtonState(copyButtonElement!, 'error');
+    setTimeout(() => {
+      if (copyButtonElement) {
+        // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
+        updateButtonState(copyButtonElement, 'copy');
+      }
+    }, 1500);
+  }
 }
 
 // Loads settings and stores them in userSettings.
@@ -647,6 +741,32 @@ async function initializeContentScript(): Promise<void> {
             } else {
               sendResponse({ success: false, error: 'No content selected' });
             }
+          }
+        } else {
+          sendResponse({ success: false, error: 'Settings not loaded' });
+        }
+        return true; // Indicates async response
+      }
+
+      if (message.type === 'PROCESS_PAGE_WITH_PROMPT') {
+        if (!userSettings) {
+          await loadSettingsAndApply();
+        }
+        if (userSettings) {
+          console.debug('AI Copilot: Processing entire page content with prompt');
+          // @ts-ignore: processContent is available from inlined content-processor.ts
+          const content = processContent(document.body, userSettings);
+          if (content.trim()) {
+            const finalText = message.promptTemplate.replace('{content}', content);
+            try {
+              await copyToClipboard(finalText);
+              sendResponse({ success: true });
+            } catch (error) {
+              console.error('Error copying to clipboard:', error);
+              sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+            }
+          } else {
+            sendResponse({ success: false, error: 'No content to copy' });
           }
         } else {
           sendResponse({ success: false, error: 'Settings not loaded' });

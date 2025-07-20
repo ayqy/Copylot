@@ -42,6 +42,7 @@
     "service_worker": "src/background.js",
     "type": "module"
   },
+  "options_page": "src/options/options.html",
   "devtools_page": "src/devtools/devtools.html",
   "web_accessible_resources": [
     {

@@ -54,6 +54,101 @@ export function getErrorIcon(): string {
   `;
 }
 
+export function getDropdownIcon(): string {
+  return `
+    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="6,9 12,15 18,9"></polyline>
+    </svg>
+  `;
+}
+
+export function createPromptMenu(prompts: any[]): HTMLElement {
+  const menu = document.createElement('div');
+  menu.className = 'ai-copilot-prompt-menu';
+  menu.style.cssText = `
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 100px;
+    background: rgba(79, 70, 229, 0.8);
+    border: 1px solid rgb(79, 70, 229);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: ${MAX_Z_INDEX + 1};
+    display: none;
+    padding: 2px 0;
+    font-size: 13px;
+  `;
+
+  if (prompts && prompts.length > 0) {
+    prompts.forEach((prompt) => {
+      const item = document.createElement('div');
+      item.className = 'ai-copilot-prompt-item';
+      item.textContent = prompt.title;
+      item.dataset.promptId = prompt.id;
+      item.style.cssText = `
+        padding: 4px 8px;
+        cursor: pointer;
+        font-size: 12px;
+        color: #ffffff;
+        transition: background-color 0.1s ease;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      `;
+      
+      item.addEventListener('mouseenter', () => {
+        item.style.backgroundColor = '#f3f4f6';
+      });
+      
+      item.addEventListener('mouseleave', () => {
+        item.style.backgroundColor = 'transparent';
+      });
+      
+      menu.appendChild(item);
+    });
+  } else {
+    const emptyItem = document.createElement('div');
+    emptyItem.className = 'ai-copilot-prompt-empty';
+    emptyItem.textContent = 'No prompts available';
+    emptyItem.style.cssText = `
+      padding: 6px 12px;
+      font-size: 13px;
+      color: #9ca3af;
+      font-style: italic;
+    `;
+    menu.appendChild(emptyItem);
+  }
+
+  return menu;
+}
+
+export function showPromptMenu(button: HTMLElement): void {
+  const menu = button.querySelector('.ai-copilot-prompt-menu') as HTMLElement;
+  if (menu) {
+    menu.style.display = 'block';
+  }
+}
+
+export function hidePromptMenu(button: HTMLElement): void {
+  const menu = button.querySelector('.ai-copilot-prompt-menu') as HTMLElement;
+  if (menu) {
+    menu.style.display = 'none';
+  }
+}
+
+export function updatePromptMenu(button: HTMLElement, prompts: any[]): void {
+  const existingMenu = button.querySelector('.ai-copilot-prompt-menu');
+  if (existingMenu) {
+    existingMenu.remove();
+  }
+  
+  if (prompts && prompts.length > 0) {
+    const newMenu = createPromptMenu(prompts);
+    button.appendChild(newMenu);
+  }
+}
+
 export function createButton(): HTMLElement {
   if (buttonInstance) return buttonInstance;
 
@@ -76,11 +171,11 @@ export function createButton(): HTMLElement {
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
     transition: 'all 0.2s ease',
     userSelect: 'none',
-    pointerEvents: 'auto' // Important for the button to be clickable
+    pointerEvents: 'auto'
   });
 
   button.innerHTML = getCopyIcon();
-  button.title = getMessage('copy'); // Use getMessage for title
+  button.title = getMessage('copy');
 
   button.addEventListener('mouseenter', () => {
     if (button.dataset.state !== 'copied' && button.dataset.state !== 'append-mode') {
@@ -94,6 +189,8 @@ export function createButton(): HTMLElement {
       button.style.backgroundColor = '#4F46E5';
       button.style.transform = 'scale(1)';
     }
+    // Hide prompt menu when mouse leaves
+    hidePromptMenu(button);
   });
 
   document.body.appendChild(button);
@@ -241,6 +338,15 @@ export function injectStyles(): void {
     
     #ai-copilot-copy-btn {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      position: relative;
+    }
+    
+    .ai-copilot-prompt-menu {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    .ai-copilot-prompt-item:hover {
+      background-color: rgb(79, 70, 229) !important;
     }
   `;
 

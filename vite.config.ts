@@ -89,6 +89,18 @@ export default defineConfig({
             console.warn('Warning: Could not copy popup.html:', error.message);
           }
 
+          // Copy options HTML
+          try {
+            const optionsHtml = readFileSync('./src/options/options.html', 'utf-8');
+            this.emitFile({
+              type: 'asset',
+              fileName: 'src/options/options.html',
+              source: optionsHtml
+            });
+          } catch (error) {
+            console.warn('Warning: Could not copy options.html:', error.message);
+          }
+
           // Copy devtools HTML
           try {
             const devtoolsHtml = readFileSync('./src/devtools/devtools.html', 'utf-8');
@@ -168,6 +180,7 @@ function getAllScriptsConfig() {
     input: {
       content: resolve(__dirname, 'src/content/content.ts'),
       popup: resolve(__dirname, 'src/popup/popup.ts'),
+      options: resolve(__dirname, 'src/options/options.ts'),
       background: resolve(__dirname, 'src/background.ts'),
       devtools: resolve(__dirname, 'src/devtools/devtools.js'),
       sidebar: resolve(__dirname, 'src/devtools/sidebar.js')
@@ -178,6 +191,7 @@ function getAllScriptsConfig() {
         const name = chunkInfo.name;
         if (name === 'content') return 'src/content/content.js';
         if (name === 'popup') return 'src/popup/popup.js';
+        if (name === 'options') return 'src/options/options.js';
         if (name === 'background') return 'src/background.js';
         if (name === 'devtools') return 'src/devtools/devtools.js';
         if (name === 'sidebar') return 'src/devtools/sidebar.js';
@@ -188,6 +202,7 @@ function getAllScriptsConfig() {
         const name = assetInfo.name || '';
         if (name.endsWith('.css')) {
           if (name.includes('popup')) return 'src/popup/popup.css';
+          if (name.includes('options')) return 'src/options/options.css';
           if (name.includes('sidebar')) return 'src/devtools/sidebar.css';
           return 'src/[name].[ext]';
         }

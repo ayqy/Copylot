@@ -1,34 +1,46 @@
-import { getSettings, type Prompt } from './shared/settings-manager';
+import { getSettings, saveSettings, type Prompt } from './shared/settings-manager';
 
 const PARENT_MENU_ID = 'magic-copy-with-prompt';
 
 async function updateContextMenu() {
-  await chrome.contextMenus.removeAll();
+  try {
+    // 完全清除所有菜单项
+    await chrome.contextMenus.removeAll();
+    
+    // 等待一小段时间确保清除完成
+    await new Promise(resolve => setTimeout(resolve, 10));
 
-  // Create the main "Convert Page" item
-  chrome.contextMenus.create({
-    id: 'convert-page-to-ai-friendly-format',
-    title: chrome.i18n.getMessage('convertPage') || 'Convert Page to AI-Friendly Format',
-    contexts: ['page']
-  });
-
-  const { userPrompts } = await getSettings();
-
-  if (userPrompts && userPrompts.length > 0) {
+    // Create the main "Convert Page" item
     chrome.contextMenus.create({
-      id: PARENT_MENU_ID,
-      title: 'Magic Copy with Prompt',
-      contexts: ['selection']
+      id: 'convert-page-to-ai-friendly-format',
+      title: chrome.i18n.getMessage('convertPage') || 'Convert Page to AI-Friendly Format',
+      contexts: ['page']
     });
 
-    userPrompts.forEach((prompt: Prompt) => {
+    const { userPrompts } = await getSettings();
+
+    if (userPrompts && userPrompts.length > 0) {
       chrome.contextMenus.create({
-        id: prompt.id,
-        title: prompt.title,
-        parentId: PARENT_MENU_ID,
-        contexts: ['selection']
+        id: PARENT_MENU_ID,
+        title: chrome.i18n.getMessage('magicCopyWithPrompt') || 'Magic Copy with Prompt',
+        contexts: ['page']
       });
-    });
+
+      userPrompts.forEach((prompt: Prompt) => {
+        try {
+          chrome.contextMenus.create({
+            id: prompt.id,
+            title: prompt.title,
+            parentId: PARENT_MENU_ID,
+            contexts: ['page']
+          });
+        } catch (error) {
+          console.warn(`Failed to create menu item for prompt ${prompt.id}:`, error);
+        }
+      });
+    }
+  } catch (error) {
+    console.error('Error updating context menu:', error);
   }
 }
 
@@ -126,6 +138,28 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       sendResponse({ success: true });
       break;
 
+    case 'update-prompt-usage':
+      // 处理从content script发来的使用次数更新请求
+      (async () => {
+        const { promptId, usageCount, lastUsedAt } = message;
+        try {
+          const settings = await getSettings();
+          const prompt = settings.userPrompts.find((p: Prompt) => p.id === promptId);
+          if (prompt) {
+            prompt.usageCount = usageCount;
+            prompt.lastUsedAt = lastUsedAt;
+            await saveSettings({ userPrompts: settings.userPrompts });
+            sendResponse({ success: true });
+          } else {
+            sendResponse({ success: false, error: 'Prompt not found' });
+          }
+        } catch (error) {
+          console.error('Failed to save prompt usage update:', error);
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
     case 'clear-clipboard-stack':
       clipboardStack = [];
       chrome.action.setBadgeText({ text: '' });
@@ -147,10 +181,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   return true;
 });
 
-// Handle storage changes (for debugging)
+// Handle storage changes for cross-device sync
 chrome.storage.onChanged.addListener((changes, namespace) => {
   if (changes.copilot_settings && namespace === 'sync') {
-    console.debug('Settings updated, rebuilding context menu...');
+    console.debug('Settings synced from another device, rebuilding context menu...');
     updateContextMenu();
   }
 });
@@ -164,12 +198,24 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     return;
   }
 
-  if (info.parentMenuItemId === PARENT_MENU_ID && info.selectionText && tab && tab.id) {
-    const { userPrompts } = await getSettings();
-    const prompt = userPrompts.find((p: Prompt) => p.id === info.menuItemId);
+  if (info.parentMenuItemId === PARENT_MENU_ID && tab && tab.id) {
+    const settings = await getSettings();
+    const prompt = settings.userPrompts.find((p: Prompt) => p.id === info.menuItemId);
     if (prompt) {
+      // 更新使用次数和最后使用时间
+      prompt.usageCount = (prompt.usageCount || 0) + 1;
+      prompt.lastUsedAt = Date.now();
+      
+      // 保存更新后的设置
+      try {
+        await saveSettings({ userPrompts: settings.userPrompts });
+        console.debug(`Updated usage count for prompt "${prompt.title}": ${prompt.usageCount}`);
+      } catch (error) {
+        console.error('Failed to update prompt usage:', error);
+      }
+      
       chrome.tabs.sendMessage(tab.id, {
-        type: 'PROCESS_SELECTION_WITH_PROMPT',  // 使用新的消息类型
+        type: 'PROCESS_PAGE_WITH_PROMPT',  // 新的消息类型，处理整个页面
         promptTemplate: prompt.template
       });
     }
