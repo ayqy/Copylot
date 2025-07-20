@@ -15,8 +15,28 @@ let gfmTurndownInstance: any = null;
  * @returns 处理后的代码块内容（带markdown标签）
  */
 function processCodeBlock(node: any): string {
-  // 直接使用innerText获取纯文本内容，避免手动解析span等标签
-  const text = node.innerText || node.textContent || '';
+  let text: string;
+  
+  // 对于 pre 元素，先进行预处理：去掉除 code 标签外的所有内容
+  if (node.tagName.toLowerCase() === 'pre') {
+    // 克隆节点以避免修改原始DOM
+    const clonedNode = node.cloneNode(true);
+    
+    // 查找 code 子元素
+    const codeElement = clonedNode.querySelector('code');
+    if (codeElement) {
+      // 如果有 code 元素，清空 pre 的内容，然后只保留 code 元素
+      clonedNode.innerHTML = '';
+      clonedNode.appendChild(codeElement);
+    }
+    // 如果没有 code 元素，保持原样（这种情况下预处理不会有影响）
+    
+    // 从预处理后的节点获取文本
+    text = clonedNode.innerText || clonedNode.textContent || '';
+  } else {
+    // 对于非 pre 元素（如 code），直接获取文本
+    text = node.innerText || node.textContent || '';
+  }
   
   // 对文本进行轻量级后处理，只处理确实必要的情况
   const cleanedText = cleanCodeBlockTextConservatively(text);
