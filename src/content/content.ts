@@ -9,6 +9,7 @@ import type { Settings } from '../shared/settings-manager';
 /* INLINE:block-identifier */
 /* INLINE:settings-manager */
 /* INLINE:ui-injector */
+/* INLINE:dom-preprocessor */
 /* INLINE:content-processor */
 
 // Main content script logic

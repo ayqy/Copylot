@@ -1,5 +1,6 @@
 // Content processor functionality (using TurndownService from global scope)
 import type { Settings } from './settings-manager'; // Import type for Settings
+import { createVisibleClone } from './dom-preprocessor';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const TurndownService: any; // Assume TurndownService is loaded globally
@@ -97,17 +98,20 @@ function detectTablesInElement(element: Element): HTMLTableElement[] {
  * @returns 处理后的内容
  */
 export function processElementWithTableDetection(element: Element, settings: Settings): string {
-  const tables = detectTablesInElement(element);
+  // 预处理可见性
+  const visibleClone = createVisibleClone(element);
+
+  const tables = detectTablesInElement(visibleClone);
   
-  if (tables.length === 1 && element instanceof HTMLTableElement) {
+  if (tables.length === 1 && visibleClone instanceof HTMLTableElement) {
     // 单纯的表格元素，直接处理
-    return processContent(element, settings);
-  } else if (tables.length > 0 && !(element instanceof HTMLTableElement)) {
+    return processContent(visibleClone, settings);
+  } else if (tables.length > 0 && !(visibleClone instanceof HTMLTableElement)) {
     // 包含表格的复合元素，需要特殊处理
-    return processElementWithMixedContent(element, tables, settings);
+    return processElementWithMixedContent(visibleClone, tables, settings);
   } else {
     // 不包含表格，正常处理
-    return processContent(element, settings);
+    return processContent(visibleClone, settings);
   }
 }
 
@@ -126,8 +130,8 @@ function processElementWithMixedContent(element: Element, tables: HTMLTableEleme
     outputFormat: settings.outputFormat
   });
   
-  // 克隆元素以避免修改原DOM
-  const clonedElement = element.cloneNode(true) as Element;
+  // 使用已过滤的可见克隆，避免二次包含隐藏内容
+  const clonedElement = createVisibleClone(element);
   
   // 存储表格内容和对应的placeholder信息
   const tableReplacements: { 
@@ -670,28 +674,31 @@ export function formatAdditionalInfo(
 
 export function processContent(element: Element, settings: Settings): string {
   try {
+    // 统一可见性预处理
+    const workingRoot = createVisibleClone(element);
+
     let content: string;
 
     // 检查是否为单纯的表格元素
-    if (element instanceof HTMLTableElement) {
+    if (workingRoot instanceof HTMLTableElement) {
       if (settings.tableOutputFormat === 'csv') {
-        content = convertTableToCSV(element);
+        content = convertTableToCSV(workingRoot);
       } else {
-        content = convertToMarkdown(element);
+        content = convertToMarkdown(workingRoot);
       }
     } else {
       // 检查元素中是否包含表格
-      const tables = detectTablesInElement(element);
+      const tables = detectTablesInElement(workingRoot);
       
       if (tables.length > 0) {
         // 包含表格的复合内容，使用特殊处理
-        content = processElementWithMixedContent(element, tables, settings);
+        content = processElementWithMixedContent(workingRoot, tables, settings);
       } else {
         // 不包含表格，正常处理
         if (settings.outputFormat === 'markdown') {
-          content = convertToMarkdown(element);
+          content = convertToMarkdown(workingRoot);
         } else {
-          content = convertToPlainText(element);
+          content = convertToPlainText(workingRoot);
         }
       }
     }
