@@ -18,6 +18,7 @@ function generateUUID(): string {
 
 // DOM Elements
 interface PopupElements {
+  versionDisplay: HTMLElement;
   enableMagicCopySwitch: HTMLInputElement;
   enableHoverMagicCopySwitch: HTMLInputElement;
   enableClipboardAccumulatorSwitch: HTMLInputElement;
@@ -51,6 +52,7 @@ let currentSettings: Settings;
  */
 function getElements(): PopupElements {
   return {
+    versionDisplay: document.getElementById('version-display') as HTMLElement,
     enableMagicCopySwitch: document.getElementById('enable-magic-copy-switch') as HTMLInputElement,
     enableHoverMagicCopySwitch: document.getElementById(
       'enable-hover-magic-copy-switch'
@@ -358,6 +360,12 @@ async function initialize() {
 
     // Get DOM elements
     elements = getElements();
+
+    // Set version number
+    const manifest = chrome.runtime.getManifest();
+    if (manifest.version) {
+      elements.versionDisplay.textContent = `V${manifest.version}`;
+    }
 
     // Localize UI
     localizeUI();
