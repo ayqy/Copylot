@@ -224,5 +224,185 @@
   "deleteSelected": {
     "message": "Delete Selected",
     "description": "Delete selected prompts button text"
+  },
+  "syncStatusUnavailable": {
+    "message": "Sync Unavailable",
+    "description": "Sync status when chrome.storage.sync is not available"
+  },
+  "syncStatusSyncing": {
+    "message": "Syncing...",
+    "description": "Sync status when a sync is in progress"
+  },
+  "syncStatusFailed": {
+    "message": "Sync Failed",
+    "description": "Sync status when a sync has failed"
+  },
+  "syncSuccess": {
+    "message": "Data synced successfully",
+    "description": "Notification message for successful manual sync"
+  },
+  "syncFailure": {
+    "message": "Sync failed: {error}",
+    "description": "Notification message for failed manual sync, with a placeholder for the error message"
+  },
+  "justNow": {
+    "message": "Just now",
+    "description": "Relative time format for events that just happened"
+  },
+  "minutesAgo": {
+    "message": "{minutes}m ago",
+    "description": "Relative time format for events that happened minutes ago"
+  },
+  "hoursAgo": {
+    "message": "{hours}h ago",
+    "description": "Relative time format for events that happened hours ago"
+  },
+  "daysAgo": {
+    "message": "{days}d ago",
+    "description": "Relative time format for events that happened days ago"
+  },
+  "usageCount": {
+    "message": "{count} uses",
+    "description": "Usage count format for a prompt"
+  },
+  "newPromptTitle": {
+    "message": "New Prompt",
+    "description": "Title for the prompt editor modal when creating a new prompt"
+  },
+  "confirmDeleteSelectedTitle": {
+    "message": "Delete {count} prompts?",
+    "description": "Confirmation title for deleting selected prompts"
+  },
+  "confirmDeleteSelectedMessage": {
+    "message": "Are you sure you want to delete the selected {count} prompts? This action cannot be undone.",
+    "description": "Confirmation message for deleting selected prompts"
+  },
+  "deleteSuccessMessage": {
+    "message": "Deleted {count} prompts.",
+    "description": "Notification message after successfully deleting prompts"
+  },
+  "errorNoPromptsSelected": {
+    "message": "Please select prompts to delete.",
+    "description": "Error message when trying to delete without selecting any prompts"
+  },
+  "duplicateSuffix": {
+    "message": " (copy)",
+    "description": "Suffix added to the title of a duplicated prompt"
+  },
+  "duplicateSuccessMessage": {
+    "message": "Prompt duplicated successfully.",
+    "description": "Notification message after successfully duplicating a prompt"
+  },
+  "confirmDeleteSingleTitle": {
+    "message": "Delete this prompt?",
+    "description": "Confirmation title for deleting a single prompt"
+  },
+  "confirmDeleteSingleMessage": {
+    "message": "Are you sure you want to delete this prompt? This action cannot be undone.",
+    "description": "Confirmation message for deleting a single prompt"
+  },
+  "deleteSingleSuccessMessage": {
+    "message": "Prompt deleted.",
+    "description": "Notification message after successfully deleting a single prompt"
+  },
+  "saveSuccessMessage": {
+    "message": "Prompt saved.",
+    "description": "Notification message after successfully saving a prompt"
+  },
+  "saveSuccessNewPromptMessage": {
+    "message": "Prompt saved! You can now use it by right-clicking selected text on any webpage.",
+    "description": "Notification message after successfully saving a new prompt for the first time"
+  },
+  "errorFillInTitleAndTemplate": {
+    "message": "Please fill in both the title and template fields.",
+    "description": "Error message when trying to save a prompt with empty title or template"
+  },
+  "errorTemplateNeeded": {
+    "message": "Please enter template content first.",
+    "description": "Error message when trying to preview a prompt with no template content"
+  },
+  "exportSuccessMessage": {
+    "message": "Prompts exported successfully.",
+    "description": "Notification message after successfully exporting prompts"
+  },
+  "exportFailedMessage": {
+    "message": "Export failed: {error}",
+    "description": "Notification message when prompt export fails"
+  },
+  "importFailedMessage": {
+    "message": "Import failed: {error}",
+    "description": "Notification message when prompt import fails"
+  },
+  "importSuccessMessage": {
+    "message": "Successfully imported {count} prompts.",
+    "description": "Notification message after successfully importing prompts"
+  },
+  "errorInvalidImportFile": {
+    "message": "Invalid import file format.",
+    "description": "Error message for an invalid import file"
+  },
+  "confirmImportWithDuplicates": {
+    "message": "Found {count} duplicate prompts. Do you want to proceed? Duplicates will be skipped.",
+    "description": "Confirmation message when importing prompts with duplicates"
+  },
+  "previewSampleText": {
+    "message": "This is some sample text to demonstrate the effect of the prompt.",
+    "description": "Default sample text for the prompt preview modal"
+  },
+  "loadingSettingsFailed": {
+    "message": "Failed to load settings.",
+    "description": "Error message when settings fail to load"
+  },
+  "savingFailed": {
+    "message": "Save failed: {error}",
+    "description": "Error message when saving settings fails"
+  },
+  "initializationFailed": {
+    "message": "Initialization failed.",
+    "description": "Error message when the options page fails to initialize"
+  },
+  "justCreated": {
+    "message": "Just created",
+    "description": "Timestamp text for a newly created prompt"
+  },
+  "usageInstructionsTitle": {
+    "message": "💡 How to Use Your Prompts",
+    "description": "Title for the usage instructions card"
+  },
+  "usageStep1Title": {
+    "message": "Select Text",
+    "description": "Title for the first step in usage instructions"
+  },
+  "usageStep1Desc": {
+    "message": ": Select the text you want to process on any webpage.",
+    "description": "Description for the first step in usage instructions"
+  },
+  "usageStep2Title": {
+    "message": "Right-Click Menu",
+    "description": "Title for the second step in usage instructions"
+  },
+  "usageStep2Desc": {
+    "message": ": Right-click the selected text and find 'Magic Copy with Prompt' in the context menu.",
+    "description": "Description for the second step in usage instructions"
+  },
+  "usageStep3Title": {
+    "message": "Choose a Prompt",
+    "description": "Title for the third step in usage instructions"
+  },
+  "usageStep3Desc": {
+    "message": ": Select the prompt template you just created from the submenu.",
+    "description": "Description for the third step in usage instructions"
+  },
+  "usageStep4Title": {
+    "message": "Auto-Copy",
+    "description": "Title for the fourth step in usage instructions"
+  },
+  "usageStep4Desc": {
+    "message": ": The processed text will be automatically copied to your clipboard, ready to be pasted into an AI chat.",
+    "description": "Description for the fourth step in usage instructions"
+  },
+  "gotIt": {
+    "message": "Got It",
+    "description": "Button text to dismiss the usage instructions"
   }
 }
