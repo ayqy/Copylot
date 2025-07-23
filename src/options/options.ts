@@ -167,6 +167,7 @@ async function loadSettings() {
  * 更新同步状态
  */
 function updateSyncStatus() {
+  // 检查Chrome storage API状态
   if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.sync) {
     elements.syncStatusText.textContent = getMessage('syncStatusUnavailable');
     elements.syncStatusBtn.style.color = 'var(--error-color)';
@@ -185,6 +186,7 @@ async function manualSync() {
     elements.syncStatusText.textContent = getMessage('syncStatusSyncing');
     elements.syncStatusBtn.style.color = 'var(--warning-color)';
     
+    // 重新保存设置以触发同步
     await saveSettings({ userPrompts: allPrompts });
     
     elements.syncStatusText.textContent = getMessage('syncStatusConnected');
@@ -225,10 +227,12 @@ function filterAndRenderPrompts() {
  * 从prompt获取分类
  */
 function getCategoryFromPrompt(prompt: Prompt): string {
+  // 优先使用保存的category字段
   if (prompt.category) {
     return prompt.category;
   }
   
+  // 回退到基于preset ID或内容推断分类（用于旧数据兼容性）
   if (prompt.id.includes('summary')) return 'summary';
   if (prompt.id.includes('translate')) return 'translate';
   if (prompt.id.includes('code')) return 'coding';
@@ -371,8 +375,10 @@ function formatUsageCount(count?: number): string {
  * 更新UI状态
  */
 function updateUI() {
+  // 批量操作按钮总是可用，但文本会根据选择状态变化
   elements.batchActionBtn.disabled = false;
   
+  // 更新复选框状态
   document.querySelectorAll('.prompt-card-checkbox').forEach(checkbox => {
     const promptId = (checkbox as HTMLInputElement).getAttribute('data-id');
     if (promptId) {
@@ -465,11 +471,14 @@ function closePromptEditor() {
 function openPreviewModal(template: string) {
   elements.previewModal.style.display = 'flex';
   
+  // 设置示例内容
   const sampleText = elements.previewSample.value || getMessage('previewSampleText');
   elements.previewSample.value = sampleText;
   
+  // 生成预览结果
   updatePreviewResult(template, sampleText);
   
+  // 监听示例内容变化
   elements.previewSample.oninput = () => {
     updatePreviewResult(template, elements.previewSample.value);
   };
@@ -554,6 +563,7 @@ async function savePrompts() {
   try {
     const wasEmpty = allPrompts.length === 0;
     
+    // 显示同步中状态
     elements.syncStatusText.textContent = getMessage('syncStatusSyncing');
     elements.syncStatusBtn.style.color = 'var(--warning-color)';
     
@@ -561,16 +571,21 @@ async function savePrompts() {
     currentSettings.userPrompts = [...allPrompts];
     filterAndRenderPrompts();
     
+    // 同步成功
     elements.syncStatusText.textContent = getMessage('syncStatusConnected');
     elements.syncStatusBtn.style.color = 'var(--success-color)';
     
+    // 如果是第一次创建prompt，显示使用说明
     if (wasEmpty && allPrompts.length === 1) {
       showUsageInstructions();
     }
     
+    // 通知background script更新菜单
     chrome.runtime.sendMessage({ type: 'update-context-menu' });
   } catch (error) {
     console.error('Error saving prompts:', error);
+
+    // 同步失败
     elements.syncStatusText.textContent = getMessage('syncStatusFailed');
     elements.syncStatusBtn.style.color = 'var(--error-color)';
     const errorMessage = (error as Error).message;
@@ -595,6 +610,7 @@ async function savePromptForm(event: Event) {
   const category = elements.promptCategory.value;
   
   if (editingPromptId) {
+    // 编辑现有prompt
     const prompt = allPrompts.find(p => p.id === editingPromptId);
     if (prompt) {
       prompt.title = title;
@@ -602,6 +618,7 @@ async function savePromptForm(event: Event) {
       prompt.category = category;
     }
   } else {
+    // 新建prompt
     const newPrompt: Prompt = {
       id: generateUUID(),
       title,
@@ -649,6 +666,7 @@ function previewPrompt() {
     return;
   }
   
+  // 打开预览模态框
   openPreviewModal(template);
 }
 
@@ -726,10 +744,12 @@ function handleImportPrompts() {
         }
       }
       
+      // 过滤重复的prompts
       const newPrompts = importedPrompts.filter((imported: Prompt) => 
         !allPrompts.some(existing => existing.id === imported.id)
       );
       
+      // 为导入的prompts设置默认值
       newPrompts.forEach((prompt: Prompt) => {
         if (!prompt.usageCount) prompt.usageCount = 0;
         if (!prompt.createdAt) prompt.createdAt = Date.now();
@@ -785,6 +805,7 @@ function closeImportExportModal() {
  * 显示通知
  */
 function showNotification(message: string, type: 'success' | 'error' | 'info' = 'info') {
+  // 创建简单的通知
   const notification = document.createElement('div');
   notification.className = `notification notification-${type}`;
   notification.textContent = message;
@@ -805,10 +826,12 @@ function showNotification(message: string, type: 'success' | 'error' | 'info' = 
   
   document.body.appendChild(notification);
   
+  // 动画显示
   setTimeout(() => {
     notification.style.transform = 'translateX(0)';
   }, 10);
   
+  // 自动移除
   setTimeout(() => {
     notification.style.transform = 'translateX(100%)';
     setTimeout(() => {
@@ -823,64 +846,80 @@ function showNotification(message: string, type: 'success' | 'error' | 'info' = 
  * 设置事件监听器
  */
 function setupEventListeners() {
+  // 监听 storage 变化以实时更新使用次数
   chrome.storage.onChanged.addListener((changes, namespace) => {
     if (changes.copilot_settings && namespace === 'sync') {
       console.debug('Settings changed, reloading data...');
       loadSettings();
     }
   });
-
+  // 搜索和过滤
   elements.searchInput.addEventListener('input', filterAndRenderPrompts);
   elements.categoryFilter.addEventListener('change', filterAndRenderPrompts);
   
+  // 添加prompt按钮
   elements.addPromptBtn.addEventListener('click', () => openPromptEditor());
   elements.createFirstPromptBtn.addEventListener('click', () => openPromptEditor());
   elements.mobileAddBtn.addEventListener('click', () => openPromptEditor());
   
+  // 模态框控制
   elements.closeModalBtn.addEventListener('click', closePromptEditor);
   elements.cancelBtn.addEventListener('click', closePromptEditor);
   elements.promptForm.addEventListener('submit', savePromptForm);
   
+  // 编辑器工具
   elements.insertContentPlaceholder.addEventListener('click', insertContentPlaceholder);
   elements.previewPrompt.addEventListener('click', previewPrompt);
   
+  // 模态框背景点击关闭
   elements.promptEditorModal.addEventListener('click', (e) => {
     if (e.target === elements.promptEditorModal) {
       closePromptEditor();
     }
   });
   
+  // 预览模态框事件
   elements.previewModal.addEventListener('click', (e) => {
     if (e.target === elements.previewModal) {
       closePreviewModal();
     }
   });
   
+  // 预览模态框关闭按钮（从HTML中查找）
   const previewCloseBtn = elements.previewModal.querySelector('.close-btn');
   if (previewCloseBtn) {
     previewCloseBtn.addEventListener('click', closePreviewModal);
   }
   
+  // 隐藏使用说明按钮
   elements.hideInstructionsBtn.addEventListener('click', hideUsageInstructions);
+
+  // 同步状态按钮
   elements.syncStatusBtn.addEventListener('click', manualSync);
+
+  // 导入导出按钮
   elements.importExportBtn.addEventListener('click', showImportExportModal);
   
+  // 导入导出模态框事件
   elements.importExportModal.addEventListener('click', (e) => {
     if (e.target === elements.importExportModal) {
       closeImportExportModal();
     }
   });
   
+  // 导入导出模态框关闭按钮
   const closeImportExportBtn = document.getElementById('close-import-export-btn');
   if (closeImportExportBtn) {
     closeImportExportBtn.addEventListener('click', closeImportExportModal);
   }
   
+  // 预览模态框关闭按钮
   const closePreviewBtn = document.getElementById('close-preview-btn');
   if (closePreviewBtn) {
     closePreviewBtn.addEventListener('click', closePreviewModal);
   }
   
+  // 导入导出模态框内的按钮事件
   const exportBtn = document.getElementById('export-btn');
   const importBtn = document.getElementById('import-btn');
   const tabBtns = document.querySelectorAll('.tab-btn');
@@ -893,14 +932,17 @@ function setupEventListeners() {
     importBtn.addEventListener('click', handleImportPrompts);
   }
   
+  // 标签切换
   tabBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       const target = e.target as HTMLButtonElement;
       const tabName = target.getAttribute('data-tab');
       
+      // 更新活动标签
       tabBtns.forEach(b => b.classList.remove('active'));
       target.classList.add('active');
       
+      // 显示对应内容
       document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.remove('active');
       });
@@ -912,6 +954,7 @@ function setupEventListeners() {
     });
   });
   
+  // 批量操作菜单项事件
   const batchMenuItems = document.querySelectorAll('.batch-menu-item');
   batchMenuItems.forEach(item => {
     item.addEventListener('click', (e) => {
@@ -932,9 +975,11 @@ function setupEventListeners() {
     });
   });
   
+  // 动态绑定prompt卡片事件
   elements.promptsGrid.addEventListener('click', (e) => {
     const target = e.target as Element;
     
+    // 处理复选框点击
     if (target.classList.contains('prompt-card-checkbox')) {
       const checkbox = target as HTMLInputElement;
       const promptId = checkbox.getAttribute('data-id');
@@ -945,6 +990,7 @@ function setupEventListeners() {
       return;
     }
     
+    // 处理操作按钮点击
     const btn = target.closest('.action-btn') as HTMLButtonElement;
     if (btn) {
       const promptId = btn.getAttribute('data-id');
@@ -962,6 +1008,7 @@ function setupEventListeners() {
       return;
     }
     
+    // 处理卡片点击（编辑）
     const card = target.closest('.prompt-card') as HTMLElement;
     if (card) {
       const promptId = card.getAttribute('data-id');
@@ -971,6 +1018,7 @@ function setupEventListeners() {
     }
   });
   
+  // 键盘快捷键
   document.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey) {
       if (e.key === 'n') {
@@ -1011,6 +1059,9 @@ async function initialize() {
   }
 }
 
+// 全局函数已移除，现在使用事件监听器代替内联事件处理器
+
+// 当DOM加载完成时初始化
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initialize);
 } else {
