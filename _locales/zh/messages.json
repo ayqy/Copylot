@@ -242,7 +242,7 @@
     "description": "手动同步成功的通知消息"
   },
   "syncFailure": {
-    "message": "同步失败：{error}",
+    "message": "同步失败：$error$",
     "description": "手动同步失败的通知消息，带有错误信息占位符"
   },
   "justNow": {
@@ -250,19 +250,19 @@
     "description": "刚刚发生的事件的相对时间格式"
   },
   "minutesAgo": {
-    "message": "{minutes}分钟前",
+    "message": "$minutes$分钟前",
     "description": "几分钟前发生的事件的相对时间格式"
   },
   "hoursAgo": {
-    "message": "{hours}小时前",
+    "message": "$hours$小时前",
     "description": "几小时前发生的事件的相对时间格式"
   },
   "daysAgo": {
-    "message": "{days}天前",
+    "message": "$days$天前",
     "description": "几天前发生的事件的相对时间格式"
   },
   "usageCount": {
-    "message": "{count}次使用",
+    "message": "$count$次使用",
     "description": "prompt 的使用次数格式"
   },
   "newPromptTitle": {
@@ -270,15 +270,15 @@
     "description": "创建新 prompt 时，prompt 编辑器模态框的标题"
   },
   "confirmDeleteSelectedTitle": {
-    "message": "删除{count}个Prompt？",
+    "message": "删除$count$个Prompt？",
     "description": "删除所选 prompt 的确认标题"
   },
   "confirmDeleteSelectedMessage": {
-    "message": "您确定要删除所选的{count}个Prompt吗？此操作无法撤销。",
+    "message": "您确定要删除所选的$count$个Prompt吗？此操作无法撤销。",
     "description": "删除所选 prompt 的确认消息"
   },
   "deleteSuccessMessage": {
-    "message": "已删除{count}个Prompt。",
+    "message": "已删除$count$个Prompt。",
     "description": "成功删除 prompt 后的通知消息"
   },
   "errorNoPromptsSelected": {
@@ -326,15 +326,15 @@
     "description": "成功导出 prompts 后的通知消息"
   },
   "exportFailedMessage": {
-    "message": "导出失败：{error}",
+    "message": "导出失败：$error$",
     "description": "导出 prompts 失败时的通知消息"
   },
   "importFailedMessage": {
-    "message": "导入失败：{error}",
+    "message": "导入失败：$error$",
     "description": "导入 prompts 失败时的通知消息"
   },
   "importSuccessMessage": {
-    "message": "成功导入{count}个Prompt。",
+    "message": "成功导入$count$个Prompt。",
     "description": "成功导入 prompts 后的通知消息"
   },
   "errorInvalidImportFile": {
@@ -342,7 +342,7 @@
     "description": "导入文件格式无效时的错误消息"
   },
   "confirmImportWithDuplicates": {
-    "message": "发现{count}个重复的Prompt，是否继续导入？重复的Prompt将被跳过。",
+    "message": "发现$count$个重复的Prompt，是否继续导入？重复的Prompt将被跳过。",
     "description": "导入包含重复 prompts 时的确认消息"
   },
   "previewSampleText": {
@@ -354,7 +354,7 @@
     "description": "设置加载失败时的错误消息"
   },
   "savingFailed": {
-    "message": "保存失败：{error}",
+    "message": "保存失败：$error$",
     "description": "保存设置失败时的错误消息"
   },
   "initializationFailed": {

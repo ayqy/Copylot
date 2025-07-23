@@ -242,7 +242,7 @@
     "description": "Notification message for successful manual sync"
   },
   "syncFailure": {
-    "message": "Sync failed: {error}",
+    "message": "Sync failed: $error$",
     "description": "Notification message for failed manual sync, with a placeholder for the error message"
   },
   "justNow": {
@@ -250,19 +250,19 @@
     "description": "Relative time format for events that just happened"
   },
   "minutesAgo": {
-    "message": "{minutes}m ago",
+    "message": "$minutes$m ago",
     "description": "Relative time format for events that happened minutes ago"
   },
   "hoursAgo": {
-    "message": "{hours}h ago",
+    "message": "$hours$h ago",
     "description": "Relative time format for events that happened hours ago"
   },
   "daysAgo": {
-    "message": "{days}d ago",
+    "message": "$days$d ago",
     "description": "Relative time format for events that happened days ago"
   },
   "usageCount": {
-    "message": "{count} uses",
+    "message": "$count$ uses",
     "description": "Usage count format for a prompt"
   },
   "newPromptTitle": {
@@ -270,15 +270,15 @@
     "description": "Title for the prompt editor modal when creating a new prompt"
   },
   "confirmDeleteSelectedTitle": {
-    "message": "Delete {count} prompts?",
+    "message": "Delete $count$ prompts?",
     "description": "Confirmation title for deleting selected prompts"
   },
   "confirmDeleteSelectedMessage": {
-    "message": "Are you sure you want to delete the selected {count} prompts? This action cannot be undone.",
+    "message": "Are you sure you want to delete the selected $count$ prompts? This action cannot be undone.",
     "description": "Confirmation message for deleting selected prompts"
   },
   "deleteSuccessMessage": {
-    "message": "Deleted {count} prompts.",
+    "message": "Deleted $count$ prompts.",
     "description": "Notification message after successfully deleting prompts"
   },
   "errorNoPromptsSelected": {
@@ -326,15 +326,15 @@
     "description": "Notification message after successfully exporting prompts"
   },
   "exportFailedMessage": {
-    "message": "Export failed: {error}",
+    "message": "Export failed: $error$",
     "description": "Notification message when prompt export fails"
   },
   "importFailedMessage": {
-    "message": "Import failed: {error}",
+    "message": "Import failed: $error$",
     "description": "Notification message when prompt import fails"
   },
   "importSuccessMessage": {
-    "message": "Successfully imported {count} prompts.",
+    "message": "Successfully imported $count$ prompts.",
     "description": "Notification message after successfully importing prompts"
   },
   "errorInvalidImportFile": {
@@ -342,7 +342,7 @@
     "description": "Error message for an invalid import file"
   },
   "confirmImportWithDuplicates": {
-    "message": "Found {count} duplicate prompts. Do you want to proceed? Duplicates will be skipped.",
+    "message": "Found $count$ duplicate prompts. Do you want to proceed? Duplicates will be skipped.",
     "description": "Confirmation message when importing prompts with duplicates"
   },
   "previewSampleText": {
@@ -354,7 +354,7 @@
     "description": "Error message when settings fail to load"
   },
   "savingFailed": {
-    "message": "Save failed: {error}",
+    "message": "Save failed: $error$",
     "description": "Error message when saving settings fails"
   },
   "initializationFailed": {
