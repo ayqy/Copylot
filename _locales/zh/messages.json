@@ -224,5 +224,185 @@
   "deleteSelected": {
     "message": "批量删除",
     "description": "Delete selected prompts button text"
+  },
+  "syncStatusUnavailable": {
+    "message": "同步不可用",
+    "description": "当 chrome.storage.sync 不可用时的同步状态"
+  },
+  "syncStatusSyncing": {
+    "message": "同步中...",
+    "description": "正在进行同步时的同步状态"
+  },
+  "syncStatusFailed": {
+    "message": "同步失败",
+    "description": "同步失败后的同步状态"
+  },
+  "syncSuccess": {
+    "message": "数据同步成功",
+    "description": "手动同步成功的通知消息"
+  },
+  "syncFailure": {
+    "message": "同步失败：{error}",
+    "description": "手动同步失败的通知消息，带有错误信息占位符"
+  },
+  "justNow": {
+    "message": "刚刚",
+    "description": "刚刚发生的事件的相对时间格式"
+  },
+  "minutesAgo": {
+    "message": "{minutes}分钟前",
+    "description": "几分钟前发生的事件的相对时间格式"
+  },
+  "hoursAgo": {
+    "message": "{hours}小时前",
+    "description": "几小时前发生的事件的相对时间格式"
+  },
+  "daysAgo": {
+    "message": "{days}天前",
+    "description": "几天前发生的事件的相对时间格式"
+  },
+  "usageCount": {
+    "message": "{count}次使用",
+    "description": "prompt 的使用次数格式"
+  },
+  "newPromptTitle": {
+    "message": "新建Prompt",
+    "description": "创建新 prompt 时，prompt 编辑器模态框的标题"
+  },
+  "confirmDeleteSelectedTitle": {
+    "message": "删除{count}个Prompt？",
+    "description": "删除所选 prompt 的确认标题"
+  },
+  "confirmDeleteSelectedMessage": {
+    "message": "您确定要删除所选的{count}个Prompt吗？此操作无法撤销。",
+    "description": "删除所选 prompt 的确认消息"
+  },
+  "deleteSuccessMessage": {
+    "message": "已删除{count}个Prompt。",
+    "description": "成功删除 prompt 后的通知消息"
+  },
+  "errorNoPromptsSelected": {
+    "message": "请先选择要删除的Prompt。",
+    "description": "尝试删除但未选择任何 prompt 时的错误消息"
+  },
+  "duplicateSuffix": {
+    "message": " (副本)",
+    "description": "复制的 prompt 标题后缀"
+  },
+  "duplicateSuccessMessage": {
+    "message": "Prompt已成功复制。",
+    "description": "成功复制 prompt 后的通知消息"
+  },
+  "confirmDeleteSingleTitle": {
+    "message": "删除这个Prompt？",
+    "description": "删除单个 prompt 的确认标题"
+  },
+  "confirmDeleteSingleMessage": {
+    "message": "您确定要删除这个Prompt吗？此操作无法撤销。",
+    "description": "删除单个 prompt 的确认消息"
+  },
+  "deleteSingleSuccessMessage": {
+    "message": "Prompt已删除。",
+    "description": "成功删除单个 prompt 后的通知消息"
+  },
+  "saveSuccessMessage": {
+    "message": "Prompt已保存。",
+    "description": "成功保存 prompt 后的通知消息"
+  },
+  "saveSuccessNewPromptMessage": {
+    "message": "Prompt已保存！现在您可以在任意网页中选择文本后右键使用它。",
+    "description": "首次成功保存新 prompt 后的通知消息"
+  },
+  "errorFillInTitleAndTemplate": {
+    "message": "请填写标题和模板内容。",
+    "description": "尝试保的存 prompt 标题或模板为空时的错误消息"
+  },
+  "errorTemplateNeeded": {
+    "message": "请先输入模板内容。",
+    "description": "尝试预览但模板内容为空时的错误消息"
+  },
+  "exportSuccessMessage": {
+    "message": "Prompts导出成功。",
+    "description": "成功导出 prompts 后的通知消息"
+  },
+  "exportFailedMessage": {
+    "message": "导出失败：{error}",
+    "description": "导出 prompts 失败时的通知消息"
+  },
+  "importFailedMessage": {
+    "message": "导入失败：{error}",
+    "description": "导入 prompts 失败时的通知消息"
+  },
+  "importSuccessMessage": {
+    "message": "成功导入{count}个Prompt。",
+    "description": "成功导入 prompts 后的通知消息"
+  },
+  "errorInvalidImportFile": {
+    "message": "无效的导入文件格式。",
+    "description": "导入文件格式无效时的错误消息"
+  },
+  "confirmImportWithDuplicates": {
+    "message": "发现{count}个重复的Prompt，是否继续导入？重复的Prompt将被跳过。",
+    "description": "导入包含重复 prompts 时的确认消息"
+  },
+  "previewSampleText": {
+    "message": "这是一段示例文本，用来演示prompt的效果。",
+    "description": "prompt 预览模态框的默认示例文本"
+  },
+  "loadingSettingsFailed": {
+    "message": "加载设置失败。",
+    "description": "设置加载失败时的错误消息"
+  },
+  "savingFailed": {
+    "message": "保存失败：{error}",
+    "description": "保存设置失败时的错误消息"
+  },
+  "initializationFailed": {
+    "message": "初始化失败。",
+    "description": "选项页面初始化失败时的错误消息"
+  },
+  "justCreated": {
+    "message": "刚刚创建",
+    "description": "新创建的 prompt 的时间戳文本"
+  },
+  "usageInstructionsTitle": {
+    "message": "💡 如何使用您的Prompt",
+    "description": "使用说明卡的标题"
+  },
+  "usageStep1Title": {
+    "message": "选择文本",
+    "description": "使用说明第一步的标题"
+  },
+  "usageStep1Desc": {
+    "message": "：在任意网页中选择您想要处理的文本内容",
+    "description": "使用说明第一步的描述"
+  },
+  "usageStep2Title": {
+    "message": "右键菜单",
+    "description": "使用说明第二步的标题"
+  },
+  "usageStep2Desc": {
+    "message": "：右键点击选中的文本，在菜单中找到“Magic Copy with Prompt”",
+    "description": "使用说明第二步的描述"
+  },
+  "usageStep3Title": {
+    "message": "选择Prompt",
+    "description": "使用说明第三步的标题"
+  },
+  "usageStep3Desc": {
+    "message": "：从子菜单中选择您刚才创建的Prompt模板",
+    "description": "使用说明第三步的描述"
+  },
+  "usageStep4Title": {
+    "message": "自动复制",
+    "description": "使用说明第四步的标题"
+  },
+  "usageStep4Desc": {
+    "message": "：处理后的文本将自动复制到剪贴板，可直接粘贴到AI聊天界面",
+    "description": "使用说明第四步的描述"
+  },
+  "gotIt": {
+    "message": "我知道了",
+    "description": "关闭使用说明的按钮文本"
   }
 }
