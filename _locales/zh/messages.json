@@ -243,7 +243,13 @@
   },
   "syncFailure": {
     "message": "同步失败：$error$",
-    "description": "手动同步失败的通知消息，带有错误信息占位符"
+    "description": "手动同步失败的通知消息，带有错误信息占位符",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "网络错误"
+      }
+    }
   },
   "justNow": {
     "message": "刚刚",
@@ -251,19 +257,43 @@
   },
   "minutesAgo": {
     "message": "$minutes$分钟前",
-    "description": "几分钟前发生的事件的相对时间格式"
+    "description": "几分钟前发生的事件的相对时间格式",
+    "placeholders": {
+      "minutes": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "hoursAgo": {
     "message": "$hours$小时前",
-    "description": "几小时前发生的事件的相对时间格式"
+    "description": "几小时前发生的事件的相对时间格式",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "daysAgo": {
     "message": "$days$天前",
-    "description": "几天前发生的事件的相对时间格式"
+    "description": "几天前发生的事件的相对时间格式",
+    "placeholders": {
+      "days": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
   },
   "usageCount": {
     "message": "$count$次使用",
-    "description": "prompt 的使用次数格式"
+    "description": "prompt 的使用次数格式",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "newPromptTitle": {
     "message": "新建Prompt",
@@ -271,15 +301,33 @@
   },
   "confirmDeleteSelectedTitle": {
     "message": "删除$count$个Prompt？",
-    "description": "删除所选 prompt 的确认标题"
+    "description": "删除所选 prompt 的确认标题",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
   },
   "confirmDeleteSelectedMessage": {
     "message": "您确定要删除所选的$count$个Prompt吗？此操作无法撤销。",
-    "description": "删除所选 prompt 的确认消息"
+    "description": "删除所选 prompt 的确认消息",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
   },
   "deleteSuccessMessage": {
     "message": "已删除$count$个Prompt。",
-    "description": "成功删除 prompt 后的通知消息"
+    "description": "成功删除 prompt 后的通知消息",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
   },
   "errorNoPromptsSelected": {
     "message": "请先选择要删除的Prompt。",
@@ -327,15 +375,33 @@
   },
   "exportFailedMessage": {
     "message": "导出失败：$error$",
-    "description": "导出 prompts 失败时的通知消息"
+    "description": "导出 prompts 失败时的通知消息",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "权限被拒绝"
+      }
+    }
   },
   "importFailedMessage": {
     "message": "导入失败：$error$",
-    "description": "导入 prompts 失败时的通知消息"
+    "description": "导入 prompts 失败时的通知消息",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "文件格式无效"
+      }
+    }
   },
   "importSuccessMessage": {
     "message": "成功导入$count$个Prompt。",
-    "description": "成功导入 prompts 后的通知消息"
+    "description": "成功导入 prompts 后的通知消息",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "errorInvalidImportFile": {
     "message": "无效的导入文件格式。",
@@ -343,7 +409,13 @@
   },
   "confirmImportWithDuplicates": {
     "message": "发现$count$个重复的Prompt，是否继续导入？重复的Prompt将被跳过。",
-    "description": "导入包含重复 prompts 时的确认消息"
+    "description": "导入包含重复 prompts 时的确认消息",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "previewSampleText": {
     "message": "这是一段示例文本，用来演示prompt的效果。",
@@ -355,7 +427,13 @@
   },
   "savingFailed": {
     "message": "保存失败：$error$",
-    "description": "保存设置失败时的错误消息"
+    "description": "保存设置失败时的错误消息",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "权限被拒绝"
+      }
+    }
   },
   "initializationFailed": {
     "message": "初始化失败。",

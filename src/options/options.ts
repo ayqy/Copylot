@@ -350,9 +350,9 @@ function formatTimeAgo(timestamp?: number): string {
   const diffDay = Math.floor(diffHour / 24);
   
   if (diffSec < 60) return getMessage('justNow');
-  if (diffMin < 60) return getMessage('minutesAgo', { minutes: diffMin });
-  if (diffHour < 24) return getMessage('hoursAgo', { hours: diffHour });
-  if (diffDay < 7) return getMessage('daysAgo', { days: diffDay });
+  if (diffMin < 60) return getMessage('minutesAgo', [diffMin.toString()]);
+  if (diffHour < 24) return getMessage('hoursAgo', [diffHour.toString()]);
+  if (diffDay < 7) return getMessage('daysAgo', [diffDay.toString()]);
   
   const date = new Date(timestamp);
   const year = date.getFullYear();
@@ -368,7 +368,7 @@ function formatTimeAgo(timestamp?: number): string {
  * 格式化使用次数
  */
 function formatUsageCount(count?: number): string {
-  return getMessage('usageCount', { count: count || 0 });
+  return getMessage('usageCount', [(count || 0).toString()]);
 }
 
 /**
@@ -427,11 +427,11 @@ async function deleteSelectedPrompts() {
   }
   
   const count = selectedPrompts.size;
-  if (confirm(getMessage('confirmDeleteSelectedMessage', { count }))) {
+      if (confirm(getMessage('confirmDeleteSelectedMessage', [count.toString()]))) {
     allPrompts = allPrompts.filter(p => !selectedPrompts.has(p.id));
     selectedPrompts.clear();
     await savePrompts();
-    showNotification(getMessage('deleteSuccessMessage', { count }), 'success');
+          showNotification(getMessage('deleteSuccessMessage', [count.toString()]), 'success');
   }
 }
 
@@ -589,7 +589,7 @@ async function savePrompts() {
     elements.syncStatusText.textContent = getMessage('syncStatusFailed');
     elements.syncStatusBtn.style.color = 'var(--error-color)';
     const errorMessage = (error as Error).message;
-    showNotification(getMessage('savingFailed', { error: errorMessage }), 'error');
+    showNotification(getMessage('savingFailed', [errorMessage]), 'error');
   }
 }
 
@@ -707,7 +707,7 @@ function handleExportPrompts() {
   } catch (error) {
     console.error('Export failed:', error);
     const errorMessage = (error as Error).message;
-    showNotification(getMessage('exportFailedMessage', { error: errorMessage }), 'error');
+          showNotification(getMessage('exportFailedMessage', [errorMessage]), 'error');
   }
 }
 
@@ -739,7 +739,7 @@ function handleImportPrompts() {
       ).length;
       
       if (duplicateCount > 0) {
-        if (!confirm(getMessage('confirmImportWithDuplicates', { count: duplicateCount }))) {
+        if (!confirm(getMessage('confirmImportWithDuplicates', [duplicateCount.toString()]))) {
           return;
         }
       }
@@ -758,12 +758,12 @@ function handleImportPrompts() {
       allPrompts.push(...newPrompts);
       await savePrompts();
       
-      showNotification(getMessage('importSuccessMessage', { count: newPrompts.length }), 'success');
+      showNotification(getMessage('importSuccessMessage', [newPrompts.length.toString()]), 'success');
       closeImportExportModal();
     } catch (error) {
       console.error('Import failed:', error);
       const errorMessage = (error as Error).message;
-      showNotification(getMessage('importFailedMessage', { error: errorMessage }), 'error');
+      showNotification(getMessage('importFailedMessage', [errorMessage]), 'error');
     }
   };
   

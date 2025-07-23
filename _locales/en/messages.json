@@ -243,7 +243,13 @@
   },
   "syncFailure": {
     "message": "Sync failed: $error$",
-    "description": "Notification message for failed manual sync, with a placeholder for the error message"
+    "description": "Notification message for failed manual sync, with a placeholder for the error message",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Network error"
+      }
+    }
   },
   "justNow": {
     "message": "Just now",
@@ -251,19 +257,43 @@
   },
   "minutesAgo": {
     "message": "$minutes$m ago",
-    "description": "Relative time format for events that happened minutes ago"
+    "description": "Relative time format for events that happened minutes ago",
+    "placeholders": {
+      "minutes": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "hoursAgo": {
     "message": "$hours$h ago",
-    "description": "Relative time format for events that happened hours ago"
+    "description": "Relative time format for events that happened hours ago",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "daysAgo": {
     "message": "$days$d ago",
-    "description": "Relative time format for events that happened days ago"
+    "description": "Relative time format for events that happened days ago",
+    "placeholders": {
+      "days": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
   },
   "usageCount": {
     "message": "$count$ uses",
-    "description": "Usage count format for a prompt"
+    "description": "Usage count format for a prompt",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "newPromptTitle": {
     "message": "New Prompt",
@@ -271,15 +301,33 @@
   },
   "confirmDeleteSelectedTitle": {
     "message": "Delete $count$ prompts?",
-    "description": "Confirmation title for deleting selected prompts"
+    "description": "Confirmation title for deleting selected prompts",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
   },
   "confirmDeleteSelectedMessage": {
     "message": "Are you sure you want to delete the selected $count$ prompts? This action cannot be undone.",
-    "description": "Confirmation message for deleting selected prompts"
+    "description": "Confirmation message for deleting selected prompts",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
   },
   "deleteSuccessMessage": {
     "message": "Deleted $count$ prompts.",
-    "description": "Notification message after successfully deleting prompts"
+    "description": "Notification message after successfully deleting prompts",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
   },
   "errorNoPromptsSelected": {
     "message": "Please select prompts to delete.",
@@ -327,15 +375,33 @@
   },
   "exportFailedMessage": {
     "message": "Export failed: $error$",
-    "description": "Notification message when prompt export fails"
+    "description": "Notification message when prompt export fails",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Permission denied"
+      }
+    }
   },
   "importFailedMessage": {
     "message": "Import failed: $error$",
-    "description": "Notification message when prompt import fails"
+    "description": "Notification message when prompt import fails",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Invalid file format"
+      }
+    }
   },
   "importSuccessMessage": {
     "message": "Successfully imported $count$ prompts.",
-    "description": "Notification message after successfully importing prompts"
+    "description": "Notification message after successfully importing prompts",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "errorInvalidImportFile": {
     "message": "Invalid import file format.",
@@ -343,7 +409,13 @@
   },
   "confirmImportWithDuplicates": {
     "message": "Found $count$ duplicate prompts. Do you want to proceed? Duplicates will be skipped.",
-    "description": "Confirmation message when importing prompts with duplicates"
+    "description": "Confirmation message when importing prompts with duplicates",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "previewSampleText": {
     "message": "This is some sample text to demonstrate the effect of the prompt.",
@@ -355,7 +427,13 @@
   },
   "savingFailed": {
     "message": "Save failed: $error$",
-    "description": "Error message when saving settings fails"
+    "description": "Error message when saving settings fails",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Permission denied"
+      }
+    }
   },
   "initializationFailed": {
     "message": "Initialization failed.",
