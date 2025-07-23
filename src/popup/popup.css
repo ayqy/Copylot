@@ -59,7 +59,7 @@ body {
 
 /* Form Sections */
 #settings-form {
-  padding: 20px;
+  padding: 10px;
 }
 
 .section {
@@ -145,6 +145,7 @@ body {
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  padding: 6px;
   border-radius: 8px;
   transition: background-color 0.2s ease;
   flex: 1; /* Allow items to grow */
@@ -216,7 +217,7 @@ body {
 /* Footer */
 .footer {
   background-color: #f9fafb;
-  padding: 16px 20px;
+  padding: 6px 10px;
   border-top: 1px solid #e5e7eb;
 }
 
@@ -382,8 +383,7 @@ input:checked + .slider:before {
   font-weight: 600;
   color: #111827;
   font-size: 14px;
-  max-width: 80px;
-  min-width: 50px;
+  width: 60px;
   flex-shrink: 0;
 }
 
@@ -451,6 +451,15 @@ input:checked + .slider:before {
 }
 
 /* Dark mode support (if needed) */
+/* Style adjustments for English version */
+:lang(en) {
+  body {
+    font-size: 12px;
+  }
+  .radio-option {
+    padding: 6px;
+  }
+}
 @media (prefers-color-scheme: dark) {
   body {
     background: #111827;
