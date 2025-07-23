@@ -259,7 +259,6 @@ body {
 
 .switch-label {
   font-size: 14px; /* Matches general font size */
-  color: #ffffff; /* Changed to white color */
   /* If you want it to behave like .checkbox-option text, ensure padding and alignment match */
 }
 
