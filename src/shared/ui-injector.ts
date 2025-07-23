@@ -244,8 +244,10 @@ export function showButton(
     // Use requestAnimationFrame to ensure DOM updates are complete
     requestAnimationFrame(() => {
       if (currentTargetElement) {
-        // Save original outline instead of border
-        currentTargetElement.dataset.originalOutline = currentTargetElement.style.outline;
+        // Only save original outline if it hasn't been saved yet
+        if (currentTargetElement.dataset.originalOutline === undefined) {
+          currentTargetElement.dataset.originalOutline = currentTargetElement.style.outline || '';
+        }
         // Use outline instead of border to avoid being covered by cell borders
         currentTargetElement.style.setProperty('outline', '2px solid #4F46E5', 'important');
       }
@@ -258,11 +260,22 @@ export function hideButton(button: HTMLElement, currentTargetElement: HTMLElemen
   updateButtonState(button, 'copy'); // Reset to default state
 
   if (currentTargetElement) {
-    // Remove the forced outline style and restore original
+    // First, remove the !important outline style that was set in showButton
     currentTargetElement.style.removeProperty('outline');
-    if (currentTargetElement.dataset.originalOutline) {
-      currentTargetElement.style.outline = currentTargetElement.dataset.originalOutline;
+    
+    // Then restore the original outline if it exists
+    if (currentTargetElement.dataset.originalOutline !== undefined) {
+      const originalOutline = currentTargetElement.dataset.originalOutline;
+      if (originalOutline && originalOutline !== 'none' && originalOutline !== '') {
+        currentTargetElement.style.outline = originalOutline;
+      } else {
+        // If original was 'none' or empty, explicitly set to 'none'
+        currentTargetElement.style.outline = 'none';
+      }
       delete currentTargetElement.dataset.originalOutline;
+    } else {
+      // If no original outline was saved, ensure outline is cleared
+      currentTargetElement.style.outline = 'none';
     }
   }
 }

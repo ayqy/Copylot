@@ -520,7 +520,9 @@ function handleMouseOver(event: MouseEvent): void {
 
   const targetElement = event.target as Element;
 
-  if (!targetElement || !(targetElement instanceof Element)) return;
+  if (!targetElement || !(targetElement instanceof Element)) {
+    return;
+  }
 
   // Do not trigger hover if the mouse is over the copy button itself
   if (copyButtonElement && copyButtonElement.contains(targetElement)) {
@@ -528,6 +530,7 @@ function handleMouseOver(event: MouseEvent): void {
   }
 
   const tagName = targetElement.tagName.toLowerCase();
+  
   if (HOVER_TARGET_TAGS.includes(tagName)) {
     let width = 0;
     let height = 0;
@@ -548,7 +551,7 @@ function handleMouseOver(event: MouseEvent): void {
       width = rect.width;
       height = rect.height;
     }
-
+    
     if (width < 50 && height < 50) {
       // If the element is too small, also ensure any existing button is hidden,
       // especially if the mouse quickly moved from a valid target to a small icon.
@@ -572,7 +575,9 @@ function handleMouseOut(event: MouseEvent): void {
   const targetElement = event.target as Element;
   const relatedTarget = event.relatedTarget as Element;
 
-  if (!currentTarget || !(targetElement instanceof Element)) return;
+  if (!currentTarget || !(targetElement instanceof Element)) {
+    return;
+  }
 
   // If the mouse is moving to the copy button, don't hide.
   if (copyButtonElement && relatedTarget && copyButtonElement.contains(relatedTarget)) {
@@ -584,9 +589,14 @@ function handleMouseOut(event: MouseEvent): void {
     return;
   }
 
-  // Hide if the mouse is leaving the currentTarget and not entering the button or a child.
-  if (targetElement === currentTarget) {
-    hideMagicCopy();
+  // Hide if the mouse is leaving the currentTarget or its children and not entering the button or a child.
+  const targetInCurrent = currentTarget.contains(targetElement) || targetElement === currentTarget;
+  const relatedOutsideCurrent = !relatedTarget || !currentTarget.contains(relatedTarget);
+  
+  if (targetInCurrent) {
+    if (relatedOutsideCurrent) {
+      hideMagicCopy();
+    }
   }
 }
 
