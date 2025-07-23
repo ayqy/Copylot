@@ -580,7 +580,7 @@ function handleMouseOut(event: MouseEvent): void {
   }
 
   // If the mouse is moving to a child of the currentTarget, don't hide.
-  if (currentTarget.contains(relatedTarget)) {
+  if (currentTarget.contains(relatedTarget) && relatedTarget !== document.body && relatedTarget !== document.documentElement) {
     return;
   }
 
