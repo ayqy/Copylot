@@ -131,12 +131,12 @@ function processElementWithMixedContent(element: Element, tables: HTMLTableEleme
   });
 
   // 1. 先将整个克隆元素（已确保可见性）转换为Markdown
+  // 关键修复：确保这里使用 GFM 服务
   let fullMarkdown = convertToMarkdown(element);
 
   // 2. 遍历所有检测到的表格，进行文本替换
   tables.forEach((table, index) => {
     // a. 将原始表格的HTML也转换为Markdown，作为被替换的目标
-    // 注意：这里的转换需要和 convertToMarkdown 中的规则一致，特别是 GFM 插件的使用
     const originalTableMarkdown = convertHtmlToMarkdown(table.outerHTML);
     
     // b. 根据设置，生成最终的表格内容（Markdown 或 CSV）
@@ -144,9 +144,7 @@ function processElementWithMixedContent(element: Element, tables: HTMLTableEleme
     if (settings.tableOutputFormat === 'csv') {
       finalTableContent = convertTableToCSV(table);
     } else {
-      // 如果目标就是Markdown，那么 finalTableContent 和 originalTableMarkdown 应该是一样的
-      // 但为了逻辑清晰，我们还是重新计算
-      finalTableContent = convertHtmlToMarkdown(table.outerHTML);
+      finalTableContent = originalTableMarkdown; // 如果目标是MD，直接使用已生成的
     }
 
     console.debug(`AI Copilot: Table ${index} replacement`, {
@@ -155,8 +153,6 @@ function processElementWithMixedContent(element: Element, tables: HTMLTableEleme
     });
 
     // 3. 在完整的Markdown文本中执行替换
-    // Turndown 可能会在表格前后添加额外的换行符，我们需要考虑到这一点
-    // 通过对 target 进行 trim() 来提高匹配的稳健性
     if (originalTableMarkdown.trim()) {
       fullMarkdown = fullMarkdown.replace(originalTableMarkdown, finalTableContent);
     }
@@ -412,7 +408,8 @@ function formatCSVField(text: string): string {
 
 
 export function convertToMarkdown(element: Element): string {
-  const turndown = getTurndownService();
+  // 始终使用 GFM 服务来确保表格等元素被正确处理
+  const turndown = getGfmTurndownService();
   try {
     if (element instanceof HTMLTableElement) {
       // Use the new HTML to Markdown converter for tables
