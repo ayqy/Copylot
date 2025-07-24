@@ -123,86 +123,47 @@ export function processElementWithTableDetection(element: Element, settings: Set
  * @returns 处理后的内容
  */
 function processElementWithMixedContent(element: Element, tables: HTMLTableElement[], settings: Settings): string {
-  console.debug('AI Copilot: processElementWithMixedContent - Start', {
+  console.debug('AI Copilot: processElementWithMixedContent (text-replacement strategy) - Start', {
     elementTag: element.tagName,
     tablesCount: tables.length,
     tableOutputFormat: settings.tableOutputFormat,
     outputFormat: settings.outputFormat
   });
-  
-  // 使用已过滤的可见克隆，避免二次包含隐藏内容
-  const clonedElement = createVisibleClone(element);
-  
-  // 存储表格内容和对应的placeholder信息
-  const tableReplacements: { 
-    originalPlaceholder: string; 
-    processedPlaceholder: string; 
-    content: string 
-  }[] = [];
-  
-  // 处理每个表格，生成对应的内容和placeholder
-  tables.forEach((originalTable, index) => {
-    let tableContent: string;
+
+  // 1. 先将整个克隆元素（已确保可见性）转换为Markdown
+  let fullMarkdown = convertToMarkdown(element);
+
+  // 2. 遍历所有检测到的表格，进行文本替换
+  tables.forEach((table, index) => {
+    // a. 将原始表格的HTML也转换为Markdown，作为被替换的目标
+    // 注意：这里的转换需要和 convertToMarkdown 中的规则一致，特别是 GFM 插件的使用
+    const originalTableMarkdown = convertHtmlToMarkdown(table.outerHTML);
     
+    // b. 根据设置，生成最终的表格内容（Markdown 或 CSV）
+    let finalTableContent: string;
     if (settings.tableOutputFormat === 'csv') {
-      tableContent = convertTableToCSV(originalTable);
-      console.debug(`AI Copilot: Table ${index} CSV content:`, tableContent);
+      finalTableContent = convertTableToCSV(table);
     } else {
-      tableContent = convertHtmlToMarkdown(originalTable.outerHTML);
-      console.debug(`AI Copilot: Table ${index} Markdown content:`, tableContent);
+      // 如果目标就是Markdown，那么 finalTableContent 和 originalTableMarkdown 应该是一样的
+      // 但为了逻辑清晰，我们还是重新计算
+      finalTableContent = convertHtmlToMarkdown(table.outerHTML);
     }
-    
-    // 创建唯一的、不会被转义的placeholder
-    const placeholder = `MAGIC_COPY_TABLE_HOLDER_${index}`;
-    
-    tableReplacements.push({ 
-      originalPlaceholder: placeholder,
-      processedPlaceholder: placeholder, // 新的placeholder不会被turndown转义，所以两者相同
-      content: tableContent 
+
+    console.debug(`AI Copilot: Table ${index} replacement`, {
+      target: originalTableMarkdown,
+      replacement: finalTableContent
     });
-    
-    console.debug(`AI Copilot: Table ${index} placeholder:`, placeholder);
-  });
-  
-  console.debug('AI Copilot: Table replacements:', tableReplacements);
-  
-  // 在克隆元素中用placeholder替换表格
-  const clonedTables = Array.from(clonedElement.querySelectorAll('table'));
-  clonedTables.forEach((table, index) => {
-    if (index < tableReplacements.length) {
-      // 创建文本节点替换表格
-      const textNode = document.createTextNode(tableReplacements[index].originalPlaceholder);
-      table.parentNode?.replaceChild(textNode, table);
-      console.debug(`AI Copilot: Replaced table ${index} with placeholder:`, tableReplacements[index].originalPlaceholder);
+
+    // 3. 在完整的Markdown文本中执行替换
+    // Turndown 可能会在表格前后添加额外的换行符，我们需要考虑到这一点
+    // 通过对 target 进行 trim() 来提高匹配的稳健性
+    if (originalTableMarkdown.trim()) {
+      fullMarkdown = fullMarkdown.replace(originalTableMarkdown, finalTableContent);
     }
   });
-  
-  // 处理剩余内容（现在包含placeholder）
-  let content: string;
-  if (settings.outputFormat === 'markdown') {
-    content = convertToMarkdown(clonedElement);
-  } else {
-    content = convertToPlainText(clonedElement);
-  }
-  
-  console.debug('AI Copilot: Content with placeholders:', content);
-  
-  // 将处理后的placeholder替换为实际的表格内容
-  tableReplacements.forEach((replacement, index) => {
-    const beforeReplacement = content;
-    // 使用处理后的placeholder进行替换
-    content = content.replace(replacement.processedPlaceholder, replacement.content);
-    console.debug(`AI Copilot: Replaced placeholder ${index}:`, {
-      placeholder: replacement.processedPlaceholder,
-      content: replacement.content,
-      beforeReplacement: beforeReplacement,
-      afterReplacement: content,
-      found: beforeReplacement !== content
-    });
-  });
-  
-  console.debug('AI Copilot: processElementWithMixedContent - End, returning:', content);
-  return content;
+
+  console.debug('AI Copilot: processElementWithMixedContent - End, returning:', fullMarkdown);
+  return fullMarkdown;
 }
 
 function getTurndownService() {
