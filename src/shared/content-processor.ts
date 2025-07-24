@@ -152,31 +152,16 @@ function processElementWithMixedContent(element: Element, tables: HTMLTableEleme
       console.debug(`AI Copilot: Table ${index} Markdown content:`, tableContent);
     }
     
-    // 创建唯一的placeholder
-    const originalPlaceholder = `__MAGIC_COPY_TABLE_${index}__`;
-    
-    // 用turndown处理placeholder，看看它会变成什么样
-    let processedPlaceholder: string;
-    if (settings.outputFormat === 'markdown') {
-      const tempDiv = document.createElement('div');
-      tempDiv.textContent = originalPlaceholder;
-      processedPlaceholder = convertToMarkdown(tempDiv);
-    } else {
-      const tempDiv = document.createElement('div');
-      tempDiv.textContent = originalPlaceholder;
-      processedPlaceholder = convertToPlainText(tempDiv);
-    }
+    // 创建唯一的、不会被转义的placeholder
+    const placeholder = `MAGIC_COPY_TABLE_HOLDER_${index}`;
     
     tableReplacements.push({ 
-      originalPlaceholder, 
-      processedPlaceholder, 
+      originalPlaceholder: placeholder,
+      processedPlaceholder: placeholder, // 新的placeholder不会被turndown转义，所以两者相同
       content: tableContent 
     });
     
-    console.debug(`AI Copilot: Table ${index} placeholders:`, {
-      original: originalPlaceholder,
-      processed: processedPlaceholder
-    });
+    console.debug(`AI Copilot: Table ${index} placeholder:`, placeholder);
   });
   
   console.debug('AI Copilot: Table replacements:', tableReplacements);
@@ -207,9 +192,8 @@ function processElementWithMixedContent(element: Element, tables: HTMLTableEleme
     const beforeReplacement = content;
     // 使用处理后的placeholder进行替换
     content = content.replace(replacement.processedPlaceholder, replacement.content);
-    console.debug(`AI Copilot: Replaced processed placeholder ${index}:`, {
-      originalPlaceholder: replacement.originalPlaceholder,
-      processedPlaceholder: replacement.processedPlaceholder,
+    console.debug(`AI Copilot: Replaced placeholder ${index}:`, {
+      placeholder: replacement.processedPlaceholder,
       content: replacement.content,
       beforeReplacement: beforeReplacement,
       afterReplacement: content,
