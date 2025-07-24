@@ -618,8 +618,8 @@ async function initializeContentScript(): Promise<void> {
     // Listen for settings changes from the popup/options page.
     if (chrome.storage && chrome.storage.onChanged) {
       chrome.storage.onChanged.addListener((changes, areaName) => {
-        // @ts-ignore: SETTINGS_KEY, getSystemLanguage are from inlined settings-manager.ts
-        if (areaName === 'local' && changes[SETTINGS_KEY]) {
+        // @ts-ignore: SETTINGS_KEY is available from inlined settings-manager.ts
+        if (areaName === 'sync' && changes[SETTINGS_KEY]) {
           const oldSettings = userSettings ? { ...userSettings } : null;
           // @ts-ignore: SETTINGS_KEY is available from inlined settings-manager.ts
           const newSettingsValue = changes[SETTINGS_KEY].newValue as Settings;
@@ -629,8 +629,11 @@ async function initializeContentScript(): Promise<void> {
             // @ts-ignore
             newSettingsValue.language = getSystemLanguage();
           }
+
           userSettings = newSettingsValue;
           console.debug('AI Copilot: Settings updated through storage listener.', userSettings);
+          console.debug('AI Copilot: Table output format is now:', userSettings?.tableOutputFormat);
+
 
           // Check if the isMagicCopyEnabled setting has changed
           if (oldSettings?.isMagicCopyEnabled !== userSettings.isMagicCopyEnabled) {
@@ -639,12 +642,6 @@ async function initializeContentScript(): Promise<void> {
             } else {
               disableMagicCopyFeatures();
             }
-          }
-
-          // Check if the interactionMode has changed
-          if (oldSettings?.interactionMode !== userSettings.interactionMode) {
-            // No need to enable/disable features, just log the change
-            console.debug('AI Copilot: Interaction mode changed to', userSettings.interactionMode);
           }
         }
       });
