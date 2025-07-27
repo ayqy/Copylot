@@ -1,4 +1,4 @@
-# AI Copilot – MagicCopy
+# Copylot
 
 A Chrome browser extension that intelligently copies web page content in AI-friendly formats.
 

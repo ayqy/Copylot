@@ -1,6 +1,6 @@
 {
   "appName": {
-    "message": "AI Copilot – MagicCopy",
+    "message": "Copylot",
     "description": "Extension name"
   },
   "appDescription": {
@@ -123,7 +123,7 @@
     "message": "Manage Prompts"
   },
   "optionsTitle": {
-    "message": "Prompt Manager - AI Copilot"
+    "message": "Prompt Manager - Copylot"
   },
   "promptManagerTitle": {
     "message": "Private Prompt Manager"
