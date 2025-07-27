@@ -1,0 +1,317 @@
+/* 品牌色定义 */
+:root {
+    --brand-primary: #4f46e5;
+    --brand-secondary: #e0e7ff;
+    --brand-accent: #c7d2fe;
+    --brand-light: #f8fafc;
+    --brand-dark: #1e293b;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --white: #ffffff;
+}
+
+/* 基础样式重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--brand-light);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* 主容器 */
+.animation-container {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* 背景渐变 */
+.background-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        var(--brand-secondary) 0%, 
+        var(--brand-accent) 25%, 
+        var(--brand-primary) 50%, 
+        var(--brand-accent) 75%, 
+        var(--brand-secondary) 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 8s ease-in-out infinite;
+    z-index: -1;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* 内容包装器 */
+.content-wrapper {
+    text-align: center;
+    z-index: 1;
+    padding: 2rem;
+    max-width: 800px;
+    width: 100%;
+}
+
+/* 标题区域 */
+.title-section {
+    margin-bottom: 3rem;
+}
+
+.main-title {
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--brand-primary);
+    text-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+/* 动画区域 */
+.animation-section {
+    margin-bottom: 3rem;
+}
+
+.letter-display {
+    font-size: 6rem;
+    font-weight: 700;
+    font-family: 'Inter', monospace;
+    color: var(--brand-primary);
+    text-shadow: 0 0 30px rgba(79, 70, 229, 0.4);
+    min-height: 8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.letter-display.changing {
+    animation: letterGlow 0.047s ease-in-out; /* 47ms，与JS动画同步 */
+}
+
+@keyframes letterGlow {
+    0%, 100% { 
+        text-shadow: 0 0 30px rgba(79, 70, 229, 0.4);
+        transform: scale(1);
+    }
+    50% { 
+        text-shadow: 0 0 50px rgba(79, 70, 229, 0.8), 0 0 80px rgba(79, 70, 229, 0.6);
+        transform: scale(1.05);
+    }
+}
+
+.animation-description {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.animation-description p {
+    margin-bottom: 0.5rem;
+}
+
+/* 品牌信息区域 */
+.brand-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.brand-color-palette {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.color-swatch {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 3px solid var(--white);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+
+.color-swatch.primary {
+    background: var(--brand-primary);
+}
+
+.color-swatch.secondary {
+    background: var(--brand-secondary);
+}
+
+.color-swatch.accent {
+    background: var(--brand-accent);
+}
+
+.brand-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* SVG容器 */
+.svg-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 2.5rem;
+    }
+    
+    .letter-display {
+        font-size: 4rem;
+        min-height: 6rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+    
+    .animation-description {
+        font-size: 1rem;
+    }
+    
+    .content-wrapper {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-title {
+        font-size: 2rem;
+    }
+    
+    .letter-display {
+        font-size: 3rem;
+        min-height: 5rem;
+    }
+    
+    .brand-color-palette {
+        gap: 0.5rem;
+    }
+    
+    .color-swatch {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+}
+
+/* 特殊字母样式 */
+.letter-i {
+    color: var(--white);
+    position: relative;
+    transition: all 0.047s ease; /* 47ms，与JS动画同步 */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.letter-y {
+    color: var(--white);
+    position: relative;
+    transition: all 0.047s ease; /* 47ms，与JS动画同步 */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.letter-other {
+    color: var(--brand-primary);
+    position: relative;
+    transition: all 0.047s ease; /* 47ms，与JS动画同步 */
+}
+
+.letter-changing {
+    color: var(--white);
+    position: relative;
+    transition: all 0.047s ease; /* 47ms，与JS动画同步 */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes letterMorph {
+    0% {
+        transform: scale(1) rotate(0deg);
+        color: var(--brand-primary);
+    }
+    25% {
+        transform: scale(1.2) rotate(5deg);
+        color: var(--brand-accent);
+    }
+    50% {
+        transform: scale(1.1) rotate(-3deg);
+        color: var(--brand-secondary);
+    }
+    75% {
+        transform: scale(1.15) rotate(2deg);
+        color: var(--brand-accent);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        color: var(--brand-primary);
+    }
+}
+
+/* 字母变化时的特殊效果 */
+.letter-changing::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, var(--brand-primary) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: all 0.047s ease; /* 47ms，与JS动画同步 */
+}
+
+.letter-changing.active::before {
+    width: 100px;
+    height: 100px;
+    opacity: 0.3;
+    animation: ripple 0.047s ease-out; /* 47ms，与JS动画同步 */
+}
+
+@keyframes ripple {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0.6;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+} 
