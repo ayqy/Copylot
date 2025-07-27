@@ -144,7 +144,7 @@ function localizeUI() {
     }
   });
 
-  document.title = getMessage('optionsTitle') || 'Prompt Manager - AI Copilot';
+  document.title = getMessage('optionsTitle') || 'Prompt Manager - Copylot';
 }
 
 /**

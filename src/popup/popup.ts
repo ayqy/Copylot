@@ -109,7 +109,7 @@ function localizeUI() {
   });
 
   // Set page title
-  document.title = chrome.i18n.getMessage('appName') || 'AI Copilot Settings';
+  document.title = chrome.i18n.getMessage('appName') || 'Copylot Settings';
 }
 
 /**
