@@ -1,242 +1,113 @@
-# Copylot
+# AI Copilot – MagicCopy v1.1.3 用户手册
 
-A Chrome browser extension that intelligently copies web page content in AI-friendly formats.
+欢迎使用 AI Copilot – MagicCopy！本插件旨在帮助您轻松、智能地复制网页内容，并将其转换为对AI友好的格式，极大地提升您与AI助手协作的效率。
 
-## Features
+## 功能介绍
 
-- 🎯 **Smart Content Detection**: Automatically identifies viable content blocks on web pages.
-- ✨ **Smart Table Conversion**: Intelligently copies tables into Markdown or CSV formats.
-- 📝 **Multiple Output Formats**: Copy content as clean Markdown or plain text.
-- ✨ **Professional Code Block Cleaning**: Automatically removes line numbers, prompts, and other "clutter" from copied code blocks, delivering clean, runnable code.
-- 🔄 **Customizable Prompts**: Create, manage, and use your own prompts to format copied text for AI models.
-- 🖱️ **Flexible Interaction Modes**: Activate by single-click or double-click, configurable via settings.
-- ✨ **Hover-to-Copy for Media**: Instantly copy images, videos, and other media elements just by hovering over them.
-- 🌐 **Full Page Conversion**: Convert the entire page content with a single click from the context menu.
-- 🔧 **Developer Tools**: Inspect element details, including selectors and attributes, directly in Chrome DevTools.
-- 🌍 **Internationalization**: Supports English and Chinese interfaces.
-- ⚙️ **Customizable & Controllable**:
-  - Enable or disable the Magic Copy feature entirely with a single switch.
-  - Configure output format, what metadata to attach (title, URL), and interaction preferences.
-- 🎨 **Modern UI**: Beautiful and responsive popup interface.
-- 🚀 **High Performance**: Built with performance in mind, ensuring a smooth user experience.
-- ➕ **Clipboard Accumulator**: Consecutively copy multiple blocks of content and merge them into a single clipboard entry.
+MagicCopy 是一款旨在解决您在浏览网页、收集资料时“复制粘贴”痛点的浏览器插件。它不是简单的复制，而是智能地提取、清理和格式化网页内容，使其完美适配您与 AI 助手（如 ChatGPT、Kimi）的协作或本地笔记（如 Obsidian、Notion）的整理需求。
 
-## Installation
+我们的核心目标是：**让您从网页上复制的任何内容，无需二次整理，即可直接使用。**
 
-### For Development
+---
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/ayqy/copy.git
-   cd copy
-   ```
+### ⭐ 核心功能亮点
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+1.  **【智能识别与提取】—— 告别无关信息**
+    -   **场景：** 当您想复制一篇博客文章或新闻报道时，常常会不小心带上导航栏、广告、推荐阅读等多余内容。
+    -   **MagicCopy 解决方案：** 只需在文章主体上轻轻一点，MagicCopy 会自动识别核心内容区域，并生成一份干净、整洁、排除所有干扰的 Markdown 文本。
 
-3. Build the extension:
-   ```bash
-   npm run build
-   ```
+2.  **【追加复制模式 (Append Mode)】—— 跨页面信息整合利器**
+    -   **场景：** 您正在为一份报告或论文查阅资料，需要在多个不同的网页、甚至同一页面的不同段落中摘取信息。传统的“复制-切换窗口-粘贴”操作流繁琐且低效。
+    -   **MagicCopy 解决方案：**
+        -   在需要追加复制时，**按住 `Shift` 键再点击复制**。
+        -   MagicCopy 会将新复制的内容自动追加到剪贴板中，并用美观的分隔符 `---` 隔开。
+        -   插件图标上会显示一个角标，实时告诉您已经合并了多少条内容。
+        -   所有资料收集完毕后，一次性粘贴即可，所有内容井井有条。
 
-4. Load in Chrome:
-   - Open Chrome and go to `chrome://extensions/`
-   - Enable "Developer mode"
-   - Click "Load unpacked" and select the `dist` folder
+3.  **【网页表格一键转换 (CSV & Markdown)】—— 数据工作者的福音**
+    -   **场景：** 从网页上复制表格数据是一场灾难。格式混乱、对不齐，无法直接粘贴到 Excel、Google Sheets 或数据库中。
+    -   **MagicCopy 解决方案：**
+        -   当您点击网页上的任意表格时，MagicCopy 会将其完整识别。
+        -   您可以选择将表格一键转换为 **CSV** 格式，完美导入各类数据分析工具。
+        -   您也可以选择将其转换为 **Markdown** 格式，轻松粘贴到 Notion、GitHub 或其他支持 Markdown 的文档平台，保持清晰的表格结构。
 
-### For Production
+4.  **【代码块专业级清理】—— 开发者必备**
+    -   **场景：** 从技术博客或论坛（如 Stack Overflow）复制代码时，常常会带上行号、`$` 或 `>` 等命令行提示符，甚至还有“复制”按钮的文本，这些“杂质”使得代码无法直接运行。
+    -   **MagicCopy 解决方案：** 它能精准识别代码块 (`<pre>`/`<code>`)，并在复制时自动执行以下清理，得到纯净代码：
+        -   **自动移除**行尾的 “Copy”、“复制代码” 等多余文本。
+        -   **智能反转义**网页上被错误处理的特殊字符，确保代码的准确性。
+        -   **完整保留**原始的缩进和格式，代码结构不被破坏。
 
-Download the latest release from the Chrome Web Store (coming soon).
+5.  **【私人 Prompt 管理器】—— 打造您的专属 AI 工作流**
+    -   **场景：** 您经常需要让 AI 对复制的内容执行相同的操作，例如“翻译成英文”、“总结这段话”、“为这段代码写注释”等，每次都要手动输入一遍指令，非常重复。
+    -   **MagicCopy 解决方案：**
+        -   内置强大的 **Prompt 管理器**，您可以将这些常用指令创建为模板（例如：“请将以下内容翻译成英文：\n\n{content}”）。`{content}` 是一个占位符，代表您复制的内容。
+        -   在网页上选中文字，通过右键菜单或悬浮按钮，选择您预设好的 Prompt。
+        -   MagicCopy 会自动将 **“您的指令” + “您复制的内容”** 合并成一段完整的文本复制到剪贴板。您只需粘贴给 AI，即可获得结果。
+        -   所有 Prompt **通过浏览器账户云端同步**，您在任何一台电脑上配置的 Prompt 都会自动同步，无需重复设置。
 
-## Usage
+### ▶️ 基础功能
 
-There are three main ways to use Magic Copy:
+-   **多种交互模式：** 支持**单击**、**双击**或**悬停**触发复制，可在设置中自由切换。
+-   **格式选择：** 支持输出为 **Markdown** 或 **纯文本**。
+-   **附加来源信息：** 可选在复制内容末尾自动附上页面的**标题和URL**，方便溯源。
 
-### 1. On-Page Interaction (Click or Hover)
+## 如何使用
 
-This is the primary way to copy specific content blocks.
+### 1. 安装与启用
 
-1.  **Activate**:
-    *   **Click/Double-Click**: Click (or double-click, depending on your settings) on any text content you wish to copy.
-    *   **Hover**: Alternatively, hover your mouse over images, videos, SVGs, canvases, or other media elements.
-2.  **See the Copy Button**: A blue copy button will appear near your cursor, and the targeted content block will be highlighted with a border.
-3.  **Expand Selection (for Text)**:
-    *   If the initial selection is too narrow (e.g., a single word), press and hold the `Alt` key (`Option` on macOS).
-    *   The highlighted selection will expand to its parent block. You can press `Alt` multiple times to expand further.
-    *   The copy button's position **will not change** during this process.
-4.  **Click to Copy**: Click the blue button to copy the content of the currently highlighted block.
+从Chrome网上应用店或其他官方渠道安装插件后，MagicCopy默认启用。您可以在浏览器的插件管理页面随时禁用或启用它。
 
-### 2. Full Page Conversion (Context Menu)
+![01-toolbar-icon.jpg](docs/imgs/01-toolbar-icon.jpg)
 
-To copy the entire content of a page in a clean format:
+### 2. 基本复制操作
 
-1.  **Right-click** anywhere on the page.
-2.  Select **"Convert Page to AI-Friendly Format"** from the context menu.
-3.  The entire page's content will be instantly copied to your clipboard.
+- **选择复制模式**：点击浏览器工具栏上的MagicCopy图标，在弹出的菜单中可以设置交互模式（单击/双击）和是否启用悬停触发。
 
-### 3. Using Custom Prompts (Context Menu)
+![02-popup-menu.jpg](docs/imgs/02-popup-menu.jpg)
 
-1.  **Select Text**: Highlight any text on a web page.
-2.  **Right-click**: Open the context menu.
-3.  **Choose Prompt**: Navigate to "Magic Copy with Prompt" and select one of your custom prompts.
-4.  **Formatted Text is Copied**: The selected text will be inserted into your prompt template, and the final result is copied to your clipboard.
 
-### 4. Configure Settings & Manage Prompts
+- **执行复制**：
+    - **单击/双击**：在网页上找到您想复制的内容区域，单击或双击（取决于您的设置），内容块会被高亮显示，此时已成功复制到剪贴板。
 
-Click the extension icon in the Chrome toolbar to open the popup, where you can:
-- Enable or disable Magic Copy entirely.
-- Switch between single-click and double-click activation.
-- Enable or disable the hover-to-copy feature for media.
-- Choose your preferred output format (Markdown/Plain Text).
-- **For tables, choose between Markdown and CSV format.**
-- Decide whether to include the page title and URL in the copied content.
-- **Manage Prompts**: Add, edit, delete, and reorder your custom prompts.
+![03-highlight-copy.jpg](docs/imgs/03-highlight-copy.jpg)
 
-## Settings
+    - **悬停**：将鼠标移动到内容块上，旁边会出现MagicCopy的图标，点击它即可复制。
 
-- **Output Format**: Choose between Markdown and Plain Text
-- **Table Copy Format**: Choose between Markdown and CSV
-- **Additional Info**: Optionally attach page title and/or source URL
-- **Language**: Select interface language (System, English, or Chinese)
-- **Clipboard Accumulator**: Enable or disable the clipboard accumulator feature. When enabled, holding `Shift` while clicking the copy button will append the content to a temporary stack. A regular click will merge all stacked content and copy it to the clipboard.
+![04-hover-icon.jpg](docs/imgs/04-hover-icon.jpg)
 
-## Technical Details
 
-### Architecture
+### 3. 使用右键菜单
 
-- **Manifest V3**: Uses the latest Chrome extension standard
-- **TypeScript**: Fully typed codebase for better reliability
-- **Modular Design**: Separated concerns with shared utilities
-- **Performance Optimized**: Uses RequestIdleCallback and debounced events
+在页面任意位置点击右键，您会看到MagicCopy相关的选项：
 
-### Project Structure
+- **转换为AI友好格式**：将整个页面的主要内容复制为Markdown。
+- **智能复制+自定义提示**：这会弹出一个包含您预设Prompt的菜单。选择一个Prompt，MagicCopy会将当前选中的文本（或整个页面内容，如果未选择文本）与Prompt结合后复制到剪贴板。
 
-```
-src/
-├── content/          # Content script
-├── popup/           # Extension popup UI
-├── shared/          # Shared utilities
-│   ├── block-identifier.ts    # Content detection logic
-│   ├── ui-injector.ts        # Button injection and management
-│   ├── content-processor.ts  # Content formatting
-│   └── settings-manager.ts   # Settings management
-├── assets/          # Icons and static assets
-└── background.ts    # Background service worker
-```
+![05-context-menu.jpg](docs/imgs/05-context-menu.jpg)
 
-### Build System
+### 4. 管理您的Prompt
 
-- **Custom Inlining Script**: `scripts/inline-build.ts` preprocesses `src/content/content.ts` by inlining shared modules (from `src/shared/`) directly into it. This creates a single, cohesive content script ready for Vite.
-- **Vite**: Modern build tool then compiles the preprocessed content script and other assets (popup, background script).
-- **ESLint + Prettier**: Code quality and formatting.
-- **Sharp**: Icon generation from PNG/SVG (auto-detects source format).
+1. 右键点击浏览器工具栏上的MagicCopy图标，选择“选项”。
+2. 在打开的“Prompt管理器”页面，您可以：
+    - **新建Prompt**：点击“新建Prompt”，为您的常用操作创建模板，例如“总结以下内容：{content}”、“将{content}翻译成英文”等。`{content}`是您复制内容的占位符。
+    - **管理**：对现有的Prompt进行搜索、编辑、删除和分类。
+    - **导入/导出**：方便地备份和分享您的Prompt库。
 
-## Development
+![06-prompt-manager.jpg](docs/imgs/06-prompt-manager.jpg)
 
-### Scripts
+![07-prompt-editor.jpg](docs/imgs/07-prompt-editor.jpg)
 
-- `npm run dev`: Watch mode for development
-- `npm run build`: Production build
-- `npm run lint`: Run ESLint
-- `npm run format`: Format code with Prettier
-- `npm run type-check`: TypeScript type checking
+### 5. 设置
 
-### Publishing Process
+点击浏览器工具栏上的MagicCopy图标，可以进行一些常用设置：
 
-To create a new release of the extension, use the automated publish script:
+- **输出格式**：选择Markdown或纯文本。
+- **附加信息**：选择是否在复制内容中包含页面标题和URL。
+- **追加模式**：临时启用或禁用追加复制功能。
 
-```bash
-npm run publish
-```
+![08-settings-popup.jpg](docs/imgs/08-settings-popup.jpg)
 
-This script will guide you through the following steps:
+---
 
-1.  **Version Bump**: Automatically suggests a new version number (patch increment) based on `manifest.json`. You will be asked to confirm.
-2.  **Git Commit & Tag**: Commits the version change with a message like `chore: bump version to x.y.z` and creates a Git tag `vx.y.z`.
-3.  **Build**: Runs `npm run build` to generate the production-ready extension files in the `dist/` directory.
-4.  **Testing Confirmation**: Prompts you to confirm that you have tested the built extension.
-5.  **Packaging**: Zips the contents of the `dist/` directory into `plugin-vx.y.z.zip`. The full path to this zip file will be displayed.
-6.  **GitHub Release**:
-    *   If GitHub CLI (`gh`) is installed and configured, it will attempt to create a new GitHub Release, using the tag and uploading the zip file.
-    *   If `gh` is not available or fails, you will be prompted to create the GitHub Release manually. The script will provide the necessary tag name and the path to the zip file.
-7.  **Push to Remote**: Asks for final confirmation before pushing the commit and the new tag to the remote repository.
-
-**Dependencies for the publish script:**
-
-*   **Git**: Must be installed and available in your system's PATH.
-*   **zip**: The `zip` command-line utility must be installed.
-    *   On macOS: Usually pre-installed.
-    *   On Linux: `sudo apt-get install zip` (Debian/Ubuntu) or `sudo yum install zip` (Fedora/CentOS).
-    *   On Windows: You might need to install it separately (e.g., via [Git for Windows SDK](https://gitforwindows.org/) which includes common Unix tools, or other sources).
-*   **GitHub CLI (`gh`)** (Optional, for automatic GitHub Release creation):
-    *   **Installation**:
-        *   On macOS: `brew install gh`
-        *   On Linux: See [installation guide](https://cli.github.com/manual/installation)
-        *   On Windows: See [installation guide](https://cli.github.com/manual/installation)
-    *   **Authentication**: After installation, you need to authenticate with your GitHub account:
-        *   Run `gh auth login` and follow the prompts
-        *   For detailed authentication options, see the [official documentation](https://cli.github.com/manual/gh_auth_login)
-
-## Developer Tools
-
-For web developers and QA engineers, Magic Copy includes a handy DevTools panel.
-
-1.  **Open DevTools**: Press `F12` or right-click on the page and select "Inspect".
-2.  **Go to Elements Panel**: Select the "Elements" tab.
-3.  **Find MagicCopy Sidebar**: In the right-hand pane (where you usually see Styles, Computed, etc.), find and click on the "MagicCopy" tab.
-4.  **Inspect Elements**: As you select different elements in the Elements panel, the MagicCopy sidebar will display a structured JSON object containing:
-    - `tagName`
-    - Important `attributes` (like `id`, `class`, `data-*`, etc.)
-    - `innerText`
-    - `selectors` (including CSS, XPath, and a stable selector)
-5.  **Copy Details**: Click the "Copy" button in the sidebar to copy the complete JSON object to your clipboard.
-
-### Testing
-
-Load the extension in Chrome's developer mode and test on various websites.
-
-1.  **Settings Panel**:
-    - Toggle the main "Enable Magic Copy" switch. Verify all on-page features (click, hover) are disabled/enabled.
-    - Switch between "Single Click" and "Double Click" interaction modes and test the activation behavior on text elements.
-    - Toggle "Enable Hover-to-Copy". Verify that hovering over media elements does/does not activate the copy button.
-    - Test all other settings (output format, attach info) and ensure they are applied correctly.
-
-2.  **On-Page Functionality**:
-    - **Click/Dbl-Click**: Test on various text elements. Verify the button appears and the element is bordered. Check that it doesn't appear on non-viable elements.
-- **Table Selection**: Click inside any part of a table (`<td>`, `<th>`, `<tr>`). The entire `<table>` should be highlighted and become the copy target.
-    - **Selection Expansion**: On a small text element, use the `Alt`/`Option` key to expand the selection. Verify the border updates while the button position remains static.
-    - **Hover-to-Copy**: Hover over images, videos, SVGs, etc. Verify the button appears and content is copied correctly. Ensure it doesn't trigger for very small media elements.
-
-3.  **Context Menu**:
-    - Right-click on a page and select "Convert Page to AI-Friendly Format".
-    - Paste the content and verify it represents the entire page's text in the correct format.
-
-4.  **DevTools Panel**:
-    - Open the DevTools and navigate to the MagicCopy sidebar in the Elements panel.
-    - Select various elements on the page and confirm the JSON details are displayed correctly.
-    - Test the "Copy" button in the sidebar.
-
-## Browser Compatibility
-
-- Chrome 88+ (Manifest V3 requirement)
-- Chromium-based browsers (Edge, Brave, etc.)
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and ensure linting passes
-5. Submit a pull request
-
-## License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
-## Support
-
-- Report bugs: [GitHub Issues](https://github.com/ayqy/copy/issues)
-- Feature requests: [GitHub Discussions](https://github.com/ayqy/copy/discussions)
-- Documentation: [GitHub Wiki](https://github.com/ayqy/copy/wiki)
+希望这份指南能帮助您更好地使用AI Copilot – MagicCopy，让您的网页信息处理和AI协作流程更加顺畅高效！如果您有任何问题或建议，欢迎通过插件设置页面中的“反馈与建议”链接与我们联系。 
