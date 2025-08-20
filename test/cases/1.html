@@ -1,0 +1,734 @@
+<html lang="en"><head>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-V8B90DGEJV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-V8B90DGEJV");
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+      My AI Code Prep &amp; Cline Workflow for Budget Coding/Debugging (Part 2)
+    </title>
+    <meta name="description" content="A personal guide on using AI Code Prep GUI, Cline, and various free AI web interfaces like Gemini, Grok, Deepseek, and Poe for cost-effective coding and debugging.">
+<!-- Removed unused Roboto font import -->
+    <meta name="keywords" content="AI coding, vibe coding, debug, free AI, Cline, AI Code Prep GUI, VS Code, Gemini AI Studio, OpenRouter, ChatGPT, Perplexity AI, Deepseek, Grok, Poe, Github Copilot, budget AI, coding workflow, LLM, large language model">
+    <link rel="stylesheet" href="style-addedinfo.css?v=1.2">
+  <style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style id="ai-copilot-styles">
+    @keyframes ai-copilot-success {
+      0% {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      50% {
+        box-shadow: 0 4px 20px rgba(5, 150, 105, 0.4), 0 0 0 4px rgba(5, 150, 105, 0.2);
+      }
+      100% {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    }
+    
+
+    @keyframes ai-copilot-error {
+      0% {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      50% {
+        box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4), 0 0 0 4px rgba(220, 38, 38, 0.2);
+      }
+      100% {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    }
+    
+    #ai-copilot-copy-btn {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      position: relative;
+    }
+    
+    .ai-copilot-prompt-menu {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    .ai-copilot-prompt-item:hover {
+      background-color: rgb(79, 70, 229) !important;
+    }
+  </style></head>
+  <body>
+    <div class="main-content" style="outline: none;">
+      <!-- Navigation Top -->
+      <div style="text-align: center; margin-bottom: 20px">
+        <a href="aiguide1.html" style="font-size: 1.2em">&lt;--</a>
+        &nbsp;<b>Page 2/3</b>&nbsp;
+        <span style="font-size: 1.5em">&nbsp;•&nbsp;</span>
+        <a href="aiguide3.html" style="font-size: 1.2em">--&gt;</a>
+      </div>
+      <div class="top-button-container">
+        <a href="https://wuu73.org" target="_blank" rel="noopener noreferrer" class="top-button">Visit wuu73.org</a>
+      </div>
+      <div style="font-size: 0.95em; color: #aaa; margin-bottom: 15px">
+        Last updated: July 2025
+      </div>
+      <h2>Model Strategy: Picking the Right Brain for the Job</h2>
+      <p>
+        Since many great models are free to use via web interfaces (like Gemini
+        in
+        <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer">AI Studio</a>,
+        <a href="https://grok.com/" target="_blank" rel="noopener noreferrer">Grok</a>,
+        <a href="https://chat.deepseek.com/" target="_blank" rel="noopener noreferrer">Deepseek</a>), I prioritize these.
+        <a href="https://poe.com/" target="_blank" rel="noopener noreferrer">Poe.com</a>
+        also gives free daily credits for top models like Claude and the new o4
+        series.
+      </p>
+      <p>
+        <strong>Gemini 2.5 Pro</strong> (via
+        <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer">AI Studio</a>) is great for debugging, great for planning, and also finding it the
+        best at lots of things now. For really thorny issues, I might try the
+        new <strong>o4-mini</strong> (available via
+        <a href="https://openrouter.ai/" target="_blank" rel="noopener noreferrer">OpenRouter</a>
+        or
+        <a href="https://poe.com/" target="_blank" rel="noopener noreferrer">Poe</a>). It surprisingly fixed a persistent bug for me right away, though I'm
+        still figuring out its best use cases. It's notably cheaper via API than
+        the previous top dogs like Claude 3.5/3.7/4.
+      </p>
+      <p>
+        I usually try <strong>Claude 3.7 or 4</strong> at some point, via
+        <a href="https://poe.com/" target="_blank" rel="noopener noreferrer">Poe</a>
+        or API (<a href="https://openrouter.ai/" target="_blank" rel="noopener noreferrer">OpenRouter</a>
+        makes this easy), or github Copilot chat (you can get some free usage from that if you don't pay) but it's pricier for frequent use. Think of Claude 3.7 and 4 
+        as Claude on Adderall – brilliant, sometimes verbose, maybe a bit
+        'psychotic' like Hunter S. Thompson. Lots of great output, but you might
+        need a calmer model like <strong>Claude 3.5</strong> to refine it or do
+        the actual coding.
+      </p>
+      <p>
+        <strong>Gemini 2.5 Pro</strong> (via
+        <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer">AI Studio</a>) is great for debugging, great for planning, and also finding it the
+        best at lots of things now. The new <strong>Gemini 2.5 Pro</strong> model shows even better performance across coding tasks. For really thorny issues, I might try the
+        new <strong>o4-mini</strong> (available via
+        <a href="https://openrouter.ai/" target="_blank" rel="noopener noreferrer">OpenRouter</a>
+        or
+        <a href="https://poe.com/" target="_blank" rel="noopener noreferrer">Poe</a>). It surprisingly fixed a persistent bug for me right away, though I'm
+        still figuring out its best use cases. It's notably cheaper via API than
+        the previous top dogs like Claude 3.5/3.7.
+      </p>
+      <p>For really hard problems, try using OpenAI's o3 or GLM 4.5, Qwen3 Coder 480b. You can get lots of free daily tokens if you set your account to allow sharing of your data to help train models. Go to the Open AI Playground page, click the settings icon in the upper right, then click Data Controls on the left sidebar, then Sharing on the displayed page, there you can change the "Share inputs and outputs with OpenAI" setting to Enabled, which will give you:
+        </p><ul>
+          <li>Up to 250 thousand tokens per day across gpt-5, gpt-4.1, gpt-4o, o1 and o3</li>
+          <li>Up to 2.5 million tokens per day across gpt-4.1-mini, gpt-4.1-nano, gpt-4o-mini, o1-mini, o3-mini, o4-mini, and codex-mini-latest</li>
+        </ul>
+        <p>This is really awesome, o3 and GPT 4.5 seem super genius! Sometimes in the OpenAI Playground, I have it set up to use o3 and o4-mini side-by-side, to compare them. This helps me get a feel for which ones are best for which types of problems.</p>
+      <p></p>
+      <p>
+        <strong>Claude 4 and 3.7</strong> is always a good option to try and fix hard problems quickly, it is just harder to access it for cheap or free. But it is often the best out of them all. When you really need to fix something fast, use it.
+        <a href="https://poe.com/" target="_blank" rel="noopener noreferrer">Poe</a>
+        has free tokens for all models, daily. <a href="https://openrouter.ai/" target="_blank" rel="noopener noreferrer">OpenRouter</a>
+        has all models paid and/or free. Claude 3.7
+        is Claude on caffeine – brilliant, sometimes verbose, maybe a bit
+        'psychotic' like Hunter S. Thompson. Lots of great output, but you might
+        need a calmer model like <strong>Claude 3.5 / 4</strong> to refine it or do
+        the actual coding.
+      </p>
+      <h2>The Hybrid Approach: Premium Planning + Budget Execution</h2>
+      <p>
+        After extensive testing with various models, I've developed a hybrid strategy that maximizes both quality and cost-effectiveness. The key insight is that different models excel at different parts of the development process.
+      </p>
+      <h2 class="gradient2thoughts">My "smart juice" theory of model intelligence - How Models become stupid under certain circumstances</h2>
+      <p>
+        AI models are usually smarter the less text you send to them. Think of each model as having a fixed amount of "intelligence" or "smart juice" available for every question or problem you ask. When you send a simple, focused prompt, nearly 100% of that intelligence is available to solve your problem. But the more complex your input—long agentic instructions about how to use tools, lots of context unrelated to your specific problem, or multiple pages of code—the more of that "smart juice" gets used up just processing the unrelated stuff like how it can use tools in your IDE, leaving less intelligence energy available for your actual problem.
+      </p>
+      <p>
+        This is why tools like Cursor, Cline, and other agentic systems can sometimes seem less effective: if they send five giant pages of instructions and context before even getting to your real question, the model's available intelligence for your specific problem drops. The more "stuff" you send, the more diluted the model's focus becomes. For best results, keep your prompts as concise and targeted as possible—curate the context so the model can use its full intelligence on what matters most.
+      </p>
+      <p>
+        When you have a hard problem or bug, you will usually save time by using AI Code Prep to dump it into a web chat (as discussed on page 1 of this guide). It cuts out all the extra instructions and stuff that get sent in agentic IDEs/apps. I noticed that this works better even if you give the AI ALL of the files from your project. The agentic instructions/stuff/bloat that is unrelated to your actual problem is the content that seems to make the AI dumber/run out of juice.
+      </p>
+      <p>
+        <strong>My Workflow is something like this when starting a new project:</strong>
+      </p>
+      <ol>
+        <li>
+          <strong>Plan &amp; Brainstorm:</strong> Use the smarter/free web models
+          (Gemini 2.5, o4-mini, Claude 3.7, 4, o3, etc) to figure out the approach, plan the steps, identify
+          libraries, etc.
+        </li>
+        <li>
+          <strong>Generate Agent Prompt:</strong> Ask one of these smart models:
+          "Write a detailed-enough prompt for
+          <a href="https://cline.bot/" target="_blank" rel="noopener noreferrer">Cline</a>, my AI coding agent, to complete the following tasks: [describe
+          tasks]". Sometimes, I'll copy this generated prompt and paste it into
+          <em>another</em> free AI good at rewriting (like
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>) to refine it further.
+        </li>
+        <li>
+          <strong>Execute with Cline:</strong> Paste the step-by-step task list
+          into
+          <a href="https://cline.bot/" target="_blank" rel="noopener noreferrer">Cline</a>, configured to use a stable and efficient model like
+          <strong>GPT 4.1 or Claude 3.5</strong> (or Claude 4 if it is doing really complicated things). The 4.1's have been trained to
+          follow instructions well.
+        </li>
+        <li>
+          <strong>Fallback:</strong> If GPT 4.1 struggles, switch
+          <a href="https://cline.bot/" target="_blank" rel="noopener noreferrer">Cline</a>
+          to use <strong>Claude 3.5</strong> via API. It seems to be the next
+            best for reliable execution. <a href="https://chat.deepseek.com/" target="_blank" rel="noopener noreferrer">Deepseek v3 or R1</a> is really great at following instructions as well.
+        </li>
+      </ol>
+      <p>
+        Essentially: Use expensive/smart models (and the excellent free Gemini
+        2.5 Pro) to strategize and plan. Validate the plan by pasting it into
+        2-3 other free models (<a href="https://chat.deepseek.com/" target="_blank" rel="noopener noreferrer">Deepseek R1</a>, Claude on
+        <a href="https://poe.com/" target="_blank" rel="noopener noreferrer">Poe</a>
+        if context allows) and ask "Is this good? Can you improve it or find
+        flaws?". Then, use a stable workhorse like GPT 4.1 or Claude 3.5 within
+        <a href="https://cline.bot/" target="_blank" rel="noopener noreferrer">Cline</a>
+        to do the heavy lifting (coding).
+      </p>
+      <p>
+        <strong>o4-mini</strong> seems particularly adept at untangling complex
+        code logic or figuring out high-level implementation strategies (like
+        choosing frameworks or libraries). I'll often throw my initial idea at
+        Gemini 2.5, o4-mini, GPT 4.1,
+        <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>, maybe o3-mini (try
+        <a href="https://duckduckgo.com/chat" target="_blank" rel="noopener noreferrer">duck.ai</a>
+        - often free), and
+        <a href="https://phind.com" target="_blank" rel="noopener noreferrer">Phind</a>
+        to get a range of ideas. If the free/cheap options don't crack it, I'll
+        escalate to pricier models via API.
+      </p>
+      <h2>Alternative Agents &amp; Setups</h2>
+      <p>
+        <a href="https://trae.ai/" target="_blank" rel="noopener noreferrer">Trae.ai</a>
+        (from Bytedance, makers of TikTok) is a free VS Code compatible IDE with free AI usage, including Claude 4, Claude 3.7, Claude 3.5, and GPT 4.1. Their agents aren't as good as Cline (nothing is as good, to be honest!) but it's free and gives access to the best models.
+        Sometimes, I find its built-in agent isn't as robust as
+        <a href="https://cline.bot/" target="_blank" rel="noopener noreferrer">Cline</a>. However, since
+        <a href="https://trae.ai/" target="_blank" rel="noopener noreferrer">Trae</a>
+        seems to be a VS Code clone, you can likely install the
+        <a href="https://cline.bot/" target="_blank" rel="noopener noreferrer">Cline</a>
+        extension within it! However... it is too overloaded to get any free usage from it, its too slow. I'll still mention it though.. but meh.
+      </p>
+      <p>So, you could have two setups:</p>
+      <ul>
+        <li>
+          VS Code +
+          <a href="https://cline.bot/" target="_blank" rel="noopener noreferrer">Cline</a>
+          extension +
+          <a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer">Copilot</a>
+          extension (get the $10/mo subscription for cheap API access via Cline,
+          though the free tier might offer some basic use).
+        </li>
+        <li>
+          <a href="https://trae.ai/" target="_blank" rel="noopener noreferrer">Trae.ai</a>
+          +
+          <a href="https://cline.bot/" target="_blank" rel="noopener noreferrer">Cline</a>
+          extension (potentially leveraging Trae's free model access if Cline
+          can use it, or using your own API keys).
+        </li>
+      </ul>
+      <p>
+        Try both! Sometimes the native
+        <a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer">Copilot</a>
+        agent solves things
+        <a href="https://cline.bot/" target="_blank" rel="noopener noreferrer">Cline</a>
+        struggles with, and vice-versa. I suspect
+        <a href="https://cline.bot/" target="_blank" rel="noopener noreferrer">Cline</a>
+        sometimes sends overly large prompts which might hinder performance on
+        certain tasks compared to the more integrated Copilot agent.
+      </p>
+      <h3>Roo Code: Cline's Clone</h3>
+      <div class="model-card">
+        <h4>Roo Code</h4>
+        <p>
+          Roo Code is a clone of Cline, very similar but with some different features that are worth trying out. Sometimes Cline might work better for your workflow, and sometimes Roo Code will. It's a good idea to try both and see which fits your needs for a given project or coding style.
+        </p>
+      </div>
+      <p>
+        <a href="https://cline.bot/" target="_blank" rel="noopener noreferrer">Cline</a>
+        for VS Code is free, but remember you pay for the API calls unless
+        you're leveraging the
+        <a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer">Copilot</a>
+        subscription trick. Using the VS Code LM API setting in
+        <a href="https://cline.bot/" target="_blank" rel="noopener noreferrer">Cline</a>
+        with a $10/month Copilot sub is currently the most cost-effective way to
+        get near-unlimited access to powerful models within the agent.
+      </p>
+      <div class="model-card-red">
+        <h4>New CLI Tools: Claude Code, Qwen Code, Gemini CLI</h4>
+        <p>
+          There’s a lot of buzz about new CLI tools for coding, especially <strong>Claude Code</strong>, <strong>Qwen Code</strong>, and <strong>Gemini CLI</strong>. People rave about Claude Code’s capabilities, though I haven’t tried it myself yet. When I do, I plan to set it up to use <strong>GLM 4.5</strong> instead (there’s a guide for this on the z.ai website).
+        </p>
+        <p>
+          Claude Code supports subagents—these are agents that only do one task and don’t use extra tools. This setup can mimic the streamlined workflow described in this guide, focusing the model’s intelligence on a single job. Subagents are a clever way to avoid the “bloat” of agentic instructions and keep things efficient.
+        </p>
+        <p>
+          If you want to experiment, check out the guides and community tips for configuring these tools. The ecosystem is evolving quickly, and each tool has its own strengths for different workflows.
+        </p>
+      </div>
+      <!-- Navigation Bottom -->
+      <div style="text-align: center; margin-top: 30px">
+        <a href="aiguide1.html" style="font-size: 1.2em">&lt;--</a>
+        &nbsp;
+        <a href="aiguide3.html" style="font-size: 1.2em">--&gt;</a>
+      </div>
+    </div>
+  <script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon="{&quot;rayId&quot;:&quot;96e928b43cb81388&quot;,&quot;version&quot;:&quot;2025.7.0&quot;,&quot;r&quot;:1,&quot;token&quot;:&quot;b5eda1282ceb44d4ac5d6f9d1466fb31&quot;,&quot;serverTiming&quot;:{&quot;name&quot;:{&quot;cfExtPri&quot;:true,&quot;cfEdge&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfL4&quot;:true,&quot;cfSpeedBrain&quot;:true,&quot;cfCacheStatus&quot;:true}}}" crossorigin="anonymous"></script>
+
+
+<div id="ai-copilot-copy-btn" title="复制" style="position: fixed; width: 32px; height: 32px; background-color: rgb(79, 70, 229); color: white; border: none; border-radius: 8px; cursor: pointer; display: none; align-items: center; justify-content: center; z-index: 2147483647; box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 12px; transition: 0.2s; user-select: none; pointer-events: auto; left: 722px; top: 257px; transform: scale(1); animation: 0.8s ease-out 0s 1 normal none running ai-copilot-success;" data-state="copy">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+    </svg>
+  </div></body><div id="immersive-translate-popup" style="all: initial"></div></html>

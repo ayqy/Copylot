@@ -1,5 +1,9 @@
 [
   {
+    "path": "cases/1.html",
+    "title": "1"
+  },
+  {
     "path": "cases/link-with-imageless-alt.html",
     "title": "link with imageless alt",
     "expected": "[This is some text next to the image.](https://example.com)"
