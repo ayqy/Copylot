@@ -122,7 +122,7 @@ export function processElementWithTableDetection(element: Element, settings: Set
  * @param settings - 用户设置
  * @returns 处理后的内容
  */
-function processElementWithMixedContent(element: Element, tables: HTMLTableElement[], settings: Settings): string {
+function processElementWithMixedContent(element: Element, tables: HTMLTableElement[], settings: Settings, TurndownService: any, turndownPluginGfm: any): string {
   console.debug('AI Copilot: processElementWithMixedContent (text-replacement strategy) - Start', {
     elementTag: element.tagName,
     tablesCount: tables.length,
@@ -132,12 +132,12 @@ function processElementWithMixedContent(element: Element, tables: HTMLTableEleme
 
   // 1. 先将整个克隆元素（已确保可见性）转换为Markdown
   // 关键修复：确保这里使用 GFM 服务
-  let fullMarkdown = convertToMarkdown(element);
+  let fullMarkdown = convertToMarkdown(element, TurndownService, turndownPluginGfm);
 
   // 2. 遍历所有检测到的表格，进行文本替换
   tables.forEach((table, index) => {
     // a. 将原始表格的HTML也转换为Markdown，作为被替换的目标
-    const originalTableMarkdown = convertHtmlToMarkdown(table.outerHTML);
+    const originalTableMarkdown = convertHtmlToMarkdown(table.outerHTML, TurndownService, turndownPluginGfm);
     
     // b. 根据设置，生成最终的表格内容（Markdown 或 CSV）
     let finalTableContent: string;
@@ -210,18 +210,16 @@ function getTurndownService() {
   return turndownInstance;
 }
 
-function getGfmTurndownService() {
+function getGfmTurndownService(TurndownService: any, turndownPluginGfm: any) {
   if (!gfmTurndownInstance) {
     if (typeof TurndownService === 'undefined') {
       console.error('TurndownService is not available. Markdown conversion will fail.');
       return { turndown: (html: string) => html }; // Basic fallback
     }
     
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const turndownPluginGfm = (window as any).turndownPluginGfm;
     if (!turndownPluginGfm) {
       console.error('turndown-plugin-gfm is not available. Using basic turndown.');
-      return getTurndownService();
+      return getTurndownService(TurndownService);
     }
 
     gfmTurndownInstance = new TurndownService({
@@ -253,9 +251,9 @@ function getGfmTurndownService() {
  * @param html - 要转换的HTML字符串
  * @returns 转换后的Markdown字符串
  */
-function convertHtmlToMarkdown(html: string): string {
+function convertHtmlToMarkdown(html: string, TurndownService: any, turndownPluginGfm: any): string {
   try {
-    const turndown = getGfmTurndownService();
+    const turndown = getGfmTurndownService(TurndownService, turndownPluginGfm);
     return turndown.turndown(html);
   } catch (error) {
     console.error('HTML转Markdown转换失败:', error);
@@ -407,13 +405,13 @@ function formatCSVField(text: string): string {
 
 
 
-export function convertToMarkdown(element: Element): string {
+export function convertToMarkdown(element: Element, TurndownService: any, turndownPluginGfm: any): string {
   // 始终使用 GFM 服务来确保表格等元素被正确处理
-  const turndown = getGfmTurndownService();
+  const turndown = getGfmTurndownService(TurndownService, turndownPluginGfm);
   try {
     if (element instanceof HTMLTableElement) {
       // Use the new HTML to Markdown converter for tables
-      return convertHtmlToMarkdown(element.outerHTML);
+      return convertHtmlToMarkdown(element.outerHTML, TurndownService, turndownPluginGfm);
     } else if (element instanceof HTMLImageElement) {
       const imgElement = element as HTMLImageElement;
       let sourceUrl = imgElement.dataset.src || imgElement.src;
@@ -489,6 +487,7 @@ export function convertToMarkdown(element: Element): string {
           if (alt) {
             a.replaceWith(document.createTextNode(alt));
           } else {
+            // Fallback to href if alt is empty
             a.replaceWith(document.createTextNode(a.href));
           }
           return; // Move to the next 'a' tag
@@ -500,6 +499,7 @@ export function convertToMarkdown(element: Element): string {
           if (title && title.textContent) {
             a.replaceWith(document.createTextNode(title.textContent.trim()));
           } else {
+            // Fallback to href if title is empty
             a.replaceWith(document.createTextNode(a.href));
           }
         }
@@ -615,18 +615,27 @@ export function formatAdditionalInfo(
 }
 
 export function processContent(element: Element, settings: Settings): string {
+  console.log('PROCESS CONTENT IS CALLED');
+  console.groupCollapsed('[Debug Content Processor] Starting processContent');
+  console.log('[Debug] Input element:', element);
+  console.log('[Debug] Settings:', settings);
+
   try {
     // 统一可见性预处理
+    console.log('[Debug] Creating visible clone...');
     const workingRoot = createVisibleClone(element);
+    console.log('[Debug] Visible clone created:', workingRoot);
 
     let content: string;
 
     // 检查是否为单纯的表格元素
     if (workingRoot instanceof HTMLTableElement) {
       if (settings.tableOutputFormat === 'csv') {
+        console.log('[Debug] Processing as CSV table.');
         content = convertTableToCSV(workingRoot);
       } else {
-        content = convertToMarkdown(workingRoot);
+        console.log('[Debug] Processing as Markdown table.');
+        content = convertToMarkdown(workingRoot, TurndownService, turndownPluginGfm);
       }
     } else {
       // 检查元素中是否包含表格
@@ -634,11 +643,13 @@ export function processContent(element: Element, settings: Settings): string {
       
       if (tables.length > 0) {
         // 包含表格的复合内容，使用特殊处理
-        content = processElementWithMixedContent(workingRoot, tables, settings);
+        console.log(`[Debug] Detected ${tables.length} table(s) in mixed content. Processing with special handling.`);
+        content = processElementWithMixedContent(workingRoot, tables, settings, TurndownService, turndownPluginGfm);
       } else {
         // 不包含表格，正常处理
+        console.log('[Debug] No tables detected. Processing as standard content.');
         if (settings.outputFormat === 'markdown') {
-          content = convertToMarkdown(workingRoot);
+          content = convertToMarkdown(workingRoot, TurndownService, turndownPluginGfm);
         } else {
           content = convertToPlainText(workingRoot);
         }
@@ -659,17 +670,25 @@ export function processContent(element: Element, settings: Settings): string {
 
     const pageInfo = getPageInfo();
     const additionalInfo = formatAdditionalInfo(settings, pageInfo);
-
+    
+    let finalContent: string;
     if (content && additionalInfo) {
-      return content + additionalInfo;
+      finalContent = content + additionalInfo;
     } else if (content) {
-      return content;
+      finalContent = content;
     } else if (additionalInfo.trim()) {
-      return additionalInfo.trim();
+      finalContent = additionalInfo.trim();
+    } else {
+      finalContent = '';
     }
-    return '';
+    
+    console.log('[Debug] Final computed content:', finalContent);
+    console.groupEnd();
+    return finalContent;
+
   } catch (error) {
-    console.error('Error in processContent:', error);
+    console.error('[Debug Content Processor] Error in processContent:', error);
+    console.groupEnd();
     return (element as HTMLElement).innerText || '';
   }
 }

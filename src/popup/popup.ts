@@ -367,6 +367,25 @@ async function initialize() {
       elements.versionDisplay.textContent = `V${manifest.version}`;
     }
 
+    // Easter egg to open test runner
+    let clickCount = 0;
+    let clickTimer: number | null = null;
+    elements.versionDisplay.addEventListener('click', () => {
+      clickCount++;
+      if (clickTimer) {
+        clearTimeout(clickTimer);
+      }
+      clickTimer = window.setTimeout(() => {
+        clickCount = 0;
+      }, 1000);
+
+      if (clickCount === 3) {
+        clickCount = 0;
+        clearTimeout(clickTimer);
+        chrome.tabs.create({ url: chrome.runtime.getURL('test/index.html') });
+      }
+    });
+
     // Localize UI
     localizeUI();
 

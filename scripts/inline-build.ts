@@ -51,6 +51,17 @@ for (const p of COPY_PATHS) {
 log('Copied project files to .tmp_build');
 
 // ---------------------------------------------------------------------------
+// Step 2.1: Copy test directory into .tmp_build/test for inclusion in dist
+// ---------------------------------------------------------------------------
+const testDirSrc = join(ROOT_DIR, 'test');
+const testDirDest = join(TMP_DIR, 'test');
+if (existsSync(testDirSrc)) {
+  cpSync(testDirSrc, testDirDest, { recursive: true });
+  log('Copied test directory to .tmp_build/test');
+}
+log('Copied and organized test files into .tmp_build/test');
+
+// ---------------------------------------------------------------------------
 // Step 3: Inline modules into content script inside .tmp_build
 // ---------------------------------------------------------------------------
 const INLINE_REGEX = /\/\*\s*INLINE:([a-zA-Z0-9_-]+)\s*\*\//g;

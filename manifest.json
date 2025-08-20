@@ -47,7 +47,13 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "src/assets/*"
+        "src/assets/*",
+        "test/index.html",
+        "test/runner.css",
+        "test/runner.js",
+        "test-manifest.json",
+        "test/cases/*",
+        "test/snapshots/*"
       ],
       "matches": [
         "<all_urls>"

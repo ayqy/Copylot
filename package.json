@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite build --watch",
-    "build": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/inline-build.ts",
+    "build": "npm run clean && npm run build:tests && npm run build:prod",
+    "build:prod": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/inline-build.ts",
     "preview": "vite preview",
     "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
@@ -16,7 +17,9 @@
     "generate-icons": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/generate-icons.ts",
     "publish": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/publish.ts",
     "publish:cws": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/chrome-webstore.ts",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist && rm -rf .tmp_build",
+    "apply": "ts-node scripts/apply-snapshots.ts",
+    "build:tests": "ts-node scripts/build-test-manifest.ts"
   },
   "dependencies": {
     "turndown": "^7.2.0",
@@ -41,7 +44,11 @@
     "sharp": "^0.33.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
-    "vite": "^5.3.1"
+    "vite": "^5.3.1",
+    "diff": "*",
+    "clipboardy": "*",
+    "glob": "*",
+    "@types/diff": "*"
   },
   "keywords": [
     "chrome-extension",

@@ -195,28 +195,61 @@ For web developers and QA engineers, Magic Copy includes a handy DevTools panel.
 
 ### Testing
 
-Load the extension in Chrome's developer mode and test on various websites.
+Our extension includes a browser-based test suite to ensure the core content conversion logic is working correctly and to prevent regressions, especially content loss. Please run these tests after making any changes to the content processing or DOM handling code.
 
-1.  **Settings Panel**:
-    - Toggle the main "Enable Magic Copy" switch. Verify all on-page features (click, hover) are disabled/enabled.
-    - Switch between "Single Click" and "Double Click" interaction modes and test the activation behavior on text elements.
-    - Toggle "Enable Hover-to-Copy". Verify that hovering over media elements does/does not activate the copy button.
-    - Test all other settings (output format, attach info) and ensure they are applied correctly.
+#### One-Time Setup
 
-2.  **On-Page Functionality**:
-    - **Click/Dbl-Click**: Test on various text elements. Verify the button appears and the element is bordered. Check that it doesn't appear on non-viable elements.
-- **Table Selection**: Click inside any part of a table (`<td>`, `<th>`, `<tr>`). The entire `<table>` should be highlighted and become the copy target.
-    - **Selection Expansion**: On a small text element, use the `Alt`/`Option` key to expand the selection. Verify the border updates while the button position remains static.
-    - **Hover-to-Copy**: Hover over images, videos, SVGs, etc. Verify the button appears and content is copied correctly. Ensure it doesn't trigger for very small media elements.
+After cloning the repository, you need to install the necessary dependencies and build the test files for the first time.
 
-3.  **Context Menu**:
-    - Right-click on a page and select "Convert Page to AI-Friendly Format".
-    - Paste the content and verify it represents the entire page's text in the correct format.
+1.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
 
-4.  **DevTools Panel**:
-    - Open the DevTools and navigate to the MagicCopy sidebar in the Elements panel.
-    - Select various elements on the page and confirm the JSON details are displayed correctly.
-    - Test the "Copy" button in the sidebar.
+2.  **Build Test Suite**:
+    This command compiles the test runner and creates a manifest of all test cases.
+    ```bash
+    npm run build:tests
+    ```
+
+#### Running the Tests
+
+You can run the tests directly in your browser using one of two methods:
+
+**Method 1: The 'Easter Egg' (Recommended)**
+
+1.  Load the extension in your browser in developer mode.
+2.  Open the extension's **Settings** page.
+3.  Rapidly click the **sync status button** (the cloud icon in the top right) **3 times**.
+4.  The Test Runner page will open in a new tab.
+
+**Method 2: Direct File Access**
+
+*   In your browser, open the file `public/test/index.html` located in the project's root directory.
+
+#### The Testing Workflow
+
+1.  On the Test Runner page, click **'Run All Tests'**.
+2.  Review the results. If a test fails, it will be highlighted in red and will show the difference between the 'Actual Output' and the 'Expected Snapshot'.
+3.  **If the 'Actual Output' is correct** (meaning your code change is valid and the snapshot is outdated), you need to update the snapshot:
+    a. At the bottom of the page, click the **'Generate Update Batch'** button.
+    b. Click the **'Copy Batch'** button to copy the generated JSON data to your clipboard.
+    c. In your terminal, run the following command:
+       ```bash
+       npm run apply-snapshots
+       ```
+    d. This command reads the data from your clipboard and automatically updates all the necessary snapshot files.
+    e. Re-run the tests in the browser to confirm that they now pass.
+
+#### Adding New Tests
+
+1.  Create a new HTML file (e.g., `my-new-case.html`) inside the `test/cases/` directory.
+2.  Add the specific HTML snippet you want to test into this file.
+3.  Re-build the test manifest by running:
+    ```bash
+    npm run build:tests
+    ```
+4.  Open the Test Runner. Your new test will appear. Run it and generate its first snapshot using the workflow described above.
 
 ## Browser Compatibility
 

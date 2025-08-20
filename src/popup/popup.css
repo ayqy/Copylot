@@ -55,6 +55,8 @@ body {
   border-radius: 6px;
   font-size: 12px;
   font-weight: 500;
+  cursor: pointer;
+  user-select: none;
 }
 
 /* Form Sections */

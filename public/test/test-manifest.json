@@ -1,0 +1,10 @@
+[
+  {
+    "path": "test/cases/link-with-imageless-alt.html",
+    "title": "link with imageless alt"
+  },
+  {
+    "path": "test/cases/zero-height-container.html",
+    "title": "zero height container"
+  }
+]

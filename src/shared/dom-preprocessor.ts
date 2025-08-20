@@ -45,53 +45,67 @@ function recursiveCopy(original: Node, cloneParent: Node): void {
  * Implements rules R1–R9 from the design spec.
  */
 function isNodeHidden(el: HTMLElement): boolean {
+  const logHidden = (reason: string) => {
+    console.log(`[Debug DOM Preprocessor] Hiding ${el.tagName}#${el.id}.${el.className} due to: ${reason}`, el);
+    return true;
+  };
+
   // R2: aria-hidden="true"
-  if (el.getAttribute("aria-hidden") === "true") return true;
+  if (el.getAttribute("aria-hidden") === "true") return logHidden('aria-hidden=true');
 
   // R3: role="presentation" or role="none"
   const role = el.getAttribute("role");
-  if (role === "presentation" || role === "none") return true;
+  if (role === "presentation" || role === "none") return logHidden(`role=${role}`);
 
   // R4: common utility classes that visually hide content
   const cls = el.className;
-  if (cls && /(sr-only|visually-hidden|screen-reader-only)/i.test(cls)) return true;
+  if (cls && typeof cls === 'string' && /(sr-only|visually-hidden|screen-reader-only)/i.test(cls)) return logHidden('screen reader class');
 
   const style = window.getComputedStyle(el);
 
   // R1: display/visibility/opacity
-  if (style.display === "none" || style.visibility === "hidden") return true;
+  if (style.display === "none" || style.visibility === "hidden") return logHidden(`display: ${style.display} or visibility: ${style.visibility}`);
   const opacity = parseFloat(style.opacity || "1");
-  if (!isNaN(opacity) && opacity <= 0.05) return true;
+  if (!isNaN(opacity) && opacity <= 0.05) return logHidden(`opacity: ${opacity}`);
 
   // R5: transform scale(0) or filter opacity(0)
   if (/scale\(0/.test(style.transform) || /scaleX\(0/.test(style.transform) || /scaleY\(0/.test(style.transform)) {
-    return true;
+    return logHidden(`transform: ${style.transform}`);
   }
-  if (/opacity\(0/.test(style.filter)) return true;
+  if (/opacity\(0/.test(style.filter)) return logHidden(`filter: ${style.filter}`);
 
   // clip / clip-path hiding
   if (style.clip === "rect(0px, 0px, 0px, 0px)" || /inset\(100%/.test(style.clipPath)) {
-    return true;
+    return logHidden(`clip/clip-path: ${style.clip || style.clipPath}`);
   }
 
   // text-indent far offscreen
   const textIndent = parseFloat(style.textIndent || "0");
-  if (!isNaN(textIndent) && textIndent <= -9999) return true;
+  if (!isNaN(textIndent) && textIndent <= -9999) return logHidden(`text-indent: ${textIndent}`);
 
-  // R6: zero dimensions
-  if (
-    el.offsetWidth + el.offsetHeight + el.clientWidth + el.clientHeight === 0 &&
-    // allow inline SVG etc. ; treat as hidden if also no border box
-    !(el instanceof HTMLImageElement || el instanceof HTMLVideoElement)
-  ) {
-    return true;
+  // R6: zero dimensions - THIS IS THE PROBLEMATIC PART
+  const isZeroSize = el.offsetWidth + el.offsetHeight + el.clientWidth + el.clientHeight === 0;
+
+  if (isZeroSize) {
+    // If the element has zero size, check if any of its children are visible.
+    // If any child is visible, then the parent should be considered visible.
+    if (el.children.length > 0) {
+      for (let i = 0; i < el.children.length; i++) {
+        if (!isNodeHidden(el.children[i] as HTMLElement)) {
+          return false; // The parent is not hidden if at least one child is visible
+        }
+      }
+    }
+    // If all children are hidden or there are no children, and the element itself is zero-size, then it's hidden.
+    return logHidden('Zero size with no visible children');
   }
+
 
   // R7: out of viewport (only if element has dimensions)
   try {
     const rect = el.getBoundingClientRect();
     if (rect.width > 0 && rect.height > 0) {
-      if (rect.bottom < 0 || rect.right < 0) return true;
+      if (rect.bottom < 0 || rect.right < 0) return logHidden('Element is out of viewport');
     }
   } catch {
     // getBoundingClientRect may fail on detached nodes; ignore.
