@@ -117,18 +117,35 @@ async function runTest(testCase: TestCase): Promise<TestResult> {
 
   console.error('!!! ATTEMPTING TO FETCH CASE HTML:', testCase.path);
   const response = await fetch(testCase.path);
-  const html = await response.text();
+  let html = await response.text();
   console.log('[Debug] Fetched raw HTML for test case:', html);
 
-  const doc = iframe.contentWindow!.document;
-  doc.open();
-  doc.write(html);
-  doc.close();
+  // 清理HTML，移除所有script标签，避免异步资源加载问题
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
 
-  await new Promise(r => setTimeout(r, 50));
+  // 移除所有script标签（包括内联和外部脚本）
+  const scripts = doc.querySelectorAll('script');
+  scripts.forEach(script => script.remove());
+
+  // 移除外部样式表链接（可选，进一步减少外部资源加载）
+  const stylesheets = doc.querySelectorAll('link[rel="stylesheet"]');
+  stylesheets.forEach(link => link.remove());
+
+  // 将清理后的HTML重新序列化为字符串
+  const cleanedHtml = doc.documentElement.outerHTML;
+
+  console.log('[Debug] Cleaned HTML for test case (scripts removed):', cleanedHtml);
+
+  const iframeDoc = iframe.contentWindow!.document;
+  iframeDoc.open();
+  iframeDoc.write(cleanedHtml);
+  iframeDoc.close();
+
+  await new Promise(r => setTimeout(r, 300));
 
   const settings = await getSettings();
-  const targetElement = doc.body;
+  const targetElement = iframeDoc.body;
 
   console.log('[Debug] Starting content processing...');
   const actual = processContent(targetElement, settings);
