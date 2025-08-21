@@ -128,9 +128,14 @@ async function runTest(testCase: TestCase): Promise<TestResult> {
   const scripts = doc.querySelectorAll('script');
   scripts.forEach(script => script.remove());
 
-  // 移除外部样式表链接（可选，进一步减少外部资源加载）
+  // 改进的CSS处理：保留内联样式，移除外部样式表链接
   const stylesheets = doc.querySelectorAll('link[rel="stylesheet"]');
+  console.log(`[Debug] Removing ${stylesheets.length} external stylesheets to simulate test environment`);
   stylesheets.forEach(link => link.remove());
+
+  // 保留内联样式标签 <style> 中的CSS规则
+  const inlineStyles = doc.querySelectorAll('style');
+  console.log(`[Debug] Preserving ${inlineStyles.length} inline style blocks`);
 
   // 将清理后的HTML重新序列化为字符串
   const cleanedHtml = doc.documentElement.outerHTML;

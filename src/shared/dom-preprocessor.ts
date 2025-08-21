@@ -83,10 +83,21 @@ function isNodeHidden(el: HTMLElement): boolean {
   const textIndent = parseFloat(style.textIndent || "0");
   if (!isNaN(textIndent) && textIndent <= -9999) return logHidden(`text-indent: ${textIndent}`);
 
-  // R6: zero dimensions - THIS IS THE PROBLEMATIC PART
+  // R6: zero dimensions - IMPROVED VERSION
   const isZeroSize = el.offsetWidth + el.offsetHeight + el.clientWidth + el.clientHeight === 0;
 
   if (isZeroSize) {
+    // Additional check: if element has content but no dimensions, it might be due to CSS loading issues
+    const hasTextContent = el.textContent && el.textContent.trim().length > 0;
+    const hasChildElements = el.children.length > 0;
+
+    // For elements with actual content, don't treat them as hidden even if dimensions are zero
+    // This addresses the issue where CSS loading affects dimension calculations
+    if (hasTextContent || hasChildElements) {
+      console.log(`[Debug DOM Preprocessor] Element has content but zero dimensions, treating as visible: ${el.tagName}#${el.id}.${el.className}`);
+      return false;
+    }
+
     // If the element has zero size, check if any of its children are visible.
     // If any child is visible, then the parent should be considered visible.
     if (el.children.length > 0) {
