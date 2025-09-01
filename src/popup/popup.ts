@@ -367,24 +367,27 @@ async function initialize() {
       elements.versionDisplay.textContent = `V${manifest.version}`;
     }
 
-    // Easter egg to open test runner
-    let clickCount = 0;
-    let clickTimer: number | null = null;
-    elements.versionDisplay.addEventListener('click', () => {
-      clickCount++;
-      if (clickTimer) {
-        clearTimeout(clickTimer);
-      }
-      clickTimer = window.setTimeout(() => {
-        clickCount = 0;
-      }, 1000);
+    // 彩蛋功能：三次点击版本号打开测试运行器（仅开发环境）
+    // @ts-ignore: 环境变量在构建时注入
+    if (process.env.NODE_ENV !== 'production' || process.env.BUILD_TARGET !== 'production') {
+      let clickCount = 0;
+      let clickTimer: number | null = null;
+      elements.versionDisplay.addEventListener('click', () => {
+        clickCount++;
+        if (clickTimer) {
+          clearTimeout(clickTimer);
+        }
+        clickTimer = window.setTimeout(() => {
+          clickCount = 0;
+        }, 1000);
 
-      if (clickCount === 3) {
-        clickCount = 0;
-        clearTimeout(clickTimer);
-        chrome.tabs.create({ url: chrome.runtime.getURL('test/index.html') });
-      }
-    });
+        if (clickCount === 3) {
+          clickCount = 0;
+          clearTimeout(clickTimer);
+          chrome.tabs.create({ url: chrome.runtime.getURL('test/index.html') });
+        }
+      });
+    }
 
     // Localize UI
     localizeUI();

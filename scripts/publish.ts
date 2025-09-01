@@ -169,7 +169,7 @@ async function main() {
   // --- 步骤 10: 构建生产环境插件 ---
   log.info('开始构建生产环境插件...');
   try {
-    execSync('npm run build', { stdio: 'inherit' });
+    execSync('npm run build:prod', { stdio: 'inherit' });
     log.success('生产环境插件构建完成。');
   } catch (error) {
     log.error('构建生产环境插件失败。');

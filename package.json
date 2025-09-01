@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite build --watch",
-    "build": "npm run clean && npm run build:tests && npm run build:prod",
-    "build:prod": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/inline-build.ts",
+    "build": "npm run clean && npm run build:tests && BUILD_TARGET=development node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/inline-build.ts",
+    "build:prod": "npm run clean && BUILD_TARGET=production node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/inline-build.ts",
     "preview": "vite preview",
     "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
@@ -17,7 +17,7 @@
     "generate-icons": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/generate-icons.ts",
     "publish": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/publish.ts",
     "publish:cws": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/chrome-webstore.ts",
-    "clean": "rm -rf dist && rm -rf .tmp_build",
+    "clean": "rm -rf dist && rm -rf .tmp_build && rm -rf .tmp_build_prod",
     "apply": "ts-node scripts/apply-snapshots.ts",
     "build:tests": "ts-node scripts/build-test-manifest.ts"
   },

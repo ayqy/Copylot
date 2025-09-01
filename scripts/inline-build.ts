@@ -10,12 +10,15 @@ import { cpSync, rmSync, mkdirSync, existsSync, readFileSync, writeFileSync } fr
 import { join } from 'path';
 import { execSync } from 'child_process';
 
+// 检查是否为生产环境构建
+const isProductionBuild = process.env.BUILD_TARGET === 'production';
+
 function log(message: string) {
-  console.log(`[inline-build] ${message}`);
+  console.log(`[inline-build${isProductionBuild ? '-prod' : ''}] ${message}`);
 }
 
 const ROOT_DIR = process.cwd();
-const TMP_DIR = join(ROOT_DIR, '.tmp_build');
+const TMP_DIR = join(ROOT_DIR, isProductionBuild ? '.tmp_build_prod' : '.tmp_build');
 const DIST_DIR = join(ROOT_DIR, 'dist');
 
 // ---------------------------------------------------------------------------
@@ -25,14 +28,13 @@ if (existsSync(TMP_DIR)) {
   rmSync(TMP_DIR, { recursive: true, force: true });
 }
 mkdirSync(TMP_DIR);
-log('Created temporary directory .tmp_build');
+log(`Created temporary directory ${isProductionBuild ? '.tmp_build_prod' : '.tmp_build'}`);
 
 // ---------------------------------------------------------------------------
-// Step 2: Copy required project files into .tmp_build
+// Step 2: Copy required project files into temporary directory
 // ---------------------------------------------------------------------------
 const COPY_PATHS = [
   'src',
-  'public',
   '_locales',
   'manifest.json',
   'vite.config.ts',
@@ -42,24 +44,49 @@ const COPY_PATHS = [
   'scripts'
 ];
 
+// 生产环境构建时排除public目录中的测试文件
+if (isProductionBuild) {
+  // Copy public directory but exclude test files
+  const publicSrc = join(ROOT_DIR, 'public');
+  const publicDest = join(TMP_DIR, 'public');
+  if (existsSync(publicSrc)) {
+    cpSync(publicSrc, publicDest, { 
+      recursive: true,
+      filter: (src) => {
+        // Exclude any path containing 'test' or test-manifest.json
+        const basename = src.split('/').pop() || src.split('\\').pop() || '';
+        return !src.includes('/test/') && 
+               !src.includes('\\test\\') && 
+               !src.endsWith('/test') && 
+               !src.endsWith('\\test') &&
+               basename !== 'test-manifest.json';
+      }
+    });
+    log('Copied public directory (excluding test files and test-manifest.json)');
+  }
+} else {
+  COPY_PATHS.push('public');
+}
+
 for (const p of COPY_PATHS) {
   const absSrc = join(ROOT_DIR, p);
   if (existsSync(absSrc)) {
     cpSync(absSrc, join(TMP_DIR, p), { recursive: true });
   }
 }
-log('Copied project files to .tmp_build');
+log(`Copied project files to ${isProductionBuild ? '.tmp_build_prod' : '.tmp_build'}${isProductionBuild ? ' (excluding test directory)' : ''}`);
 
 // ---------------------------------------------------------------------------
-// Step 2.1: Copy test directory into .tmp_build/test for inclusion in dist
+// Step 2.1: Copy test directory (only for development builds)
 // ---------------------------------------------------------------------------
-const testDirSrc = join(ROOT_DIR, 'test');
-const testDirDest = join(TMP_DIR, 'test');
-if (existsSync(testDirSrc)) {
-  cpSync(testDirSrc, testDirDest, { recursive: true });
-  log('Copied test directory to .tmp_build/test');
+if (!isProductionBuild) {
+  const testDirSrc = join(ROOT_DIR, 'test');
+  const testDirDest = join(TMP_DIR, 'test');
+  if (existsSync(testDirSrc)) {
+    cpSync(testDirSrc, testDirDest, { recursive: true });
+    log('Copied test directory to temporary build directory');
+  }
 }
-log('Copied and organized test files into .tmp_build/test');
 
 // ---------------------------------------------------------------------------
 // Step 3: Inline modules into content script inside .tmp_build
@@ -116,13 +143,17 @@ if (existsSync(TURNDOWN_PLUGIN_SRC)) {
 }
 
 // ---------------------------------------------------------------------------
-// Step 5: Run Vite build inside .tmp_build (no sourcemap)
+// Step 5: Run Vite build in temporary directory
 // ---------------------------------------------------------------------------
-log('Running Vite build (production, no sourcemap)...');
+log(`Running Vite build (${isProductionBuild ? 'production, no sourcemap, no tests' : 'production, no sourcemap'})...`);
 execSync('npx vite build --no-sourcemap', {
   cwd: TMP_DIR,
   stdio: 'inherit',
-  env: { ...process.env, NODE_ENV: 'production' }
+  env: { 
+    ...process.env, 
+    NODE_ENV: 'production',
+    BUILD_TARGET: isProductionBuild ? 'production' : 'development'
+  }
 });
 
 // ---------------------------------------------------------------------------
@@ -158,4 +189,12 @@ if (existsSync(TURNDOWN_PLUGIN_SRC)) {
 
 log('Moved build output to ./dist');
 
-log('✅ Build finished successfully');
+// ---------------------------------------------------------------------------
+// Step 8: Clean up temporary directory (production builds only)
+// ---------------------------------------------------------------------------
+if (isProductionBuild) {
+  rmSync(TMP_DIR, { recursive: true, force: true });
+  log('Cleaned up temporary directory');
+}
+
+log(`✅ ${isProductionBuild ? 'Production build finished successfully - ready for Chrome Web Store!' : 'Build finished successfully'}`);

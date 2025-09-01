@@ -8,6 +8,8 @@ import { existsSync, readdirSync, statSync, unlinkSync } from 'fs';
 
 // 检查是否构建特定脚本
 const scriptToBuild = process.env.SCRIPT;
+// 检查是否为生产环境构建（不包含测试代码和彩蛋）
+const isProductionBuild = process.env.BUILD_TARGET === 'production';
 
 export default defineConfig({
   build: {
@@ -29,35 +31,39 @@ export default defineConfig({
   },
   define: {
     // Define environment variables
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    'process.env.BUILD_TARGET': JSON.stringify(process.env.BUILD_TARGET || 'development')
   },
   plugins: [
     // Custom plugin to handle extension-specific tasks
     {
       name: 'chrome-extension-builder',
       buildStart() {
-        console.log('🚀 Building Chrome Extension...');
-        // Cleanup old test artifacts in public/test to avoid stale runner.js/ts conflicts
-        try {
-          const testDir = resolve(__dirname, 'public', 'test');
-          if (existsSync(testDir)) {
-            const walk = (dir: string) => {
-              const entries = readdirSync(dir);
-              for (const entry of entries) {
-                const full = resolve(dir, entry);
-                const stats = statSync(full);
-                if (stats.isDirectory()) {
-                  walk(full);
-                } else if (full.endsWith('.ts') || /runner\.js$/.test(full)) {
-                  unlinkSync(full);
+        console.log(`🚀 Building Chrome Extension${isProductionBuild ? ' (Production)' : ''}...`);
+        // 生产环境构建不需要清理测试文件
+        if (!isProductionBuild) {
+          // Cleanup old test artifacts in public/test to avoid stale runner.js/ts conflicts
+          try {
+            const testDir = resolve(__dirname, 'public', 'test');
+            if (existsSync(testDir)) {
+              const walk = (dir: string) => {
+                const entries = readdirSync(dir);
+                for (const entry of entries) {
+                  const full = resolve(dir, entry);
+                  const stats = statSync(full);
+                  if (stats.isDirectory()) {
+                    walk(full);
+                  } else if (full.endsWith('.ts') || /runner\.js$/.test(full)) {
+                    unlinkSync(full);
+                  }
                 }
-              }
-            };
-            walk(testDir);
-            console.log('🧹 Cleaned stale .ts and runner.js from public/test');
+              };
+              walk(testDir);
+              console.log('🧹 Cleaned stale .ts and runner.js from public/test');
+            }
+          } catch (err) {
+            console.warn('Cleanup public/test failed:', (err as Error).message);
           }
-        } catch (err) {
-          console.warn('Cleanup public/test failed:', (err as Error).message);
         }
       },
       async buildEnd() {
@@ -150,7 +156,7 @@ export default defineConfig({
             console.warn('Warning: Could not copy sidebar.html:', error.message);
           }
 
-          // Ensure turndown scripts are copied for test runner
+          // Ensure turndown scripts are copied for content script
           try {
             ['src/turndown.js', 'src/turndown-plugin-gfm.js'].forEach((p) => {
               const content = readFileSync(`./${p}`, 'utf-8');
@@ -160,52 +166,55 @@ export default defineConfig({
             console.warn('Warning: Could not copy turndown scripts:', (error as Error).message);
           }
 
-          // Copy all test assets (html/css/js/json/md/ts)
-          try {
-            const testFiles = glob.sync('./test/**/*.{html,css,js,json,md,ts}', { nodir: true });
-            testFiles.forEach((file) => {
-              try {
-                // Skip .js file if corresponding .ts exists to avoid stale overrides
-                if (file.endsWith('.js')) {
-                  const tsSibling = file.slice(0, -3) + '.ts';
-                  if (testFiles.includes(tsSibling)) {
-                    return; // ignore js sibling
+          // 生产环境构建：不包含测试资源和测试运行器
+          if (!isProductionBuild) {
+            // Copy all test assets (html/css/js/json/md/ts) - only for development builds
+            try {
+              const testFiles = glob.sync('./test/**/*.{html,css,js,json,md,ts}', { nodir: true });
+              testFiles.forEach((file) => {
+                try {
+                  // Skip .js file if corresponding .ts exists to avoid stale overrides
+                  if (file.endsWith('.js')) {
+                    const tsSibling = file.slice(0, -3) + '.ts';
+                    if (testFiles.includes(tsSibling)) {
+                      return; // ignore js sibling
+                    }
                   }
-                }
-                const source = readFileSync(file, 'utf-8');
-                if (file.endsWith('.ts')) {
-                  let code: string;
-                  if (file.endsWith('runner.ts')) {
-                    // Bundle runner.ts to include its dependencies (e.g., diff)
-                    const bundle = buildSync({
-                      entryPoints: [file],
-                      bundle: true,
-                      platform: 'browser',
-                      format: 'esm',
-                      target: 'es2020',
-                      write: false
-                    });
-                    code = bundle.outputFiles[0].text;
+                  const source = readFileSync(file, 'utf-8');
+                  if (file.endsWith('.ts')) {
+                    let code: string;
+                    if (file.endsWith('runner.ts')) {
+                      // Bundle runner.ts to include its dependencies (e.g., diff)
+                      const bundle = buildSync({
+                        entryPoints: [file],
+                        bundle: true,
+                        platform: 'browser',
+                        format: 'esm',
+                        target: 'es2020',
+                        write: false
+                      });
+                      code = bundle.outputFiles[0].text;
+                    } else {
+                      const result = transformSync(source, {
+                        loader: 'ts',
+                        format: 'esm',
+                        target: 'es2020',
+                        sourcemap: false
+                      });
+                      code = result.code;
+                    }
+                    const jsFileName = file.replace('./', '').replace(/\.ts$/, '.js');
+                    this.emitFile({ type: 'asset', fileName: jsFileName, source: code });
                   } else {
-                    const result = transformSync(source, {
-                      loader: 'ts',
-                      format: 'esm',
-                      target: 'es2020',
-                      sourcemap: false
-                    });
-                    code = result.code;
+                    this.emitFile({ type: 'asset', fileName: file.replace('./', ''), source });
                   }
-                  const jsFileName = file.replace('./', '').replace(/\.ts$/, '.js');
-                  this.emitFile({ type: 'asset', fileName: jsFileName, source: code });
-                } else {
-                  this.emitFile({ type: 'asset', fileName: file.replace('./', ''), source });
+                } catch (error) {
+                  console.warn('Warning: Could not copy/compile test asset', file, ':', (error as Error).message);
                 }
-              } catch (error) {
-                console.warn('Warning: Could not copy/compile test asset', file, ':', (error as Error).message);
-              }
-            });
-          } catch (error) {
-            console.warn('Warning: Failed to glob test assets:', (error as Error).message);
+              });
+            } catch (error) {
+              console.warn('Warning: Failed to glob test assets:', (error as Error).message);
+            }
           }
         }
       }
