@@ -2,6 +2,13 @@
 
 https://developer.chrome.com/docs/webstore/using-api
 
+
+refresh token经常过期（7天有效期），原因是Google auth App是Testing状态，需要点一下变成production状态，refresh token变成6个月有效期
+
+https://console.cloud.google.com/auth/audience?project=chromestore-465702
+
+点击左侧Audience - Publishing status
+
 **直接看官方文档，不要看底下这些**
 
 
