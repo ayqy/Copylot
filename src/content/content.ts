@@ -510,7 +510,7 @@ async function loadSettingsAndApply(): Promise<void> {
 }
 
 // Target elements for hover-triggered Magic Copy
-const HOVER_TARGET_TAGS = ['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object'];
+const HOVER_TARGET_TAGS = ['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object', 'pre', 'code'];
 
 // Handles mouseover events to show Magic Copy
 function handleMouseOver(event: MouseEvent): void {

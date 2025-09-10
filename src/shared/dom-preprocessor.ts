@@ -4,6 +4,21 @@
  * nodes (e.g. aria-hidden, sr-only) do not appear in the copied result.
  */
 
+/**
+ * 检查元素是否在代码块上下文中
+ */
+function isInCodeBlock(element: Element): boolean {
+  let current: Element | null = element;
+  while (current) {
+    const tagName = current.tagName.toLowerCase();
+    if (tagName === 'pre' || tagName === 'code') {
+      return true;
+    }
+    current = current.parentElement;
+  }
+  return false;
+}
+
 export function createVisibleClone(root: Element): Element {
   // Create a shallow clone of the root (without children for now)
   const cloneRoot = root.cloneNode(false) as Element;
@@ -20,10 +35,11 @@ function recursiveCopy(original: Node, cloneParent: Node): void {
   const childNodes = Array.from(original.childNodes);
   for (const child of childNodes) {
     if (child.nodeType === Node.TEXT_NODE) {
-      // Skip pure-whitespace text nodes
       const text = child.textContent ?? "";
-      if (text.trim() === "") continue;
-      cloneParent.appendChild(child.cloneNode());
+      // 在代码块中保留所有空白，包括纯空白行
+      if (isInCodeBlock(original as Element) || text.trim() !== "") {
+        cloneParent.appendChild(child.cloneNode());
+      }
       continue;
     }
 

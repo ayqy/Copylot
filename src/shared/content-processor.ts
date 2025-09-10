@@ -11,36 +11,59 @@ let turndownInstance: any = null;
 let gfmTurndownInstance: any = null;
 
 /**
+ * 统一的代码块文本提取函数，确保所有场景下的一致性
+ * @param element - 代码块元素（pre或code）
+ * @returns 提取的原始代码文本
+ */
+function extractCodeBlockText(element: Element): string {
+  let text = '';
+  
+  // 1. 对于pre>code结构，先从code元素开始处理
+  let targetElement = element;
+  if (element.tagName.toLowerCase() === 'pre') {
+    const codeElement = element.querySelector('code');
+    if (codeElement) {
+      targetElement = codeElement;
+    }
+  }
+  
+  // 2. 特别处理hljs（highlight.js）代码块结构
+  // 检查是否是hljs结构：包含ol.hljs-ln列表
+  const hljsList = targetElement.querySelector('ol.hljs-ln');
+  if (hljsList) {
+    // hljs结构：从每个li中的.hljs-ln-code > .hljs-ln-line提取文本
+    const lines = hljsList.querySelectorAll('li .hljs-ln-code .hljs-ln-line');
+    const lineTexts: string[] = [];
+    
+    lines.forEach(line => {
+      // 使用innerText保持更好的格式，但对于代码行，textContent通常更准确
+      const lineText = line.textContent || '';
+      lineTexts.push(lineText);
+    });
+    
+    text = lineTexts.join('\n');
+  } else {
+    // 3. 其他情况：使用textContent获取完整内容（不受CSS影响）
+    text = targetElement.textContent || '';
+  }
+  
+  // 4. 清理复制按钮文本（扩展支持更多语言和位置）
+  text = cleanCodeBlockTextConservatively(text);
+  
+  // 5. 只trim首尾空行，保留所有内部空行和缩进
+  text = text.replace(/^\n+/, '').replace(/\n+$/, '');
+  
+  return text;
+}
+
+/**
  * 用于Turndown的代码块处理函数，专门处理混合内容中的代码块
  * @param node - DOM节点
  * @returns 处理后的代码块内容（带markdown标签）
  */
 function processCodeBlock(node: any): string {
-  let text: string;
-  
-  // 对于 pre 元素，先进行预处理：去掉除 code 标签外的所有内容
-  if (node.tagName.toLowerCase() === 'pre') {
-    // 克隆节点以避免修改原始DOM
-    const clonedNode = node.cloneNode(true);
-    
-    // 查找 code 子元素
-    const codeElement = clonedNode.querySelector('code');
-    if (codeElement) {
-      // 如果有 code 元素，清空 pre 的内容，然后只保留 code 元素
-      clonedNode.innerHTML = '';
-      clonedNode.appendChild(codeElement);
-    }
-    // 如果没有 code 元素，保持原样（这种情况下预处理不会有影响）
-    
-    // 从预处理后的节点获取文本
-    text = clonedNode.innerText || clonedNode.textContent || '';
-  } else {
-    // 对于非 pre 元素（如 code），直接获取文本
-    text = node.innerText || node.textContent || '';
-  }
-  
-  // 对文本进行轻量级后处理，只处理确实必要的情况
-  const cleanedText = cleanCodeBlockTextConservatively(text);
+  // 使用统一的文本提取函数
+  const cleanedText = extractCodeBlockText(node);
   
   // 对于混合内容中的代码块，包裹相应的markdown标签
   if (node.tagName.toLowerCase() === 'pre') {
@@ -61,18 +84,20 @@ function processCodeBlock(node: any): string {
  * @returns 清理后的文本
  */
 function cleanCodeBlockTextConservatively(text: string): string {
-  // 只移除"复制"按钮文本，这是最安全的处理
-  let result = text.replace(/(Copy|复制代码|Copy to clipboard|复制)\s*$/, '');
+  // 移除各种语言和位置的复制按钮文本
+  let result = text
+    .replace(/(Copy|复制代码|Copy to clipboard|复制|COPY|Clone|克隆|拷贝)\s*/gi, '')
+    .replace(/\s*(Copy|复制代码|Copy to clipboard|复制|COPY|Clone|克隆|拷贝)/gi, '');
   
-  // 只反转义明显的Markdown转义字符，且只在确实需要的情况下
+  // 反转义Markdown字符
   result = result
-    .replace(/\\#/g, '#')       // 反转义井号
-    .replace(/\\=/g, '=')       // 反转义等号
-    .replace(/\\\*/g, '*')      // 反转义星号
-    .replace(/\\\[/g, '[')      // 反转义左方括号
-    .replace(/\\\]/g, ']')      // 反转义右方括号
-    .replace(/\\\(/g, '(')      // 反转义左圆括号
-    .replace(/\\\)/g, ')');     // 反转义右圆括号
+    .replace(/\\#/g, '#')
+    .replace(/\\=/g, '=')
+    .replace(/\\\*/g, '*')
+    .replace(/\\\[/g, '[')
+    .replace(/\\\]/g, ']')
+    .replace(/\\\(/g, '(')
+    .replace(/\\\)/g, ')');
       
   return result;
 }
@@ -202,7 +227,7 @@ function getTurndownService() {
     // 使用公共的代码块处理函数
     turndownInstance.addRule('codeBlock', {
       filter: ['pre', 'code'],
-      replacement: function (content: string, node: any, options: any) {
+      replacement: function (content: string, node: any) {
         return processCodeBlock(node);
       }
     });
@@ -238,7 +263,7 @@ function getGfmTurndownService(TurndownService: any, turndownPluginGfm: any) {
     // 使用公共的代码块处理函数
     gfmTurndownInstance.addRule('codeBlock', {
       filter: ['pre', 'code'],
-      replacement: function (content: string, node: any, options: any) {
+      replacement: function (content: string, node: any) {
         return processCodeBlock(node);
       }
     });
@@ -472,8 +497,8 @@ export function convertToMarkdown(element: Element, TurndownService: any, turndo
       }
       return `[Object Content${type ? ` (type: ${type})` : ''}]`;
     } else if (element.tagName.toLowerCase() === 'pre' || element.tagName.toLowerCase() === 'code') {
-      // 当用户直接复制code或pre元素时，说明用户想要纯代码内容，不包裹任何markdown语法
-      return cleanCodeBlockTextConservatively((element as HTMLElement).innerText || element.textContent || '').replace(/\n+$/, '');
+      // 当用户直接复制code或pre元素时，使用统一的文本提取函数
+      return extractCodeBlockText(element);
     } else {
       // Default handling for other elements
       const clonedElement = element.cloneNode(true) as Element;
@@ -562,8 +587,8 @@ export function convertToPlainText(element: Element): string {
     } else if (element instanceof HTMLObjectElement) {
       return element.data || '[Object Content]';
     } else if (element.tagName.toLowerCase() === 'pre' || element.tagName.toLowerCase() === 'code') {
-      // 对于代码块，使用简化处理直接返回清理后的文本
-      return cleanCodeBlockTextConservatively((element as HTMLElement).innerText || element.textContent || '');
+      // 对于代码块，使用统一的文本提取函数
+      return extractCodeBlockText(element);
     } else {
       let text = (clonedElement as HTMLElement).innerText || '';
       return cleanText(text);
