@@ -62,7 +62,7 @@ function recursiveCopy(original: Node, cloneParent: Node): void {
  */
 function isNodeHidden(el: HTMLElement): boolean {
   const logHidden = (reason: string) => {
-    console.log(`[Debug DOM Preprocessor] Hiding ${el.tagName}#${el.id}.${el.className} due to: ${reason}`, el);
+    // console.log(`[Debug DOM Preprocessor] Hiding ${el.tagName}#${el.id}.${el.className} due to: ${reason}`, el);
     return true;
   };
 
@@ -103,6 +103,13 @@ function isNodeHidden(el: HTMLElement): boolean {
   const isZeroSize = el.offsetWidth + el.offsetHeight + el.clientWidth + el.clientHeight === 0;
 
   if (isZeroSize) {
+    // Special handling for void elements that are semantically meaningful
+    // Void elements like <br>, <hr>, <img> etc. naturally have zero size but should not be hidden
+    const voidElements = ['BR', 'HR', 'IMG', 'INPUT', 'META', 'LINK', 'AREA', 'BASE', 'COL', 'EMBED', 'SOURCE', 'TRACK', 'WBR'];
+    if (voidElements.includes(el.tagName)) {
+      return false;
+    }
+
     // Additional check: if element has content but no dimensions, it might be due to CSS loading issues
     const hasTextContent = el.textContent && el.textContent.trim().length > 0;
     const hasChildElements = el.children.length > 0;
@@ -110,7 +117,7 @@ function isNodeHidden(el: HTMLElement): boolean {
     // For elements with actual content, don't treat them as hidden even if dimensions are zero
     // This addresses the issue where CSS loading affects dimension calculations
     if (hasTextContent || hasChildElements) {
-      console.log(`[Debug DOM Preprocessor] Element has content but zero dimensions, treating as visible: ${el.tagName}#${el.id}.${el.className}`);
+      // console.log(`[Debug DOM Preprocessor] Element has content but zero dimensions, treating as visible: ${el.tagName}#${el.id}.${el.className}`);
       return false;
     }
 
