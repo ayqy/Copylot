@@ -48,7 +48,40 @@ function getSelectedElement(): Element | null {
 }
 
 /**
- * 获取选择内容的最佳元素
+ * 获取用户选择内容的精确HTML片段，并封装成一个可处理的元素。
+ * @returns {Element | null} 一个包含精确选区内容的临时元素，如果无选区则返回null。
+ */
+function getPreciseSelectedElement(): Element | null {
+  const selection = window.getSelection();
+  if (!selection || selection.rangeCount === 0 || selection.toString().trim() === '') {
+    return null; // 没有有效选区
+  }
+
+  try {
+    // 1. 获取选区的第一个范围 (Range)
+    const range = selection.getRangeAt(0);
+
+    // 2. 将范围内的内容克隆到一个 DocumentFragment 中
+    // 这是关键一步，它能完整保留选区内的HTML结构（如<b>, <a>等）
+    const fragment = range.cloneContents();
+
+    // 3. 创建一个临时容器元素
+    const tempDiv = document.createElement('div');
+
+    // 4. 将Fragment附加到临时容器中
+    tempDiv.appendChild(fragment);
+
+    // 5. 返回这个包含了精确选区内容的容器
+    // content-processor可以像处理普通DOM元素一样处理它
+    return tempDiv;
+  } catch (error) {
+    console.error('AI Copilot: Error extracting precise selection:', error);
+    return null;
+  }
+}
+
+/**
+ * 获取选择内容的最佳元素（保留原有函数作为回退）
  * @returns 最适合处理的元素或null
  */
 function getSelectionContent(): Element | null {
@@ -171,7 +204,7 @@ function disableMagicCopyFeatures(): void {
 }
 
 // Unified function to show Magic Copy
-function showMagicCopy(element: Element, event?: MouseEvent): void {
+function showMagicCopy(element: Element, event?: MouseEvent, showOutline: boolean = true): void {
   if (!element) return;
 
   // @ts-ignore: hideButton is available from inlined ui-injector.ts
@@ -213,7 +246,7 @@ function showMagicCopy(element: Element, event?: MouseEvent): void {
   }
 
   // @ts-ignore: showButton is available from inlined ui-injector.ts
-  showButton(copyButtonElement, x, y, currentTarget instanceof HTMLElement ? currentTarget : null);
+  showButton(copyButtonElement, x, y, showOutline && currentTarget instanceof HTMLElement ? currentTarget : null);
 }
 
 // Unified function to hide Magic Copy
@@ -263,6 +296,15 @@ function handleDocumentClick(event: MouseEvent): void {
 function handleInteraction(event: MouseEvent, potentialTargetNode: Node) {
   hideMagicCopy();
 
+  // 优先处理用户的精确选区
+  const preciseSelectedElement = getPreciseSelectedElement();
+  if (preciseSelectedElement) {
+    console.debug('AI Copilot: Using precise user selection');
+    showMagicCopy(preciseSelectedElement, event, false);
+    return;
+  }
+
+  // 回退到原有的区块识别逻辑
   if (potentialTargetNode.nodeType === Node.TEXT_NODE) {
     potentialTargetNode = potentialTargetNode.parentElement || potentialTargetNode;
   }
@@ -683,18 +725,26 @@ async function initializeContentScript(): Promise<void> {
           await loadSettingsAndApply();
         }
         if (userSettings) {
-          // 优先处理用户选择的内容
-          const selectedElement = getSelectionContent();
+          // 优先处理用户精确选区
+          const preciseSelectedElement = getPreciseSelectedElement();
           let content: string;
           
-          if (selectedElement) {
-            console.debug('AI Copilot: Processing selected content');
-            // @ts-ignore: processElementWithTableDetection is available from inlined content-processor.ts
-            content = processElementWithTableDetection(selectedElement, userSettings);
-          } else {
-            console.debug('AI Copilot: No selection found, processing entire page');
+          if (preciseSelectedElement) {
+            console.debug('AI Copilot: Processing precise user selection');
             // @ts-ignore: processContent is available from inlined content-processor.ts
-            content = processContent(document.body, userSettings);
+            content = processContent(preciseSelectedElement, userSettings);
+          } else {
+            // 回退到原有的选区处理逻辑
+            const selectedElement = getSelectionContent();
+            if (selectedElement) {
+              console.debug('AI Copilot: Processing selected content');
+              // @ts-ignore: processElementWithTableDetection is available from inlined content-processor.ts
+              content = processElementWithTableDetection(selectedElement, userSettings);
+            } else {
+              console.debug('AI Copilot: No selection found, processing entire page');
+              // @ts-ignore: processContent is available from inlined content-processor.ts
+              content = processContent(document.body, userSettings);
+            }
           }
           
           if (content.trim()) {
@@ -719,11 +769,12 @@ async function initializeContentScript(): Promise<void> {
           await loadSettingsAndApply();
         }
         if (userSettings) {
-          const selectedElement = getSelectionContent();
-          if (selectedElement) {
-            console.debug('AI Copilot: Processing selected content with prompt');
-            // @ts-ignore: processElementWithTableDetection is available from inlined content-processor.ts
-            const content = processElementWithTableDetection(selectedElement, userSettings);
+          // 优先处理用户精确选区
+          const preciseSelectedElement = getPreciseSelectedElement();
+          if (preciseSelectedElement) {
+            console.debug('AI Copilot: Processing precise selection with prompt');
+            // @ts-ignore: processContent is available from inlined content-processor.ts
+            const content = processContent(preciseSelectedElement, userSettings);
             const finalText = message.promptTemplate.replace('{content}', content);
             
             try {
@@ -734,20 +785,37 @@ async function initializeContentScript(): Promise<void> {
               sendResponse({ success: false, error: 'Failed to copy to clipboard' });
             }
           } else {
-            console.debug('AI Copilot: No DOM selection found, using text selection');
-            // 回退到原有逻辑，使用纯文本
-            const selection = window.getSelection();
-            const selectedText = selection ? selection.toString() : '';
-            if (selectedText) {
-              const finalText = message.promptTemplate.replace('{content}', selectedText);
+            // 回退到原有的选区处理逻辑
+            const selectedElement = getSelectionContent();
+            if (selectedElement) {
+              console.debug('AI Copilot: Processing selected content with prompt');
+              // @ts-ignore: processElementWithTableDetection is available from inlined content-processor.ts
+              const content = processElementWithTableDetection(selectedElement, userSettings);
+              const finalText = message.promptTemplate.replace('{content}', content);
+              
               try {
                 await copyToClipboard(finalText);
                 sendResponse({ success: true });
               } catch (error) {
+                console.error('Error copying to clipboard:', error);
                 sendResponse({ success: false, error: 'Failed to copy to clipboard' });
               }
             } else {
-              sendResponse({ success: false, error: 'No content selected' });
+              console.debug('AI Copilot: No DOM selection found, using text selection');
+              // 回退到原有逻辑，使用纯文本
+              const selection = window.getSelection();
+              const selectedText = selection ? selection.toString() : '';
+              if (selectedText) {
+                const finalText = message.promptTemplate.replace('{content}', selectedText);
+                try {
+                  await copyToClipboard(finalText);
+                  sendResponse({ success: true });
+                } catch (error) {
+                  sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+                }
+              } else {
+                sendResponse({ success: false, error: 'No content selected' });
+              }
             }
           }
         } else {
