@@ -824,7 +824,8 @@ body {
 
 .tabs-nav .tab-btn:hover {
   color: var(--text-primary);
-  background: var(--background-color);
+  background: linear-gradient(180deg, transparent 0%, rgba(79, 70, 229, 0.06) 100%);
+  transform: translateY(-1px);
 }
 
 .tabs-nav .tab-btn.active {
@@ -1301,5 +1302,9 @@ input:checked + .slider:before {
   .chat-service-icon-text {
     color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .tabs-nav .tab-btn:hover {
+    background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.1) 100%);
   }
 } 
