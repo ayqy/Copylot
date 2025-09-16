@@ -22,6 +22,8 @@ export interface Prompt {
   lastUsedAt?: number;
   targetChatId?: string;
   autoOpenChat?: boolean;
+  builtIn?: boolean;
+  deleted?: boolean;
 }
 
 export interface Settings {
@@ -41,6 +43,20 @@ export interface Settings {
 }
 
 export const SETTINGS_KEY = 'copilot_settings';
+
+// 默认内置Prompt配置
+export const DEFAULT_BUILT_IN_PROMPTS: Prompt[] = [
+  {
+    id: 'builtin-summary-article',
+    title: '总结文章',
+    template: '请总结以下文章的主要内容：\n\n<article>{content}</article>',
+    category: 'summary',
+    usageCount: 0,
+    createdAt: Date.now(),
+    builtIn: true,
+    deleted: false
+  }
+];
 
 // 默认Chat服务配置
 export const DEFAULT_CHAT_SERVICES: ChatService[] = [
@@ -111,7 +127,7 @@ export const DEFAULT_SETTINGS: Settings = {
   attachURL: false,
   language: 'system',
   interactionMode: 'click',
-  userPrompts: [],
+  userPrompts: [...DEFAULT_BUILT_IN_PROMPTS],
   isClipboardAccumulatorEnabled: false,
   chatServices: DEFAULT_CHAT_SERVICES,
   defaultChatServiceId: undefined,
@@ -170,6 +186,25 @@ export async function getSettings(): Promise<Settings> {
       if (mergedSettings.language === 'system') {
         mergedSettings.language = currentLanguage;
       }
+
+      // 迁移逻辑：为现有用户添加内置prompt（如果不存在的话）
+      const builtInPromptIds = DEFAULT_BUILT_IN_PROMPTS.map(p => p.id);
+      const existingPromptIds = new Set(mergedSettings.userPrompts.map(p => p.id));
+      
+      // 添加缺失的内置prompt
+      DEFAULT_BUILT_IN_PROMPTS.forEach(builtInPrompt => {
+        if (!existingPromptIds.has(builtInPrompt.id)) {
+          mergedSettings.userPrompts.push({ ...builtInPrompt });
+        }
+      });
+
+      // 过滤掉已删除的内置prompt
+      mergedSettings.userPrompts = mergedSettings.userPrompts.filter(prompt => {
+        if (prompt.builtIn && prompt.deleted) {
+          return false;
+        }
+        return true;
+      });
 
       return mergedSettings;
     }

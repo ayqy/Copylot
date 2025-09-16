@@ -247,6 +247,11 @@ function filterAndRenderPrompts() {
   const categoryFilter = elements.categoryFilter.value;
 
   filteredPrompts = allPrompts.filter(prompt => {
+    // 过滤掉已删除的内置prompt
+    if (prompt.builtIn && prompt.deleted) {
+      return false;
+    }
+    
     const matchesSearch = !searchTerm || 
       prompt.title.toLowerCase().includes(searchTerm) ||
       prompt.template.toLowerCase().includes(searchTerm);
@@ -308,10 +313,15 @@ function createPromptCard(prompt: Prompt): HTMLElement {
   const category = getCategoryFromPrompt(prompt);
   const categoryText = getCategoryDisplayName(category);
   
+  // 为内置prompt添加特殊样式类
+  if (prompt.builtIn) {
+    card.classList.add('builtin-prompt');
+  }
+  
   card.innerHTML = `
     <input type="checkbox" class="prompt-card-checkbox" data-id="${prompt.id}">
     <div class="prompt-card-header">
-      <h3 class="prompt-card-title">${escapeHtml(prompt.title)}</h3>
+      <h3 class="prompt-card-title">${escapeHtml(prompt.title)}${prompt.builtIn ? ' <span class="builtin-badge">内置</span>' : ''}</h3>
       <div class="prompt-card-actions">
         <button class="action-btn edit-btn" title="${getMessage('editPrompt')}" data-id="${prompt.id}">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -551,7 +561,16 @@ async function deleteSelectedPrompts() {
   
   const count = selectedPrompts.size;
       if (confirm(getMessage('confirmDeleteSelectedMessage', [count.toString()]))) {
-    allPrompts = allPrompts.filter(p => !selectedPrompts.has(p.id));
+    // 处理批量删除，对内置prompt标记删除，对用户prompt直接删除
+    allPrompts.forEach(prompt => {
+      if (selectedPrompts.has(prompt.id)) {
+        if (prompt.builtIn) {
+          prompt.deleted = true;
+        }
+      }
+    });
+    // 删除非内置的用户prompt
+    allPrompts = allPrompts.filter(p => !(selectedPrompts.has(p.id) && !p.builtIn));
     selectedPrompts.clear();
     await savePrompts();
           showNotification(getMessage('deleteSuccessMessage', [count.toString()]), 'success');
@@ -680,7 +699,14 @@ async function duplicatePrompt(promptId: string) {
  */
 async function deletePrompt(promptId: string) {
   if (confirm(getMessage('confirmDeleteSingleMessage'))) {
-    allPrompts = allPrompts.filter(p => p.id !== promptId);
+    const prompt = allPrompts.find(p => p.id === promptId);
+    if (prompt && prompt.builtIn) {
+      // 对于内置prompt，标记为已删除而不是真正删除
+      prompt.deleted = true;
+    } else {
+      // 对于用户创建的prompt，直接删除
+      allPrompts = allPrompts.filter(p => p.id !== promptId);
+    }
     await savePrompts();
     showNotification(getMessage('deleteSingleSuccessMessage'), 'success');
   }

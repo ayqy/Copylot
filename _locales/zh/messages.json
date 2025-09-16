@@ -574,5 +574,13 @@
   "confirmDeleteService": {
     "message": "确定要删除这个Chat服务吗？",
     "description": "删除Chat服务确认提示"
+  },
+  "builtInSummaryTitle": {
+    "message": "总结文章",
+    "description": "内置总结prompt的标题"
+  },
+  "builtInSummaryTemplate": {
+    "message": "请总结以下文章的主要内容：\n\n<article>{content}</article>",
+    "description": "内置总结prompt的模板"
   }
 }
