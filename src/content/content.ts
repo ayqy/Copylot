@@ -133,6 +133,59 @@ async function copyToClipboard(text: string): Promise<void> {
   }
 }
 
+/**
+ * 显示Chat跳转通知
+ * @param chatServiceName chat服务名称
+ */
+function showChatRedirectNotification(chatServiceName: string): void {
+  const notification = document.createElement('div');
+  notification.id = 'ai-copilot-chat-notification';
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #4F46E5;
+    color: white;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    max-width: 300px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  `;
+  
+  notification.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="20,6 9,17 4,12"></polyline>
+    </svg>
+    <span>已复制内容，即将跳转到 ${chatServiceName}</span>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // 动画显示
+  setTimeout(() => {
+    notification.style.transform = 'translateX(0)';
+  }, 10);
+  
+  // 自动移除
+  setTimeout(() => {
+    notification.style.transform = 'translateX(100%)';
+    setTimeout(() => {
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification);
+      }
+    }, 300);
+  }, 4000);
+}
+
 // Function to add all event listeners and inject UI
 function enableMagicCopyFeatures(): void {
   if (isActive) return; // Already active
@@ -496,7 +549,8 @@ async function handlePromptClick(promptId: string): Promise<void> {
     const content = processContent(currentTarget, userSettings);
     if (!content.trim()) return;
 
-    const finalText = prompt.template.replace('{content}', content);
+    // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
+    const finalText = combinePromptWithContent(prompt.template, content);
     await navigator.clipboard.writeText(finalText);
     
     // 更新使用次数
@@ -775,7 +829,8 @@ async function initializeContentScript(): Promise<void> {
             console.debug('AI Copilot: Processing precise selection with prompt');
             // @ts-ignore: processContent is available from inlined content-processor.ts
             const content = processContent(preciseSelectedElement, userSettings);
-            const finalText = message.promptTemplate.replace('{content}', content);
+            // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
+            const finalText = combinePromptWithContent(message.promptTemplate, content);
             
             try {
               await copyToClipboard(finalText);
@@ -791,7 +846,8 @@ async function initializeContentScript(): Promise<void> {
               console.debug('AI Copilot: Processing selected content with prompt');
               // @ts-ignore: processElementWithTableDetection is available from inlined content-processor.ts
               const content = processElementWithTableDetection(selectedElement, userSettings);
-              const finalText = message.promptTemplate.replace('{content}', content);
+              // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
+              const finalText = combinePromptWithContent(message.promptTemplate, content);
               
               try {
                 await copyToClipboard(finalText);
@@ -806,7 +862,8 @@ async function initializeContentScript(): Promise<void> {
               const selection = window.getSelection();
               const selectedText = selection ? selection.toString() : '';
               if (selectedText) {
-                const finalText = message.promptTemplate.replace('{content}', selectedText);
+                // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
+                const finalText = combinePromptWithContent(message.promptTemplate, selectedText);
                 try {
                   await copyToClipboard(finalText);
                   sendResponse({ success: true });
@@ -833,9 +890,46 @@ async function initializeContentScript(): Promise<void> {
           // @ts-ignore: processContent is available from inlined content-processor.ts
           const content = processContent(document.body, userSettings);
           if (content.trim()) {
-            const finalText = message.promptTemplate.replace('{content}', content);
+            // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
+            const finalText = combinePromptWithContent(message.promptTemplate, content);
             try {
               await copyToClipboard(finalText);
+              sendResponse({ success: true });
+            } catch (error) {
+              console.error('Error copying to clipboard:', error);
+              sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+            }
+          } else {
+            sendResponse({ success: false, error: 'No content to copy' });
+          }
+        } else {
+          sendResponse({ success: false, error: 'Settings not loaded' });
+        }
+        return true; // Indicates async response
+      }
+
+      if (message.type === 'PROCESS_PAGE_WITH_PROMPT_AND_CHAT') {
+        if (!userSettings) {
+          await loadSettingsAndApply();
+        }
+        if (userSettings) {
+          console.debug('AI Copilot: Processing page content with prompt and opening chat');
+          // @ts-ignore: processContent is available from inlined content-processor.ts
+          const content = processContent(document.body, userSettings);
+          if (content.trim()) {
+            // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
+            const finalText = combinePromptWithContent(message.promptTemplate, content);
+            try {
+              await copyToClipboard(finalText);
+              
+              // 显示视觉反馈
+              showChatRedirectNotification(message.chatServiceName);
+              
+              // 延迟打开chat服务，让用户看到反馈
+              setTimeout(() => {
+                window.open(message.chatServiceUrl, '_blank');
+              }, 1500);
+              
               sendResponse({ success: true });
             } catch (error) {
               console.error('Error copying to clipboard:', error);

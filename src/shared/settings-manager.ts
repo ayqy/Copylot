@@ -3,6 +3,15 @@
 export const FORCE_UI_LANGUAGE = '';
 
 // Settings manager functionality
+export interface ChatService {
+  id: string;
+  name: string;
+  url: string;
+  icon: string;
+  enabled: boolean;
+  builtIn: boolean;
+}
+
 export interface Prompt {
   id: string;
   title: string;
@@ -11,6 +20,8 @@ export interface Prompt {
   usageCount?: number;
   createdAt?: number;
   lastUsedAt?: number;
+  targetChatId?: string;
+  autoOpenChat?: boolean;
 }
 
 export interface Settings {
@@ -24,9 +35,72 @@ export interface Settings {
   interactionMode: 'click' | 'dblclick';
   userPrompts: Prompt[];
   isClipboardAccumulatorEnabled: boolean;
+  chatServices: ChatService[];
+  defaultChatServiceId?: string;
+  defaultAutoOpenChat: boolean;
 }
 
 export const SETTINGS_KEY = 'copilot_settings';
+
+// 默认Chat服务配置
+export const DEFAULT_CHAT_SERVICES: ChatService[] = [
+  {
+    id: 'chatgpt',
+    name: 'ChatGPT',
+    url: 'https://chat.openai.com',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIyLjI4MTkgOS44MjE3NEMhLjQ5MTcgNy4zMDgxNyAyMC42OTUgNS4xMDcwNyAxNy44NTkgNC4yNDA5QzE3LjUxNDEgMS4wNTU0NCAxNC43NzM0IDAuMTI1NDU1IDEyLjAwMTcgMS4xNjM2NUM5LjIyNzM1IDAuMTI1NDU1IDYuNDg2NDEgMS4wNTU0NCA2LjE0MTE3IDQuMjQwOUMzLjMwNTU4IDUuMTA3MDcgMS41MDgyOCA3LjMwODE3IDIuNzE4MyA5LjgyMTc0QzEuNDkxNyAxMi40NDU3IDIuNzE4MyAxNS4yNTc0IDUuMzY5MzkgMTYuODc3NkM1LjM5NjE1IDE5LjkxODcgNy43NzM4NyAyMi4zNjExIDEwLjg5NDEgMjMuMDAwOEMxMy45OTk1IDIzLjM2MTEgMTcuODY1IDIyLjE3NyAxOC42NzMyIDE3Ljg2M0MyMS45MjE3IDE3LjUwNDUgMjMuMzE4NSAxNS4wMTA3IDIzLjE4NTQgMTIuNDQ1N0MyMi40NDU3IDEwLjk0MzQgMjIuNDQ1NyA5LjgyMTc0IDIyLjI4MTkgOS44MjE3NFoiIGZpbGw9IiMzMzMzMzMiLz4KPC9zdmc+',
+    enabled: true,
+    builtIn: true
+  },
+  {
+    id: 'claude',
+    name: 'Claude',
+    url: 'https://claude.ai',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiByeD0iNiIgZmlsbD0iI0Q5N0Y0MiIvPgo8cGF0aCBkPSJNOCA4SDE2VjE2SDhaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=',
+    enabled: true,
+    builtIn: true
+  },
+  {
+    id: 'gemini',
+    name: 'Gemini',
+    url: 'https://gemini.google.com',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM0Mjg1RjQiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+    enabled: true,
+    builtIn: true
+  },
+  {
+    id: 'yiyan',
+    name: '文心一言',
+    url: 'https://yiyan.baidu.com',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiMyOTVGRkYiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+    enabled: true,
+    builtIn: true
+  },
+  {
+    id: 'tongyi',
+    name: '通义千问',
+    url: 'https://tongyi.aliyun.com',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNGRjY0MDAiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+    enabled: true,
+    builtIn: true
+  },
+  {
+    id: 'kimi',
+    name: 'Kimi',
+    url: 'https://kimi.moonshot.cn',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM0RjQ2RTUiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+    enabled: true,
+    builtIn: true
+  },
+  {
+    id: 'doubao',
+    name: '豆包',
+    url: 'https://doubao.com',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiMwMEJCNzAiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+    enabled: true,
+    builtIn: true
+  }
+];
 
 export const DEFAULT_SETTINGS: Settings = {
   isMagicCopyEnabled: true, // Added this line
@@ -39,6 +113,9 @@ export const DEFAULT_SETTINGS: Settings = {
   interactionMode: 'click',
   userPrompts: [],
   isClipboardAccumulatorEnabled: false,
+  chatServices: DEFAULT_CHAT_SERVICES,
+  defaultChatServiceId: undefined,
+  defaultAutoOpenChat: false,
 };
 
 export function getSystemLanguage(): 'system' | 'en' | 'zh' {
@@ -169,4 +246,15 @@ async function optimizeSettingsForSync(settings: Settings): Promise<Settings> {
   }
   
   return optimized;
+}
+
+// Helper function to combine prompt template with content
+export function combinePromptWithContent(promptTemplate: string, content: string): string {
+  // Check if template contains {content} placeholder
+  if (promptTemplate.includes('{content}')) {
+    return promptTemplate.replace(/{content}/g, content);
+  } else {
+    // If no placeholder, wrap content in <content> tags and append
+    return `${promptTemplate}\n\n<content>\n${content}\n</content>`;
+  }
 }

@@ -45,6 +45,16 @@
 
       <!-- Main Content -->
       <main class="main-content">
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+          <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="prompts" data-i18n="promptsTab">Prompt管理</button>
+            <button class="tab-btn" data-tab="chat-services" data-i18n="chatServicesTab">Chat服务</button>
+          </div>
+        </div>
+
+        <!-- Prompts Tab -->
+        <div id="prompts-tab" class="tab-content active">
         <!-- Toolbar -->
         <div class="toolbar">
           <div class="search-section">
@@ -153,6 +163,53 @@
             </p>
           </div>
         </div>
+        </div>
+
+        <!-- Chat Services Tab -->
+        <div id="chat-services-tab" class="tab-content">
+          <div class="chat-services-header">
+            <h2 data-i18n="chatServicesTitle">Chat服务管理</h2>
+            <p data-i18n="chatServicesDescription">管理您可以跳转到的AI聊天服务</p>
+          </div>
+
+          <div class="chat-services-section">
+            <h3 data-i18n="defaultSettings">默认设置</h3>
+            <div class="default-settings-grid">
+              <div class="setting-item">
+                <div class="setting-label" data-i18n="defaultChatService">默认Chat服务</div>
+                <div class="setting-controls">
+                  <select id="default-chat-service">
+                    <option value="" data-i18n="noDefault">无默认</option>
+                  </select>
+                  <label class="switch-label">
+                    <span data-i18n="defaultAutoOpen">默认自动打开</span>
+                    <label class="switch">
+                      <input type="checkbox" id="default-auto-open-chat" />
+                      <span class="slider round"></span>
+                    </label>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-services-section">
+            <div class="section-header">
+              <h3 data-i18n="availableServices">可用服务</h3>
+              <button id="add-custom-chat-btn" class="secondary-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                <span data-i18n="addCustomService">添加自定义服务</span>
+              </button>
+            </div>
+            
+            <div id="chat-services-grid" class="chat-services-grid">
+              <!-- Chat service cards will be rendered here -->
+            </div>
+          </div>
+        </div>
       </main>
 
       <!-- Floating Action Button for mobile -->
@@ -194,6 +251,24 @@
                 <option value="coding" data-i18n="categoryCoding">编程</option>
                 <option value="writing" data-i18n="categoryWriting">写作</option>
               </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prompt-target-chat" data-i18n="targetChatService">目标Chat服务</label>
+              <select id="prompt-target-chat">
+                <option value="" data-i18n="useDefault">使用默认设置</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="switch-label">
+                <span data-i18n="autoOpenChat">复制后自动打开</span>
+                <label class="switch">
+                  <input type="checkbox" id="prompt-auto-open-chat" />
+                  <span class="slider round"></span>
+                </label>
+              </label>
             </div>
           </div>
 
@@ -292,6 +367,45 @@
             <div id="preview-result" class="preview-result"></div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Chat Service Editor Modal -->
+    <div id="chat-service-editor-modal" class="modal" style="display: none;">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="chat-service-modal-title" data-i18n="addChatService">添加Chat服务</h2>
+          <button id="close-chat-service-modal-btn" class="close-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        <form id="chat-service-form" class="modal-form">
+          <input type="hidden" id="chat-service-id">
+          
+          <div class="form-group">
+            <label for="chat-service-name" data-i18n="serviceName">服务名称</label>
+            <input type="text" id="chat-service-name" required placeholder="输入服务名称">
+          </div>
+          
+          <div class="form-group">
+            <label for="chat-service-url" data-i18n="serviceUrl">服务URL</label>
+            <input type="url" id="chat-service-url" required placeholder="https://example.com">
+          </div>
+          
+          <div class="form-group">
+            <label for="chat-service-icon" data-i18n="serviceIcon">图标URL (可选)</label>
+            <input type="url" id="chat-service-icon" placeholder="图标的URL地址">
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="cancel-chat-service-btn" class="secondary-btn" data-i18n="cancel">取消</button>
+            <button type="submit" id="save-chat-service-btn" class="primary-btn" data-i18n="save">保存</button>
+          </div>
+        </form>
       </div>
     </div>
 

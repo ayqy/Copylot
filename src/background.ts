@@ -1,4 +1,4 @@
-import { getSettings, saveSettings, type Prompt } from './shared/settings-manager';
+import { getSettings, saveSettings, type Prompt, type ChatService, combinePromptWithContent } from './shared/settings-manager';
 
 const PARENT_MENU_ID = 'magic-copy-with-prompt';
 
@@ -214,10 +214,34 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         console.error('Failed to update prompt usage:', error);
       }
       
-      chrome.tabs.sendMessage(tab.id, {
-        type: 'PROCESS_PAGE_WITH_PROMPT',  // 新的消息类型，处理整个页面
-        promptTemplate: prompt.template
-      });
+      // 决定是否需要跳转到chat服务
+      const shouldOpenChat = prompt.autoOpenChat !== undefined ? prompt.autoOpenChat : settings.defaultAutoOpenChat;
+      const targetChatId = prompt.targetChatId || settings.defaultChatServiceId;
+      
+      if (shouldOpenChat && targetChatId) {
+        const chatService = settings.chatServices.find((c: ChatService) => c.id === targetChatId && c.enabled);
+        if (chatService) {
+          // 发送消息给content script处理内容并获取结果
+          chrome.tabs.sendMessage(tab.id, {
+            type: 'PROCESS_PAGE_WITH_PROMPT_AND_CHAT',
+            promptTemplate: prompt.template,
+            chatServiceUrl: chatService.url,
+            chatServiceName: chatService.name
+          });
+        } else {
+          // 如果找不到chat服务，只执行prompt处理不跳转
+          chrome.tabs.sendMessage(tab.id, {
+            type: 'PROCESS_PAGE_WITH_PROMPT',
+            promptTemplate: prompt.template
+          });
+        }
+      } else {
+        // 不跳转，只处理prompt
+        chrome.tabs.sendMessage(tab.id, {
+          type: 'PROCESS_PAGE_WITH_PROMPT',
+          promptTemplate: prompt.template
+        });
+      }
     }
   }
 });

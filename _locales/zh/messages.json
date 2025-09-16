@@ -482,5 +482,97 @@
   "gotIt": {
     "message": "我知道了",
     "description": "关闭使用说明的按钮文本"
+  },
+  "promptsTab": {
+    "message": "Prompt管理",
+    "description": "Prompt管理标签页标题"
+  },
+  "chatServicesTab": {
+    "message": "Chat服务",
+    "description": "Chat服务管理标签页标题"
+  },
+  "chatServicesTitle": {
+    "message": "Chat服务管理",
+    "description": "Chat服务管理页面主标题"
+  },
+  "chatServicesDescription": {
+    "message": "管理您可以跳转到的AI聊天服务",
+    "description": "Chat服务管理页面描述"
+  },
+  "defaultSettings": {
+    "message": "默认设置",
+    "description": "默认设置区域标题"
+  },
+  "defaultChatService": {
+    "message": "默认Chat服务",
+    "description": "默认Chat服务选择标签"
+  },
+  "noDefault": {
+    "message": "无默认",
+    "description": "默认Chat服务选择中的无默认选项"
+  },
+  "defaultAutoOpen": {
+    "message": "默认自动打开",
+    "description": "默认自动打开Chat服务的开关标签"
+  },
+  "availableServices": {
+    "message": "可用服务",
+    "description": "可用Chat服务列表标题"
+  },
+  "addCustomService": {
+    "message": "添加自定义服务",
+    "description": "添加自定义Chat服务按钮文本"
+  },
+  "addChatService": {
+    "message": "添加Chat服务",
+    "description": "添加Chat服务模态框标题"
+  },
+  "editChatService": {
+    "message": "编辑Chat服务",
+    "description": "编辑Chat服务模态框标题"
+  },
+  "serviceName": {
+    "message": "服务名称",
+    "description": "Chat服务名称输入框标签"
+  },
+  "serviceUrl": {
+    "message": "服务URL",
+    "description": "Chat服务URL输入框标签"
+  },
+  "serviceIcon": {
+    "message": "图标URL (可选)",
+    "description": "Chat服务图标URL输入框标签"
+  },
+  "targetChatService": {
+    "message": "目标Chat服务",
+    "description": "Prompt编辑器中目标Chat服务选择标签"
+  },
+  "useDefault": {
+    "message": "使用默认设置",
+    "description": "使用默认Chat服务设置选项"
+  },
+  "autoOpenChat": {
+    "message": "复制后自动打开",
+    "description": "自动打开Chat服务的开关标签"
+  },
+  "enableService": {
+    "message": "启用服务",
+    "description": "启用Chat服务的开关标签"
+  },
+  "deleteService": {
+    "message": "删除服务",
+    "description": "删除Chat服务按钮标题"
+  },
+  "openService": {
+    "message": "打开",
+    "description": "打开Chat服务按钮标题"
+  },
+  "editService": {
+    "message": "编辑服务",
+    "description": "编辑Chat服务按钮标题"
+  },
+  "confirmDeleteService": {
+    "message": "确定要删除这个Chat服务吗？",
+    "description": "删除Chat服务确认提示"
   }
 }

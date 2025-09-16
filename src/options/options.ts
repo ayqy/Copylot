@@ -5,6 +5,7 @@ import {
   saveSettings,
   type Settings,
   type Prompt,
+  type ChatService,
   FORCE_UI_LANGUAGE
 } from '../shared/settings-manager';
 
@@ -42,6 +43,8 @@ interface OptionsElements {
   promptTitle: HTMLInputElement;
   promptCategory: HTMLSelectElement;
   promptTemplate: HTMLTextAreaElement;
+  promptTargetChat: HTMLSelectElement;
+  promptAutoOpenChat: HTMLInputElement;
   insertContentPlaceholder: HTMLButtonElement;
   previewPrompt: HTMLButtonElement;
   cancelBtn: HTMLButtonElement;
@@ -63,6 +66,22 @@ interface OptionsElements {
   // Sync status
   syncStatusBtn: HTMLButtonElement;
   syncStatusText: HTMLElement;
+
+  // Chat Services elements
+  defaultChatService: HTMLSelectElement;
+  defaultAutoOpenChat: HTMLInputElement;
+  addCustomChatBtn: HTMLButtonElement;
+  chatServicesGrid: HTMLElement;
+  chatServiceEditorModal: HTMLElement;
+  chatServiceModalTitle: HTMLElement;
+  closeChatServiceModalBtn: HTMLButtonElement;
+  chatServiceForm: HTMLFormElement;
+  chatServiceId: HTMLInputElement;
+  chatServiceName: HTMLInputElement;
+  chatServiceUrl: HTMLInputElement;
+  chatServiceIcon: HTMLInputElement;
+  cancelChatServiceBtn: HTMLButtonElement;
+  saveChatServiceBtn: HTMLButtonElement;
 }
 
 let elements: OptionsElements;
@@ -71,6 +90,7 @@ let allPrompts: Prompt[] = [];
 let filteredPrompts: Prompt[] = [];
 let selectedPrompts: Set<string> = new Set();
 let editingPromptId: string | null = null;
+let editingChatServiceId: string | null = null;
 
 /**
  * 获取所有DOM元素
@@ -94,6 +114,8 @@ function getElements(): OptionsElements {
     promptTitle: document.getElementById('prompt-title') as HTMLInputElement,
     promptCategory: document.getElementById('prompt-category') as HTMLSelectElement,
     promptTemplate: document.getElementById('prompt-template') as HTMLTextAreaElement,
+    promptTargetChat: document.getElementById('prompt-target-chat') as HTMLSelectElement,
+    promptAutoOpenChat: document.getElementById('prompt-auto-open-chat') as HTMLInputElement,
     insertContentPlaceholder: document.getElementById('insert-content-placeholder') as HTMLButtonElement,
     previewPrompt: document.getElementById('preview-prompt') as HTMLButtonElement,
     cancelBtn: document.getElementById('cancel-btn') as HTMLButtonElement,
@@ -110,7 +132,23 @@ function getElements(): OptionsElements {
     hideInstructionsBtn: document.getElementById('hide-instructions-btn') as HTMLButtonElement,
     
     syncStatusBtn: document.getElementById('sync-status-btn') as HTMLButtonElement,
-    syncStatusText: document.getElementById('sync-status-text') as HTMLElement
+    syncStatusText: document.getElementById('sync-status-text') as HTMLElement,
+
+    // Chat Services elements
+    defaultChatService: document.getElementById('default-chat-service') as HTMLSelectElement,
+    defaultAutoOpenChat: document.getElementById('default-auto-open-chat') as HTMLInputElement,
+    addCustomChatBtn: document.getElementById('add-custom-chat-btn') as HTMLButtonElement,
+    chatServicesGrid: document.getElementById('chat-services-grid') as HTMLElement,
+    chatServiceEditorModal: document.getElementById('chat-service-editor-modal') as HTMLElement,
+    chatServiceModalTitle: document.getElementById('chat-service-modal-title') as HTMLElement,
+    closeChatServiceModalBtn: document.getElementById('close-chat-service-modal-btn') as HTMLButtonElement,
+    chatServiceForm: document.getElementById('chat-service-form') as HTMLFormElement,
+    chatServiceId: document.getElementById('chat-service-id') as HTMLInputElement,
+    chatServiceName: document.getElementById('chat-service-name') as HTMLInputElement,
+    chatServiceUrl: document.getElementById('chat-service-url') as HTMLInputElement,
+    chatServiceIcon: document.getElementById('chat-service-icon') as HTMLInputElement,
+    cancelChatServiceBtn: document.getElementById('cancel-chat-service-btn') as HTMLButtonElement,
+    saveChatServiceBtn: document.getElementById('save-chat-service-btn') as HTMLButtonElement
   };
 }
 
@@ -328,6 +366,91 @@ function getCategoryDisplayName(category: string): string {
 }
 
 /**
+ * 预定义的图标背景色数组，用于区分不同的服务
+ */
+const ICON_COLORS = [
+  '#4F46E5', // 靛紫色 - ChatGPT
+  '#D97F42', // 橙棕色 - Claude  
+  '#4285F4', // 蓝色 - Gemini
+  '#295FFF', // 深蓝色 - 文心一言
+  '#FF6400', // 橙色 - 通义千问
+  '#7C3AED', // 紫色 - Kimi
+  '#00BB70', // 绿色 - 豆包
+  '#EF4444', // 红色
+  '#10B981', // 翠绿色
+  '#F59E0B', // 黄色
+  '#8B5CF6', // 薰衣草紫
+  '#06B6D4', // 青色
+  '#EC4899', // 粉色
+  '#84CC16', // 柠檬绿
+  '#F97316', // 橙红色
+  '#6366F1'  // 蓝紫色
+];
+
+/**
+ * 根据服务ID获取对应的背景色
+ */
+function getServiceIconColor(serviceId: string): string {
+  // 对于内置服务，使用预定义的颜色映射
+  const builtInColors: Record<string, string> = {
+    'chatgpt': ICON_COLORS[0],
+    'claude': ICON_COLORS[1], 
+    'gemini': ICON_COLORS[2],
+    'yiyan': ICON_COLORS[3],
+    'tongyi': ICON_COLORS[4],
+    'kimi': ICON_COLORS[5],
+    'doubao': ICON_COLORS[6]
+  };
+  
+  if (builtInColors[serviceId]) {
+    return builtInColors[serviceId];
+  }
+  
+  // 对于自定义服务，使用简单的哈希算法分配颜色
+  let hash = 0;
+  for (let i = 0; i < serviceId.length; i++) {
+    const char = serviceId.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // 转换为32位整数
+  }
+  const colorIndex = Math.abs(hash) % ICON_COLORS.length;
+  return ICON_COLORS[colorIndex];
+}
+
+/**
+ * 获取chat服务的文字图标信息
+ */
+function getServiceIconInfo(service: ChatService): { text: string; color: string } {
+  const serviceName = service.name;
+  
+  if (!serviceName) {
+    return { text: '?', color: ICON_COLORS[0] };
+  }
+  
+  // 获取第一个字符并转换为大写
+  const firstChar = serviceName.charAt(0).toUpperCase();
+  
+  let iconText: string;
+  // 如果是中文字符，直接返回
+  if (/[\u4e00-\u9fff]/.test(firstChar)) {
+    iconText = firstChar;
+  }
+  // 如果是英文字符，返回大写字母
+  else if (/[A-Za-z]/.test(firstChar)) {
+    iconText = firstChar;
+  }
+  // 其他情况返回问号
+  else {
+    iconText = '?';
+  }
+  
+  return {
+    text: iconText,
+    color: getServiceIconColor(service.id)
+  };
+}
+
+/**
  * HTML转义
  */
 function escapeHtml(text: string): string {
@@ -441,16 +564,23 @@ async function deleteSelectedPrompts() {
 function openPromptEditor(prompt?: Prompt) {
   editingPromptId = prompt?.id || null;
   
+  // 更新chat服务选择框
+  updateChatServiceOptions();
+  
   if (prompt) {
     elements.modalTitle.textContent = getMessage('editPrompt');
     elements.promptId.value = prompt.id;
     elements.promptTitle.value = prompt.title;
     elements.promptCategory.value = prompt.category || getCategoryFromPrompt(prompt);
     elements.promptTemplate.value = prompt.template;
+    elements.promptTargetChat.value = prompt.targetChatId || '';
+    elements.promptAutoOpenChat.checked = prompt.autoOpenChat !== undefined ? prompt.autoOpenChat : currentSettings.defaultAutoOpenChat;
   } else {
     elements.modalTitle.textContent = getMessage('newPromptTitle');
     elements.promptForm.reset();
     elements.promptId.value = '';
+    elements.promptTargetChat.value = '';
+    elements.promptAutoOpenChat.checked = currentSettings.defaultAutoOpenChat;
   }
   
   elements.promptEditorModal.style.display = 'flex';
@@ -609,6 +739,9 @@ async function savePromptForm(event: Event) {
   
   const category = elements.promptCategory.value;
   
+  const targetChatId = elements.promptTargetChat.value || undefined;
+  const autoOpenChat = elements.promptAutoOpenChat.checked;
+  
   if (editingPromptId) {
     // 编辑现有prompt
     const prompt = allPrompts.find(p => p.id === editingPromptId);
@@ -616,6 +749,8 @@ async function savePromptForm(event: Event) {
       prompt.title = title;
       prompt.template = template;
       prompt.category = category;
+      prompt.targetChatId = targetChatId;
+      prompt.autoOpenChat = autoOpenChat;
     }
   } else {
     // 新建prompt
@@ -624,6 +759,8 @@ async function savePromptForm(event: Event) {
       title,
       template,
       category,
+      targetChatId,
+      autoOpenChat,
       usageCount: 0,
       createdAt: Date.now()
     };
@@ -953,6 +1090,76 @@ function setupEventListeners() {
       }
     });
   });
+
+  // Chat服务相关事件监听器
+  elements.addCustomChatBtn.addEventListener('click', () => openChatServiceEditor());
+  elements.chatServiceForm.addEventListener('submit', saveChatService);
+  elements.cancelChatServiceBtn.addEventListener('click', closeChatServiceEditor);
+  elements.closeChatServiceModalBtn.addEventListener('click', closeChatServiceEditor);
+
+  // 默认设置事件监听器
+  elements.defaultChatService.addEventListener('change', async () => {
+    currentSettings.defaultChatServiceId = elements.defaultChatService.value || undefined;
+    await saveChatSettings();
+  });
+
+  elements.defaultAutoOpenChat.addEventListener('change', async () => {
+    currentSettings.defaultAutoOpenChat = elements.defaultAutoOpenChat.checked;
+    await saveChatSettings();
+  });
+
+  // Chat服务卡片事件委托
+  elements.chatServicesGrid.addEventListener('click', (e) => {
+    const target = e.target as Element;
+    
+    const openBtn = target.closest('.open-service-btn') as HTMLButtonElement;
+    if (openBtn) {
+      const url = openBtn.getAttribute('data-url');
+      if (url) {
+        chrome.tabs.create({ url: url });
+      }
+      return;
+    }
+    
+    const editBtn = target.closest('.edit-service-btn') as HTMLButtonElement;
+    if (editBtn) {
+      const serviceId = editBtn.getAttribute('data-id');
+      if (serviceId) {
+        const service = currentSettings.chatServices.find(s => s.id === serviceId);
+        if (service) {
+          openChatServiceEditor(service);
+        }
+      }
+      return;
+    }
+
+    const deleteBtn = target.closest('.delete-service-btn') as HTMLButtonElement;
+    if (deleteBtn) {
+      const serviceId = deleteBtn.getAttribute('data-id');
+      if (serviceId) {
+        deleteChatService(serviceId);
+      }
+      return;
+    }
+  });
+
+  // Chat服务启用状态切换
+  elements.chatServicesGrid.addEventListener('change', (e) => {
+    const target = e.target as HTMLInputElement;
+    if (target.classList.contains('service-enabled-toggle')) {
+      const serviceId = target.getAttribute('data-id');
+      if (serviceId) {
+        toggleChatServiceEnabled(serviceId, target.checked);
+      }
+    }
+  });
+
+  // Chat服务模态框背景点击关闭
+  elements.chatServiceEditorModal.addEventListener('click', (e) => {
+    if (e.target === elements.chatServiceEditorModal) {
+      closeChatServiceEditor();
+    }
+  });
   
   // 批量操作菜单项事件
   const batchMenuItems = document.querySelectorAll('.batch-menu-item');
@@ -1050,6 +1257,8 @@ async function initialize() {
     elements = getElements();
     localizeUI();
     await loadSettings();
+    renderChatServices();
+    updateChatServiceOptions();
     setupEventListeners();
     
     console.debug('Options page initialized successfully');
@@ -1060,6 +1269,239 @@ async function initialize() {
 }
 
 // 全局函数已移除，现在使用事件监听器代替内联事件处理器
+
+/**
+ * 更新chat服务选择框选项
+ */
+function updateChatServiceOptions() {
+  const chatServices = currentSettings.chatServices.filter(service => service.enabled);
+  
+  // 更新prompt编辑器中的选择框
+  elements.promptTargetChat.innerHTML = `<option value="" data-i18n="useDefault">${getMessage('useDefault')}</option>`;
+  chatServices.forEach(service => {
+    const option = document.createElement('option');
+    option.value = service.id;
+    option.textContent = service.name;
+    elements.promptTargetChat.appendChild(option);
+  });
+  
+  // 更新默认chat服务选择框
+  elements.defaultChatService.innerHTML = `<option value="" data-i18n="noDefault">${getMessage('noDefault')}</option>`;
+  chatServices.forEach(service => {
+    const option = document.createElement('option');
+    option.value = service.id;
+    option.textContent = service.name;
+    elements.defaultChatService.appendChild(option);
+  });
+  
+  // 设置当前值
+  elements.defaultChatService.value = currentSettings.defaultChatServiceId || '';
+  elements.defaultAutoOpenChat.checked = currentSettings.defaultAutoOpenChat;
+}
+
+/**
+ * 渲染chat服务卡片
+ */
+function renderChatServices() {
+  elements.chatServicesGrid.innerHTML = '';
+  
+  currentSettings.chatServices.forEach(service => {
+    const card = createChatServiceCard(service);
+    elements.chatServicesGrid.appendChild(card);
+  });
+}
+
+/**
+ * 创建chat服务卡片
+ */
+function createChatServiceCard(service: ChatService): HTMLElement {
+  const card = document.createElement('div');
+  card.className = 'chat-service-card';
+  card.setAttribute('data-id', service.id);
+  
+  // 获取服务图标信息（文字和颜色）
+  const iconInfo = getServiceIconInfo(service);
+  
+  card.innerHTML = `
+    <div class="chat-service-header">
+      <div class="chat-service-info">
+        <div class="chat-service-icon-text" style="background-color: ${iconInfo.color}">${iconInfo.text}</div>
+        <div class="chat-service-details">
+          <h4 class="chat-service-name">${escapeHtml(service.name)}</h4>
+          <p class="chat-service-url">${escapeHtml(service.url)}</p>
+        </div>
+      </div>
+      <div class="chat-service-actions">
+        <button class="action-btn open-service-btn" title="${getMessage('openService')}" data-id="${service.id}" data-url="${service.url}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15,3 21,3 21,9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+        </button>
+        ${!service.builtIn ? `
+          <button class="action-btn edit-service-btn" title="${getMessage('editService')}" data-id="${service.id}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </button>
+          <button class="action-btn delete-service-btn" title="${getMessage('deleteService')}" data-id="${service.id}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3,6 5,6 21,6"/>
+              <path d="M19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"/>
+              <line x1="10" y1="11" x2="10" y2="17"/>
+              <line x1="14" y1="11" x2="14" y2="17"/>
+            </svg>
+          </button>
+        ` : ''}
+      </div>
+    </div>
+    <div class="chat-service-toggle">
+      <label class="switch-label">
+        <span data-i18n="enableService">${getMessage('enableService')}</span>
+        <label class="switch">
+          <input type="checkbox" class="service-enabled-toggle" data-id="${service.id}" ${service.enabled ? 'checked' : ''} />
+          <span class="slider round"></span>
+        </label>
+      </label>
+    </div>
+  `;
+
+  return card;
+}
+
+/**
+ * 打开chat服务编辑器
+ */
+function openChatServiceEditor(service?: ChatService) {
+  editingChatServiceId = service?.id || null;
+  
+  if (service) {
+    elements.chatServiceModalTitle.textContent = getMessage('editChatService');
+    elements.chatServiceId.value = service.id;
+    elements.chatServiceName.value = service.name;
+    elements.chatServiceUrl.value = service.url;
+    elements.chatServiceIcon.value = service.icon;
+  } else {
+    elements.chatServiceModalTitle.textContent = getMessage('addChatService');
+    elements.chatServiceForm.reset();
+    elements.chatServiceId.value = '';
+  }
+  
+  elements.chatServiceEditorModal.style.display = 'flex';
+  elements.chatServiceName.focus();
+}
+
+/**
+ * 关闭chat服务编辑器
+ */
+function closeChatServiceEditor() {
+  elements.chatServiceEditorModal.style.display = 'none';
+  editingChatServiceId = null;
+}
+
+/**
+ * 保存chat服务
+ */
+async function saveChatService(event: Event) {
+  event.preventDefault();
+  
+  const name = elements.chatServiceName.value.trim();
+  const url = elements.chatServiceUrl.value.trim();
+  const icon = elements.chatServiceIcon.value.trim();
+  
+  if (!name || !url) {
+    showNotification(getMessage('errorFillInTitleAndTemplate'), 'error');
+    return;
+  }
+  
+  if (editingChatServiceId) {
+    // 编辑现有服务
+    const service = currentSettings.chatServices.find(s => s.id === editingChatServiceId);
+    if (service) {
+      service.name = name;
+      service.url = url;
+      service.icon = icon || service.icon;
+    }
+  } else {
+    // 新建服务
+    const newService: ChatService = {
+      id: generateUUID(),
+      name,
+      url,
+      icon: icon || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM2MzY2RjEiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+      enabled: true,
+      builtIn: false
+    };
+    currentSettings.chatServices.push(newService);
+  }
+  
+  await saveChatSettings();
+  closeChatServiceEditor();
+  showNotification(getMessage('saveSuccessMessage'), 'success');
+}
+
+/**
+ * 删除chat服务
+ */
+async function deleteChatService(serviceId: string) {
+  if (confirm(getMessage('confirmDeleteService'))) {
+    currentSettings.chatServices = currentSettings.chatServices.filter(s => s.id !== serviceId);
+    
+    // 如果删除的是默认服务，清除默认设置
+    if (currentSettings.defaultChatServiceId === serviceId) {
+      currentSettings.defaultChatServiceId = undefined;
+    }
+    
+    // 清理使用此服务的prompts
+    allPrompts.forEach(prompt => {
+      if (prompt.targetChatId === serviceId) {
+        prompt.targetChatId = undefined;
+      }
+    });
+    
+    await saveChatSettings();
+    showNotification(getMessage('deleteSingleSuccessMessage'), 'success');
+  }
+}
+
+/**
+ * 切换chat服务启用状态
+ */
+async function toggleChatServiceEnabled(serviceId: string, enabled: boolean) {
+  const service = currentSettings.chatServices.find(s => s.id === serviceId);
+  if (service) {
+    service.enabled = enabled;
+    
+    // 如果禁用的是默认服务，清除默认设置
+    if (!enabled && currentSettings.defaultChatServiceId === serviceId) {
+      currentSettings.defaultChatServiceId = undefined;
+    }
+    
+    await saveChatSettings();
+  }
+}
+
+/**
+ * 保存chat服务设置
+ */
+async function saveChatSettings() {
+  try {
+    await saveSettings({
+      chatServices: currentSettings.chatServices,
+      defaultChatServiceId: currentSettings.defaultChatServiceId,
+      defaultAutoOpenChat: currentSettings.defaultAutoOpenChat,
+      userPrompts: allPrompts
+    });
+    
+    renderChatServices();
+    updateChatServiceOptions();
+  } catch (error) {
+    console.error('Error saving chat settings:', error);
+    showNotification(getMessage('savingFailed'), 'error');
+  }
+}
 
 // 当DOM加载完成时初始化
 if (document.readyState === 'loading') {

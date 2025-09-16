@@ -482,5 +482,97 @@
   "gotIt": {
     "message": "Got It",
     "description": "Button text to dismiss the usage instructions"
+  },
+  "promptsTab": {
+    "message": "Prompt Manager",
+    "description": "Prompt management tab title"
+  },
+  "chatServicesTab": {
+    "message": "Chat Services",
+    "description": "Chat services management tab title"
+  },
+  "chatServicesTitle": {
+    "message": "Chat Services Management",
+    "description": "Chat services management page main title"
+  },
+  "chatServicesDescription": {
+    "message": "Manage AI chat services you can jump to",
+    "description": "Chat services management page description"
+  },
+  "defaultSettings": {
+    "message": "Default Settings",
+    "description": "Default settings section title"
+  },
+  "defaultChatService": {
+    "message": "Default Chat Service",
+    "description": "Default chat service selection label"
+  },
+  "noDefault": {
+    "message": "No Default",
+    "description": "No default option in chat service selection"
+  },
+  "defaultAutoOpen": {
+    "message": "Auto Open by Default",
+    "description": "Default auto open chat service switch label"
+  },
+  "availableServices": {
+    "message": "Available Services",
+    "description": "Available chat services list title"
+  },
+  "addCustomService": {
+    "message": "Add Custom Service",
+    "description": "Add custom chat service button text"
+  },
+  "addChatService": {
+    "message": "Add Chat Service",
+    "description": "Add chat service modal title"
+  },
+  "editChatService": {
+    "message": "Edit Chat Service",
+    "description": "Edit chat service modal title"
+  },
+  "serviceName": {
+    "message": "Service Name",
+    "description": "Chat service name input label"
+  },
+  "serviceUrl": {
+    "message": "Service URL",
+    "description": "Chat service URL input label"
+  },
+  "serviceIcon": {
+    "message": "Icon URL (Optional)",
+    "description": "Chat service icon URL input label"
+  },
+  "targetChatService": {
+    "message": "Target Chat Service",
+    "description": "Target chat service selection label in prompt editor"
+  },
+  "useDefault": {
+    "message": "Use Default Settings",
+    "description": "Use default chat service settings option"
+  },
+  "autoOpenChat": {
+    "message": "Auto Open After Copy",
+    "description": "Auto open chat service switch label"
+  },
+  "enableService": {
+    "message": "Enable Service",
+    "description": "Enable chat service switch label"
+  },
+  "deleteService": {
+    "message": "Delete Service",
+    "description": "Delete chat service button title"
+  },
+  "openService": {
+    "message": "Open",
+    "description": "Open chat service button title"
+  },
+  "editService": {
+    "message": "Edit Service",
+    "description": "Edit chat service button title"
+  },
+  "confirmDeleteService": {
+    "message": "Are you sure you want to delete this chat service?",
+    "description": "Delete chat service confirmation prompt"
   }
 }
