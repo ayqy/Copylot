@@ -10,6 +10,7 @@ export interface ChatService {
   icon: string;
   enabled: boolean;
   builtIn: boolean;
+  description?: string;
 }
 
 export interface Prompt {
@@ -71,18 +72,19 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
   {
     id: 'claude',
     name: 'Claude',
-    url: 'https://claude.ai',
+    url: 'https://claude.ai/new',
     icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiByeD0iNiIgZmlsbD0iI0Q5N0Y0MiIvPgo8cGF0aCBkPSJNOCA4SDE2VjE2SDhaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=',
     enabled: true,
     builtIn: true
   },
   {
     id: 'gemini',
-    name: 'Gemini',
-    url: 'https://gemini.google.com',
+    name: 'Gemini AI Studio',
+    url: 'https://aistudio.google.com/',
     icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM0Mjg1RjQiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
-    builtIn: true
+    builtIn: true,
+    description: '完全免费使用'
   },
   {
     id: 'yiyan',
@@ -95,7 +97,7 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
   {
     id: 'tongyi',
     name: '通义千问',
-    url: 'https://tongyi.aliyun.com',
+    url: 'https://chat.qwen.ai/',
     icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNGRjY0MDAiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true
@@ -115,6 +117,67 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiMwMEJCNzAiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true
+  },
+  {
+    id: 'deepseek',
+    name: 'DeepSeek',
+    url: 'https://chat.deepseek.com/',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM2MzY2RjEiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+    enabled: true,
+    builtIn: true,
+    description: '登录后免费使用'
+  },
+  {
+    id: 'poe',
+    name: 'Poe',
+    url: 'https://poe.com/',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNFRjQ0NDQiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+    enabled: true,
+    builtIn: true,
+    description: '每天有免费额度'
+  },
+  {
+    id: 'glm',
+    name: 'GLM',
+    url: 'https://chat.z.ai/',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiMxMEI5ODEiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+    enabled: true,
+    builtIn: true,
+    description: '（免登录）免费使用'
+  },
+  {
+    id: 'openai-playground',
+    name: 'OpenAI Playground',
+    url: 'https://platform.openai.com/playground/prompts?models=o3',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM4QjVDRjYiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+    enabled: true,
+    builtIn: true,
+    description: '每天有免费额度'
+  },
+  {
+    id: 'perplexity',
+    name: 'Perplexity AI',
+    url: 'https://www.perplexity.ai/',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiMwNkI2RDQiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+    enabled: true,
+    builtIn: true
+  },
+  {
+    id: 'grok',
+    name: 'Grok',
+    url: 'https://grok.com/',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNFQzQ4OTkiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+    enabled: true,
+    builtIn: true
+  },
+  {
+    id: 'lmarena',
+    name: 'LMArena',
+    url: 'https://lmarena.ai/?mode=direct',
+    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM4NEEzMTYiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+    enabled: true,
+    builtIn: true,
+    description: '完全免费使用'
   }
 ];
 
@@ -188,7 +251,6 @@ export async function getSettings(): Promise<Settings> {
       }
 
       // 迁移逻辑：为现有用户添加内置prompt（如果不存在的话）
-      const builtInPromptIds = DEFAULT_BUILT_IN_PROMPTS.map(p => p.id);
       const existingPromptIds = new Set(mergedSettings.userPrompts.map(p => p.id));
       
       // 添加缺失的内置prompt
@@ -204,6 +266,24 @@ export async function getSettings(): Promise<Settings> {
           return false;
         }
         return true;
+      });
+
+      // 迁移逻辑：为现有用户添加新的内置聊天服务和更新现有服务
+      const existingChatServiceIds = new Set(mergedSettings.chatServices.map(s => s.id));
+      
+      // 添加缺失的内置聊天服务
+      DEFAULT_CHAT_SERVICES.forEach(defaultService => {
+        if (!existingChatServiceIds.has(defaultService.id)) {
+          mergedSettings.chatServices.push({ ...defaultService });
+        } else {
+          // 更新现有服务的URL和其他属性（如description）
+          const existingService = mergedSettings.chatServices.find(s => s.id === defaultService.id);
+          if (existingService && existingService.builtIn) {
+            // 保留用户的enabled状态，但更新其他内置服务属性
+            const userEnabled = existingService.enabled;
+            Object.assign(existingService, { ...defaultService, enabled: userEnabled });
+          }
+        }
       });
 
       return mergedSettings;

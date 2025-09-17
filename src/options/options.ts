@@ -409,7 +409,14 @@ function getServiceIconColor(serviceId: string): string {
     'yiyan': ICON_COLORS[3],
     'tongyi': ICON_COLORS[4],
     'kimi': ICON_COLORS[5],
-    'doubao': ICON_COLORS[6]
+    'doubao': ICON_COLORS[6],
+    'deepseek': ICON_COLORS[7],
+    'poe': ICON_COLORS[8],
+    'glm': ICON_COLORS[9],
+    'openai-playground': ICON_COLORS[10],
+    'perplexity': ICON_COLORS[11],
+    'grok': ICON_COLORS[12],
+    'lmarena': ICON_COLORS[13]
   };
   
   if (builtInColors[serviceId]) {
@@ -1385,7 +1392,7 @@ function createChatServiceCard(service: ChatService): HTMLElement {
     </div>
     <div class="chat-service-toggle">
       <label class="switch-label">
-        <span data-i18n="enableService">${getMessage('enableService')}</span>
+        <span>${service.description || ''}</span>
         <label class="switch">
           <input type="checkbox" class="service-enabled-toggle" data-id="${service.id}" ${service.enabled ? 'checked' : ''} />
           <span class="slider round"></span>
