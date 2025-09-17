@@ -25,6 +25,7 @@ export interface Prompt {
   autoOpenChat?: boolean;
   builtIn?: boolean;
   deleted?: boolean;
+  templateVersion?: number;
 }
 
 export interface Settings {
@@ -50,12 +51,13 @@ export const DEFAULT_BUILT_IN_PROMPTS: Prompt[] = [
   {
     id: 'builtin-summary-article',
     title: '总结文章',
-    template: '请总结以下文章的主要内容：\n\n<article>{content}</article>',
+    template: '请总结以下文章的主要内容：\n\n<article>\n{content}\n</article>',
     category: 'summary',
     usageCount: 0,
     createdAt: Date.now(),
     builtIn: true,
-    deleted: false
+    deleted: false,
+    templateVersion: 2
   }
 ];
 
@@ -257,6 +259,23 @@ export async function getSettings(): Promise<Settings> {
       DEFAULT_BUILT_IN_PROMPTS.forEach(builtInPrompt => {
         if (!existingPromptIds.has(builtInPrompt.id)) {
           mergedSettings.userPrompts.push({ ...builtInPrompt });
+        }
+      });
+
+      // 更新现有内置prompt到最新版本
+      DEFAULT_BUILT_IN_PROMPTS.forEach(defaultPrompt => {
+        const existingPrompt = mergedSettings.userPrompts.find(p => p.id === defaultPrompt.id);
+        if (existingPrompt && existingPrompt.builtIn) {
+          const existingVersion = existingPrompt.templateVersion || 1; // 默认为版本1
+          const defaultVersion = defaultPrompt.templateVersion || 1;
+          
+          // 如果默认版本更高，则更新模版但保留用户的使用统计
+          if (defaultVersion > existingVersion) {
+            existingPrompt.template = defaultPrompt.template;
+            existingPrompt.title = defaultPrompt.title;
+            existingPrompt.templateVersion = defaultPrompt.templateVersion;
+            // 保留：usageCount, lastUsedAt, targetChatId, autoOpenChat 等用户相关设置
+          }
         }
       });
 

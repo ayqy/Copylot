@@ -580,7 +580,7 @@
     "description": "内置总结prompt的标题"
   },
   "builtInSummaryTemplate": {
-    "message": "请总结以下文章的主要内容：\n\n<article>{content}</article>",
+    "message": "请总结以下文章的主要内容：\n\n<article>\n{content}\n</article>",
     "description": "内置总结prompt的模板"
   }
 }

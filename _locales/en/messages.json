@@ -574,5 +574,13 @@
   "confirmDeleteService": {
     "message": "Are you sure you want to delete this chat service?",
     "description": "Delete chat service confirmation prompt"
+  },
+  "builtInSummaryTitle": {
+    "message": "Summarize Article",
+    "description": "Built-in summary prompt title"
+  },
+  "builtInSummaryTemplate": {
+    "message": "Please summarize the main content of the following article:\n\n<article>\n{content}\n</article>",
+    "description": "Built-in summary prompt template"
   }
 }
