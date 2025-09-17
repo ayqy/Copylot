@@ -569,6 +569,23 @@ async function handlePromptClick(promptId: string): Promise<void> {
       console.warn('Failed to update prompt usage count:', error);
     }
     
+    // 决定是否需要跳转到chat服务
+    const shouldOpenChat = prompt.autoOpenChat !== undefined ? prompt.autoOpenChat : userSettings.defaultAutoOpenChat;
+    const targetChatId = prompt.targetChatId || userSettings.defaultChatServiceId;
+    
+    if (shouldOpenChat && targetChatId) {
+      const chatService = userSettings.chatServices.find((c: any) => c.id === targetChatId && c.enabled);
+      if (chatService) {
+        // 显示视觉反馈
+        showChatRedirectNotification(chatService.name);
+        
+        // 延迟打开chat服务，让用户看到反馈
+        setTimeout(() => {
+          window.open(chatService.url, '_blank');
+        }, 1500);
+      }
+    }
+    
     // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
     updateButtonState(copyButtonElement!, 'copied');
     // @ts-ignore: hidePromptMenu is available from inlined ui-injector.ts
