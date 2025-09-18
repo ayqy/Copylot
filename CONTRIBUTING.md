@@ -118,12 +118,12 @@ src/
 ├── content/          # Content script
 ├── popup/           # Extension popup UI
 ├── shared/          # Shared utilities
-│   ├── block-identifier.ts    # Content detection logic
-│   ├── ui-injector.ts        # Button injection and management
-│   ├── content-processor.ts  # Content formatting
-│   └── settings-manager.ts   # Settings management
 ├── assets/          # Icons and static assets
 └── background.ts    # Background service worker
+eslint-rules/        # Custom ESLint rules for i18n
+scripts/
+├── check-i18n.ts    # i18n compliance checker
+└── ...              # Other build scripts
 ```
 
 ### Build System
@@ -131,6 +131,9 @@ src/
 - **Custom Inlining Script**: `scripts/inline-build.ts` preprocesses `src/content/content.ts` by inlining shared modules (from `src/shared/`) directly into it. This creates a single, cohesive content script ready for Vite.
 - **Vite**: Modern build tool then compiles the preprocessed content script and other assets (popup, background script).
 - **ESLint + Prettier**: Code quality and formatting.
+- **Custom ESLint Rules**: Custom rules for project-specific requirements (e.g., i18n string detection).
+- **i18n Validation**: Automated detection of untranslated string literals using TypeScript AST analysis.
+- **Pre-commit Hooks**: Husky with lint-staged ensures code quality and i18n compliance before commits.
 - **Sharp**: Icon generation from PNG/SVG (auto-detects source format).
 
 ## Development
@@ -142,6 +145,28 @@ src/
 - `npm run lint`: Run ESLint
 - `npm run format`: Format code with Prettier
 - `npm run type-check`: TypeScript type checking
+- `npm run check-i18n`: Check for untranslated string literals
+
+### Internationalization (i18n) Guidelines
+
+This project enforces strict i18n compliance to ensure all user-facing text is properly localized.
+
+#### Automated Detection System
+
+- **ESLint Rule**: Real-time detection of untranslated strings during development
+- **Check Script**: Run `npm run check-i18n` to scan all TypeScript files
+- **Pre-commit Hook**: Automatically validates i18n compliance before commits
+
+#### Development Requirements
+
+1. **Use `chrome.i18n.getMessage()`** for all user-facing strings
+2. **Define keys in `_locales/*/messages.json`** for both English and Chinese
+3. **Provide fallback strings** using `chrome.i18n.getMessage('key') || 'fallback'`
+4. **Run i18n check** before submitting PRs
+
+#### Technical Strings Excluded
+
+The system automatically ignores CSS properties, file paths, DOM selectors, console messages, and other technical identifiers.
 
 ### Publishing Process
 
@@ -262,7 +287,15 @@ You can run the tests directly in your browser using one of two methods:
 2. Create a feature branch
 3. Make your changes
 4. Run tests and ensure linting passes
-5. Submit a pull request
+5. **Ensure i18n compliance**: Run `npm run check-i18n` to verify all user-facing strings are properly localized
+6. Submit a pull request
+
+### Code Quality Requirements
+
+Before submitting a pull request:
+- Ensure ESLint passes (including i18n rules)
+- Run `npm run check-i18n` to verify string localization
+- Update both English and Chinese translations in `_locales/`
 
 ## License
 
