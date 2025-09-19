@@ -129,7 +129,7 @@ async function copyToClipboard(text: string): Promise<void> {
   document.body.removeChild(textarea);
   
   if (!success) {
-    throw new Error('Failed to copy to clipboard');
+    throw new Error(getMessage('failedCopyClipboard'));
   }
 }
 
@@ -780,13 +780,13 @@ async function initializeContentScript(): Promise<void> {
               sendResponse({ success: true });
             } catch (error) {
               console.error('Error copying to clipboard:', error);
-              sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+              sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
             }
           } else {
-            sendResponse({ success: false, error: 'No content to copy' });
+            sendResponse({ success: false, error: getMessage('noContentToCopy') });
           }
         } else {
-          sendResponse({ success: false, error: 'Settings not loaded' });
+          sendResponse({ success: false, error: getMessage('settingsNotLoaded') });
         }
         return true; // Indicates async response
       }
@@ -824,13 +824,13 @@ async function initializeContentScript(): Promise<void> {
               sendResponse({ success: true });
             } catch (error) {
               console.error('Error copying to clipboard:', error);
-              sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+              sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
             }
           } else {
-            sendResponse({ success: false, error: 'No content to copy' });
+            sendResponse({ success: false, error: getMessage('noContentToCopy') });
           }
         } else {
-          sendResponse({ success: false, error: 'Settings not loaded' });
+          sendResponse({ success: false, error: getMessage('settingsNotLoaded') });
         }
         return true; // Indicates async response
       }
@@ -854,7 +854,7 @@ async function initializeContentScript(): Promise<void> {
               sendResponse({ success: true });
             } catch (error) {
               console.error('Error copying to clipboard:', error);
-              sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+              sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
             }
           } else {
             // 回退到原有的选区处理逻辑
@@ -871,7 +871,7 @@ async function initializeContentScript(): Promise<void> {
                 sendResponse({ success: true });
               } catch (error) {
                 console.error('Error copying to clipboard:', error);
-                sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+                sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
               }
             } else {
               console.debug('AI Copilot: No DOM selection found, using text selection');
@@ -885,15 +885,15 @@ async function initializeContentScript(): Promise<void> {
                   await copyToClipboard(finalText);
                   sendResponse({ success: true });
                 } catch (error) {
-                  sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+                  sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
                 }
               } else {
-                sendResponse({ success: false, error: 'No content selected' });
+                sendResponse({ success: false, error: getMessage('noContentSelected') });
               }
             }
           }
         } else {
-          sendResponse({ success: false, error: 'Settings not loaded' });
+          sendResponse({ success: false, error: getMessage('settingsNotLoaded') });
         }
         return true; // Indicates async response
       }
@@ -914,13 +914,13 @@ async function initializeContentScript(): Promise<void> {
               sendResponse({ success: true });
             } catch (error) {
               console.error('Error copying to clipboard:', error);
-              sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+              sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
             }
           } else {
-            sendResponse({ success: false, error: 'No content to copy' });
+            sendResponse({ success: false, error: getMessage('noContentToCopy') });
           }
         } else {
-          sendResponse({ success: false, error: 'Settings not loaded' });
+          sendResponse({ success: false, error: getMessage('settingsNotLoaded') });
         }
         return true; // Indicates async response
       }
@@ -950,13 +950,13 @@ async function initializeContentScript(): Promise<void> {
               sendResponse({ success: true });
             } catch (error) {
               console.error('Error copying to clipboard:', error);
-              sendResponse({ success: false, error: 'Failed to copy to clipboard' });
+              sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
             }
           } else {
-            sendResponse({ success: false, error: 'No content to copy' });
+            sendResponse({ success: false, error: getMessage('noContentToCopy') });
           }
         } else {
-          sendResponse({ success: false, error: 'Settings not loaded' });
+          sendResponse({ success: false, error: getMessage('settingsNotLoaded') });
         }
         return true; // Indicates async response
       }

@@ -109,7 +109,7 @@ function localizeUI() {
   });
 
   // Set page title
-  document.title = chrome.i18n.getMessage('appName') || 'Copylot Settings';
+  document.title = chrome.i18n.getMessage('copylotSettings') || 'Copylot Settings';
 }
 
 /**
@@ -330,12 +330,12 @@ async function handleSavePrompt(event: Event) {
 function openModal(prompt: Prompt | null = null) {
   elements.popupContent.style.filter = 'blur(5px)';
   if (prompt) {
-    elements.modalTitle.textContent = 'Edit Prompt';
+    elements.modalTitle.textContent = chrome.i18n.getMessage('editPrompt') || 'Edit Prompt';
     elements.promptId.value = prompt.id;
     elements.promptTitle.value = prompt.title;
     elements.promptTemplate.value = prompt.template;
   } else {
-    elements.modalTitle.textContent = 'Add New Prompt';
+    elements.modalTitle.textContent = chrome.i18n.getMessage('addNewPromptButton') || 'Add New Prompt';
     elements.promptForm.reset();
     elements.promptId.value = '';
   }

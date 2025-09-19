@@ -111,7 +111,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
               (response) => {
                 if (chrome.runtime.lastError) {
                   console.warn('Could not send message to content script:', chrome.runtime.lastError.message);
-                  sendResponse({ success: true, warning: 'Content script not available.' });
+                  sendResponse({ success: true, warning: chrome.i18n.getMessage('contentScriptUnavailable') || 'Content script not available.' });
                 } else {
                   sendResponse({ 
                     success: response.success, 
@@ -123,7 +123,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             );
           } else {
             console.error('No active tab found to send the message to.');
-            sendResponse({ success: false, error: 'No active tab found.' });
+            sendResponse({ success: false, error: chrome.i18n.getMessage('noActiveTabFound') || 'No active tab found.' });
           }
         });
         return true; // Indicate that the response is asynchronous
@@ -151,7 +151,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             await saveSettings({ userPrompts: settings.userPrompts });
             sendResponse({ success: true });
           } else {
-            sendResponse({ success: false, error: 'Prompt not found' });
+            sendResponse({ success: false, error: chrome.i18n.getMessage('promptNotFound') || 'Prompt not found' });
           }
         } catch (error) {
           console.error('Failed to save prompt usage update:', error);
@@ -174,7 +174,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     default:
       console.warn('Unknown message type:', message.type);
-      sendResponse({ success: false, error: 'Unknown message type' });
+      sendResponse({ success: false, error: chrome.i18n.getMessage('unknownMessageType') || 'Unknown message type' });
   }
 
   // Return true to indicate we'll send a response asynchronously

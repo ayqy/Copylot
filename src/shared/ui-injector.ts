@@ -110,7 +110,7 @@ export function createPromptMenu(prompts: any[]): HTMLElement {
   } else {
     const emptyItem = document.createElement('div');
     emptyItem.className = 'ai-copilot-prompt-empty';
-    emptyItem.textContent = 'No prompts available';
+    emptyItem.textContent = getMessage('noPromptsAvailable') || 'No prompts available';
     emptyItem.style.cssText = `
       padding: 6px 12px;
       font-size: 13px;

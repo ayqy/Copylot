@@ -61,6 +61,126 @@ function isI18nCall(node: ts.Node): boolean {
   return false;
 }
 
+function isLogHiddenCall(node: ts.Node): boolean {
+  let parent = node.parent;
+  while (parent) {
+    if (ts.isCallExpression(parent)) {
+      // Check for logHidden calls
+      if (ts.isIdentifier(parent.expression) && parent.expression.text === 'logHidden') {
+        return true;
+      }
+      // Check for console.* calls
+      if (
+        ts.isPropertyAccessExpression(parent.expression) &&
+        ts.isIdentifier(parent.expression.expression) &&
+        parent.expression.expression.text === 'console' &&
+        ts.isIdentifier(parent.expression.name) &&
+        CONSOLE_METHODS.includes(parent.expression.name.text)
+      ) {
+        return true;
+      }
+    }
+    parent = parent.parent;
+  }
+  return false;
+}
+
+function isSelectorContext(node: ts.Node): boolean {
+  let parent = node.parent;
+  while (parent) {
+    if (ts.isCallExpression(parent)) {
+      // Check if this is a DOM selector method call and our node is the first argument
+      if (
+        ts.isPropertyAccessExpression(parent.expression) &&
+        ts.isIdentifier(parent.expression.name) &&
+        ['querySelector', 'querySelectorAll', 'matches', 'closest'].includes(parent.expression.name.text) &&
+        parent.arguments.length > 0
+      ) {
+        // Check if our node is somewhere in the arguments chain
+        for (const arg of parent.arguments) {
+          if (isNodeDescendantOf(node, arg)) {
+            return true;
+          }
+        }
+      }
+    }
+    parent = parent.parent;
+  }
+  return false;
+}
+
+function isNodeDescendantOf(child: ts.Node, ancestor: ts.Node): boolean {
+  let current: ts.Node | undefined = child;
+  while (current) {
+    if (current === ancestor) {
+      return true;
+    }
+    current = current.parent;
+  }
+  return false;
+}
+
+function isStyleContext(node: ts.Node): boolean {
+  let parent = node.parent;
+  while (parent) {
+    if (ts.isPropertyAccessExpression(parent)) {
+      const propertyName = parent.name.text;
+      if (/^style$|color|transform|boxShadow|opacity|filter|background|border|margin|padding/.test(propertyName)) {
+        return true;
+      }
+    }
+    parent = parent.parent;
+  }
+  return false;
+}
+
+function isAttributePair(text: string): boolean {
+  return /^[\w-]+=(?:[\w-]+|"[^"]*"|'[^']*')$/.test(text);
+}
+
+function isPlaceholderContent(text: string): boolean {
+  // HTML content with tags that shouldn't be translated
+  if (text.includes('<span class=') || text.includes('builtin-badge')) {
+    return true;
+  }
+  
+  // Fallback strings that are already in chrome.i18n.getMessage calls
+  if (isInFallbackContext(text)) {
+    return true;
+  }
+  
+  return false;
+}
+
+function isInFallbackContext(text: string): boolean {
+  // These are strings that appear as fallbacks in existing chrome.i18n.getMessage calls
+  const fallbackStrings = [
+    'Convert Page to AI-Friendly Format',
+    'Magic Copy with Prompt', 
+    'Content script not available.',
+    'No active tab found.',
+    'Prompt not found',
+    'Unknown message type',
+    'Prompt Manager - Copylot',
+    'Copylot Settings',
+    'Edit Prompt',
+    'Add New Prompt',
+    'No prompts available',
+    'Video Poster',
+    'Video Source', 
+    'No source or poster',
+    '[Picture Element - No image found]',
+    '[Embedded Content]',
+    '[Object Content]',
+    '总结文章'
+  ];
+  
+  // Check if text starts with any fallback string (for truncated display)
+  return fallbackStrings.some(fallback => 
+    text === fallback || fallback.startsWith(text) || text.startsWith(fallback.substring(0, 30))
+  );
+}
+
 function isCSSLiteral(text: string): boolean {
   // CSS 属性名
   const cssProperties = [
@@ -121,8 +241,13 @@ function isCSSLiteral(text: string): boolean {
     return true;
   }
 
-  // 检查是否是 box-shadow 或类似的复合值
-  if (/^\d+px\s+\d+px\s+\d+px\s+(rgba?\([^)]+\)|#[0-9A-Fa-f]{3,8})/.test(text)) {
+  // 检查是否是 box-shadow 或类似的复合值 - 改进版本
+  if (/^\d+(px)?\s+\d+(px)?\s+\d+(px)?\s+(rgba?\([^)]+\)|#[0-9A-Fa-f]{3,8})/i.test(text)) {
+    return true;
+  }
+  
+  // 更宽松的 box-shadow 检测 (可能没有px单位)
+  if (/^\d+\s+\d+\s+\d+\s+rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*[\d.]+\s*\)$/i.test(text)) {
     return true;
   }
 
@@ -308,6 +433,25 @@ function checkStringLiteral(
   const hasEnglishWords = /[a-zA-Z]{2,}/.test(text);
   
   if (!hasNonAscii && !hasEnglishWords) {
+    return;
+  }
+
+  // 排除调试日志和DOM操作相关的字符串
+  if (
+    isLogHiddenCall(node) ||
+    isSelectorContext(node) ||
+    isStyleContext(node)
+  ) {
+    return;
+  }
+
+  // 排除属性键值对格式的字符串
+  if (isAttributePair(text)) {
+    return;
+  }
+
+  // 排除占位符内容和服务名称
+  if (isPlaceholderContent(text)) {
     return;
   }
 

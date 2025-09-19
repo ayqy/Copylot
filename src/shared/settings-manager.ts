@@ -2,6 +2,9 @@
 // Leave empty to use the browser's default language
 export const FORCE_UI_LANGUAGE = '';
 
+// Import getMessage function for i18n support
+import { getMessage } from './ui-injector';
+
 // Settings manager functionality
 export interface ChatService {
   id: string;
@@ -50,8 +53,8 @@ export const SETTINGS_KEY = 'copilot_settings';
 export const DEFAULT_BUILT_IN_PROMPTS: Prompt[] = [
   {
     id: 'builtin-summary-article',
-    title: '总结文章',
-    template: '请总结以下文章的主要内容：\n\n<article>\n{content}\n</article>',
+    title: getMessage('builtInSummaryTitle') || '总结文章',
+    template: getMessage('builtInSummaryTemplate'),
     category: 'summary',
     usageCount: 0,
     createdAt: Date.now(),
@@ -81,16 +84,16 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
   },
   {
     id: 'gemini',
-    name: 'Gemini AI Studio',
+    name: getMessage('serviceGeminiAIStudio'),
     url: 'https://aistudio.google.com/',
     icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM0Mjg1RjQiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true,
-    description: '完全免费使用'
+    description: getMessage('statusCompleteFree')
   },
   {
     id: 'yiyan',
-    name: '文心一言',
+    name: getMessage('serviceYiyan'),
     url: 'https://yiyan.baidu.com',
     icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiMyOTVGRkYiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
@@ -98,7 +101,7 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
   },
   {
     id: 'tongyi',
-    name: '通义千问',
+    name: getMessage('serviceTongyi'),
     url: 'https://chat.qwen.ai/',
     icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNGRjY0MDAiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
@@ -127,7 +130,7 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM2MzY2RjEiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true,
-    description: '登录后免费使用'
+    description: getMessage('statusFreeAfterLogin')
   },
   {
     id: 'poe',
@@ -136,7 +139,7 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNFRjQ0NDQiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true,
-    description: '每天有免费额度'
+    description: getMessage('statusDailyQuota')
   },
   {
     id: 'glm',
@@ -145,20 +148,20 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiMxMEI5ODEiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true,
-    description: '（免登录）免费使用'
+    description: getMessage('statusFreeNoLogin')
   },
   {
     id: 'openai-playground',
-    name: 'OpenAI Playground',
+    name: getMessage('serviceOpenAIPlayground'),
     url: 'https://platform.openai.com/playground/prompts?models=o3',
     icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM4QjVDRjYiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true,
-    description: '每天有免费额度'
+    description: getMessage('statusDailyQuota')
   },
   {
     id: 'perplexity',
-    name: 'Perplexity AI',
+    name: getMessage('servicePerplexityAI'),
     url: 'https://www.perplexity.ai/',
     icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiMwNkI2RDQiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
@@ -179,7 +182,7 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM4NEEzMTYiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true,
-    description: '完全免费使用'
+    description: getMessage('statusCompleteFree')
   }
 ];
 

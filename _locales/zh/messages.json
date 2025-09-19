@@ -582,5 +582,109 @@
   "builtInSummaryTemplate": {
     "message": "请总结以下文章的主要内容：\n\n<article>\n{content}\n</article>",
     "description": "内置总结prompt的模板"
+  },
+  "failedCopyClipboard": {
+    "message": "复制到剪贴板失败",
+    "description": "剪贴板复制操作失败时的错误消息"
+  },
+  "noContentToCopy": {
+    "message": "没有可复制的内容",
+    "description": "没有可复制内容时的错误消息"
+  },
+  "settingsNotLoaded": {
+    "message": "设置未加载",
+    "description": "设置加载失败时的错误消息"
+  },
+  "noContentSelected": {
+    "message": "未选择任何内容",
+    "description": "未选择复制内容时的错误消息"
+  },
+  "contentScriptUnavailable": {
+    "message": "内容脚本不可用。",
+    "description": "内容脚本不可用时的错误消息"
+  },
+  "noActiveTabFound": {
+    "message": "未找到活动标签页。",
+    "description": "未找到活动标签页时的错误消息"
+  },
+  "promptNotFound": {
+    "message": "未找到Prompt",
+    "description": "找不到Prompt时的错误消息"
+  },
+  "unknownMessageType": {
+    "message": "未知消息类型",
+    "description": "无法识别的消息类型的错误消息"
+  },
+  "copylotSettings": {
+    "message": "Copylot 设置",
+    "description": "Copylot设置页面的标题"
+  },
+  "addNewPromptButton": {
+    "message": "新增Prompt",
+    "description": "添加新Prompt的按钮文本"
+  },
+  "noPromptsAvailable": {
+    "message": "暂无可用提示词",
+    "description": "没有可用提示词时的消息"
+  },
+  "pictureElementNoImage": {
+    "message": "[图片元素 - 未找到图片]",
+    "description": "没有图片的picture元素的占位文本"
+  },
+  "videoPoster": {
+    "message": "视频封面",
+    "description": "视频封面图片的替代文本"
+  },
+  "videoSource": {
+    "message": "视频来源",
+    "description": "视频来源的链接文本"
+  },
+  "noSourceOrPoster": {
+    "message": "无来源或封面",
+    "description": "没有来源或封面的视频文本"
+  },
+  "embeddedContent": {
+    "message": "[嵌入内容]",
+    "description": "嵌入内容的占位符"
+  },
+  "objectContent": {
+    "message": "[对象内容]",
+    "description": "对象内容的占位符"
+  },
+  "serviceGeminiAIStudio": {
+    "message": "Gemini AI Studio",
+    "description": "Gemini AI Studio服务名称"
+  },
+  "serviceYiyan": {
+    "message": "文心一言",
+    "description": "文心一言服务名称（百度AI）"
+  },
+  "serviceTongyi": {
+    "message": "通义千问",
+    "description": "通义千问服务名称（阿里巴巴AI）"
+  },
+  "serviceOpenAIPlayground": {
+    "message": "OpenAI Playground",
+    "description": "OpenAI Playground服务名称"
+  },
+  "servicePerplexityAI": {
+    "message": "Perplexity AI",
+    "description": "Perplexity AI服务名称"
+  },
+  "statusCompleteFree": {
+    "message": "完全免费使用",
+    "description": "完全免费服务的状态描述"
+  },
+  "statusFreeAfterLogin": {
+    "message": "登录后免费使用",
+    "description": "登录后免费服务的状态描述"
+  },
+  "statusDailyQuota": {
+    "message": "每天有免费额度",
+    "description": "有每日免费额度服务的状态描述"
+  },
+  "statusFreeNoLogin": {
+    "message": "（免登录）免费使用",
+    "description": "无需登录免费服务的状态描述"
   }
 }

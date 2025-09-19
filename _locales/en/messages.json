@@ -582,5 +582,109 @@
   "builtInSummaryTemplate": {
     "message": "Please summarize the main content of the following article:\n\n<article>\n{content}\n</article>",
     "description": "Built-in summary prompt template"
+  },
+  "failedCopyClipboard": {
+    "message": "Failed to copy to clipboard",
+    "description": "Error message when clipboard copy operation fails"
+  },
+  "noContentToCopy": {
+    "message": "No content to copy",
+    "description": "Error message when there is no content available to copy"
+  },
+  "settingsNotLoaded": {
+    "message": "Settings not loaded",
+    "description": "Error message when settings fail to load"
+  },
+  "noContentSelected": {
+    "message": "No content selected",
+    "description": "Error message when no content is selected for copying"
+  },
+  "contentScriptUnavailable": {
+    "message": "Content script not available.",
+    "description": "Error message when content script is not available"
+  },
+  "noActiveTabFound": {
+    "message": "No active tab found.",
+    "description": "Error message when no active tab is found"
+  },
+  "promptNotFound": {
+    "message": "Prompt not found",
+    "description": "Error message when a prompt cannot be found"
+  },
+  "unknownMessageType": {
+    "message": "Unknown message type",
+    "description": "Error message for unrecognized message types"
+  },
+  "copylotSettings": {
+    "message": "Copylot Settings",
+    "description": "Title for Copylot settings page"
+  },
+  "addNewPromptButton": {
+    "message": "Add New Prompt",
+    "description": "Button text for adding a new prompt"
+  },
+  "noPromptsAvailable": {
+    "message": "No prompts available",
+    "description": "Message when no prompts are available"
+  },
+  "pictureElementNoImage": {
+    "message": "[Picture Element - No image found]",
+    "description": "Placeholder text for picture elements without images"
+  },
+  "videoPoster": {
+    "message": "Video Poster",
+    "description": "Alt text for video poster images"
+  },
+  "videoSource": {
+    "message": "Video Source",
+    "description": "Link text for video sources"
+  },
+  "noSourceOrPoster": {
+    "message": "No source or poster",
+    "description": "Text for videos without source or poster"
+  },
+  "embeddedContent": {
+    "message": "[Embedded Content]",
+    "description": "Placeholder for embedded content"
+  },
+  "objectContent": {
+    "message": "[Object Content]",
+    "description": "Placeholder for object content"
+  },
+  "serviceGeminiAIStudio": {
+    "message": "Gemini AI Studio",
+    "description": "Name of the Gemini AI Studio service"
+  },
+  "serviceYiyan": {
+    "message": "Wenxin Yiyan",
+    "description": "Name of the Wenxin Yiyan service (Baidu's AI)"
+  },
+  "serviceTongyi": {
+    "message": "Tongyi Qianwen",
+    "description": "Name of the Tongyi Qianwen service (Alibaba's AI)"
+  },
+  "serviceOpenAIPlayground": {
+    "message": "OpenAI Playground",
+    "description": "Name of the OpenAI Playground service"
+  },
+  "servicePerplexityAI": {
+    "message": "Perplexity AI",
+    "description": "Name of the Perplexity AI service"
+  },
+  "statusCompleteFree": {
+    "message": "Completely free to use",
+    "description": "Status description for completely free services"
+  },
+  "statusFreeAfterLogin": {
+    "message": "Free after login",
+    "description": "Status description for services that are free after login"
+  },
+  "statusDailyQuota": {
+    "message": "Daily free quota available",
+    "description": "Status description for services with daily free quota"
+  },
+  "statusFreeNoLogin": {
+    "message": "Free (no login required)",
+    "description": "Status description for services that are free without login"
   }
 }

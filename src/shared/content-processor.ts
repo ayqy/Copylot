@@ -421,7 +421,7 @@ export function convertToMarkdown(element: Element): string {
       if (img) {
         return convertToMarkdown(img); // Delegate to HTMLImageElement handling
       }
-      return '[Picture Element - No image found]';
+      return getMessage('pictureElementNoImage') || '[Picture Element - No image found]';
     } else if (element instanceof HTMLVideoElement) {
       const videoElement = element as HTMLVideoElement;
       const posterUrl = videoElement.poster;
@@ -431,13 +431,13 @@ export function convertToMarkdown(element: Element): string {
       const title = videoElement.title || videoElement.ariaLabel || '';
 
       if (posterUrl) {
-        const altText = title || 'Video Poster';
+        const altText = title || getMessage('videoPoster') || 'Video Poster';
         return `![${altText}](${posterUrl})`;
       } else if (videoSrc) {
-        const linkText = title || `Video Source`;
+        const linkText = title || getMessage('videoSource') || 'Video Source';
         return `[${linkText}](${videoSrc})`;
       }
-      return `[Video: ${title || 'No source or poster'}]`;
+      return `[Video: ${title || getMessage('noSourceOrPoster') || 'No source or poster'}]`;
     } else if (element instanceof SVGSVGElement) {
       const svgOuterHTML = element.outerHTML;
       return `\`\`\`svg\n${svgOuterHTML}\n\`\`\``;
@@ -561,9 +561,9 @@ export function convertToPlainText(element: Element): string {
       const attributes = [id, classes].filter(Boolean).join(', ');
       return `[Canvas Element${attributes ? ` (${attributes})` : ''}]`;
     } else if (element instanceof HTMLEmbedElement) {
-      return element.src || '[Embedded Content]';
+      return element.src || getMessage('embeddedContent') || '[Embedded Content]';
     } else if (element instanceof HTMLObjectElement) {
-      return element.data || '[Object Content]';
+      return element.data || getMessage('objectContent') || '[Object Content]';
     } else if (element.tagName.toLowerCase() === 'pre' || element.tagName.toLowerCase() === 'code') {
       // 对于代码块，使用统一的文本提取函数
       return extractCodeBlockText(element);
