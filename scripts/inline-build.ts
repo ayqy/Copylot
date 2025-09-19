@@ -14,7 +14,9 @@ import { execSync } from 'child_process';
 const isProductionBuild = process.env.BUILD_TARGET === 'production';
 
 function log(message: string) {
-  console.log(`[inline-build${isProductionBuild ? '-prod' : ''}] ${message}`);
+  if (message.includes('⚠️')) {
+    console.log(`[inline-build${isProductionBuild ? '-prod' : ''}] ${message}`);
+  }
 }
 
 const ROOT_DIR = process.cwd();
@@ -146,7 +148,7 @@ if (existsSync(TURNDOWN_PLUGIN_SRC)) {
 // Step 5: Run Vite build in temporary directory
 // ---------------------------------------------------------------------------
 log(`Running Vite build (${isProductionBuild ? 'production, no sourcemap, no tests' : 'production, no sourcemap'})...`);
-execSync('npx vite build --no-sourcemap', {
+execSync('npx vite build --no-sourcemap --logLevel error', {
   cwd: TMP_DIR,
   stdio: 'inherit',
   env: { 
