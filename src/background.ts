@@ -1,4 +1,5 @@
 import { getSettings } from './shared/settings-manager';
+import { storeArticleData, cleanExpiredData } from './shared/article-data-manager';
 
 // Extension lifecycle events
 chrome.runtime.onInstalled.addListener(async (details) => {
@@ -20,11 +21,27 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     await getSettings(); // This will merge with defaults if needed
     console.log('Settings migrated successfully');
   }
+
+  // Clean expired article data on install/update
+  try {
+    const cleanedCount = await cleanExpiredData();
+    console.log('Cleaned expired article data on install/update:', cleanedCount);
+  } catch (error) {
+    console.warn('Failed to clean expired data on install/update:', error);
+  }
 });
 
 // Handle extension startup
 chrome.runtime.onStartup.addListener(async () => {
   console.log('WeChat to Zhihu Publisher extension started');
+
+  // Clean expired article data on startup
+  try {
+    const cleanedCount = await cleanExpiredData();
+    console.log('Cleaned expired article data on startup:', cleanedCount);
+  } catch (error) {
+    console.warn('Failed to clean expired data on startup:', error);
+  }
 });
 
 // Handle messages from content scripts
@@ -59,46 +76,48 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
  */
 async function handleWeChatArticleData(message: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) {
   try {
+    console.log('[Background] 📥 Received WeChat article data message:', message);
+    console.log('[Background] Sender info:', sender);
+    
     const { title, content, autoPublish, autoCloseOriginal } = message;
     
-    console.log('Received WeChat article data:', {
+    console.log('[Background] 📊 Article data received:', {
       titleLength: title?.length || 0,
       contentLength: content?.length || 0,
       autoPublish,
-      autoCloseOriginal
+      autoCloseOriginal,
+      timestamp: new Date().toISOString()
     });
     
     if (!title || !content) {
+      console.error('[Background] ❌ Missing article title or content');
       throw new Error('Missing article title or content');
     }
     
+    // Store article data in chrome.storage.local
+    console.log('[Background] 💾 Storing article data...');
+    const storageKey = await storeArticleData({
+      title,
+      content,
+      autoPublish,
+      sourceTabId: sender.tab?.id
+    });
+    
+    console.log('[Background] ✅ Article data stored with key:', storageKey);
+    
     // Create new Zhihu tab
+    console.log('[Background] 🚀 Creating new Zhihu tab...');
     const zhihuTab = await chrome.tabs.create({
       url: 'https://zhuanlan.zhihu.com/write',
       active: true
     });
     
+    console.log('[Background] 📄 Zhihu tab created:', zhihuTab);
+    
     if (!zhihuTab.id) {
+      console.error('[Background] ❌ Failed to create Zhihu tab - no tab ID');
       throw new Error('Failed to create Zhihu tab');
     }
-    
-    // Wait for tab to load and inject publisher script
-    const tabUpdateListener = (tabId: number, changeInfo: chrome.tabs.TabChangeInfo) => {
-      if (tabId === zhihuTab.id && changeInfo.status === 'complete') {
-        chrome.tabs.onUpdated.removeListener(tabUpdateListener);
-        
-        // Inject the publisher script with article data
-        chrome.scripting.executeScript({
-          target: { tabId: zhihuTab.id! },
-          func: injectArticleData,
-          args: [{ title, content, autoPublish }]
-        }).catch(error => {
-          console.error('Failed to inject publisher script:', error);
-        });
-      }
-    };
-    
-    chrome.tabs.onUpdated.addListener(tabUpdateListener);
     
     // Auto close original tab if setting is enabled
     if (autoCloseOriginal && sender.tab?.id) {
@@ -120,25 +139,6 @@ async function handleWeChatArticleData(message: any, sender: chrome.runtime.Mess
   }
 }
 
-/**
- * Function to be injected into Zhihu page
- */
-function injectArticleData(articleData: { title: string; content: string; autoPublish: boolean }) {
-  // This function will be executed in the Zhihu page context
-  console.log('Article data injected into Zhihu page:', {
-    titleLength: articleData.title.length,
-    contentLength: articleData.content.length,
-    autoPublish: articleData.autoPublish
-  });
-  
-  // Store data in window for zhihu-publisher content script to access
-  (window as any).wechatToZhihuData = articleData;
-  
-  // Dispatch custom event to notify content script
-  window.dispatchEvent(new CustomEvent('wechatToZhihuDataReady', {
-    detail: articleData
-  }));
-}
 
 // Handle storage changes for cross-device sync
 chrome.storage.onChanged.addListener((changes, namespace) => {

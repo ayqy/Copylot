@@ -47,6 +47,7 @@ export function showNotification(message: string, options: NotificationOptions =
   setTimeout(() => {
     notification.style.transform = getVisibleTransform(position);
     notification.style.opacity = '1';
+    notification.style.transform += ' scale(1)';
   }, 10);
   
   // Auto-dismiss if duration > 0
@@ -104,9 +105,9 @@ export function showWarning(message: string, duration: number = 5000): void {
  * @param position The position of the notification
  */
 function dismissNotification(notification: HTMLElement, position: string): void {
-  notification.style.transform = getHiddenTransform(position);
+  notification.style.transform = getHiddenTransform(position) + ' scale(0.8)';
   notification.style.opacity = '0';
-  
+
   setTimeout(() => {
     if (document.body.contains(notification)) {
       document.body.removeChild(notification);
@@ -126,23 +127,25 @@ function getNotificationStyles(type: string, position: string): string {
     z-index: 10000;
     background: ${getBackgroundColor(type)};
     color: white;
-    padding: 16px 20px;
-    border-radius: 8px;
+    padding: 18px 24px;
+    border-radius: 12px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    max-width: 400px;
-    min-width: 200px;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    max-width: 450px;
+    min-width: 280px;
     transform: ${getHiddenTransform(position)};
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     opacity: 0;
     cursor: pointer;
     word-wrap: break-word;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
   `;
-  
+
   const positionStyles = getPositionStyles(position);
-  
+
   return baseStyles + positionStyles;
 }
 
@@ -154,15 +157,15 @@ function getNotificationStyles(type: string, position: string): string {
 function getPositionStyles(position: string): string {
   switch (position) {
     case 'top-right':
-      return 'top: 20px; right: 20px;';
+      return 'top: 30px; right: 30px;';
     case 'top-left':
-      return 'top: 20px; left: 20px;';
+      return 'top: 30px; left: 30px;';
     case 'bottom-right':
-      return 'bottom: 20px; right: 20px;';
+      return 'bottom: 30px; right: 30px;';
     case 'bottom-left':
-      return 'bottom: 20px; left: 20px;';
+      return 'bottom: 30px; left: 30px;';
     default:
-      return 'top: 20px; right: 20px;';
+      return 'top: 30px; right: 30px;';
   }
 }
 
@@ -229,12 +232,12 @@ function getHiddenTransform(position: string): string {
   switch (position) {
     case 'top-right':
     case 'bottom-right':
-      return 'translateX(100%)';
+      return 'translateX(100%) scale(0.8)';
     case 'top-left':
     case 'bottom-left':
-      return 'translateX(-100%)';
+      return 'translateX(-100%) scale(0.8)';
     default:
-      return 'translateX(100%)';
+      return 'translateX(100%) scale(0.8)';
   }
 }
 

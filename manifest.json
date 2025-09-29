@@ -41,7 +41,7 @@
       "js": [
         "src/content/zhihu-publisher.js"
       ],
-      "run_at": "document_start"
+      "run_at": "document_end"
     }
   ],
   "background": {

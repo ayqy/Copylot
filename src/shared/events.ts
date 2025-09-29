@@ -63,46 +63,56 @@ export function simulateType(input: HTMLInputElement | HTMLTextAreaElement, text
  * @param target The target element
  * @param html The HTML content to paste
  */
-export function simulatePaste(target: Element, html: string): void {
-  // Focus the target first
-  if (target instanceof HTMLElement) {
-    target.focus();
+export async function simulatePaste(target: HTMLElement, html: string): Promise<boolean> {
+  const initialLen = (target.textContent || '').length;
+
+  // 保证获得焦点
+  target.focus();
+
+  // ---------- 方法 0: 系统剪贴板 + 热键粘贴 ---------- //
+  try {
+    await writeToClipboard(html);
+    const ok = await simulateHotkeyPaste(target);
+    if (ok) {
+      return true;
+    }
+  } catch (err) {
+    console.warn('系统剪贴板路径失败，转入 ClipboardEvent 方案:', err);
   }
-  
-  // Method 1: Try using execCommand (works in many rich text editors)
+
+  // ---------- 方法 1: execCommand('insertHTML') ---------- //
   try {
     const success = document.execCommand('insertHTML', false, html);
     if (success) {
-      console.log('Successfully pasted using execCommand');
-      return;
+      await new Promise(r => requestAnimationFrame(r));
+      const afterLen = (target.textContent || '').length;
+      if (afterLen - initialLen > Math.min(100, html.length * 0.1)) {
+        console.log('execCommand("insertHTML") 成功');
+        return true;
+      }
     }
-  } catch (error) {
-    console.warn('execCommand failed, trying clipboard API method:', error);
+  } catch (err) {
+    console.warn('execCommand insertHTML 失败:', err);
   }
-  
-  // Method 2: Simulate paste event with clipboard data
+
+  // ---------- 方法 3: 最终回退 innerHTML ---------- //
   try {
-    const clipboardData = new DataTransfer();
-    clipboardData.setData('text/html', html);
-    clipboardData.setData('text/plain', html.replace(/<[^>]*>/g, ''));
-    
-    const pasteEvent = new ClipboardEvent('paste', {
-      bubbles: true,
-      cancelable: true,
-      clipboardData: clipboardData,
-    });
-    
-    target.dispatchEvent(pasteEvent);
-    console.log('Dispatched paste event with clipboard data');
-  } catch (error) {
-    console.warn('Paste event simulation failed:', error);
-    
-    // Method 3: Fallback - try to set innerHTML directly
-    if (target instanceof HTMLElement) {
-      target.innerHTML = html;
-      console.log('Fallback: Set innerHTML directly');
-    }
+    target.innerHTML = html;
+
+    // 触发 input & composition 事件，兼容 React/DraftJS 更新
+    const inputEvt = new InputEvent('input', { bubbles: true, cancelable: true });
+    target.dispatchEvent(inputEvt);
+    const compStart = new CompositionEvent('compositionstart', { bubbles: true });
+    const compEnd = new CompositionEvent('compositionend', { bubbles: true, data: html });
+    target.dispatchEvent(compStart);
+    target.dispatchEvent(compEnd);
+
+    return true;
+  } catch (err) {
+    console.error('最终 innerHTML 回退失败:', err);
   }
+
+  return false;
 }
 
 /**
@@ -117,4 +127,73 @@ export function simulateFocus(element: HTMLElement): void {
     cancelable: true,
   });
   element.dispatchEvent(focusEvent);
+}
+
+// 将 HTML 转为纯文本，去除标签与多余空白
+function htmlToPlainText(html: string): string {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
+
+// —— 系统剪贴板 & 热键粘贴 —————————————— //
+
+/**
+ * 将 HTML 与纯文本写入系统剪贴板
+ * 若浏览器或用户拒绝权限，将抛出异常由调用方捕获。
+ */
+async function writeToClipboard(html: string): Promise<void> {
+  const plain = htmlToPlainText(html);
+  const item = new ClipboardItem({
+    'text/html': new Blob([html], { type: 'text/html' }),
+    'text/plain': new Blob([plain], { type: 'text/plain' }),
+  });
+  await navigator.clipboard.write([item]);
+}
+
+/**
+ * 模拟 Ctrl/Cmd + V 粘贴热键
+ * 返回是否检测到内容增量（粗略成功判定）
+ */
+async function simulateHotkeyPaste(target: HTMLElement): Promise<boolean> {
+  const isMac = /mac/i.test(navigator.platform);
+  const initialLen = (target.textContent || '').length;
+
+  target.focus();
+
+  const downEvt = new KeyboardEvent('keydown', {
+    bubbles: true,
+    cancelable: true,
+    key: 'v',
+    code: 'KeyV',
+    [isMac ? 'metaKey' : 'ctrlKey']: true,
+  });
+  target.dispatchEvent(downEvt);
+
+  const pressEvt = new KeyboardEvent('keypress', {
+    bubbles: true,
+    cancelable: true,
+    key: 'v',
+    code: 'KeyV',
+    charCode: 118,
+    [isMac ? 'metaKey' : 'ctrlKey']: true,
+  });
+  target.dispatchEvent(pressEvt);
+
+  const upEvt = new KeyboardEvent('keyup', {
+    bubbles: true,
+    cancelable: true,
+    key: 'v',
+    code: 'KeyV',
+    [isMac ? 'metaKey' : 'ctrlKey']: true,
+  });
+  target.dispatchEvent(upEvt);
+
+  await new Promise(r => setTimeout(r, 100));
+  const afterLen = (target.textContent || '').length;
+  return afterLen - initialLen > Math.min(100, initialLen * 0.1);
+}
+
+export async function writeHtmlToClipboard(html: string): Promise<void> {
+  await writeToClipboard(html);
 }
