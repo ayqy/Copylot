@@ -1,55 +1,8 @@
-import { getSettings, saveSettings, type Prompt, type ChatService, combinePromptWithContent } from './shared/settings-manager';
-
-const PARENT_MENU_ID = 'magic-copy-with-prompt';
-
-async function updateContextMenu() {
-  try {
-    // 完全清除所有菜单项
-    await chrome.contextMenus.removeAll();
-    
-    // 等待一小段时间确保清除完成
-    await new Promise(resolve => setTimeout(resolve, 10));
-
-    // Create the main "Convert Page" item
-    chrome.contextMenus.create({
-      id: 'convert-page-to-ai-friendly-format',
-      title: chrome.i18n.getMessage('convertPage') || 'Convert Page to AI-Friendly Format',
-      contexts: ['page']
-    });
-
-    const { userPrompts } = await getSettings();
-
-    if (userPrompts && userPrompts.length > 0) {
-      chrome.contextMenus.create({
-        id: PARENT_MENU_ID,
-        title: chrome.i18n.getMessage('magicCopyWithPrompt') || 'Magic Copy with Prompt',
-        contexts: ['page']
-      });
-
-      userPrompts.forEach((prompt: Prompt) => {
-        try {
-          chrome.contextMenus.create({
-            id: prompt.id,
-            title: prompt.title,
-            parentId: PARENT_MENU_ID,
-            contexts: ['page']
-          });
-        } catch (error) {
-          console.warn(`Failed to create menu item for prompt ${prompt.id}:`, error);
-        }
-      });
-    }
-  } catch (error) {
-    console.error('Error updating context menu:', error);
-  }
-}
-
-let clipboardStack: string[] = [];
+import { getSettings } from './shared/settings-manager';
 
 // Extension lifecycle events
 chrome.runtime.onInstalled.addListener(async (details) => {
-  console.log('AI Copilot extension installed/updated:', details.reason);
-  await updateContextMenu();
+  console.log('WeChat to Zhihu Publisher extension installed/updated:', details.reason);
 
   // Initialize settings on first install
   if (details.reason === 'install') {
@@ -71,192 +24,127 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 
 // Handle extension startup
 chrome.runtime.onStartup.addListener(async () => {
-  console.log('AI Copilot extension started');
-  await updateContextMenu();
+  console.log('WeChat to Zhihu Publisher extension started');
 });
 
-// Handle messages from content scripts (for future features)
+// Handle messages from content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.debug('Background received message:', message, 'from', sender);
 
   // Handle different message types
   switch (message.type) {
-    case 'copy-to-clipboard':
-      {
-        const { text, isShiftPressed } = message;
-        
-        // Forward the message to the content script in the active tab
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          if (tabs[0] && tabs[0].id) {
-            let textToSend: string;
-            
-            if (isShiftPressed) {
-              // Append mode: add to clipboard stack and combine with existing content
-              clipboardStack.push(text);
-              chrome.action.setBadgeText({ text: clipboardStack.length.toString() });
-              textToSend = clipboardStack.join('\n\n---\n\n');
-            } else {
-              // Normal mode: clear the stack and copy just the current text
-              clipboardStack = [text];
-              chrome.action.setBadgeText({ text: '' });
-              textToSend = text;
-            }
-            
-            chrome.tabs.sendMessage(
-              tabs[0].id,
-              {
-                type: 'copy-to-clipboard-from-background',
-                text: textToSend
-              },
-              (response) => {
-                if (chrome.runtime.lastError) {
-                  console.warn('Could not send message to content script:', chrome.runtime.lastError.message);
-                  sendResponse({ success: true, warning: chrome.i18n.getMessage('contentScriptUnavailable') || 'Content script not available.' });
-                } else {
-                  sendResponse({ 
-                    success: response.success, 
-                    action: isShiftPressed ? 'appended' : 'copied',
-                    error: response.error 
-                  });
-                }
-              }
-            );
-          } else {
-            console.error('No active tab found to send the message to.');
-            sendResponse({ success: false, error: chrome.i18n.getMessage('noActiveTabFound') || 'No active tab found.' });
-          }
-        });
-        return true; // Indicate that the response is asynchronous
-      }
+    case 'WECHAT_ARTICLE_DATA':
+      handleWeChatArticleData(message, sender, sendResponse);
+      return true; // Indicate async response
 
     case 'ping':
       sendResponse({ success: true, message: 'pong' });
       break;
 
-    case 'update-context-menu':
-      updateContextMenu();
-      sendResponse({ success: true });
-      break;
-
-    case 'update-prompt-usage':
-      // 处理从content script发来的使用次数更新请求
-      (async () => {
-        const { promptId, usageCount, lastUsedAt } = message;
-        try {
-          const settings = await getSettings();
-          const prompt = settings.userPrompts.find((p: Prompt) => p.id === promptId);
-          if (prompt) {
-            prompt.usageCount = usageCount;
-            prompt.lastUsedAt = lastUsedAt;
-            await saveSettings({ userPrompts: settings.userPrompts });
-            sendResponse({ success: true });
-          } else {
-            sendResponse({ success: false, error: chrome.i18n.getMessage('promptNotFound') || 'Prompt not found' });
-          }
-        } catch (error) {
-          console.error('Failed to save prompt usage update:', error);
-          sendResponse({ success: false, error: (error as Error).message });
-        }
-      })();
-      break;
-
-    case 'clear-clipboard-stack':
-      clipboardStack = [];
-      chrome.action.setBadgeText({ text: '' });
-      sendResponse({ success: true });
-      break;
-
     case 'error-report':
-      // Future: handle error reporting
       console.error('Error reported from content script:', message.error);
       sendResponse({ success: true });
       break;
 
     default:
       console.warn('Unknown message type:', message.type);
-      sendResponse({ success: false, error: chrome.i18n.getMessage('unknownMessageType') || 'Unknown message type' });
+      sendResponse({ success: false, error: 'Unknown message type' });
   }
 
-  // Return true to indicate we'll send a response asynchronously
   return true;
 });
+
+/**
+ * Handles WeChat article data and creates Zhihu tab
+ */
+async function handleWeChatArticleData(message: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) {
+  try {
+    const { title, content, autoPublish, autoCloseOriginal } = message;
+    
+    console.log('Received WeChat article data:', {
+      titleLength: title?.length || 0,
+      contentLength: content?.length || 0,
+      autoPublish,
+      autoCloseOriginal
+    });
+    
+    if (!title || !content) {
+      throw new Error('Missing article title or content');
+    }
+    
+    // Create new Zhihu tab
+    const zhihuTab = await chrome.tabs.create({
+      url: 'https://zhuanlan.zhihu.com/write',
+      active: true
+    });
+    
+    if (!zhihuTab.id) {
+      throw new Error('Failed to create Zhihu tab');
+    }
+    
+    // Wait for tab to load and inject publisher script
+    const tabUpdateListener = (tabId: number, changeInfo: chrome.tabs.TabChangeInfo) => {
+      if (tabId === zhihuTab.id && changeInfo.status === 'complete') {
+        chrome.tabs.onUpdated.removeListener(tabUpdateListener);
+        
+        // Inject the publisher script with article data
+        chrome.scripting.executeScript({
+          target: { tabId: zhihuTab.id! },
+          func: injectArticleData,
+          args: [{ title, content, autoPublish }]
+        }).catch(error => {
+          console.error('Failed to inject publisher script:', error);
+        });
+      }
+    };
+    
+    chrome.tabs.onUpdated.addListener(tabUpdateListener);
+    
+    // Auto close original tab if setting is enabled
+    if (autoCloseOriginal && sender.tab?.id) {
+      setTimeout(() => {
+        chrome.tabs.remove(sender.tab!.id!).catch(error => {
+          console.warn('Failed to close original tab:', error);
+        });
+      }, 2000);
+    }
+    
+    sendResponse({ success: true });
+    
+  } catch (error) {
+    console.error('Failed to handle WeChat article data:', error);
+    sendResponse({ 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    });
+  }
+}
+
+/**
+ * Function to be injected into Zhihu page
+ */
+function injectArticleData(articleData: { title: string; content: string; autoPublish: boolean }) {
+  // This function will be executed in the Zhihu page context
+  console.log('Article data injected into Zhihu page:', {
+    titleLength: articleData.title.length,
+    contentLength: articleData.content.length,
+    autoPublish: articleData.autoPublish
+  });
+  
+  // Store data in window for zhihu-publisher content script to access
+  (window as any).wechatToZhihuData = articleData;
+  
+  // Dispatch custom event to notify content script
+  window.dispatchEvent(new CustomEvent('wechatToZhihuDataReady', {
+    detail: articleData
+  }));
+}
 
 // Handle storage changes for cross-device sync
 chrome.storage.onChanged.addListener((changes, namespace) => {
   if (changes.copilot_settings && namespace === 'sync') {
-    console.debug('Settings synced from another device, rebuilding context menu...');
-    updateContextMenu();
+    console.debug('Settings synced from another device');
   }
 });
 
-// Handle context menu click
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  if (info.menuItemId === 'convert-page-to-ai-friendly-format' && tab && tab.id) {
-    chrome.tabs.sendMessage(tab.id, {
-      type: 'CONVERT_PAGE_WITH_SELECTION'  // 使用新的消息类型
-    });
-    return;
-  }
-
-  if (info.parentMenuItemId === PARENT_MENU_ID && tab && tab.id) {
-    const settings = await getSettings();
-    const prompt = settings.userPrompts.find((p: Prompt) => p.id === info.menuItemId);
-    if (prompt) {
-      // 更新使用次数和最后使用时间
-      prompt.usageCount = (prompt.usageCount || 0) + 1;
-      prompt.lastUsedAt = Date.now();
-      
-      // 保存更新后的设置
-      try {
-        await saveSettings({ userPrompts: settings.userPrompts });
-        console.debug(`Updated usage count for prompt "${prompt.title}": ${prompt.usageCount}`);
-      } catch (error) {
-        console.error('Failed to update prompt usage:', error);
-      }
-      
-      // 决定是否需要跳转到chat服务
-      const shouldOpenChat = prompt.autoOpenChat !== undefined ? prompt.autoOpenChat : settings.defaultAutoOpenChat;
-      const targetChatId = prompt.targetChatId || settings.defaultChatServiceId;
-      
-      if (shouldOpenChat && targetChatId) {
-        const chatService = settings.chatServices.find((c: ChatService) => c.id === targetChatId && c.enabled);
-        if (chatService) {
-          // 发送消息给content script处理内容并获取结果
-          chrome.tabs.sendMessage(tab.id, {
-            type: 'PROCESS_PAGE_WITH_PROMPT_AND_CHAT',
-            promptTemplate: prompt.template,
-            chatServiceUrl: chatService.url,
-            chatServiceName: chatService.name
-          });
-        } else {
-          // 如果找不到chat服务，只执行prompt处理不跳转
-          chrome.tabs.sendMessage(tab.id, {
-            type: 'PROCESS_PAGE_WITH_PROMPT',
-            promptTemplate: prompt.template
-          });
-        }
-      } else {
-        // 不跳转，只处理prompt
-        chrome.tabs.sendMessage(tab.id, {
-          type: 'PROCESS_PAGE_WITH_PROMPT',
-          promptTemplate: prompt.template
-        });
-      }
-    }
-  }
-});
-
-// Performance monitoring (development only)
-if (process.env.NODE_ENV === 'development') {
-  // Monitor performance and log any issues
-  let performanceBuffer: unknown[] = [];
-
-  setInterval(() => {
-    if (performanceBuffer.length > 0) {
-      console.debug('Performance metrics:', performanceBuffer);
-      performanceBuffer = [];
-    }
-  }, 30000); // Log every 30 seconds
-}
-
-console.log('AI Copilot background script loaded');
+console.log('WeChat to Zhihu Publisher background script loaded');

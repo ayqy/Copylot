@@ -1,16 +1,15 @@
 {
   "manifest_version": 3,
   "name": "__MSG_appName__",
-  "version": "1.1.12",
+  "version": "1.0.0",
   "description": "__MSG_appDescription__",
   "default_locale": "en",
   "permissions": [
     "storage",
-    "clipboardWrite",
-    "contextMenus"
+    "tabs",
+    "scripting"
   ],
   "action": {
-    "default_popup": "src/popup/popup.html",
     "default_title": "__MSG_appName__",
     "default_icon": {
       "16": "icons/icon-16.png",
@@ -28,22 +27,27 @@
   "content_scripts": [
     {
       "matches": [
-        "<all_urls>"
+        "https://mp.weixin.qq.com/*"
       ],
       "js": [
-        "src/turndown.js",
-        "src/turndown-plugin-gfm.js",
-        "src/content/content.js"
+        "src/content/wechat-content.js"
       ],
       "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://zhuanlan.zhihu.com/write*"
+      ],
+      "js": [
+        "src/content/zhihu-publisher.js"
+      ],
+      "run_at": "document_start"
     }
   ],
   "background": {
     "service_worker": "src/background.js",
     "type": "module"
   },
-  "options_page": "src/options/options.html",
-  "devtools_page": "src/devtools/devtools.html",
   "web_accessible_resources": [
     {
       "resources": [

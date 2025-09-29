@@ -108,63 +108,7 @@ export default defineConfig({
             }
           });
 
-          // Copy popup HTML
-          try {
-            const popupHtml = readFileSync('./src/popup/popup.html', 'utf-8');
-            this.emitFile({
-              type: 'asset',
-              fileName: 'src/popup/popup.html',
-              source: popupHtml
-            });
-          } catch (error) {
-            console.warn('Warning: Could not copy popup.html:', error.message);
-          }
-
-          // Copy options HTML
-          try {
-            const optionsHtml = readFileSync('./src/options/options.html', 'utf-8');
-            this.emitFile({
-              type: 'asset',
-              fileName: 'src/options/options.html',
-              source: optionsHtml
-            });
-          } catch (error) {
-            console.warn('Warning: Could not copy options.html:', error.message);
-          }
-
-          // Copy devtools HTML
-          try {
-            const devtoolsHtml = readFileSync('./src/devtools/devtools.html', 'utf-8');
-            this.emitFile({
-              type: 'asset',
-              fileName: 'src/devtools/devtools.html',
-              source: devtoolsHtml
-            });
-          } catch (error) {
-            console.warn('Warning: Could not copy devtools.html:', error.message);
-          }
-
-          // Copy sidebar HTML
-          try {
-            const sidebarHtml = readFileSync('./src/devtools/sidebar.html', 'utf-8');
-            this.emitFile({
-              type: 'asset',
-              fileName: 'src/devtools/sidebar.html',
-              source: sidebarHtml
-            });
-          } catch (error) {
-            console.warn('Warning: Could not copy sidebar.html:', error.message);
-          }
-
-          // Ensure turndown scripts are copied for content script
-          try {
-            ['src/turndown.js', 'src/turndown-plugin-gfm.js'].forEach((p) => {
-              const content = readFileSync(`./${p}`, 'utf-8');
-              this.emitFile({ type: 'asset', fileName: p, source: content });
-            });
-          } catch (error) {
-            console.warn('Warning: Could not copy turndown scripts:', (error as Error).message);
-          }
+          // No HTML files to copy for new architecture
 
           // 生产环境构建：不包含测试资源和测试运行器
           if (!isProductionBuild) {
@@ -222,7 +166,7 @@ export default defineConfig({
   ],
   // Optimize dependencies
   optimizeDeps: {
-    include: ['turndown', 'uuid']
+    include: ['uuid']
   },
   // Development server (not used for extension, but useful for testing components)
   server: {
@@ -234,21 +178,23 @@ export default defineConfig({
 // 单个脚本构建配置
 function getSingleScriptConfig(script: string) {
   const configs: Record<string, any> = {
-    content: {
-      input: resolve(__dirname, 'src/content/content.ts'),
+    'wechat-content': {
+      input: resolve(__dirname, 'src/content/wechat-content.ts'),
       output: {
         format: 'iife',
-        name: 'AICopilotContent',
-        file: 'dist/src/content/content.js',
+        name: 'WeChatContent',
+        dir: 'dist',
+        entryFileNames: 'src/content/wechat-content.js',
         inlineDynamicImports: true
       }
     },
-    popup: {
-      input: resolve(__dirname, 'src/popup/popup.ts'),
+    'zhihu-publisher': {
+      input: resolve(__dirname, 'src/content/zhihu-publisher.ts'),
       output: {
-        format: 'umd',
-        name: 'AICopilotPopup',
-        file: 'dist/src/popup/popup.js',
+        format: 'iife',
+        name: 'ZhihuPublisher',
+        dir: 'dist',
+        entryFileNames: 'src/content/zhihu-publisher.js',
         inlineDynamicImports: true
       }
     },
@@ -256,50 +202,37 @@ function getSingleScriptConfig(script: string) {
       input: resolve(__dirname, 'src/background.ts'),
       output: {
         format: 'umd',
-        name: 'AICopilotBackground',
-        file: 'dist/src/background.js',
+        name: 'WeChatToZhihuBackground',
+        dir: 'dist',
+        entryFileNames: 'src/background.js',
         inlineDynamicImports: true
       }
     }
   };
 
-  return configs[script] || configs.content;
+  return configs[script] || configs['wechat-content'];
 }
 
-// 所有脚本构建配置（使用 ES 模块，适合现代浏览器）
+// 所有脚本构建配置（使用内联配置避免 chunks）
 function getAllScriptsConfig() {
   return {
     input: {
-      content: resolve(__dirname, 'src/content/content.ts'),
-      popup: resolve(__dirname, 'src/popup/popup.ts'),
-      options: resolve(__dirname, 'src/options/options.ts'),
-      background: resolve(__dirname, 'src/background.ts'),
-      devtools: resolve(__dirname, 'src/devtools/devtools.js'),
-      sidebar: resolve(__dirname, 'src/devtools/sidebar.js')
+      'wechat-content': resolve(__dirname, 'src/content/wechat-content.ts'),
+      'zhihu-publisher': resolve(__dirname, 'src/content/zhihu-publisher.ts'),
+      background: resolve(__dirname, 'src/background.ts')
     },
     output: {
       format: 'es',
       entryFileNames: (chunkInfo) => {
         const name = chunkInfo.name;
-        if (name === 'content') return 'src/content/content.js';
-        if (name === 'popup') return 'src/popup/popup.js';
-        if (name === 'options') return 'src/options/options.js';
+        if (name === 'wechat-content') return 'src/content/wechat-content.js';
+        if (name === 'zhihu-publisher') return 'src/content/zhihu-publisher.js';
         if (name === 'background') return 'src/background.js';
-        if (name === 'devtools') return 'src/devtools/devtools.js';
-        if (name === 'sidebar') return 'src/devtools/sidebar.js';
         return '[name].js';
       },
-      chunkFileNames: 'chunks/[name]-[hash].js',
-      assetFileNames: (assetInfo) => {
-        const name = assetInfo.name || '';
-        if (name.endsWith('.css')) {
-          if (name.includes('popup')) return 'src/popup/popup.css';
-          if (name.includes('options')) return 'src/options/options.css';
-          if (name.includes('sidebar')) return 'src/devtools/sidebar.css';
-          return 'src/[name].[ext]';
-        }
-        return 'assets/[name]-[hash].[ext]';
-      }
-    }
+      manualChunks: undefined, // 禁用手动分块
+      chunkFileNames: 'chunks/[name]-[hash].js'
+    },
+    external: [] // 确保所有依赖都被打包
   };
 }

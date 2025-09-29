@@ -1,13 +1,13 @@
 {
-  "name": "copylot-extension",
+  "name": "wechat-to-zhihu-publisher",
   "private": true,
-  "version": "1.1.0",
-  "description": "A browser extension to copy web page content as AI-friendly format",
+  "version": "1.0.0",
+  "description": "A browser extension to publish WeChat articles to Zhihu column",
   "type": "module",
   "scripts": {
     "dev": "vite build --watch",
-    "build": "npm run clean && npm run build:tests && BUILD_TARGET=development node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/inline-build.ts",
-    "build:prod": "npm run clean && BUILD_TARGET=production node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/inline-build.ts",
+    "build": "npm run clean && BUILD_TARGET=development node scripts/inline-build.ts",
+    "build:prod": "npm run clean && BUILD_TARGET=production node scripts/inline-build.ts",
     "preview": "vite preview",
     "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
@@ -18,15 +18,11 @@
     "publish": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/publish.ts",
     "publish:cws": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/chrome-webstore.ts",
     "clean": "rm -rf dist && rm -rf .tmp_build && rm -rf .tmp_build_prod",
-    "apply": "ts-node scripts/apply-snapshots.ts",
-    "build:tests": "ts-node scripts/build-test-manifest.ts",
     "check-i18n": "ts-node scripts/check-i18n.ts",
     "postinstall": "echo 'Dependencies installed successfully'",
     "prepare": "husky"
   },
   "dependencies": {
-    "turndown": "^7.2.0",
-    "turndown-plugin-gfm": "^1.0.2",
     "undici": "^7.11.0",
     "uuid": "^11.1.0"
   },
@@ -34,7 +30,6 @@
     "@types/chrome": "^0.0.268",
     "@types/diff": "*",
     "@types/node": "^20.14.8",
-    "@types/turndown": "^5.0.4",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
@@ -57,14 +52,13 @@
   },
   "keywords": [
     "chrome-extension",
-    "ai",
-    "copilot",
-    "copy",
-    "markdown",
-    "web-scraping",
-    "content-extraction"
+    "wechat",
+    "zhihu",
+    "publisher",
+    "content-publishing",
+    "automation"
   ],
-  "author": "Copylot Team",
+  "author": "WeChat to Zhihu Publisher Team",
   "license": "MIT",
   "repository": {
     "type": "git",

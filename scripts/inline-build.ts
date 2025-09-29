@@ -91,58 +91,72 @@ if (!isProductionBuild) {
 }
 
 // ---------------------------------------------------------------------------
-// Step 3: Inline modules into content script inside .tmp_build
+// Step 3: Inline modules into content scripts inside .tmp_build
 // ---------------------------------------------------------------------------
 const INLINE_REGEX = /\/\*\s*INLINE:([a-zA-Z0-9_-]+)\s*\*\//g;
-const contentPath = join(TMP_DIR, 'src/content/content.ts');
-let contentSrc = readFileSync(contentPath, 'utf8');
-let match: RegExpExecArray | null;
 
-const stripModuleSyntax = (code: string) =>
-  code
-    // remove import lines
-    .replace(/^\s*import[^;]*;?\s*$/gm, '')
-    // remove export keywords (default or named)
-    .replace(/^\s*export\s+(default\s+)?/gm, '');
+// Process wechat-content.ts
+const wechatContentPath = join(TMP_DIR, 'src/content/wechat-content.ts');
+if (existsSync(wechatContentPath)) {
+  let contentSrc = readFileSync(wechatContentPath, 'utf8');
+  let match: RegExpExecArray | null;
 
-while ((match = INLINE_REGEX.exec(contentSrc)) !== null) {
-  const moduleName = match[1];
-  const moduleFile = join(TMP_DIR, 'src/shared', `${moduleName}.ts`);
-  if (!existsSync(moduleFile)) {
-    log(`⚠️  Module not found for inline: ${moduleName}`);
-    continue;
+  const stripModuleSyntax = (code: string) =>
+    code
+      // remove import lines
+      .replace(/^\s*import[^;]*;?\s*$/gm, '')
+      // remove export keywords (default or named)
+      .replace(/^\s*export\s+(default\s+)?/gm, '');
+
+  INLINE_REGEX.lastIndex = 0; // Reset regex state
+  while ((match = INLINE_REGEX.exec(contentSrc)) !== null) {
+    const moduleName = match[1];
+    const moduleFile = join(TMP_DIR, 'src/shared', `${moduleName}.ts`);
+    if (!existsSync(moduleFile)) {
+      log(`⚠️  Module not found for inline: ${moduleName}`);
+      continue;
+    }
+    let moduleCode = readFileSync(moduleFile, 'utf8');
+    moduleCode = stripModuleSyntax(moduleCode).trim();
+    contentSrc = contentSrc.replace(match[0], moduleCode);
+    log(`Inlined module: ${moduleName} into wechat-content.ts`);
   }
-  let moduleCode = readFileSync(moduleFile, 'utf8');
-  moduleCode = stripModuleSyntax(moduleCode).trim();
-  contentSrc = contentSrc.replace(match[0], moduleCode);
-  log(`Inlined module: ${moduleName}`);
+  writeFileSync(wechatContentPath, contentSrc);
 }
-writeFileSync(contentPath, contentSrc, 'utf8');
-log('Finished inlining modules into content script');
+
+// Process zhihu-publisher.ts
+const zhihuPublisherPath = join(TMP_DIR, 'src/content/zhihu-publisher.ts');
+if (existsSync(zhihuPublisherPath)) {
+  let contentSrc = readFileSync(zhihuPublisherPath, 'utf8');
+  let match: RegExpExecArray | null;
+
+  const stripModuleSyntax = (code: string) =>
+    code
+      // remove import lines
+      .replace(/^\s*import[^;]*;?\s*$/gm, '')
+      // remove export keywords (default or named)
+      .replace(/^\s*export\s+(default\s+)?/gm, '');
+
+  INLINE_REGEX.lastIndex = 0; // Reset regex state
+  while ((match = INLINE_REGEX.exec(contentSrc)) !== null) {
+    const moduleName = match[1];
+    const moduleFile = join(TMP_DIR, 'src/shared', `${moduleName}.ts`);
+    if (!existsSync(moduleFile)) {
+      log(`⚠️  Module not found for inline: ${moduleName}`);
+      continue;
+    }
+    let moduleCode = readFileSync(moduleFile, 'utf8');
+    moduleCode = stripModuleSyntax(moduleCode).trim();
+    contentSrc = contentSrc.replace(match[0], moduleCode);
+    log(`Inlined module: ${moduleName} into zhihu-publisher.ts`);
+  }
+  writeFileSync(zhihuPublisherPath, contentSrc);
+}
 
 // ---------------------------------------------------------------------------
-// Step 4: Copy turndown.js and turndown-plugin-gfm into temporary root so they end up in dist
+// Step 4: No Turndown dependencies needed for new architecture
 // ---------------------------------------------------------------------------
-const TURNDOWN_SRC = join(ROOT_DIR, 'node_modules/turndown/dist/turndown.js');
-const TURNDOWN_PLUGIN_SRC = join(ROOT_DIR, 'node_modules/turndown-plugin-gfm/dist/turndown-plugin-gfm.js');
-const turndownTmpDest = join(TMP_DIR, 'src/turndown.js');
-const turndownPluginTmpDest = join(TMP_DIR, 'src/turndown-plugin-gfm.js');
-
-if (existsSync(TURNDOWN_SRC)) {
-  // Copy to temp build dir for Vite
-  cpSync(TURNDOWN_SRC, turndownTmpDest);
-  log('Copied turndown.js to temporary build directory');
-} else {
-  log('⚠️  turndown.js not found; make sure turndown is installed');
-}
-
-if (existsSync(TURNDOWN_PLUGIN_SRC)) {
-  // Copy to temp build dir for Vite
-  cpSync(TURNDOWN_PLUGIN_SRC, turndownPluginTmpDest);
-  log('Copied turndown-plugin-gfm.js to temporary build directory');
-} else {
-  log('⚠️  turndown-plugin-gfm.js not found; make sure turndown-plugin-gfm is installed');
-}
+log('Skipping Turndown dependencies - not needed for WeChat to Zhihu publisher');
 
 // ---------------------------------------------------------------------------
 // Step 5: Run Vite build in temporary directory
@@ -166,28 +180,7 @@ if (existsSync(DIST_DIR)) {
 }
 cpSync(join(TMP_DIR, 'dist'), DIST_DIR, { recursive: true });
 
-// Ensure turndown.js is in the final dist directory
-const turndownDist = join(DIST_DIR, 'src/turndown.js');
-const turndownPluginDist = join(DIST_DIR, 'src/turndown-plugin-gfm.js');
-const distSrcDir = join(DIST_DIR, 'src');
-
-if (!existsSync(distSrcDir)) {
-  mkdirSync(distSrcDir, { recursive: true });
-}
-
-if (existsSync(TURNDOWN_SRC)) {
-  cpSync(TURNDOWN_SRC, turndownDist);
-  log('Copied turndown.js to final dist directory');
-} else {
-  log('⚠️  turndown.js not found in final copy step');
-}
-
-if (existsSync(TURNDOWN_PLUGIN_SRC)) {
-  cpSync(TURNDOWN_PLUGIN_SRC, turndownPluginDist);
-  log('Copied turndown-plugin-gfm.js to final dist directory');
-} else {
-  log('⚠️  turndown-plugin-gfm.js not found in final copy step');
-}
+// No additional files needed for final dist directory
 
 log('Moved build output to ./dist');
 
