@@ -462,8 +462,17 @@ function shouldRun(): boolean {
 
 // ===== Paste assist UI =====
 function showPasteHint(): void {
-  // 使用右上角弹出提示替代黑灰色顶部提示条
-  showInfo('正文已复制，请在编辑器中按 Ctrl/Cmd+V 粘贴', 8000);
+  // 根据操作系统显示正确的快捷键提示
+  const isMac = /mac/i.test(navigator.platform);
+  const modifierKey = isMac ? 'Cmd' : 'Ctrl';
+  const hintText = `正文已复制，请在编辑器中按 ${modifierKey}+V 粘贴`;
+
+  // 使用showNotification替代showInfo，确保跳动动画生效
+  showNotification(hintText, {
+    type: 'info',
+    duration: 8000,
+    position: 'top-right'
+  });
 }
 
 function hidePasteHint(): void {
@@ -472,18 +481,24 @@ function hidePasteHint(): void {
 
 function waitForUserPaste(expectedLen: number, editor: HTMLElement, timeout = 30000): Promise<void> {
   return new Promise((resolve, reject) => {
-    const handler = () => {
-      const current = (editor.textContent || '').length;
-      if (current >= expectedLen * 0.8) {
+    const isMac = /mac/i.test(navigator.platform);
+    const modifierKey = isMac ? 'metaKey' : 'ctrlKey';
+    const keyCode = 'V';
+
+    const handler = (e: KeyboardEvent) => {
+      // 检测 Ctrl+V (Windows/Linux) 或 Cmd+V (Mac)
+      if (e[modifierKey] && e.key.toLowerCase() === keyCode.toLowerCase() && !e.altKey && !e.shiftKey) {
         cleanup();
         resolve();
       }
     };
+
     const cleanup = () => {
-      editor.removeEventListener('paste', handler);
+      document.removeEventListener('keydown', handler);
       clearTimeout(timerId);
     };
-    editor.addEventListener('paste', handler, { once: false });
+
+    document.addEventListener('keydown', handler, { once: false });
     const timerId = setTimeout(() => {
       cleanup();
       reject(new Error('粘贴超时'));
