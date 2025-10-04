@@ -106,5 +106,9 @@
   "unknownError": {
     "message": "未知错误",
     "description": "Unknown error message"
+  },
+  "pasteSuccessToast": {
+    "message": "内容粘贴成功",
+    "description": "Content pasted successfully message"
   }
 }

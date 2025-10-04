@@ -471,12 +471,19 @@ function showPasteHint(): void {
   showNotification(hintText, {
     type: 'info',
     duration: 8000,
-    position: 'top-right'
+    position: 'top-right',
+    exclusive: true  // 启用独占模式（跳动动画 + 阻止其他通知）
   });
 }
 
 function hidePasteHint(): void {
-  // 不需要手动隐藏，因为通知系统会自动处理
+  // 主动隐藏独占通知（粘贴提示）
+  const existingNotifications = document.querySelectorAll('[data-exclusive="true"]');
+  existingNotifications.forEach(notification => {
+    const element = notification as HTMLElement;
+    // 移除独占通知
+    element.remove();
+  });
 }
 
 function waitForUserPaste(expectedLen: number, editor: HTMLElement, timeout = 30000): Promise<void> {
@@ -488,6 +495,10 @@ function waitForUserPaste(expectedLen: number, editor: HTMLElement, timeout = 30
     const handler = (e: KeyboardEvent) => {
       // 检测 Ctrl+V (Windows/Linux) 或 Cmd+V (Mac)
       if (e[modifierKey] && e.key.toLowerCase() === keyCode.toLowerCase() && !e.altKey && !e.shiftKey) {
+        // 立即隐藏粘贴提示并显示粘贴成功提示
+        hidePasteHint();
+        showSuccess(getMessage('pasteSuccessToast') || '内容粘贴成功');
+
         cleanup();
         resolve();
       }

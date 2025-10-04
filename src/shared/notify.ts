@@ -6,6 +6,7 @@ export interface NotificationOptions {
   type?: 'info' | 'success' | 'error' | 'warning';
   duration?: number; // in milliseconds, 0 means no auto-dismiss
   position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+  exclusive?: boolean; // 标记是否为独占通知，阻止其他非错误通知显示并启用特殊动画效果
 }
 
 // 跳动动画控制函数
@@ -93,24 +94,23 @@ export function showNotification(message: string, options: NotificationOptions =
   const {
     type = 'info',
     duration = 4000,
-    position = 'top-right'
+    position = 'top-right',
+    exclusive = false
   } = options;
 
-  // 检测是否为粘贴提示（通过消息内容识别）
-  const isPasteHint = message.includes('已复制') && message.includes('粘贴');
-  const actualType = isPasteHint ? 'bounce' : type;
+  const actualType = exclusive ? 'bounce' : type;
 
   // 【修复】移除所有现有通知，确保同一时间只显示一个通知
-  // 特别处理：如果当前显示的是粘贴提示，则阻止其他通知显示，除非是错误通知
+  // 特别处理：如果当前显示的是独占通知，则阻止其他通知显示，除非是错误通知
   const existingNotifications = document.querySelectorAll('[data-notification-type]');
   if (existingNotifications.length > 0) {
-    // 检查是否有正在显示的粘贴提示
-    const hasActivePasteHint = Array.from(existingNotifications).some(notification =>
-      notification.textContent?.includes('已复制') && notification.textContent?.includes('粘贴')
+    // 检查是否有正在显示的独占通知
+    const hasActiveExclusive = Array.from(existingNotifications).some(notification =>
+      notification.getAttribute('data-exclusive') === 'true'
     );
 
-    if (hasActivePasteHint && type !== 'error') {
-      console.log('[Notification] 粘贴提示正在显示，阻止其他非错误通知');
+    if (hasActiveExclusive && type !== 'error') {
+      console.log('[Notification] 独占通知正在显示，阻止其他非错误通知');
       return; // 不显示新通知
     }
   }
@@ -118,8 +118,8 @@ export function showNotification(message: string, options: NotificationOptions =
   // 移除所有现有通知
   existingNotifications.forEach(notification => {
     const element = notification as HTMLElement;
-    // 如果是粘贴提示，停止跳动动画
-    if (element.textContent?.includes('已复制') && element.textContent?.includes('粘贴')) {
+    // 如果是独占通知，停止跳动动画
+    if (element.getAttribute('data-exclusive') === 'true') {
       stopBouncingAnimation();
     }
     element.remove();
@@ -128,6 +128,7 @@ export function showNotification(message: string, options: NotificationOptions =
   // Create notification element
   const notification = document.createElement('div');
   notification.setAttribute('data-notification-type', actualType);
+  notification.setAttribute('data-exclusive', exclusive.toString());
   notification.style.cssText = getNotificationStyles(actualType, position);
 
   // Add icon based on type
@@ -148,8 +149,8 @@ export function showNotification(message: string, options: NotificationOptions =
     notification.style.opacity = '1';
     notification.style.transform += ' scale(1)';
 
-    // 如果是粘贴提示，开始跳动动画
-    if (isPasteHint) {
+    // 如果是独占通知，开始跳动动画
+    if (exclusive) {
       const iconElement = notification.querySelector('svg') as SVGElement;
       if (iconElement) {
         startBouncingAnimation(iconElement);
