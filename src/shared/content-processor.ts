@@ -12,6 +12,29 @@ declare const turndownPluginGfm: any; // Assume turndown-plugin-gfm is loaded gl
 let cachedTurndown: any = null;
 
 /**
+ * 判断一段文本中是否仍包含 HTML table 结构
+ */
+function containsHtmlTable(source: string): boolean {
+  if (!source) return false;
+  return /<\s*table[\s>]/i.test(source);
+}
+
+/**
+ * 转义 Markdown 表格单元格文本
+ * - 转义竖线 |
+ * - 将换行替换为 <br>
+ * - 压缩多余空白并 trim
+ */
+function escapeMarkdownTableCell(text: string): string {
+  if (!text) return '';
+  let t = String(text);
+  t = t.replace(/\r?\n+/g, '<br>');
+  t = t.replace(/\|/g, '\\|');
+  t = t.replace(/\s+/g, ' ').trim();
+  return t;
+}
+
+/**
  * 统一的代码块文本提取函数，确保所有场景下的一致性
  * @param element - 代码块元素（pre或code）
  * @returns 提取的原始代码文本
@@ -62,7 +85,7 @@ function extractCodeBlockText(element: Element): string {
  * @param node - DOM节点
  * @returns 处理后的代码块内容（带markdown标签）
  */
-function processCodeBlock(node: any): string {
+function processCodeBlock(node: HTMLElement): string {
   // 使用统一的文本提取函数
   const cleanedText = extractCodeBlockText(node);
   
@@ -118,6 +141,160 @@ function detectTablesInElement(element: Element): HTMLTableElement[] {
 }
 
 /**
+ * 将 HTML 表格展开为无跨行/跨列的二维网格
+ */
+function tableToInlineString(table: HTMLTableElement): string {
+  const rows = Array.from(table.querySelectorAll('tr'));
+  const parts: string[] = [];
+  rows.forEach((row) => {
+    const cells = Array.from(row.querySelectorAll('th, td')).map((c) => (c as HTMLElement).innerText.trim()).filter(Boolean);
+    if (cells.length === 0) return;
+    if (cells.length === 1) {
+      parts.push(cells[0]);
+    } else if (cells.length === 2) {
+      parts.push(`${cells[0]}: ${cells[1]}`);
+    } else {
+      parts.push(cells.join(' | '));
+    }
+  });
+  return parts.join(' ; ');
+}
+
+function flattenTableToGrid(table: HTMLTableElement): string[][] {
+  const rows = Array.from(table.rows);
+  const grid: string[][] = [];
+
+  // 暂存占位以处理跨行/跨列
+  const occupancy: string[][] = [];
+
+  // 获取 turndown 实例（如可用），用于单元格内 HTML → MD 文本
+  const turndown = getTurndownService(true);
+
+  for (let r = 0; r < rows.length; r++) {
+    const row = rows[r];
+    grid[r] = grid[r] || [];
+    occupancy[r] = occupancy[r] || [];
+
+    let cIndex = 0;
+    // 跳过已被上方 rowSpan 占据的位置
+    while (occupancy[r][cIndex] === '__OCC__') cIndex++;
+
+    const cells = Array.from(row.cells);
+    for (let ci = 0; ci < cells.length; ci++) {
+      const cell = cells[ci] as HTMLTableCellElement;
+
+      // 寻找下一个空位
+      while (occupancy[r][cIndex] === '__OCC__' || typeof grid[r][cIndex] !== 'undefined') {
+        cIndex++;
+      }
+
+      // 提取单元格文本：在 turndown 前先将单元格内嵌套表格转为可内联的一行文本
+      let cellText = '';
+      try {
+        const cellClone = cell.cloneNode(true) as HTMLElement;
+        const nested = Array.from(cellClone.querySelectorAll('table')) as HTMLTableElement[];
+        nested.forEach((nt) => {
+          const inline = tableToInlineString(nt);
+          nt.replaceWith(cellClone.ownerDocument?.createTextNode(inline) || document.createTextNode(inline));
+        });
+        if (turndown && typeof turndown.turndown === 'function') {
+          cellText = turndown.turndown(cellClone.innerHTML);
+        } else {
+          cellText = (cellClone as HTMLElement).innerText || '';
+        }
+      } catch {
+        cellText = (cell as HTMLElement).innerText || '';
+      }
+      cellText = escapeMarkdownTableCell(cellText);
+
+      const colSpan = Math.max(1, cell.colSpan || 1);
+      const rowSpan = Math.max(1, cell.rowSpan || 1);
+
+      // 填充当前单元及其跨行/跨列范围
+      for (let rr = 0; rr < rowSpan; rr++) {
+        const tr = r + rr;
+        grid[tr] = grid[tr] || [];
+        occupancy[tr] = occupancy[tr] || [];
+
+        // 寻找写入起点（对于后续行，需跳过已有占位）
+        let writeIndex = cIndex;
+        while (occupancy[tr][writeIndex] === '__OCC__' || typeof grid[tr][writeIndex] !== 'undefined') {
+          writeIndex++;
+        }
+
+        for (let cc = 0; cc < colSpan; cc++) {
+          const tc = writeIndex + cc;
+          grid[tr][tc] = cellText;
+          // 标记被占据位置，供后续跳过
+          if (!(rr === 0 && cc === 0)) {
+            occupancy[tr][tc] = '__OCC__';
+          }
+        }
+      }
+
+      // 下一个候选列
+      cIndex++;
+    }
+  }
+
+  // 归一化：补齐每行列数
+  const maxCols = grid.reduce((m, row) => Math.max(m, row ? row.length : 0), 0);
+  for (let i = 0; i < grid.length; i++) {
+    grid[i] = grid[i] || [];
+    if (grid[i].length < maxCols) {
+      grid[i].length = maxCols;
+      for (let j = 0; j < maxCols; j++) {
+        if (typeof grid[i][j] === 'undefined') grid[i][j] = '';
+      }
+    }
+  }
+
+  return grid;
+}
+
+/**
+ * 由二维网格生成 Markdown 管道表
+ * 表头使用占位符（默认全角破折号“—”）
+ */
+function generateMarkdownTableFromGrid(grid: string[][], headerPlaceholder = '—'): string {
+  if (!grid || grid.length === 0) return '';
+  const cols = grid[0] ? grid[0].length : 0;
+  if (cols === 0) return '';
+
+  const header = Array(cols).fill(headerPlaceholder);
+  const separator = Array(cols).fill('---');
+
+  const lines: string[] = [];
+  const toRow = (arr: string[]) => `| ${arr.join(' | ')} |`;
+
+  lines.push(toRow(header));
+  lines.push(toRow(separator));
+  for (let r = 0; r < grid.length; r++) {
+    lines.push(toRow(grid[r]));
+  }
+  return lines.join('\n');
+}
+
+/**
+ * 将“非规范表格”转换为 Markdown（含占位表头）
+ */
+function convertNonStandardTableToMarkdown(table: HTMLTableElement, headerPlaceholder = '—'): string {
+  const grid = flattenTableToGrid(table);
+  return generateMarkdownTableFromGrid(grid, headerPlaceholder);
+}
+
+/**
+ * 优先使用 GFM 转换；若仍包含 <table>，回退为自研 Markdown 表格
+ */
+function toGfmMarkdownOrFallback(table: HTMLTableElement): string {
+  const gfm = convertHtmlToMarkdown(table.outerHTML);
+  if (containsHtmlTable(gfm)) {
+    return convertNonStandardTableToMarkdown(table);
+  }
+  return gfm;
+}
+
+/**
  * 带表格检测的元素处理函数
  * @param element - 要处理的元素
  * @param settings - 用户设置
@@ -149,31 +326,35 @@ export function processElementWithTableDetection(element: Element, settings: Set
  * @returns 处理后的内容
  */
 function processElementWithMixedContent(element: Element, tables: HTMLTableElement[], settings: Settings): string {
+  // 使用占位符文本节点替换每个表格，避免直接字符串匹配失败
+  // 使用不含下划线的占位符，避免 turndown 转义导致替换失败
+  const tokenPrefix = '%%AICOPYLOT-TABLE-MARKER-';
+  const tokenSuffix = '%%';
+  const tokenMap = new Map<string, string>();
 
-  // 1. 先将整个克隆元素（已确保可见性）转换为Markdown
-  // 关键修复：确保这里使用 GFM 服务
-  let fullMarkdown = convertToMarkdown(element);
+  tables.forEach((table, idx) => {
+    const token = `${tokenPrefix}${idx}${tokenSuffix}`;
+    const mdOrCsv = settings.tableOutputFormat === 'csv' ?
+      convertTableToCSV(table) :
+      toGfmMarkdownOrFallback(table);
 
-  // 2. 遍历所有检测到的表格，进行文本替换
-  tables.forEach((table, index) => {
-    // a. 将原始表格的HTML也转换为Markdown，作为被替换的目标
-    const originalTableMarkdown = convertHtmlToMarkdown(table.outerHTML);
-    
-    // b. 根据设置，生成最终的表格内容（Markdown 或 CSV）
-    let finalTableContent: string;
-    if (settings.tableOutputFormat === 'csv') {
-      finalTableContent = convertTableToCSV(table);
-    } else {
-      finalTableContent = originalTableMarkdown; // 如果目标是MD，直接使用已生成的
-    }
+    tokenMap.set(token, mdOrCsv);
 
-    // 3. 在完整的Markdown文本中执行替换
-    if (originalTableMarkdown.trim()) {
-      fullMarkdown = fullMarkdown.replace(originalTableMarkdown, finalTableContent);
-    }
+    const textNode = element.ownerDocument?.createTextNode(token) || document.createTextNode(token);
+    table.replaceWith(textNode);
   });
 
-  return fullMarkdown;
+  // 整体 turndown
+  const overall = convertHtmlToMarkdown((element as HTMLElement).outerHTML);
+
+  // 将占位符替换为对应的表格 Markdown/CSV
+  let restored = overall;
+  tokenMap.forEach((value, key) => {
+    // 使用 split/join 以避免 replace 的正则转义问题
+    restored = restored.split(key).join(value);
+  });
+
+  return restored;
 }
 
 function getTurndownService(useGfm: boolean = true) {
@@ -212,7 +393,7 @@ function getTurndownService(useGfm: boolean = true) {
     // 使用公共的代码块处理函数
     cachedTurndown.addRule('codeBlock', {
       filter: ['pre', 'code'],
-      replacement: function (_content: string, node: any) {
+      replacement: function (_content: string, node: HTMLElement) {
         return processCodeBlock(node);
       }
     });
@@ -402,8 +583,8 @@ export function convertToMarkdown(element: Element): string {
   const turndown = getTurndownService(true);
   try {
     if (element instanceof HTMLTableElement) {
-      // Use the new HTML to Markdown converter for tables
-      return convertHtmlToMarkdown(element.outerHTML);
+      // 优先 GFM，失败则兜底生成占位表头的 Markdown 表
+      return toGfmMarkdownOrFallback(element);
     } else if (element instanceof HTMLImageElement) {
       const imgElement = element as HTMLImageElement;
       let sourceUrl = imgElement.dataset.src || imgElement.src;
@@ -629,7 +810,7 @@ export function processContent(element: Element, settings: Settings): string {
       if (settings.tableOutputFormat === 'csv') {
         content = convertTableToCSV(workingRoot);
       } else {
-        content = convertToMarkdown(workingRoot);
+        content = toGfmMarkdownOrFallback(workingRoot);
       }
     } else {
       // 检查元素中是否包含表格

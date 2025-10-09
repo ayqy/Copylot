@@ -22,7 +22,11 @@
   {
     "path": "cases/role-attributes-table.html",
     "title": "role attributes table",
-    "expected": "| Feature | Value |\n| --- | --- |\n| Name | Copylot |\n| Lang | Chinese |\n\n"
+    "expected": "| Feature | Value |\n| --- | --- |\n| Name | Copylot |\n| Lang | Chinese |"
+  },
+  {
+    "path": "cases/vs-marketplace-nonstandard-table.html",
+    "title": "vs marketplace nonstandard table"
   },
   {
     "path": "cases/zero-height-container.html",

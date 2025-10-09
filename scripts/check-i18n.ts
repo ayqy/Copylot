@@ -364,6 +364,11 @@ function isTechnicalLiteral(text: string): boolean {
     return true;
   }
   
+  // 内部占位符标记（如 %%AICOPYLOT-TABLE-MARKER-）
+  if (/^%%[\w-]+%%$/.test(text) || /^%%[\w-]+-$/.test(text)) {
+    return true;
+  }
+  
   // HTML 标签内容
   if (/^<[\w\s="'-]+>$/.test(text)) {
     return true;

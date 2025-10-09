@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>VS Marketplace Nonstandard Table</title>
+  </head>
+  <body>
+    <p>VS Marketplace sample (nonstandard tables below):</p>
+
+    <!-- Nonstandard table: role=presentation, no thead, first row uses td -->
+    <table role="presentation">
+      <tbody>
+        <tr>
+          <td class="item-img"><img alt="Claude Code for VS Code" src="https://example.com/icon.png"></td>
+          <td class="item-header">
+            <div class="item-header-content light">
+              <h1><span class="ux-item-name">Claude Code for VS Code</span></h1>
+              <div class="ux-item-second-row-wrapper">
+                <div class="ux-item-publisher"><h2 role="presentation"><a href="#">Anthropic</a></h2></div>
+                <span class="divider">|</span>
+                <div class="ux-item-rating"><span class="installs-text">1,078,013 installs</span></div>
+                <span class="divider"> | </span>
+                <span class="item-price-category">Free</span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Details table:</p>
+    <table class="ux-section-details-table" role="presentation">
+      <tbody>
+        <tr>
+          <td id="version">Version</td>
+          <td role="definition" aria-labelledby="version">2.0.10</td>
+        </tr>
+        <tr>
+          <td id="released-on">Released on</td>
+          <td role="definition" aria-labelledby="released-on">2025/6/19 00:32:16</td>
+        </tr>
+        <tr>
+          <td id="publisher">Publisher</td>
+          <td role="definition" aria-labelledby="publisher">Anthropic</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+  </html>
+
