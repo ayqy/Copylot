@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>role attributes table</title>
+    <style>
+      body { font-family: Arial, sans-serif; }
+      table { border-collapse: collapse; }
+      th, td { border: 1px solid #ccc; padding: 4px 8px; }
+    </style>
+  </head>
+  <body>
+    <!-- Container with arbitrary role that must NOT hide content -->
+    <div role="button">
+      <table role="presentation">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Name</td>
+            <td>Copylot</td>
+          </tr>
+          <tr>
+            <td>Lang</td>
+            <td>Chinese</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+  </html>
+

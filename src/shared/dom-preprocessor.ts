@@ -62,16 +62,19 @@ function recursiveCopy(original: Node, cloneParent: Node): void {
  */
 function isNodeHidden(el: HTMLElement): boolean {
   const logHidden = (reason: string) => {
+    // 保留参数，便于需要时打开调试日志
     // console.log(`[Debug DOM Preprocessor] Hiding ${el.tagName}#${el.id}.${el.className} due to: ${reason}`, el);
+    // 标记为已使用以通过 ESLint（不改变运行逻辑）
+    void reason;
     return true;
   };
 
   // R2: aria-hidden="true"
   if (el.getAttribute("aria-hidden") === "true") return logHidden('aria-hidden=true');
-
-  // R3: role="presentation" or role="none"
-  const role = el.getAttribute("role");
-  if (role === "presentation" || role === "none") return logHidden(`role=${role}`);
+  // NOTE: We intentionally ignore ARIA role attributes for visibility pruning.
+  // Presentational roles (e.g., role="presentation"/"none") do not imply visual hiding.
+  // Many real-world pages misuse role on content containers (including tables),
+  // so role MUST NOT be used to decide visibility here.
 
   // R4: common utility classes that visually hide content
   const cls = el.className;

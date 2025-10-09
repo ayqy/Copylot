@@ -20,6 +20,11 @@
     "expected": "https://example.com/"
   },
   {
+    "path": "cases/role-attributes-table.html",
+    "title": "role attributes table",
+    "expected": "| Feature | Value |\n| --- | --- |\n| Name | Copylot |\n| Lang | Chinese |\n\n"
+  },
+  {
     "path": "cases/zero-height-container.html",
     "title": "zero height container",
     "expected": "This content is inside a zero-height container.\n\nIt should still be visible in the output."
