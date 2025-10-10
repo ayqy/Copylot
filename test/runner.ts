@@ -15,6 +15,9 @@ const testGlobals = globalThis as TestGlobals;
 testGlobals.TurndownService = TurndownServiceCtor;
 // turndown-plugin-gfm exports { gfm }, but content-processor expects an object with .gfm
 testGlobals.turndownPluginGfm = { gfm: gfmPlugin };
+// 在测试环境中提供可切换的 offscreen 裁剪开关，默认关闭
+const offscreenGlobals = globalThis as typeof globalThis & { __COPYLOT_TEST_DISABLE_OFFSCREEN?: boolean };
+offscreenGlobals.__COPYLOT_TEST_DISABLE_OFFSCREEN = false;
 
 // Mock chrome APIs
 testGlobals.chrome = {
@@ -27,6 +30,7 @@ interface TestCase {
   path: string;
   title: string;
   expected?: string;
+  disableOffscreenPruning?: boolean;
 }
 
 interface TestResult {
@@ -254,52 +258,59 @@ async function runTest(testCase: TestCase): Promise<TestResult> {
   await new Promise(r => setTimeout(r, 300));
   perfLog('Iframe render', stageStart);
 
-  const settings: Settings = await getSettings();
-  const targetElement = iframeDoc.body;
+  const previousOffscreenFlag = offscreenGlobals.__COPYLOT_TEST_DISABLE_OFFSCREEN;
+  offscreenGlobals.__COPYLOT_TEST_DISABLE_OFFSCREEN = !!testCase.disableOffscreenPruning;
 
-  console.log('[Debug] Starting content processing...');
-  stageStart = shouldMeasurePerf ? performance.now() : 0;
-  const actual = processContent(targetElement, settings);
-  perfLog('processContent', stageStart);
-  console.log('[Debug] Actual output from processContent:', actual);
+  try {
+    const settings: Settings = await getSettings();
+    const targetElement = iframeDoc.body;
 
-  document.body.removeChild(iframe);
+    console.log('[Debug] Starting content processing...');
+    stageStart = shouldMeasurePerf ? performance.now() : 0;
+    const actual = processContent(targetElement, settings);
+    perfLog('processContent', stageStart);
+    console.log('[Debug] Actual output from processContent:', actual);
 
-  let status: 'passed' | 'failed' = 'passed';
-  let diff = '';
-  let diffStart = shouldMeasurePerf ? performance.now() : 0;
+    document.body.removeChild(iframe);
 
-  // If expected is missing, auto-fail to generate snapshot
-  if (!expected) {
-    status = 'failed';
-    snapshotsToUpdate[snapshotPath] = actual;
-    diff = '<ins>' + escapeHtml(actual) + '</ins>';
-    perfLog('Diff (fallback empty expected)', diffStart);
-  } else {
-    const expectedHash = fnv1aHash(expected);
-    const actualHash = fnv1aHash(actual);
+    let status: 'passed' | 'failed' = 'passed';
+    let diff = '';
+    let diffStart = shouldMeasurePerf ? performance.now() : 0;
 
-    if (expected.length === actual.length && expectedHash === actualHash) {
-      diff = '';
-      perfLog('Diff.hashEqual', diffStart);
+    // If expected is missing, auto-fail to generate snapshot
+    if (!expected) {
+      status = 'failed';
+      snapshotsToUpdate[snapshotPath] = actual;
+      diff = '<ins>' + escapeHtml(actual) + '</ins>';
+      perfLog('Diff (fallback empty expected)', diffStart);
     } else {
-      const expectedLines = expected.split('\n');
-      const actualLines = actual.split('\n');
-      const lineDiffResults = diffLines(expectedLines, actualLines);
-      diff = buildDiffFromLineResults(lineDiffResults);
-      const hasChanges = lineDiffResults.some(result => result.type !== 'equal');
-      if (hasChanges) {
-        status = 'failed';
-        snapshotsToUpdate[snapshotPath] = actual;
+      const expectedHash = fnv1aHash(expected);
+      const actualHash = fnv1aHash(actual);
+
+      if (expected.length === actual.length && expectedHash === actualHash) {
+        diff = '';
+        perfLog('Diff.hashEqual', diffStart);
+      } else {
+        const expectedLines = expected.split('\n');
+        const actualLines = actual.split('\n');
+        const lineDiffResults = diffLines(expectedLines, actualLines);
+        diff = buildDiffFromLineResults(lineDiffResults);
+        const hasChanges = lineDiffResults.some(result => result.type !== 'equal');
+        if (hasChanges) {
+          status = 'failed';
+          snapshotsToUpdate[snapshotPath] = actual;
+        }
+        perfLog('Diff.line+char', diffStart);
       }
-      perfLog('Diff.line+char', diffStart);
     }
+
+    console.log(`[Debug] Test status: ${status}`);
+    console.groupEnd();
+
+    return { case: testCase, status, actual, expected: expected || '', diff };
+  } finally {
+    offscreenGlobals.__COPYLOT_TEST_DISABLE_OFFSCREEN = previousOffscreenFlag;
   }
-
-  console.log(`[Debug] Test status: ${status}`);
-  console.groupEnd();
-
-  return { case: testCase, status, actual, expected: expected || '', diff };
 }
 
 function createResultElement(result: TestResult): HTMLElement {

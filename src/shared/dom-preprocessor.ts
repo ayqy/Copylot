@@ -69,6 +69,10 @@ function isNodeHidden(el: HTMLElement): boolean {
     return true;
   };
 
+  // 使用元素所属文档的视图来匹配 iframe/嵌入场景，避免跨文档几何计算失真
+  const ownerDoc = el.ownerDocument || document;
+  const view = ownerDoc.defaultView || window;
+
   // R2: aria-hidden="true"
   if (el.getAttribute("aria-hidden") === "true") return logHidden('aria-hidden=true');
   // NOTE: We intentionally ignore ARIA role attributes for visibility pruning.
@@ -140,12 +144,19 @@ function isNodeHidden(el: HTMLElement): boolean {
 
   // R7: out of viewport (only if element has dimensions)
   try {
+    const disableOffscreenPruning = Boolean(
+      (view as typeof globalThis & { __COPYLOT_TEST_DISABLE_OFFSCREEN?: boolean }).__COPYLOT_TEST_DISABLE_OFFSCREEN ??
+      (globalThis as { __COPYLOT_TEST_DISABLE_OFFSCREEN?: boolean }).__COPYLOT_TEST_DISABLE_OFFSCREEN
+    );
+    if (disableOffscreenPruning) {
+      return false;
+    }
     const rect = el.getBoundingClientRect();
     if (rect.width > 0 && rect.height > 0) {
-      const docElement = document.documentElement;
-      const body = document.body;
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      const scrollX = window.scrollX || window.pageXOffset || 0;
+      const docElement = ownerDoc.documentElement;
+      const body = ownerDoc.body;
+      const scrollY = view.scrollY || view.pageYOffset || 0;
+      const scrollX = view.scrollX || view.pageXOffset || 0;
 
       const docTop = rect.top + scrollY;
       const docBottom = rect.bottom + scrollY;
@@ -153,14 +164,14 @@ function isNodeHidden(el: HTMLElement): boolean {
       const docRight = rect.right + scrollX;
 
       const docHeight = Math.max(
-        window.innerHeight,
+        view.innerHeight,
         docElement?.scrollHeight ?? 0,
         body?.scrollHeight ?? 0,
         docElement?.offsetHeight ?? 0,
         body?.offsetHeight ?? 0
       );
       const docWidth = Math.max(
-        window.innerWidth,
+        view.innerWidth,
         docElement?.scrollWidth ?? 0,
         body?.scrollWidth ?? 0,
         docElement?.offsetWidth ?? 0,
