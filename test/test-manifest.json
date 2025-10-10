@@ -20,6 +20,11 @@
     "expected": "https://example.com/"
   },
   {
+    "path": "cases/long-page-offscreen.html",
+    "title": "long page offscreen",
+    "expected": "Top section content that should remain even after the page is scrolled away.\n\nThis middle section represents the content a user might select after scrolling.\n\nBottom section content near the end of the page.\n"
+  },
+  {
     "path": "cases/role-attributes-table.html",
     "title": "role attributes table",
     "expected": "| Feature | Value |\n| --- | --- |\n| Name | Copylot |\n| Lang | Chinese |"

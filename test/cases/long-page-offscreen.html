@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Long Page Offscreen Elements</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        line-height: 1.6;
+      }
+
+      .section {
+        padding: 32px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .spacer {
+        height: 1600px;
+        background: linear-gradient(180deg, rgba(79, 70, 229, 0.05), rgba(79, 70, 229, 0));
+      }
+
+      #permanent-offscreen {
+        position: absolute;
+        top: -4000px;
+        left: 0;
+        width: 320px;
+        padding: 16px;
+        background: #fca5a5;
+        border: 2px solid #ef4444;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="permanent-offscreen">This element stays outside the document view and must be hidden.</div>
+
+    <section class="section" id="top-section">
+      Top section content that should remain even after the page is scrolled away.
+    </section>
+
+    <div class="spacer" aria-hidden="true"></div>
+
+    <section class="section" id="middle-section">
+      This middle section represents the content a user might select after scrolling.
+    </section>
+
+    <div class="spacer" aria-hidden="true"></div>
+
+    <section class="section" id="bottom-section">
+      Bottom section content near the end of the page.
+    </section>
+  </body>
+</html>

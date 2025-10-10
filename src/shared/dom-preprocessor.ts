@@ -142,7 +142,35 @@ function isNodeHidden(el: HTMLElement): boolean {
   try {
     const rect = el.getBoundingClientRect();
     if (rect.width > 0 && rect.height > 0) {
-      if (rect.bottom < 0 || rect.right < 0) return logHidden('Element is out of viewport');
+      const docElement = document.documentElement;
+      const body = document.body;
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      const scrollX = window.scrollX || window.pageXOffset || 0;
+
+      const docTop = rect.top + scrollY;
+      const docBottom = rect.bottom + scrollY;
+      const docLeft = rect.left + scrollX;
+      const docRight = rect.right + scrollX;
+
+      const docHeight = Math.max(
+        window.innerHeight,
+        docElement?.scrollHeight ?? 0,
+        body?.scrollHeight ?? 0,
+        docElement?.offsetHeight ?? 0,
+        body?.offsetHeight ?? 0
+      );
+      const docWidth = Math.max(
+        window.innerWidth,
+        docElement?.scrollWidth ?? 0,
+        body?.scrollWidth ?? 0,
+        docElement?.offsetWidth ?? 0,
+        body?.offsetWidth ?? 0
+      );
+
+      if (docBottom < 0) return logHidden('Element above document bounds');
+      if (docTop > docHeight) return logHidden('Element below document bounds');
+      if (docRight < 0) return logHidden('Element left of document bounds');
+      if (docLeft > docWidth) return logHidden('Element right of document bounds');
     }
   } catch {
     // getBoundingClientRect may fail on detached nodes; ignore.
@@ -151,4 +179,4 @@ function isNodeHidden(el: HTMLElement): boolean {
   // R8 handled by zero dimension rule above for media elements of size 0;
 
   return false;
-} 
+}
