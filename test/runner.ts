@@ -1,20 +1,23 @@
 import { processContent } from '../src/shared/content-processor';
-import { createVisibleClone } from '../src/shared/dom-preprocessor';
 import { getSettings, type Settings } from '../src/shared/settings-manager';
 import * as Diff from 'diff';
 import TurndownServiceCtor from 'turndown';
 import { gfm as gfmPlugin } from 'turndown-plugin-gfm';
 
+type TestGlobals = typeof globalThis & {
+  TurndownService: typeof TurndownServiceCtor;
+  turndownPluginGfm: { gfm: typeof gfmPlugin };
+  chrome: { i18n: { getMessage(key: string): string } };
+};
+
 // Expose globals for content-processor which expects TurndownService & turndownPluginGfm
-// @ts-ignore
-(globalThis as any).TurndownService = TurndownServiceCtor;
+const testGlobals = globalThis as TestGlobals;
+testGlobals.TurndownService = TurndownServiceCtor;
 // turndown-plugin-gfm exports { gfm }, but content-processor expects an object with .gfm
-// @ts-ignore
-(globalThis as any).turndownPluginGfm = { gfm: gfmPlugin };
+testGlobals.turndownPluginGfm = { gfm: gfmPlugin };
 
 // Mock chrome APIs
-// @ts-ignore
-globalThis.chrome = {
+testGlobals.chrome = {
   i18n: {
     getMessage: (key: string) => key,
   },
@@ -49,7 +52,96 @@ let testCases: TestCase[] = [];
 const results: TestResult[] = [];
 const snapshotsToUpdate: Record<string, string> = {};
 
+function fnv1aHash(input: string): number {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < input.length; i++) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+    hash >>>= 0;
+  }
+  return hash >>> 0;
+}
 
+type LineDiffType = 'equal' | 'add' | 'remove' | 'change';
+
+interface LineDiffResult {
+  type: LineDiffType;
+  expected?: string;
+  actual?: string;
+}
+
+function diffLines(expected: string[], actual: string[]): LineDiffResult[] {
+  const results: LineDiffResult[] = [];
+  let i = 0;
+  let j = 0;
+
+  while (i < expected.length && j < actual.length) {
+    if (expected[i] === actual[j]) {
+      results.push({ type: 'equal', expected: expected[i], actual: actual[j] });
+      i++;
+      j++;
+      continue;
+    }
+
+    if (expected[i + 1] !== undefined && expected[i + 1] === actual[j]) {
+      results.push({ type: 'remove', expected: expected[i] });
+      i++;
+      continue;
+    }
+
+    if (actual[j + 1] !== undefined && expected[i] === actual[j + 1]) {
+      results.push({ type: 'add', actual: actual[j] });
+      j++;
+      continue;
+    }
+
+    results.push({ type: 'change', expected: expected[i], actual: actual[j] });
+    i++;
+    j++;
+  }
+
+  while (i < expected.length) {
+    results.push({ type: 'remove', expected: expected[i] });
+    i++;
+  }
+  while (j < actual.length) {
+    results.push({ type: 'add', actual: actual[j] });
+    j++;
+  }
+
+  return results;
+}
+
+function buildDiffFromLineResults(lineResults: LineDiffResult[]): string {
+  let diffHtml = '';
+  lineResults.forEach(result => {
+    if (result.type === 'equal' && result.actual !== undefined) {
+      diffHtml += `${escapeHtml(result.actual)}\n`;
+      return;
+    }
+
+    if (result.type === 'add' && result.actual !== undefined) {
+      diffHtml += `<ins>${escapeHtml(result.actual)}</ins>\n`;
+      return;
+    }
+
+    if (result.type === 'remove' && result.expected !== undefined) {
+      diffHtml += `<del>${escapeHtml(result.expected)}</del>\n`;
+      return;
+    }
+
+    if (result.type === 'change' && result.actual !== undefined && result.expected !== undefined) {
+      const charDiff = Diff.diffChars(result.expected, result.actual);
+      charDiff.forEach(part => {
+        const tag = part.added ? 'ins' : part.removed ? 'del' : 'span';
+        diffHtml += `<${tag}>${escapeHtml(part.value)}</${tag}>`;
+      });
+      diffHtml += '\n';
+    }
+  });
+
+  return diffHtml.trim();
+}
 
 function renderAllTestSkeletons() {
   elements.testResults.innerHTML = '';
@@ -92,6 +184,13 @@ async function runTest(testCase: TestCase): Promise<TestResult> {
   console.log(`[Debug] Case Path from manifest: ${testCase.path}`);
   console.log(`[Debug] Derived Snapshot Path: ${snapshotPath}`);
 
+  const shouldMeasurePerf = testCase.path === 'cases/2.html';
+  const perfLog = (stage: string, start: number) => {
+    if (!shouldMeasurePerf) return;
+    const duration = performance.now() - start;
+    console.log(`[Perf][Case2] ${stage}: ${duration.toFixed(2)} ms`);
+  };
+
   // Use inlined expected content if provided in manifest
   let expected = testCase.expected ?? '';
 
@@ -115,11 +214,14 @@ async function runTest(testCase: TestCase): Promise<TestResult> {
   iframe.style.height = '768px';
   document.body.appendChild(iframe);
 
+  let stageStart = shouldMeasurePerf ? performance.now() : 0;
   console.error('!!! ATTEMPTING TO FETCH CASE HTML:', testCase.path);
   const response = await fetch(testCase.path);
   let html = await response.text();
+  perfLog('Fetch HTML', stageStart);
   console.log('[Debug] Fetched raw HTML for test case:', html);
 
+  stageStart = shouldMeasurePerf ? performance.now() : 0;
   // 清理HTML，移除所有script标签，避免异步资源加载问题
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
@@ -139,42 +241,58 @@ async function runTest(testCase: TestCase): Promise<TestResult> {
 
   // 将清理后的HTML重新序列化为字符串
   const cleanedHtml = doc.documentElement.outerHTML;
+  perfLog('DOM cleanup', stageStart);
 
   console.log('[Debug] Cleaned HTML for test case (scripts removed):', cleanedHtml);
 
   const iframeDoc = iframe.contentWindow!.document;
+  stageStart = shouldMeasurePerf ? performance.now() : 0;
   iframeDoc.open();
   iframeDoc.write(cleanedHtml);
   iframeDoc.close();
 
   await new Promise(r => setTimeout(r, 300));
+  perfLog('Iframe render', stageStart);
 
-  const settings = await getSettings();
+  const settings: Settings = await getSettings();
   const targetElement = iframeDoc.body;
 
   console.log('[Debug] Starting content processing...');
+  stageStart = shouldMeasurePerf ? performance.now() : 0;
   const actual = processContent(targetElement, settings);
+  perfLog('processContent', stageStart);
   console.log('[Debug] Actual output from processContent:', actual);
 
   document.body.removeChild(iframe);
 
   let status: 'passed' | 'failed' = 'passed';
   let diff = '';
+  let diffStart = shouldMeasurePerf ? performance.now() : 0;
 
   // If expected is missing, auto-fail to generate snapshot
   if (!expected) {
     status = 'failed';
     snapshotsToUpdate[snapshotPath] = actual;
     diff = '<ins>' + escapeHtml(actual) + '</ins>';
+    perfLog('Diff (fallback empty expected)', diffStart);
   } else {
-    const diffResult = Diff.diffChars(expected, actual);
-    if (diffResult.length > 1 || (diffResult.length === 1 && (diffResult[0].added || diffResult[0].removed))) {
-      status = 'failed';
-      snapshotsToUpdate[snapshotPath] = actual;
-      diffResult.forEach(part => {
-        const color = part.added ? 'ins' : part.removed ? 'del' : 'span';
-        diff += `<${color}>${escapeHtml(part.value)}</${color}>`;
-      });
+    const expectedHash = fnv1aHash(expected);
+    const actualHash = fnv1aHash(actual);
+
+    if (expected.length === actual.length && expectedHash === actualHash) {
+      diff = '';
+      perfLog('Diff.hashEqual', diffStart);
+    } else {
+      const expectedLines = expected.split('\n');
+      const actualLines = actual.split('\n');
+      const lineDiffResults = diffLines(expectedLines, actualLines);
+      diff = buildDiffFromLineResults(lineDiffResults);
+      const hasChanges = lineDiffResults.some(result => result.type !== 'equal');
+      if (hasChanges) {
+        status = 'failed';
+        snapshotsToUpdate[snapshotPath] = actual;
+      }
+      perfLog('Diff.line+char', diffStart);
     }
   }
 

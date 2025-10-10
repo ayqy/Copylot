@@ -31,7 +31,8 @@
   },
   {
     "path": "cases/vs-marketplace-nonstandard-table.html",
-    "title": "vs marketplace nonstandard table"
+    "title": "vs marketplace nonstandard table",
+    "expected": "VS Marketplace sample (nonstandard tables below):\n\n| ![Claude Code for VS Code](https://example.com/icon.png) | Claude Code for VS Code<br>[Anthropic](https://Anthropic) \\| 1,078,013 installs \\| Free |\n\nDetails table:\n\n| Version | 2.0.10 |\n| Released on | 2025/6/19 00:32:16 |\n| Publisher | Anthropic |\n"
   },
   {
     "path": "cases/zero-height-container.html",
