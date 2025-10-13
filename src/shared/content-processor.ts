@@ -397,6 +397,28 @@ function getTurndownService(useGfm: boolean = true) {
         return processCodeBlock(node);
       }
     });
+
+    cachedTurndown.addRule('absoluteImageSrc', {
+      filter: 'img',
+      replacement: function (_content: string, node: HTMLElement) {
+        const img = node as HTMLImageElement;
+        const datasetSrc = (img.dataset && img.dataset.src) || '';
+        const dataAttrSrc = img.getAttribute('data-src') || '';
+        const srcAttr = img.getAttribute('src') || '';
+        const currentSrc = typeof img.currentSrc === 'string' ? img.currentSrc : '';
+
+        let sourceUrl = datasetSrc || dataAttrSrc || srcAttr || currentSrc;
+        const baseHref = img.ownerDocument?.baseURI;
+        sourceUrl = resolveToAbsoluteUrl(sourceUrl, baseHref);
+
+        const altText = (img.getAttribute('alt') || '').trim();
+        if (!sourceUrl || (typeof window !== 'undefined' && sourceUrl === window.location.href)) {
+          return cleanText(img.innerText || altText);
+        }
+
+        return `![${altText}](${sourceUrl})`;
+      }
+    });
     
     // Apply a custom lineBreak rule for br tags
     cachedTurndown.addRule('lineBreak', {
@@ -488,6 +510,33 @@ function cleanInvalidLinks(markdown: string): string {
     }
     return match; // 保留有效链接
   });
+}
+
+function resolveToAbsoluteUrl(url: string | null | undefined, baseHref?: string): string {
+  const raw = (url ?? '').trim();
+  if (!raw) {
+    return '';
+  }
+
+  // Data URI、blob URI 保持原值
+  if (/^(data:|blob:)/i.test(raw)) {
+    return raw;
+  }
+
+  try {
+    const base =
+      baseHref ||
+      (typeof document !== 'undefined' && document.baseURI ? document.baseURI : undefined) ||
+      (typeof window !== 'undefined' ? window.location.href : undefined);
+
+    if (base) {
+      return new URL(raw, base).href;
+    }
+
+    return new URL(raw).href;
+  } catch {
+    return raw;
+  }
 }
 
 // i18n message retrieval, checking for chrome API availability
