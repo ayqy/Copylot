@@ -35,6 +35,30 @@ export const MIN_TEXT_LENGTH = 1; // Adjusted for potentially smaller but valid 
 export const MIN_WIDTH = 20; // Adjusted for smaller icons or elements
 export const MIN_HEIGHT = 20; // Adjusted for smaller icons or elements
 
+export function findEditableContext(element: Element | null): HTMLElement | null {
+  let current: Element | null = element;
+  while (current && current instanceof HTMLElement) {
+    if (current.isContentEditable) {
+      return current;
+    }
+
+    if (current.hasAttribute('contenteditable')) {
+      const attr = current.getAttribute('contenteditable');
+      if (!attr || attr.toLowerCase() !== 'false') {
+        return current;
+      }
+      // If explicitly false, continue searching upwards to find true ancestor.
+    }
+
+    current = current.parentElement;
+  }
+  return null;
+}
+
+export function isInsideContentEditable(element: Element | null): boolean {
+  return findEditableContext(element) !== null;
+}
+
 export function isElementVisible(element: Element): boolean {
   if (!(element instanceof HTMLElement)) {
     return true; // Non-HTMLElements like SVGElement are considered visible if attached
@@ -122,6 +146,10 @@ export function hasMinimumDimensions(element: Element): boolean {
 export function isViableBlock(element: Element): boolean {
   try {
     const tagName = element.tagName.toLowerCase();
+
+    if (isInsideContentEditable(element)) {
+      return false;
+    }
 
     // Rule 3.2: Filter out inherently invisible elements first.
     if (['script', 'style', 'meta', 'head', 'link', 'template', 'noscript'].includes(tagName)) {

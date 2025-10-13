@@ -6,6 +6,8 @@ import type { Settings } from '../shared/settings-manager';
 // as they will be part of the global scope after the inline build step.
 // The /* INLINE:... */ comments will bring their definitions directly into this file.
 
+declare function findEditableContext(element: Element | null): HTMLElement | null;
+
 /* INLINE:block-identifier */
 /* INLINE:settings-manager */
 /* INLINE:ui-injector */
@@ -67,6 +69,7 @@ function getPreciseSelectedElement(): Element | null {
 
     // 3. 创建一个临时容器元素
     const tempDiv = document.createElement('div');
+    tempDiv.dataset.fromEditableSelection = 'true';
 
     // 4. 将Fragment附加到临时容器中
     tempDiv.appendChild(fragment);
@@ -114,6 +117,19 @@ function getSelectionContent(): Element | null {
   
   console.debug('AI Copilot: Using selected element as is');
   return selectedElement;
+}
+
+function isFromEditableContext(element: Element | null): boolean {
+  if (!element) {
+    return false;
+  }
+
+  if (element instanceof HTMLElement && element.dataset.fromEditableSelection === 'true') {
+    return true;
+  }
+
+  // @ts-ignore: findEditableContext is available from inlined block-identifier.ts
+  return !!findEditableContext(element);
 }
 
 /**
@@ -260,6 +276,10 @@ function disableMagicCopyFeatures(): void {
 function showMagicCopy(element: Element, event?: MouseEvent, showOutline: boolean = true): void {
   if (!element) return;
 
+  if (isFromEditableContext(element)) {
+    return;
+  }
+
   // @ts-ignore: hideButton is available from inlined ui-injector.ts
   if (currentTarget && currentTarget !== element && copyButtonElement) {
     // Hide from previous target if different
@@ -321,6 +341,11 @@ function handleDocumentClick(event: MouseEvent): void {
     return;
   }
 
+  // @ts-ignore: findEditableContext is available from inlined block-identifier.ts
+  if (findEditableContext(document.activeElement as Element)) {
+    return;
+  }
+
   if (userSettings?.interactionMode === 'dblclick') {
     const now = Date.now();
     if (now - lastClickTimestamp < DOUBLE_CLICK_THRESHOLD) {
@@ -370,6 +395,9 @@ function handleInteraction(event: MouseEvent, potentialTargetNode: Node) {
   const viableElement = findViableBlock(potentialTargetNode);
 
   if (viableElement) {
+    if (isFromEditableContext(viableElement)) {
+      return;
+    }
     showMagicCopy(viableElement, event);
   }
 }
@@ -464,7 +492,7 @@ function setupButtonClickHandler(): void {
     }
 
     // Otherwise handle as main copy click (original functionality)
-    await handleMainCopyClick(event);
+    await handleMainCopyClick();
   });
 
   // Handle hover to show prompt menu
@@ -485,7 +513,7 @@ function setupButtonClickHandler(): void {
   });
 }
 
-async function handleMainCopyClick(event: MouseEvent): Promise<void> {
+async function handleMainCopyClick(): Promise<void> {
   if (!currentTarget || !userSettings) return;
 
   try {
@@ -542,7 +570,7 @@ async function handlePromptClick(promptId: string): Promise<void> {
 
   try {
     const { userPrompts } = userSettings;
-    const prompt = userPrompts.find((p: any) => p.id === promptId);
+    const prompt = userPrompts.find((p) => p.id === promptId);
     if (!prompt) return;
 
     // @ts-ignore: processContent is available from inlined content-processor.ts
@@ -574,7 +602,9 @@ async function handlePromptClick(promptId: string): Promise<void> {
     const targetChatId = prompt.targetChatId || userSettings.defaultChatServiceId;
     
     if (shouldOpenChat && targetChatId) {
-      const chatService = userSettings.chatServices.find((c: any) => c.id === targetChatId && c.enabled);
+      const chatService = userSettings.chatServices.find(
+        (service) => service.id === targetChatId && service.enabled
+      );
       if (chatService) {
         // 显示视觉反馈
         showChatRedirectNotification(chatService.name);
@@ -634,6 +664,15 @@ function handleMouseOver(event: MouseEvent): void {
   const targetElement = event.target as Element;
 
   if (!targetElement || !(targetElement instanceof Element)) {
+    return;
+  }
+
+  // @ts-ignore: findEditableContext is available from inlined block-identifier.ts
+  if (findEditableContext(document.activeElement as Element)) {
+    return;
+  }
+
+  if (isFromEditableContext(targetElement)) {
     return;
   }
 
