@@ -10,7 +10,6 @@ export interface ChatService {
   id: string;
   name: string;
   url: string;
-  icon: string;
   enabled: boolean;
   builtIn: boolean;
   description?: string;
@@ -89,7 +88,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'chatgpt',
     name: 'ChatGPT',
     url: 'https://chat.openai.com',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIyLjI4MTkgOS44MjE3NEMhLjQ5MTcgNy4zMDgxNyAyMC42OTUgNS4xMDcwNyAxNy44NTkgNC4yNDA5QzE3LjUxNDEgMS4wNTU0NCAxNC43NzM0IDAuMTI1NDU1IDEyLjAwMTcgMS4xNjM2NUM5LjIyNzM1IDAuMTI1NDU1IDYuNDg2NDEgMS4wNTU0NCA2LjE0MTE3IDQuMjQwOUMzLjMwNTU4IDUuMTA3MDcgMS41MDgyOCA3LjMwODE3IDIuNzE4MyA5LjgyMTc0QzEuNDkxNyAxMi40NDU3IDIuNzE4MyAxNS4yNTc0IDUuMzY5MzkgMTYuODc3NkM1LjM5NjE1IDE5LjkxODcgNy43NzM4NyAyMi4zNjExIDEwLjg5NDEgMjMuMDAwOEMxMy45OTk1IDIzLjM2MTEgMTcuODY1IDIyLjE3NyAxOC42NzMyIDE3Ljg2M0MyMS45MjE3IDE3LjUwNDUgMjMuMzE4NSAxNS4wMTA3IDIzLjE4NTQgMTIuNDQ1N0MyMi40NDU3IDEwLjk0MzQgMjIuNDQ1NyA5LjgyMTc0IDIyLjI4MTkgOS44MjE3NFoiIGZpbGw9IiMzMzMzMzMiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true
   },
@@ -97,7 +95,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'claude',
     name: 'Claude',
     url: 'https://claude.ai/new',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiByeD0iNiIgZmlsbD0iI0Q5N0Y0MiIvPgo8cGF0aCBkPSJNOCA4SDE2VjE2SDhaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=',
     enabled: true,
     builtIn: true
   },
@@ -105,7 +102,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'gemini',
     name: getMessage('serviceGeminiAIStudio'),
     url: 'https://aistudio.google.com/',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM0Mjg1RjQiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true,
     description: getMessage('statusCompleteFree')
@@ -114,7 +110,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'yiyan',
     name: getMessage('serviceYiyan'),
     url: 'https://yiyan.baidu.com',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiMyOTVGRkYiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true
   },
@@ -122,7 +117,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'tongyi',
     name: getMessage('serviceTongyi'),
     url: 'https://chat.qwen.ai/',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNGRjY0MDAiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true
   },
@@ -130,7 +124,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'kimi',
     name: 'Kimi',
     url: 'https://kimi.moonshot.cn',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM0RjQ2RTUiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true
   },
@@ -138,7 +131,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'doubao',
     name: '豆包',
     url: 'https://doubao.com',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiMwMEJCNzAiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true
   },
@@ -146,7 +138,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'deepseek',
     name: 'DeepSeek',
     url: 'https://chat.deepseek.com/',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM2MzY2RjEiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true,
     description: getMessage('statusFreeAfterLogin')
@@ -155,7 +146,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'poe',
     name: 'Poe',
     url: 'https://poe.com/',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNFRjQ0NDQiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true,
     description: getMessage('statusDailyQuota')
@@ -164,7 +154,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'glm',
     name: 'GLM',
     url: 'https://chat.z.ai/',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiMxMEI5ODEiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true,
     description: getMessage('statusFreeNoLogin')
@@ -173,7 +162,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'openai-playground',
     name: getMessage('serviceOpenAIPlayground'),
     url: 'https://platform.openai.com/playground/prompts?models=o3',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM4QjVDRjYiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true,
     description: getMessage('statusDailyQuota')
@@ -182,7 +170,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'perplexity',
     name: getMessage('servicePerplexityAI'),
     url: 'https://www.perplexity.ai/',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiMwNkI2RDQiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true
   },
@@ -190,7 +177,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'grok',
     name: 'Grok',
     url: 'https://grok.com/',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNFQzQ4OTkiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true
   },
@@ -198,7 +184,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     id: 'lmarena',
     name: 'LMArena',
     url: 'https://lmarena.ai/?mode=direct',
-    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM4NEEzMTYiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
     enabled: true,
     builtIn: true,
     description: getMessage('statusCompleteFree')
@@ -269,6 +254,15 @@ export async function getSettings(): Promise<Settings> {
         ...DEFAULT_SETTINGS,
         ...storedSettings
       };
+
+      // 清理历史遗留的 icon 字段以减少存储占用
+      mergedSettings.chatServices = mergedSettings.chatServices.map((service) => {
+        const normalized = { ...service } as Record<string, unknown>;
+        if ('icon' in normalized) {
+          delete normalized.icon;
+        }
+        return normalized as ChatService;
+      });
 
       if (!mergedSettings.editorExclusionClassNames || !Array.isArray(mergedSettings.editorExclusionClassNames)) {
         mergedSettings.editorExclusionClassNames = [...DEFAULT_EDITOR_EXCLUSION_CLASSES];
@@ -371,6 +365,15 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
       
       // Merge with new settings
       const mergedSettings = { ...currentSettings, ...settings };
+
+      // 再次清除潜在的 icon 字段，避免写回占用空间
+      mergedSettings.chatServices = mergedSettings.chatServices.map((service) => {
+        const normalized = { ...service } as Record<string, unknown>;
+        if ('icon' in normalized) {
+          delete normalized.icon;
+        }
+        return normalized as ChatService;
+      });
 
       // Check storage size limits
       const dataString = JSON.stringify({ [SETTINGS_KEY]: mergedSettings });

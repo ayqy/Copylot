@@ -686,5 +686,9 @@
   "statusFreeNoLogin": {
     "message": "Free (no login required)",
     "description": "Status description for services that are free without login"
+  },
+  "storageQuotaExceeded": {
+    "message": "Sync storage is full. Remove some chat services before trying again.",
+    "description": "Shown when Chrome sync storage quota prevents adding more chat services"
   }
 }

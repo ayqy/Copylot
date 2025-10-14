@@ -18,8 +18,10 @@ function generateUUID(): string {
   });
 }
 
+type MessageSubstitutions = Parameters<typeof chrome.i18n.getMessage>[1];
+
 // Helper function to get localized messages
-function getMessage(key: string, substitutions?: any): string {
+function getMessage(key: string, substitutions?: MessageSubstitutions): string {
   return chrome.i18n.getMessage(key, substitutions);
 }
 
@@ -79,7 +81,6 @@ interface OptionsElements {
   chatServiceId: HTMLInputElement;
   chatServiceName: HTMLInputElement;
   chatServiceUrl: HTMLInputElement;
-  chatServiceIcon: HTMLInputElement;
   cancelChatServiceBtn: HTMLButtonElement;
   saveChatServiceBtn: HTMLButtonElement;
 }
@@ -146,7 +147,6 @@ function getElements(): OptionsElements {
     chatServiceId: document.getElementById('chat-service-id') as HTMLInputElement,
     chatServiceName: document.getElementById('chat-service-name') as HTMLInputElement,
     chatServiceUrl: document.getElementById('chat-service-url') as HTMLInputElement,
-    chatServiceIcon: document.getElementById('chat-service-icon') as HTMLInputElement,
     cancelChatServiceBtn: document.getElementById('cancel-chat-service-btn') as HTMLButtonElement,
     saveChatServiceBtn: document.getElementById('save-chat-service-btn') as HTMLButtonElement
   };
@@ -896,15 +896,15 @@ function handleImportPrompts() {
     
     try {
       const text = await file.text();
-      const data = JSON.parse(text);
+      const data: unknown = JSON.parse(text);
       
       if (!validateImportData(data)) {
         showNotification(getMessage('errorInvalidImportFile'), 'error');
         return;
       }
       
-      const importedPrompts = data.prompts || [];
-      const duplicateCount = importedPrompts.filter((imported: Prompt) => 
+      const importedPrompts = data.prompts;
+      const duplicateCount = importedPrompts.filter((imported) => 
         allPrompts.some(existing => existing.id === imported.id)
       ).length;
       
@@ -915,12 +915,12 @@ function handleImportPrompts() {
       }
       
       // 过滤重复的prompts
-      const newPrompts = importedPrompts.filter((imported: Prompt) => 
+      const newPrompts = importedPrompts.filter((imported) => 
         !allPrompts.some(existing => existing.id === imported.id)
       );
       
       // 为导入的prompts设置默认值
-      newPrompts.forEach((prompt: Prompt) => {
+      newPrompts.forEach((prompt) => {
         if (!prompt.usageCount) prompt.usageCount = 0;
         if (!prompt.createdAt) prompt.createdAt = Date.now();
       });
@@ -945,16 +945,30 @@ function handleImportPrompts() {
 /**
  * 验证导入数据格式
  */
-function validateImportData(data: any): boolean {
+type UnknownRecord = Record<string, unknown>;
+
+function isPromptLike(value: unknown): value is Prompt {
+  if (!value || typeof value !== 'object') return false;
+  const record = value as UnknownRecord;
+  if (typeof record.id !== 'string' || typeof record.title !== 'string' || typeof record.template !== 'string') {
+    return false;
+  }
+  if (record.usageCount !== undefined && typeof record.usageCount !== 'number') return false;
+  if (record.createdAt !== undefined && typeof record.createdAt !== 'number') return false;
+  if (record.lastUsedAt !== undefined && typeof record.lastUsedAt !== 'number') return false;
+  if (record.targetChatId !== undefined && typeof record.targetChatId !== 'string') return false;
+  if (record.autoOpenChat !== undefined && typeof record.autoOpenChat !== 'boolean') return false;
+  if (record.builtIn !== undefined && typeof record.builtIn !== 'boolean') return false;
+  if (record.deleted !== undefined && typeof record.deleted !== 'boolean') return false;
+  if (record.templateVersion !== undefined && typeof record.templateVersion !== 'number') return false;
+  return true;
+}
+
+function validateImportData(data: unknown): data is { prompts: Prompt[] } {
   if (!data || typeof data !== 'object') return false;
-  if (!Array.isArray(data.prompts)) return false;
-  
-  return data.prompts.every((prompt: any) => 
-    prompt && 
-    typeof prompt.id === 'string' && 
-    typeof prompt.title === 'string' && 
-    typeof prompt.template === 'string'
-  );
+  const payload = data as UnknownRecord;
+  if (!Array.isArray(payload.prompts)) return false;
+  return payload.prompts.every(isPromptLike);
 }
 
 /**
@@ -1415,7 +1429,6 @@ function openChatServiceEditor(service?: ChatService) {
     elements.chatServiceId.value = service.id;
     elements.chatServiceName.value = service.name;
     elements.chatServiceUrl.value = service.url;
-    elements.chatServiceIcon.value = service.icon;
   } else {
     elements.chatServiceModalTitle.textContent = getMessage('addChatService');
     elements.chatServiceForm.reset();
@@ -1442,8 +1455,6 @@ async function saveChatService(event: Event) {
   
   const name = elements.chatServiceName.value.trim();
   const url = elements.chatServiceUrl.value.trim();
-  const icon = elements.chatServiceIcon.value.trim();
-  
   if (!name || !url) {
     showNotification(getMessage('errorFillInTitleAndTemplate'), 'error');
     return;
@@ -1455,7 +1466,6 @@ async function saveChatService(event: Event) {
     if (service) {
       service.name = name;
       service.url = url;
-      service.icon = icon || service.icon;
     }
   } else {
     // 新建服务
@@ -1463,7 +1473,6 @@ async function saveChatService(event: Event) {
       id: generateUUID(),
       name,
       url,
-      icon: icon || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM2MzY2RjEiLz4KPHBhdGggZD0iTTggOEgxNlYxNkg4WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
       enabled: true,
       builtIn: false
     };
@@ -1532,7 +1541,12 @@ async function saveChatSettings() {
     updateChatServiceOptions();
   } catch (error) {
     console.error('Error saving chat settings:', error);
-    showNotification(getMessage('savingFailed'), 'error');
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const quotaWarning = errorMessage.includes('QUOTA_BYTES') || errorMessage.toLowerCase().includes('quota');
+    const message = quotaWarning
+      ? getMessage('storageQuotaExceeded') || 'storageQuotaExceeded'
+      : getMessage('savingFailed');
+    showNotification(message, 'error');
   }
 }
 

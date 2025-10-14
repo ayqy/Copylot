@@ -686,5 +686,9 @@
   "statusFreeNoLogin": {
     "message": "（免登录）免费使用",
     "description": "无需登录免费服务的状态描述"
+  },
+  "storageQuotaExceeded": {
+    "message": "同步空间不足，无法保存更多 Chat 服务，请删除部分服务后重试。",
+    "description": "chat 服务同步空间用尽时的提示"
   }
 }
