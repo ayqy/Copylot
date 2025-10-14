@@ -7,10 +7,13 @@ import type { Settings } from '../shared/settings-manager';
 // The /* INLINE:... */ comments will bring their definitions directly into this file.
 
 declare function findEditableContext(element: Element | null): HTMLElement | null;
+declare const DEFAULT_EDITOR_EXCLUSION_CLASSES: string[] | undefined;
+declare const DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS: string[] | undefined;
 
 /* INLINE:block-identifier */
 /* INLINE:settings-manager */
 /* INLINE:ui-injector */
+/* INLINE:link-utils */
 /* INLINE:dom-preprocessor */
 /* INLINE:content-processor */
 
@@ -26,6 +29,22 @@ let clickTimer: number | null = null;
 let lastClickTimestamp = 0;
 let isShiftPressed = false; // Tracks if Shift key is currently pressed
 const DOUBLE_CLICK_THRESHOLD = 300; // ms
+const FALLBACK_EDITOR_EXCLUSION_CLASSES = [
+  'CodeMirror',
+  'cm-editor',
+  'cm-content',
+  'monaco-editor',
+  'ace_editor',
+  'ql-editor',
+  'tox-edit-area',
+  'ProseMirror',
+  'notion-page-content'
+];
+
+const FALLBACK_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS = [
+  '[data-cangjie-content]',
+  '[data-cangjie-editable]'
+];
 
 /**
  * 获取用户选择的元素
@@ -130,6 +149,102 @@ function isFromEditableContext(element: Element | null): boolean {
 
   // @ts-ignore: findEditableContext is available from inlined block-identifier.ts
   return !!findEditableContext(element);
+}
+
+function getEditorExclusionClasses(): string[] {
+  if (userSettings?.editorExclusionClassNames && Array.isArray(userSettings.editorExclusionClassNames) && userSettings.editorExclusionClassNames.length > 0) {
+    return userSettings.editorExclusionClassNames;
+  }
+
+  if (typeof DEFAULT_EDITOR_EXCLUSION_CLASSES !== 'undefined' && Array.isArray(DEFAULT_EDITOR_EXCLUSION_CLASSES) && DEFAULT_EDITOR_EXCLUSION_CLASSES.length > 0) {
+    return DEFAULT_EDITOR_EXCLUSION_CLASSES;
+  }
+
+  return FALLBACK_EDITOR_EXCLUSION_CLASSES;
+}
+
+function getEditorExclusionAttributeSelectors(): string[] {
+  if (
+    userSettings?.editorExclusionAttributeSelectors &&
+    Array.isArray(userSettings.editorExclusionAttributeSelectors) &&
+    userSettings.editorExclusionAttributeSelectors.length > 0
+  ) {
+    return userSettings.editorExclusionAttributeSelectors;
+  }
+
+  if (
+    typeof DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS !== 'undefined' &&
+    Array.isArray(DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS) &&
+    DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS.length > 0
+  ) {
+    return DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS;
+  }
+
+  return FALLBACK_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS;
+}
+
+function elementMatchesExcludedClass(element: Element, classes: string[]): boolean {
+  if (!(element instanceof Element) || !element.classList) {
+    return false;
+  }
+  return classes.some((cls) => element.classList.contains(cls));
+}
+
+function elementMatchesExcludedAttribute(element: Element, selectors: string[]): boolean {
+  if (!(element instanceof Element) || typeof element.matches !== 'function') {
+    return false;
+  }
+  return selectors.some((selector) => {
+    try {
+      return element.matches(selector);
+    } catch (error) {
+      console.error('AI Copilot: Invalid editor exclusion attribute selector:', selector, error);
+      return false;
+    }
+  });
+}
+
+function isInExcludedEditorZone(element: Element | null): boolean {
+  if (!element) {
+    return false;
+  }
+
+  const classes = getEditorExclusionClasses();
+  const attributeSelectors = getEditorExclusionAttributeSelectors();
+  let current: Element | null = element;
+
+  while (current && current !== document.body && current !== document.documentElement) {
+    if (current instanceof HTMLTextAreaElement || current instanceof HTMLInputElement) {
+      return true;
+    }
+    if (elementMatchesExcludedClass(current, classes)) {
+      return true;
+    }
+    if (elementMatchesExcludedAttribute(current, attributeSelectors)) {
+      return true;
+    }
+    current = current.parentElement;
+  }
+
+  return false;
+}
+
+function getSelectionAnchorElement(): Element | null {
+  const selection = window.getSelection();
+  if (!selection || selection.rangeCount === 0) {
+    return null;
+  }
+
+  const anchorNode = selection.anchorNode;
+  if (!anchorNode) {
+    return null;
+  }
+
+  if (anchorNode instanceof Element) {
+    return anchorNode;
+  }
+
+  return anchorNode.parentElement;
 }
 
 /**
@@ -276,6 +391,10 @@ function disableMagicCopyFeatures(): void {
 function showMagicCopy(element: Element, event?: MouseEvent, showOutline: boolean = true): void {
   if (!element) return;
 
+  if (isInExcludedEditorZone(element)) {
+    return;
+  }
+
   if (isFromEditableContext(element)) {
     return;
   }
@@ -346,6 +465,12 @@ function handleDocumentClick(event: MouseEvent): void {
     return;
   }
 
+  const selectionAnchorElement = getSelectionAnchorElement();
+  if (isInExcludedEditorZone(selectionAnchorElement)) {
+    hideMagicCopy();
+    return;
+  }
+
   if (userSettings?.interactionMode === 'dblclick') {
     const now = Date.now();
     if (now - lastClickTimestamp < DOUBLE_CLICK_THRESHOLD) {
@@ -374,6 +499,11 @@ function handleDocumentClick(event: MouseEvent): void {
 function handleInteraction(event: MouseEvent, potentialTargetNode: Node) {
   hideMagicCopy();
 
+  const selectionAnchorElement = getSelectionAnchorElement();
+  if (isInExcludedEditorZone(selectionAnchorElement)) {
+    return;
+  }
+
   // 优先处理用户的精确选区
   const preciseSelectedElement = getPreciseSelectedElement();
   if (preciseSelectedElement) {
@@ -391,10 +521,17 @@ function handleInteraction(event: MouseEvent, potentialTargetNode: Node) {
     return;
   }
 
+  if (isInExcludedEditorZone(potentialTargetNode)) {
+    return;
+  }
+
   // @ts-ignore: findViableBlock is available from inlined block-identifier.ts
   const viableElement = findViableBlock(potentialTargetNode);
 
   if (viableElement) {
+    if (isInExcludedEditorZone(viableElement)) {
+      return;
+    }
     if (isFromEditableContext(viableElement)) {
       return;
     }
@@ -673,6 +810,10 @@ function handleMouseOver(event: MouseEvent): void {
   }
 
   if (isFromEditableContext(targetElement)) {
+    return;
+  }
+
+  if (isInExcludedEditorZone(targetElement) || isInExcludedEditorZone(document.activeElement as Element)) {
     return;
   }
 

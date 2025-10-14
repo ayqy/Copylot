@@ -21,6 +21,11 @@
     "expected": "https://example.com/"
   },
   {
+    "path": "cases/links-and-icons.html",
+    "title": "links and icons",
+    "expected": "含类名的图标：\n\n仅私用区字符图标：\n\n混合内容图标：图标描述\n\nInline Base64 Logo\n\n![Banner](https://example.com/docs/images/banner.png)\n\n[关于我们](https://example.com/about)\n\n[快速开始](https://example.com/docs/guides/getting-started)\n\n首页链接"
+  },
+  {
     "path": "cases/long-page-offscreen.html",
     "title": "long page offscreen",
     "expected": "Top section content that should remain even after the page is scrolled away.\n\nThis middle section represents the content a user might select after scrolling.\n\nBottom section content near the end of the page."

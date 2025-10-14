@@ -1,6 +1,7 @@
 // Content processor functionality (using TurndownService from global scope)
 import type { Settings } from './settings-manager'; // Import type for Settings
 import { createVisibleClone } from './dom-preprocessor';
+import { normalizeLink } from './link-utils';
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -402,21 +403,7 @@ function getTurndownService(useGfm: boolean = true) {
       filter: 'img',
       replacement: function (_content: string, node: HTMLElement) {
         const img = node as HTMLImageElement;
-        const datasetSrc = (img.dataset && img.dataset.src) || '';
-        const dataAttrSrc = img.getAttribute('data-src') || '';
-        const srcAttr = img.getAttribute('src') || '';
-        const currentSrc = typeof img.currentSrc === 'string' ? img.currentSrc : '';
-
-        let sourceUrl = datasetSrc || dataAttrSrc || srcAttr || currentSrc;
-        const baseHref = img.ownerDocument?.baseURI;
-        sourceUrl = resolveToAbsoluteUrl(sourceUrl, baseHref);
-
-        const altText = (img.getAttribute('alt') || '').trim();
-        if (!sourceUrl || (typeof window !== 'undefined' && sourceUrl === window.location.href)) {
-          return cleanText(img.innerText || altText);
-        }
-
-        return `![${altText}](${sourceUrl})`;
+        return processImageNodeForMarkdown(img);
       }
     });
     
@@ -452,91 +439,60 @@ function convertHtmlToMarkdown(html: string): string {
   }
 }
 
-/**
- * 验证URL是否为有效的链接
- * @param url - 要验证的URL
- * @returns 是否为有效链接
- */
-function isValidUrl(url: string): boolean {
-  if (!url || url.trim() === '') return false;
-  
-  // 过滤掉无效的链接协议和模式
-  const invalidPatterns = [
-    /^javascript:/i,
-    /^#.*$/,           // 纯锚点链接
-    /^#$/,             // 空锚点
-    /^\s*$/,           // 空白字符串
-    /^void\(0\)$/i,    // void(0)
-    /^about:blank$/i   // about:blank
-  ];
-  
-  for (const pattern of invalidPatterns) {
-    if (pattern.test(url.trim())) {
-      return false;
-    }
-  }
-  
-  // 检查是否为有效的URL格式
-  try {
-    // 对于相对路径和绝对路径的基本检查
-    if (url.startsWith('/') || url.startsWith('./') || url.startsWith('../')) {
-      return true;
-    }
-    
-    // 检查是否包含有效的协议
-    if (url.includes('://')) {
-      const urlObj = new URL(url);
-      return ['http:', 'https:', 'ftp:', 'ftps:', 'mailto:', 'tel:'].includes(urlObj.protocol);
-    }
-    
-    // 对于不包含协议的URL，进行基本格式检查
-    return /^[a-zA-Z0-9][a-zA-Z0-9-_.]*[a-zA-Z0-9](\.[a-zA-Z]{2,}|:[0-9]+)/.test(url);
-  } catch {
-    return false;
-  }
-}
-
-/**
- * 清理Markdown文本中的无效链接
- * @param markdown - 原始markdown文本
- * @returns 清理后的markdown文本
- */
 function cleanInvalidLinks(markdown: string): string {
-  // 匹配markdown链接格式 [text](url)
-  return markdown.replace(/\[([^\]]*)\]\(([^)]*)\)/g, (match, text, url) => {
-    // 如果URL无效，只保留文本内容
-    if (!isValidUrl(url)) {
-      return text.trim() || ''; // 如果文本为空，则完全移除
+  // 同时匹配普通链接与图片链接，可选的感叹号捕获在第1组
+  return markdown.replace(/(!?)\[([^\]]*)\]\(([^)]*)\)/g, (match, bang, text, url) => {
+    const trimmedUrl = (url || '').trim();
+    const trimmedText = text.trim();
+    const isImage = bang === '!';
+    console.debug('[cleanInvalidLinks] processing', {
+      match,
+      trimmedText,
+      trimmedUrl,
+    });
+
+    const normalized = normalizeLink(
+      trimmedUrl,
+      undefined,
+      typeof window !== 'undefined' ? window.location.href : undefined
+    );
+
+    if (normalized.drop || !normalized.href) {
+      console.debug('[cleanInvalidLinks] dropping invalid or root link', {
+        trimmedText,
+        trimmedUrl,
+      });
+      return trimmedText || '';
     }
-    return match; // 保留有效链接
+
+    if (!trimmedText) {
+      if (isImage) {
+        console.debug('[cleanInvalidLinks] keeping image with empty alt', {
+          absoluteUrl: normalized.href,
+        });
+        return `![](${normalized.href})`;
+      } else {
+        console.debug('[cleanInvalidLinks] keeping bare absolute url', {
+          absoluteUrl: normalized.href,
+        });
+        return normalized.href;
+      }
+    }
+
+    if (isImage) {
+      console.debug('[cleanInvalidLinks] keeping image markdown link with absolute url', {
+        trimmedText,
+        absoluteUrl: normalized.href,
+      });
+      return `![${trimmedText}](${normalized.href})`;
+    } else {
+      console.debug('[cleanInvalidLinks] keeping markdown link with absolute url', {
+        trimmedText,
+        absoluteUrl: normalized.href,
+      });
+      return `[${trimmedText}](${normalized.href})`;
+    }
   });
-}
-
-function resolveToAbsoluteUrl(url: string | null | undefined, baseHref?: string): string {
-  const raw = (url ?? '').trim();
-  if (!raw) {
-    return '';
-  }
-
-  // Data URI、blob URI 保持原值
-  if (/^(data:|blob:)/i.test(raw)) {
-    return raw;
-  }
-
-  try {
-    const base =
-      baseHref ||
-      (typeof document !== 'undefined' && document.baseURI ? document.baseURI : undefined) ||
-      (typeof window !== 'undefined' ? window.location.href : undefined);
-
-    if (base) {
-      return new URL(raw, base).href;
-    }
-
-    return new URL(raw).href;
-  } catch {
-    return raw;
-  }
 }
 
 // i18n message retrieval, checking for chrome API availability
@@ -578,6 +534,71 @@ function cleanText(text: string): string {
   
   cleaned = cleaned.trim(); // Trim leading/trailing whitespace
   return cleaned;
+}
+
+function extractRawImageSource(img: HTMLImageElement): string {
+  const srcAttr = img.getAttribute('src') || '';
+  const currentSrc = typeof img.currentSrc === 'string' ? img.currentSrc : '';
+  const dataAttrSrc = img.getAttribute('data-src') || '';
+  const datasetSrc = (img.dataset && img.dataset.src) || '';
+  return srcAttr || currentSrc || dataAttrSrc || datasetSrc || '';
+}
+
+function normalizeImageSource(img: HTMLImageElement): { resolvedUrl: string; isDataUri: boolean } {
+  const raw = extractRawImageSource(img).trim();
+  if (!raw) {
+    return { resolvedUrl: '', isDataUri: false };
+  }
+
+  if (/^data:/i.test(raw)) {
+    return { resolvedUrl: raw, isDataUri: true };
+  }
+
+  const normalized = normalizeLink(
+    raw,
+    img.ownerDocument?.baseURI,
+    typeof window !== 'undefined' ? window.location.href : undefined
+  );
+
+  if (normalized.drop) {
+    return { resolvedUrl: '', isDataUri: false };
+  }
+
+  return { resolvedUrl: normalized.href, isDataUri: false };
+}
+
+function processImageNodeForMarkdown(img: HTMLImageElement): string {
+  const altAttribute = img.getAttribute('alt') || '';
+  const altText = cleanText(altAttribute);
+  const { resolvedUrl, isDataUri } = normalizeImageSource(img);
+
+  if (isDataUri) {
+    return altText || '';
+  }
+
+  if (!resolvedUrl || (typeof window !== 'undefined' && resolvedUrl === window.location.href)) {
+    const fallback = img.innerText || altAttribute;
+    return cleanText(fallback);
+  }
+
+  return `![${altText}](${resolvedUrl})`;
+}
+
+function processImageNodeToPlainText(img: HTMLImageElement): string {
+  const altAttribute = img.getAttribute('alt') || '';
+  const altText = cleanText(altAttribute);
+  const { resolvedUrl, isDataUri } = normalizeImageSource(img);
+
+  if (isDataUri) {
+    return altText || '';
+  }
+
+  if (resolvedUrl) {
+    return resolvedUrl;
+  }
+
+  const fallback = img.innerText || altAttribute;
+  return cleanText(fallback);
 }
 
 function convertTableToCSV(element: HTMLTableElement): string {
@@ -635,16 +656,7 @@ export function convertToMarkdown(element: Element): string {
       // 优先 GFM，失败则兜底生成占位表头的 Markdown 表
       return toGfmMarkdownOrFallback(element);
     } else if (element instanceof HTMLImageElement) {
-      const imgElement = element as HTMLImageElement;
-      let sourceUrl = imgElement.dataset.src || imgElement.src;
-      if (sourceUrl && !sourceUrl.startsWith('http') && !sourceUrl.startsWith('data:')) {
-        sourceUrl = imgElement.src; // Fallback to resolved .src for relative data-src
-      }
-      const altText = imgElement.alt || '';
-      if (!sourceUrl || sourceUrl === window.location.href) {
-        return cleanText(imgElement.innerText || '');
-      }
-      return `![${altText}](${sourceUrl})`;
+      return processImageNodeForMarkdown(element as HTMLImageElement);
     } else if (element instanceof HTMLPictureElement) {
       const pictureElement = element as HTMLPictureElement;
       const img = pictureElement.querySelector('img');
@@ -704,14 +716,29 @@ export function convertToMarkdown(element: Element): string {
 
       // Pre-process links containing images or SVGs
       clonedElement.querySelectorAll('a').forEach((a) => {
+        const rawHref = (a.getAttribute('href') || '').trim();
+        const fallbackText = cleanText(a.textContent || '');
+
+        const normalizedLink = normalizeLink(
+          rawHref,
+          a.ownerDocument?.baseURI,
+          typeof window !== 'undefined' ? window.location.href : undefined
+        );
+
+        if (normalizedLink.drop || !normalizedLink.href) {
+          a.replaceWith(document.createTextNode(fallbackText));
+          return;
+        }
+
+        a.setAttribute('href', normalizedLink.href);
+
         const img = a.querySelector('img');
         if (img) {
-          const alt = img.alt.trim();
+          const alt = cleanText(img.alt || '');
           if (alt) {
             a.replaceWith(document.createTextNode(alt));
           } else {
-            // Fallback to href if alt is empty
-            a.replaceWith(document.createTextNode(a.href));
+            a.replaceWith(document.createTextNode(a.getAttribute('href') || ''));
           }
           return; // Move to the next 'a' tag
         }
@@ -720,12 +747,31 @@ export function convertToMarkdown(element: Element): string {
         if (svg) {
           const title = svg.querySelector('title');
           if (title && title.textContent) {
-            a.replaceWith(document.createTextNode(title.textContent.trim()));
+            a.replaceWith(document.createTextNode(cleanText(title.textContent)));
           } else {
-            // Fallback to href if title is empty
-            a.replaceWith(document.createTextNode(a.href));
+            a.replaceWith(document.createTextNode(absoluteHref));
           }
         }
+      });
+
+      // 预处理图片，确保在 Turndown 前已经解析为绝对 URL 并保留/移除策略一致
+      clonedElement.querySelectorAll('img').forEach((img) => {
+        const { resolvedUrl, isDataUri } = normalizeImageSource(img as HTMLImageElement);
+        if (isDataUri) {
+          return;
+        }
+
+        if (!resolvedUrl) {
+          const alt = cleanText(img.getAttribute('alt') || '');
+          if (alt) {
+            img.replaceWith(document.createTextNode(alt));
+          } else {
+            img.remove();
+          }
+          return;
+        }
+
+        img.setAttribute('src', resolvedUrl);
       });
 
       let markdown = turndown.turndown(clonedElement.innerHTML);
@@ -759,12 +805,7 @@ export function convertToPlainText(element: Element): string {
     clonedElement.querySelectorAll('#ai-copilot-copy-btn').forEach((btn) => btn.remove());
 
     if (element instanceof HTMLImageElement) {
-      const imgElement = element as HTMLImageElement;
-      let sourceUrl = imgElement.dataset.src || imgElement.src;
-      if (sourceUrl && !sourceUrl.startsWith('http') && !sourceUrl.startsWith('data:')) {
-        sourceUrl = imgElement.src;
-      }
-      return sourceUrl || '';
+      return processImageNodeToPlainText(element as HTMLImageElement);
     } else if (element instanceof HTMLPictureElement) {
       const pictureElement = element as HTMLPictureElement;
       const img = pictureElement.querySelector('img');

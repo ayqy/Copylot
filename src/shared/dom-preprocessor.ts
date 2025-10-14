@@ -1,3 +1,5 @@
+import { normalizeLink } from './link-utils';
+
 /**
  * Utility to clone a DOM subtree while stripping out nodes that are not visible to the user.
  * This is used by Magic Copy before any text/markdown conversion so that hidden or decorative
@@ -17,6 +19,60 @@ function isInCodeBlock(element: Element): boolean {
     current = current.parentElement;
   }
   return false;
+}
+
+function hasIconFontClass(el: HTMLElement): boolean {
+  if (!el.classList || el.classList.length === 0) {
+    const className = typeof el.className === 'string' ? el.className : '';
+    return className.toLowerCase().includes('iconfont');
+  }
+
+  for (const cls of Array.from(el.classList)) {
+    if (cls.toLowerCase().includes('iconfont')) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isPrivateUseCodePoint(codePoint: number): boolean {
+  return (
+    (codePoint >= 0xe000 && codePoint <= 0xf8ff) ||
+    (codePoint >= 0xf0000 && codePoint <= 0xffffd) ||
+    (codePoint >= 0x100000 && codePoint <= 0x10fffd)
+  );
+}
+
+function containsOnlyIconFontGlyphs(text: string): boolean {
+  const compact = text.replace(/\s+/g, '');
+  if (!compact) {
+    return false;
+  }
+
+  let hasGlyph = false;
+  for (const char of compact) {
+    const codePoint = char.codePointAt(0) ?? 0;
+    if (codePoint === 0x200b) {
+      // zero-width space, continue
+      continue;
+    }
+    if (!isPrivateUseCodePoint(codePoint)) {
+      return false;
+    }
+    hasGlyph = true;
+  }
+  return hasGlyph;
+}
+
+function shouldSkipIconFontElement(el: HTMLElement): boolean {
+  if (hasIconFontClass(el)) {
+    return true;
+  }
+  const textContent = el.textContent ?? '';
+  if (!textContent) {
+    return false;
+  }
+  return containsOnlyIconFontGlyphs(textContent);
 }
 
 export function createVisibleClone(root: Element): Element {
@@ -45,9 +101,33 @@ function recursiveCopy(original: Node, cloneParent: Node): void {
 
     if (child.nodeType === Node.ELEMENT_NODE) {
       const el = child as HTMLElement;
+      if (shouldSkipIconFontElement(el)) {
+        continue;
+      }
       if (isNodeHidden(el)) {
         continue; // skip entire subtree
       }
+      const tagName = el.tagName.toLowerCase();
+      if (tagName === 'a') {
+        const normalized = normalizeLink(
+          el.getAttribute('href') || '',
+          el.ownerDocument?.baseURI,
+          typeof window !== 'undefined' ? window.location.href : undefined
+        );
+
+        if (normalized.drop || !normalized.href) {
+          // Skip the anchor wrapper but keep its children
+          recursiveCopy(el, cloneParent);
+          continue;
+        }
+
+        const anchorClone = el.cloneNode(false) as HTMLElement;
+        anchorClone.setAttribute('href', normalized.href);
+        cloneParent.appendChild(anchorClone);
+        recursiveCopy(el, anchorClone);
+        continue;
+      }
+
       const cloneEl = el.cloneNode(false) as HTMLElement;
       cloneParent.appendChild(cloneEl);
       // recurse

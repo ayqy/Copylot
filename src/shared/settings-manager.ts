@@ -45,9 +45,28 @@ export interface Settings {
   chatServices: ChatService[];
   defaultChatServiceId?: string;
   defaultAutoOpenChat: boolean;
+  editorExclusionClassNames: string[];
+  editorExclusionAttributeSelectors: string[];
 }
 
 export const SETTINGS_KEY = 'copilot_settings';
+
+export const DEFAULT_EDITOR_EXCLUSION_CLASSES: string[] = [
+  'CodeMirror',
+  'cm-editor',
+  'cm-content',
+  'monaco-editor',
+  'ace_editor',
+  'ql-editor',
+  'tox-edit-area',
+  'ProseMirror',
+  'notion-page-content'
+];
+
+export const DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS: string[] = [
+  '[data-cangjie-content]',
+  '[data-cangjie-editable]'
+];
 
 // 默认内置Prompt配置
 export const DEFAULT_BUILT_IN_PROMPTS: Prompt[] = [
@@ -200,6 +219,8 @@ export const DEFAULT_SETTINGS: Settings = {
   chatServices: DEFAULT_CHAT_SERVICES,
   defaultChatServiceId: undefined,
   defaultAutoOpenChat: false,
+  editorExclusionClassNames: [...DEFAULT_EDITOR_EXCLUSION_CLASSES],
+  editorExclusionAttributeSelectors: [...DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS]
 };
 
 export function getSystemLanguage(): 'system' | 'en' | 'zh' {
@@ -222,7 +243,6 @@ export function getSystemLanguage(): 'system' | 'en' | 'zh' {
 }
 
 // Chrome sync storage limits
-const SYNC_QUOTA_BYTES = 102400; // 100KB
 const SYNC_QUOTA_BYTES_PER_ITEM = 8192; // 8KB per item
 
 export async function getSettings(): Promise<Settings> {
@@ -249,6 +269,17 @@ export async function getSettings(): Promise<Settings> {
         ...DEFAULT_SETTINGS,
         ...storedSettings
       };
+
+      if (!mergedSettings.editorExclusionClassNames || !Array.isArray(mergedSettings.editorExclusionClassNames)) {
+        mergedSettings.editorExclusionClassNames = [...DEFAULT_EDITOR_EXCLUSION_CLASSES];
+      }
+
+      if (
+        !mergedSettings.editorExclusionAttributeSelectors ||
+        !Array.isArray(mergedSettings.editorExclusionAttributeSelectors)
+      ) {
+        mergedSettings.editorExclusionAttributeSelectors = [...DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS];
+      }
 
       // If language is 'system' or was not resolved properly before, resolve it now
       if (mergedSettings.language === 'system') {

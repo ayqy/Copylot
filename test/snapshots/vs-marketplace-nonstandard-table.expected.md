@@ -2,7 +2,7 @@ VS Marketplace sample (nonstandard tables below):
 
 | — | — |
 | --- | --- |
-| ![Claude Code for VS Code](https://example.com/icon.png) | # Claude Code for VS Code<br>## [Anthropic](#)<br>\|<br>1,078,013 installs<br>\| Free |
+| ![Claude Code for VS Code](https://example.com/icon.png) | # Claude Code for VS Code<br>## [Anthropic](chrome-extension://hjgbehelkepoedbdpdegbedghndjmgnm/test/index.html#)<br>\|<br>1,078,013 installs<br>\| Free |
 
 Details table:
 
