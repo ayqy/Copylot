@@ -82,6 +82,10 @@ h1 {
   color: white;
 }
 
+.test-status.pending {
+  display: none;
+}
+
 .test-status.passed { background-color: #10B981; }
 .test-status.failed { background-color: #EF4444; }
 .test-status.running { background-color: #F59E0B; }
@@ -89,23 +93,20 @@ h1 {
 .test-content {
   display: none; /* Hidden by default */
   padding: 15px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
   border-top: 1px solid #eee;
 }
 
 .test-content.open {
-  display: grid;
+  display: block;
 }
 
 .test-content h3 {
   margin-top: 0;
   font-size: 16px;
-  grid-column: 1 / -1;
 }
 
-.test-content pre {
+.test-content pre,
+.diff pre {
   background-color: #fdfdfd;
   border: 1px solid #eee;
   padding: 10px;
@@ -114,10 +115,6 @@ h1 {
   word-wrap: break-word;
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
   font-size: 13px;
-}
-
-.diff {
-  grid-column: 1 / -1;
 }
 
 .diff ins {
@@ -130,6 +127,21 @@ h1 {
   background-color: #fee2e2;
   color: #9b1c1c;
   text-decoration: none;
+}
+
+.diff-empty {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.diff-omitted {
+  display: inline-block;
+  width: 100%;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  font-style: italic;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 #batch-update-section {

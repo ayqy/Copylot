@@ -116,13 +116,49 @@ function diffLines(expected: string[], actual: string[]): LineDiffResult[] {
   return results;
 }
 
-function buildDiffFromLineResults(lineResults: LineDiffResult[]): string {
+function buildDiffFromLineResults(lineResults: LineDiffResult[], contextLines = 3): string {
+  if (lineResults.length === 0) {
+    return '';
+  }
+
+  const hasMeaningfulChange = lineResults.some(result => result.type !== 'equal');
+  if (!hasMeaningfulChange) {
+    return '';
+  }
+
+  const include = new Array(lineResults.length).fill(false);
+  lineResults.forEach((result, index) => {
+    if (result.type !== 'equal') {
+      for (let offset = -contextLines; offset <= contextLines; offset++) {
+        const target = index + offset;
+        if (target >= 0 && target < include.length) {
+          include[target] = true;
+        }
+      }
+    }
+  });
+
   let diffHtml = '';
-  lineResults.forEach(result => {
-    if (result.type === 'equal' && result.actual !== undefined) {
+  let omittedCount = 0;
+
+  const flushOmitted = () => {
+    if (omittedCount === 0) return;
+    diffHtml += `<span class="diff-omitted">…… ${omittedCount} 行未变</span>\n`;
+    omittedCount = 0;
+  };
+
+  lineResults.forEach((result, index) => {
+    if (result.type === 'equal') {
+      if (!include[index] || result.actual === undefined) {
+        omittedCount++;
+        return;
+      }
+      flushOmitted();
       diffHtml += `${escapeHtml(result.actual)}\n`;
       return;
     }
+
+    flushOmitted();
 
     if (result.type === 'add' && result.actual !== undefined) {
       diffHtml += `<ins>${escapeHtml(result.actual)}</ins>\n`;
@@ -144,6 +180,8 @@ function buildDiffFromLineResults(lineResults: LineDiffResult[]): string {
     }
   });
 
+  flushOmitted();
+
   return diffHtml.trim();
 }
 
@@ -152,7 +190,7 @@ function renderAllTestSkeletons() {
   testCases.forEach(testCase => {
     const resultEl = createResultElement({
       case: testCase,
-      status: 'running',
+      status: '',
       actual: '',
       expected: '',
       diff: '',
@@ -320,15 +358,11 @@ function createResultElement(result: TestResult): HTMLElement {
   el.innerHTML = `
     <div class="test-header">
       <span class="test-title">${result.case.title}</span>
-      <span class="test-status ${result.status}">${result.status}</span>
+      <span class="test-status ${result.status ? result.status : 'pending'}">${escapeHtml(result.status)}</span>
     </div>
     <div class="test-content">
       <h3>Difference</h3>
-      <div class="diff"><pre>${result.diff || 'No difference'}</pre></div>
-      <h3>Actual Output</h3>
-      <pre>${escapeHtml(result.actual)}</pre>
-      <h3>Expected Snapshot</h3>
-      <pre>${escapeHtml(result.expected)}</pre>
+      <div class="diff">${result.diff ? `<pre>${result.diff}</pre>` : '<div class="diff-empty">No difference</div>'}</div>
     </div>
   `;
   el.querySelector('.test-header')?.addEventListener('click', () => {
@@ -346,14 +380,13 @@ function updateResultElement(result: TestResult) {
   }
 
   const statusEl = el.querySelector('.test-status')!;
-  statusEl.textContent = result.status;
-  statusEl.className = `test-status ${result.status}`;
+  statusEl.textContent = result.status ? escapeHtml(result.status) : '';
+  statusEl.className = `test-status ${result.status ? result.status : 'pending'}`;
 
   if (result.status === 'failed') {
     el.querySelector('.test-content')!.classList.add('open');
-    el.querySelector('.diff')!.innerHTML = `<pre>${result.diff}</pre>`;
-    el.querySelectorAll('pre')[1].textContent = result.actual;
-    el.querySelectorAll('pre')[2].textContent = result.expected;
+    const diffContainer = el.querySelector('.diff')!;
+    diffContainer.innerHTML = result.diff ? `<pre>${result.diff}</pre>` : '<div class="diff-empty">No difference</div>';
   } else {
      el.querySelector('.test-content')!.innerHTML = 'Test passed. No differences found.';
   }
