@@ -746,10 +746,11 @@ export function convertToMarkdown(element: Element): string {
         const svg = a.querySelector('svg');
         if (svg) {
           const title = svg.querySelector('title');
+          const linkFallbackText = cleanText(normalizedLink.href || fallbackText);
           if (title && title.textContent) {
             a.replaceWith(document.createTextNode(cleanText(title.textContent)));
           } else {
-            a.replaceWith(document.createTextNode(absoluteHref));
+            a.replaceWith(document.createTextNode(linkFallbackText));
           }
         }
       });
