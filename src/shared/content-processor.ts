@@ -441,15 +441,10 @@ function convertHtmlToMarkdown(html: string): string {
 
 function cleanInvalidLinks(markdown: string): string {
   // 同时匹配普通链接与图片链接，可选的感叹号捕获在第1组
-  return markdown.replace(/(!?)\[([^\]]*)\]\(([^)]*)\)/g, (match, bang, text, url) => {
+  return markdown.replace(/(!?)\[([^\]]*)\]\(([^)]*)\)/g, (_match, bang, text, url) => {
     const trimmedUrl = (url || '').trim();
     const trimmedText = text.trim();
     const isImage = bang === '!';
-    console.debug('[cleanInvalidLinks] processing', {
-      match,
-      trimmedText,
-      trimmedUrl,
-    });
 
     const normalized = normalizeLink(
       trimmedUrl,
@@ -458,38 +453,20 @@ function cleanInvalidLinks(markdown: string): string {
     );
 
     if (normalized.drop || !normalized.href) {
-      console.debug('[cleanInvalidLinks] dropping invalid or root link', {
-        trimmedText,
-        trimmedUrl,
-      });
       return trimmedText || '';
     }
 
     if (!trimmedText) {
       if (isImage) {
-        console.debug('[cleanInvalidLinks] keeping image with empty alt', {
-          absoluteUrl: normalized.href,
-        });
         return `![](${normalized.href})`;
       } else {
-        console.debug('[cleanInvalidLinks] keeping bare absolute url', {
-          absoluteUrl: normalized.href,
-        });
         return normalized.href;
       }
     }
 
     if (isImage) {
-      console.debug('[cleanInvalidLinks] keeping image markdown link with absolute url', {
-        trimmedText,
-        absoluteUrl: normalized.href,
-      });
       return `![${trimmedText}](${normalized.href})`;
     } else {
-      console.debug('[cleanInvalidLinks] keeping markdown link with absolute url', {
-        trimmedText,
-        absoluteUrl: normalized.href,
-      });
       return `[${trimmedText}](${normalized.href})`;
     }
   });
