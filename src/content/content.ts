@@ -535,6 +535,20 @@ function handleInteraction(event: MouseEvent, potentialTargetNode: Node) {
     if (isFromEditableContext(viableElement)) {
       return;
     }
+    const BLOCKED_MEDIA_TAGS = ['img', 'canvas', 'svg', 'picture', 'video', 'embed', 'object'];
+
+    if (potentialTargetNode instanceof Element) {
+      const clickedTag = potentialTargetNode.tagName.toLowerCase();
+      if (BLOCKED_MEDIA_TAGS.includes(clickedTag)) {
+        return;
+      }
+    }
+
+    const viableTag = viableElement.tagName.toLowerCase();
+    if (BLOCKED_MEDIA_TAGS.includes(viableTag)) {
+      return;
+    }
+
     showMagicCopy(viableElement, event);
   }
 }
@@ -790,7 +804,8 @@ async function loadSettingsAndApply(): Promise<void> {
 }
 
 // Target elements for hover-triggered Magic Copy
-const HOVER_TARGET_TAGS = ['img', 'video', 'canvas', 'svg', 'picture', 'embed', 'object', 'pre', 'code'];
+// Further narrowed: remove video/embed/object as hover targets; only pre/code allow hover UI
+const HOVER_TARGET_TAGS = ['pre', 'code'];
 
 // Handles mouseover events to show Magic Copy
 function handleMouseOver(event: MouseEvent): void {

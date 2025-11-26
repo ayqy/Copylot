@@ -192,7 +192,8 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
 
 export const DEFAULT_SETTINGS: Settings = {
   isMagicCopyEnabled: true, // Added this line
-  isHoverMagicCopyEnabled: true,
+  // Default hover disabled for first-time initialization per requirement
+  isHoverMagicCopyEnabled: false,
   outputFormat: 'markdown',
   tableOutputFormat: 'markdown', // Default table format
   attachTitle: false,
