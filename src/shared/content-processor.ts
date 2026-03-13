@@ -472,6 +472,48 @@ function cleanInvalidLinks(markdown: string): string {
   });
 }
 
+/**
+ * 只在“非代码块/非行内代码”区域做 Markdown 链接清理，避免误改写用户正文中的字面量。
+ */
+function processMarkdownOutsideCodeBlocksAndSpans(
+  markdown: string,
+  processor: (text: string) => string
+): string {
+  const tokenPrefix = '%%COPYLOT-PRESERVE-';
+  const tokenSuffix = '-%%';
+  const tokenMap = new Map<string, string>();
+  let tokenIndex = 0;
+
+  const protect = (source: string, pattern: RegExp, kind: string): string => {
+    return source.replace(pattern, (match) => {
+      const token = `${tokenPrefix}${kind}-${tokenIndex++}${tokenSuffix}`;
+      tokenMap.set(token, match);
+      return token;
+    });
+  };
+
+  // 先保护 fenced code block，再保护 inline code span
+  let protectedText = markdown;
+  protectedText = protect(protectedText, /```[\s\S]*?```/g, 'CODEBLOCK');
+  protectedText = protect(protectedText, /(`+)([\s\S]*?)\1/g, 'CODESPAN');
+
+  let processed = processor(protectedText);
+
+  tokenMap.forEach((value, key) => {
+    processed = processed.split(key).join(value);
+  });
+
+  return processed;
+}
+
+function cleanMarkdownLinksPreservingCode(markdown: string): string {
+  return processMarkdownOutsideCodeBlocksAndSpans(markdown, (text) => {
+    let cleaned = text.replace(/\[\s*\]\(#\)/g, '');
+    cleaned = cleanInvalidLinks(cleaned);
+    return cleaned;
+  });
+}
+
 // i18n message retrieval, checking for chrome API availability
 function getI18nMessage(key: string, language?: string): string {
   // Use specific language bundle if provided and not 'system'
@@ -513,12 +555,65 @@ function cleanText(text: string): string {
   return cleaned;
 }
 
+function pickUrlFromSrcset(srcset: string): string {
+  const raw = (srcset || '').trim();
+  if (!raw) return '';
+
+  const parts = raw
+    .split(',')
+    .map((p) => p.trim())
+    .filter(Boolean);
+  if (parts.length === 0) return '';
+
+  const last = parts[parts.length - 1];
+  const url = last.split(/\s+/)[0] || '';
+  return url.trim();
+}
+
+function getDatasetValue(img: HTMLImageElement, keys: string[]): string {
+  const dataset = (img.dataset || {}) as Record<string, string | undefined>;
+  for (const key of keys) {
+    const value = (dataset[key] || '').trim();
+    if (value) return value;
+  }
+  return '';
+}
+
 function extractRawImageSource(img: HTMLImageElement): string {
-  const srcAttr = img.getAttribute('src') || '';
-  const currentSrc = typeof img.currentSrc === 'string' ? img.currentSrc : '';
-  const dataAttrSrc = img.getAttribute('data-src') || '';
-  const datasetSrc = (img.dataset && img.dataset.src) || '';
-  return srcAttr || currentSrc || dataAttrSrc || datasetSrc || '';
+  const attr = (name: string) => (img.getAttribute(name) || '').trim();
+
+  // Lazy-load 常见属性优先：尽量避免拿到 placeholder src 而忽略真实图片 URL
+  const dataCandidates = [
+    attr('data-src'),
+    attr('data-original'),
+    attr('data-url'),
+    attr('data-lazy-src'),
+    attr('data-actualsrc'),
+    attr('data-original-src'),
+    getDatasetValue(img, ['src', 'original', 'url', 'lazySrc', 'actualSrc', 'actualsrc'])
+  ].filter(Boolean);
+
+  const srcsetCandidates = [
+    attr('data-srcset'),
+    attr('data-original-srcset'),
+    attr('data-lazy-srcset'),
+    getDatasetValue(img, ['srcset', 'srcSet'])
+  ]
+    .map(pickUrlFromSrcset)
+    .filter(Boolean);
+
+  const currentSrc = typeof img.currentSrc === 'string' ? img.currentSrc.trim() : '';
+  const srcAttr = attr('src');
+  const srcsetAttr = pickUrlFromSrcset(attr('srcset'));
+
+  return (
+    dataCandidates[0] ||
+    currentSrc ||
+    srcsetCandidates[0] ||
+    srcsetAttr ||
+    srcAttr ||
+    ''
+  );
 }
 
 function normalizeImageSource(img: HTMLImageElement): { resolvedUrl: string; isDataUri: boolean } {
@@ -709,26 +804,55 @@ export function convertToMarkdown(element: Element): string {
 
         a.setAttribute('href', normalizedLink.href);
 
-        const img = a.querySelector('img');
-        if (img) {
-          const alt = cleanText(img.alt || '');
-          if (alt) {
-            a.replaceWith(document.createTextNode(alt));
-          } else {
-            a.replaceWith(document.createTextNode(a.getAttribute('href') || ''));
+        // 计算 a 中“去掉图片/SVG 后”的可见文本；用于限制丢弃范围，避免误删卡片链接正文
+        const cloneWithoutMedia = a.cloneNode(true) as HTMLElement;
+        cloneWithoutMedia.querySelectorAll('img, svg').forEach((node) => node.remove());
+        const textWithoutMedia = cleanText(cloneWithoutMedia.textContent || '');
+
+        // ISSUE-001：仅当 a 没有可见文本内容时，才将“图片链接”整体降级为 alt/href（避免丢掉链接内正文）
+        const firstImg = a.querySelector('img') as HTMLImageElement | null;
+        if (firstImg) {
+          if (!textWithoutMedia) {
+            const alt = cleanText(firstImg.alt || '');
+            if (alt) {
+              a.replaceWith(document.createTextNode(alt));
+            } else {
+              a.replaceWith(document.createTextNode(a.getAttribute('href') || ''));
+            }
+            return;
           }
-          return; // Move to the next 'a' tag
+
+          // a 里有文本时：移除 alt 为空的装饰性图片，避免输出噪音/空图片占位
+          a.querySelectorAll('img').forEach((imgNode) => {
+            const alt = cleanText((imgNode as HTMLImageElement).alt || '');
+            if (!alt) {
+              imgNode.remove();
+            }
+          });
         }
 
-        const svg = a.querySelector('svg');
-        if (svg) {
-          const title = svg.querySelector('title');
-          const linkFallbackText = cleanText(normalizedLink.href || fallbackText);
-          if (title && title.textContent) {
-            a.replaceWith(document.createTextNode(cleanText(title.textContent)));
-          } else {
-            a.replaceWith(document.createTextNode(linkFallbackText));
+        // ISSUE-002：仅当 a “只包含 SVG（无其它可见内容）”时，才整体降级为 title/href
+        const firstSvg = a.querySelector('svg') as SVGSVGElement | null;
+        if (firstSvg) {
+          const cloneWithoutSvg = a.cloneNode(true) as HTMLElement;
+          cloneWithoutSvg.querySelectorAll('svg').forEach((node) => node.remove());
+          const remainingText = cleanText(cloneWithoutSvg.textContent || '');
+          const remainingElement = cloneWithoutSvg.querySelector('*');
+          const isSvgOnly = !remainingText && !remainingElement;
+
+          if (isSvgOnly) {
+            const title = firstSvg.querySelector('title');
+            const linkFallbackText = cleanText(normalizedLink.href || fallbackText);
+            if (title && title.textContent) {
+              a.replaceWith(document.createTextNode(cleanText(title.textContent)));
+            } else {
+              a.replaceWith(document.createTextNode(linkFallbackText));
+            }
+            return;
           }
+
+          // a 里有其它内容时：移除 SVG 图标，避免输出大段 SVG HTML
+          a.querySelectorAll('svg').forEach((svgNode) => svgNode.remove());
         }
       });
 
@@ -763,8 +887,7 @@ export function convertToMarkdown(element: Element): string {
         markdown = markdown.replace(/ \n$/, '\n');
       }
       
-      markdown = markdown.replace(/\[\s*\]\(#\)/g, ''); // Clean up empty links like `[ ](#)`
-      markdown = cleanInvalidLinks(markdown); // 清理Markdown文本中的无效链接
+      markdown = cleanMarkdownLinksPreservingCode(markdown);
       
       return markdown.trim();
     }

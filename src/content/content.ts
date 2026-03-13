@@ -68,13 +68,42 @@ function getSelectedElement(): Element | null {
   return null;
 }
 
+function hasMeaningfulSelection(selection: Selection): boolean {
+  if (!selection || selection.rangeCount === 0) {
+    return false;
+  }
+
+  const range = selection.getRangeAt(0);
+  if (!range || range.collapsed) {
+    return false;
+  }
+
+  // 有可见文本时直接认为有效
+  if (selection.toString().trim() !== '') {
+    return true;
+  }
+
+  // 无文本但可能选中了图片/元素节点：检查 fragment 是否包含元素或非空白文本
+  try {
+    const fragment = range.cloneContents();
+    return Array.from(fragment.childNodes).some((node) => {
+      if (node.nodeType === Node.ELEMENT_NODE) return true;
+      if (node.nodeType === Node.TEXT_NODE) return Boolean((node.textContent || '').trim());
+      return false;
+    });
+  } catch (error) {
+    console.error('AI Copilot: Error checking selection contents:', error);
+    return false;
+  }
+}
+
 /**
  * 获取用户选择内容的精确HTML片段，并封装成一个可处理的元素。
  * @returns {Element | null} 一个包含精确选区内容的临时元素，如果无选区则返回null。
  */
 function getPreciseSelectedElement(): Element | null {
   const selection = window.getSelection();
-  if (!selection || selection.rangeCount === 0 || selection.toString().trim() === '') {
+  if (!selection || !hasMeaningfulSelection(selection)) {
     return null; // 没有有效选区
   }
 
@@ -85,6 +114,9 @@ function getPreciseSelectedElement(): Element | null {
     // 2. 将范围内的内容克隆到一个 DocumentFragment 中
     // 这是关键一步，它能完整保留选区内的HTML结构（如<b>, <a>等）
     const fragment = range.cloneContents();
+    if (!fragment || fragment.childNodes.length === 0) {
+      return null;
+    }
 
     // 3. 创建一个临时容器元素
     const tempDiv = document.createElement('div');
@@ -108,7 +140,7 @@ function getPreciseSelectedElement(): Element | null {
  */
 function getSelectionContent(): Element | null {
   const selection = window.getSelection();
-  if (!selection || selection.rangeCount === 0 || selection.toString().trim() === '') {
+  if (!selection || !hasMeaningfulSelection(selection)) {
     // 没有选择任何内容
     return null;
   }

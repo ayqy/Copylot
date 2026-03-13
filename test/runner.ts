@@ -10,6 +10,9 @@ type TestGlobals = typeof globalThis & {
   chrome: { i18n: { getMessage(key: string): string } };
 };
 
+// 为没有 <base> 的测试用例注入稳定的 base，避免相对链接解析依赖当前运行环境（http/file/extension id）
+const TEST_BASE_URL = 'chrome-extension://hjgbehelkepoedbdpdegbedghndjmgnm/test/index.html';
+
 // Expose globals for content-processor which expects TurndownService & turndownPluginGfm
 const testGlobals = globalThis as TestGlobals;
 testGlobals.TurndownService = TurndownServiceCtor;
@@ -267,6 +270,16 @@ async function runTest(testCase: TestCase): Promise<TestResult> {
   // 清理HTML，移除所有script标签，避免异步资源加载问题
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
+
+  // 如果用例没有自带 <base>，注入一个稳定 base，确保快照中的链接解析结果可预测
+  if (!doc.querySelector('base')) {
+    const head = doc.querySelector('head');
+    if (head) {
+      const base = doc.createElement('base');
+      base.setAttribute('href', TEST_BASE_URL);
+      head.insertBefore(base, head.firstChild);
+    }
+  }
 
   // 移除所有script标签（包括内联和外部脚本）
   const scripts = doc.querySelectorAll('script');

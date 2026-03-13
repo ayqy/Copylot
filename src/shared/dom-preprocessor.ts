@@ -164,7 +164,13 @@ function isNodeHidden(el: HTMLElement): boolean {
   const cls = el.className;
   if (cls && typeof cls === 'string' && /(sr-only|visually-hidden|screen-reader-only)/i.test(cls)) return logHidden('screen reader class');
 
-  const style = window.getComputedStyle(el);
+  let style: CSSStyleDeclaration;
+  try {
+    style = view.getComputedStyle(el);
+  } catch {
+    // getComputedStyle 可能在异常节点/跨文档场景下抛错；此处保守视为“可见”，避免丢内容
+    return false;
+  }
 
   // R1: display/visibility/opacity
   if (style.display === "none" || style.visibility === "hidden") return logHidden(`display: ${style.display} or visibility: ${style.visibility}`);
