@@ -36,6 +36,31 @@ body {
   align-items: center;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dev-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.6px;
+  background: #24292f;
+  color: #ffffff;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  user-select: none;
+  pointer-events: none;
+}
+
 .logo {
   display: flex;
   align-items: center;
@@ -510,8 +535,6 @@ input:checked + .slider:before {
     color: #6366f1;
   }
 }
-
-
 
 /* Modal Styles */
 .modal {

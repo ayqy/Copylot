@@ -9,9 +9,9 @@ import {
 } from '../shared/settings-manager';
 // Simple UUID generator for Chrome extension
 function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
@@ -19,6 +19,7 @@ function generateUUID(): string {
 // DOM Elements
 interface PopupElements {
   versionDisplay: HTMLElement;
+  devBadge: HTMLElement;
   enableMagicCopySwitch: HTMLInputElement;
   enableHoverMagicCopySwitch: HTMLInputElement;
   enableClipboardAccumulatorSwitch: HTMLInputElement;
@@ -53,6 +54,7 @@ let currentSettings: Settings;
 function getElements(): PopupElements {
   return {
     versionDisplay: document.getElementById('version-display') as HTMLElement,
+    devBadge: document.getElementById('dev-badge') as HTMLElement,
     enableMagicCopySwitch: document.getElementById('enable-magic-copy-switch') as HTMLInputElement,
     enableHoverMagicCopySwitch: document.getElementById(
       'enable-hover-magic-copy-switch'
@@ -162,8 +164,6 @@ function updateUIFromSettings(settings: Settings) {
   // language field removed from UI; keep default stored value
 }
 
-
-
 /**
  * Get settings from UI
  */
@@ -228,7 +228,7 @@ function setupEventListeners() {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0] && tabs[0].id) {
         chrome.tabs.sendMessage(tabs[0].id, {
-          type: 'CONVERT_PAGE_WITH_SELECTION'  // 使用新的消息类型
+          type: 'CONVERT_PAGE_WITH_SELECTION' // 使用新的消息类型
         });
         window.close(); // Close popup after clicking
       }
@@ -302,8 +302,7 @@ function setupAccessibility() {
   });
 }
 
-
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 async function handleSavePrompt(event: Event) {
   event.preventDefault();
   const id = elements.promptId.value;
@@ -327,6 +326,7 @@ async function handleSavePrompt(event: Event) {
   closeModal();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 function openModal(prompt: Prompt | null = null) {
   elements.popupContent.style.filter = 'blur(5px)';
   if (prompt) {
@@ -335,7 +335,8 @@ function openModal(prompt: Prompt | null = null) {
     elements.promptTitle.value = prompt.title;
     elements.promptTemplate.value = prompt.template;
   } else {
-    elements.modalTitle.textContent = chrome.i18n.getMessage('addNewPromptButton') || 'Add New Prompt';
+    elements.modalTitle.textContent =
+      chrome.i18n.getMessage('addNewPromptButton') || 'Add New Prompt';
     elements.promptForm.reset();
     elements.promptId.value = '';
   }
@@ -360,6 +361,13 @@ async function initialize() {
 
     // Get DOM elements
     elements = getElements();
+
+    // @ts-ignore: 环境变量在构建时注入
+    const isDevBuild =
+      process.env.NODE_ENV !== 'production' || process.env.BUILD_TARGET !== 'production';
+    if (isDevBuild) {
+      elements.devBadge.hidden = false;
+    }
 
     // Set version number
     const manifest = chrome.runtime.getManifest();
