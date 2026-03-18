@@ -21,6 +21,107 @@ function isInCodeBlock(element: Element): boolean {
   return false;
 }
 
+const BLOCK_SEPARATOR_TAGS = new Set([
+  'div',
+  'p',
+  'section',
+  'article',
+  'header',
+  'footer',
+  'nav',
+  'main',
+  'aside',
+  'ul',
+  'ol',
+  'li',
+  'table',
+  'thead',
+  'tbody',
+  'tr',
+  'td',
+  'th',
+  'pre',
+  'blockquote',
+  'hr',
+  'br'
+]);
+
+function isBlockSeparatorTag(tagName: string): boolean {
+  const normalized = tagName.toLowerCase();
+  if (/^h[1-6]$/.test(normalized)) {
+    return true;
+  }
+
+  return BLOCK_SEPARATOR_TAGS.has(normalized);
+}
+
+function isWhitespaceOnlyTextNode(node: Node | null): boolean {
+  if (!node || node.nodeType !== Node.TEXT_NODE) {
+    return false;
+  }
+  const text = node.textContent ?? '';
+  return text.trim() === '';
+}
+
+function getPreviousNonCommentSibling(node: Node): Node | null {
+  let current: Node | null = node.previousSibling;
+  while (current && current.nodeType === Node.COMMENT_NODE) {
+    current = current.previousSibling;
+  }
+  return current;
+}
+
+function getPreviousMeaningfulSibling(node: Node): Node | null {
+  let current: Node | null = node.previousSibling;
+  while (current) {
+    if (current.nodeType === Node.COMMENT_NODE) {
+      current = current.previousSibling;
+      continue;
+    }
+    if (isWhitespaceOnlyTextNode(current)) {
+      current = current.previousSibling;
+      continue;
+    }
+    return current;
+  }
+  return null;
+}
+
+function getNextMeaningfulSibling(node: Node): Node | null {
+  let current: Node | null = node.nextSibling;
+  while (current) {
+    if (current.nodeType === Node.COMMENT_NODE) {
+      current = current.nextSibling;
+      continue;
+    }
+    if (isWhitespaceOnlyTextNode(current)) {
+      current = current.nextSibling;
+      continue;
+    }
+    return current;
+  }
+  return null;
+}
+
+function shouldPreserveWhitespaceTextNode(prevSibling: Node | null, nextSibling: Node | null): boolean {
+  if (!prevSibling || !nextSibling) {
+    return false;
+  }
+
+  const isBlockSeparatorNode = (node: Node): boolean => {
+    if (node.nodeType !== Node.ELEMENT_NODE) {
+      return false;
+    }
+    return isBlockSeparatorTag((node as Element).tagName);
+  };
+
+  if (isBlockSeparatorNode(prevSibling) || isBlockSeparatorNode(nextSibling)) {
+    return false;
+  }
+
+  return true;
+}
+
 function hasIconFontClass(el: HTMLElement): boolean {
   if (!el.classList || el.classList.length === 0) {
     const className = typeof el.className === 'string' ? el.className : '';
@@ -91,10 +192,33 @@ function recursiveCopy(original: Node, cloneParent: Node): void {
   const childNodes = Array.from(original.childNodes);
   for (const child of childNodes) {
     if (child.nodeType === Node.TEXT_NODE) {
-      const text = child.textContent ?? "";
-      // 在代码块中保留所有空白，包括纯空白行
-      if (isInCodeBlock(original as Element) || text.trim() !== "") {
+      const text = child.textContent ?? '';
+
+      // 在代码块中保留所有空白，包括纯空白行（保持现有行为）
+      if (isInCodeBlock(original as Element)) {
         cloneParent.appendChild(child.cloneNode());
+        continue;
+      }
+
+      // 非 code 场景：保留非空白文本节点
+      if (text.trim() !== '') {
+        cloneParent.appendChild(child.cloneNode());
+        continue;
+      }
+
+      // 非 code 场景：纯空白文本节点按上下文决定是否保留为单个空格，避免词语粘连
+      const prevNonComment = getPreviousNonCommentSibling(child);
+      const isFirstWhitespaceInRun = !isWhitespaceOnlyTextNode(prevNonComment);
+
+      if (!isFirstWhitespaceInRun) {
+        continue;
+      }
+
+      const prevMeaningful = getPreviousMeaningfulSibling(child);
+      const nextMeaningful = getNextMeaningfulSibling(child);
+      if (shouldPreserveWhitespaceTextNode(prevMeaningful, nextMeaningful)) {
+        const doc = cloneParent.ownerDocument || child.ownerDocument || document;
+        cloneParent.appendChild(doc.createTextNode(' '));
       }
       continue;
     }
