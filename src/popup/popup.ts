@@ -21,6 +21,7 @@ import {
   shouldShowRatingPrompt
 } from '../shared/growth-stats';
 import { recordTelemetryEvent } from '../shared/telemetry';
+import { buildProWaitlistIssueUrl } from '../shared/monetization';
 
 // DOM Elements
 interface PopupElements {
@@ -57,6 +58,10 @@ interface PopupElements {
   shareLink: HTMLAnchorElement;
   copyShareButton: HTMLButtonElement;
   rateLink: HTMLAnchorElement;
+
+  // Pro entry
+  upgradeProEntry: HTMLButtonElement;
+  popupProWaitlistButton: HTMLButtonElement;
 
   // Popup onboarding
   onboardingReopenButton: HTMLButtonElement;
@@ -133,6 +138,9 @@ function getElements(): PopupElements {
     shareLink: document.getElementById('share-link') as HTMLAnchorElement,
     copyShareButton: document.getElementById('copy-share-button') as HTMLButtonElement,
     rateLink: document.getElementById('rate-link') as HTMLAnchorElement,
+
+    upgradeProEntry: document.getElementById('upgrade-pro-entry') as HTMLButtonElement,
+    popupProWaitlistButton: document.getElementById('popup-pro-waitlist') as HTMLButtonElement,
 
     onboardingReopenButton: document.getElementById('popup-onboarding-reopen') as HTMLButtonElement,
     onboardingModal: document.getElementById('popup-onboarding-modal') as HTMLElement,
@@ -368,6 +376,29 @@ async function maybeShowRatingPrompt() {
  */
 function setupEventListeners() {
   const getMessage = createI18nGetMessage();
+
+  // Pro entry
+  elements.upgradeProEntry.addEventListener('click', () => {
+    void recordTelemetryEvent('pro_entry_opened', { source: 'popup' });
+    const url = `${chrome.runtime.getURL('src/options/options.html')}#pro`;
+    chrome.tabs.create({ url });
+    window.close();
+  });
+
+  elements.popupProWaitlistButton.addEventListener('click', () => {
+    void recordTelemetryEvent('pro_waitlist_opened', { source: 'popup' });
+    const waitlistUrl = buildProWaitlistIssueUrl({
+      env: {
+        extensionVersion: chrome.runtime.getManifest().version || '',
+        extensionId: chrome.runtime.id,
+        navigatorLanguage: navigator.language || '',
+        uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
+      },
+      getMessage
+    });
+    chrome.tabs.create({ url: waitlistUrl });
+    window.close();
+  });
 
   // Interaction mode radio buttons
   elements.interactionClick.addEventListener('change', saveCurrentSettings);

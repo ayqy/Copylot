@@ -128,6 +128,80 @@
       }
     }
   },
+  "proWaitlistIssueTitleTemplate": {
+    "message": "Pro Waitlist: <Your use case in one sentence>",
+    "description": "Default GitHub issue title for Pro waitlist"
+  },
+  "proWaitlistIssueBodyTemplate": {
+    "message": "## Privacy Notice\\n- Please do NOT paste any webpage content or copied content.\\n- Please do NOT paste any personal data.\\n\\n## Environment\\n- Extension Version: $EXT_VERSION$\\n- Extension ID: $EXT_ID$\\n- navigator.language: $NAV_LANG$\\n- UI Language: $UI_LANG$\\n\\n## Use case\\n-\\n\\n## Desired Pro capabilities\\n-\\n\\n## Contact (optional)\\n-\\n",
+    "description": "GitHub issue body template for Pro waitlist",
+    "placeholders": {
+      "EXT_VERSION": {
+        "content": "$1"
+      },
+      "EXT_ID": {
+        "content": "$2"
+      },
+      "NAV_LANG": {
+        "content": "$3"
+      },
+      "UI_LANG": {
+        "content": "$4"
+      }
+    }
+  },
+  "upgradePro": {
+    "message": "Upgrade Pro",
+    "description": "Popup entry for upgrading to Pro"
+  },
+  "joinProWaitlist": {
+    "message": "Join waitlist",
+    "description": "Popup entry for Pro waitlist"
+  },
+  "proTab": {
+    "message": "Pro",
+    "description": "Options tab label for Pro"
+  },
+  "proTitle": {
+    "message": "Copylot Pro (Waitlist)",
+    "description": "Options Pro tab title"
+  },
+  "proSubtitle": {
+    "message": "No popups, no pressure. Validate intent first, then decide what to build.",
+    "description": "Options Pro tab subtitle"
+  },
+  "proIntro": {
+    "message": "Pro focuses on stronger workflows and saving time, as an optional enhancement without breaking the free core experience.",
+    "description": "Options Pro tab intro"
+  },
+  "proFeature1": {
+    "message": "Advanced page cleaning (reader mode + rules to remove ads/comments/recommendations)",
+    "description": "Pro capability bullet 1"
+  },
+  "proFeature2": {
+    "message": "Batch collection & organization (collect across pages, naming, export, history search)",
+    "description": "Pro capability bullet 2"
+  },
+  "proFeature3": {
+    "message": "Advanced Prompt Pack / team sharing (backend features postponed)",
+    "description": "Pro capability bullet 3"
+  },
+  "proFeature4": {
+    "message": "Exports for note tools (structured templates for Obsidian/Notion)",
+    "description": "Pro capability bullet 4"
+  },
+  "proJoinWaitlist": {
+    "message": "Join waitlist",
+    "description": "Options Pro tab primary action"
+  },
+  "proCopyWaitlistCopy": {
+    "message": "Copy waitlist template",
+    "description": "Options Pro tab copy action"
+  },
+  "proPrivacyHint": {
+    "message": "The waitlist issue is prefilled with extension version/ID and language only. No webpage or copied content is included.",
+    "description": "Options Pro tab privacy hint"
+  },
   "source": {
     "message": "Source",
     "description": "Source prefix for copied content"

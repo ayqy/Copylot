@@ -8,7 +8,8 @@ import {
   type ChatService,
   FORCE_UI_LANGUAGE
 } from '../shared/settings-manager';
-import { clearTelemetryEvents } from '../shared/telemetry';
+import { clearTelemetryEvents, recordTelemetryEvent } from '../shared/telemetry';
+import { buildProWaitlistIssueUrl } from '../shared/monetization';
 
 // Simple UUID generator
 function generateUUID(): string {
@@ -72,6 +73,10 @@ interface OptionsElements {
 
   // Privacy / Observability
   anonymousUsageDataSwitch: HTMLInputElement;
+
+  // Pro / Monetization
+  proWaitlistButton: HTMLButtonElement;
+  proWaitlistCopyButton: HTMLButtonElement;
 
   // Chat Services elements
   defaultChatService: HTMLSelectElement;
@@ -140,6 +145,9 @@ function getElements(): OptionsElements {
     syncStatusText: document.getElementById('sync-status-text') as HTMLElement,
 
     anonymousUsageDataSwitch: document.getElementById('anonymous-usage-data-switch') as HTMLInputElement,
+
+    proWaitlistButton: document.getElementById('pro-waitlist-button') as HTMLButtonElement,
+    proWaitlistCopyButton: document.getElementById('pro-waitlist-copy') as HTMLButtonElement,
 
     // Chat Services elements
     defaultChatService: document.getElementById('default-chat-service') as HTMLSelectElement,
@@ -1134,7 +1142,8 @@ function setupEventListeners() {
   // 导入导出模态框内的按钮事件
   const exportBtn = document.getElementById('export-btn');
   const importBtn = document.getElementById('import-btn');
-  const tabBtns = document.querySelectorAll('.tab-btn');
+  const mainTabBtns = document.querySelectorAll('.tabs-nav .tab-btn');
+  const importExportTabBtns = document.querySelectorAll('.import-export-tabs .tab-btn');
   
   if (exportBtn) {
     exportBtn.addEventListener('click', handleExportPrompts);
@@ -1144,26 +1153,107 @@ function setupEventListeners() {
     importBtn.addEventListener('click', handleImportPrompts);
   }
   
-  // 标签切换
-  tabBtns.forEach(btn => {
+  function setActiveMainTab(tabName: string) {
+    const target = document.querySelector(
+      `.tabs-nav .tab-btn[data-tab="${tabName}"]`
+    ) as HTMLButtonElement | null;
+    if (!target) return;
+
+    mainTabBtns.forEach((b) => b.classList.remove('active'));
+    target.classList.add('active');
+
+    document.querySelectorAll('main.main-content > .tab-content').forEach((content) => {
+      content.classList.remove('active');
+    });
+
+    const tabContent = document.getElementById(`${tabName}-tab`);
+    if (tabContent) {
+      tabContent.classList.add('active');
+    }
+
+    if (tabName === 'pro') {
+      void recordTelemetryEvent('pro_entry_opened', { source: 'options' });
+    }
+  }
+
+  // Main tab switch
+  mainTabBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const target = e.target as HTMLButtonElement;
       const tabName = target.getAttribute('data-tab');
-      
-      // 更新活动标签
-      tabBtns.forEach(b => b.classList.remove('active'));
-      target.classList.add('active');
-      
-      // 显示对应内容
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-      });
-      
-      const tabContent = document.getElementById(`${tabName}-tab`);
-      if (tabContent) {
-        tabContent.classList.add('active');
-      }
+      if (!tabName) return;
+      setActiveMainTab(tabName);
     });
+  });
+
+  // Import/Export modal tab switch
+  function setActiveImportExportTab(tabName: string) {
+    const target = elements.importExportModal.querySelector(
+      `.import-export-tabs .tab-btn[data-tab="${tabName}"]`
+    ) as HTMLButtonElement | null;
+    if (!target) return;
+
+    importExportTabBtns.forEach((b) => b.classList.remove('active'));
+    target.classList.add('active');
+
+    elements.importExportModal.querySelectorAll('.tab-content').forEach((content) => {
+      content.classList.remove('active');
+    });
+
+    const tabContent = document.getElementById(`${tabName}-tab`);
+    if (tabContent) {
+      tabContent.classList.add('active');
+    }
+  }
+
+  importExportTabBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const target = e.target as HTMLButtonElement;
+      const tabName = target.getAttribute('data-tab');
+      if (!tabName) return;
+      setActiveImportExportTab(tabName);
+    });
+  });
+
+  // Hash定位：src/options/options.html#pro -> 默认激活 Pro Tab
+  if (window.location.hash === '#pro') {
+    setActiveMainTab('pro');
+  }
+
+  function buildWaitlistUrl(): string {
+    return buildProWaitlistIssueUrl({
+      env: {
+        extensionVersion: chrome.runtime.getManifest().version || '',
+        extensionId: chrome.runtime.id,
+        navigatorLanguage: navigator.language || '',
+        uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
+      },
+      getMessage
+    });
+  }
+
+  elements.proWaitlistButton.addEventListener('click', () => {
+    void recordTelemetryEvent('pro_waitlist_opened', { source: 'options' });
+    const url = buildWaitlistUrl();
+    chrome.tabs.create({ url });
+  });
+
+  elements.proWaitlistCopyButton.addEventListener('click', async () => {
+    const originalText = elements.proWaitlistCopyButton.textContent || '';
+    try {
+      const url = buildWaitlistUrl();
+      const body = new URL(url).searchParams.get('body') || '';
+      await navigator.clipboard.writeText(body);
+      void recordTelemetryEvent('pro_waitlist_copied', { source: 'options' });
+      elements.proWaitlistCopyButton.textContent = getMessage('copied') || originalText;
+      window.setTimeout(() => {
+        elements.proWaitlistCopyButton.textContent =
+          getMessage('proCopyWaitlistCopy') || originalText;
+      }, 1200);
+    } catch (error) {
+      console.error('Failed to copy waitlist copy:', error);
+      elements.proWaitlistCopyButton.textContent = originalText;
+    }
   });
 
   // Chat服务相关事件监听器

@@ -10,6 +10,9 @@ export type TelemetryEventName =
   | 'popup_opened'
   | 'copy_success'
   | 'prompt_used'
+  | 'pro_entry_opened'
+  | 'pro_waitlist_opened'
+  | 'pro_waitlist_copied'
   | 'onboarding_shown'
   | 'onboarding_completed'
   | 'rating_prompt_shown'
@@ -31,6 +34,9 @@ const TELEMETRY_EVENT_PROP_ALLOWLIST: Record<TelemetryEventName, readonly string
   popup_opened: [],
   copy_success: [],
   prompt_used: [],
+  pro_entry_opened: ['source'],
+  pro_waitlist_opened: ['source'],
+  pro_waitlist_copied: ['source'],
   onboarding_shown: ['source'],
   onboarding_completed: ['source', 'action'],
   rating_prompt_shown: [],

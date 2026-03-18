@@ -1,0 +1,38 @@
+export type I18nGetMessage = (key: string, substitutions?: string | string[]) => string;
+
+export interface ProWaitlistEnvironmentInfo {
+  extensionVersion: string;
+  extensionId: string;
+  navigatorLanguage: string;
+  uiLanguage: string;
+}
+
+export const DEFAULT_PRO_WAITLIST_GITHUB_NEW_ISSUE_URL = 'https://github.com/ayqy/copy/issues/new';
+
+function safeGetMessage(getMessage: I18nGetMessage, key: string, substitutions?: string | string[]) {
+  const message = getMessage(key, substitutions);
+  return message || key;
+}
+
+export interface BuildProWaitlistIssueParams {
+  env: ProWaitlistEnvironmentInfo;
+  getMessage: I18nGetMessage;
+  githubNewIssueUrl?: string;
+}
+
+export function buildProWaitlistIssueUrl(params: BuildProWaitlistIssueParams): string {
+  const githubNewIssueUrl = params.githubNewIssueUrl || DEFAULT_PRO_WAITLIST_GITHUB_NEW_ISSUE_URL;
+
+  const title = safeGetMessage(params.getMessage, 'proWaitlistIssueTitleTemplate');
+  const body = safeGetMessage(params.getMessage, 'proWaitlistIssueBodyTemplate', [
+    params.env.extensionVersion,
+    params.env.extensionId,
+    params.env.navigatorLanguage,
+    params.env.uiLanguage
+  ]);
+
+  const url = new URL(githubNewIssueUrl);
+  url.search = new URLSearchParams({ title, body }).toString();
+  return url.toString();
+}
+

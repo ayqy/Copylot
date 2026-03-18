@@ -51,6 +51,7 @@
             <button class="tab-btn active" data-tab="prompts" data-i18n="promptsTab">Prompt管理</button>
             <button class="tab-btn" data-tab="chat-services" data-i18n="chatServicesTab">Chat服务</button>
             <button class="tab-btn" data-tab="privacy" data-i18n="privacyTab">隐私</button>
+            <button class="tab-btn" data-tab="pro" data-i18n="proTab">Pro</button>
           </div>
         </div>
 
@@ -242,6 +243,42 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Pro Tab -->
+        <div id="pro-tab" class="tab-content">
+          <div class="pro-header">
+            <h2 data-i18n="proTitle">Copylot Pro（候补）</h2>
+            <p data-i18n="proSubtitle">
+              不打扰、不强引导；先验证意向，再决定是否投入实现。
+            </p>
+          </div>
+
+          <div class="pro-card">
+            <p class="pro-intro" data-i18n="proIntro">
+              Pro 会聚焦“更强工作流 / 更省时间”，在不破坏免费核心体验的前提下提供可选增强。
+            </p>
+
+            <ul class="pro-feature-list">
+              <li data-i18n="proFeature1">高级页面清洗（阅读模式 + 去广告/评论区/推荐区规则）</li>
+              <li data-i18n="proFeature2">批量采集与整理（跨页面收集、命名、导出、历史检索）</li>
+              <li data-i18n="proFeature3">Prompt Pack 高级库/团队共享（后端能力后置）</li>
+              <li data-i18n="proFeature4">面向笔记工具的导出能力（Obsidian/Notion 结构化模板）</li>
+            </ul>
+
+            <div class="pro-actions">
+              <button id="pro-waitlist-button" class="primary-btn" data-i18n="proJoinWaitlist">
+                加入候补名单
+              </button>
+              <button id="pro-waitlist-copy" class="secondary-btn" data-i18n="proCopyWaitlistCopy">
+                复制候补文案
+              </button>
+            </div>
+
+            <p class="pro-privacy-hint" data-i18n="proPrivacyHint">
+              候补登记不会预填任何网页内容/复制内容；仅包含扩展版本、扩展 ID 与语言信息。
+            </p>
           </div>
         </div>
       </main>

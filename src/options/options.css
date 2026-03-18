@@ -909,6 +909,60 @@ body {
   display: block;
 }
 
+/* Pro Tab */
+.pro-header {
+  margin-bottom: 24px;
+}
+
+.pro-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.pro-header p {
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+
+.pro-card {
+  border: 1px solid var(--border-color);
+  border-radius: calc(var(--border-radius) + 4px);
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.06) 0%, rgba(255, 255, 255, 0) 60%);
+}
+
+.pro-intro {
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+.pro-feature-list {
+  margin: 0 0 18px 18px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.pro-feature-list li {
+  margin-bottom: 8px;
+}
+
+.pro-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.pro-privacy-hint {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
 /* Chat Services Styles */
 .chat-services-header {
   margin-bottom: 32px;
@@ -1401,4 +1455,3 @@ input:checked + .slider:before {
     background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.1) 100%);
   }
 } 
-

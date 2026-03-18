@@ -794,6 +794,51 @@ input:checked + .slider:before {
   background-color: #f3f4f6;
 }
 
+/* Pro entry */
+.pro-entry-row {
+  padding: 0 20px 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.pro-entry-button {
+  flex: 1;
+  height: 30px;
+  border: 1px solid rgba(79, 70, 229, 0.25);
+  background: rgba(79, 70, 229, 0.06);
+  color: #4338ca;
+  border-radius: 10px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.pro-entry-button:hover {
+  background: rgba(79, 70, 229, 0.1);
+  border-color: rgba(79, 70, 229, 0.45);
+}
+
+.pro-entry-button:active {
+  transform: translateY(1px);
+}
+
+.pro-entry-button.secondary {
+  border-color: rgba(17, 24, 39, 0.12);
+  background: rgba(17, 24, 39, 0.03);
+  color: #374151;
+  font-weight: 700;
+}
+
+.pro-entry-button.secondary:hover {
+  background: rgba(17, 24, 39, 0.06);
+  border-color: rgba(17, 24, 39, 0.18);
+}
+
 /* Onboarding entry */
 .onboarding-entry-row {
   padding: 0 20px 12px;

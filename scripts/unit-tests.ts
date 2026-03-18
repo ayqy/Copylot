@@ -150,6 +150,31 @@ function run() {
     }),
     { name: 'onboarding_shown', ts: now, props: { source: 'auto' } }
   );
+
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_entry_opened',
+      ts: now,
+      props: { source: 'popup', extra: 'x' }
+    }),
+    { name: 'pro_entry_opened', ts: now, props: { source: 'popup' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_waitlist_opened',
+      ts: now,
+      props: { source: 'options', extra: 'x' }
+    }),
+    { name: 'pro_waitlist_opened', ts: now, props: { source: 'options' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_waitlist_copied',
+      ts: now,
+      props: { source: { not: 'primitive' } }
+    }),
+    { name: 'pro_waitlist_copied', ts: now }
+  );
   assert.deepEqual(
     sanitizeTelemetryEvent({
       name: 'onboarding_shown',
