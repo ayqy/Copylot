@@ -8,6 +8,7 @@ import {
   type ChatService,
   FORCE_UI_LANGUAGE
 } from '../shared/settings-manager';
+import { clearTelemetryEvents } from '../shared/telemetry';
 
 // Simple UUID generator
 function generateUUID(): string {
@@ -68,6 +69,9 @@ interface OptionsElements {
   // Sync status
   syncStatusBtn: HTMLButtonElement;
   syncStatusText: HTMLElement;
+
+  // Privacy / Observability
+  anonymousUsageDataSwitch: HTMLInputElement;
 
   // Chat Services elements
   defaultChatService: HTMLSelectElement;
@@ -135,6 +139,8 @@ function getElements(): OptionsElements {
     syncStatusBtn: document.getElementById('sync-status-btn') as HTMLButtonElement,
     syncStatusText: document.getElementById('sync-status-text') as HTMLElement,
 
+    anonymousUsageDataSwitch: document.getElementById('anonymous-usage-data-switch') as HTMLInputElement,
+
     // Chat Services elements
     defaultChatService: document.getElementById('default-chat-service') as HTMLSelectElement,
     defaultAutoOpenChat: document.getElementById('default-auto-open-chat') as HTMLInputElement,
@@ -192,6 +198,9 @@ async function loadSettings() {
   try {
     currentSettings = await getSettings();
     allPrompts = [...currentSettings.userPrompts];
+    if (elements?.anonymousUsageDataSwitch) {
+      elements.anonymousUsageDataSwitch.checked = Boolean(currentSettings.isAnonymousUsageDataEnabled);
+    }
     filterAndRenderPrompts();
     updateSyncStatus();
     console.debug('Settings loaded:', currentSettings);
@@ -1083,6 +1092,25 @@ function setupEventListeners() {
 
   // 导入导出按钮
   elements.importExportBtn.addEventListener('click', showImportExportModal);
+
+  // 匿名使用数据开关
+  elements.anonymousUsageDataSwitch.addEventListener('change', async () => {
+    const enabled = elements.anonymousUsageDataSwitch.checked;
+    try {
+      await saveSettings({ isAnonymousUsageDataEnabled: enabled });
+      currentSettings = { ...currentSettings, isAnonymousUsageDataEnabled: enabled };
+
+      // 关闭后必须立刻停止记录并清空本地日志（不发送、不缓存、不补发）
+      if (!enabled) {
+        await clearTelemetryEvents();
+      }
+
+      showNotification(getMessage('saveSuccessMessage'), 'success');
+    } catch (error) {
+      console.error('Error saving anonymous usage data setting:', error);
+      showNotification(getMessage('savingFailed'), 'error');
+    }
+  });
   
   // 导入导出模态框事件
   elements.importExportModal.addEventListener('click', (e) => {

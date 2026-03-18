@@ -20,6 +20,7 @@ import {
   setRatingPromptAction,
   shouldShowRatingPrompt
 } from '../shared/growth-stats';
+import { recordTelemetryEvent } from '../shared/telemetry';
 
 // DOM Elements
 interface PopupElements {
@@ -88,6 +89,7 @@ const POPUP_ONBOARDING_RECOMMENDED_SETTINGS: Partial<Settings> = {
 
 let onboardingCurrentStep = 1;
 let isOnboardingOpen = false;
+let onboardingSource: 'auto' | 'manual' = 'manual';
 
 /**
  * Get all required DOM elements
@@ -292,7 +294,9 @@ function setOnboardingStep(step: number) {
   elements.onboardingFinishButton.hidden = !isLast;
 }
 
-function openOnboardingModal() {
+function openOnboardingModal(source: 'auto' | 'manual') {
+  onboardingSource = source;
+  void recordTelemetryEvent('onboarding_shown', { source });
   isOnboardingOpen = true;
   setOnboardingStep(1);
   elements.onboardingModal.style.display = 'flex';
@@ -303,7 +307,8 @@ function closeOnboardingModal() {
   elements.onboardingModal.style.display = 'none';
 }
 
-async function completeOnboarding() {
+async function completeOnboarding(action: 'finish' | 'skip') {
+  void recordTelemetryEvent('onboarding_completed', { source: onboardingSource, action });
   try {
     const completedVersion = currentSettings.popupOnboardingVersion;
     const completedAt = Date.now();
@@ -348,6 +353,7 @@ async function maybeShowRatingPrompt() {
       // Important: once the prompt becomes visible, persist `ratingPromptShownAt` immediately.
       await markRatingPromptShown(now);
       elements.ratingPrompt.hidden = false;
+      void recordTelemetryEvent('rating_prompt_shown');
       return;
     }
   } catch (error) {
@@ -404,6 +410,7 @@ function setupEventListeners() {
 
   elements.feedbackLink.addEventListener('click', (event) => {
     event.preventDefault();
+    void recordTelemetryEvent('wom_feedback_opened');
     const mergedSettings = { ...currentSettings, ...getSettingsFromUI() } as Settings;
     const feedbackUrl = buildFeedbackIssueUrl({
       env: {
@@ -422,6 +429,7 @@ function setupEventListeners() {
 
   elements.shareLink.addEventListener('click', (event) => {
     event.preventDefault();
+    void recordTelemetryEvent('wom_share_opened');
     const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id);
     chrome.tabs.create({ url: storeUrl });
     window.close();
@@ -429,6 +437,7 @@ function setupEventListeners() {
 
   elements.rateLink.addEventListener('click', (event) => {
     event.preventDefault();
+    void recordTelemetryEvent('wom_rate_opened');
     const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id);
     chrome.tabs.create({ url: reviewsUrl });
     window.close();
@@ -440,6 +449,7 @@ function setupEventListeners() {
     } catch (error) {
       console.error('Error saving rating prompt action:', error);
     }
+    void recordTelemetryEvent('rating_prompt_action', { action: 'rate' });
 
     const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id);
     chrome.tabs.create({ url: reviewsUrl });
@@ -452,6 +462,7 @@ function setupEventListeners() {
     } catch (error) {
       console.error('Error saving rating prompt action:', error);
     }
+    void recordTelemetryEvent('rating_prompt_action', { action: 'later' });
     hideRatingPrompt();
   });
 
@@ -461,6 +472,7 @@ function setupEventListeners() {
     } catch (error) {
       console.error('Error saving rating prompt action:', error);
     }
+    void recordTelemetryEvent('rating_prompt_action', { action: 'never' });
     hideRatingPrompt();
   });
 
@@ -471,6 +483,7 @@ function setupEventListeners() {
 
     try {
       await navigator.clipboard.writeText(shareText);
+      void recordTelemetryEvent('wom_share_copied');
       elements.copyShareButton.textContent = chrome.i18n.getMessage('copied') || originalText;
       window.setTimeout(() => {
         elements.copyShareButton.textContent = chrome.i18n.getMessage('copyShareText') || originalText;
@@ -492,15 +505,15 @@ function setupEventListeners() {
 
   // Onboarding entry
   elements.onboardingReopenButton.addEventListener('click', () => {
-    openOnboardingModal();
+    openOnboardingModal('manual');
   });
 
   // Onboarding modal controls
   elements.onboardingCloseButton.addEventListener('click', () => {
-    completeOnboarding();
+    completeOnboarding('skip');
   });
   elements.onboardingSkipButton.addEventListener('click', () => {
-    completeOnboarding();
+    completeOnboarding('skip');
   });
   elements.onboardingPrevButton.addEventListener('click', () => {
     setOnboardingStep(onboardingCurrentStep - 1);
@@ -509,7 +522,7 @@ function setupEventListeners() {
     setOnboardingStep(onboardingCurrentStep + 1);
   });
   elements.onboardingFinishButton.addEventListener('click', () => {
-    completeOnboarding();
+    completeOnboarding('finish');
   });
   elements.onboardingApplyRecommendedButton.addEventListener('click', () => {
     applyRecommendedSettings();
@@ -521,7 +534,7 @@ function setupEventListeners() {
   // Click outside modal-content closes onboarding (acts like skip)
   elements.onboardingModal.addEventListener('click', (event) => {
     if (event.target === elements.onboardingModal) {
-      completeOnboarding();
+      completeOnboarding('skip');
     }
   });
 
@@ -529,7 +542,7 @@ function setupEventListeners() {
   document.addEventListener('keydown', (event) => {
     if (!isOnboardingOpen) return;
     if (event.key === 'Escape') {
-      completeOnboarding();
+      completeOnboarding('skip');
     }
   });
 }
@@ -594,6 +607,7 @@ async function initialize() {
 
     // Get DOM elements
     elements = getElements();
+    void recordTelemetryEvent('popup_opened');
 
     // @ts-ignore: 环境变量在构建时注入
     const isDevBuild =
@@ -644,7 +658,7 @@ async function initialize() {
 
     // Auto show onboarding for new users (zero-disturb: only when not completed)
     if (shouldAutoShowOnboarding(currentSettings)) {
-      openOnboardingModal();
+      openOnboardingModal('auto');
     }
 
     // Evaluate one-time rating prompt (non-blocking, based on local growth stats)

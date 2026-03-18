@@ -10,9 +10,11 @@ declare function findEditableContext(element: Element | null): HTMLElement | nul
 declare const DEFAULT_EDITOR_EXCLUSION_CLASSES: string[] | undefined;
 declare const DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS: string[] | undefined;
 declare function getMessage(key: string): string;
+declare function recordTelemetryEvent(name: string, props?: Record<string, unknown>): Promise<void>;
 
 /* INLINE:block-identifier */
 /* INLINE:settings-manager */
+/* INLINE:telemetry */
 /* INLINE:ui-injector */
 /* INLINE:link-utils */
 /* INLINE:dom-preprocessor */
@@ -735,6 +737,7 @@ async function handleMainCopyClick(): Promise<void> {
       });
     } else {
       await navigator.clipboard.writeText(content);
+      void recordTelemetryEvent('copy_success');
       await reportSuccessfulCopy();
       // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
       updateButtonState(copyButtonElement!, 'copied');
@@ -773,6 +776,8 @@ async function handlePromptClick(promptId: string): Promise<void> {
     // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
     const finalText = combinePromptWithContent(prompt.template, content);
     await navigator.clipboard.writeText(finalText);
+    void recordTelemetryEvent('copy_success');
+    void recordTelemetryEvent('prompt_used');
     await reportSuccessfulCopy();
     
     // 更新使用次数
@@ -1010,6 +1015,7 @@ async function initializeContentScript(): Promise<void> {
           if (content.trim()) {
             try {
               await copyToClipboard(content);
+              void recordTelemetryEvent('copy_success');
               await reportSuccessfulCopy();
               sendResponse({ success: true });
             } catch (error) {
@@ -1055,6 +1061,7 @@ async function initializeContentScript(): Promise<void> {
           if (content.trim()) {
             try {
               await copyToClipboard(content);
+              void recordTelemetryEvent('copy_success');
               await reportSuccessfulCopy();
               sendResponse({ success: true });
             } catch (error) {
@@ -1086,6 +1093,8 @@ async function initializeContentScript(): Promise<void> {
             
             try {
               await copyToClipboard(finalText);
+              void recordTelemetryEvent('copy_success');
+              void recordTelemetryEvent('prompt_used');
               await reportSuccessfulCopy();
               sendResponse({ success: true });
             } catch (error) {
@@ -1104,6 +1113,8 @@ async function initializeContentScript(): Promise<void> {
               
               try {
                 await copyToClipboard(finalText);
+                void recordTelemetryEvent('copy_success');
+                void recordTelemetryEvent('prompt_used');
                 await reportSuccessfulCopy();
                 sendResponse({ success: true });
               } catch (error) {
@@ -1120,6 +1131,8 @@ async function initializeContentScript(): Promise<void> {
                 const finalText = combinePromptWithContent(message.promptTemplate, selectedText);
                 try {
                   await copyToClipboard(finalText);
+                  void recordTelemetryEvent('copy_success');
+                  void recordTelemetryEvent('prompt_used');
                   await reportSuccessfulCopy();
                   sendResponse({ success: true });
                 } catch (error) {
@@ -1149,6 +1162,8 @@ async function initializeContentScript(): Promise<void> {
             const finalText = combinePromptWithContent(message.promptTemplate, content);
             try {
               await copyToClipboard(finalText);
+              void recordTelemetryEvent('copy_success');
+              void recordTelemetryEvent('prompt_used');
               await reportSuccessfulCopy();
               sendResponse({ success: true });
             } catch (error) {
@@ -1177,6 +1192,8 @@ async function initializeContentScript(): Promise<void> {
             const finalText = combinePromptWithContent(message.promptTemplate, content);
             try {
               await copyToClipboard(finalText);
+              void recordTelemetryEvent('copy_success');
+              void recordTelemetryEvent('prompt_used');
               await reportSuccessfulCopy();
               
               // 显示视觉反馈
@@ -1214,6 +1231,7 @@ async function initializeContentScript(): Promise<void> {
           document.body.removeChild(textarea);
 
           if (success) {
+            void recordTelemetryEvent('copy_success');
             await reportSuccessfulCopy();
             sendResponse({ success: true });
           } else {

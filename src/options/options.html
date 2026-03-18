@@ -50,6 +50,7 @@
           <div class="tabs-nav">
             <button class="tab-btn active" data-tab="prompts" data-i18n="promptsTab">Prompt管理</button>
             <button class="tab-btn" data-tab="chat-services" data-i18n="chatServicesTab">Chat服务</button>
+            <button class="tab-btn" data-tab="privacy" data-i18n="privacyTab">隐私</button>
           </div>
         </div>
 
@@ -207,6 +208,39 @@
             
             <div id="chat-services-grid" class="chat-services-grid">
               <!-- Chat service cards will be rendered here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Privacy Tab -->
+        <div id="privacy-tab" class="tab-content">
+          <div class="chat-services-header">
+            <h2 data-i18n="privacyTitle">隐私与可观测性</h2>
+            <p data-i18n="privacyDescription">默认关闭；仅本地记录匿名事件日志，不联网、不打扰。</p>
+          </div>
+
+          <div class="chat-services-section">
+            <h3 data-i18n="anonymousUsageDataSectionTitle">匿名使用数据</h3>
+
+            <div class="default-settings-grid">
+              <div class="setting-item">
+                <div class="setting-label" data-i18n="anonymousUsageDataLabel">匿名使用数据</div>
+                <div class="setting-controls">
+                  <label class="switch">
+                    <input type="checkbox" id="anonymous-usage-data-switch" />
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-label"></div>
+                <div class="setting-controls">
+                  <span class="setting-hint" data-i18n="anonymousUsageDataHint">
+                    关闭时会立即停止记录并清空本地日志。
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

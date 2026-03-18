@@ -33,6 +33,8 @@ export interface Prompt {
 export interface Settings {
   isMagicCopyEnabled: boolean;
   isHoverMagicCopyEnabled: boolean;
+  // Observability (local-only, privacy-safe). Default: off.
+  isAnonymousUsageDataEnabled: boolean;
   outputFormat: 'markdown' | 'plaintext';
   tableOutputFormat: 'markdown' | 'csv'; // Added for table format
   attachTitle: boolean;
@@ -198,6 +200,7 @@ export const DEFAULT_SETTINGS: Settings = {
   isMagicCopyEnabled: true, // Added this line
   // Default hover disabled for first-time initialization per requirement
   isHoverMagicCopyEnabled: false,
+  isAnonymousUsageDataEnabled: false,
   outputFormat: 'markdown',
   tableOutputFormat: 'markdown', // Default table format
   attachTitle: false,

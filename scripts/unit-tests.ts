@@ -14,6 +14,7 @@ import {
   shouldShowRatingPrompt,
   type GrowthStats
 } from '../src/shared/growth-stats.ts';
+import { TELEMETRY_MAX_EVENTS, sanitizeTelemetryEvent, trimTelemetryEvents } from '../src/shared/telemetry.ts';
 
 const getMessage: I18nGetMessage = (key, substitutions) => {
   const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
@@ -45,6 +46,7 @@ function run() {
   const settings: Parameters<typeof buildFeedbackSettingsSnapshot>[0] = {
     isMagicCopyEnabled: false,
     isHoverMagicCopyEnabled: true,
+    isAnonymousUsageDataEnabled: false,
     outputFormat: 'plaintext',
     tableOutputFormat: 'csv',
     attachTitle: true,
@@ -133,6 +135,38 @@ function run() {
     shouldShowRatingPrompt({ ...eligibleStats, ratingPromptShownAt: now - 1000 }, now),
     false
   );
+
+  // telemetry.ts (pure functions)
+  assert.equal(sanitizeTelemetryEvent({ name: 'unknown', ts: now }), null);
+  assert.equal(sanitizeTelemetryEvent({ name: 'popup_opened', ts: -1 }), null);
+  assert.equal(sanitizeTelemetryEvent({ name: 'popup_opened', ts: Number.NaN }), null);
+  assert.equal(sanitizeTelemetryEvent({ name: 'popup_opened', ts: 'x' }), null);
+
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'onboarding_shown',
+      ts: now,
+      props: { source: 'auto', extra: 'x', action: 'skip' }
+    }),
+    { name: 'onboarding_shown', ts: now, props: { source: 'auto' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'onboarding_shown',
+      ts: now,
+      props: { source: { not: 'primitive' } }
+    }),
+    { name: 'onboarding_shown', ts: now }
+  );
+
+  const manyEvents = Array.from({ length: TELEMETRY_MAX_EVENTS + 1 }, (_, i) => ({
+    name: 'popup_opened' as const,
+    ts: i + 1
+  }));
+  const trimmedDefault = trimTelemetryEvents(manyEvents);
+  assert.equal(trimmedDefault.length, TELEMETRY_MAX_EVENTS);
+  assert.equal(trimmedDefault[0]?.ts, 2);
+  assert.equal(trimmedDefault[TELEMETRY_MAX_EVENTS - 1]?.ts, TELEMETRY_MAX_EVENTS + 1);
 }
 
 try {

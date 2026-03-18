@@ -978,6 +978,12 @@ body {
   gap: 16px;
 }
 
+.setting-hint {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .setting-item select {
   padding: 10px 12px;
   border: 1px solid var(--border-color);
@@ -1395,5 +1401,4 @@ input:checked + .slider:before {
     background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.1) 100%);
   }
 } 
-
 
