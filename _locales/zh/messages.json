@@ -71,6 +71,26 @@
     "message": "去评价",
     "description": "Popup 中的去评价入口"
   },
+  "ratingPromptTitle": {
+    "message": "喜欢 Copylot 吗？",
+    "description": "Popup 内一次性评价引导标题"
+  },
+  "ratingPromptDesc": {
+    "message": "如果 Copylot 帮到你，给个好评会对我们很有帮助。",
+    "description": "Popup 内一次性评价引导说明"
+  },
+  "ratingPromptRate": {
+    "message": "去评价",
+    "description": "评价引导主按钮"
+  },
+  "ratingPromptLater": {
+    "message": "稍后",
+    "description": "评价引导稍后按钮"
+  },
+  "ratingPromptNever": {
+    "message": "不再提示",
+    "description": "评价引导不再提示按钮"
+  },
   "shareCopyTextTemplate": {
     "message": "我在用 Copylot 一键把网页内容复制成 AI 友好格式，推荐你试试：$STORE_URL$",
     "description": "分享文案模板",

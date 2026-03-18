@@ -71,6 +71,26 @@
     "message": "Rate",
     "description": "Rate entry in popup"
   },
+  "ratingPromptTitle": {
+    "message": "Enjoying Copylot?",
+    "description": "Title of the one-time rating prompt in popup"
+  },
+  "ratingPromptDesc": {
+    "message": "If Copylot helps you, a quick review would mean a lot.",
+    "description": "Description of the one-time rating prompt in popup"
+  },
+  "ratingPromptRate": {
+    "message": "Rate now",
+    "description": "Primary action button in rating prompt"
+  },
+  "ratingPromptLater": {
+    "message": "Later",
+    "description": "Later action button in rating prompt"
+  },
+  "ratingPromptNever": {
+    "message": "Never",
+    "description": "Never action button in rating prompt"
+  },
   "shareCopyTextTemplate": {
     "message": "I'm using Copylot to copy webpages into an AI-friendly format. Try it: $STORE_URL$",
     "description": "Share copy text template",

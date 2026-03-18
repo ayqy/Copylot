@@ -50,6 +50,40 @@
           </div>
         </div>
 
+        <!-- One-time rating prompt (shown based on local growth stats) -->
+        <div id="rating-prompt" class="rating-prompt" hidden>
+          <div class="rating-prompt-title" data-i18n="ratingPromptTitle">Rate Copylot</div>
+          <div class="rating-prompt-desc" data-i18n="ratingPromptDesc">
+            If Copylot helps you, a quick review would mean a lot.
+          </div>
+          <div class="rating-prompt-actions">
+            <button
+              type="button"
+              id="rating-prompt-rate"
+              class="rating-prompt-button primary"
+              data-i18n="ratingPromptRate"
+            >
+              Rate
+            </button>
+            <button
+              type="button"
+              id="rating-prompt-later"
+              class="rating-prompt-button"
+              data-i18n="ratingPromptLater"
+            >
+              Later
+            </button>
+            <button
+              type="button"
+              id="rating-prompt-never"
+              class="rating-prompt-button"
+              data-i18n="ratingPromptNever"
+            >
+              Never
+            </button>
+          </div>
+        </div>
+
         <!-- Settings Form -->
         <form id="settings-form">
           <!-- Enable/Disable Magic Copy Section -->

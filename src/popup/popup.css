@@ -84,6 +84,74 @@ body {
   user-select: none;
 }
 
+/* Rating Prompt (one-time, non-blocking) */
+.rating-prompt {
+  margin: 10px 10px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(79, 70, 229, 0.18);
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(124, 58, 237, 0.06) 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rating-prompt-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.rating-prompt-desc {
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.rating-prompt-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.rating-prompt-button {
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.1s ease;
+  flex: 0 0 auto;
+}
+
+.rating-prompt-button:hover {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.rating-prompt-button:active {
+  transform: translateY(1px);
+}
+
+.rating-prompt-button.primary {
+  border: none;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: #ffffff;
+}
+
+.rating-prompt-button.primary:hover {
+  background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+  color: #ffffff;
+}
+
 /* Form Sections */
 #settings-form {
   padding: 10px;
@@ -531,6 +599,40 @@ input:checked + .slider:before {
   .popup-container {
     background: #1f2937;
     border: 1px solid #374151;
+  }
+
+  .rating-prompt {
+    border-color: rgba(199, 210, 254, 0.25);
+    background: rgba(129, 140, 248, 0.08);
+  }
+
+  .rating-prompt-title {
+    color: #f9fafb;
+  }
+
+  .rating-prompt-desc {
+    color: #d1d5db;
+  }
+
+  .rating-prompt-button {
+    border-color: #374151;
+    background: #1f2937;
+    color: #e5e7eb;
+  }
+
+  .rating-prompt-button:hover {
+    border-color: #4b5563;
+    background: #111827;
+    color: #f9fafb;
+  }
+
+  .rating-prompt-button.primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #ffffff;
+  }
+
+  .rating-prompt-button.primary:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
   }
 
   .section-title {

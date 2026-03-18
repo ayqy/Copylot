@@ -8,6 +8,12 @@ import {
   buildShareCopyText,
   type I18nGetMessage
 } from '../src/shared/word-of-mouth.ts';
+import {
+  RATING_PROMPT_MIN_INSTALL_AGE_MS,
+  RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
+  shouldShowRatingPrompt,
+  type GrowthStats
+} from '../src/shared/growth-stats.ts';
 
 const getMessage: I18nGetMessage = (key, substitutions) => {
   const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
@@ -102,6 +108,31 @@ function run() {
 
   const shareText = buildShareCopyText(getMessage, storeUrl);
   assert.ok(shareText.includes(storeUrl));
+
+  const now = 1_700_000_000_000;
+  const eligibleStats: GrowthStats = {
+    installedAt: now - RATING_PROMPT_MIN_INSTALL_AGE_MS,
+    successfulCopyCount: RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT
+  };
+  assert.equal(shouldShowRatingPrompt(eligibleStats, now), true);
+  assert.equal(
+    shouldShowRatingPrompt(
+      { ...eligibleStats, installedAt: now - RATING_PROMPT_MIN_INSTALL_AGE_MS + 1 },
+      now
+    ),
+    false
+  );
+  assert.equal(
+    shouldShowRatingPrompt(
+      { ...eligibleStats, successfulCopyCount: RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT - 1 },
+      now
+    ),
+    false
+  );
+  assert.equal(
+    shouldShowRatingPrompt({ ...eligibleStats, ratingPromptShownAt: now - 1000 }, now),
+    false
+  );
 }
 
 try {

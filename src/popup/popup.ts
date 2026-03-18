@@ -14,11 +14,21 @@ import {
   buildShareCopyText,
   type I18nGetMessage
 } from '../shared/word-of-mouth';
+import {
+  getGrowthStats,
+  markRatingPromptShown,
+  setRatingPromptAction,
+  shouldShowRatingPrompt
+} from '../shared/growth-stats';
 
 // DOM Elements
 interface PopupElements {
   versionDisplay: HTMLElement;
   devBadge: HTMLElement;
+  ratingPrompt: HTMLElement;
+  ratingPromptRateButton: HTMLButtonElement;
+  ratingPromptLaterButton: HTMLButtonElement;
+  ratingPromptNeverButton: HTMLButtonElement;
   enableMagicCopySwitch: HTMLInputElement;
   enableHoverMagicCopySwitch: HTMLInputElement;
   enableClipboardAccumulatorSwitch: HTMLInputElement;
@@ -86,6 +96,10 @@ function getElements(): PopupElements {
   return {
     versionDisplay: document.getElementById('version-display') as HTMLElement,
     devBadge: document.getElementById('dev-badge') as HTMLElement,
+    ratingPrompt: document.getElementById('rating-prompt') as HTMLElement,
+    ratingPromptRateButton: document.getElementById('rating-prompt-rate') as HTMLButtonElement,
+    ratingPromptLaterButton: document.getElementById('rating-prompt-later') as HTMLButtonElement,
+    ratingPromptNeverButton: document.getElementById('rating-prompt-never') as HTMLButtonElement,
     enableMagicCopySwitch: document.getElementById('enable-magic-copy-switch') as HTMLInputElement,
     enableHoverMagicCopySwitch: document.getElementById(
       'enable-hover-magic-copy-switch'
@@ -321,6 +335,28 @@ async function applyRecommendedSettings() {
   }
 }
 
+function hideRatingPrompt() {
+  elements.ratingPrompt.hidden = true;
+}
+
+async function maybeShowRatingPrompt() {
+  try {
+    const now = Date.now();
+    const stats = await getGrowthStats(now);
+
+    if (shouldShowRatingPrompt(stats, now)) {
+      // Important: once the prompt becomes visible, persist `ratingPromptShownAt` immediately.
+      await markRatingPromptShown(now);
+      elements.ratingPrompt.hidden = false;
+      return;
+    }
+  } catch (error) {
+    console.error('Error evaluating rating prompt:', error);
+  }
+
+  hideRatingPrompt();
+}
+
 /**
  * Setup event listeners for form elements
  */
@@ -396,6 +432,36 @@ function setupEventListeners() {
     const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id);
     chrome.tabs.create({ url: reviewsUrl });
     window.close();
+  });
+
+  elements.ratingPromptRateButton.addEventListener('click', async () => {
+    try {
+      await setRatingPromptAction('rate');
+    } catch (error) {
+      console.error('Error saving rating prompt action:', error);
+    }
+
+    const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id);
+    chrome.tabs.create({ url: reviewsUrl });
+    window.close();
+  });
+
+  elements.ratingPromptLaterButton.addEventListener('click', async () => {
+    try {
+      await setRatingPromptAction('later');
+    } catch (error) {
+      console.error('Error saving rating prompt action:', error);
+    }
+    hideRatingPrompt();
+  });
+
+  elements.ratingPromptNeverButton.addEventListener('click', async () => {
+    try {
+      await setRatingPromptAction('never');
+    } catch (error) {
+      console.error('Error saving rating prompt action:', error);
+    }
+    hideRatingPrompt();
   });
 
   elements.copyShareButton.addEventListener('click', async () => {
@@ -580,6 +646,9 @@ async function initialize() {
     if (shouldAutoShowOnboarding(currentSettings)) {
       openOnboardingModal();
     }
+
+    // Evaluate one-time rating prompt (non-blocking, based on local growth stats)
+    await maybeShowRatingPrompt();
 
     console.debug('Popup initialized successfully');
   } catch (error) {

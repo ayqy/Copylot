@@ -1,4 +1,12 @@
 import { getSettings, saveSettings, type Prompt, type ChatService } from './shared/settings-manager';
+import {
+  ensureGrowthStatsInitialized,
+  getGrowthStats,
+  incrementSuccessfulCopyCount,
+  markRatingPromptShown,
+  setRatingPromptAction,
+  type RatingPromptAction
+} from './shared/growth-stats';
 
 const PARENT_MENU_ID = 'magic-copy-with-prompt';
 
@@ -51,6 +59,13 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   console.log('AI Copilot extension installed/updated:', details.reason);
   await updateContextMenu();
 
+  // Initialize growth stats (local only, auditable, privacy-safe)
+  try {
+    await ensureGrowthStatsInitialized();
+  } catch (error) {
+    console.error('Failed to initialize growth stats:', error);
+  }
+
   // Initialize settings on first install
   if (details.reason === 'install') {
     console.log('First install - initializing settings...');
@@ -81,6 +96,65 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   // Handle different message types
   switch (message.type) {
+    case 'growth-stats-get':
+      (async () => {
+        try {
+          const stats = await getGrowthStats();
+          sendResponse({ success: true, stats });
+        } catch (error) {
+          console.error('Failed to get growth stats:', error);
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'growth-stats-increment-successful-copy':
+      (async () => {
+        try {
+          const stats = await incrementSuccessfulCopyCount();
+          sendResponse({ success: true, stats });
+        } catch (error) {
+          console.error('Failed to increment successfulCopyCount:', error);
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'growth-stats-mark-rating-prompt-shown':
+      (async () => {
+        try {
+          const shownAt = typeof message.shownAt === 'number' ? message.shownAt : Date.now();
+          const stats = await markRatingPromptShown(shownAt);
+          sendResponse({ success: true, stats });
+        } catch (error) {
+          console.error('Failed to mark rating prompt shown:', error);
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'growth-stats-set-rating-prompt-action':
+      (async () => {
+        try {
+          const action = message.action as RatingPromptAction;
+          if (action !== 'rate' && action !== 'later' && action !== 'never') {
+            sendResponse({
+              success: false,
+              error: chrome.i18n.getMessage('unknownMessageType') || 'Unknown message type'
+            });
+            return;
+          }
+
+          const actionAt = typeof message.actionAt === 'number' ? message.actionAt : Date.now();
+          const stats = await setRatingPromptAction(action, actionAt);
+          sendResponse({ success: true, stats });
+        } catch (error) {
+          console.error('Failed to set rating prompt action:', error);
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
     case 'copy-to-clipboard':
       {
         const { text, isShiftPressed } = message;

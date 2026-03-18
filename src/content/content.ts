@@ -297,6 +297,14 @@ async function copyToClipboard(text: string): Promise<void> {
   }
 }
 
+async function reportSuccessfulCopy(): Promise<void> {
+  try {
+    await chrome.runtime.sendMessage({ type: 'growth-stats-increment-successful-copy' });
+  } catch (error) {
+    console.warn('Failed to report successful copy:', error);
+  }
+}
+
 /**
  * 显示Chat跳转通知
  * @param chatServiceName chat服务名称
@@ -727,6 +735,7 @@ async function handleMainCopyClick(): Promise<void> {
       });
     } else {
       await navigator.clipboard.writeText(content);
+      await reportSuccessfulCopy();
       // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
       updateButtonState(copyButtonElement!, 'copied');
       setTimeout(() => {
@@ -764,6 +773,7 @@ async function handlePromptClick(promptId: string): Promise<void> {
     // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
     const finalText = combinePromptWithContent(prompt.template, content);
     await navigator.clipboard.writeText(finalText);
+    await reportSuccessfulCopy();
     
     // 更新使用次数
     prompt.usageCount = (prompt.usageCount || 0) + 1;
@@ -999,12 +1009,8 @@ async function initializeContentScript(): Promise<void> {
           const content = processContent(document.body, userSettings);
           if (content.trim()) {
             try {
-              const textarea = document.createElement('textarea');
-              textarea.value = content;
-              document.body.appendChild(textarea);
-              textarea.select();
-              document.execCommand('copy');
-              document.body.removeChild(textarea);
+              await copyToClipboard(content);
+              await reportSuccessfulCopy();
               sendResponse({ success: true });
             } catch (error) {
               console.error('Error copying to clipboard:', error);
@@ -1049,6 +1055,7 @@ async function initializeContentScript(): Promise<void> {
           if (content.trim()) {
             try {
               await copyToClipboard(content);
+              await reportSuccessfulCopy();
               sendResponse({ success: true });
             } catch (error) {
               console.error('Error copying to clipboard:', error);
@@ -1079,6 +1086,7 @@ async function initializeContentScript(): Promise<void> {
             
             try {
               await copyToClipboard(finalText);
+              await reportSuccessfulCopy();
               sendResponse({ success: true });
             } catch (error) {
               console.error('Error copying to clipboard:', error);
@@ -1096,6 +1104,7 @@ async function initializeContentScript(): Promise<void> {
               
               try {
                 await copyToClipboard(finalText);
+                await reportSuccessfulCopy();
                 sendResponse({ success: true });
               } catch (error) {
                 console.error('Error copying to clipboard:', error);
@@ -1111,6 +1120,7 @@ async function initializeContentScript(): Promise<void> {
                 const finalText = combinePromptWithContent(message.promptTemplate, selectedText);
                 try {
                   await copyToClipboard(finalText);
+                  await reportSuccessfulCopy();
                   sendResponse({ success: true });
                 } catch (error) {
                   sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
@@ -1139,6 +1149,7 @@ async function initializeContentScript(): Promise<void> {
             const finalText = combinePromptWithContent(message.promptTemplate, content);
             try {
               await copyToClipboard(finalText);
+              await reportSuccessfulCopy();
               sendResponse({ success: true });
             } catch (error) {
               console.error('Error copying to clipboard:', error);
@@ -1166,6 +1177,7 @@ async function initializeContentScript(): Promise<void> {
             const finalText = combinePromptWithContent(message.promptTemplate, content);
             try {
               await copyToClipboard(finalText);
+              await reportSuccessfulCopy();
               
               // 显示视觉反馈
               showChatRedirectNotification(message.chatServiceName);
@@ -1202,6 +1214,7 @@ async function initializeContentScript(): Promise<void> {
           document.body.removeChild(textarea);
 
           if (success) {
+            await reportSuccessfulCopy();
             sendResponse({ success: true });
           } else {
             throw new Error('document.execCommand("copy") returned false.');
