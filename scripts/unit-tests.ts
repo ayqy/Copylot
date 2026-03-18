@@ -15,6 +15,7 @@ import {
   type GrowthStats
 } from '../src/shared/growth-stats.ts';
 import { TELEMETRY_MAX_EVENTS, sanitizeTelemetryEvent, trimTelemetryEvents } from '../src/shared/telemetry.ts';
+import { cleanCodeBlockText } from '../src/shared/code-block-cleaner.ts';
 
 const getMessage: I18nGetMessage = (key, substitutions) => {
   const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
@@ -192,6 +193,25 @@ function run() {
   assert.equal(trimmedDefault.length, TELEMETRY_MAX_EVENTS);
   assert.equal(trimmedDefault[0]?.ts, 2);
   assert.equal(trimmedDefault[TELEMETRY_MAX_EVENTS - 1]?.ts, TELEMETRY_MAX_EVENTS + 1);
+
+  // code-block-cleaner.ts (pure function)
+  assert.equal(cleanCodeBlockText('const Copy = 1;\nconsole.log(Copy);'), 'const Copy = 1;\nconsole.log(Copy);');
+  assert.equal(
+    cleanCodeBlockText('console.log("Copy");\nconsole.log("Clone");'),
+    'console.log("Copy");\nconsole.log("Clone");'
+  );
+  assert.equal(
+    cleanCodeBlockText('// Copy this file\n// Clone repo'),
+    '// Copy this file\n// Clone repo'
+  );
+
+  assert.equal(cleanCodeBlockText('Copy\nconst a = 1;'), 'const a = 1;');
+  assert.equal(cleanCodeBlockText('const a = 1;\n复制代码'), 'const a = 1;');
+
+  assert.equal(
+    cleanCodeBlockText('const a = 1;\nCopy\nconst b = 2;'),
+    'const a = 1;\nCopy\nconst b = 2;'
+  );
 }
 
 try {

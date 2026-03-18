@@ -1,5 +1,6 @@
 // Content processor functionality (using TurndownService from global scope)
 import type { Settings } from './settings-manager'; // Import type for Settings
+import { cleanCodeBlockText } from './code-block-cleaner';
 import { createVisibleClone } from './dom-preprocessor';
 import { normalizeLink } from './link-utils';
 
@@ -73,7 +74,7 @@ function extractCodeBlockText(element: Element): string {
   }
   
   // 4. 清理复制按钮文本（扩展支持更多语言和位置）
-  text = cleanCodeBlockTextConservatively(text);
+  text = cleanCodeBlockText(text);
   
   // 5. 只trim首尾空行，保留所有内部空行和缩进
   text = text.replace(/^\n+/, '').replace(/\n+$/, '');
@@ -102,32 +103,6 @@ function processCodeBlock(node: HTMLElement): string {
     return '`' + cleanedText + '`';
   }
 }
-
-/**
- * 保守的代码块文本清理，只处理确实有问题且安全的情况
- * @param text - 原始文本
- * @returns 清理后的文本
- */
-function cleanCodeBlockTextConservatively(text: string): string {
-  // 移除各种语言和位置的复制按钮文本
-  let result = text
-    .replace(/(Copy|复制代码|Copy to clipboard|复制|COPY|Clone|克隆|拷贝)\s*/gi, '')
-    .replace(/\s*(Copy|复制代码|Copy to clipboard|复制|COPY|Clone|克隆|拷贝)/gi, '');
-  
-  // 反转义Markdown字符
-  result = result
-    .replace(/\\#/g, '#')
-    .replace(/\\=/g, '=')
-    .replace(/\\\*/g, '*')
-    .replace(/\\\[/g, '[')
-    .replace(/\\\]/g, ']')
-    .replace(/\\\(/g, '(')
-    .replace(/\\\)/g, ')');
-      
-  return result;
-}
-
-
 
 /**
  * 检测元素中的表格
