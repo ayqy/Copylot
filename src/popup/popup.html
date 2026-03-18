@@ -180,6 +180,18 @@
           </button>
         </div>
 
+        <!-- Onboarding entry -->
+        <div class="onboarding-entry-row">
+          <button
+            type="button"
+            id="popup-onboarding-reopen"
+            class="onboarding-entry-button"
+            data-i18n="popupOnboardingReopen"
+          >
+            新手引导
+          </button>
+        </div>
+
         <!-- Prompt Modal -->
         <div id="prompt-modal" class="modal" style="display: none">
           <div class="modal-content">
@@ -273,6 +285,113 @@
               </svg>
               <span data-i18n="rateUs">Rate us</span>
             </a>
+          </div>
+        </div>
+
+        <!-- Popup Onboarding Modal -->
+        <div id="popup-onboarding-modal" class="modal onboarding-modal" style="display: none">
+          <div class="modal-content onboarding-modal-content">
+            <div class="onboarding-header">
+              <div class="onboarding-title" data-i18n="popupOnboardingTitle">欢迎使用 Copylot</div>
+              <div id="popup-onboarding-progress" class="onboarding-progress">1/3</div>
+              <button type="button" id="popup-onboarding-close" class="onboarding-close-button">
+                &times;
+              </button>
+            </div>
+
+            <div class="onboarding-body">
+              <div id="popup-onboarding-step-1" class="onboarding-step" data-step="1">
+                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep1Title">
+                  第 1 步：开始复制
+                </h3>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep1Desc1">
+                  选择你习惯的触发方式：单击 / 双击 / 悬停。
+                </p>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep1Desc2">
+                  你也可以一键应用推荐配置（不打开打扰性功能）。
+                </p>
+                <div class="onboarding-step-actions">
+                  <button
+                    type="button"
+                    id="popup-onboarding-apply-recommended"
+                    class="button"
+                    data-i18n="popupOnboardingApplyRecommended"
+                  >
+                    应用推荐设置
+                  </button>
+                </div>
+              </div>
+
+              <div id="popup-onboarding-step-2" class="onboarding-step" data-step="2" hidden>
+                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep2Title">
+                  第 2 步：追加模式
+                </h3>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep2Desc1">
+                  按住 Shift 进行“追加复制”，可在粘贴时合并为一段。
+                </p>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep2Desc2">
+                  你可以在 Popup 里打开 “Append Mode” 开关来启用。
+                </p>
+              </div>
+
+              <div id="popup-onboarding-step-3" class="onboarding-step" data-step="3" hidden>
+                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep3Title">
+                  第 3 步：管理 Prompts
+                </h3>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep3Desc1">
+                  通过“管理 Prompts”添加/编辑指令模板，并可配置自动跳转 Chat。
+                </p>
+                <div class="onboarding-step-actions">
+                  <button
+                    type="button"
+                    id="popup-onboarding-open-options"
+                    class="button secondary"
+                    data-i18n="popupOnboardingOpenOptions"
+                  >
+                    打开管理 Prompts
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="onboarding-footer">
+              <button
+                type="button"
+                id="popup-onboarding-skip"
+                class="onboarding-skip-button"
+                data-i18n="popupOnboardingSkip"
+              >
+                跳过
+              </button>
+
+              <div class="onboarding-nav">
+                <button
+                  type="button"
+                  id="popup-onboarding-prev"
+                  class="button secondary"
+                  data-i18n="popupOnboardingPrev"
+                >
+                  上一步
+                </button>
+                <button
+                  type="button"
+                  id="popup-onboarding-next"
+                  class="button"
+                  data-i18n="popupOnboardingNext"
+                >
+                  下一步
+                </button>
+                <button
+                  type="button"
+                  id="popup-onboarding-finish"
+                  class="button"
+                  data-i18n="popupOnboardingFinish"
+                  hidden
+                >
+                  完成
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

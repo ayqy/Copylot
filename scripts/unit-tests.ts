@@ -50,7 +50,10 @@ function run() {
     chatServices: [],
     defaultAutoOpenChat: false,
     editorExclusionClassNames: [],
-    editorExclusionAttributeSelectors: []
+    editorExclusionAttributeSelectors: [],
+    popupOnboardingVersion: 1,
+    popupOnboardingCompletedVersion: 0,
+    popupOnboardingCompletedAt: undefined
   };
   const snapshot = buildFeedbackSettingsSnapshot(settings);
   assert.deepEqual(Object.keys(snapshot).sort(), [

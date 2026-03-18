@@ -46,6 +46,10 @@ export interface Settings {
   defaultAutoOpenChat: boolean;
   editorExclusionClassNames: string[];
   editorExclusionAttributeSelectors: string[];
+  // Popup onboarding (for new users) - versioned for future upgrades
+  popupOnboardingVersion: number;
+  popupOnboardingCompletedVersion: number;
+  popupOnboardingCompletedAt?: number;
 }
 
 export const SETTINGS_KEY = 'copilot_settings';
@@ -206,7 +210,10 @@ export const DEFAULT_SETTINGS: Settings = {
   defaultChatServiceId: undefined,
   defaultAutoOpenChat: false,
   editorExclusionClassNames: [...DEFAULT_EDITOR_EXCLUSION_CLASSES],
-  editorExclusionAttributeSelectors: [...DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS]
+  editorExclusionAttributeSelectors: [...DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS],
+  popupOnboardingVersion: 1,
+  popupOnboardingCompletedVersion: 0,
+  popupOnboardingCompletedAt: undefined
 };
 
 export function getSystemLanguage(): 'system' | 'en' | 'zh' {
@@ -255,6 +262,9 @@ export async function getSettings(): Promise<Settings> {
         ...DEFAULT_SETTINGS,
         ...storedSettings
       };
+
+      // Ensure onboarding version always follows current extension constant (support future upgrades)
+      mergedSettings.popupOnboardingVersion = DEFAULT_SETTINGS.popupOnboardingVersion;
 
       // 清理历史遗留的 icon 字段以减少存储占用
       mergedSettings.chatServices = mergedSettings.chatServices.map((service) => {
@@ -366,6 +376,9 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
       
       // Merge with new settings
       const mergedSettings = { ...currentSettings, ...settings };
+
+      // Keep onboarding version in sync with current extension constant
+      mergedSettings.popupOnboardingVersion = DEFAULT_SETTINGS.popupOnboardingVersion;
 
       // 再次清除潜在的 icon 字段，避免写回占用空间
       mergedSettings.chatServices = mergedSettings.chatServices.map((service) => {

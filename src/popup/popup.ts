@@ -46,10 +46,38 @@ interface PopupElements {
   shareLink: HTMLAnchorElement;
   copyShareButton: HTMLButtonElement;
   rateLink: HTMLAnchorElement;
+
+  // Popup onboarding
+  onboardingReopenButton: HTMLButtonElement;
+  onboardingModal: HTMLElement;
+  onboardingProgress: HTMLElement;
+  onboardingCloseButton: HTMLButtonElement;
+  onboardingSkipButton: HTMLButtonElement;
+  onboardingPrevButton: HTMLButtonElement;
+  onboardingNextButton: HTMLButtonElement;
+  onboardingFinishButton: HTMLButtonElement;
+  onboardingApplyRecommendedButton: HTMLButtonElement;
+  onboardingOpenOptionsButton: HTMLButtonElement;
+  onboardingStep1: HTMLElement;
+  onboardingStep2: HTMLElement;
+  onboardingStep3: HTMLElement;
 }
 
 let elements: PopupElements;
 let currentSettings: Settings;
+
+const POPUP_ONBOARDING_TOTAL_STEPS = 3;
+const POPUP_ONBOARDING_RECOMMENDED_SETTINGS: Partial<Settings> = {
+  interactionMode: 'click',
+  isHoverMagicCopyEnabled: false,
+  outputFormat: 'markdown',
+  tableOutputFormat: 'markdown',
+  attachTitle: false,
+  attachURL: false
+};
+
+let onboardingCurrentStep = 1;
+let isOnboardingOpen = false;
 
 /**
  * Get all required DOM elements
@@ -88,7 +116,25 @@ function getElements(): PopupElements {
     feedbackLink: document.getElementById('feedback-link') as HTMLAnchorElement,
     shareLink: document.getElementById('share-link') as HTMLAnchorElement,
     copyShareButton: document.getElementById('copy-share-button') as HTMLButtonElement,
-    rateLink: document.getElementById('rate-link') as HTMLAnchorElement
+    rateLink: document.getElementById('rate-link') as HTMLAnchorElement,
+
+    onboardingReopenButton: document.getElementById('popup-onboarding-reopen') as HTMLButtonElement,
+    onboardingModal: document.getElementById('popup-onboarding-modal') as HTMLElement,
+    onboardingProgress: document.getElementById('popup-onboarding-progress') as HTMLElement,
+    onboardingCloseButton: document.getElementById('popup-onboarding-close') as HTMLButtonElement,
+    onboardingSkipButton: document.getElementById('popup-onboarding-skip') as HTMLButtonElement,
+    onboardingPrevButton: document.getElementById('popup-onboarding-prev') as HTMLButtonElement,
+    onboardingNextButton: document.getElementById('popup-onboarding-next') as HTMLButtonElement,
+    onboardingFinishButton: document.getElementById('popup-onboarding-finish') as HTMLButtonElement,
+    onboardingApplyRecommendedButton: document.getElementById(
+      'popup-onboarding-apply-recommended'
+    ) as HTMLButtonElement,
+    onboardingOpenOptionsButton: document.getElementById(
+      'popup-onboarding-open-options'
+    ) as HTMLButtonElement,
+    onboardingStep1: document.getElementById('popup-onboarding-step-1') as HTMLElement,
+    onboardingStep2: document.getElementById('popup-onboarding-step-2') as HTMLElement,
+    onboardingStep3: document.getElementById('popup-onboarding-step-3') as HTMLElement
   };
 }
 
@@ -212,6 +258,69 @@ async function saveCurrentSettings() {
   }
 }
 
+function shouldAutoShowOnboarding(settings: Settings): boolean {
+  return settings.popupOnboardingCompletedVersion < settings.popupOnboardingVersion;
+}
+
+function setOnboardingStep(step: number) {
+  onboardingCurrentStep = Math.min(Math.max(step, 1), POPUP_ONBOARDING_TOTAL_STEPS);
+
+  elements.onboardingStep1.hidden = onboardingCurrentStep !== 1;
+  elements.onboardingStep2.hidden = onboardingCurrentStep !== 2;
+  elements.onboardingStep3.hidden = onboardingCurrentStep !== 3;
+
+  elements.onboardingProgress.textContent = `${onboardingCurrentStep}/${POPUP_ONBOARDING_TOTAL_STEPS}`;
+
+  elements.onboardingPrevButton.disabled = onboardingCurrentStep === 1;
+
+  const isLast = onboardingCurrentStep === POPUP_ONBOARDING_TOTAL_STEPS;
+  elements.onboardingNextButton.hidden = isLast;
+  elements.onboardingFinishButton.hidden = !isLast;
+}
+
+function openOnboardingModal() {
+  isOnboardingOpen = true;
+  setOnboardingStep(1);
+  elements.onboardingModal.style.display = 'flex';
+}
+
+function closeOnboardingModal() {
+  isOnboardingOpen = false;
+  elements.onboardingModal.style.display = 'none';
+}
+
+async function completeOnboarding() {
+  try {
+    const completedVersion = currentSettings.popupOnboardingVersion;
+    const completedAt = Date.now();
+    await saveSettings({
+      popupOnboardingCompletedVersion: completedVersion,
+      popupOnboardingCompletedAt: completedAt
+    });
+
+    currentSettings = {
+      ...currentSettings,
+      popupOnboardingCompletedVersion: completedVersion,
+      popupOnboardingCompletedAt: completedAt
+    };
+
+    closeOnboardingModal();
+  } catch (error) {
+    console.error('Error completing onboarding:', error);
+    closeOnboardingModal();
+  }
+}
+
+async function applyRecommendedSettings() {
+  try {
+    await saveSettings(POPUP_ONBOARDING_RECOMMENDED_SETTINGS);
+    currentSettings = { ...currentSettings, ...POPUP_ONBOARDING_RECOMMENDED_SETTINGS };
+    updateUIFromSettings(currentSettings);
+  } catch (error) {
+    console.error('Error applying recommended settings:', error);
+  }
+}
+
 /**
  * Setup event listeners for form elements
  */
@@ -314,6 +423,49 @@ function setupEventListeners() {
   //     closeModal();
   //   }
   // });
+
+  // Onboarding entry
+  elements.onboardingReopenButton.addEventListener('click', () => {
+    openOnboardingModal();
+  });
+
+  // Onboarding modal controls
+  elements.onboardingCloseButton.addEventListener('click', () => {
+    completeOnboarding();
+  });
+  elements.onboardingSkipButton.addEventListener('click', () => {
+    completeOnboarding();
+  });
+  elements.onboardingPrevButton.addEventListener('click', () => {
+    setOnboardingStep(onboardingCurrentStep - 1);
+  });
+  elements.onboardingNextButton.addEventListener('click', () => {
+    setOnboardingStep(onboardingCurrentStep + 1);
+  });
+  elements.onboardingFinishButton.addEventListener('click', () => {
+    completeOnboarding();
+  });
+  elements.onboardingApplyRecommendedButton.addEventListener('click', () => {
+    applyRecommendedSettings();
+  });
+  elements.onboardingOpenOptionsButton.addEventListener('click', () => {
+    chrome.runtime.openOptionsPage();
+  });
+
+  // Click outside modal-content closes onboarding (acts like skip)
+  elements.onboardingModal.addEventListener('click', (event) => {
+    if (event.target === elements.onboardingModal) {
+      completeOnboarding();
+    }
+  });
+
+  // Escape closes onboarding (acts like skip)
+  document.addEventListener('keydown', (event) => {
+    if (!isOnboardingOpen) return;
+    if (event.key === 'Escape') {
+      completeOnboarding();
+    }
+  });
 }
 
 /**
@@ -423,6 +575,11 @@ async function initialize() {
     setupFormHandler();
     setupKeyboardNavigation();
     setupAccessibility();
+
+    // Auto show onboarding for new users (zero-disturb: only when not completed)
+    if (shouldAutoShowOnboarding(currentSettings)) {
+      openOnboardingModal();
+    }
 
     console.debug('Popup initialized successfully');
   } catch (error) {

@@ -171,6 +171,70 @@
   "managePrompts": {
     "message": "Manage Prompts"
   },
+  "popupOnboardingReopen": {
+    "message": "Quick Start Guide",
+    "description": "Entry in popup to reopen onboarding"
+  },
+  "popupOnboardingTitle": {
+    "message": "Welcome to Copylot",
+    "description": "Onboarding modal title"
+  },
+  "popupOnboardingStep1Title": {
+    "message": "Step 1: Start copying",
+    "description": "Onboarding step 1 title"
+  },
+  "popupOnboardingStep1Desc1": {
+    "message": "Choose your trigger: single-click / double-click / hover.",
+    "description": "Onboarding step 1 description"
+  },
+  "popupOnboardingStep1Desc2": {
+    "message": "You can also apply our recommended settings (no intrusive features).",
+    "description": "Onboarding step 1 description"
+  },
+  "popupOnboardingApplyRecommended": {
+    "message": "Apply recommended settings",
+    "description": "Button to apply recommended settings"
+  },
+  "popupOnboardingStep2Title": {
+    "message": "Step 2: Append Mode",
+    "description": "Onboarding step 2 title"
+  },
+  "popupOnboardingStep2Desc1": {
+    "message": "Hold Shift to append copies and paste them as one merged block.",
+    "description": "Onboarding step 2 description"
+  },
+  "popupOnboardingStep2Desc2": {
+    "message": "You can enable it via the \"Append Mode\" switch in the popup.",
+    "description": "Onboarding step 2 description"
+  },
+  "popupOnboardingStep3Title": {
+    "message": "Step 3: Manage Prompts",
+    "description": "Onboarding step 3 title"
+  },
+  "popupOnboardingStep3Desc1": {
+    "message": "Create/edit prompt templates and configure auto-open chat in the Options page.",
+    "description": "Onboarding step 3 description"
+  },
+  "popupOnboardingOpenOptions": {
+    "message": "Open Prompt Manager",
+    "description": "Button to open options page"
+  },
+  "popupOnboardingSkip": {
+    "message": "Skip",
+    "description": "Onboarding skip button"
+  },
+  "popupOnboardingPrev": {
+    "message": "Back",
+    "description": "Onboarding previous button"
+  },
+  "popupOnboardingNext": {
+    "message": "Next",
+    "description": "Onboarding next button"
+  },
+  "popupOnboardingFinish": {
+    "message": "Finish",
+    "description": "Onboarding finish button"
+  },
   "optionsTitle": {
     "message": "Prompt Manager - Copylot"
   },

@@ -171,6 +171,70 @@
   "managePrompts": {
     "message": "管理Prompts"
   },
+  "popupOnboardingReopen": {
+    "message": "新手引导",
+    "description": "Popup 中重新打开引导的入口"
+  },
+  "popupOnboardingTitle": {
+    "message": "欢迎使用 Copylot",
+    "description": "引导弹窗标题"
+  },
+  "popupOnboardingStep1Title": {
+    "message": "第 1 步：开始复制",
+    "description": "引导第 1 步标题"
+  },
+  "popupOnboardingStep1Desc1": {
+    "message": "选择你习惯的触发方式：单击 / 双击 / 悬停。",
+    "description": "引导第 1 步说明"
+  },
+  "popupOnboardingStep1Desc2": {
+    "message": "你也可以一键应用推荐配置（不打开打扰性功能）。",
+    "description": "引导第 1 步说明"
+  },
+  "popupOnboardingApplyRecommended": {
+    "message": "应用推荐设置",
+    "description": "一键应用推荐设置按钮"
+  },
+  "popupOnboardingStep2Title": {
+    "message": "第 2 步：追加模式",
+    "description": "引导第 2 步标题"
+  },
+  "popupOnboardingStep2Desc1": {
+    "message": "按住 Shift 进行“追加复制”，可在粘贴时合并为一段。",
+    "description": "引导第 2 步说明"
+  },
+  "popupOnboardingStep2Desc2": {
+    "message": "你可以在 Popup 里打开“Append Mode”开关来启用。",
+    "description": "引导第 2 步说明"
+  },
+  "popupOnboardingStep3Title": {
+    "message": "第 3 步：管理 Prompts",
+    "description": "引导第 3 步标题"
+  },
+  "popupOnboardingStep3Desc1": {
+    "message": "通过“管理 Prompts”添加/编辑指令模板，并可在 Options 页配置自动跳转 Chat。",
+    "description": "引导第 3 步说明"
+  },
+  "popupOnboardingOpenOptions": {
+    "message": "打开管理 Prompts",
+    "description": "跳转到 Options 页按钮"
+  },
+  "popupOnboardingSkip": {
+    "message": "跳过",
+    "description": "引导跳过按钮"
+  },
+  "popupOnboardingPrev": {
+    "message": "上一步",
+    "description": "引导上一步按钮"
+  },
+  "popupOnboardingNext": {
+    "message": "下一步",
+    "description": "引导下一步按钮"
+  },
+  "popupOnboardingFinish": {
+    "message": "完成",
+    "description": "引导完成按钮"
+  },
   "optionsTitle": {
     "message": "Prompt管理器 - Copylot"
   },
