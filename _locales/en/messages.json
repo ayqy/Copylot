@@ -4,7 +4,7 @@
     "description": "Extension name"
   },
   "appDescription": {
-    "message": "A browser extension to copy web page content as AI-friendly format.",
+    "message": "Copy web pages as clean Markdown/CSV, and apply Prompt templates for AI. Privacy-first, local processing.",
     "description": "Extension description"
   },
   "copy": {

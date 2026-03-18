@@ -1,99 +1,89 @@
-# Privacy Policy for MagicCopy
+# Privacy Policy for Copylot
 
-**Last Updated:** December 2024
+**Last Updated:** 2026-03-19
 
 ## Overview
 
-MagicCopy is a Chrome browser extension that helps users intelligently copy web page content in AI-friendly formats. This privacy policy explains how we handle your information when you use our extension.
+Copylot is a browser extension that helps you copy web content into clean, AI-friendly formats (for example: Markdown/CSV/Plain Text). This privacy policy explains what Copylot processes and stores when you use the extension.
 
-## Information We Collect
+## What Copylot Processes (On Your Device)
 
-### Data We DO NOT Collect
+To provide the copy/format features, Copylot reads the relevant parts of the current web page inside your browser when you trigger an action (for example: click/double-click to copy a block, hover-to-copy for code blocks, or use the context menu).
 
-MagicCopy is designed with privacy in mind. We **do not collect, store, or transmit** any of the following:
+All extraction/cleanup/formatting happens locally on your device. The formatted result is written to your clipboard.
 
+## Data We Do NOT Collect or Upload
+
+Copylot does **not** send your copied content or browsing data to any Copylot server. In particular, we do not collect or upload:
+
+- Any copied web page content
 - Personal information (name, email, phone number, address)
-- Browsing history or website visits
-- Web page content you view or copy
-- Search queries or user behavior data
-- Cookies or tracking data
-- Any data that could identify you personally
+- Browsing history
+- The full URLs/titles/content of the pages you visit (not uploaded)
+- Any third-party analytics identifiers or tracking cookies
 
-### Data We DO Collect and Store Locally
+## Data Stored in Your Browser
 
-The extension only stores the following data **locally on your device**:
+Copylot stores some data in your browser storage to make the extension work and to remember your preferences. This data is not uploaded to Copylot.
 
-- **User Preferences**: Your chosen settings such as:
-  - Output format preference (Markdown or Plain Text)
-  - Language preference (English or Chinese)
-  - Additional information settings (whether to include page title/URL)
-  - Extension enable/disable status
+### Settings / Prompts / Chat Services (Browser Storage)
 
-This data is stored using Chrome's local storage API (`chrome.storage.local`) and **never leaves your device**.
+- Storage: `chrome.storage.sync`
+- Key: `copilot_settings`
+- What it may include:
+  - Extension settings (format options, interaction mode, switches)
+  - Your Prompt templates and their usage counters (if you create/edit prompts)
+  - Chat service configuration (built-in services + any custom services you add)
 
-## How We Use Your Information
+Note: `chrome.storage.sync` is provided by the browser. If you enable Chrome Sync in your browser, this data may be synced across your devices by Chrome/Google. Copylot does not operate that sync service and does not receive this data.
 
-The locally stored preferences are used solely to:
+### Growth / UX Stats (Local Only)
 
-- Remember your preferred output format and language settings
-- Provide a consistent user experience across browser sessions
-- Enable/disable extension functionality based on your preferences
+- Storage: `chrome.storage.local`
+- Key: `copilot_growth_stats`
+- What it includes:
+  - Install timestamp
+  - Successful copy count (for showing one-time prompts like rating guidance)
+  - One-time rating prompt state (shown/action/time)
 
-## Data Sharing and Third Parties
+### Anonymous Usage Data (Optional, Local Only)
 
-We **do not share any data** with third parties because:
+Copylot provides an “Anonymous usage data” toggle for privacy-safe, local-only observability.
 
-- We don't collect any personal or browsing data
-- All processing happens locally on your device
-- No data is transmitted to external servers
-- No analytics or tracking services are used
+- Default: **OFF**
+- Storage: `chrome.storage.local`
+- Key: `copilot_telemetry_events`
+- When ON: Copylot records a local event log with a strict schema (event name, timestamp, and a small set of allowlisted enum-like fields).
+- What it never contains: any copied content, page content, URLs, page titles, or other sensitive data.
+- Network: **not sent over the network**
+- Retention: keeps up to the most recent 100 events (FIFO)
+- When turned OFF: the local event log is cleared immediately
+
+## External Pages and Third Parties
+
+Some features may open external pages (for example: GitHub Issues for feedback, Chrome Web Store pages for rating/sharing, or the chat services you choose to open). Those websites are operated by third parties and their privacy practices are governed by their own policies.
+
+Copylot does not automatically upload your copied content to those websites. You control what you paste or submit.
 
 ## Permissions We Request
 
-Our extension requests the following Chrome permissions:
+Copylot requests the following Chrome extension permissions:
 
-- **storage**: To save your preferences locally on your device
-- **clipboardWrite**: To copy formatted content to your clipboard
-- **contextMenus**: To provide right-click context menu options for page conversion
+- `storage`: to store your settings (and optional local logs) in browser storage
+- `clipboardWrite`: to write the formatted result into your clipboard
+- `contextMenus`: to provide right-click menu actions
 
-These permissions are used solely for the extension's core functionality and not for data collection.
+Copylot also runs content scripts on web pages (as declared in `manifest.json`) to enable the copy/format functionality. The page processing happens locally on your device as described above.
 
-## Data Security
+## Your Choices
 
-Since all data processing occurs locally on your device and no data is transmitted externally:
+- You can change settings at any time in the extension Options/Popup.
+- You can keep “Anonymous usage data” OFF (default). Turning it OFF clears the local event log immediately.
+- Uninstalling the extension removes its local data from your browser.
 
-- Your copied content never leaves your browser
-- Your settings are stored securely using Chrome's built-in storage mechanisms
-- No network connections are made for data transmission
-- No external servers have access to your information
+## Contact
 
-## Your Rights and Choices
+If you have questions or concerns about this privacy policy, please contact us via:
 
-You have complete control over your data:
+- GitHub Issues: https://github.com/ayqy/copy/issues/new
 
-- **Settings**: You can modify or reset your preferences at any time through the extension popup
-- **Uninstall**: Removing the extension will delete all locally stored preferences
-- **Disable**: You can disable the extension without losing your settings
-
-## Changes to This Policy
-
-We may update this privacy policy from time to time. Any changes will be posted in this document with an updated "Last Updated" date. Continued use of the extension after changes constitutes acceptance of the updated policy.
-
-## Contact Us
-
-If you have any questions about this privacy policy or our data practices, please contact us:
-
-- **GitHub Issues**: [https://github.com/ayqy/MagicCopy/issues/new](https://github.com/ayqy/MagicCopy/issues/new)
-
-## Compliance
-
-This privacy policy is designed to comply with:
-
-- Chrome Web Store Developer Program Policies
-- General Data Protection Regulation (GDPR)
-- California Consumer Privacy Act (CCPA)
-- Other applicable privacy laws and regulations
-
-## Summary
-
-MagicCopy is built with privacy as a core principle. We do not collect, store, or transmit any personal information or browsing data. All functionality operates locally on your device, ensuring your privacy and data security. 

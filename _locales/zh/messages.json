@@ -4,7 +4,7 @@
     "description": "Extension name"
   },
   "appDescription": {
-    "message": "智能复制网页内容为AI友好格式的浏览器插件。",
+    "message": "智能提取网页并复制为干净 Markdown/CSV，可用 Prompt 模板一键整理；隐私优先，本地处理。",
     "description": "Extension description"
   },
   "copy": {
