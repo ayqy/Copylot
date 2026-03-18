@@ -173,6 +173,37 @@ function getSelectionContent(): Element | null {
   return selectedElement;
 }
 
+/**
+ * 统一“选区处理根节点”选择逻辑：
+ * - 表格内选区：优先整表（table ancestor）
+ * - 非表格选区：使用精确选区 fragment（保留 <a>/<b>/<code> 等内联结构）
+ * - 兜底：回退到原有 getSelectionContent() 逻辑
+ */
+function getSelectionRootElementForProcessing(): Element | null {
+  const selection = window.getSelection();
+  if (!selection || !hasMeaningfulSelection(selection)) {
+    return null;
+  }
+
+  const selectedElement = getSelectedElement();
+  if (selectedElement) {
+    // @ts-ignore: getTableAncestor is available from inlined block-identifier.ts
+    const tableAncestor = getTableAncestor(selectedElement);
+    if (tableAncestor) {
+      console.debug('AI Copilot: Selection is inside a table, using table ancestor as root:', tableAncestor);
+      return tableAncestor;
+    }
+  }
+
+  const preciseSelectedElement = getPreciseSelectedElement();
+  if (preciseSelectedElement) {
+    console.debug('AI Copilot: Using precise selection fragment as root');
+    return preciseSelectedElement;
+  }
+
+  return getSelectionContent();
+}
+
 function isFromEditableContext(element: Element | null): boolean {
   if (!element) {
     return false;
@@ -1036,26 +1067,17 @@ async function initializeContentScript(): Promise<void> {
           await loadSettingsAndApply();
         }
         if (userSettings) {
-          // 优先处理用户精确选区
-          const preciseSelectedElement = getPreciseSelectedElement();
+          const selectionRoot = getSelectionRootElementForProcessing();
           let content: string;
-          
-          if (preciseSelectedElement) {
-            console.debug('AI Copilot: Processing precise user selection');
+
+          if (selectionRoot) {
+            console.debug('AI Copilot: Processing selection root element');
             // @ts-ignore: processContent is available from inlined content-processor.ts
-            content = processContent(preciseSelectedElement, userSettings);
+            content = processContent(selectionRoot, userSettings);
           } else {
-            // 回退到原有的选区处理逻辑
-            const selectedElement = getSelectionContent();
-            if (selectedElement) {
-              console.debug('AI Copilot: Processing selected content');
-              // @ts-ignore: processElementWithTableDetection is available from inlined content-processor.ts
-              content = processElementWithTableDetection(selectedElement, userSettings);
-            } else {
-              console.debug('AI Copilot: No selection found, processing entire page');
-              // @ts-ignore: processContent is available from inlined content-processor.ts
-              content = processContent(document.body, userSettings);
-            }
+            console.debug('AI Copilot: No selection found, processing entire page');
+            // @ts-ignore: processContent is available from inlined content-processor.ts
+            content = processContent(document.body, userSettings);
           }
           
           if (content.trim()) {
@@ -1082,15 +1104,14 @@ async function initializeContentScript(): Promise<void> {
           await loadSettingsAndApply();
         }
         if (userSettings) {
-          // 优先处理用户精确选区
-          const preciseSelectedElement = getPreciseSelectedElement();
-          if (preciseSelectedElement) {
-            console.debug('AI Copilot: Processing precise selection with prompt');
+          const selectionRoot = getSelectionRootElementForProcessing();
+          if (selectionRoot) {
+            console.debug('AI Copilot: Processing selection root element with prompt');
             // @ts-ignore: processContent is available from inlined content-processor.ts
-            const content = processContent(preciseSelectedElement, userSettings);
+            const content = processContent(selectionRoot, userSettings);
             // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
             const finalText = combinePromptWithContent(message.promptTemplate, content);
-            
+
             try {
               await copyToClipboard(finalText);
               void recordTelemetryEvent('copy_success');
@@ -1102,15 +1123,13 @@ async function initializeContentScript(): Promise<void> {
               sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
             }
           } else {
-            // 回退到原有的选区处理逻辑
-            const selectedElement = getSelectionContent();
-            if (selectedElement) {
-              console.debug('AI Copilot: Processing selected content with prompt');
-              // @ts-ignore: processElementWithTableDetection is available from inlined content-processor.ts
-              const content = processElementWithTableDetection(selectedElement, userSettings);
+            console.debug('AI Copilot: No DOM selection found, using text selection');
+            // 回退到原有逻辑，使用纯文本
+            const selection = window.getSelection();
+            const selectedText = selection ? selection.toString() : '';
+            if (selectedText) {
               // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
-              const finalText = combinePromptWithContent(message.promptTemplate, content);
-              
+              const finalText = combinePromptWithContent(message.promptTemplate, selectedText);
               try {
                 await copyToClipboard(finalText);
                 void recordTelemetryEvent('copy_success');
@@ -1118,29 +1137,10 @@ async function initializeContentScript(): Promise<void> {
                 await reportSuccessfulCopy();
                 sendResponse({ success: true });
               } catch (error) {
-                console.error('Error copying to clipboard:', error);
                 sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
               }
             } else {
-              console.debug('AI Copilot: No DOM selection found, using text selection');
-              // 回退到原有逻辑，使用纯文本
-              const selection = window.getSelection();
-              const selectedText = selection ? selection.toString() : '';
-              if (selectedText) {
-                // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
-                const finalText = combinePromptWithContent(message.promptTemplate, selectedText);
-                try {
-                  await copyToClipboard(finalText);
-                  void recordTelemetryEvent('copy_success');
-                  void recordTelemetryEvent('prompt_used');
-                  await reportSuccessfulCopy();
-                  sendResponse({ success: true });
-                } catch (error) {
-                  sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
-                }
-              } else {
-                sendResponse({ success: false, error: getMessage('noContentSelected') });
-              }
+              sendResponse({ success: false, error: getMessage('noContentSelected') });
             }
           }
         } else {

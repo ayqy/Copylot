@@ -36,6 +36,11 @@
     "expected": "| Feature | Value |\n| --- | --- |\n| Name | Copylot |\n| Lang | Chinese |"
   },
   {
+    "path": "cases/table-selection-inside-table.html",
+    "title": "table selection inside table",
+    "expected": "Outside paragraph (A): select text here to verify non-table selection still uses precise selection. **Bold** and [link](https://example.com/outside).\n\n| Col A | Col B |\n| --- | --- |\n| Cell A1 with [link](https://example.com/a1) and inline `code`. | Cell B1 with **bold** and *em*. |\n| Cell A2 plain text. | Cell B2 with nested inline elements: [`code-link`](https://example.com/b2). |\n\nOutside paragraph (B): used to verify conversion behavior when selection is outside the table.\n"
+  },
+  {
     "path": "cases/vs-marketplace-nonstandard-table.html",
     "title": "vs marketplace nonstandard table",
     "expected": "VS Marketplace sample (nonstandard tables below):\n\n| — | — |\n| --- | --- |\n| ![Claude Code for VS Code](https://example.com/icon.png) | # Claude Code for VS Code<br>## [Anthropic](chrome-extension://hjgbehelkepoedbdpdegbedghndjmgnm/test/index.html#)<br>\\|<br>1,078,013 installs<br>\\| Free |\n\nDetails table:\n\n| — | — |\n| --- | --- |\n| Version | 2.0.10 |\n| Released on | 2025/6/19 00:32:16 |\n| Publisher | Anthropic |"

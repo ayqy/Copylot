@@ -277,21 +277,10 @@ function toGfmMarkdownOrFallback(table: HTMLTableElement): string {
  * @returns 处理后的内容
  */
 export function processElementWithTableDetection(element: Element, settings: Settings): string {
-  // 预处理可见性
-  const visibleClone = createVisibleClone(element);
-
-  const tables = detectTablesInElement(visibleClone);
-  
-  if (tables.length === 1 && visibleClone instanceof HTMLTableElement) {
-    // 单纯的表格元素，直接处理
-    return processContent(visibleClone, settings);
-  } else if (tables.length > 0 && !(visibleClone instanceof HTMLTableElement)) {
-    // 包含表格的复合元素，需要特殊处理
-    return processElementWithMixedContent(visibleClone, tables, settings);
-  } else {
-    // 不包含表格，正常处理
-    return processContent(visibleClone, settings);
-  }
+  // NOTE(v1-10): 该函数历史上在此处提前 createVisibleClone()，随后又调用 processContent()
+  // 导致同一路径发生两次可见性裁剪。自 v1-10 起收敛为 processContent() 的薄封装，
+  // 由 processContent() 统一负责（且仅负责一次）createVisibleClone()。
+  return processContent(element, settings);
 }
 
 /**
