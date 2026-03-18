@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable no-control-regex */
-
 /**
  * 检测项目中未本地化的固定文案
  * 使用 TypeScript AST 分析，准确识别需要本地化的字符串字面量

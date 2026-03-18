@@ -258,11 +258,11 @@ export async function getSettings(): Promise<Settings> {
 
       // 清理历史遗留的 icon 字段以减少存储占用
       mergedSettings.chatServices = mergedSettings.chatServices.map((service) => {
-        const normalized = { ...service } as Record<string, unknown>;
+        const normalized = { ...service } as ChatService & { icon?: unknown };
         if ('icon' in normalized) {
           delete normalized.icon;
         }
-        return normalized as ChatService;
+        return normalized;
       });
 
       if (!mergedSettings.editorExclusionClassNames || !Array.isArray(mergedSettings.editorExclusionClassNames)) {
@@ -369,11 +369,11 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
 
       // 再次清除潜在的 icon 字段，避免写回占用空间
       mergedSettings.chatServices = mergedSettings.chatServices.map((service) => {
-        const normalized = { ...service } as Record<string, unknown>;
+        const normalized = { ...service } as ChatService & { icon?: unknown };
         if ('icon' in normalized) {
           delete normalized.icon;
         }
-        return normalized as ChatService;
+        return normalized;
       });
 
       // Check storage size limits

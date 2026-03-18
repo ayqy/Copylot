@@ -9,6 +9,7 @@ import type { Settings } from '../shared/settings-manager';
 declare function findEditableContext(element: Element | null): HTMLElement | null;
 declare const DEFAULT_EDITOR_EXCLUSION_CLASSES: string[] | undefined;
 declare const DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS: string[] | undefined;
+declare function getMessage(key: string): string;
 
 /* INLINE:block-identifier */
 /* INLINE:settings-manager */
@@ -988,7 +989,7 @@ async function initializeContentScript(): Promise<void> {
     }
 
     // Listener for messages from background script or popup
-    chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+    chrome.runtime.onMessage.addListener(async (message, _sender, sendResponse) => {
       if (message.type === 'CONVERT_PAGE') {
         if (!userSettings) {
           await loadSettingsAndApply();

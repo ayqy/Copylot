@@ -59,6 +59,55 @@
     "message": "Feedback & Suggestions",
     "description": "Feedback link text"
   },
+  "shareWithFriends": {
+    "message": "Share",
+    "description": "Share entry in popup"
+  },
+  "copyShareText": {
+    "message": "Copy Text",
+    "description": "Copy share text button"
+  },
+  "rateUs": {
+    "message": "Rate",
+    "description": "Rate entry in popup"
+  },
+  "shareCopyTextTemplate": {
+    "message": "I'm using Copylot to copy webpages into an AI-friendly format. Try it: $STORE_URL$",
+    "description": "Share copy text template",
+    "placeholders": {
+      "STORE_URL": {
+        "content": "$1"
+      }
+    }
+  },
+  "feedbackIssueTitleTemplate": {
+    "message": "Feedback: <Please summarize in one sentence>",
+    "description": "Default GitHub issue title for feedback"
+  },
+  "feedbackIssueBodyTemplate": {
+    "message": "## Privacy Notice\\n- Please do NOT paste any copied content or personal data.\\n\\n## Environment\\n- Extension Version: $EXT_VERSION$\\n- Extension ID: $EXT_ID$\\n- User Agent: $USER_AGENT$\\n- navigator.language: $NAV_LANG$\\n- UI Language: $UI_LANG$\\n\\n## Settings Snapshot (copilot_settings)\\n```json\\n$SETTINGS_JSON$\\n```\\n\\n## Steps to Reproduce\\n1. \\n\\n## Expected Result\\n-\\n\\n## Actual Result\\n-\\n",
+    "description": "GitHub issue body template for feedback",
+    "placeholders": {
+      "EXT_VERSION": {
+        "content": "$1"
+      },
+      "EXT_ID": {
+        "content": "$2"
+      },
+      "USER_AGENT": {
+        "content": "$3"
+      },
+      "NAV_LANG": {
+        "content": "$4"
+      },
+      "UI_LANG": {
+        "content": "$5"
+      },
+      "SETTINGS_JSON": {
+        "content": "$6"
+      }
+    }
+  },
   "source": {
     "message": "Source",
     "description": "Source prefix for copied content"

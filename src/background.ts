@@ -1,4 +1,4 @@
-import { getSettings, saveSettings, type Prompt, type ChatService, combinePromptWithContent } from './shared/settings-manager';
+import { getSettings, saveSettings, type Prompt, type ChatService } from './shared/settings-manager';
 
 const PARENT_MENU_ID = 'magic-copy-with-prompt';
 

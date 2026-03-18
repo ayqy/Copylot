@@ -4,17 +4,16 @@ import {
   getSettings,
   saveSettings,
   type Settings,
-  type Prompt,
   FORCE_UI_LANGUAGE
 } from '../shared/settings-manager';
-// Simple UUID generator for Chrome extension
-function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
+import {
+  buildChromeWebStoreDetailUrl,
+  buildChromeWebStoreReviewsUrl,
+  buildFeedbackIssueUrl,
+  buildFeedbackSettingsSnapshot,
+  buildShareCopyText,
+  type I18nGetMessage
+} from '../shared/word-of-mouth';
 
 // DOM Elements
 interface PopupElements {
@@ -43,6 +42,10 @@ interface PopupElements {
   cancelPromptButton: HTMLButtonElement;
   closeModalButton: HTMLElement;
   popupContent: HTMLElement;
+  feedbackLink: HTMLAnchorElement;
+  shareLink: HTMLAnchorElement;
+  copyShareButton: HTMLButtonElement;
+  rateLink: HTMLAnchorElement;
 }
 
 let elements: PopupElements;
@@ -81,7 +84,18 @@ function getElements(): PopupElements {
     savePromptButton: document.getElementById('save-prompt-button') as HTMLButtonElement,
     cancelPromptButton: document.getElementById('cancel-prompt-button') as HTMLButtonElement,
     closeModalButton: document.querySelector('.close-button') as HTMLElement,
-    popupContent: document.getElementById('popup-content') as HTMLElement
+    popupContent: document.getElementById('popup-content') as HTMLElement,
+    feedbackLink: document.getElementById('feedback-link') as HTMLAnchorElement,
+    shareLink: document.getElementById('share-link') as HTMLAnchorElement,
+    copyShareButton: document.getElementById('copy-share-button') as HTMLButtonElement,
+    rateLink: document.getElementById('rate-link') as HTMLAnchorElement
+  };
+}
+
+function createI18nGetMessage(): I18nGetMessage {
+  type MessageSubstitutions = Parameters<typeof chrome.i18n.getMessage>[1];
+  return (key: string, substitutions?: string | string[]) => {
+    return chrome.i18n.getMessage(key, substitutions as MessageSubstitutions);
   };
 }
 
@@ -202,6 +216,8 @@ async function saveCurrentSettings() {
  * Setup event listeners for form elements
  */
 function setupEventListeners() {
+  const getMessage = createI18nGetMessage();
+
   // Interaction mode radio buttons
   elements.interactionClick.addEventListener('change', saveCurrentSettings);
   elements.interactionDblClick.addEventListener('change', saveCurrentSettings);
@@ -239,6 +255,55 @@ function setupEventListeners() {
   elements.addPromptButton.addEventListener('click', () => {
     chrome.runtime.openOptionsPage();
     window.close();
+  });
+
+  elements.feedbackLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    const mergedSettings = { ...currentSettings, ...getSettingsFromUI() } as Settings;
+    const feedbackUrl = buildFeedbackIssueUrl({
+      env: {
+        extensionVersion: chrome.runtime.getManifest().version || '',
+        extensionId: chrome.runtime.id,
+        userAgent: navigator.userAgent || '',
+        navigatorLanguage: navigator.language || '',
+        uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
+      },
+      settingsSnapshot: buildFeedbackSettingsSnapshot(mergedSettings),
+      getMessage
+    });
+    chrome.tabs.create({ url: feedbackUrl });
+    window.close();
+  });
+
+  elements.shareLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id);
+    chrome.tabs.create({ url: storeUrl });
+    window.close();
+  });
+
+  elements.rateLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id);
+    chrome.tabs.create({ url: reviewsUrl });
+    window.close();
+  });
+
+  elements.copyShareButton.addEventListener('click', async () => {
+    const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id);
+    const shareText = buildShareCopyText(getMessage, storeUrl);
+    const originalText = elements.copyShareButton.textContent || '';
+
+    try {
+      await navigator.clipboard.writeText(shareText);
+      elements.copyShareButton.textContent = chrome.i18n.getMessage('copied') || originalText;
+      window.setTimeout(() => {
+        elements.copyShareButton.textContent = chrome.i18n.getMessage('copyShareText') || originalText;
+      }, 1200);
+    } catch (error) {
+      console.error('Error copying share text:', error);
+      elements.copyShareButton.textContent = originalText;
+    }
   });
   // Remove old modal handlers as we're redirecting to options page
   // elements.promptForm.addEventListener('submit', handleSavePrompt);
@@ -300,56 +365,6 @@ function setupAccessibility() {
     option.setAttribute('role', 'checkbox');
     option.setAttribute('tabindex', '0');
   });
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-async function handleSavePrompt(event: Event) {
-  event.preventDefault();
-  const id = elements.promptId.value;
-  const title = elements.promptTitle.value;
-  const template = elements.promptTemplate.value;
-
-  if (id) {
-    // Editing existing prompt
-    const prompt = currentSettings.userPrompts.find((p) => p.id === id);
-    if (prompt) {
-      prompt.title = title;
-      prompt.template = template;
-    }
-  } else {
-    // Adding new prompt
-    currentSettings.userPrompts.push({ id: generateUUID(), title, template });
-  }
-
-  await saveSettings({ userPrompts: currentSettings.userPrompts });
-  notifyBackgroundScript();
-  closeModal();
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-function openModal(prompt: Prompt | null = null) {
-  elements.popupContent.style.filter = 'blur(5px)';
-  if (prompt) {
-    elements.modalTitle.textContent = chrome.i18n.getMessage('editPrompt') || 'Edit Prompt';
-    elements.promptId.value = prompt.id;
-    elements.promptTitle.value = prompt.title;
-    elements.promptTemplate.value = prompt.template;
-  } else {
-    elements.modalTitle.textContent =
-      chrome.i18n.getMessage('addNewPromptButton') || 'Add New Prompt';
-    elements.promptForm.reset();
-    elements.promptId.value = '';
-  }
-  elements.promptModal.style.display = 'block';
-}
-
-function closeModal() {
-  elements.promptModal.style.display = 'none';
-  elements.popupContent.style.filter = 'none';
-}
-
-function notifyBackgroundScript() {
-  chrome.runtime.sendMessage({ type: 'update-context-menu' });
 }
 
 /**

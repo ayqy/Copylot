@@ -62,7 +62,12 @@ export function getDropdownIcon(): string {
   `;
 }
 
-export function createPromptMenu(prompts: any[]): HTMLElement {
+export interface PromptMenuItem {
+  id: string;
+  title: string;
+}
+
+export function createPromptMenu(prompts: PromptMenuItem[]): HTMLElement {
   const menu = document.createElement('div');
   menu.className = 'ai-copilot-prompt-menu';
   menu.style.cssText = `
@@ -137,7 +142,7 @@ export function hidePromptMenu(button: HTMLElement): void {
   }
 }
 
-export function updatePromptMenu(button: HTMLElement, prompts: any[]): void {
+export function updatePromptMenu(button: HTMLElement, prompts: PromptMenuItem[]): void {
   const existingMenu = button.querySelector('.ai-copilot-prompt-menu');
   if (existingMenu) {
     existingMenu.remove();

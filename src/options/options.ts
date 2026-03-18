@@ -235,7 +235,7 @@ async function manualSync() {
     elements.syncStatusText.textContent = getMessage('syncStatusFailed');
     elements.syncStatusBtn.style.color = 'var(--error-color)';
     const errorMessage = (error as Error).message;
-    showNotification(getMessage('syncFailure', { error: errorMessage }), 'error');
+    showNotification(getMessage('syncFailure', [errorMessage]), 'error');
   }
 }
 

@@ -246,9 +246,20 @@ body {
   background-color: #f9fafb;
   padding: 6px 10px;
   border-top: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.feedback-link {
+.footer-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.footer-link {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -256,15 +267,39 @@ body {
   text-decoration: none;
   font-size: 13px;
   transition: color 0.2s ease;
+  flex: 1;
 }
 
-.feedback-link:hover {
+.footer-link:hover {
   color: #4f46e5;
 }
 
-.feedback-link svg {
+.footer-link svg {
   width: 16px;
   height: 16px;
+  flex: 0 0 auto;
+}
+
+.footer-button {
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #4f46e5;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+  flex: 0 0 auto;
+}
+
+.footer-button:hover {
+  border-color: #c7d2fe;
+  background: #eef2ff;
 }
 
 /* Focus States */
@@ -527,12 +562,24 @@ input:checked + .slider:before {
     border-color: #374151;
   }
 
-  .feedback-link {
+  .footer-link {
     color: #9ca3af;
   }
 
-  .feedback-link:hover {
+  .footer-link:hover {
     color: #6366f1;
+  }
+
+  .footer-button {
+    border-color: #374151;
+    background: #1f2937;
+    color: #a5b4fc;
+  }
+
+  .footer-button:hover {
+    border-color: #4b5563;
+    background: #111827;
+    color: #c7d2fe;
   }
 }
 

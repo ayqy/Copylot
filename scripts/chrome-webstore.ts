@@ -56,7 +56,7 @@ function logError(msg: string) {
 }
 
 // 改进的错误显示函数
-function displayError(error: any, context: string = '') {
+function displayError(error: unknown, context: string = '') {
   logError(`${context}发生错误：`);
   
   if (error instanceof Error) {
@@ -74,7 +74,7 @@ function displayError(error: any, context: string = '') {
       console.error('错误详细信息:');
       errorProps.forEach(prop => {
         try {
-          const value = (error as any)[prop];
+          const value = (error as Record<string, unknown>)[prop];
           console.error(`  ${prop}: ${JSON.stringify(value, null, 2)}`);
         } catch (e) {
           console.error(`  ${prop}: [无法序列化]`);
