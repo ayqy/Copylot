@@ -127,6 +127,15 @@ function normalizeStoredTelemetryEvents(stored: unknown): TelemetryEvent[] {
   return sanitized;
 }
 
+/**
+ * 纯函数：对 storage 读出的 events 做规范化（数组 + 白名单过滤）。
+ * - 非数组 / 被污染 -> []
+ * - 逐条调用 sanitizeTelemetryEvent()
+ */
+export function sanitizeTelemetryEvents(stored: unknown): TelemetryEvent[] {
+  return normalizeStoredTelemetryEvents(stored);
+}
+
 function appendTelemetryEvent(events: TelemetryEvent[], next: TelemetryEvent): TelemetryEvent[] {
   return trimTelemetryEvents([...events, next], TELEMETRY_MAX_EVENTS);
 }

@@ -698,6 +698,70 @@
     "message": "Chat Services",
     "description": "Chat services management tab title"
   },
+  "privacyTab": {
+    "message": "Privacy",
+    "description": "Options privacy tab title"
+  },
+  "privacyTitle": {
+    "message": "Privacy & Observability",
+    "description": "Options privacy tab main title"
+  },
+  "privacyDescription": {
+    "message": "Off by default; only records anonymous events locally. No network, no disruptions.",
+    "description": "Options privacy tab description"
+  },
+  "anonymousUsageDataSectionTitle": {
+    "message": "Anonymous usage data",
+    "description": "Anonymous usage data section title"
+  },
+  "anonymousUsageDataLabel": {
+    "message": "Anonymous usage data",
+    "description": "Anonymous usage data switch label"
+  },
+  "anonymousUsageDataHint": {
+    "message": "When turned off, recording stops immediately and the local log is cleared.",
+    "description": "Anonymous usage data hint"
+  },
+  "telemetryEventsPanelTitle": {
+    "message": "Local anonymous event log",
+    "description": "Telemetry events panel title in Options privacy tab"
+  },
+  "telemetryEventsCountLabel": {
+    "message": "Events",
+    "description": "Telemetry events count label"
+  },
+  "telemetryEventsPanelHint": {
+    "message": "Local-only view/export (name/ts/allowlisted props). When disabled, no events are recorded and turning off clears the log.",
+    "description": "Telemetry events panel hint"
+  },
+  "telemetryEventsRefresh": {
+    "message": "Refresh",
+    "description": "Telemetry events refresh button label"
+  },
+  "telemetryEventsCopy": {
+    "message": "Copy",
+    "description": "Telemetry events copy button label"
+  },
+  "telemetryEventsClear": {
+    "message": "Clear",
+    "description": "Telemetry events clear button label"
+  },
+  "telemetryEventsCopySuccess": {
+    "message": "Copied to clipboard",
+    "description": "Telemetry events copy success notification"
+  },
+  "telemetryEventsCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Telemetry events copy failure notification"
+  },
+  "telemetryEventsClearSuccess": {
+    "message": "Cleared",
+    "description": "Telemetry events clear success notification"
+  },
+  "telemetryEventsClearFailed": {
+    "message": "Clear failed",
+    "description": "Telemetry events clear failure notification"
+  },
   "chatServicesTitle": {
     "message": "Chat Services Management",
     "description": "Chat services management page main title"

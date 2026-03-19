@@ -14,7 +14,12 @@ import {
   shouldShowRatingPrompt,
   type GrowthStats
 } from '../src/shared/growth-stats.ts';
-import { TELEMETRY_MAX_EVENTS, sanitizeTelemetryEvent, trimTelemetryEvents } from '../src/shared/telemetry.ts';
+import {
+  TELEMETRY_MAX_EVENTS,
+  sanitizeTelemetryEvent,
+  sanitizeTelemetryEvents,
+  trimTelemetryEvents
+} from '../src/shared/telemetry.ts';
 import { cleanCodeBlockText } from '../src/shared/code-block-cleaner.ts';
 
 const getMessage: I18nGetMessage = (key, substitutions) => {
@@ -183,6 +188,19 @@ function run() {
       props: { source: { not: 'primitive' } }
     }),
     { name: 'onboarding_shown', ts: now }
+  );
+
+  assert.deepEqual(sanitizeTelemetryEvents({ not: 'an array' }), []);
+  assert.deepEqual(
+    sanitizeTelemetryEvents([
+      { name: 'popup_opened', ts: now },
+      { name: 'unknown', ts: now },
+      { name: 'pro_entry_opened', ts: now, props: { source: 'popup', extra: 'x' } }
+    ]),
+    [
+      { name: 'popup_opened', ts: now },
+      { name: 'pro_entry_opened', ts: now, props: { source: 'popup' } }
+    ]
   );
 
   const manyEvents = Array.from({ length: TELEMETRY_MAX_EVENTS + 1 }, (_, i) => ({

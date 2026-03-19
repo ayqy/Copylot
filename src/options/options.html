@@ -244,6 +244,38 @@
               </div>
             </div>
           </div>
+
+          <div class="chat-services-section">
+            <details id="telemetry-events-panel" class="telemetry-events-panel">
+              <summary class="telemetry-events-summary">
+                <span data-i18n="telemetryEventsPanelTitle">本地匿名事件日志</span>
+                <span class="telemetry-events-summary-meta">
+                  <span data-i18n="telemetryEventsCountLabel">事件数</span>
+                  <span id="telemetry-events-count" class="telemetry-events-count">0</span>
+                </span>
+              </summary>
+
+              <div class="telemetry-events-content">
+                <p class="setting-hint telemetry-events-hint" data-i18n="telemetryEventsPanelHint">
+                  仅本地显示与导出（name/ts/props 白名单）。开关关闭时不会记录；关闭会清空。
+                </p>
+
+                <div class="telemetry-events-actions">
+                  <button id="telemetry-events-refresh" class="secondary-btn" data-i18n="telemetryEventsRefresh">
+                    刷新
+                  </button>
+                  <button id="telemetry-events-copy" class="secondary-btn" data-i18n="telemetryEventsCopy">
+                    复制
+                  </button>
+                  <button id="telemetry-events-clear" class="secondary-btn danger-btn" data-i18n="telemetryEventsClear">
+                    清空
+                  </button>
+                </div>
+
+                <textarea id="telemetry-events-view" class="telemetry-events-view" readonly rows="10">[]</textarea>
+              </div>
+            </details>
+          </div>
         </div>
 
         <!-- Pro Tab -->

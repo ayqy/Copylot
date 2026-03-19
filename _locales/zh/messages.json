@@ -698,6 +698,70 @@
     "message": "Chat服务",
     "description": "Chat服务管理标签页标题"
   },
+  "privacyTab": {
+    "message": "隐私",
+    "description": "隐私标签页标题"
+  },
+  "privacyTitle": {
+    "message": "隐私与可观测性",
+    "description": "隐私页主标题"
+  },
+  "privacyDescription": {
+    "message": "默认关闭；仅本地记录匿名事件日志，不联网、不打扰。",
+    "description": "隐私页描述"
+  },
+  "anonymousUsageDataSectionTitle": {
+    "message": "匿名使用数据",
+    "description": "匿名使用数据区域标题"
+  },
+  "anonymousUsageDataLabel": {
+    "message": "匿名使用数据",
+    "description": "匿名使用数据开关标签"
+  },
+  "anonymousUsageDataHint": {
+    "message": "关闭时会立即停止记录并清空本地日志。",
+    "description": "匿名使用数据提示文案"
+  },
+  "telemetryEventsPanelTitle": {
+    "message": "本地匿名事件日志",
+    "description": "隐私页本地匿名事件日志面板标题"
+  },
+  "telemetryEventsCountLabel": {
+    "message": "事件数",
+    "description": "匿名事件条数标签"
+  },
+  "telemetryEventsPanelHint": {
+    "message": "仅本地显示与导出（name/ts/props 白名单）。开关关闭时不会记录；关闭会清空。",
+    "description": "匿名事件日志面板提示文案"
+  },
+  "telemetryEventsRefresh": {
+    "message": "刷新",
+    "description": "匿名事件日志刷新按钮"
+  },
+  "telemetryEventsCopy": {
+    "message": "复制",
+    "description": "匿名事件日志复制按钮"
+  },
+  "telemetryEventsClear": {
+    "message": "清空",
+    "description": "匿名事件日志清空按钮"
+  },
+  "telemetryEventsCopySuccess": {
+    "message": "已复制到剪贴板",
+    "description": "匿名事件日志复制成功提示"
+  },
+  "telemetryEventsCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "匿名事件日志复制失败提示"
+  },
+  "telemetryEventsClearSuccess": {
+    "message": "已清空",
+    "description": "匿名事件日志清空成功提示"
+  },
+  "telemetryEventsClearFailed": {
+    "message": "清空失败",
+    "description": "匿名事件日志清空失败提示"
+  },
   "chatServicesTitle": {
     "message": "Chat服务管理",
     "description": "Chat服务管理页面主标题"

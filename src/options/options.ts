@@ -8,7 +8,13 @@ import {
   type ChatService,
   FORCE_UI_LANGUAGE
 } from '../shared/settings-manager';
-import { clearTelemetryEvents, recordTelemetryEvent } from '../shared/telemetry';
+import {
+  clearTelemetryEvents,
+  recordTelemetryEvent,
+  sanitizeTelemetryEvents,
+  TELEMETRY_EVENTS_KEY,
+  type TelemetryEvent
+} from '../shared/telemetry';
 import { buildProWaitlistIssueUrl } from '../shared/monetization';
 
 // Simple UUID generator
@@ -73,6 +79,12 @@ interface OptionsElements {
 
   // Privacy / Observability
   anonymousUsageDataSwitch: HTMLInputElement;
+  telemetryEventsPanel: HTMLDetailsElement;
+  telemetryEventsCount: HTMLElement;
+  telemetryEventsView: HTMLTextAreaElement;
+  telemetryEventsRefreshButton: HTMLButtonElement;
+  telemetryEventsCopyButton: HTMLButtonElement;
+  telemetryEventsClearButton: HTMLButtonElement;
 
   // Pro / Monetization
   proWaitlistButton: HTMLButtonElement;
@@ -145,6 +157,12 @@ function getElements(): OptionsElements {
     syncStatusText: document.getElementById('sync-status-text') as HTMLElement,
 
     anonymousUsageDataSwitch: document.getElementById('anonymous-usage-data-switch') as HTMLInputElement,
+    telemetryEventsPanel: document.getElementById('telemetry-events-panel') as HTMLDetailsElement,
+    telemetryEventsCount: document.getElementById('telemetry-events-count') as HTMLElement,
+    telemetryEventsView: document.getElementById('telemetry-events-view') as HTMLTextAreaElement,
+    telemetryEventsRefreshButton: document.getElementById('telemetry-events-refresh') as HTMLButtonElement,
+    telemetryEventsCopyButton: document.getElementById('telemetry-events-copy') as HTMLButtonElement,
+    telemetryEventsClearButton: document.getElementById('telemetry-events-clear') as HTMLButtonElement,
 
     proWaitlistButton: document.getElementById('pro-waitlist-button') as HTMLButtonElement,
     proWaitlistCopyButton: document.getElementById('pro-waitlist-copy') as HTMLButtonElement,
@@ -1043,6 +1061,90 @@ function showNotification(message: string, type: 'success' | 'error' | 'info' = 
   }, 3000);
 }
 
+function sortTelemetryEventsForDisplay(events: TelemetryEvent[]): TelemetryEvent[] {
+  return events
+    .map((event, index) => ({ event, index }))
+    .sort((a, b) => (b.event.ts - a.event.ts) || (a.index - b.index))
+    .map(({ event }) => event);
+}
+
+function formatTelemetryEventsAsJson(events: TelemetryEvent[]): string {
+  return `${JSON.stringify(events, null, 2)}\n`;
+}
+
+async function readTelemetryEventsForDisplay(): Promise<TelemetryEvent[]> {
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) return [];
+
+  try {
+    const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+    return sanitizeTelemetryEvents(result[TELEMETRY_EVENTS_KEY]);
+  } catch (error) {
+    console.warn('Failed to read telemetry events:', error);
+    return [];
+  }
+}
+
+async function refreshTelemetryEventsPanel(): Promise<TelemetryEvent[]> {
+  if (!elements?.telemetryEventsCount || !elements?.telemetryEventsView) return [];
+
+  const events = sortTelemetryEventsForDisplay(await readTelemetryEventsForDisplay());
+  elements.telemetryEventsCount.textContent = String(events.length);
+  elements.telemetryEventsView.value = JSON.stringify(events, null, 2);
+  return events;
+}
+
+function fallbackCopyText(text: string): boolean {
+  try {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', 'true');
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+    const ok = document.execCommand('copy');
+    document.body.removeChild(textarea);
+    return ok;
+  } catch (error) {
+    console.warn('Fallback copy failed:', error);
+    return false;
+  }
+}
+
+async function copyTelemetryEventsToClipboard(): Promise<void> {
+  const events = sortTelemetryEventsForDisplay(await readTelemetryEventsForDisplay());
+  const text = formatTelemetryEventsAsJson(events);
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showNotification(getMessage('telemetryEventsCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy telemetry events:', error);
+    const ok = fallbackCopyText(text);
+    if (ok) {
+      showNotification(getMessage('telemetryEventsCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('telemetryEventsCopyFailed'), 'error');
+  }
+}
+
+async function clearTelemetryEventsAndRefresh(): Promise<void> {
+  try {
+    await clearTelemetryEvents();
+    const events = (await refreshTelemetryEventsPanel()) ?? [];
+    showNotification(
+      events.length === 0 ? getMessage('telemetryEventsClearSuccess') : getMessage('telemetryEventsClearFailed'),
+      events.length === 0 ? 'success' : 'error'
+    );
+  } catch (error) {
+    console.warn('Failed to clear telemetry events:', error);
+    showNotification(getMessage('telemetryEventsClearFailed'), 'error');
+  }
+}
+
 /**
  * 设置事件监听器
  */
@@ -1101,6 +1203,17 @@ function setupEventListeners() {
   // 导入导出按钮
   elements.importExportBtn.addEventListener('click', showImportExportModal);
 
+  // 本地匿名事件日志面板
+  elements.telemetryEventsRefreshButton.addEventListener('click', () => {
+    void refreshTelemetryEventsPanel();
+  });
+  elements.telemetryEventsCopyButton.addEventListener('click', () => {
+    void copyTelemetryEventsToClipboard();
+  });
+  elements.telemetryEventsClearButton.addEventListener('click', () => {
+    void clearTelemetryEventsAndRefresh();
+  });
+
   // 匿名使用数据开关
   elements.anonymousUsageDataSwitch.addEventListener('change', async () => {
     const enabled = elements.anonymousUsageDataSwitch.checked;
@@ -1112,6 +1225,9 @@ function setupEventListeners() {
       if (!enabled) {
         await clearTelemetryEvents();
       }
+
+      // Settings 变化后，面板必须立刻刷新，避免 UI 残留旧数据造成误解
+      await refreshTelemetryEventsPanel();
 
       showNotification(getMessage('saveSuccessMessage'), 'success');
     } catch (error) {
@@ -1422,6 +1538,7 @@ async function initialize() {
     elements = getElements();
     localizeUI();
     await loadSettings();
+    await refreshTelemetryEventsPanel();
     renderChatServices();
     updateChatServiceOptions();
     setupEventListeners();
