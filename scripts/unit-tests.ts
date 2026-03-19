@@ -361,11 +361,35 @@ function run() {
   );
   assert.deepEqual(
     sanitizeTelemetryEvent({
+      name: 'pro_entry_opened',
+      ts: now,
+      props: { source: 'unknown' }
+    }),
+    { name: 'pro_entry_opened', ts: now }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
       name: 'pro_waitlist_opened',
       ts: now,
       props: { source: 'options', extra: 'x' }
     }),
     { name: 'pro_waitlist_opened', ts: now, props: { source: 'options' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_waitlist_copied',
+      ts: now,
+      props: { source: 'options' }
+    }),
+    { name: 'pro_waitlist_copied', ts: now, props: { source: 'options' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_waitlist_copied',
+      ts: now,
+      props: { source: 'popup' }
+    }),
+    { name: 'pro_waitlist_copied', ts: now }
   );
   assert.deepEqual(
     sanitizeTelemetryEvent({
@@ -400,6 +424,50 @@ function run() {
     }),
     { name: 'wom_share_opened', ts: now }
   );
+
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'onboarding_shown',
+      ts: now,
+      props: { source: 'popup' }
+    }),
+    { name: 'onboarding_shown', ts: now }
+  );
+
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'onboarding_completed',
+      ts: now,
+      props: { action: 'finish' }
+    }),
+    { name: 'onboarding_completed', ts: now, props: { action: 'finish' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'onboarding_completed',
+      ts: now,
+      props: { action: 'unknown' }
+    }),
+    { name: 'onboarding_completed', ts: now }
+  );
+
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'rating_prompt_action',
+      ts: now,
+      props: { action: 'rate' }
+    }),
+    { name: 'rating_prompt_action', ts: now, props: { action: 'rate' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'rating_prompt_action',
+      ts: now,
+      props: { action: 'xxx' }
+    }),
+    { name: 'rating_prompt_action', ts: now }
+  );
+
   assert.deepEqual(
     sanitizeTelemetryEvent({
       name: 'onboarding_shown',

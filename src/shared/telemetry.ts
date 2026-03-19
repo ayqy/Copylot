@@ -69,6 +69,24 @@ function isWomSource(value: unknown): value is WomSource {
   return value === 'popup' || value === 'options';
 }
 
+type OnboardingSource = 'auto' | 'manual';
+
+function isOnboardingSource(value: unknown): value is OnboardingSource {
+  return value === 'auto' || value === 'manual';
+}
+
+type OnboardingCompletedAction = 'finish' | 'skip';
+
+function isOnboardingCompletedAction(value: unknown): value is OnboardingCompletedAction {
+  return value === 'finish' || value === 'skip';
+}
+
+type RatingPromptAction = 'rate' | 'later' | 'never';
+
+function isRatingPromptAction(value: unknown): value is RatingPromptAction {
+  return value === 'rate' || value === 'later' || value === 'never';
+}
+
 function isWomEventName(name: TelemetryEventName): boolean {
   return (
     name === 'wom_feedback_opened' ||
@@ -95,6 +113,38 @@ function sanitizeProps(
       if (!isWomSource(value)) continue;
       sanitized[key] = value;
       continue;
+    }
+
+    // Enum strict filtering for non-WOM events (privacy + consistency).
+    if (key === 'source') {
+      if (eventName === 'pro_entry_opened' || eventName === 'pro_waitlist_opened') {
+        if (!isWomSource(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
+      if (eventName === 'pro_waitlist_copied') {
+        if (value !== 'options') continue;
+        sanitized[key] = value;
+        continue;
+      }
+      if (eventName === 'onboarding_shown' || eventName === 'onboarding_completed') {
+        if (!isOnboardingSource(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
+    }
+
+    if (key === 'action') {
+      if (eventName === 'onboarding_completed') {
+        if (!isOnboardingCompletedAction(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
+      if (eventName === 'rating_prompt_action') {
+        if (!isRatingPromptAction(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
     }
     if (!isAllowedPropValue(value)) continue;
     sanitized[key] = value;
