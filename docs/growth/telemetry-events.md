@@ -21,10 +21,10 @@
 | `onboarding_completed` | 新手引导结束 | `src/popup/popup.ts` `completeOnboarding(action)` | `{ source: 'auto' \| 'manual', action: 'finish' \| 'skip' }` | 不包含任何用户内容 | `finish`=完成；`skip`=关闭/跳过/ESC/点击遮罩 |
 | `rating_prompt_shown` | 评价引导展示 | `src/popup/popup.ts` `maybeShowRatingPrompt()` | 无 | 不包含任何用户内容 | 仅在满足条件且展示时记录 |
 | `rating_prompt_action` | 评价引导按钮点击 | `src/popup/popup.ts` 评价引导按钮点击 | `{ action: 'rate' \| 'later' \| 'never' }` | 不包含任何用户内容 | 记录用户选择 |
-| `wom_feedback_opened` | 打开反馈入口 | Popup：`src/popup/popup.ts` 点击“反馈”；Options：`src/options/options.ts` 点击 `#wom-feedback-open` | 无 | 不包含任何用户内容 | 打开 GitHub Issue |
-| `wom_share_opened` | 打开分享入口 | Popup：`src/popup/popup.ts` 点击“分享”；Options：`src/options/options.ts` 点击 `#wom-share-open` | 无 | 不包含任何用户内容 | 打开商店详情页 |
-| `wom_share_copied` | 复制分享文案成功 | Popup：`src/popup/popup.ts` 点击“复制分享文案”且写入剪贴板成功；Options：`src/options/options.ts` 点击 `#wom-share-copy` 且写入剪贴板成功 | 无 | 不包含任何用户内容 | 仅在写入成功时记录 |
-| `wom_rate_opened` | 打开去评价入口 | Popup：`src/popup/popup.ts` 点击“去评价”；Options：`src/options/options.ts` 点击 `#wom-rate-open` | 无 | 不包含任何用户内容 | 打开商店评价页 |
+| `wom_feedback_opened` | 打开反馈入口 | Popup：`src/popup/popup.ts` 点击“反馈”；Options：`src/options/options.ts` 点击 `#wom-feedback-open` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容 | 打开 GitHub Issue |
+| `wom_share_opened` | 打开分享入口 | Popup：`src/popup/popup.ts` 点击“分享”；Options：`src/options/options.ts` 点击 `#wom-share-open` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容 | 打开商店详情页 |
+| `wom_share_copied` | 复制分享文案成功 | Popup：`src/popup/popup.ts` 点击“复制分享文案”且写入剪贴板成功；Options：`src/options/options.ts` 点击 `#wom-share-copy` 且写入剪贴板成功 | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容 | 仅在写入成功时记录 |
+| `wom_rate_opened` | 打开去评价入口 | Popup：`src/popup/popup.ts` 点击“去评价”；Options：`src/options/options.ts` 点击 `#wom-rate-open` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容 | 打开商店评价页 |
 | `copy_success` | 确认写入剪贴板成功 | `src/content/content.ts`：主复制、Prompt 复制、右键菜单/消息链路复制、追加模式复制成功路径 | 无 | 不包含任何用户内容 | 仅在写入成功后记录 |
 | `prompt_used` | Prompt 链路触发且复制成功 | `src/content/content.ts`：Prompt 菜单复制 / `PROCESS_*_WITH_PROMPT*` 消息链路复制成功路径 | 无 | 不包含任何用户内容 | 与 `copy_success` 同次成功复制配对出现 |
 | `pro_entry_opened` | 打开 Pro 入口（升级 Pro / Pro Tab） | Popup：`src/popup/popup.ts` 点击 `#upgrade-pro-entry`；Options：`src/options/options.ts` 激活 `#pro-tab` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容 | 仅记录意向入口触达 |

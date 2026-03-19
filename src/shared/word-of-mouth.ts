@@ -59,7 +59,7 @@ export interface ChromeWebStoreUtmParams {
 export const DEFAULT_CWS_UTM_PARAMS: ChromeWebStoreUtmParams = {
   utm_source: 'copylot-ext',
   utm_medium: 'popup-entry',
-  utm_campaign: 'v1-1'
+  utm_campaign: 'v1-21'
 };
 
 export function buildChromeWebStoreDetailUrl(

@@ -48,17 +48,17 @@ function run() {
   assert.ok(storeParsed.pathname.endsWith(`/webstore/detail/${extensionId}`));
   assert.equal(storeParsed.searchParams.get('utm_source'), 'copylot-ext');
   assert.equal(storeParsed.searchParams.get('utm_medium'), 'popup-entry');
-  assert.equal(storeParsed.searchParams.get('utm_campaign'), 'v1-1');
+  assert.equal(storeParsed.searchParams.get('utm_campaign'), 'v1-21');
 
   const storeUrlOptions = buildChromeWebStoreDetailUrl(extensionId, {
     utm_source: 'copylot-ext',
     utm_medium: 'options-entry',
-    utm_campaign: 'v1-13'
+    utm_campaign: 'v1-21'
   });
   const storeOptionsParsed = new URL(storeUrlOptions);
   assert.equal(storeOptionsParsed.searchParams.get('utm_source'), 'copylot-ext');
   assert.equal(storeOptionsParsed.searchParams.get('utm_medium'), 'options-entry');
-  assert.equal(storeOptionsParsed.searchParams.get('utm_campaign'), 'v1-13');
+  assert.equal(storeOptionsParsed.searchParams.get('utm_campaign'), 'v1-21');
 
   const reviewsUrl = buildChromeWebStoreReviewsUrl(extensionId);
   assert.equal(reviewsUrl, `https://chrome.google.com/webstore/detail/${extensionId}/reviews`);
@@ -374,6 +374,31 @@ function run() {
       props: { source: { not: 'primitive' } }
     }),
     { name: 'pro_waitlist_copied', ts: now }
+  );
+
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'wom_share_opened',
+      ts: now,
+      props: { source: 'popup' }
+    }),
+    { name: 'wom_share_opened', ts: now, props: { source: 'popup' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'wom_share_opened',
+      ts: now,
+      props: { source: 'popup', foo: 'bar' }
+    }),
+    { name: 'wom_share_opened', ts: now, props: { source: 'popup' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'wom_share_opened',
+      ts: now,
+      props: { source: 'unknown' }
+    }),
+    { name: 'wom_share_opened', ts: now }
   );
   assert.deepEqual(
     sanitizeTelemetryEvent({

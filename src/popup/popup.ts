@@ -444,7 +444,7 @@ function setupEventListeners() {
 
   elements.feedbackLink.addEventListener('click', (event) => {
     event.preventDefault();
-    void recordTelemetryEvent('wom_feedback_opened');
+    void recordTelemetryEvent('wom_feedback_opened', { source: 'popup' });
     void (async () => {
       const mergedSettings = { ...currentSettings, ...getSettingsFromUI() } as Settings;
       const settingsSnapshot = buildFeedbackSettingsSnapshot(mergedSettings);
@@ -496,7 +496,7 @@ function setupEventListeners() {
 
   elements.shareLink.addEventListener('click', (event) => {
     event.preventDefault();
-    void recordTelemetryEvent('wom_share_opened');
+    void recordTelemetryEvent('wom_share_opened', { source: 'popup' });
     const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id);
     chrome.tabs.create({ url: storeUrl });
     window.close();
@@ -504,7 +504,7 @@ function setupEventListeners() {
 
   elements.rateLink.addEventListener('click', (event) => {
     event.preventDefault();
-    void recordTelemetryEvent('wom_rate_opened');
+    void recordTelemetryEvent('wom_rate_opened', { source: 'popup' });
     const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id);
     chrome.tabs.create({ url: reviewsUrl });
     window.close();
@@ -550,7 +550,7 @@ function setupEventListeners() {
 
     try {
       await navigator.clipboard.writeText(shareText);
-      void recordTelemetryEvent('wom_share_copied');
+      void recordTelemetryEvent('wom_share_copied', { source: 'popup' });
       elements.copyShareButton.textContent = chrome.i18n.getMessage('copied') || originalText;
       window.setTimeout(() => {
         elements.copyShareButton.textContent = chrome.i18n.getMessage('copyShareText') || originalText;

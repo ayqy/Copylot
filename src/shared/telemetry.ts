@@ -41,10 +41,10 @@ const TELEMETRY_EVENT_PROP_ALLOWLIST: Record<TelemetryEventName, readonly string
   onboarding_completed: ['source', 'action'],
   rating_prompt_shown: [],
   rating_prompt_action: ['action'],
-  wom_feedback_opened: [],
-  wom_share_opened: [],
-  wom_share_copied: [],
-  wom_rate_opened: []
+  wom_feedback_opened: ['source'],
+  wom_share_opened: ['source'],
+  wom_share_copied: ['source'],
+  wom_rate_opened: ['source']
 };
 
 function isTelemetryEventName(value: unknown): value is TelemetryEventName {
@@ -63,6 +63,21 @@ function isAllowedPropValue(value: unknown): value is TelemetryPropPrimitive {
   );
 }
 
+type WomSource = 'popup' | 'options';
+
+function isWomSource(value: unknown): value is WomSource {
+  return value === 'popup' || value === 'options';
+}
+
+function isWomEventName(name: TelemetryEventName): boolean {
+  return (
+    name === 'wom_feedback_opened' ||
+    name === 'wom_share_opened' ||
+    name === 'wom_share_copied' ||
+    name === 'wom_rate_opened'
+  );
+}
+
 function sanitizeProps(
   eventName: TelemetryEventName,
   props: unknown
@@ -76,6 +91,11 @@ function sanitizeProps(
   for (const key of allowlist) {
     if (!(key in raw)) continue;
     const value = raw[key];
+    if (isWomEventName(eventName) && key === 'source') {
+      if (!isWomSource(value)) continue;
+      sanitized[key] = value;
+      continue;
+    }
     if (!isAllowedPropValue(value)) continue;
     sanitized[key] = value;
   }

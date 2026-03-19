@@ -1594,7 +1594,7 @@ function setupEventListeners() {
   const womUtmParams = {
     utm_source: 'copylot-ext',
     utm_medium: 'options-entry',
-    utm_campaign: 'v1-13'
+    utm_campaign: 'v1-21'
   };
 
   function buildWomStoreUrl(): string {
@@ -1671,19 +1671,19 @@ function setupEventListeners() {
   });
 
   elements.womShareOpenButton.addEventListener('click', () => {
-    void recordTelemetryEvent('wom_share_opened');
+    void recordTelemetryEvent('wom_share_opened', { source: 'options' });
     const url = buildWomStoreUrl();
     chrome.tabs.create({ url });
   });
 
   elements.womRateOpenButton.addEventListener('click', () => {
-    void recordTelemetryEvent('wom_rate_opened');
+    void recordTelemetryEvent('wom_rate_opened', { source: 'options' });
     const url = buildChromeWebStoreReviewsUrl(chrome.runtime.id);
     chrome.tabs.create({ url });
   });
 
   elements.womFeedbackOpenButton.addEventListener('click', () => {
-    void recordTelemetryEvent('wom_feedback_opened');
+    void recordTelemetryEvent('wom_feedback_opened', { source: 'options' });
     void (async () => {
       const url = await buildWomFeedbackUrl();
       chrome.tabs.create({ url });
@@ -1697,7 +1697,7 @@ function setupEventListeners() {
 
     try {
       await navigator.clipboard.writeText(shareText);
-      void recordTelemetryEvent('wom_share_copied');
+      void recordTelemetryEvent('wom_share_copied', { source: 'options' });
       elements.womShareCopyButton.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
         elements.womShareCopyButton.textContent = getMessage('copyShareText') || originalText;
@@ -1706,7 +1706,7 @@ function setupEventListeners() {
       console.error('Failed to copy share text:', error);
       const ok = fallbackCopyText(shareText);
       if (ok) {
-        void recordTelemetryEvent('wom_share_copied');
+        void recordTelemetryEvent('wom_share_copied', { source: 'options' });
         elements.womShareCopyButton.textContent = getMessage('copied') || originalText;
         window.setTimeout(() => {
           elements.womShareCopyButton.textContent = getMessage('copyShareText') || originalText;
