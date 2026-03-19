@@ -105,7 +105,7 @@
     "description": "反馈 GitHub Issue 默认标题"
   },
   "feedbackIssueBodyTemplate": {
-    "message": "## 隐私提示\\n- 请不要粘贴任何复制内容或个人隐私数据。\\n\\n## 环境信息\\n- 插件版本: $EXT_VERSION$\\n- 扩展 ID: $EXT_ID$\\n- User Agent: $USER_AGENT$\\n- navigator.language: $NAV_LANG$\\n- UI 语言: $UI_LANG$\\n\\n## 关键开关快照 (copilot_settings)\\n```json\\n$SETTINGS_JSON$\\n```\\n\\n## 增长统计 (copilot_growth_stats)\\n```json\\n$GROWTH_STATS_JSON$\\n```\\n\\n## 匿名事件日志 (copilot_telemetry_events，最近最多 $TELEMETRY_LAST_N$ 条)\\n```json\\n$TELEMETRY_EVENTS_JSON$\\n```\\n\\n## 复现步骤\\n1. \\n\\n## 期望结果\\n-\\n\\n## 实际结果\\n-\\n",
+    "message": "## 隐私提示\\n- 请不要粘贴任何复制内容或个人隐私数据。\\n\\n## 环境信息\\n- 插件版本: $EXT_VERSION$\\n- 扩展 ID: $EXT_ID$\\n- User Agent: $USER_AGENT$\\n- navigator.language: $NAV_LANG$\\n- UI 语言: $UI_LANG$\\n\\n## 关键开关快照 (copilot_settings)\\n```json\\n$SETTINGS_JSON$\\n```\\n\\n## 增长统计 (copilot_growth_stats)\\n```json\\n$GROWTH_STATS_JSON$\\n```\\n\\n## 本地漏斗摘要 (copilot_growth_funnel_summary)\\n```json\\n$GROWTH_FUNNEL_JSON$\\n```\\n\\n## 匿名事件日志 (copilot_telemetry_events，最近最多 $TELEMETRY_LAST_N$ 条)\\n```json\\n$TELEMETRY_EVENTS_JSON$\\n```\\n\\n## 复现步骤\\n1. \\n\\n## 期望结果\\n-\\n\\n## 实际结果\\n-\\n",
     "description": "反馈 GitHub Issue Body 模板",
     "placeholders": {
       "EXT_VERSION": {
@@ -129,11 +129,14 @@
       "GROWTH_STATS_JSON": {
         "content": "$7"
       },
-      "TELEMETRY_EVENTS_JSON": {
+      "GROWTH_FUNNEL_JSON": {
         "content": "$8"
       },
-      "TELEMETRY_LAST_N": {
+      "TELEMETRY_EVENTS_JSON": {
         "content": "$9"
+      },
+      "TELEMETRY_LAST_N": {
+        "content": "$10"
       }
     }
   },

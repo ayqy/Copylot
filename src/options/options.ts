@@ -1611,6 +1611,15 @@ function setupEventListeners() {
       console.warn('Failed to read growth stats for feedback template:', error);
     }
 
+    let growthFunnelSummarySnapshot: GrowthFunnelSummary | undefined;
+    try {
+      if (growthStatsSnapshot) {
+        growthFunnelSummarySnapshot = buildGrowthFunnelSummary(growthStatsSnapshot, Date.now());
+      }
+    } catch (error) {
+      console.warn('Failed to build growth funnel summary for feedback template:', error);
+    }
+
     let telemetryEventsSnapshot: TelemetryEvent[] | undefined;
     try {
       if (settingsSnapshot.isAnonymousUsageDataEnabled && chrome.storage?.local) {
@@ -1631,6 +1640,7 @@ function setupEventListeners() {
       },
       settingsSnapshot,
       growthStatsSnapshot,
+      growthFunnelSummarySnapshot,
       telemetryEventsSnapshot,
       getMessage
     });

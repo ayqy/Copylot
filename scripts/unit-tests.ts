@@ -31,7 +31,7 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
 
   if (key === 'feedbackIssueTitleTemplate') return 'title';
   if (key === 'feedbackIssueBodyTemplate') {
-    return `v=${subs[0]} id=${subs[1]} ua=${subs[2]} nav=${subs[3]} ui=${subs[4]} copilot_settings=${subs[5]} copilot_growth_stats=${subs[6]} copilot_telemetry_events=${subs[7]} lastN=${subs[8]}`;
+    return `v=${subs[0]} id=${subs[1]} ua=${subs[2]} nav=${subs[3]} ui=${subs[4]} copilot_settings=${subs[5]} copilot_growth_stats=${subs[6]} copilot_growth_funnel_summary=${subs[7]} copilot_telemetry_events=${subs[8]} lastN=${subs[9]}`;
   }
   if (key === 'shareCopyTextTemplate') {
     return `share ${subs[0]}`;
@@ -114,6 +114,14 @@ function run() {
   assert.equal(snapshot.defaultAutoOpenChat, false);
   assert.equal(snapshot.language, 'en');
 
+  const growthStatsForFeedback: GrowthStats = {
+    installedAt: 1_700_000_000_000,
+    successfulCopyCount: 123,
+    firstPopupOpenedAt: 1_700_000_100_000,
+    firstSuccessfulCopyAt: 1_700_000_101_000
+  };
+  const growthFunnelSummaryForFeedback = buildGrowthFunnelSummary(growthStatsForFeedback, 1_700_000_200_000);
+
   const issueUrl = buildFeedbackIssueUrl({
     env: {
       extensionVersion: '1.1.0',
@@ -123,10 +131,8 @@ function run() {
       uiLanguage: 'en'
     },
     settingsSnapshot: snapshot,
-    growthStatsSnapshot: {
-      installedAt: 1_700_000_000_000,
-      successfulCopyCount: 123
-    },
+    growthStatsSnapshot: growthStatsForFeedback,
+    growthFunnelSummarySnapshot: growthFunnelSummaryForFeedback,
     telemetryEventsSnapshot: [
       { name: 'popup_opened', ts: 1 },
       { name: 'copy_success', ts: 2 }
@@ -150,6 +156,9 @@ function run() {
   assert.ok(!body?.includes('"title"'));
   assert.ok(body?.includes('copilot_growth_stats'));
   assert.ok(body?.includes('"successfulCopyCount"'));
+  assert.ok(body?.includes('copilot_growth_funnel_summary'));
+  assert.ok(body?.includes('activatedWithin3MinutesFromFirstPopup'));
+  assert.ok(body?.includes('timeFromFirstPopupToFirstCopyMs'));
   assert.ok(body?.includes('copilot_telemetry_events'));
   assert.ok(body?.includes('"name": "copy_success"'));
   assert.ok(body?.indexOf('"ts": 2') < body?.indexOf('"ts": 1'));
