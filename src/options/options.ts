@@ -15,7 +15,13 @@ import {
   TELEMETRY_EVENTS_KEY,
   type TelemetryEvent
 } from '../shared/telemetry';
-import { getGrowthStats, setGrowthStats, type GrowthStats } from '../shared/growth-stats';
+import {
+  buildGrowthFunnelSummary,
+  getGrowthStats,
+  setGrowthStats,
+  type GrowthFunnelSummary,
+  type GrowthStats
+} from '../shared/growth-stats';
 import {
   buildChromeWebStoreDetailUrl,
   buildChromeWebStoreReviewsUrl,
@@ -99,6 +105,10 @@ interface OptionsElements {
   telemetryEventsRefreshButton: HTMLButtonElement;
   telemetryEventsCopyButton: HTMLButtonElement;
   telemetryEventsClearButton: HTMLButtonElement;
+  growthFunnelPanel: HTMLDetailsElement;
+  growthFunnelView: HTMLTextAreaElement;
+  growthFunnelRefreshButton: HTMLButtonElement;
+  growthFunnelCopyButton: HTMLButtonElement;
   growthStatsPanel: HTMLDetailsElement;
   growthStatsView: HTMLTextAreaElement;
   growthStatsRefreshButton: HTMLButtonElement;
@@ -195,6 +205,10 @@ function getElements(): OptionsElements {
     telemetryEventsRefreshButton: document.getElementById('telemetry-events-refresh') as HTMLButtonElement,
     telemetryEventsCopyButton: document.getElementById('telemetry-events-copy') as HTMLButtonElement,
     telemetryEventsClearButton: document.getElementById('telemetry-events-clear') as HTMLButtonElement,
+    growthFunnelPanel: document.getElementById('growth-funnel-panel') as HTMLDetailsElement,
+    growthFunnelView: document.getElementById('growth-funnel-view') as HTMLTextAreaElement,
+    growthFunnelRefreshButton: document.getElementById('growth-funnel-refresh') as HTMLButtonElement,
+    growthFunnelCopyButton: document.getElementById('growth-funnel-copy') as HTMLButtonElement,
     growthStatsPanel: document.getElementById('growth-stats-panel') as HTMLDetailsElement,
     growthStatsView: document.getElementById('growth-stats-view') as HTMLTextAreaElement,
     growthStatsRefreshButton: document.getElementById('growth-stats-refresh') as HTMLButtonElement,
@@ -1220,6 +1234,56 @@ async function clearTelemetryEventsAndRefresh(): Promise<void> {
   }
 }
 
+function formatGrowthFunnelSummaryAsJson(summary: GrowthFunnelSummary): string {
+  return `${JSON.stringify(summary, null, 2)}\n`;
+}
+
+async function readGrowthFunnelSummaryForDisplay(): Promise<GrowthFunnelSummary> {
+  const stats = await getGrowthStats();
+  return buildGrowthFunnelSummary(stats, Date.now());
+}
+
+async function refreshGrowthFunnelPanel(): Promise<GrowthFunnelSummary | null> {
+  if (!elements?.growthFunnelView) return null;
+
+  try {
+    const summary = await readGrowthFunnelSummaryForDisplay();
+    elements.growthFunnelView.value = formatGrowthFunnelSummaryAsJson(summary);
+    return summary;
+  } catch (error) {
+    console.warn('Failed to refresh growth funnel summary:', error);
+    showNotification(getMessage('growthFunnelRefreshFailed'), 'error');
+    return null;
+  }
+}
+
+async function copyGrowthFunnelSummaryToClipboard(): Promise<void> {
+  let summary: GrowthFunnelSummary;
+  let text: string;
+
+  try {
+    summary = await readGrowthFunnelSummaryForDisplay();
+    text = formatGrowthFunnelSummaryAsJson(summary);
+  } catch (error) {
+    console.warn('Failed to read growth funnel summary:', error);
+    showNotification(getMessage('growthFunnelCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showNotification(getMessage('growthFunnelCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy growth funnel summary:', error);
+    const ok = fallbackCopyText(text);
+    if (ok) {
+      showNotification(getMessage('growthFunnelCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('growthFunnelCopyFailed'), 'error');
+  }
+}
+
 function formatGrowthStatsAsJson(stats: GrowthStats): string {
   return `${JSON.stringify(stats, null, 2)}\n`;
 }
@@ -1372,6 +1436,14 @@ function setupEventListeners() {
   });
   elements.telemetryEventsClearButton.addEventListener('click', () => {
     void clearTelemetryEventsAndRefresh();
+  });
+
+  // 本地漏斗摘要面板
+  elements.growthFunnelRefreshButton.addEventListener('click', () => {
+    void refreshGrowthFunnelPanel();
+  });
+  elements.growthFunnelCopyButton.addEventListener('click', () => {
+    void copyGrowthFunnelSummaryToClipboard();
   });
 
   // 本地增长统计面板
@@ -1804,6 +1876,7 @@ async function initialize() {
     loadPromptSortMode();
     await loadSettings();
     await refreshTelemetryEventsPanel();
+    await refreshGrowthFunnelPanel();
     await refreshGrowthStatsPanel();
     renderChatServices();
     updateChatServiceOptions();

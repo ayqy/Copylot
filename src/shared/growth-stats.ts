@@ -18,10 +18,31 @@ export interface GrowthStats {
   ratingPromptActionAt?: number;
 }
 
+export interface GrowthFunnelSummary {
+  // Raw milestones (auditable, local only)
+  installedAt: number;
+  successfulCopyCount: number;
+  firstPopupOpenedAt?: number;
+  firstSuccessfulCopyAt?: number;
+  firstPromptUsedAt?: number;
+  reusedWithin7DaysAt?: number;
+
+  // Derived progress flags (must not be persisted)
+  isPopupOpened: boolean;
+  isActivated: boolean;
+  isPromptUsed: boolean;
+  isReusedWithin7Days: boolean;
+
+  // Activation within 3 minutes from first popup open
+  timeFromFirstPopupToFirstCopyMs?: number;
+  activatedWithin3MinutesFromFirstPopup?: boolean;
+}
+
 export const RATING_PROMPT_MIN_INSTALL_AGE_MS = 72 * 60 * 60 * 1000;
 export const RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT = 20;
 
 const REUSE_WITHIN_7_DAYS_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+const ACTIVATION_WITHIN_3_MINUTES_MS = 3 * 60 * 1000;
 
 function isValidTimestamp(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value) && value > 0;
@@ -76,6 +97,47 @@ export function normalizeGrowthStatsValue(stored: unknown, now: number): GrowthS
   if (ratingPromptActionAt) normalized.ratingPromptActionAt = ratingPromptActionAt;
 
   return normalized;
+}
+
+export function buildGrowthFunnelSummary(stats: GrowthStats, now: number): GrowthFunnelSummary {
+  const installedAt = isValidTimestamp(stats.installedAt) ? stats.installedAt : now;
+  const successfulCopyCount = isValidCount(stats.successfulCopyCount) ? stats.successfulCopyCount : 0;
+
+  const firstPopupOpenedAt = isValidTimestamp(stats.firstPopupOpenedAt) ? stats.firstPopupOpenedAt : undefined;
+  const firstSuccessfulCopyAt = isValidTimestamp(stats.firstSuccessfulCopyAt) ? stats.firstSuccessfulCopyAt : undefined;
+  const firstPromptUsedAt = isValidTimestamp(stats.firstPromptUsedAt) ? stats.firstPromptUsedAt : undefined;
+  const reusedWithin7DaysAt = isValidTimestamp(stats.reusedWithin7DaysAt) ? stats.reusedWithin7DaysAt : undefined;
+
+  const isPopupOpened = Boolean(firstPopupOpenedAt);
+  const isActivated = Boolean(firstSuccessfulCopyAt) || successfulCopyCount > 0;
+  const isPromptUsed = Boolean(firstPromptUsedAt);
+  const isReusedWithin7Days = Boolean(reusedWithin7DaysAt);
+
+  let timeFromFirstPopupToFirstCopyMs: number | undefined;
+  let activatedWithin3MinutesFromFirstPopup: boolean | undefined;
+
+  if (firstPopupOpenedAt && firstSuccessfulCopyAt) {
+    const delta = firstSuccessfulCopyAt - firstPopupOpenedAt;
+    if (Number.isFinite(delta) && delta >= 0) {
+      timeFromFirstPopupToFirstCopyMs = delta;
+      activatedWithin3MinutesFromFirstPopup = delta <= ACTIVATION_WITHIN_3_MINUTES_MS;
+    }
+  }
+
+  return {
+    installedAt,
+    successfulCopyCount,
+    firstPopupOpenedAt,
+    firstSuccessfulCopyAt,
+    firstPromptUsedAt,
+    reusedWithin7DaysAt,
+    isPopupOpened,
+    isActivated,
+    isPromptUsed,
+    isReusedWithin7Days,
+    timeFromFirstPopupToFirstCopyMs,
+    activatedWithin3MinutesFromFirstPopup
+  };
 }
 
 export interface ApplySuccessfulCopyOptions {

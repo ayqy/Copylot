@@ -806,6 +806,34 @@
     "message": "清空失败",
     "description": "匿名事件日志清空失败提示"
   },
+  "growthFunnelPanelTitle": {
+    "message": "本地漏斗摘要",
+    "description": "隐私页本地漏斗摘要面板标题"
+  },
+  "growthFunnelPanelHint": {
+    "message": "仅本地读取并派生展示/导出（仅时间戳/计数/布尔/耗时），不包含网页内容、URL、标题或复制内容。",
+    "description": "本地漏斗摘要面板提示文案"
+  },
+  "growthFunnelRefresh": {
+    "message": "刷新",
+    "description": "本地漏斗摘要刷新按钮"
+  },
+  "growthFunnelCopy": {
+    "message": "复制",
+    "description": "本地漏斗摘要复制按钮"
+  },
+  "growthFunnelCopySuccess": {
+    "message": "已复制到剪贴板",
+    "description": "本地漏斗摘要复制成功提示"
+  },
+  "growthFunnelCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "本地漏斗摘要复制失败提示"
+  },
+  "growthFunnelRefreshFailed": {
+    "message": "刷新失败",
+    "description": "本地漏斗摘要刷新失败提示"
+  },
   "growthStatsPanelTitle": {
     "message": "本地增长统计",
     "description": "隐私页本地增长统计面板标题"

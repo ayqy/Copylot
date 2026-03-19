@@ -12,6 +12,7 @@ import {
   RATING_PROMPT_MIN_INSTALL_AGE_MS,
   RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
   applySuccessfulCopyToGrowthStats,
+  buildGrowthFunnelSummary,
   normalizeGrowthStatsValue,
   shouldShowRatingPrompt,
   type GrowthStats
@@ -264,6 +265,67 @@ function run() {
   assert.equal(normalized.lastSuccessfulCopyAt, undefined);
   assert.equal(normalized.firstPromptUsedAt, undefined);
   assert.equal(normalized.reusedWithin7DaysAt, undefined);
+
+  // growth-stats.ts (buildGrowthFunnelSummary)
+  const summaryMissing = buildGrowthFunnelSummary({ installedAt: now, successfulCopyCount: 0 }, now);
+  assert.equal(summaryMissing.timeFromFirstPopupToFirstCopyMs, undefined);
+  assert.equal(summaryMissing.activatedWithin3MinutesFromFirstPopup, undefined);
+  assert.equal(summaryMissing.isPopupOpened, false);
+  assert.equal(summaryMissing.isActivated, false);
+  assert.equal(summaryMissing.isPromptUsed, false);
+  assert.equal(summaryMissing.isReusedWithin7Days, false);
+
+  const popupOpenedAt = now + 10_000;
+  const within3MinCopyAt = popupOpenedAt + 3 * 60 * 1000;
+  const summaryWithin3Min = buildGrowthFunnelSummary(
+    {
+      installedAt: now,
+      successfulCopyCount: 1,
+      firstPopupOpenedAt: popupOpenedAt,
+      firstSuccessfulCopyAt: within3MinCopyAt
+    },
+    now
+  );
+  assert.equal(summaryWithin3Min.timeFromFirstPopupToFirstCopyMs, 3 * 60 * 1000);
+  assert.equal(summaryWithin3Min.activatedWithin3MinutesFromFirstPopup, true);
+
+  const over3MinCopyAt = popupOpenedAt + 3 * 60 * 1000 + 1;
+  const summaryOver3Min = buildGrowthFunnelSummary(
+    {
+      installedAt: now,
+      successfulCopyCount: 1,
+      firstPopupOpenedAt: popupOpenedAt,
+      firstSuccessfulCopyAt: over3MinCopyAt
+    },
+    now
+  );
+  assert.equal(summaryOver3Min.activatedWithin3MinutesFromFirstPopup, false);
+
+  const summaryBooleans = buildGrowthFunnelSummary(
+    {
+      installedAt: now,
+      successfulCopyCount: 2,
+      firstPopupOpenedAt: popupOpenedAt,
+      firstSuccessfulCopyAt: over3MinCopyAt,
+      firstPromptUsedAt: now + 123,
+      reusedWithin7DaysAt: now + 456
+    },
+    now
+  );
+  assert.equal(summaryBooleans.isPopupOpened, true);
+  assert.equal(summaryBooleans.isActivated, true);
+  assert.equal(summaryBooleans.isPromptUsed, true);
+  assert.equal(summaryBooleans.isReusedWithin7Days, true);
+  assert.equal(summaryBooleans.firstPopupOpenedAt, popupOpenedAt);
+  assert.equal(summaryBooleans.firstSuccessfulCopyAt, over3MinCopyAt);
+
+  const summaryActivatedByCount = buildGrowthFunnelSummary(
+    { installedAt: now, successfulCopyCount: 2, firstPopupOpenedAt: popupOpenedAt },
+    now
+  );
+  assert.equal(summaryActivatedByCount.isActivated, true);
+  assert.equal(summaryActivatedByCount.timeFromFirstPopupToFirstCopyMs, undefined);
+  assert.equal(summaryActivatedByCount.activatedWithin3MinutesFromFirstPopup, undefined);
 
   // telemetry.ts (pure functions)
   assert.equal(sanitizeTelemetryEvent({ name: 'unknown', ts: now }), null);

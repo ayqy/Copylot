@@ -304,6 +304,31 @@
           </div>
 
           <div class="chat-services-section">
+            <details id="growth-funnel-panel" class="telemetry-events-panel">
+              <summary class="telemetry-events-summary">
+                <span data-i18n="growthFunnelPanelTitle">本地漏斗摘要</span>
+              </summary>
+
+              <div class="telemetry-events-content">
+                <p class="setting-hint telemetry-events-hint" data-i18n="growthFunnelPanelHint">
+                  仅本地读取并派生展示/导出（仅时间戳/计数/布尔/耗时），不包含网页内容、URL、标题或复制内容。
+                </p>
+
+                <div class="telemetry-events-actions">
+                  <button id="growth-funnel-refresh" class="secondary-btn" data-i18n="growthFunnelRefresh">
+                    刷新
+                  </button>
+                  <button id="growth-funnel-copy" class="secondary-btn" data-i18n="growthFunnelCopy">
+                    复制
+                  </button>
+                </div>
+
+                <textarea id="growth-funnel-view" class="telemetry-events-view" readonly rows="10">{}</textarea>
+              </div>
+            </details>
+          </div>
+
+          <div class="chat-services-section">
             <details id="growth-stats-panel" class="telemetry-events-panel">
               <summary class="telemetry-events-summary">
                 <span data-i18n="growthStatsPanelTitle">本地增长统计</span>

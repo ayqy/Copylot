@@ -806,6 +806,34 @@
     "message": "Clear failed",
     "description": "Telemetry events clear failure notification"
   },
+  "growthFunnelPanelTitle": {
+    "message": "Local funnel summary",
+    "description": "Growth funnel summary panel title in Options privacy tab"
+  },
+  "growthFunnelPanelHint": {
+    "message": "Local-only derived view/export (timestamps/counts/booleans/durations only). No page content, URLs, titles, or copied text.",
+    "description": "Growth funnel summary panel hint"
+  },
+  "growthFunnelRefresh": {
+    "message": "Refresh",
+    "description": "Growth funnel summary refresh button label"
+  },
+  "growthFunnelCopy": {
+    "message": "Copy",
+    "description": "Growth funnel summary copy button label"
+  },
+  "growthFunnelCopySuccess": {
+    "message": "Copied to clipboard",
+    "description": "Growth funnel summary copy success notification"
+  },
+  "growthFunnelCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Growth funnel summary copy failure notification"
+  },
+  "growthFunnelRefreshFailed": {
+    "message": "Refresh failed",
+    "description": "Growth funnel summary refresh failure notification"
+  },
   "growthStatsPanelTitle": {
     "message": "Local growth stats",
     "description": "Growth stats panel title in Options privacy tab"
