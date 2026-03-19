@@ -145,7 +145,7 @@
     "description": "Pro 候补 GitHub Issue 默认标题"
   },
   "proWaitlistIssueBodyTemplate": {
-    "message": "## 隐私提示\\n- 请不要粘贴任何网页内容或复制内容。\\n- 请不要粘贴任何个人隐私信息。\\n\\n## 环境信息\\n- 扩展版本: $EXT_VERSION$\\n- 扩展 ID: $EXT_ID$\\n- navigator.language: $NAV_LANG$\\n- UI 语言: $UI_LANG$\\n\\n## 使用场景\\n-\\n\\n## 期望的 Pro 能力\\n-\\n\\n## 联系方式（可选）\\n-\\n",
+    "message": "## 隐私提示\\n- 请不要粘贴任何网页内容或复制内容。\\n- 请不要粘贴任何个人隐私信息。\\n\\n## Pro 范围说明（Free vs 规划）\\n- 现有免费核心功能不会被收费（不做付费墙）。\\n- Pro 仅为可选增强，当前处于规划/候补阶段（未上线）。\\n- 文档入口: https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md\\n\\n## 环境信息\\n- 扩展版本: $EXT_VERSION$\\n- 扩展 ID: $EXT_ID$\\n- navigator.language: $NAV_LANG$\\n- UI 语言: $UI_LANG$\\n\\n## 使用场景\\n-\\n\\n## 期望的 Pro 能力\\n-\\n\\n## 联系方式（可选）\\n-\\n",
     "description": "Pro 候补 GitHub Issue Body 模板",
     "placeholders": {
       "EXT_VERSION": {
@@ -186,6 +186,46 @@
     "message": "Pro 会聚焦“更强工作流 / 更省时间”，在不破坏免费核心体验的前提下提供可选增强。",
     "description": "Options Pro Tab 说明"
   },
+  "proFreeScopeTitle": {
+    "message": "Free（永久免费）",
+    "description": "Options Pro Tab：Free 能力清单区块标题"
+  },
+  "proFreeScopeHint": {
+    "message": "以下为已发货的核心能力清单，并承诺长期免费（不做付费墙）。",
+    "description": "Options Pro Tab：Free 能力清单区块提示"
+  },
+  "proFreeFeature1": {
+    "message": "智能区块复制：单击/双击提取正文，复制为 Markdown / 纯文本",
+    "description": "Options Pro Tab：Free 能力要点 1"
+  },
+  "proFreeFeature2": {
+    "message": "代码块悬停复制 + 保守清理（缩进/空行、行号边界、Copy 文案整行移除）",
+    "description": "Options Pro Tab：Free 能力要点 2"
+  },
+  "proFreeFeature3": {
+    "message": "追加模式（Shift 追加合并，多段内容用分隔符整理）",
+    "description": "Options Pro Tab：Free 能力要点 3"
+  },
+  "proFreeFeature4": {
+    "message": "表格一键转 Markdown / CSV",
+    "description": "Options Pro Tab：Free 能力要点 4"
+  },
+  "proFreeFeature5": {
+    "message": "Prompt 管理器（模板/分类/同步）与一键套用",
+    "description": "Options Pro Tab：Free 能力要点 5"
+  },
+  "proFreeFeature6": {
+    "message": "可配置默认 Chat 服务与复制后自动打开（基于本地设置）",
+    "description": "Options Pro Tab：Free 能力要点 6"
+  },
+  "proPlannedScopeTitle": {
+    "message": "Pro（规划中，未上线）",
+    "description": "Options Pro Tab：Pro 规划区块标题"
+  },
+  "proPlannedScopeHint": {
+    "message": "以下仅为候补/规划方向（Not shipped yet），不代表已提供。",
+    "description": "Options Pro Tab：Pro 规划区块提示"
+  },
   "proFeature1": {
     "message": "高级页面清洗（阅读模式 + 去广告/评论区/推荐区规则）",
     "description": "Pro 能力方向要点 1"
@@ -213,6 +253,10 @@
   "proPrivacyHint": {
     "message": "候补登记不会预填任何网页内容/复制内容；仅包含扩展版本、扩展 ID 与语言信息。",
     "description": "Options Pro Tab 隐私提示"
+  },
+  "proScopeLearnMore": {
+    "message": "了解更多：Pro 范围/边界文档",
+    "description": "Options Pro Tab：Pro 范围/边界文档入口文案"
   },
   "womActionsTitle": {
     "message": "口碑与支持",

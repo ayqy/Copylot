@@ -145,7 +145,7 @@
     "description": "Default GitHub issue title for Pro waitlist"
   },
   "proWaitlistIssueBodyTemplate": {
-    "message": "## Privacy Notice\\n- Please do NOT paste any webpage content or copied content.\\n- Please do NOT paste any personal data.\\n\\n## Environment\\n- Extension Version: $EXT_VERSION$\\n- Extension ID: $EXT_ID$\\n- navigator.language: $NAV_LANG$\\n- UI Language: $UI_LANG$\\n\\n## Use case\\n-\\n\\n## Desired Pro capabilities\\n-\\n\\n## Contact (optional)\\n-\\n",
+    "message": "## Privacy Notice\\n- Please do NOT paste any webpage content or copied content.\\n- Please do NOT paste any personal data.\\n\\n## Pro scope (Free vs Planned)\\n- Existing free core features will remain free (no paywall).\\n- Pro is optional, planned enhancements (not shipped yet).\\n- Doc: https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md\\n\\n## Environment\\n- Extension Version: $EXT_VERSION$\\n- Extension ID: $EXT_ID$\\n- navigator.language: $NAV_LANG$\\n- UI Language: $UI_LANG$\\n\\n## Use case\\n-\\n\\n## Desired Pro capabilities\\n-\\n\\n## Contact (optional)\\n-\\n",
     "description": "GitHub issue body template for Pro waitlist",
     "placeholders": {
       "EXT_VERSION": {
@@ -186,6 +186,46 @@
     "message": "Pro focuses on stronger workflows and saving time, as an optional enhancement without breaking the free core experience.",
     "description": "Options Pro tab intro"
   },
+  "proFreeScopeTitle": {
+    "message": "Free (Always free)",
+    "description": "Options Pro tab: free scope section title"
+  },
+  "proFreeScopeHint": {
+    "message": "These are shipped core capabilities, and we commit to keep them free (no paywall).",
+    "description": "Options Pro tab: free scope section hint"
+  },
+  "proFreeFeature1": {
+    "message": "Smart block copy: click/double-click to extract the main content and copy as Markdown / plain text",
+    "description": "Options Pro tab: free capability bullet 1"
+  },
+  "proFreeFeature2": {
+    "message": "Hover-to-copy for code blocks + conservative cleanup (indent/blank lines, bounded line number handling, drop leading/trailing Copy-label lines)",
+    "description": "Options Pro tab: free capability bullet 2"
+  },
+  "proFreeFeature3": {
+    "message": "Append Mode (hold Shift to merge multiple clips with separators)",
+    "description": "Options Pro tab: free capability bullet 3"
+  },
+  "proFreeFeature4": {
+    "message": "One-click table to Markdown / CSV",
+    "description": "Options Pro tab: free capability bullet 4"
+  },
+  "proFreeFeature5": {
+    "message": "Prompt Manager (templates/categories/sync) and one-click apply",
+    "description": "Options Pro tab: free capability bullet 5"
+  },
+  "proFreeFeature6": {
+    "message": "Configurable default chat service and auto-open-after-copy (based on local settings)",
+    "description": "Options Pro tab: free capability bullet 6"
+  },
+  "proPlannedScopeTitle": {
+    "message": "Pro (Planned, not shipped yet)",
+    "description": "Options Pro tab: planned scope section title"
+  },
+  "proPlannedScopeHint": {
+    "message": "The following are waitlist/planned ideas (not shipped yet).",
+    "description": "Options Pro tab: planned scope section hint"
+  },
   "proFeature1": {
     "message": "Advanced page cleaning (reader mode + rules to remove ads/comments/recommendations)",
     "description": "Pro capability bullet 1"
@@ -213,6 +253,10 @@
   "proPrivacyHint": {
     "message": "The waitlist issue is prefilled with extension version/ID and language only. No webpage or copied content is included.",
     "description": "Options Pro tab privacy hint"
+  },
+  "proScopeLearnMore": {
+    "message": "Learn more: Pro scope & boundaries",
+    "description": "Options Pro tab: learn more link text"
   },
   "womActionsTitle": {
     "message": "Word of Mouth & Support",

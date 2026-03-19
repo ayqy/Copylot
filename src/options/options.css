@@ -1008,6 +1008,42 @@ body {
   margin-bottom: 14px;
 }
 
+.pro-scope-title {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pro-scope-hint {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.pro-scope-divider {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 14px 0;
+  opacity: 0.7;
+}
+
+.pro-scope-links {
+  margin: 0 0 10px 0;
+}
+
+.pro-scope-link {
+  font-size: 13px;
+  color: var(--primary-color);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.pro-scope-link:hover {
+  opacity: 0.9;
+}
+
 .pro-feature-list {
   margin: 0 0 18px 18px;
   color: var(--text-secondary);
