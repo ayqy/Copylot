@@ -15,6 +15,7 @@ import {
   TELEMETRY_EVENTS_KEY,
   type TelemetryEvent
 } from '../shared/telemetry';
+import { getGrowthStats, setGrowthStats, type GrowthStats } from '../shared/growth-stats';
 import {
   buildChromeWebStoreDetailUrl,
   buildChromeWebStoreReviewsUrl,
@@ -92,6 +93,11 @@ interface OptionsElements {
   telemetryEventsRefreshButton: HTMLButtonElement;
   telemetryEventsCopyButton: HTMLButtonElement;
   telemetryEventsClearButton: HTMLButtonElement;
+  growthStatsPanel: HTMLDetailsElement;
+  growthStatsView: HTMLTextAreaElement;
+  growthStatsRefreshButton: HTMLButtonElement;
+  growthStatsCopyButton: HTMLButtonElement;
+  growthStatsResetButton: HTMLButtonElement;
 
   // Pro / Monetization
   proWaitlistButton: HTMLButtonElement;
@@ -176,6 +182,11 @@ function getElements(): OptionsElements {
     telemetryEventsRefreshButton: document.getElementById('telemetry-events-refresh') as HTMLButtonElement,
     telemetryEventsCopyButton: document.getElementById('telemetry-events-copy') as HTMLButtonElement,
     telemetryEventsClearButton: document.getElementById('telemetry-events-clear') as HTMLButtonElement,
+    growthStatsPanel: document.getElementById('growth-stats-panel') as HTMLDetailsElement,
+    growthStatsView: document.getElementById('growth-stats-view') as HTMLTextAreaElement,
+    growthStatsRefreshButton: document.getElementById('growth-stats-refresh') as HTMLButtonElement,
+    growthStatsCopyButton: document.getElementById('growth-stats-copy') as HTMLButtonElement,
+    growthStatsResetButton: document.getElementById('growth-stats-reset') as HTMLButtonElement,
 
     proWaitlistButton: document.getElementById('pro-waitlist-button') as HTMLButtonElement,
     proWaitlistCopyButton: document.getElementById('pro-waitlist-copy') as HTMLButtonElement,
@@ -1163,6 +1174,57 @@ async function clearTelemetryEventsAndRefresh(): Promise<void> {
   }
 }
 
+function formatGrowthStatsAsJson(stats: GrowthStats): string {
+  return `${JSON.stringify(stats, null, 2)}\n`;
+}
+
+async function readGrowthStatsForDisplay(): Promise<GrowthStats> {
+  try {
+    return await getGrowthStats();
+  } catch (error) {
+    console.warn('Failed to read growth stats:', error);
+    return { installedAt: Date.now(), successfulCopyCount: 0 };
+  }
+}
+
+async function refreshGrowthStatsPanel(): Promise<GrowthStats | null> {
+  if (!elements?.growthStatsView) return null;
+
+  const stats = await readGrowthStatsForDisplay();
+  elements.growthStatsView.value = formatGrowthStatsAsJson(stats);
+  return stats;
+}
+
+async function copyGrowthStatsToClipboard(): Promise<void> {
+  const stats = await readGrowthStatsForDisplay();
+  const text = formatGrowthStatsAsJson(stats);
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showNotification(getMessage('growthStatsCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy growth stats:', error);
+    const ok = fallbackCopyText(text);
+    if (ok) {
+      showNotification(getMessage('growthStatsCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('growthStatsCopyFailed'), 'error');
+  }
+}
+
+async function resetGrowthStatsAndRefresh(): Promise<void> {
+  try {
+    const now = Date.now();
+    await setGrowthStats({ installedAt: now, successfulCopyCount: 0 });
+    await refreshGrowthStatsPanel();
+    showNotification(getMessage('growthStatsResetSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to reset growth stats:', error);
+    showNotification(getMessage('growthStatsResetFailed'), 'error');
+  }
+}
+
 /**
  * 设置事件监听器
  */
@@ -1230,6 +1292,17 @@ function setupEventListeners() {
   });
   elements.telemetryEventsClearButton.addEventListener('click', () => {
     void clearTelemetryEventsAndRefresh();
+  });
+
+  // 本地增长统计面板
+  elements.growthStatsRefreshButton.addEventListener('click', () => {
+    void refreshGrowthStatsPanel();
+  });
+  elements.growthStatsCopyButton.addEventListener('click', () => {
+    void copyGrowthStatsToClipboard();
+  });
+  elements.growthStatsResetButton.addEventListener('click', () => {
+    void resetGrowthStatsAndRefresh();
   });
 
   // 匿名使用数据开关
@@ -1627,6 +1700,7 @@ async function initialize() {
     localizeUI();
     await loadSettings();
     await refreshTelemetryEventsPanel();
+    await refreshGrowthStatsPanel();
     renderChatServices();
     updateChatServiceOptions();
     setupEventListeners();

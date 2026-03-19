@@ -770,6 +770,42 @@
     "message": "Clear failed",
     "description": "Telemetry events clear failure notification"
   },
+  "growthStatsPanelTitle": {
+    "message": "Local growth stats",
+    "description": "Growth stats panel title in Options privacy tab"
+  },
+  "growthStatsPanelHint": {
+    "message": "Local-only view/export (timestamps/counts/enums only). No page content, URLs, titles, or copied text.",
+    "description": "Growth stats panel hint"
+  },
+  "growthStatsRefresh": {
+    "message": "Refresh",
+    "description": "Growth stats refresh button label"
+  },
+  "growthStatsCopy": {
+    "message": "Copy",
+    "description": "Growth stats copy button label"
+  },
+  "growthStatsReset": {
+    "message": "Reset",
+    "description": "Growth stats reset button label"
+  },
+  "growthStatsCopySuccess": {
+    "message": "Copied to clipboard",
+    "description": "Growth stats copy success notification"
+  },
+  "growthStatsCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Growth stats copy failure notification"
+  },
+  "growthStatsResetSuccess": {
+    "message": "Reset",
+    "description": "Growth stats reset success notification"
+  },
+  "growthStatsResetFailed": {
+    "message": "Reset failed",
+    "description": "Growth stats reset failure notification"
+  },
   "chatServicesTitle": {
     "message": "Chat Services Management",
     "description": "Chat services management page main title"
