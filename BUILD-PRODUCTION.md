@@ -70,7 +70,18 @@ npm run build:prod
 
 ## 构建验证
 
-运行生产环境构建后，可以通过以下命令验证构建是否干净：
+发布前（或提交 Chrome Web Store 前）推荐使用统一回归入口一键验证：
+
+```bash
+bash scripts/test.sh
+```
+
+该入口会执行：
+- lint/type-check/check-i18n/unit-tests
+- `npm run build:prod`
+- `bash scripts/verify-prod-build.sh`（生产包“干净产物”自检，失败会阻断）
+
+手工兜底（仅用于快速排查 `dist/` 是否干净，不能替代统一回归）：
 
 ```bash
 # 应该返回空结果

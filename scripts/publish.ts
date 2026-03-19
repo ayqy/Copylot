@@ -90,14 +90,29 @@ async function getRepoUrlPath(): Promise<string> {
 async function main() {
   log.info('开始发布流程...');
 
+  // --- Preflight: 发布前置校验（失败直接退出，避免污染 git commit/tag） ---
+  try {
+    const status = execSync('git status --porcelain').toString();
+    if (status.trim().length > 0) {
+      log.error('工作区不干净，禁止发布。请先提交或清理以下变更后再发布：');
+      process.stderr.write(status);
+      process.exit(1);
+    }
+  } catch (error) {
+    log.error("执行 'git status --porcelain' 失败，无法继续发布。");
+    console.error(error);
+    process.exit(1);
+  }
+
   // --- 步骤 4: 获取当前版本号 ---
   const manifestPath = path.resolve(process.cwd(), 'manifest.json');
+  let originalManifestRaw = '';
   let manifestContent;
   let currentVersion;
 
   try {
-    const rawManifest = await fs.readFile(manifestPath, 'utf-8');
-    manifestContent = JSON.parse(rawManifest);
+    originalManifestRaw = await fs.readFile(manifestPath, 'utf-8');
+    manifestContent = JSON.parse(originalManifestRaw);
     currentVersion = manifestContent.version;
     if (!currentVersion || typeof currentVersion !== 'string') {
       log.error("无法在 manifest.json 中找到有效的 'version' 字符串。");
@@ -141,58 +156,86 @@ async function main() {
     process.exit(1);
   }
 
-  // --- 步骤 8: 创建 commit ---
-  const commitMessage = `chore: bump version to ${newVersion}`;
+  async function restoreManifestToOriginal() {
+    try {
+      await fs.writeFile(manifestPath, originalManifestRaw, 'utf-8');
+      log.success('manifest.json 已恢复到发布前的原始版本内容。');
+    } catch (error) {
+      log.error('恢复 manifest.json 失败，请手动恢复后再继续。');
+      console.error(error);
+    }
+  }
+
+  // --- 步骤 8: 全量回归（唯一门禁：失败直接退出，且恢复 manifest） ---
+  log.info('开始全量回归：bash scripts/test.sh');
   try {
-    execSync(`git add ${manifestPath}`);
+    execSync('bash scripts/test.sh', { stdio: 'inherit' });
+    log.success('全量回归通过。');
+  } catch (error) {
+    log.error('全量回归失败，已阻断发布（不会创建 commit/tag/zip，也不会 push/release）。');
+    console.error(error);
+    await restoreManifestToOriginal();
+    process.exit(1);
+  }
+
+  // --- 步骤 9: 打包前产物一致性校验（dist/manifest.json 的 version 必须与 newVersion 一致） ---
+  const distManifestPath = path.resolve(process.cwd(), 'dist', 'manifest.json');
+  try {
+    const distRaw = await fs.readFile(distManifestPath, 'utf-8');
+    const distManifest = JSON.parse(distRaw);
+    const distVersion = distManifest?.version;
+    if (distVersion !== newVersion) {
+      log.error(
+        `产物一致性校验失败：dist/manifest.json 的 version=${String(distVersion)}，期望=${newVersion}。`
+      );
+      log.error('请确认 build:prod 产物已正确更新，避免“版本号已改但 dist 仍是旧产物”。');
+      await restoreManifestToOriginal();
+      process.exit(1);
+    }
+    log.success(`产物一致性校验通过：dist/manifest.json version === ${newVersion}`);
+  } catch (error) {
+    log.error(`读取或解析 dist/manifest.json 出错 (${distManifestPath})，无法继续发布。`);
+    console.error(error);
+    await restoreManifestToOriginal();
+    process.exit(1);
+  }
+
+  // --- 步骤 10: 创建 commit（仅在回归通过后才允许落盘） ---
+  const commitMessage = `chore: bump version to ${newVersion}`;
+  const tagName = `v${newVersion}`;
+
+  function printPostCommitRollbackHints() {
+    // 必须输出到 stderr，且不做自动回滚（仅给出可执行指令）
+    console.error('');
+    console.error('[回滚指令] 如需回滚本次本地 commit/tag，请执行：');
+    console.error(`git tag -d ${tagName}`);
+    console.error('git reset --soft HEAD~1');
+    console.error("（如需丢弃工作区变更，可在确认后自行决定是否执行：git reset --hard）");
+  }
+
+  try {
+    execSync('git add manifest.json');
     execSync(`git commit -m "${commitMessage}"`);
     log.success(`已创建 commit: "${commitMessage}"`);
   } catch (error) {
     log.error('git commit 执行失败。');
     console.error(error);
-    // TODO: 考虑在这里添加 git reset 或者其他恢复操作的提示
+    await restoreManifestToOriginal();
     process.exit(1);
   }
 
-  // --- 步骤 9: 创建 git tag ---
-  const tagName = `v${newVersion}`;
+  // --- 步骤 11: 创建 git tag（仅在回归通过后才允许落盘） ---
   try {
     execSync(`git tag ${tagName}`);
     log.success(`已创建 git tag: ${tagName}`);
   } catch (error) {
     log.error(`git tag ${tagName} 创建失败。可能已存在同名标签。`);
     console.error(error);
-    // TODO: 考虑在这里添加删除旧标签或提示用户的操作
+    printPostCommitRollbackHints();
     process.exit(1);
   }
 
-  // --- 步骤 10: 构建生产环境插件 ---
-  log.info('开始构建生产环境插件...');
-  try {
-    execSync('npm run build:prod', { stdio: 'inherit' });
-    log.success('生产环境插件构建完成。');
-  } catch (error) {
-    log.error('构建生产环境插件失败。');
-    console.error(error);
-    log.warn(
-      `提醒：您可能需要手动执行 'git tag -d ${tagName}' 和 'git reset HEAD~1' 来撤销版本更新和标签。`
-    );
-    process.exit(1);
-  }
-
-  // --- 步骤 11: 用户确认测试是否通过 ---
-  const testConfirmation = await askQuestion(
-    `${colors.yellow}请确认您已完成插件测试并且测试通过。是否继续发布? (y/N): ${colors.reset}`
-  );
-  if (testConfirmation.toLowerCase() !== 'y' && testConfirmation.toLowerCase() !== 'yes') {
-    log.warn('操作已取消。提醒：生产插件已构建，但未发布。');
-    log.warn(
-      `提醒：您可能需要手动执行 'git tag -d ${tagName}' 和 'git reset HEAD~1' 来撤销版本更新和标签。`
-    );
-    process.exit(0);
-  }
-
-  // --- 步骤 12: 发布到 GitHub Release ---
+  // --- 步骤 12: 打包 dist/ 为发布 zip（仅在回归通过后才允许） ---
   const buildDir = path.resolve(process.cwd(), 'dist');
   const zipFileName = `plugin-${newVersion}.zip`;
   const zipFilePath = path.resolve(process.cwd(), zipFileName);
@@ -203,7 +246,7 @@ async function main() {
       // fsSync.existsSync is sync, but ok here for a pre-check
       await fs.unlink(zipFilePath);
     }
-    execSync(`cd ${buildDir} && zip -r ../${zipFileName} . && cd ..`, { cwd: process.cwd() });
+    execSync(`zip -r ../${zipFileName} .`, { cwd: buildDir, stdio: 'inherit' });
     log.success(`构建产物已打包到: ${zipFilePath}`);
     log.info(`您可以使用此文件进行手动上传或测试：${colors.cyan}${zipFilePath}${colors.reset}`);
   } catch (error) {
@@ -211,9 +254,7 @@ async function main() {
       `打包构建产物 (${buildDir} to ${zipFilePath}) 失败。请确保 'zip' 命令已安装并可用，并且 dist 目录存在。`
     );
     console.error(error);
-    log.warn(
-      `提醒：您可能需要手动执行 'git tag -d ${tagName}' 和 'git reset HEAD~1' 来撤销版本更新和标签。`
-    );
+    printPostCommitRollbackHints();
     process.exit(1);
   }
 
@@ -242,7 +283,7 @@ async function main() {
     } catch (error) {
       log.error('推送标签到远程仓库失败。');
       console.error(error);
-      log.warn(`提醒：您可能需要手动执行 'git tag -d ${tagName}' 和 'git reset HEAD~1' 来撤销版本更新和标签。`);
+      printPostCommitRollbackHints();
       process.exit(1);
     }
 
@@ -256,6 +297,7 @@ async function main() {
     } catch (error) {
       log.error('使用 gh CLI 创建 GitHub Release 失败。');
       console.error(error);
+      printPostCommitRollbackHints();
 
       const repoUrlPath = await getRepoUrlPath();
 
@@ -292,7 +334,10 @@ async function main() {
   if (pushConfirmation.toLowerCase() !== 'y' && pushConfirmation.toLowerCase() !== 'yes') {
     log.warn('操作已取消。Commit 已在本地创建但未推送。');
     log.info(`提示：您之后可以手动运行 'git push'。`);
-    log.info(`如果您想完全回滚本地更改：git reset HEAD~1 --hard && git tag -d ${tagName}`);
+    log.info('如果您想回滚本次本地 commit/tag（保守建议，避免 --hard）：');
+    log.info(`git tag -d ${tagName}`);
+    log.info('git reset --soft HEAD~1');
+    log.info('（如需丢弃工作区变更，可在确认后自行决定是否执行：git reset --hard）');
     process.exit(0);
   }
 
@@ -320,6 +365,7 @@ async function main() {
   } catch (error) {
     log.error('git push 执行失败。');
     console.error(error);
+    printPostCommitRollbackHints();
     log.info('请检查您的网络连接和远程仓库权限。');
     log.info(`提示：Commit 已在本地创建，但未成功推送到远程。`);
     log.info(`您可以稍后手动运行 'git push'。`);
