@@ -808,8 +808,39 @@ async function handlePromptClick(promptId: string): Promise<void> {
     const prompt = userPrompts.find((p) => p.id === promptId);
     if (!prompt) return;
 
+    // 悬浮按钮 Prompt：当存在有效选区且选区位于当前块内时，优先对选区进行处理（表格优先整表）。
+    const selection = window.getSelection();
+    const hasValidSelection = Boolean(selection && hasMeaningfulSelection(selection));
+    const isCurrentTargetFromSelection =
+      currentTarget instanceof HTMLElement && currentTarget.dataset.fromEditableSelection === 'true';
+
+    let rootForProcessing: Element = currentTarget;
+
+    if (hasValidSelection) {
+      let selectionInCurrentTarget = false;
+
+      if (isCurrentTargetFromSelection) {
+        // currentTarget 来自精确选区 fragment，视为“选区上下文”，避免被回退到整块。
+        selectionInCurrentTarget = true;
+      } else {
+        try {
+          const range = selection!.getRangeAt(0);
+          selectionInCurrentTarget = currentTarget.contains(range.commonAncestorContainer);
+        } catch (error) {
+          console.warn('AI Copilot: Failed to read selection range for prompt click:', error);
+        }
+      }
+
+      if (selectionInCurrentTarget) {
+        const selectionRoot = getSelectionRootElementForProcessing();
+        if (selectionRoot) {
+          rootForProcessing = selectionRoot;
+        }
+      }
+    }
+
     // @ts-ignore: processContent is available from inlined content-processor.ts
-    const content = processContent(currentTarget, userSettings);
+    const content = processContent(rootForProcessing, userSettings);
     if (!content.trim()) return;
 
     // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
