@@ -15,6 +15,13 @@ import {
   TELEMETRY_EVENTS_KEY,
   type TelemetryEvent
 } from '../shared/telemetry';
+import {
+  buildChromeWebStoreDetailUrl,
+  buildChromeWebStoreReviewsUrl,
+  buildFeedbackIssueUrl,
+  buildFeedbackSettingsSnapshot,
+  buildShareCopyText
+} from '../shared/word-of-mouth';
 import { buildProWaitlistIssueUrl } from '../shared/monetization';
 
 // Simple UUID generator
@@ -89,6 +96,12 @@ interface OptionsElements {
   // Pro / Monetization
   proWaitlistButton: HTMLButtonElement;
   proWaitlistCopyButton: HTMLButtonElement;
+
+  // WOM actions (Pro Tab)
+  womShareOpenButton: HTMLButtonElement;
+  womShareCopyButton: HTMLButtonElement;
+  womRateOpenButton: HTMLButtonElement;
+  womFeedbackOpenButton: HTMLButtonElement;
 
   // Chat Services elements
   defaultChatService: HTMLSelectElement;
@@ -166,6 +179,11 @@ function getElements(): OptionsElements {
 
     proWaitlistButton: document.getElementById('pro-waitlist-button') as HTMLButtonElement,
     proWaitlistCopyButton: document.getElementById('pro-waitlist-copy') as HTMLButtonElement,
+
+    womShareOpenButton: document.getElementById('wom-share-open') as HTMLButtonElement,
+    womShareCopyButton: document.getElementById('wom-share-copy') as HTMLButtonElement,
+    womRateOpenButton: document.getElementById('wom-rate-open') as HTMLButtonElement,
+    womFeedbackOpenButton: document.getElementById('wom-feedback-open') as HTMLButtonElement,
 
     // Chat Services elements
     defaultChatService: document.getElementById('default-chat-service') as HTMLSelectElement,
@@ -1348,6 +1366,30 @@ function setupEventListeners() {
     });
   }
 
+  const womUtmParams = {
+    utm_source: 'copylot-ext',
+    utm_medium: 'options-entry',
+    utm_campaign: 'v1-13'
+  };
+
+  function buildWomStoreUrl(): string {
+    return buildChromeWebStoreDetailUrl(chrome.runtime.id, womUtmParams);
+  }
+
+  function buildWomFeedbackUrl(): string {
+    return buildFeedbackIssueUrl({
+      env: {
+        extensionVersion: chrome.runtime.getManifest().version || '',
+        extensionId: chrome.runtime.id,
+        userAgent: navigator.userAgent || '',
+        navigatorLanguage: navigator.language || '',
+        uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
+      },
+      settingsSnapshot: buildFeedbackSettingsSnapshot(currentSettings),
+      getMessage
+    });
+  }
+
   elements.proWaitlistButton.addEventListener('click', () => {
     void recordTelemetryEvent('pro_waitlist_opened', { source: 'options' });
     const url = buildWaitlistUrl();
@@ -1369,6 +1411,52 @@ function setupEventListeners() {
     } catch (error) {
       console.error('Failed to copy waitlist copy:', error);
       elements.proWaitlistCopyButton.textContent = originalText;
+    }
+  });
+
+  elements.womShareOpenButton.addEventListener('click', () => {
+    void recordTelemetryEvent('wom_share_opened');
+    const url = buildWomStoreUrl();
+    chrome.tabs.create({ url });
+  });
+
+  elements.womRateOpenButton.addEventListener('click', () => {
+    void recordTelemetryEvent('wom_rate_opened');
+    const url = buildChromeWebStoreReviewsUrl(chrome.runtime.id);
+    chrome.tabs.create({ url });
+  });
+
+  elements.womFeedbackOpenButton.addEventListener('click', () => {
+    void recordTelemetryEvent('wom_feedback_opened');
+    const url = buildWomFeedbackUrl();
+    chrome.tabs.create({ url });
+  });
+
+  elements.womShareCopyButton.addEventListener('click', async () => {
+    const storeUrl = buildWomStoreUrl();
+    const shareText = buildShareCopyText(getMessage, storeUrl);
+    const originalText = elements.womShareCopyButton.textContent || '';
+
+    try {
+      await navigator.clipboard.writeText(shareText);
+      void recordTelemetryEvent('wom_share_copied');
+      elements.womShareCopyButton.textContent = getMessage('copied') || originalText;
+      window.setTimeout(() => {
+        elements.womShareCopyButton.textContent = getMessage('copyShareText') || originalText;
+      }, 1200);
+    } catch (error) {
+      console.error('Failed to copy share text:', error);
+      const ok = fallbackCopyText(shareText);
+      if (ok) {
+        void recordTelemetryEvent('wom_share_copied');
+        elements.womShareCopyButton.textContent = getMessage('copied') || originalText;
+        window.setTimeout(() => {
+          elements.womShareCopyButton.textContent = getMessage('copyShareText') || originalText;
+        }, 1200);
+        return;
+      }
+      showNotification(getMessage('failedCopyClipboard'), 'error');
+      elements.womShareCopyButton.textContent = originalText;
     }
   });
 

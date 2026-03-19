@@ -46,6 +46,16 @@ function run() {
   assert.equal(storeParsed.searchParams.get('utm_medium'), 'popup-entry');
   assert.equal(storeParsed.searchParams.get('utm_campaign'), 'v1-1');
 
+  const storeUrlOptions = buildChromeWebStoreDetailUrl(extensionId, {
+    utm_source: 'copylot-ext',
+    utm_medium: 'options-entry',
+    utm_campaign: 'v1-13'
+  });
+  const storeOptionsParsed = new URL(storeUrlOptions);
+  assert.equal(storeOptionsParsed.searchParams.get('utm_source'), 'copylot-ext');
+  assert.equal(storeOptionsParsed.searchParams.get('utm_medium'), 'options-entry');
+  assert.equal(storeOptionsParsed.searchParams.get('utm_campaign'), 'v1-13');
+
   const reviewsUrl = buildChromeWebStoreReviewsUrl(extensionId);
   assert.equal(reviewsUrl, `https://chrome.google.com/webstore/detail/${extensionId}/reviews`);
 

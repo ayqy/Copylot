@@ -202,6 +202,14 @@
     "message": "The waitlist issue is prefilled with extension version/ID and language only. No webpage or copied content is included.",
     "description": "Options Pro tab privacy hint"
   },
+  "womActionsTitle": {
+    "message": "Word of Mouth & Support",
+    "description": "Options WOM actions panel title"
+  },
+  "womActionsHint": {
+    "message": "Share, rate, or send feedback to help Copylot keep improving.",
+    "description": "Options WOM actions panel hint"
+  },
   "source": {
     "message": "Source",
     "description": "Source prefix for copied content"

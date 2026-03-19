@@ -202,6 +202,14 @@
     "message": "候补登记不会预填任何网页内容/复制内容；仅包含扩展版本、扩展 ID 与语言信息。",
     "description": "Options Pro Tab 隐私提示"
   },
+  "womActionsTitle": {
+    "message": "口碑与支持",
+    "description": "Options WOM 入口区块标题"
+  },
+  "womActionsHint": {
+    "message": "喜欢 Copylot？分享、评价或反馈都能帮助我们做得更好。",
+    "description": "Options WOM 入口区块说明"
+  },
   "source": {
     "message": "来源",
     "description": "Source prefix for copied content"

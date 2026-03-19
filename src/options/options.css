@@ -933,6 +933,10 @@ body {
   background: linear-gradient(135deg, rgba(79, 70, 229, 0.06) 0%, rgba(255, 255, 255, 0) 60%);
 }
 
+.pro-card + .pro-card {
+  margin-top: 16px;
+}
+
 .pro-intro {
   color: var(--text-primary);
   font-size: 15px;
@@ -961,6 +965,20 @@ body {
   font-size: 13px;
   color: var(--text-secondary);
   margin: 0;
+}
+
+.wom-actions-title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.wom-actions-hint {
+  margin: 0 0 14px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 /* Chat Services Styles */
