@@ -330,9 +330,17 @@ async function copyToClipboard(text: string): Promise<void> {
   }
 }
 
-async function reportSuccessfulCopy(): Promise<void> {
+type ReportSuccessfulCopyOptions = {
+  isPromptUsed?: boolean;
+};
+
+async function reportSuccessfulCopy(options: ReportSuccessfulCopyOptions = {}): Promise<void> {
   try {
-    await chrome.runtime.sendMessage({ type: 'growth-stats-increment-successful-copy' });
+    const payload: { type: 'growth-stats-increment-successful-copy'; isPromptUsed?: true } = {
+      type: 'growth-stats-increment-successful-copy'
+    };
+    if (options.isPromptUsed) payload.isPromptUsed = true;
+    await chrome.runtime.sendMessage(payload);
   } catch (error) {
     console.warn('Failed to report successful copy:', error);
   }
@@ -809,7 +817,7 @@ async function handlePromptClick(promptId: string): Promise<void> {
     await navigator.clipboard.writeText(finalText);
     void recordTelemetryEvent('copy_success');
     void recordTelemetryEvent('prompt_used');
-    await reportSuccessfulCopy();
+    await reportSuccessfulCopy({ isPromptUsed: true });
     
     // 更新使用次数
     prompt.usageCount = (prompt.usageCount || 0) + 1;
@@ -1116,7 +1124,7 @@ async function initializeContentScript(): Promise<void> {
               await copyToClipboard(finalText);
               void recordTelemetryEvent('copy_success');
               void recordTelemetryEvent('prompt_used');
-              await reportSuccessfulCopy();
+              await reportSuccessfulCopy({ isPromptUsed: true });
               sendResponse({ success: true });
             } catch (error) {
               console.error('Error copying to clipboard:', error);
@@ -1134,7 +1142,7 @@ async function initializeContentScript(): Promise<void> {
                 await copyToClipboard(finalText);
                 void recordTelemetryEvent('copy_success');
                 void recordTelemetryEvent('prompt_used');
-                await reportSuccessfulCopy();
+                await reportSuccessfulCopy({ isPromptUsed: true });
                 sendResponse({ success: true });
               } catch (error) {
                 sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
@@ -1164,7 +1172,7 @@ async function initializeContentScript(): Promise<void> {
               await copyToClipboard(finalText);
               void recordTelemetryEvent('copy_success');
               void recordTelemetryEvent('prompt_used');
-              await reportSuccessfulCopy();
+              await reportSuccessfulCopy({ isPromptUsed: true });
               sendResponse({ success: true });
             } catch (error) {
               console.error('Error copying to clipboard:', error);
@@ -1194,7 +1202,7 @@ async function initializeContentScript(): Promise<void> {
               await copyToClipboard(finalText);
               void recordTelemetryEvent('copy_success');
               void recordTelemetryEvent('prompt_used');
-              await reportSuccessfulCopy();
+              await reportSuccessfulCopy({ isPromptUsed: true });
               
               // 显示视觉反馈
               showChatRedirectNotification(message.chatServiceName);

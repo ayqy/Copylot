@@ -16,6 +16,7 @@ import {
 } from '../shared/word-of-mouth';
 import {
   getGrowthStats,
+  markFirstPopupOpened,
   markRatingPromptShown,
   setRatingPromptAction,
   shouldShowRatingPrompt
@@ -662,6 +663,9 @@ async function initialize() {
     // Get DOM elements
     elements = getElements();
     void recordTelemetryEvent('popup_opened');
+    void markFirstPopupOpened().catch((error) => {
+      console.warn('Failed to mark first popup opened:', error);
+    });
 
     // @ts-ignore: 环境变量在构建时注入
     const isDevBuild =

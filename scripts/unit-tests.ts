@@ -11,6 +11,8 @@ import {
 import {
   RATING_PROMPT_MIN_INSTALL_AGE_MS,
   RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
+  applySuccessfulCopyToGrowthStats,
+  normalizeGrowthStatsValue,
   shouldShowRatingPrompt,
   type GrowthStats
 } from '../src/shared/growth-stats.ts';
@@ -196,6 +198,72 @@ function run() {
     shouldShowRatingPrompt({ ...eligibleStats, ratingPromptShownAt: now - 1000 }, now),
     false
   );
+
+  // growth-stats.ts (pure functions)
+  const baseGrowthStats: GrowthStats = { installedAt: now, successfulCopyCount: 0 };
+  const t1 = now + 1000;
+  const t2 = now + 2000;
+  const t3 = now + 3000;
+
+  const afterFirstCopy = applySuccessfulCopyToGrowthStats(baseGrowthStats, { now: t1 });
+  assert.equal(afterFirstCopy.successfulCopyCount, 1);
+  assert.equal(afterFirstCopy.firstSuccessfulCopyAt, t1);
+  assert.equal(afterFirstCopy.lastSuccessfulCopyAt, t1);
+  assert.equal(afterFirstCopy.firstPromptUsedAt, undefined);
+  assert.equal(afterFirstCopy.reusedWithin7DaysAt, undefined);
+
+  const afterSecondCopy = applySuccessfulCopyToGrowthStats(afterFirstCopy, { now: t2 });
+  assert.equal(afterSecondCopy.successfulCopyCount, 2);
+  assert.equal(afterSecondCopy.firstSuccessfulCopyAt, t1, 'firstSuccessfulCopyAt: only write once');
+  assert.equal(afterSecondCopy.lastSuccessfulCopyAt, t2, 'lastSuccessfulCopyAt: update every time');
+  assert.equal(afterSecondCopy.firstPromptUsedAt, undefined);
+  assert.equal(afterSecondCopy.reusedWithin7DaysAt, t2, 'reusedWithin7DaysAt: write on second copy within 7d');
+
+  const afterThirdCopy = applySuccessfulCopyToGrowthStats(afterSecondCopy, { now: t3 });
+  assert.equal(afterThirdCopy.successfulCopyCount, 3);
+  assert.equal(afterThirdCopy.firstSuccessfulCopyAt, t1);
+  assert.equal(afterThirdCopy.lastSuccessfulCopyAt, t3);
+  assert.equal(afterThirdCopy.reusedWithin7DaysAt, t2, 'reusedWithin7DaysAt: only write once');
+
+  const tPrompt = now + 4000;
+  const tPrompt2 = now + 5000;
+  const afterPromptCopy = applySuccessfulCopyToGrowthStats(baseGrowthStats, { now: tPrompt, isPromptUsed: true });
+  assert.equal(afterPromptCopy.successfulCopyCount, 1);
+  assert.equal(afterPromptCopy.firstPromptUsedAt, tPrompt, 'firstPromptUsedAt: write when prompt used and copy success');
+
+  const afterPromptCopyAgain = applySuccessfulCopyToGrowthStats(afterPromptCopy, {
+    now: tPrompt2,
+    isPromptUsed: true
+  });
+  assert.equal(afterPromptCopyAgain.successfulCopyCount, 2);
+  assert.equal(afterPromptCopyAgain.firstPromptUsedAt, tPrompt, 'firstPromptUsedAt: only write once');
+
+  const eightDaysMs = 8 * 24 * 60 * 60 * 1000;
+  const tFirst = now + 10_000;
+  const afterLateSecondCopy = applySuccessfulCopyToGrowthStats(
+    applySuccessfulCopyToGrowthStats(baseGrowthStats, { now: tFirst }),
+    { now: tFirst + eightDaysMs }
+  );
+  assert.equal(afterLateSecondCopy.successfulCopyCount, 2);
+  assert.equal(afterLateSecondCopy.reusedWithin7DaysAt, undefined, 'reusedWithin7DaysAt: should not write when >7d');
+
+  const normalized = normalizeGrowthStatsValue(
+    {
+      installedAt: now,
+      successfulCopyCount: 1,
+      firstPopupOpenedAt: 'x',
+      firstSuccessfulCopyAt: 0,
+      lastSuccessfulCopyAt: Number.NaN,
+      firstPromptUsedAt: -1,
+      reusedWithin7DaysAt: Number.POSITIVE_INFINITY
+    },
+    now
+  );
+  assert.equal(normalized.firstPopupOpenedAt, undefined);
+  assert.equal(normalized.firstSuccessfulCopyAt, undefined);
+  assert.equal(normalized.lastSuccessfulCopyAt, undefined);
+  assert.equal(normalized.firstPromptUsedAt, undefined);
+  assert.equal(normalized.reusedWithin7DaysAt, undefined);
 
   // telemetry.ts (pure functions)
   assert.equal(sanitizeTelemetryEvent({ name: 'unknown', ts: now }), null);

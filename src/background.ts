@@ -111,7 +111,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case 'growth-stats-increment-successful-copy':
       (async () => {
         try {
-          const stats = await incrementSuccessfulCopyCount();
+          const isPromptUsed = message.isPromptUsed === true;
+          const stats = await incrementSuccessfulCopyCount({ isPromptUsed });
           sendResponse({ success: true, stats });
         } catch (error) {
           console.error('Failed to increment successfulCopyCount:', error);

@@ -5,6 +5,14 @@ export type RatingPromptAction = 'rate' | 'later' | 'never';
 export interface GrowthStats {
   installedAt: number;
   successfulCopyCount: number;
+
+  // Funnel milestones (local only, auditable, privacy-safe)
+  firstPopupOpenedAt?: number;
+  firstSuccessfulCopyAt?: number;
+  lastSuccessfulCopyAt?: number;
+  firstPromptUsedAt?: number;
+  reusedWithin7DaysAt?: number;
+
   ratingPromptShownAt?: number;
   ratingPromptAction?: RatingPromptAction;
   ratingPromptActionAt?: number;
@@ -12,6 +20,8 @@ export interface GrowthStats {
 
 export const RATING_PROMPT_MIN_INSTALL_AGE_MS = 72 * 60 * 60 * 1000;
 export const RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT = 20;
+
+const REUSE_WITHIN_7_DAYS_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
 function isValidTimestamp(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value) && value > 0;
@@ -32,11 +42,18 @@ function createDefaultGrowthStats(now: number): GrowthStats {
   };
 }
 
-function normalizeGrowthStats(stored: unknown, now: number): GrowthStats {
+export function normalizeGrowthStatsValue(stored: unknown, now: number): GrowthStats {
   const raw = (stored || {}) as Partial<GrowthStats>;
 
   const installedAt = isValidTimestamp(raw.installedAt) ? raw.installedAt : now;
   const successfulCopyCount = isValidCount(raw.successfulCopyCount) ? raw.successfulCopyCount : 0;
+
+  const firstPopupOpenedAt = isValidTimestamp(raw.firstPopupOpenedAt) ? raw.firstPopupOpenedAt : undefined;
+  const firstSuccessfulCopyAt = isValidTimestamp(raw.firstSuccessfulCopyAt) ? raw.firstSuccessfulCopyAt : undefined;
+  const lastSuccessfulCopyAt = isValidTimestamp(raw.lastSuccessfulCopyAt) ? raw.lastSuccessfulCopyAt : undefined;
+  const firstPromptUsedAt = isValidTimestamp(raw.firstPromptUsedAt) ? raw.firstPromptUsedAt : undefined;
+  const reusedWithin7DaysAt = isValidTimestamp(raw.reusedWithin7DaysAt) ? raw.reusedWithin7DaysAt : undefined;
+
   const ratingPromptShownAt = isValidTimestamp(raw.ratingPromptShownAt) ? raw.ratingPromptShownAt : undefined;
   const ratingPromptAction = isValidRatingPromptAction(raw.ratingPromptAction)
     ? raw.ratingPromptAction
@@ -48,11 +65,53 @@ function normalizeGrowthStats(stored: unknown, now: number): GrowthStats {
     successfulCopyCount
   };
 
+  if (firstPopupOpenedAt) normalized.firstPopupOpenedAt = firstPopupOpenedAt;
+  if (firstSuccessfulCopyAt) normalized.firstSuccessfulCopyAt = firstSuccessfulCopyAt;
+  if (lastSuccessfulCopyAt) normalized.lastSuccessfulCopyAt = lastSuccessfulCopyAt;
+  if (firstPromptUsedAt) normalized.firstPromptUsedAt = firstPromptUsedAt;
+  if (reusedWithin7DaysAt) normalized.reusedWithin7DaysAt = reusedWithin7DaysAt;
+
   if (ratingPromptShownAt) normalized.ratingPromptShownAt = ratingPromptShownAt;
   if (ratingPromptAction) normalized.ratingPromptAction = ratingPromptAction;
   if (ratingPromptActionAt) normalized.ratingPromptActionAt = ratingPromptActionAt;
 
   return normalized;
+}
+
+export interface ApplySuccessfulCopyOptions {
+  now: number;
+  isPromptUsed?: boolean;
+}
+
+export function applySuccessfulCopyToGrowthStats(
+  stats: GrowthStats,
+  options: ApplySuccessfulCopyOptions
+): GrowthStats {
+  const now = options.now;
+  const prevCount = stats.successfulCopyCount || 0;
+  const nextCount = prevCount + 1;
+
+  const nextFirstSuccessfulCopyAt = stats.firstSuccessfulCopyAt || now;
+
+  const next: GrowthStats = {
+    ...stats,
+    successfulCopyCount: nextCount,
+    firstSuccessfulCopyAt: nextFirstSuccessfulCopyAt,
+    lastSuccessfulCopyAt: now
+  };
+
+  if (options.isPromptUsed && !stats.firstPromptUsedAt) {
+    next.firstPromptUsedAt = now;
+  }
+
+  if (!stats.reusedWithin7DaysAt && prevCount === 1) {
+    const within7Days = now - nextFirstSuccessfulCopyAt <= REUSE_WITHIN_7_DAYS_WINDOW_MS;
+    if (within7Days) {
+      next.reusedWithin7DaysAt = now;
+    }
+  }
+
+  return next;
 }
 
 export function shouldShowRatingPrompt(stats: GrowthStats, now: number): boolean {
@@ -76,6 +135,34 @@ function shouldPersistNormalizedGrowthStats(stored: unknown): boolean {
   if (!isValidTimestamp(raw.installedAt)) return true;
   if (!isValidCount(raw.successfulCopyCount)) return true;
 
+  if ('firstPopupOpenedAt' in raw && raw.firstPopupOpenedAt !== undefined && !isValidTimestamp(raw.firstPopupOpenedAt)) {
+    return true;
+  }
+
+  if (
+    'firstSuccessfulCopyAt' in raw &&
+    raw.firstSuccessfulCopyAt !== undefined &&
+    !isValidTimestamp(raw.firstSuccessfulCopyAt)
+  ) {
+    return true;
+  }
+
+  if ('lastSuccessfulCopyAt' in raw && raw.lastSuccessfulCopyAt !== undefined && !isValidTimestamp(raw.lastSuccessfulCopyAt)) {
+    return true;
+  }
+
+  if ('firstPromptUsedAt' in raw && raw.firstPromptUsedAt !== undefined && !isValidTimestamp(raw.firstPromptUsedAt)) {
+    return true;
+  }
+
+  if (
+    'reusedWithin7DaysAt' in raw &&
+    raw.reusedWithin7DaysAt !== undefined &&
+    !isValidTimestamp(raw.reusedWithin7DaysAt)
+  ) {
+    return true;
+  }
+
   if ('ratingPromptShownAt' in raw && raw.ratingPromptShownAt !== undefined && !isValidTimestamp(raw.ratingPromptShownAt)) {
     return true;
   }
@@ -96,15 +183,24 @@ export async function ensureGrowthStatsInitialized(now: number = Date.now()): Pr
     return createDefaultGrowthStats(now);
   }
 
-  const result = await chrome.storage.local.get(GROWTH_STATS_KEY);
-  const stored = result[GROWTH_STATS_KEY];
-  const normalized = normalizeGrowthStats(stored, now);
+  try {
+    const result = await chrome.storage.local.get(GROWTH_STATS_KEY);
+    const stored = result[GROWTH_STATS_KEY];
+    const normalized = normalizeGrowthStatsValue(stored, now);
 
-  if (shouldPersistNormalizedGrowthStats(stored)) {
-    await chrome.storage.local.set({ [GROWTH_STATS_KEY]: normalized });
+    if (shouldPersistNormalizedGrowthStats(stored)) {
+      try {
+        await chrome.storage.local.set({ [GROWTH_STATS_KEY]: normalized });
+      } catch (error) {
+        console.warn('Failed to persist normalized growth stats:', error);
+      }
+    }
+
+    return normalized;
+  } catch (error) {
+    console.warn('Failed to ensure growth stats initialized:', error);
+    return createDefaultGrowthStats(now);
   }
-
-  return normalized;
 }
 
 export async function getGrowthStats(now: number = Date.now()): Promise<GrowthStats> {
@@ -112,15 +208,24 @@ export async function getGrowthStats(now: number = Date.now()): Promise<GrowthSt
     return createDefaultGrowthStats(now);
   }
 
-  const result = await chrome.storage.local.get(GROWTH_STATS_KEY);
-  const stored = result[GROWTH_STATS_KEY];
-  const normalized = normalizeGrowthStats(stored, now);
+  try {
+    const result = await chrome.storage.local.get(GROWTH_STATS_KEY);
+    const stored = result[GROWTH_STATS_KEY];
+    const normalized = normalizeGrowthStatsValue(stored, now);
 
-  if (shouldPersistNormalizedGrowthStats(stored)) {
-    await chrome.storage.local.set({ [GROWTH_STATS_KEY]: normalized });
+    if (shouldPersistNormalizedGrowthStats(stored)) {
+      try {
+        await chrome.storage.local.set({ [GROWTH_STATS_KEY]: normalized });
+      } catch (error) {
+        console.warn('Failed to persist normalized growth stats:', error);
+      }
+    }
+
+    return normalized;
+  } catch (error) {
+    console.warn('Failed to get growth stats:', error);
+    return createDefaultGrowthStats(now);
   }
-
-  return normalized;
 }
 
 export async function setGrowthStats(stats: GrowthStats): Promise<void> {
@@ -128,15 +233,33 @@ export async function setGrowthStats(stats: GrowthStats): Promise<void> {
     return;
   }
 
-  await chrome.storage.local.set({ [GROWTH_STATS_KEY]: stats });
+  try {
+    await chrome.storage.local.set({ [GROWTH_STATS_KEY]: stats });
+  } catch (error) {
+    console.warn('Failed to set growth stats:', error);
+  }
 }
 
-export async function incrementSuccessfulCopyCount(now: number = Date.now()): Promise<GrowthStats> {
+export async function markFirstPopupOpened(now: number = Date.now()): Promise<GrowthStats> {
   const stats = await ensureGrowthStatsInitialized(now);
-  const next: GrowthStats = {
-    ...stats,
-    successfulCopyCount: (stats.successfulCopyCount || 0) + 1
-  };
+  if (stats.firstPopupOpenedAt) return stats;
+
+  const next: GrowthStats = { ...stats, firstPopupOpenedAt: now };
+  await setGrowthStats(next);
+  return next;
+}
+
+export interface IncrementSuccessfulCopyContext {
+  now?: number;
+  isPromptUsed?: boolean;
+}
+
+export async function incrementSuccessfulCopyCount(
+  context: IncrementSuccessfulCopyContext = {}
+): Promise<GrowthStats> {
+  const now = typeof context.now === 'number' ? context.now : Date.now();
+  const stats = await ensureGrowthStatsInitialized(now);
+  const next = applySuccessfulCopyToGrowthStats(stats, { now, isPromptUsed: context.isPromptUsed });
   await setGrowthStats(next);
   return next;
 }
