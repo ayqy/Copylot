@@ -31,6 +31,11 @@
     "expected": "Top section content that should remain even after the page is scrolled away.\n\nThis middle section represents the content a user might select after scrolling.\n\nBottom section content near the end of the page."
   },
   {
+    "path": "cases/mixed-content-with-table-and-links.html",
+    "title": "mixed content with table and links",
+    "expected": "# Mixed Content With Table and Links\n\nIntro paragraph with a relative link: [Getting Started](https://example.com/docs/getting-started)\n\nLink with decorative img/svg but should keep visible text: [Download now](https://example.com/docs/download)\n\nEmpty anchor should not leave `[](#)` noise in Markdown: https://example.com/docs/# end.\n\n| Col A | Col B |\n| --- | --- |\n| A1 | B1 |\n| A2 | B2 |\n\nAfter table: [About](https://example.com/about)"
+  },
+  {
     "path": "cases/role-attributes-table.html",
     "title": "role attributes table",
     "expected": "| Feature | Value |\n| --- | --- |\n| Name | Copylot |\n| Lang | Chinese |"

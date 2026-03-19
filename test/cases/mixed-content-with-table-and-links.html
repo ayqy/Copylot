@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mixed Content With Table and Links</title>
+    <!-- 用于验证相对链接在含表格 mixed content 路径下也会被规范化为绝对 URL -->
+    <base href="https://example.com/docs/" />
+  </head>
+  <body>
+    <main>
+      <h1>Mixed Content With Table and Links</h1>
+
+      <p>
+        Intro paragraph with a relative link:
+        <a href="getting-started">Getting Started</a>
+      </p>
+
+      <p>
+        Link with decorative img/svg but should keep visible text:
+        <a href="./download">
+          <img src="images/icon.png" alt="" />
+          <svg width="12" height="12" aria-hidden="true">
+            <title>Decorative icon</title>
+            <path d="M0 0h12v12H0z"></path>
+          </svg>
+          Download now
+        </a>
+      </p>
+
+      <p>
+        Empty anchor should not leave <code>[](#)</code> noise in Markdown:
+        <a href="#"></a>
+        end.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Col A</th>
+            <th>Col B</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A1</td>
+            <td>B1</td>
+          </tr>
+          <tr>
+            <td>A2</td>
+            <td>B2</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>After table: <a href="/about">About</a></p>
+    </main>
+  </body>
+</html>
+

@@ -291,8 +291,17 @@ export function processElementWithTableDetection(element: Element, settings: Set
  * @returns 处理后的内容
  */
 function processElementWithMixedContent(element: Element, tables: HTMLTableElement[], settings: Settings): string {
-  // 使用占位符文本节点替换每个表格，避免直接字符串匹配失败
-  // 使用不含下划线的占位符，避免 turndown 转义导致替换失败
+  // NOTE(v1-11):
+  // 历史上该路径会在检测到 table 后直接对 outerHTML 做整体 turndown（convertHtmlToMarkdown），
+  // 从而绕过 convertToMarkdown()/convertToPlainText() 的关键处理（ISSUE-009）：
+  // - <a> 链接规范化 + “含 img/svg 链接不丢正文”收敛逻辑
+  // - cleanMarkdownLinksPreservingCode()（清理 [](#) / 无效链接，且跳过 code）
+  //
+  // v1-11 起：仍采用 “table -> token 占位符 -> 整体转换 -> token 替换” 的总体思路，
+  // 但“整体转换”改为复用导出函数 convertToMarkdown()/convertToPlainText()，保证行为与无表格路径一致。
+
+  // 使用占位符替换每个表格，避免直接字符串匹配失败
+  // token 需在 turndown/纯文本提取后仍可稳定匹配：尽量使用简单、不会被转义/折行的字符集
   const tokenPrefix = '%%AICOPYLOT-TABLE-MARKER-';
   const tokenSuffix = '%%';
   const tokenMap = new Map<string, string>();
@@ -305,12 +314,17 @@ function processElementWithMixedContent(element: Element, tables: HTMLTableEleme
 
     tokenMap.set(token, mdOrCsv);
 
-    const textNode = element.ownerDocument?.createTextNode(token) || document.createTextNode(token);
-    table.replaceWith(textNode);
+    // token 必须与上下文有稳定分隔，避免替换后表格与相邻文本粘连：
+    // 这里用 block 元素包裹，确保 turndown / innerText 都会产生稳定换行。
+    const doc = element.ownerDocument || document;
+    const placeholder = doc.createElement('p');
+    placeholder.textContent = token;
+    table.replaceWith(placeholder);
   });
 
-  // 整体 turndown
-  const overall = convertHtmlToMarkdown((element as HTMLElement).outerHTML);
+  // 整体转换：复用既有导出函数，保证与无表格路径一致
+  const overall =
+    settings.outputFormat === 'markdown' ? convertToMarkdown(element) : convertToPlainText(element);
 
   // 将占位符替换为对应的表格 Markdown/CSV
   let restored = overall;
