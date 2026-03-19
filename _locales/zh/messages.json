@@ -340,6 +340,18 @@
   "optionsTitle": {
     "message": "Prompt管理器 - Copylot"
   },
+  "optionsOnboardingTitle": {
+    "message": "新手引导",
+    "description": "Options 新手引导入口标题"
+  },
+  "optionsOnboardingDescription": {
+    "message": "随时重新查看三步引导，快速了解 Copylot 的核心用法。",
+    "description": "Options 新手引导入口说明"
+  },
+  "optionsOnboardingOpenButton": {
+    "message": "重新查看新手引导",
+    "description": "Options 一键打开引导按钮"
+  },
   "promptManagerTitle": {
     "message": "私人Prompt管理器"
   },

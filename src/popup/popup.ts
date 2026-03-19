@@ -687,8 +687,13 @@ async function initialize() {
     setupKeyboardNavigation();
     setupAccessibility();
 
-    // Auto show onboarding for new users (zero-disturb: only when not completed)
-    if (shouldAutoShowOnboarding(currentSettings)) {
+    const shouldForceShowOnboarding = window.location.hash === '#onboarding';
+
+    // Deeplink: force show onboarding (manual re-open), ignoring completed state.
+    if (shouldForceShowOnboarding) {
+      openOnboardingModal('manual');
+    } else if (shouldAutoShowOnboarding(currentSettings)) {
+      // Auto show onboarding for new users (zero-disturb: only when not completed)
       openOnboardingModal('auto');
     }
 

@@ -85,6 +85,10 @@ interface OptionsElements {
   syncStatusBtn: HTMLButtonElement;
   syncStatusText: HTMLElement;
 
+  // Options onboarding entry
+  onboardingPanel: HTMLElement;
+  onboardingOpenButton: HTMLButtonElement;
+
   // Privacy / Observability
   anonymousUsageDataSwitch: HTMLInputElement;
   telemetryEventsPanel: HTMLDetailsElement;
@@ -174,6 +178,9 @@ function getElements(): OptionsElements {
     
     syncStatusBtn: document.getElementById('sync-status-btn') as HTMLButtonElement,
     syncStatusText: document.getElementById('sync-status-text') as HTMLElement,
+
+    onboardingPanel: document.getElementById('options-onboarding-panel') as HTMLElement,
+    onboardingOpenButton: document.getElementById('options-onboarding-open') as HTMLButtonElement,
 
     anonymousUsageDataSwitch: document.getElementById('anonymous-usage-data-switch') as HTMLInputElement,
     telemetryEventsPanel: document.getElementById('telemetry-events-panel') as HTMLDetailsElement,
@@ -1225,6 +1232,31 @@ async function resetGrowthStatsAndRefresh(): Promise<void> {
   }
 }
 
+function openPopupOnboardingInNewTab() {
+  const url = `${chrome.runtime.getURL('src/popup/popup.html')}#onboarding`;
+
+  try {
+    chrome.tabs.create({ url }, () => {
+      const err = chrome.runtime.lastError;
+      if (err) {
+        console.error('Failed to open onboarding popup tab:', err);
+        try {
+          window.open(url, '_blank');
+        } catch (fallbackError) {
+          console.error('Fallback window.open failed:', fallbackError);
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Failed to open onboarding popup tab:', error);
+    try {
+      window.open(url, '_blank');
+    } catch (fallbackError) {
+      console.error('Fallback window.open failed:', fallbackError);
+    }
+  }
+}
+
 /**
  * 设置事件监听器
  */
@@ -1276,6 +1308,11 @@ function setupEventListeners() {
   
   // 隐藏使用说明按钮
   elements.hideInstructionsBtn.addEventListener('click', hideUsageInstructions);
+
+  // Options onboarding entry
+  elements.onboardingOpenButton.addEventListener('click', () => {
+    openPopupOnboardingInNewTab();
+  });
 
   // 同步状态按钮
   elements.syncStatusBtn.addEventListener('click', manualSync);

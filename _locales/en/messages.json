@@ -340,6 +340,18 @@
   "optionsTitle": {
     "message": "Prompt Manager - Copylot"
   },
+  "optionsOnboardingTitle": {
+    "message": "Onboarding",
+    "description": "Options onboarding panel title"
+  },
+  "optionsOnboardingDescription": {
+    "message": "Reopen the 3-step guide anytime to quickly learn the essentials.",
+    "description": "Options onboarding panel description"
+  },
+  "optionsOnboardingOpenButton": {
+    "message": "View onboarding",
+    "description": "Button to open popup onboarding from options"
+  },
   "promptManagerTitle": {
     "message": "Private Prompt Manager"
   },
