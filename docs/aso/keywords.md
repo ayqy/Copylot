@@ -25,7 +25,7 @@
 1. Title: Copylot: Copy Web to Markdown & CSV
    Subtitle: Clean blocks, tables, and code for AI and notes (privacy-first, on-device).
 2. Title: Copylot - Smart Copy for AI
-   Subtitle: One click to copy clean Markdown, tables to CSV, and noise-free code.
+   Subtitle: One click to copy clean Markdown, tables to CSV, and cleaner code.
 3. Title: Copylot: AI-Ready Web Clipper
    Subtitle: Block picker + Prompt templates to turn web content into ready-to-paste inputs.
 
@@ -37,7 +37,9 @@
 - 表格转 Markdown
 - 代码块清理
 - 去行号
-- 去提示符
+- 代码块去噪
+- 去 Copy 文案（保守）
+- 保留缩进
 - Prompt 模板
 - Prompt 管理器
 - 追加模式
@@ -52,4 +54,3 @@
    副标题：干净复制到 Markdown，表格转 CSV，省掉二次整理。
 3. 标题：Copylot：Prompt 工作流复制助手
    副标题：模板化指令 + 追加模式，让网页内容更适合 AI 与笔记。
-

@@ -90,20 +90,23 @@
   3. 粘贴到任意编辑器，画面中应能看到“指令 + 被选中文本”已拼接完成。
   4. 截图建议：以 Options 的 Prompt 管理界面为主画面（更清晰可理解），右键菜单步骤可在拍摄脚本中执行但不一定必须入镜。
 
-### 05（场景覆盖）：代码块复制自动清理（悬停复制）
-- 截图标题（ZH）：代码块复制自动清理：去行号/提示符/杂质
-- Title (EN): Clean code copy: remove noise, keep formatting
+### 05（场景覆盖）：代码块悬停复制 + 保守清理
+- 截图标题（ZH）：代码块悬停复制：保留缩进/空行，保守去噪
+- Title (EN): Hover-to-copy code blocks: keep indentation, conservative cleanup
 - 要展示的真实功能点（可验证）：
-  - 代码块专业级清理 + 悬停复制（`README.md` “代码块专业级清理”；`docs/aso/value-prop.md` 差异化卖点 2）。
+  - 代码块专业级清理 + 悬停复制：保留缩进/空行；行号仅覆盖可识别结构；Copy 文案仅首/末端整行保守移除（不做行内替换）（`README.md`；`docs/aso/value-prop.md` 差异化卖点 2）。
   - Popup 可开启 Hover Trigger（`src/popup/popup.html` Enable Hover Trigger）。
 - 需要的开关前置：
   - Popup -> Enable Hover Trigger：ON
-  - Popup -> Format：Plain Text（此图更适合展示“可直接运行的纯净代码”；也可用 MD，但需保持与画面一致）
+  - Popup -> Format：Plain Text（此图更适合展示“更干净、可直接运行的代码”；也可用 MD，但需保持与画面一致）
 - 拍摄步骤（可复现）：
   1. 打开包含代码块的页面（建议：GitHub README / 技术文档页）。
   2. 鼠标悬停在代码块附近，出现 Copylot 悬浮入口（以真实 UI 为准）。
   3. 点击悬浮入口完成复制。
-  4. 粘贴到编辑器，确认无多余“Copy/复制代码”、无行号噪声（以实现为准）。
+  4. 粘贴到编辑器，确认（以实现为准）：
+     - 保留缩进与内部空行，仅裁剪首尾空行
+     - 若代码块首/末端存在独立一行的 “Copy/复制代码/Copy to clipboard ...” 按钮文案，应被保守移除（不做行内子串替换）
+     - 行号仅在结构可识别时去除（例如 `ol.hljs-ln`）；不承诺覆盖所有站点/所有行号实现方式
 
 ### 06（辅助理解）：Popup 一页完成关键设置（触发方式/格式/表格/附加信息）
 - 截图标题（ZH）：Popup 一页设置：触发方式、输出格式、表格与附加信息
@@ -141,4 +144,3 @@ EN:
 - Local by default: extraction/cleanup/formatting runs on your device.
 - No copied content collection/upload: we do not collect, store, or upload the web content you copy.
 - Anonymous usage data is OFF by default: when enabled, it only stores a local anonymous event log (event name, timestamp, a few enum-like fields). No copied/page content; no network sending; turning it off clears the local event log immediately.
-

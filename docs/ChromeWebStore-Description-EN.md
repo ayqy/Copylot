@@ -6,15 +6,20 @@ Click a block (or a table), and paste straight into AI chats, docs, or notes wit
 CORE FEATURES (based on current implementation)
 - Smart block copy: click/double-click to extract the main content and copy clean Markdown or plain text
 - Table to Markdown / CSV: convert web tables into structured Markdown (GFM) or CSV for spreadsheets
-- Code block cleanup: remove line numbers/prompts/extra copy-button text; hover-to-copy supported for code blocks
+- Code block cleanup (conservative): keep indentation/blank lines; trim only leading/trailing blank lines; remove line numbers only when the DOM structure is recognizable; conservatively drop leading/trailing whole-line Copy-label text (no in-line replacement); hover-to-copy supported for code blocks
 - Append Mode: hold Shift while copying to merge multiple clips with separators
 - Prompt templates workflow: manage prompts and copy “instruction + content” in one step; optionally auto-open your chosen chat service after copy
 - Optional source info: append page title and source URL if you want attribution
 
 USE CASES
 For knowledge work: collect snippets across multiple pages with Append Mode, then paste into Notion/Obsidian/Docs.
-For developers: copy runnable code from technical articles without cleaning up prompts or line numbers.
+For developers: copy runnable code from technical articles with less noise (like Copy-label lines or some line numbers) while keeping indentation intact.
 For data work: copy web tables as CSV for Excel/Google Sheets, or as Markdown tables for docs.
+
+LEARN MORE / TUTORIALS
+https://github.com/ayqy/copy/blob/main/docs/tutorials/table-to-csv-markdown.md
+https://github.com/ayqy/copy/blob/main/docs/tutorials/prompt-workflow.md
+https://github.com/ayqy/copy/blob/main/docs/tutorials/code-block-cleaning.md
 
 PRIVACY & PERMISSIONS
 - Local by default: extraction/cleanup/formatting runs on your device
@@ -25,4 +30,3 @@ PRIVACY & PERMISSIONS
 FEEDBACK & REVIEWS
 - Feedback and feature requests: https://github.com/ayqy/copy/issues/new
 - If Copylot helps your workflow, consider sharing it with teammates or leaving an honest review on the Chrome Web Store
-
