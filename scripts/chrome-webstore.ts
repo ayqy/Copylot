@@ -4,6 +4,12 @@
   ------------------
   独立脚本：读取 .env 中的凭据，将 dist 打包的 zip 上传并立即发布到 Chrome Web Store。
   可单独执行，也可被 publish.ts 调用。
+
+  V1-33 要求：
+  - 强制执行 `bash scripts/test.sh`（生产回归 + 产物自检）作为唯一发布门禁
+  - 校验 `dist/manifest.json` 的 `version === manifest.json.version`
+  - 基于当前 `dist/` 重新生成 `plugin-${version}.zip`（若存在则先删除再生成）
+  - 支持 `--dry-run`：不进行任何上传/发布网络调用；允许无 `.env` 凭据演练前置流程
 */
 
 import 'dotenv/config';
@@ -51,6 +57,9 @@ function logInfo(msg: string) {
 function logSuccess(msg: string) {
   console.log(`${colors.green}[CWS] ${msg}${colors.reset}`);
 }
+function logWarn(msg: string) {
+  console.warn(`${colors.yellow}[CWS] ${msg}${colors.reset}`);
+}
 function logError(msg: string) {
   console.error(`${colors.red}[CWS] ${msg}${colors.reset}`);
 }
@@ -74,7 +83,7 @@ function displayError(error: unknown, context: string = '') {
       console.error('错误详细信息:');
       errorProps.forEach(prop => {
         try {
-          const value = (error as Record<string, unknown>)[prop];
+          const value = (error as unknown as Record<string, unknown>)[prop];
           console.error(`  ${prop}: ${JSON.stringify(value, null, 2)}`);
         } catch (e) {
           console.error(`  ${prop}: [无法序列化]`);
@@ -107,26 +116,18 @@ async function ensureZipExists(version: string): Promise<string> {
   const zipFileName = `plugin-${version}.zip`;
   const zipFilePath = path.resolve(rootDir, zipFileName);
 
-  if (existsSync(zipFilePath)) {
-    logInfo(`找到现有的 zip 文件: ${zipFilePath}`);
-    return zipFilePath;
-  }
-
-  // 若 zip 不存在，则尝试构建并打包
-  logInfo('未找到现成 zip，开始构建并打包…');
-  try {
-    execSync('npm run build', { stdio: 'inherit' });
-  } catch (err) {
-    displayError(err, '构建');
-    throw err;
-  }
-
   if (!existsSync(distDir)) {
-    throw new Error('dist 目录不存在，构建可能失败。');
+    throw new Error('dist 目录不存在，请先确保已通过 `bash scripts/test.sh` 生成生产构建产物。');
+  }
+
+  // V1-33：必须基于当前 dist/ 重新生成 zip（若存在则先删除）
+  if (existsSync(zipFilePath)) {
+    logInfo(`发现同名 zip，将删除后重新生成: ${zipFilePath}`);
+    await fs.unlink(zipFilePath);
   }
 
   try {
-    execSync(`cd ${distDir} && zip -r ../${zipFileName} . && cd ..`, { stdio: 'inherit' });
+    execSync(`zip -r ../${zipFileName} .`, { cwd: distDir, stdio: 'inherit' });
   } catch (err) {
     displayError(err, '打包');
     throw err;
@@ -138,9 +139,99 @@ async function ensureZipExists(version: string): Promise<string> {
   return zipFilePath;
 }
 
-async function main() {
-  logInfo('开始 Chrome Web Store 发布流程…');
+function hasFlag(flag: string): boolean {
+  return process.argv.slice(2).includes(flag);
+}
 
+const REQUIRED_ENV_VARS = [
+  'CWS_EXTENSION_ID',
+  'CWS_CLIENT_ID',
+  'CWS_CLIENT_SECRET',
+  'CWS_REFRESH_TOKEN'
+] as const;
+
+function getMissingEnvVars(env: NodeJS.ProcessEnv = process.env): string[] {
+  return REQUIRED_ENV_VARS.filter((key) => !env[key]);
+}
+
+async function readManifestVersion(manifestPath: string): Promise<string> {
+  const raw = await fs.readFile(manifestPath, 'utf-8');
+  const parsed = JSON.parse(raw) as { version?: unknown };
+  const version = parsed?.version;
+  if (!version || typeof version !== 'string') {
+    throw new Error(`无法在 ${manifestPath} 中找到有效的 version 字符串。`);
+  }
+  return version;
+}
+
+async function runPreflight(): Promise<{ version: string; zipFilePath: string }> {
+  // 1) 强制生产回归（唯一门禁）
+  logInfo('发布前置门禁：开始执行全量回归 bash scripts/test.sh');
+  execSync('bash scripts/test.sh', { stdio: 'inherit' });
+  logSuccess('发布前置门禁：全量回归通过');
+
+  // 2) 读取 root manifest 版本 + 校验 dist manifest 版本一致
+  const rootManifestPath = path.resolve(process.cwd(), 'manifest.json');
+  const distManifestPath = path.resolve(process.cwd(), 'dist', 'manifest.json');
+
+  const rootVersion = await readManifestVersion(rootManifestPath);
+  const distVersion = await readManifestVersion(distManifestPath);
+
+  if (distVersion !== rootVersion) {
+    throw new Error(
+      `产物一致性校验失败：dist/manifest.json 的 version=${String(distVersion)}，期望=${rootVersion}。`
+    );
+  }
+  logSuccess(`产物一致性校验通过：dist/manifest.json version === ${rootVersion}`);
+
+  // 3) 基于当前 dist/ 重新生成 zip（若存在则先删除）
+  const zipFilePath = await ensureZipExists(rootVersion);
+  return { version: rootVersion, zipFilePath };
+}
+
+async function main() {
+  const dryRun = hasFlag('--dry-run');
+  logInfo(`开始 Chrome Web Store 发布流程…${dryRun ? '（dry-run）' : ''}`);
+
+  // --- Preflight：任何网络调用前必须完成的门禁 ---
+  let version = 'unknown';
+  let zipFilePath = '';
+  try {
+    const preflight = await runPreflight();
+    version = preflight.version;
+    zipFilePath = preflight.zipFilePath;
+    logInfo(`当前版本: ${version}`);
+    logInfo(`已生成发布 zip: ${zipFilePath}`);
+  } catch (err) {
+    displayError(err, '发布前置门禁');
+    process.exit(1);
+  }
+
+  // --- 环境变量检查：dry-run 仅提示；非 dry-run 缺失则阻断（且不会发生任何网络调用） ---
+  logInfo('环境变量检查:');
+  for (const key of REQUIRED_ENV_VARS) {
+    console.log(`  ${key}: ${process.env[key] ? '已设置' : '未设置'}`);
+  }
+  const missingEnvVars = getMissingEnvVars();
+  if (missingEnvVars.length > 0) {
+    const missingList = missingEnvVars.join(', ');
+    if (dryRun) {
+      logWarn(`dry-run 检测到缺失的 CWS 凭据项（真实发布前需要补齐）：${missingList}`);
+      logSuccess('dry-run 完成：未进行任何上传/发布网络调用。');
+      return;
+    }
+
+    logError(`缺少必需的环境变量：${missingList}`);
+    logError('已阻断发布（不会进行任何上传/发布网络调用）。请检查 .env 文件或环境变量配置。');
+    process.exit(1);
+  }
+
+  if (dryRun) {
+    logSuccess('dry-run 完成：凭据已齐全，但按约定不会进行任何上传/发布网络调用。');
+    return;
+  }
+
+  // --- 非 dry-run：保持现有上传并发布行为 ---
   const {
     CWS_EXTENSION_ID: extensionId,
     CWS_CLIENT_ID: clientId,
@@ -148,39 +239,9 @@ async function main() {
     CWS_REFRESH_TOKEN: refreshToken
   } = process.env as Record<string, string | undefined>;
 
-  // 调试信息
-  logInfo('环境变量检查:');
-  console.log(`  CWS_EXTENSION_ID: ${extensionId ? '已设置' : '未设置'}`);
-  console.log(`  CWS_CLIENT_ID: ${clientId ? '已设置' : '未设置'}`);
-  console.log(`  CWS_CLIENT_SECRET: ${clientSecret ? '已设置' : '未设置'}`);
-  console.log(`  CWS_REFRESH_TOKEN: ${refreshToken ? '已设置' : '未设置'}`);
-
   if (!extensionId || !clientId || !clientSecret || !refreshToken) {
-    logError(
-      '缺少必需的环境变量 (CWS_EXTENSION_ID, CWS_CLIENT_ID, CWS_CLIENT_SECRET, CWS_REFRESH_TOKEN)。'
-    );
-    logError('请检查 .env 文件是否正确配置。');
-    process.exit(1);
-  }
-
-  // 读取 manifest 版本
-  const manifestPath = path.resolve(process.cwd(), 'manifest.json');
-  let version = 'unknown';
-  try {
-    const raw = await fs.readFile(manifestPath, 'utf-8');
-    version = JSON.parse(raw).version ?? 'unknown';
-    logInfo(`当前版本: ${version}`);
-  } catch (err) {
-    displayError(err, '读取 manifest.json');
-    process.exit(1);
-  }
-
-  // 确保 zip 文件存在
-  let zipFilePath: string;
-  try {
-    zipFilePath = await ensureZipExists(version);
-  } catch (err) {
-    displayError(err, '准备 zip 文件');
+    // 理论上不会触发：已在 missingEnvVars 检查阻断
+    logError('内部错误：环境变量检查与读取不一致。');
     process.exit(1);
   }
 

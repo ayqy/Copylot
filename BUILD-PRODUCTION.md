@@ -94,6 +94,23 @@ grep -i test dist/manifest.json
 grep -i "clickCount\|easter\|test/index.html" dist/src/popup/popup.js
 ```
 
+## 发布顺序（推荐）
+
+为保证“先回归、再产物、再发布”的闭环，推荐按以下顺序执行：
+
+1. 本地发布（版本 bump / 回归 / 产物）：`npm run publish`
+2. CWS 发布（上传 / 发布）：`npm run publish:cws`
+
+### CWS 发布 dry-run 演练（无需凭据、无网络副作用）
+
+```bash
+npm run publish:cws -- --dry-run
+```
+
+说明：
+- `--dry-run` 不会进行任何上传/发布网络调用，可在未配置 `.env` 的环境中演练发布前置流程
+- 仍会强制执行 `bash scripts/test.sh`，并基于当前生产 `dist/` 生成/覆盖 `plugin-${version}.zip`
+
 ## 日常开发
 
 日常开发继续使用：
