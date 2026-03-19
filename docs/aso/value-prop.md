@@ -17,8 +17,8 @@
 ## 3) 差异化卖点（3 条，中英文对照）
 1. 中文：追加模式（Append Mode）：按住 Shift 复制即可跨页面合并，多段内容自动用分隔符整理。
    EN: Append Mode: hold Shift while copying to merge multiple clips with separators.
-2. 中文：代码块专业清理：去行号/提示符/多余按钮文案；并支持代码块悬停快速复制。
-   EN: Code block cleanup: remove line numbers/prompts/noise; plus hover-to-copy for code blocks.
+2. 中文：代码块专业级清理：保留缩进与空行；在可识别结构下去行号；保守移除首/末端整行 Copy/复制按钮文案；支持代码块悬停复制。
+   EN: Code block cleanup: preserve indentation/blank lines; remove line numbers when the DOM structure is recognizable; conservatively drop leading/trailing Copy-label lines; hover-to-copy for code blocks.
 3. 中文：隐私优先 + 最小权限：默认本地处理；不收集/不上传复制内容；“匿名使用数据”默认关闭且仅本地记录。
    EN: Privacy-first + minimal permissions: on-device processing; no collection/upload of copied content; anonymous usage data is off by default and stays local.
 
@@ -32,4 +32,3 @@ EN:
 - Local by default: extraction/cleanup/formatting runs on your device.
 - No copied content collection/upload: we do not collect, store, or upload the web content you copy.
 - Anonymous usage data is OFF by default: when enabled, it only stores a local anonymous event log (event name, timestamp, a few enum-like fields). No copied/page content; no network sending; turning it off clears the local event log immediately.
-
