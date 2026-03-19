@@ -27,7 +27,7 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
 
   if (key === 'feedbackIssueTitleTemplate') return 'title';
   if (key === 'feedbackIssueBodyTemplate') {
-    return `v=${subs[0]} id=${subs[1]} ua=${subs[2]} nav=${subs[3]} ui=${subs[4]} settings=${subs[5]}`;
+    return `v=${subs[0]} id=${subs[1]} ua=${subs[2]} nav=${subs[3]} ui=${subs[4]} copilot_settings=${subs[5]} copilot_growth_stats=${subs[6]} copilot_telemetry_events=${subs[7]} lastN=${subs[8]}`;
   }
   if (key === 'shareCopyTextTemplate') {
     return `share ${subs[0]}`;
@@ -62,7 +62,7 @@ function run() {
   const settings: Parameters<typeof buildFeedbackSettingsSnapshot>[0] = {
     isMagicCopyEnabled: false,
     isHoverMagicCopyEnabled: true,
-    isAnonymousUsageDataEnabled: false,
+    isAnonymousUsageDataEnabled: true,
     outputFormat: 'plaintext',
     tableOutputFormat: 'csv',
     attachTitle: true,
@@ -83,21 +83,32 @@ function run() {
   assert.deepEqual(Object.keys(snapshot).sort(), [
     'attachTitle',
     'attachURL',
+    'defaultAutoOpenChat',
+    'defaultChatServiceId',
     'interactionMode',
+    'isAnonymousUsageDataEnabled',
     'isClipboardAccumulatorEnabled',
     'isHoverMagicCopyEnabled',
     'isMagicCopyEnabled',
+    'language',
     'outputFormat',
+    'popupOnboardingCompletedVersion',
+    'popupOnboardingVersion',
     'tableOutputFormat'
   ]);
   assert.equal(snapshot.isMagicCopyEnabled, false);
   assert.equal(snapshot.isHoverMagicCopyEnabled, true);
   assert.equal(snapshot.isClipboardAccumulatorEnabled, true);
+  assert.equal(snapshot.isAnonymousUsageDataEnabled, true);
   assert.equal(snapshot.interactionMode, 'dblclick');
   assert.equal(snapshot.outputFormat, 'plaintext');
   assert.equal(snapshot.tableOutputFormat, 'csv');
   assert.equal(snapshot.attachTitle, true);
   assert.equal(snapshot.attachURL, true);
+  assert.equal(snapshot.popupOnboardingVersion, 1);
+  assert.equal(snapshot.popupOnboardingCompletedVersion, 0);
+  assert.equal(snapshot.defaultAutoOpenChat, false);
+  assert.equal(snapshot.language, 'en');
 
   const issueUrl = buildFeedbackIssueUrl({
     env: {
@@ -108,6 +119,14 @@ function run() {
       uiLanguage: 'en'
     },
     settingsSnapshot: snapshot,
+    growthStatsSnapshot: {
+      installedAt: 1_700_000_000_000,
+      successfulCopyCount: 123
+    },
+    telemetryEventsSnapshot: [
+      { name: 'popup_opened', ts: 1 },
+      { name: 'copy_success', ts: 2 }
+    ],
     getMessage
   });
   const issueParsed = new URL(issueUrl);
@@ -123,6 +142,31 @@ function run() {
   assert.ok(body?.includes('UA'));
   assert.ok(body?.includes('"isMagicCopyEnabled"'));
   assert.ok(!body?.includes('userPrompts'));
+  assert.ok(!body?.includes('"template"'));
+  assert.ok(!body?.includes('"title"'));
+  assert.ok(body?.includes('copilot_growth_stats'));
+  assert.ok(body?.includes('"successfulCopyCount"'));
+  assert.ok(body?.includes('copilot_telemetry_events'));
+  assert.ok(body?.includes('"name": "copy_success"'));
+  assert.ok(body?.indexOf('"ts": 2') < body?.indexOf('"ts": 1'));
+  assert.ok(body?.includes('lastN=20'));
+
+  // Anonymous usage data disabled -> telemetry events should not appear even if passed in.
+  const snapshotTelemetryDisabled = { ...snapshot, isAnonymousUsageDataEnabled: false };
+  const issueUrlTelemetryDisabled = buildFeedbackIssueUrl({
+    env: {
+      extensionVersion: '1.1.0',
+      extensionId,
+      userAgent: 'UA',
+      navigatorLanguage: 'en-US',
+      uiLanguage: 'en'
+    },
+    settingsSnapshot: snapshotTelemetryDisabled,
+    telemetryEventsSnapshot: [{ name: 'popup_opened', ts: 1 }],
+    getMessage
+  });
+  const telemetryDisabledBody = new URL(issueUrlTelemetryDisabled).searchParams.get('body') || '';
+  assert.ok(telemetryDisabledBody.includes('copilot_telemetry_events=[]'));
 
   const shareText = buildShareCopyText(getMessage, storeUrl);
   assert.ok(shareText.includes(storeUrl));

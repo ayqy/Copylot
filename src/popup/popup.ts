@@ -20,7 +20,7 @@ import {
   setRatingPromptAction,
   shouldShowRatingPrompt
 } from '../shared/growth-stats';
-import { recordTelemetryEvent } from '../shared/telemetry';
+import { recordTelemetryEvent, sanitizeTelemetryEvents, TELEMETRY_EVENTS_KEY } from '../shared/telemetry';
 import { buildProWaitlistIssueUrl } from '../shared/monetization';
 
 // DOM Elements
@@ -442,20 +442,43 @@ function setupEventListeners() {
   elements.feedbackLink.addEventListener('click', (event) => {
     event.preventDefault();
     void recordTelemetryEvent('wom_feedback_opened');
-    const mergedSettings = { ...currentSettings, ...getSettingsFromUI() } as Settings;
-    const feedbackUrl = buildFeedbackIssueUrl({
-      env: {
-        extensionVersion: chrome.runtime.getManifest().version || '',
-        extensionId: chrome.runtime.id,
-        userAgent: navigator.userAgent || '',
-        navigatorLanguage: navigator.language || '',
-        uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
-      },
-      settingsSnapshot: buildFeedbackSettingsSnapshot(mergedSettings),
-      getMessage
-    });
-    chrome.tabs.create({ url: feedbackUrl });
-    window.close();
+    void (async () => {
+      const mergedSettings = { ...currentSettings, ...getSettingsFromUI() } as Settings;
+      const settingsSnapshot = buildFeedbackSettingsSnapshot(mergedSettings);
+
+      let growthStatsSnapshot: Awaited<ReturnType<typeof getGrowthStats>> | undefined;
+      try {
+        growthStatsSnapshot = await getGrowthStats();
+      } catch (error) {
+        console.warn('Failed to read growth stats for feedback template:', error);
+      }
+
+      let telemetryEventsSnapshot: ReturnType<typeof sanitizeTelemetryEvents> | undefined;
+      try {
+        if (settingsSnapshot.isAnonymousUsageDataEnabled && chrome.storage?.local) {
+          const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+          telemetryEventsSnapshot = sanitizeTelemetryEvents(result[TELEMETRY_EVENTS_KEY]);
+        }
+      } catch (error) {
+        console.warn('Failed to read telemetry events for feedback template:', error);
+      }
+
+      const feedbackUrl = buildFeedbackIssueUrl({
+        env: {
+          extensionVersion: chrome.runtime.getManifest().version || '',
+          extensionId: chrome.runtime.id,
+          userAgent: navigator.userAgent || '',
+          navigatorLanguage: navigator.language || '',
+          uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
+        },
+        settingsSnapshot,
+        growthStatsSnapshot,
+        telemetryEventsSnapshot,
+        getMessage
+      });
+      chrome.tabs.create({ url: feedbackUrl });
+      window.close();
+    })();
   });
 
   elements.shareLink.addEventListener('click', (event) => {

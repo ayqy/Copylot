@@ -1486,7 +1486,26 @@ function setupEventListeners() {
     return buildChromeWebStoreDetailUrl(chrome.runtime.id, womUtmParams);
   }
 
-  function buildWomFeedbackUrl(): string {
+  async function buildWomFeedbackUrl(): Promise<string> {
+    const settingsSnapshot = buildFeedbackSettingsSnapshot(currentSettings);
+
+    let growthStatsSnapshot: GrowthStats | undefined;
+    try {
+      growthStatsSnapshot = await getGrowthStats();
+    } catch (error) {
+      console.warn('Failed to read growth stats for feedback template:', error);
+    }
+
+    let telemetryEventsSnapshot: TelemetryEvent[] | undefined;
+    try {
+      if (settingsSnapshot.isAnonymousUsageDataEnabled && chrome.storage?.local) {
+        const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+        telemetryEventsSnapshot = sanitizeTelemetryEvents(result[TELEMETRY_EVENTS_KEY]);
+      }
+    } catch (error) {
+      console.warn('Failed to read telemetry events for feedback template:', error);
+    }
+
     return buildFeedbackIssueUrl({
       env: {
         extensionVersion: chrome.runtime.getManifest().version || '',
@@ -1495,7 +1514,9 @@ function setupEventListeners() {
         navigatorLanguage: navigator.language || '',
         uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
       },
-      settingsSnapshot: buildFeedbackSettingsSnapshot(currentSettings),
+      settingsSnapshot,
+      growthStatsSnapshot,
+      telemetryEventsSnapshot,
       getMessage
     });
   }
@@ -1538,8 +1559,10 @@ function setupEventListeners() {
 
   elements.womFeedbackOpenButton.addEventListener('click', () => {
     void recordTelemetryEvent('wom_feedback_opened');
-    const url = buildWomFeedbackUrl();
-    chrome.tabs.create({ url });
+    void (async () => {
+      const url = await buildWomFeedbackUrl();
+      chrome.tabs.create({ url });
+    })();
   });
 
   elements.womShareCopyButton.addEventListener('click', async () => {

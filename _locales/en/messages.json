@@ -105,7 +105,7 @@
     "description": "Default GitHub issue title for feedback"
   },
   "feedbackIssueBodyTemplate": {
-    "message": "## Privacy Notice\\n- Please do NOT paste any copied content or personal data.\\n\\n## Environment\\n- Extension Version: $EXT_VERSION$\\n- Extension ID: $EXT_ID$\\n- User Agent: $USER_AGENT$\\n- navigator.language: $NAV_LANG$\\n- UI Language: $UI_LANG$\\n\\n## Settings Snapshot (copilot_settings)\\n```json\\n$SETTINGS_JSON$\\n```\\n\\n## Steps to Reproduce\\n1. \\n\\n## Expected Result\\n-\\n\\n## Actual Result\\n-\\n",
+    "message": "## Privacy Notice\\n- Please do NOT paste any copied content or personal data.\\n\\n## Environment\\n- Extension Version: $EXT_VERSION$\\n- Extension ID: $EXT_ID$\\n- User Agent: $USER_AGENT$\\n- navigator.language: $NAV_LANG$\\n- UI Language: $UI_LANG$\\n\\n## Settings Snapshot (copilot_settings)\\n```json\\n$SETTINGS_JSON$\\n```\\n\\n## Growth Stats (copilot_growth_stats)\\n```json\\n$GROWTH_STATS_JSON$\\n```\\n\\n## Telemetry Events (copilot_telemetry_events, last up to $TELEMETRY_LAST_N$)\\n```json\\n$TELEMETRY_EVENTS_JSON$\\n```\\n\\n## Steps to Reproduce\\n1. \\n\\n## Expected Result\\n-\\n\\n## Actual Result\\n-\\n",
     "description": "GitHub issue body template for feedback",
     "placeholders": {
       "EXT_VERSION": {
@@ -125,6 +125,15 @@
       },
       "SETTINGS_JSON": {
         "content": "$6"
+      },
+      "GROWTH_STATS_JSON": {
+        "content": "$7"
+      },
+      "TELEMETRY_EVENTS_JSON": {
+        "content": "$8"
+      },
+      "TELEMETRY_LAST_N": {
+        "content": "$9"
       }
     }
   },
