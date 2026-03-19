@@ -31,7 +31,7 @@ async function updateContextMenu() {
       chrome.contextMenus.create({
         id: PARENT_MENU_ID,
         title: chrome.i18n.getMessage('magicCopyWithPrompt') || 'Magic Copy with Prompt',
-        contexts: ['page']
+        contexts: ['page', 'selection']
       });
 
       userPrompts.forEach((prompt: Prompt) => {
@@ -40,7 +40,7 @@ async function updateContextMenu() {
             id: prompt.id,
             title: prompt.title,
             parentId: PARENT_MENU_ID,
-            contexts: ['page']
+            contexts: ['page', 'selection']
           });
         } catch (error) {
           console.warn(`Failed to create menu item for prompt ${prompt.id}:`, error);
@@ -292,6 +292,31 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       // 决定是否需要跳转到chat服务
       const shouldOpenChat = prompt.autoOpenChat !== undefined ? prompt.autoOpenChat : settings.defaultAutoOpenChat;
       const targetChatId = prompt.targetChatId || settings.defaultChatServiceId;
+
+      const selectionText = typeof info.selectionText === 'string' ? info.selectionText.trim() : '';
+      const hasSelection = selectionText.length > 0;
+
+      if (hasSelection) {
+        // 选区优先：有选区时只处理选区（不新增权限/事件名，复用既有 selection prompt 链路）
+        if (shouldOpenChat && targetChatId) {
+          const chatService = settings.chatServices.find((c: ChatService) => c.id === targetChatId && c.enabled);
+          if (chatService) {
+            chrome.tabs.sendMessage(tab.id, {
+              type: 'PROCESS_SELECTION_WITH_PROMPT',
+              promptTemplate: prompt.template,
+              chatServiceUrl: chatService.url,
+              chatServiceName: chatService.name
+            });
+            return;
+          }
+        }
+
+        chrome.tabs.sendMessage(tab.id, {
+          type: 'PROCESS_SELECTION_WITH_PROMPT',
+          promptTemplate: prompt.template
+        });
+        return;
+      }
       
       if (shouldOpenChat && targetChatId) {
         const chatService = settings.chatServices.find((c: ChatService) => c.id === targetChatId && c.enabled);

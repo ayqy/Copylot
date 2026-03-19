@@ -6,8 +6,8 @@
 - EN: Prompt workflow: in 3 minutes, copy “instruction + web content” and paste to AI
 
 ### 1.2 TL;DR / TL;DR
-- ZH：准备一个含 `{content}` 的 Prompt 模板；在网页上用「悬浮按钮 Prompt 菜单」（块级）或右键 `智能复制+自定义提示（Magic Copy with Prompt）`（页级）选择 Prompt。Copylot 会把 **Prompt + 提取到的内容** 合并复制到剪贴板；如果在 Options 中为该 Prompt（或默认设置）开启了 `复制后自动打开` 且目标 Chat 服务为启用状态，会在复制后打开对应 Chat 的新标签页（不会自动粘贴）。
-- EN: Create a prompt template with `{content}`; on any page, use the “floating button prompt menu” (block-level) or the context menu `Magic Copy with Prompt` (page-level). Copylot copies **prompt + extracted content** into your clipboard. If `Auto open after copy` is enabled (per-prompt or default) and the target chat service is enabled, Copylot opens the chat in a new tab after copying (it does NOT auto-paste).
+- ZH：准备一个含 `{content}` 的 Prompt 模板；在网页上用「悬浮按钮 Prompt 菜单」（块级）或右键 `智能复制+自定义提示（Magic Copy with Prompt）`（选区优先：Selection > Page）选择 Prompt。Copylot 会把 **Prompt + 提取到的内容** 合并复制到剪贴板；如果在 Options 中为该 Prompt（或默认设置）开启了 `复制后自动打开` 且目标 Chat 服务为启用状态，会在复制后打开对应 Chat 的新标签页（不会自动粘贴）。
+- EN: Create a prompt template with `{content}`; on any page, use the “floating button prompt menu” (block-level) or the context menu `Magic Copy with Prompt` (selection-first: Selection > Page). Copylot copies **prompt + extracted content** into your clipboard. If `Auto open after copy` is enabled (per-prompt or default) and the target chat service is enabled, Copylot opens the chat in a new tab after copying (it does NOT auto-paste).
 
 ## 2) 适用人群与场景 / Audience & Scenario
 - ZH：适合经常把网页段落交给 AI 做固定操作（总结/翻译/改写/提取要点/生成行动项）的人：你只需要“选中范围 + 选一个 Prompt”，然后粘贴给 AI。
@@ -93,13 +93,15 @@
    - A plain text editor (Notepad/VS Code): full text and line breaks should remain
    - Any chat input box: paste-ready (Copylot never auto-sends)
 
-### 4.4 路径 B：右键菜单 Prompt（页级复制）/ Path B: Context menu prompt (page-level)
-7. ZH：在页面空白处右键 → 选择 `智能复制+自定义提示（Magic Copy with Prompt）` → 选择某个 Prompt。
-   EN: Right-click on the page → `Magic Copy with Prompt` → pick a prompt.
-8. ZH：复制完成：该路径会对 **当前页面主要内容（页级）** 做提取与格式化，再与 Prompt 合并复制到剪贴板。  
-   与路径 A 的差异：路径 A 是“块级”（你点击的那一块）；路径 B 更偏“页级”（整页主要内容），适合做整页总结/整页翻译。
-   EN: Done: this path extracts/formats the **main content of the current page (page-level)**, then merges it with the prompt and copies to clipboard.  
-   Difference vs Path A: Path A is “block-level” (the block you clicked); Path B is more “page-level” (the whole page’s main content), ideal for full-page summary/translation.
+### 4.4 路径 B：右键菜单 Prompt（选区优先：Selection > Page）/ Path B: Context menu prompt (selection-first: Selection > Page)
+7. ZH：（验证“选区优先”）在页面中先**划词选中**一段文字 → 右键 → 选择 `智能复制+自定义提示（Magic Copy with Prompt）` → 选择某个 Prompt。
+   EN: (Verify selection-first) **Select** a piece of text → right-click → `Magic Copy with Prompt` → pick a prompt.
+8. ZH：复制完成：剪贴板里应只包含该**选区内容**（并按 Prompt 规则拼装），不应出现整页内容。
+   EN: Done: clipboard should contain **only the selection** (merged with the prompt), not the whole page.
+9. ZH：（验证“无选区=整页”）点击页面空白处取消选区 → 右键 → 选择同一 Prompt。
+   EN: (Verify no-selection = page) Click blank area to clear selection → right-click → pick the same prompt.
+10. ZH：复制完成：该路径会对**当前页面主要内容（整页）**做提取与格式化，再与 Prompt 合并复制到剪贴板（与 `PROCESS_PAGE_WITH_PROMPT` 行为一致）。
+    EN: Done: this path extracts/formats the **main content of the current page**, merges it with the prompt, and copies to clipboard (same behavior as `PROCESS_PAGE_WITH_PROMPT`).
 
 ## 5) 期望结果 / Expected Results
 ### 5.1 Format = Plain Text（示例片段）/ Format = Plain Text (example snippet)
@@ -136,8 +138,8 @@
    - ZH：确认目标 Chat 服务是“启用”状态（Options → `Chat服务`）；并确认该 Prompt（或默认）开启了 `复制后自动打开`；部分浏览器/插件会拦截 `window.open` 弹窗，允许后再试；不影响复制结果。
    - EN: Ensure the target chat service is enabled (Options → `Chat services`), and `Auto open after copy` is ON (prompt-level or default). Some browsers/extensions may block `window.open`; allow it and retry. Copy still works regardless.
 5. 站点使用 Shadow DOM / 编辑器导致无法触发 / Shadow DOM or editors block triggering
-   - ZH：对编辑器（如 Notion/在线文档）Copylot 会主动避让；可改用“页级”路径 B，或在非编辑区域触发；如果页面大量内容在 Shadow DOM 内，提取结果可能为空或不完整。
-   - EN: Copylot avoids rich editors (e.g., Notion/online docs). Use the page-level Path B, or trigger on non-editor areas. If the page heavily uses Shadow DOM, extraction may be empty or incomplete.
+   - ZH：对编辑器（如 Notion/在线文档）Copylot 会主动避让；可改用路径 B（不选区时会处理整页），或在非编辑区域触发；如果页面大量内容在 Shadow DOM 内，提取结果可能为空或不完整。
+   - EN: Copylot avoids rich editors (e.g., Notion/online docs). Use Path B (clear selection to process the whole page), or trigger on non-editor areas. If the page heavily uses Shadow DOM, extraction may be empty or incomplete.
 6. 右键菜单找不到 `Magic Copy with Prompt` / Missing `Magic Copy with Prompt` in context menu
    - ZH：确认扩展未被禁用；并确认 Options 中至少有 1 个 Prompt；保存 Prompt 后会触发菜单更新（必要时刷新页面/重启浏览器）。
    - EN: Ensure the extension is enabled and at least 1 prompt exists in Options; saving prompts triggers a menu refresh (reload / restart if needed).

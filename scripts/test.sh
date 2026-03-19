@@ -9,3 +9,4 @@ node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/unit-tests.t
 
 npm run build:prod
 
+bash scripts/verify-prod-build.sh

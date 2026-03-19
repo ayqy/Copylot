@@ -1125,6 +1125,14 @@ async function initializeContentScript(): Promise<void> {
               void recordTelemetryEvent('copy_success');
               void recordTelemetryEvent('prompt_used');
               await reportSuccessfulCopy({ isPromptUsed: true });
+
+              if (message.chatServiceUrl && message.chatServiceName) {
+                showChatRedirectNotification(message.chatServiceName);
+                setTimeout(() => {
+                  window.open(message.chatServiceUrl, '_blank');
+                }, 1500);
+              }
+
               sendResponse({ success: true });
             } catch (error) {
               console.error('Error copying to clipboard:', error);
@@ -1143,6 +1151,14 @@ async function initializeContentScript(): Promise<void> {
                 void recordTelemetryEvent('copy_success');
                 void recordTelemetryEvent('prompt_used');
                 await reportSuccessfulCopy({ isPromptUsed: true });
+
+                if (message.chatServiceUrl && message.chatServiceName) {
+                  showChatRedirectNotification(message.chatServiceName);
+                  setTimeout(() => {
+                    window.open(message.chatServiceUrl, '_blank');
+                  }, 1500);
+                }
+
                 sendResponse({ success: true });
               } catch (error) {
                 sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
