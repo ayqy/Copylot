@@ -21,6 +21,7 @@ import {
   trimTelemetryEvents
 } from '../src/shared/telemetry.ts';
 import { cleanCodeBlockText } from '../src/shared/code-block-cleaner.ts';
+import { parsePromptSortMode, sortPrompts } from '../src/shared/prompt-sort.ts';
 
 const getMessage: I18nGetMessage = (key, substitutions) => {
   const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
@@ -265,6 +266,52 @@ function run() {
   assert.equal(trimmedDefault.length, TELEMETRY_MAX_EVENTS);
   assert.equal(trimmedDefault[0]?.ts, 2);
   assert.equal(trimmedDefault[TELEMETRY_MAX_EVENTS - 1]?.ts, TELEMETRY_MAX_EVENTS + 1);
+
+  // prompt-sort.ts (pure functions)
+  assert.equal(parsePromptSortMode('most_used'), 'most_used');
+  assert.equal(parsePromptSortMode('recent_used'), 'recent_used');
+  assert.equal(parsePromptSortMode('default'), 'default');
+  assert.equal(parsePromptSortMode('invalid'), 'default');
+  assert.equal(parsePromptSortMode(null), 'default');
+
+  const samplePromptsMostUsed = [
+    { id: '1', title: 'Banana', usageCount: 2 },
+    { id: '2', title: 'zebra', usageCount: 5 },
+    { id: '3', title: 'apple', usageCount: 2 },
+    { id: '4', title: 'carrot' }
+  ];
+  const mostUsedSorted = sortPrompts(samplePromptsMostUsed, 'most_used');
+  assert.deepEqual(
+    mostUsedSorted.map((p) => p.id),
+    ['2', '3', '1', '4'],
+    'most_used: usageCount desc, then title asc (case-insensitive), undefined usageCount treated as 0'
+  );
+  assert.deepEqual(
+    samplePromptsMostUsed.map((p) => p.id),
+    ['1', '2', '3', '4'],
+    'most_used: should not mutate input array'
+  );
+
+  const samplePromptsRecentUsed = [
+    { id: 'a', title: 'beta', usageCount: 2, lastUsedAt: 2000 },
+    { id: 'b', title: 'Alpha', usageCount: 5, lastUsedAt: 2000 },
+    { id: 'c', title: 'charlie', usageCount: 1, lastUsedAt: 1500 },
+    { id: 'd', title: 'delta', usageCount: 10 },
+    { id: 'e', title: 'echo', usageCount: 0 }
+  ];
+  const recentUsedSorted = sortPrompts(samplePromptsRecentUsed, 'recent_used');
+  assert.deepEqual(
+    recentUsedSorted.map((p) => p.id),
+    ['b', 'a', 'c', 'd', 'e'],
+    'recent_used: lastUsedAt desc, then usageCount desc, then title asc; no lastUsedAt should be at the end'
+  );
+
+  const samplePromptsDefault = [
+    { id: 'x', title: 'X', usageCount: 1 },
+    { id: 'y', title: 'Y', usageCount: 2 }
+  ];
+  const defaultSorted = sortPrompts(samplePromptsDefault, 'default');
+  assert.deepEqual(defaultSorted.map((p) => p.id), ['x', 'y'], 'default: keep input order');
 
   // code-block-cleaner.ts (pure function)
   assert.equal(cleanCodeBlockText('const Copy = 1;\nconsole.log(Copy);'), 'const Copy = 1;\nconsole.log(Copy);');

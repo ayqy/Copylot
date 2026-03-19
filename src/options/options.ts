@@ -24,6 +24,7 @@ import {
   buildShareCopyText
 } from '../shared/word-of-mouth';
 import { buildProWaitlistIssueUrl } from '../shared/monetization';
+import { parsePromptSortMode, sortPrompts, type PromptSortMode } from '../shared/prompt-sort';
 
 // Simple UUID generator
 function generateUUID(): string {
@@ -45,6 +46,7 @@ function getMessage(key: string, substitutions?: MessageSubstitutions): string {
 interface OptionsElements {
   searchInput: HTMLInputElement;
   categoryFilter: HTMLSelectElement;
+  promptSortSelect: HTMLSelectElement;
   addPromptBtn: HTMLButtonElement;
   batchActionBtn: HTMLButtonElement;
   promptsGrid: HTMLElement;
@@ -133,9 +135,12 @@ let elements: OptionsElements;
 let currentSettings: Settings;
 let allPrompts: Prompt[] = [];
 let filteredPrompts: Prompt[] = [];
+let promptSortMode: PromptSortMode = 'default';
 let selectedPrompts: Set<string> = new Set();
 let editingPromptId: string | null = null;
 let editingChatServiceId: string | null = null;
+
+const PROMPT_SORT_MODE_STORAGE_KEY = 'copylot_prompt_sort_mode';
 
 /**
  * 获取所有DOM元素
@@ -144,6 +149,7 @@ function getElements(): OptionsElements {
   return {
     searchInput: document.getElementById('search-input') as HTMLInputElement,
     categoryFilter: document.getElementById('category-filter') as HTMLSelectElement,
+    promptSortSelect: document.getElementById('prompt-sort-select') as HTMLSelectElement,
     addPromptBtn: document.getElementById('add-prompt-btn') as HTMLButtonElement,
     batchActionBtn: document.getElementById('batch-action-btn') as HTMLButtonElement,
     promptsGrid: document.getElementById('prompts-grid') as HTMLElement,
@@ -310,6 +316,33 @@ async function manualSync() {
   }
 }
 
+function loadPromptSortMode(): void {
+  let stored: unknown = null;
+  try {
+    stored = localStorage.getItem(PROMPT_SORT_MODE_STORAGE_KEY);
+  } catch (error) {
+    console.debug('Failed to read prompt sort mode from localStorage:', error);
+  }
+
+  promptSortMode = parsePromptSortMode(stored);
+  elements.promptSortSelect.value = promptSortMode;
+}
+
+function persistPromptSortMode(mode: PromptSortMode): void {
+  try {
+    localStorage.setItem(PROMPT_SORT_MODE_STORAGE_KEY, mode);
+  } catch (error) {
+    console.debug('Failed to persist prompt sort mode to localStorage:', error);
+  }
+}
+
+function setPromptSortMode(value: unknown): void {
+  const mode = parsePromptSortMode(value);
+  promptSortMode = mode;
+  elements.promptSortSelect.value = mode;
+  persistPromptSortMode(mode);
+}
+
 /**
  * 过滤和渲染prompts
  */
@@ -333,7 +366,9 @@ function filterAndRenderPrompts() {
     return matchesSearch && matchesCategory;
   });
 
-  renderPrompts();
+  const promptsToRender = sortPrompts(filteredPrompts, promptSortMode);
+
+  renderPrompts(promptsToRender);
   updateUI();
 }
 
@@ -357,17 +392,17 @@ function getCategoryFromPrompt(prompt: Prompt): string {
 /**
  * 渲染prompts网格
  */
-function renderPrompts() {
+function renderPrompts(prompts: Prompt[]) {
   elements.promptsGrid.innerHTML = '';
   
-  if (filteredPrompts.length === 0) {
+  if (prompts.length === 0) {
     elements.emptyState.style.display = 'block';
     return;
   }
 
   elements.emptyState.style.display = 'none';
 
-  filteredPrompts.forEach(prompt => {
+  prompts.forEach(prompt => {
     const card = createPromptCard(prompt);
     elements.promptsGrid.appendChild(card);
   });
@@ -383,6 +418,10 @@ function createPromptCard(prompt: Prompt): HTMLElement {
   
   const category = getCategoryFromPrompt(prompt);
   const categoryText = getCategoryDisplayName(category);
+  const lastUsedText =
+    typeof prompt.lastUsedAt === 'number' && Number.isFinite(prompt.lastUsedAt) && prompt.lastUsedAt > 0
+      ? formatTimeAgo(prompt.lastUsedAt)
+      : getMessage('promptNeverUsed');
   
   // 为内置prompt添加特殊样式类
   if (prompt.builtIn) {
@@ -431,7 +470,7 @@ function createPromptCard(prompt: Prompt): HTMLElement {
         </svg>
         ${formatUsageCount(prompt.usageCount)}
       </span>
-      <span class="last-used">${formatTimeAgo(prompt.createdAt)}</span>
+      <span class="last-used">${lastUsedText}</span>
     </div>
   `;
 
@@ -1271,6 +1310,10 @@ function setupEventListeners() {
   // 搜索和过滤
   elements.searchInput.addEventListener('input', filterAndRenderPrompts);
   elements.categoryFilter.addEventListener('change', filterAndRenderPrompts);
+  elements.promptSortSelect.addEventListener('change', () => {
+    setPromptSortMode(elements.promptSortSelect.value);
+    filterAndRenderPrompts();
+  });
   
   // 添加prompt按钮
   elements.addPromptBtn.addEventListener('click', () => openPromptEditor());
@@ -1758,6 +1801,7 @@ async function initialize() {
     
     elements = getElements();
     localizeUI();
+    loadPromptSortMode();
     await loadSettings();
     await refreshTelemetryEventsPanel();
     await refreshGrowthStatsPanel();

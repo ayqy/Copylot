@@ -370,6 +370,18 @@
   "searchPlaceholder": {
     "message": "Search prompts..."
   },
+  "promptSortLabel": {
+    "message": "Sort:"
+  },
+  "promptSortDefault": {
+    "message": "Default"
+  },
+  "promptSortMostUsed": {
+    "message": "Most used"
+  },
+  "promptSortRecentUsed": {
+    "message": "Recently used"
+  },
   "allCategories": {
     "message": "All Types"
   },
@@ -405,6 +417,9 @@
   },
   "editPrompt": {
     "message": "Edit Prompt"
+  },
+  "promptNeverUsed": {
+    "message": "Never used"
   },
   "promptCategory": {
     "message": "Category"

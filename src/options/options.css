@@ -156,6 +156,17 @@ body {
   color: var(--text-secondary);
 }
 
+.filter-options {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
 #search-input {
   width: 100%;
   padding: 10px 12px 10px 40px;
@@ -174,7 +185,8 @@ body {
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-#category-filter {
+#category-filter,
+#prompt-sort-select {
   padding: 10px 12px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);

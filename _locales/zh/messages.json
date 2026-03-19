@@ -370,6 +370,18 @@
   "searchPlaceholder": {
     "message": "搜索prompt..."
   },
+  "promptSortLabel": {
+    "message": "排序："
+  },
+  "promptSortDefault": {
+    "message": "默认"
+  },
+  "promptSortMostUsed": {
+    "message": "最常用"
+  },
+  "promptSortRecentUsed": {
+    "message": "最近使用"
+  },
   "allCategories": {
     "message": "全部类型"
   },
@@ -405,6 +417,9 @@
   },
   "editPrompt": {
     "message": "编辑Prompt"
+  },
+  "promptNeverUsed": {
+    "message": "未使用过"
   },
   "promptCategory": {
     "message": "类型"
