@@ -162,6 +162,42 @@
       }
     }
   },
+  "proWaitlistSurveyBodyTemplate": {
+    "message": "## Privacy Notice\\n- No webpage content / copied content / URL / title is included.\\n- Everything comes from extension environment info + what you manually type.\\n- Contact info is optional and voluntary. The extension will not auto-collect/auto-fill/auto-send it.\\n\\n## Environment\\n- Extension Version: $EXT_VERSION$\\n- Extension ID: $EXT_ID$\\n- navigator.language: $NAV_LANG$\\n- UI Language: $UI_LANG$\\n\\n## Payment Interest Survey (Optional)\\n\\n### Use case\\n$USE_CASE$\\n\\n### Desired Pro capabilities (aligned with pro-scope)\\n$PRO_CAPABILITIES$\\n\\n### Payment intent\\n- Willing to pay: $PAY_WILLING$\\n- Acceptable price (monthly): $PAY_MONTHLY$\\n- Acceptable price (annual): $PAY_ANNUAL$\\n\\n### Contact (optional)\\n$CONTACT$\\n",
+    "description": "Options Pro tab: waitlist survey markdown template (copy to clipboard)",
+    "placeholders": {
+      "EXT_VERSION": {
+        "content": "$1"
+      },
+      "EXT_ID": {
+        "content": "$2"
+      },
+      "NAV_LANG": {
+        "content": "$3"
+      },
+      "UI_LANG": {
+        "content": "$4"
+      },
+      "USE_CASE": {
+        "content": "$5"
+      },
+      "PRO_CAPABILITIES": {
+        "content": "$6"
+      },
+      "PAY_WILLING": {
+        "content": "$7"
+      },
+      "PAY_MONTHLY": {
+        "content": "$8"
+      },
+      "PAY_ANNUAL": {
+        "content": "$9"
+      },
+      "CONTACT": {
+        "content": "$10"
+      }
+    }
+  },
   "upgradePro": {
     "message": "Upgrade Pro",
     "description": "Popup entry for upgrading to Pro"
@@ -265,6 +301,122 @@
   "proPrivacyHint": {
     "message": "The waitlist issue is prefilled with extension version/ID and language only. No webpage or copied content is included.",
     "description": "Options Pro tab privacy hint"
+  },
+  "proWaitlistSurveyTitle": {
+    "message": "Payment Interest Survey (Optional)",
+    "description": "Options Pro tab: waitlist survey title"
+  },
+  "proWaitlistSurveyHint": {
+    "message": "Fill it only if you want. Used to validate Pro direction. No auto-collection and no network sending.",
+    "description": "Options Pro tab: waitlist survey hint"
+  },
+  "proWaitlistSurveyUseCaseLabel": {
+    "message": "Use case",
+    "description": "Options Pro tab: survey field label (use case)"
+  },
+  "proWaitlistSurveyUseCasePlaceholder": {
+    "message": "e.g. summarize long articles / meeting notes / competitor research...",
+    "description": "Options Pro tab: survey field placeholder (use case)"
+  },
+  "proWaitlistSurveyCapabilitiesLabel": {
+    "message": "Desired Pro capabilities",
+    "description": "Options Pro tab: survey field label (desired capabilities)"
+  },
+  "proWaitlistSurveyCapabilitiesOtherPlaceholder": {
+    "message": "Other notes (optional)",
+    "description": "Options Pro tab: survey field placeholder (other capabilities)"
+  },
+  "proWaitlistSurveyCapabilitiesOtherPrefix": {
+    "message": "Other: ",
+    "description": "Copied survey: other capabilities prefix"
+  },
+  "proWaitlistSurveyPayWillingLabel": {
+    "message": "Willing to pay",
+    "description": "Options Pro tab: survey field label (willing to pay)"
+  },
+  "proWaitlistSurveySelectPlaceholder": {
+    "message": "Not selected",
+    "description": "Options Pro tab: select placeholder"
+  },
+  "proWaitlistSurveyPayWillingYes": {
+    "message": "Yes",
+    "description": "Options Pro tab: willing to pay option (Yes)"
+  },
+  "proWaitlistSurveyPayWillingMaybe": {
+    "message": "Maybe",
+    "description": "Options Pro tab: willing to pay option (Maybe)"
+  },
+  "proWaitlistSurveyPayWillingNo": {
+    "message": "No",
+    "description": "Options Pro tab: willing to pay option (No)"
+  },
+  "proWaitlistSurveyPayMonthlyLabel": {
+    "message": "Acceptable price (monthly)",
+    "description": "Options Pro tab: survey field label (monthly price)"
+  },
+  "proWaitlistSurveyPriceMonthly1": {
+    "message": "< $5 / mo",
+    "description": "Options Pro tab: monthly price option 1"
+  },
+  "proWaitlistSurveyPriceMonthly2": {
+    "message": "$5 - $10 / mo",
+    "description": "Options Pro tab: monthly price option 2"
+  },
+  "proWaitlistSurveyPriceMonthly3": {
+    "message": "$10 - $20 / mo",
+    "description": "Options Pro tab: monthly price option 3"
+  },
+  "proWaitlistSurveyPriceMonthly4": {
+    "message": "$20 - $50 / mo",
+    "description": "Options Pro tab: monthly price option 4"
+  },
+  "proWaitlistSurveyPriceMonthly5": {
+    "message": ">= $50 / mo",
+    "description": "Options Pro tab: monthly price option 5"
+  },
+  "proWaitlistSurveyPayAnnualLabel": {
+    "message": "Acceptable price (annual)",
+    "description": "Options Pro tab: survey field label (annual price)"
+  },
+  "proWaitlistSurveyPriceAnnual1": {
+    "message": "< $50 / yr",
+    "description": "Options Pro tab: annual price option 1"
+  },
+  "proWaitlistSurveyPriceAnnual2": {
+    "message": "$50 - $100 / yr",
+    "description": "Options Pro tab: annual price option 2"
+  },
+  "proWaitlistSurveyPriceAnnual3": {
+    "message": "$100 - $200 / yr",
+    "description": "Options Pro tab: annual price option 3"
+  },
+  "proWaitlistSurveyPriceAnnual4": {
+    "message": "$200 - $500 / yr",
+    "description": "Options Pro tab: annual price option 4"
+  },
+  "proWaitlistSurveyPriceAnnual5": {
+    "message": ">= $500 / yr",
+    "description": "Options Pro tab: annual price option 5"
+  },
+  "proWaitlistSurveyContactLabel": {
+    "message": "Contact (optional)",
+    "description": "Options Pro tab: survey field label (contact)"
+  },
+  "proWaitlistSurveyContactPlaceholder": {
+    "message": "Email / Telegram / other (voluntary)",
+    "description": "Options Pro tab: survey field placeholder (contact)"
+  },
+  "proWaitlistSurveyCopyButton": {
+    "message": "Copy survey (with environment info)",
+    "description": "Options Pro tab: copy survey button"
+  },
+  "proWaitlistSurveyCopyOpenButton": {
+    "message": "Copy and open waitlist",
+    "description": "Options Pro tab: copy then open waitlist button"
+  },
+  "proWaitlistSurveyPrivacyHint": {
+    "message": "No webpage content / copied content / URL / title is included. Everything comes from extension environment info + what you manually type.",
+    "description": "Options Pro tab: survey privacy hint"
   },
   "proScopeLearnMore": {
     "message": "Learn more: Pro scope & boundaries",

@@ -13,7 +13,8 @@ export const PRO_FUNNEL_EVENT_NAMES = [
   'pro_prompt_action',
   'pro_entry_opened',
   'pro_waitlist_opened',
-  'pro_waitlist_copied'
+  'pro_waitlist_copied',
+  'pro_waitlist_survey_copied'
 ] as const;
 
 export type ProFunnelEventName = (typeof PRO_FUNNEL_EVENT_NAMES)[number];
@@ -73,14 +74,16 @@ function createEmptySourceStats(): ProFunnelSourceStats {
       pro_prompt_action: 0,
       pro_entry_opened: 0,
       pro_waitlist_opened: 0,
-      pro_waitlist_copied: 0
+      pro_waitlist_copied: 0,
+      pro_waitlist_survey_copied: 0
     },
     lastTs: {
       pro_prompt_shown: null,
       pro_prompt_action: null,
       pro_entry_opened: null,
       pro_waitlist_opened: null,
-      pro_waitlist_copied: null
+      pro_waitlist_copied: null,
+      pro_waitlist_survey_copied: null
     },
     rates: {
       entry_opened_per_prompt_shown: null,

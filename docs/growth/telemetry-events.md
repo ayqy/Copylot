@@ -33,6 +33,7 @@
 | `pro_entry_opened` | 打开 Pro 入口（升级 Pro / Pro Tab） | Popup：`src/popup/popup.ts` 点击 `#upgrade-pro-entry`；Options：`src/options/options.ts` 激活 `#pro-tab` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容 | 仅记录意向入口触达 |
 | `pro_waitlist_opened` | 打开候补登记页 | Popup：`src/popup/popup.ts` 点击 `#popup-pro-waitlist`；Options：`src/options/options.ts` 点击 `#pro-waitlist-button` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容；候补链接仅预填环境信息与占位提示 | 打开 GitHub `issues/new` |
 | `pro_waitlist_copied` | 复制候补文案成功 | Popup：`src/popup/popup.ts` 点击 `#popup-pro-waitlist-copy` 且写入剪贴板成功；Options：`src/options/options.ts` 点击 `#pro-waitlist-copy` 且写入剪贴板成功 | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容；复制内容为候补模板（仅环境信息 + 占位提示） | 仅在写入成功时记录 |
+| `pro_waitlist_survey_copied` | 复制“付费意向问卷（可选）”成功 | Options：`src/options/options.ts` 点击 `#pro-waitlist-survey-copy` / `#pro-waitlist-survey-copy-open` 且写入剪贴板成功 | `{ source: 'options' }` | 不包含任何网页内容/复制内容/URL/标题；复制内容为“环境信息 + 用户手动填写问卷”Markdown | 仅在写入成功时记录 |
 
 ## 开关与清理
 - 开关字段：`Settings.isAnonymousUsageDataEnabled`

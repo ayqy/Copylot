@@ -629,6 +629,23 @@ async function run() {
     { name: 'pro_prompt_shown', ts: now }
   );
 
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_waitlist_survey_copied',
+      ts: now,
+      props: { source: 'options', extra: 'x' }
+    }),
+    { name: 'pro_waitlist_survey_copied', ts: now, props: { source: 'options' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_waitlist_survey_copied',
+      ts: now,
+      props: { source: 'rating_prompt' }
+    }),
+    { name: 'pro_waitlist_survey_copied', ts: now }
+  );
+
   assert.deepEqual(sanitizeTelemetryEvents({ not: 'an array' }), []);
   assert.deepEqual(
     sanitizeTelemetryEvents([
@@ -669,10 +686,12 @@ async function run() {
       { name: 'pro_entry_opened', ts: 10, props: { source: 'popup' } },
       { name: 'pro_entry_opened', ts: 20, props: { source: 'popup' } },
       { name: 'pro_waitlist_opened', ts: 30, props: { source: 'popup' } },
+      { name: 'pro_waitlist_survey_copied', ts: 35, props: { source: 'popup' } },
       { name: 'pro_waitlist_copied', ts: 40, props: { source: 'popup' } },
       { name: 'pro_prompt_shown', ts: 45, props: { source: 'options' } },
       { name: 'pro_prompt_action', ts: 46, props: { source: 'options', action: 'later' } },
       { name: 'pro_waitlist_opened', ts: 50, props: { source: 'options' } },
+      { name: 'pro_waitlist_survey_copied', ts: 55, props: { source: 'options' } },
       { name: 'pro_waitlist_copied', ts: 60, props: { source: 'options' } },
       { name: 'pro_entry_opened', ts: 70, props: { source: 'options' } },
       { name: 'popup_opened', ts: 80 },
@@ -687,28 +706,32 @@ async function run() {
     pro_prompt_action: 1,
     pro_entry_opened: 2,
     pro_waitlist_opened: 1,
-    pro_waitlist_copied: 1
+    pro_waitlist_copied: 1,
+    pro_waitlist_survey_copied: 1
   });
   assert.deepEqual(proSummary.bySource.popup.lastTs, {
     pro_prompt_shown: 5,
     pro_prompt_action: 6,
     pro_entry_opened: 20,
     pro_waitlist_opened: 30,
-    pro_waitlist_copied: 40
+    pro_waitlist_copied: 40,
+    pro_waitlist_survey_copied: 35
   });
   assert.deepEqual(proSummary.bySource.options.counts, {
     pro_prompt_shown: 1,
     pro_prompt_action: 1,
     pro_entry_opened: 1,
     pro_waitlist_opened: 1,
-    pro_waitlist_copied: 1
+    pro_waitlist_copied: 1,
+    pro_waitlist_survey_copied: 1
   });
   assert.deepEqual(proSummary.overall.counts, {
     pro_prompt_shown: 2,
     pro_prompt_action: 2,
     pro_entry_opened: 3,
     pro_waitlist_opened: 2,
-    pro_waitlist_copied: 2
+    pro_waitlist_copied: 2,
+    pro_waitlist_survey_copied: 2
   });
   assert.equal(proSummary.bySource.popup.rates.waitlist_opened_per_entry_opened, 0.5);
   assert.equal(proSummary.bySource.popup.rates.waitlist_copied_per_waitlist_opened, 1);
@@ -730,6 +753,7 @@ async function run() {
       { name: 'pro_prompt_action', ts: now, props: { source: 'popup', action: 'join', foo: 'bar' } },
       { name: 'pro_entry_opened', ts: now, props: { source: 'popup', url: 'https://example.com' } },
       { name: 'pro_waitlist_opened', ts: now + 1, props: { source: 'options', title: 'x' } },
+      { name: 'pro_waitlist_survey_copied', ts: now + 2, props: { source: 'options', useCase: 'x' } },
       { name: 'popup_opened', ts: now + 2 },
       { name: 'unknown', ts: now + 3 }
     ]
@@ -738,10 +762,10 @@ async function run() {
   assert.deepEqual(Object.keys(proPack.meta).sort(), ['exportedAt', 'extensionVersion', 'source']);
   assert.deepEqual(Object.keys(proPack.settings).sort(), ['isAnonymousUsageDataEnabled']);
   assert.equal(proPack.settings.isAnonymousUsageDataEnabled, true);
-  assert.equal(proPack.events.length, 4);
+  assert.equal(proPack.events.length, 5);
   assert.deepEqual(
     proPack.events.map((e) => e.name),
-    ['pro_prompt_shown', 'pro_prompt_action', 'pro_entry_opened', 'pro_waitlist_opened']
+    ['pro_prompt_shown', 'pro_prompt_action', 'pro_entry_opened', 'pro_waitlist_opened', 'pro_waitlist_survey_copied']
   );
   assert.deepEqual(Object.keys(proPack.events[0]?.props || {}).sort(), ['source']);
 

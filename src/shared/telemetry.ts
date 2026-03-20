@@ -15,6 +15,7 @@ export type TelemetryEventName =
   | 'pro_entry_opened'
   | 'pro_waitlist_opened'
   | 'pro_waitlist_copied'
+  | 'pro_waitlist_survey_copied'
   | 'onboarding_shown'
   | 'onboarding_completed'
   | 'rating_prompt_shown'
@@ -41,6 +42,7 @@ const TELEMETRY_EVENT_PROP_ALLOWLIST: Record<TelemetryEventName, readonly string
   pro_entry_opened: ['source'],
   pro_waitlist_opened: ['source'],
   pro_waitlist_copied: ['source'],
+  pro_waitlist_survey_copied: ['source'],
   onboarding_shown: ['source'],
   onboarding_completed: ['source', 'action'],
   rating_prompt_shown: ['source'],
@@ -151,6 +153,11 @@ function sanitizeProps(
         continue;
       }
       if (eventName === 'pro_waitlist_copied') {
+        if (!isWomSource(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
+      if (eventName === 'pro_waitlist_survey_copied') {
         if (!isWomSource(value)) continue;
         sanitized[key] = value;
         continue;

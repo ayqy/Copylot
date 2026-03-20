@@ -143,6 +143,18 @@ interface OptionsElements {
   // Pro / Monetization
   proWaitlistButton: HTMLButtonElement;
   proWaitlistCopyButton: HTMLButtonElement;
+  proWaitlistSurveyUseCase: HTMLTextAreaElement;
+  proWaitlistSurveyCapabilityAdvancedCleaning: HTMLInputElement;
+  proWaitlistSurveyCapabilityBatchCollection: HTMLInputElement;
+  proWaitlistSurveyCapabilityPromptPack: HTMLInputElement;
+  proWaitlistSurveyCapabilityNoteExport: HTMLInputElement;
+  proWaitlistSurveyCapabilitiesOther: HTMLInputElement;
+  proWaitlistSurveyPayWilling: HTMLSelectElement;
+  proWaitlistSurveyPayMonthly: HTMLSelectElement;
+  proWaitlistSurveyPayAnnual: HTMLSelectElement;
+  proWaitlistSurveyContact: HTMLInputElement;
+  proWaitlistSurveyCopyButton: HTMLButtonElement;
+  proWaitlistSurveyCopyOpenButton: HTMLButtonElement;
 
   // WOM actions (Pro Tab)
   womShareOpenButton: HTMLButtonElement;
@@ -254,6 +266,30 @@ function getElements(): OptionsElements {
 
     proWaitlistButton: document.getElementById('pro-waitlist-button') as HTMLButtonElement,
     proWaitlistCopyButton: document.getElementById('pro-waitlist-copy') as HTMLButtonElement,
+    proWaitlistSurveyUseCase: document.getElementById('pro-waitlist-survey-use-case') as HTMLTextAreaElement,
+    proWaitlistSurveyCapabilityAdvancedCleaning: document.getElementById(
+      'pro-waitlist-survey-capability-advanced-cleaning'
+    ) as HTMLInputElement,
+    proWaitlistSurveyCapabilityBatchCollection: document.getElementById(
+      'pro-waitlist-survey-capability-batch-collection'
+    ) as HTMLInputElement,
+    proWaitlistSurveyCapabilityPromptPack: document.getElementById(
+      'pro-waitlist-survey-capability-prompt-pack'
+    ) as HTMLInputElement,
+    proWaitlistSurveyCapabilityNoteExport: document.getElementById(
+      'pro-waitlist-survey-capability-note-export'
+    ) as HTMLInputElement,
+    proWaitlistSurveyCapabilitiesOther: document.getElementById(
+      'pro-waitlist-survey-capabilities-other'
+    ) as HTMLInputElement,
+    proWaitlistSurveyPayWilling: document.getElementById('pro-waitlist-survey-pay-willing') as HTMLSelectElement,
+    proWaitlistSurveyPayMonthly: document.getElementById('pro-waitlist-survey-pay-monthly') as HTMLSelectElement,
+    proWaitlistSurveyPayAnnual: document.getElementById('pro-waitlist-survey-pay-annual') as HTMLSelectElement,
+    proWaitlistSurveyContact: document.getElementById('pro-waitlist-survey-contact') as HTMLInputElement,
+    proWaitlistSurveyCopyButton: document.getElementById('pro-waitlist-survey-copy') as HTMLButtonElement,
+    proWaitlistSurveyCopyOpenButton: document.getElementById(
+      'pro-waitlist-survey-copy-open'
+    ) as HTMLButtonElement,
 
     womShareOpenButton: document.getElementById('wom-share-open') as HTMLButtonElement,
     womShareCopyButton: document.getElementById('wom-share-copy') as HTMLButtonElement,
@@ -1910,6 +1946,97 @@ function setupEventListeners() {
     });
   }
 
+  function buildWaitlistSurveyBody(): string {
+    const extensionVersion = chrome.runtime.getManifest().version || '';
+    const extensionId = chrome.runtime.id;
+    const navigatorLanguage = navigator.language || '';
+    const uiLanguage = chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : '';
+
+    const useCase = elements.proWaitlistSurveyUseCase?.value?.trim() || '-';
+    const contact = elements.proWaitlistSurveyContact?.value?.trim() || '-';
+
+    const capabilities: string[] = [];
+    if (elements.proWaitlistSurveyCapabilityAdvancedCleaning?.checked) {
+      capabilities.push(getMessage('proFeature1') || 'proFeature1');
+    }
+    if (elements.proWaitlistSurveyCapabilityBatchCollection?.checked) {
+      capabilities.push(getMessage('proFeature2') || 'proFeature2');
+    }
+    if (elements.proWaitlistSurveyCapabilityPromptPack?.checked) {
+      capabilities.push(getMessage('proFeature3') || 'proFeature3');
+    }
+    if (elements.proWaitlistSurveyCapabilityNoteExport?.checked) {
+      capabilities.push(getMessage('proFeature4') || 'proFeature4');
+    }
+    const otherCapabilities = elements.proWaitlistSurveyCapabilitiesOther?.value?.trim();
+    if (otherCapabilities) {
+      const prefix = getMessage('proWaitlistSurveyCapabilitiesOtherPrefix') || '';
+      capabilities.push(`${prefix}${otherCapabilities}`);
+    }
+    const capabilitiesBlock = capabilities.length > 0 ? capabilities.map((item) => `- ${item}`).join('\n') : '-';
+
+    const selectText = (select: HTMLSelectElement): string => {
+      const option = select?.selectedOptions?.[0];
+      const value = option?.value || '';
+      if (!value) return '-';
+      return option?.textContent?.trim() || value || '-';
+    };
+
+    const payWilling = selectText(elements.proWaitlistSurveyPayWilling);
+    const payMonthly = selectText(elements.proWaitlistSurveyPayMonthly);
+    const payAnnual = selectText(elements.proWaitlistSurveyPayAnnual);
+
+    return getMessage('proWaitlistSurveyBodyTemplate', [
+      extensionVersion,
+      extensionId,
+      navigatorLanguage,
+      uiLanguage,
+      useCase,
+      capabilitiesBlock,
+      payWilling,
+      payMonthly,
+      payAnnual,
+      contact
+    ]);
+  }
+
+  async function copyWaitlistSurveyToClipboard(button: HTMLButtonElement): Promise<boolean> {
+    const originalText = button.textContent || '';
+    const body = buildWaitlistSurveyBody();
+
+    try {
+      await navigator.clipboard.writeText(body);
+      void recordTelemetryEvent('pro_waitlist_survey_copied', { source: 'options' });
+      button.textContent = getMessage('copied') || originalText;
+      window.setTimeout(() => {
+        const key =
+          button === elements.proWaitlistSurveyCopyOpenButton
+            ? 'proWaitlistSurveyCopyOpenButton'
+            : 'proWaitlistSurveyCopyButton';
+        button.textContent = getMessage(key) || originalText;
+      }, 1200);
+      return true;
+    } catch (error) {
+      console.warn('Failed to copy waitlist survey via navigator.clipboard:', error);
+      const ok = fallbackCopyText(body);
+      if (ok) {
+        void recordTelemetryEvent('pro_waitlist_survey_copied', { source: 'options' });
+        button.textContent = getMessage('copied') || originalText;
+        window.setTimeout(() => {
+          const key =
+            button === elements.proWaitlistSurveyCopyOpenButton
+              ? 'proWaitlistSurveyCopyOpenButton'
+              : 'proWaitlistSurveyCopyButton';
+          button.textContent = getMessage(key) || originalText;
+        }, 1200);
+        return true;
+      }
+      showNotification(getMessage('failedCopyClipboard'), 'error');
+      button.textContent = originalText;
+      return false;
+    }
+  }
+
   function buildWomStoreUrl(): string {
     return buildChromeWebStoreDetailUrl(chrome.runtime.id, buildWomUtmParams('options'));
   }
@@ -1960,6 +2087,17 @@ function setupEventListeners() {
   }
 
   elements.proWaitlistButton.addEventListener('click', () => {
+    void recordTelemetryEvent('pro_waitlist_opened', { source: 'options' });
+    const url = buildWaitlistUrl();
+    chrome.tabs.create({ url });
+  });
+
+  elements.proWaitlistSurveyCopyButton.addEventListener('click', () => {
+    void copyWaitlistSurveyToClipboard(elements.proWaitlistSurveyCopyButton);
+  });
+
+  elements.proWaitlistSurveyCopyOpenButton.addEventListener('click', async () => {
+    await copyWaitlistSurveyToClipboard(elements.proWaitlistSurveyCopyOpenButton);
     void recordTelemetryEvent('pro_waitlist_opened', { source: 'options' });
     const url = buildWaitlistUrl();
     chrome.tabs.create({ url });

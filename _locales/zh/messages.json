@@ -162,6 +162,42 @@
       }
     }
   },
+  "proWaitlistSurveyBodyTemplate": {
+    "message": "## 隐私提示\\n- 不包含网页内容/复制内容/URL/标题。\\n- 所有内容均来自“扩展环境信息 + 用户手动填写”。\\n- 联系方式为用户自愿填写；扩展不会自动采集/自动填充/自动发送。\\n\\n## 环境信息\\n- 扩展版本: $EXT_VERSION$\\n- 扩展 ID: $EXT_ID$\\n- navigator.language: $NAV_LANG$\\n- UI 语言: $UI_LANG$\\n\\n## 付费意向问卷（可选）\\n\\n### 使用场景\\n$USE_CASE$\\n\\n### 期望的 Pro 能力（基于 pro-scope 口径）\\n$PRO_CAPABILITIES$\\n\\n### 付费意向\\n- 是否愿意付费: $PAY_WILLING$\\n- 可接受价位（按月）: $PAY_MONTHLY$\\n- 可接受价位（按年）: $PAY_ANNUAL$\\n\\n### 联系方式（可选）\\n$CONTACT$\\n",
+    "description": "Options Pro Tab：复制问卷（含环境信息）模板",
+    "placeholders": {
+      "EXT_VERSION": {
+        "content": "$1"
+      },
+      "EXT_ID": {
+        "content": "$2"
+      },
+      "NAV_LANG": {
+        "content": "$3"
+      },
+      "UI_LANG": {
+        "content": "$4"
+      },
+      "USE_CASE": {
+        "content": "$5"
+      },
+      "PRO_CAPABILITIES": {
+        "content": "$6"
+      },
+      "PAY_WILLING": {
+        "content": "$7"
+      },
+      "PAY_MONTHLY": {
+        "content": "$8"
+      },
+      "PAY_ANNUAL": {
+        "content": "$9"
+      },
+      "CONTACT": {
+        "content": "$10"
+      }
+    }
+  },
   "upgradePro": {
     "message": "升级 Pro",
     "description": "Popup 升级 Pro 入口"
@@ -265,6 +301,122 @@
   "proPrivacyHint": {
     "message": "候补登记不会预填任何网页内容/复制内容；仅包含扩展版本、扩展 ID 与语言信息。",
     "description": "Options Pro Tab 隐私提示"
+  },
+  "proWaitlistSurveyTitle": {
+    "message": "付费意向问卷（可选）",
+    "description": "Options Pro Tab：付费意向问卷标题"
+  },
+  "proWaitlistSurveyHint": {
+    "message": "仅在你愿意时填写，用于验证 Pro 方向；不会自动采集/联网发送。",
+    "description": "Options Pro Tab：付费意向问卷提示"
+  },
+  "proWaitlistSurveyUseCaseLabel": {
+    "message": "使用场景",
+    "description": "Options Pro Tab：问卷字段标签（使用场景）"
+  },
+  "proWaitlistSurveyUseCasePlaceholder": {
+    "message": "例如：总结长文/做会议纪要/整理竞品资料...",
+    "description": "Options Pro Tab：问卷字段占位（使用场景）"
+  },
+  "proWaitlistSurveyCapabilitiesLabel": {
+    "message": "期望的 Pro 能力",
+    "description": "Options Pro Tab：问卷字段标签（期望的 Pro 能力）"
+  },
+  "proWaitlistSurveyCapabilitiesOtherPlaceholder": {
+    "message": "其他补充（可选）",
+    "description": "Options Pro Tab：问卷字段占位（其他补充）"
+  },
+  "proWaitlistSurveyCapabilitiesOtherPrefix": {
+    "message": "其他：",
+    "description": "复制问卷：其他能力前缀"
+  },
+  "proWaitlistSurveyPayWillingLabel": {
+    "message": "是否愿意付费",
+    "description": "Options Pro Tab：问卷字段标签（是否愿意付费）"
+  },
+  "proWaitlistSurveySelectPlaceholder": {
+    "message": "未选择",
+    "description": "Options Pro Tab：问卷下拉框占位"
+  },
+  "proWaitlistSurveyPayWillingYes": {
+    "message": "Yes（愿意）",
+    "description": "Options Pro Tab：是否愿意付费选项（Yes）"
+  },
+  "proWaitlistSurveyPayWillingMaybe": {
+    "message": "Maybe（可能）",
+    "description": "Options Pro Tab：是否愿意付费选项（Maybe）"
+  },
+  "proWaitlistSurveyPayWillingNo": {
+    "message": "No（不愿意）",
+    "description": "Options Pro Tab：是否愿意付费选项（No）"
+  },
+  "proWaitlistSurveyPayMonthlyLabel": {
+    "message": "可接受价位（按月）",
+    "description": "Options Pro Tab：问卷字段标签（按月价位）"
+  },
+  "proWaitlistSurveyPriceMonthly1": {
+    "message": "< $5 / mo",
+    "description": "Options Pro Tab：按月价位选项 1"
+  },
+  "proWaitlistSurveyPriceMonthly2": {
+    "message": "$5 - $10 / mo",
+    "description": "Options Pro Tab：按月价位选项 2"
+  },
+  "proWaitlistSurveyPriceMonthly3": {
+    "message": "$10 - $20 / mo",
+    "description": "Options Pro Tab：按月价位选项 3"
+  },
+  "proWaitlistSurveyPriceMonthly4": {
+    "message": "$20 - $50 / mo",
+    "description": "Options Pro Tab：按月价位选项 4"
+  },
+  "proWaitlistSurveyPriceMonthly5": {
+    "message": ">= $50 / mo",
+    "description": "Options Pro Tab：按月价位选项 5"
+  },
+  "proWaitlistSurveyPayAnnualLabel": {
+    "message": "可接受价位（按年）",
+    "description": "Options Pro Tab：问卷字段标签（按年价位）"
+  },
+  "proWaitlistSurveyPriceAnnual1": {
+    "message": "< $50 / yr",
+    "description": "Options Pro Tab：按年价位选项 1"
+  },
+  "proWaitlistSurveyPriceAnnual2": {
+    "message": "$50 - $100 / yr",
+    "description": "Options Pro Tab：按年价位选项 2"
+  },
+  "proWaitlistSurveyPriceAnnual3": {
+    "message": "$100 - $200 / yr",
+    "description": "Options Pro Tab：按年价位选项 3"
+  },
+  "proWaitlistSurveyPriceAnnual4": {
+    "message": "$200 - $500 / yr",
+    "description": "Options Pro Tab：按年价位选项 4"
+  },
+  "proWaitlistSurveyPriceAnnual5": {
+    "message": ">= $500 / yr",
+    "description": "Options Pro Tab：按年价位选项 5"
+  },
+  "proWaitlistSurveyContactLabel": {
+    "message": "联系方式（可选）",
+    "description": "Options Pro Tab：问卷字段标签（联系方式）"
+  },
+  "proWaitlistSurveyContactPlaceholder": {
+    "message": "邮箱/Telegram/其他（自愿填写）",
+    "description": "Options Pro Tab：问卷字段占位（联系方式）"
+  },
+  "proWaitlistSurveyCopyButton": {
+    "message": "复制问卷（含环境信息）",
+    "description": "Options Pro Tab：复制问卷按钮"
+  },
+  "proWaitlistSurveyCopyOpenButton": {
+    "message": "复制并打开候补",
+    "description": "Options Pro Tab：复制并打开候补按钮"
+  },
+  "proWaitlistSurveyPrivacyHint": {
+    "message": "不包含网页内容/复制内容/URL/标题；所有内容均来自“扩展环境信息 + 你手动填写”。",
+    "description": "Options Pro Tab：问卷隐私提示"
   },
   "proScopeLearnMore": {
     "message": "了解更多：Pro 范围/边界文档",

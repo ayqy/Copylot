@@ -477,6 +477,124 @@
                 <li data-i18n="proFeature4">面向笔记工具的导出能力（Obsidian/Notion 结构化模板）</li>
               </ul>
 
+              <section id="pro-waitlist-survey" class="pro-survey-section">
+                <h4 class="pro-survey-title" data-i18n="proWaitlistSurveyTitle">付费意向问卷（可选）</h4>
+                <p class="pro-survey-hint" data-i18n="proWaitlistSurveyHint">
+                  仅在你愿意时填写，用于验证 Pro 方向；不会自动采集/联网发送。
+                </p>
+
+                <div class="pro-survey-grid">
+                  <div class="form-group pro-survey-span-2">
+                    <label for="pro-waitlist-survey-use-case" data-i18n="proWaitlistSurveyUseCaseLabel">使用场景</label>
+                    <textarea
+                      id="pro-waitlist-survey-use-case"
+                      rows="2"
+                      data-i18n-placeholder="proWaitlistSurveyUseCasePlaceholder"
+                      placeholder="例如：总结长文/做会议纪要/整理竞品资料..."
+                    ></textarea>
+                  </div>
+
+                  <div class="form-group pro-survey-span-2">
+                    <div class="pro-survey-label" data-i18n="proWaitlistSurveyCapabilitiesLabel">期望的 Pro 能力</div>
+                    <div class="pro-survey-checkboxes">
+                      <label class="pro-survey-checkbox" for="pro-waitlist-survey-capability-advanced-cleaning">
+                        <input type="checkbox" id="pro-waitlist-survey-capability-advanced-cleaning" />
+                        <span data-i18n="proFeature1">高级页面清洗（阅读模式 + 去广告/评论区/推荐区规则）</span>
+                      </label>
+                      <label class="pro-survey-checkbox" for="pro-waitlist-survey-capability-batch-collection">
+                        <input type="checkbox" id="pro-waitlist-survey-capability-batch-collection" />
+                        <span data-i18n="proFeature2">批量采集与整理（跨页面收集、命名、导出、历史检索）</span>
+                      </label>
+                      <label class="pro-survey-checkbox" for="pro-waitlist-survey-capability-prompt-pack">
+                        <input type="checkbox" id="pro-waitlist-survey-capability-prompt-pack" />
+                        <span data-i18n="proFeature3">Prompt Pack 高级库/团队共享（后端能力后置）</span>
+                      </label>
+                      <label class="pro-survey-checkbox" for="pro-waitlist-survey-capability-note-export">
+                        <input type="checkbox" id="pro-waitlist-survey-capability-note-export" />
+                        <span data-i18n="proFeature4">面向笔记工具的导出能力（Obsidian/Notion 结构化模板）</span>
+                      </label>
+                    </div>
+                    <input
+                      id="pro-waitlist-survey-capabilities-other"
+                      type="text"
+                      autocomplete="off"
+                      data-i18n-placeholder="proWaitlistSurveyCapabilitiesOtherPlaceholder"
+                      placeholder="其他补充（可选）"
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="pro-waitlist-survey-pay-willing" data-i18n="proWaitlistSurveyPayWillingLabel">
+                      是否愿意付费
+                    </label>
+                    <select id="pro-waitlist-survey-pay-willing">
+                      <option value="" data-i18n="proWaitlistSurveySelectPlaceholder">未选择</option>
+                      <option value="yes" data-i18n="proWaitlistSurveyPayWillingYes">Yes</option>
+                      <option value="maybe" data-i18n="proWaitlistSurveyPayWillingMaybe">Maybe</option>
+                      <option value="no" data-i18n="proWaitlistSurveyPayWillingNo">No</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="pro-waitlist-survey-pay-monthly" data-i18n="proWaitlistSurveyPayMonthlyLabel">
+                      可接受价位（按月）
+                    </label>
+                    <select id="pro-waitlist-survey-pay-monthly">
+                      <option value="" data-i18n="proWaitlistSurveySelectPlaceholder">未选择</option>
+                      <option value="lt_5" data-i18n="proWaitlistSurveyPriceMonthly1">&lt; $5 / mo</option>
+                      <option value="5_10" data-i18n="proWaitlistSurveyPriceMonthly2">$5 - $10 / mo</option>
+                      <option value="10_20" data-i18n="proWaitlistSurveyPriceMonthly3">$10 - $20 / mo</option>
+                      <option value="20_50" data-i18n="proWaitlistSurveyPriceMonthly4">$20 - $50 / mo</option>
+                      <option value="50_plus" data-i18n="proWaitlistSurveyPriceMonthly5">&gt;= $50 / mo</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="pro-waitlist-survey-pay-annual" data-i18n="proWaitlistSurveyPayAnnualLabel">
+                      可接受价位（按年）
+                    </label>
+                    <select id="pro-waitlist-survey-pay-annual">
+                      <option value="" data-i18n="proWaitlistSurveySelectPlaceholder">未选择</option>
+                      <option value="lt_50" data-i18n="proWaitlistSurveyPriceAnnual1">&lt; $50 / yr</option>
+                      <option value="50_100" data-i18n="proWaitlistSurveyPriceAnnual2">$50 - $100 / yr</option>
+                      <option value="100_200" data-i18n="proWaitlistSurveyPriceAnnual3">$100 - $200 / yr</option>
+                      <option value="200_500" data-i18n="proWaitlistSurveyPriceAnnual4">$200 - $500 / yr</option>
+                      <option value="500_plus" data-i18n="proWaitlistSurveyPriceAnnual5">&gt;= $500 / yr</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group pro-survey-span-2">
+                    <label for="pro-waitlist-survey-contact" data-i18n="proWaitlistSurveyContactLabel">
+                      联系方式（可选）
+                    </label>
+                    <input
+                      id="pro-waitlist-survey-contact"
+                      type="text"
+                      autocomplete="off"
+                      data-i18n-placeholder="proWaitlistSurveyContactPlaceholder"
+                      placeholder="邮箱/Telegram/其他（自愿填写）"
+                    />
+                  </div>
+                </div>
+
+                <div class="pro-actions pro-survey-actions">
+                  <button id="pro-waitlist-survey-copy" class="primary-btn" data-i18n="proWaitlistSurveyCopyButton">
+                    复制问卷（含环境信息）
+                  </button>
+                  <button
+                    id="pro-waitlist-survey-copy-open"
+                    class="secondary-btn"
+                    data-i18n="proWaitlistSurveyCopyOpenButton"
+                  >
+                    复制并打开候补
+                  </button>
+                </div>
+
+                <p class="pro-privacy-hint" data-i18n="proWaitlistSurveyPrivacyHint">
+                  不包含网页内容/复制内容/URL/标题；所有内容均来自“扩展环境信息 + 你手动填写”。
+                </p>
+              </section>
+
               <div class="pro-actions">
                 <button id="pro-waitlist-button" class="primary-btn" data-i18n="proJoinWaitlist">
                   加入候补名单
