@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "exportedAt": 1773987014000,
+    "extensionVersion": "1.1.20",
+    "source": "options"
+  },
+  "settings": {
+    "isAnonymousUsageDataEnabled": true
+  },
+  "proFunnel": {
+    "enabled": true,
+    "window": {
+      "maxEvents": 100,
+      "policy": "fifo",
+      "scope": "current_window_only"
+    },
+    "bySource": {
+      "popup": {
+        "counts": {
+          "pro_entry_opened": 1,
+          "pro_waitlist_opened": 1,
+          "pro_waitlist_copied": 1
+        },
+        "lastTs": {
+          "pro_entry_opened": 1773987009100,
+          "pro_waitlist_opened": 1773987009200,
+          "pro_waitlist_copied": 1773987009300
+        },
+        "rates": {
+          "waitlist_opened_per_entry_opened": 1,
+          "waitlist_copied_per_waitlist_opened": 1
+        }
+      },
+      "options": {
+        "counts": {
+          "pro_entry_opened": 1,
+          "pro_waitlist_opened": 1,
+          "pro_waitlist_copied": 1
+        },
+        "lastTs": {
+          "pro_entry_opened": 1773987009400,
+          "pro_waitlist_opened": 1773987009500,
+          "pro_waitlist_copied": 1773987009600
+        },
+        "rates": {
+          "waitlist_opened_per_entry_opened": 1,
+          "waitlist_copied_per_waitlist_opened": 1
+        }
+      }
+    }
+  },
+  "events": [
+    {
+      "name": "pro_entry_opened",
+      "ts": 1773987009100,
+      "props": {
+        "source": "popup"
+      }
+    },
+    {
+      "name": "pro_waitlist_opened",
+      "ts": 1773987009200,
+      "props": {
+        "source": "popup"
+      }
+    },
+    {
+      "name": "pro_waitlist_copied",
+      "ts": 1773987009300,
+      "props": {
+        "source": "popup"
+      }
+    },
+    {
+      "name": "pro_entry_opened",
+      "ts": 1773987009400,
+      "props": {
+        "source": "options"
+      }
+    },
+    {
+      "name": "pro_waitlist_opened",
+      "ts": 1773987009500,
+      "props": {
+        "source": "options"
+      }
+    },
+    {
+      "name": "pro_waitlist_copied",
+      "ts": 1773987009600,
+      "props": {
+        "source": "options"
+      }
+    }
+  ]
+}
+

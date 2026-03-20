@@ -1,4 +1,7 @@
 import assert from 'node:assert/strict';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 import { getGlobalDispatcher, setGlobalDispatcher } from 'undici';
 
@@ -589,6 +592,67 @@ async function run() {
   assert.equal(proPackTelemetryOff.events.length, 0);
   assert.equal(proPackTelemetryOff.proFunnel.enabled, false);
   assert.equal(proPackTelemetryOff.proFunnel.bySource.popup.counts.pro_entry_opened, 0);
+
+  // v1-42 zip 安装回归（离线可审计）：校验最新 plugin-*.zip 中关键入口与隐私导出面板存在
+  const rootDir = process.cwd();
+  const rootManifest = JSON.parse(await fs.readFile(path.join(rootDir, 'manifest.json'), 'utf8')) as { version?: string };
+
+  const rootEntries = await fs.readdir(rootDir);
+  const pluginZips = rootEntries.filter((name) => /^plugin-\d+\.\d+\.\d+\.zip$/.test(name));
+  assert.ok(pluginZips.length > 0, 'expected at least one plugin-*.zip artifact in repo root');
+
+  function parseVersionFromPluginZipFilename(name: string): [number, number, number] {
+    const match = /^plugin-(\d+)\.(\d+)\.(\d+)\.zip$/.exec(name);
+    if (!match) return [0, 0, 0];
+    return [Number(match[1] || 0), Number(match[2] || 0), Number(match[3] || 0)];
+  }
+
+  function compareSemverTuple(a: [number, number, number], b: [number, number, number]): number {
+    if (a[0] !== b[0]) return a[0] - b[0];
+    if (a[1] !== b[1]) return a[1] - b[1];
+    return a[2] - b[2];
+  }
+
+  const latestPluginZip = pluginZips
+    .slice()
+    .sort((a, b) => compareSemverTuple(parseVersionFromPluginZipFilename(a), parseVersionFromPluginZipFilename(b)))
+    .at(-1) as string;
+  assert.ok(latestPluginZip, 'latest plugin zip should be resolved');
+
+  const zipManifest = JSON.parse(
+    execFileSync('unzip', ['-p', latestPluginZip, 'manifest.json'], { encoding: 'utf8' })
+  ) as { version?: string };
+  assert.equal(zipManifest.version, rootManifest.version, 'plugin zip manifest version should match repo manifest.json');
+
+  const popupHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.html'], { encoding: 'utf8' });
+  assert.ok(popupHtml.includes('id="upgrade-pro-entry"'), 'popup.html should include upgrade-pro-entry');
+  assert.ok(popupHtml.includes('id="popup-pro-waitlist"'), 'popup.html should include popup-pro-waitlist');
+  assert.ok(popupHtml.includes('id="popup-pro-waitlist-copy"'), 'popup.html should include popup-pro-waitlist-copy');
+
+  const optionsHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/options/options.html'], { encoding: 'utf8' });
+  assert.ok(optionsHtml.includes('data-tab="pro"'), 'options.html should include pro tab');
+  assert.ok(optionsHtml.includes('id="pro-waitlist-button"'), 'options.html should include pro-waitlist-button');
+  assert.ok(optionsHtml.includes('id="pro-waitlist-copy"'), 'options.html should include pro-waitlist-copy');
+  assert.ok(optionsHtml.includes('id="pro-scope-learn-more"'), 'options.html should include pro-scope-learn-more');
+  assert.ok(optionsHtml.includes('id="anonymous-usage-data-switch"'), 'options.html should include anonymous usage data switch');
+  assert.ok(optionsHtml.includes('id="pro-funnel-panel"'), 'options.html should include pro-funnel-panel');
+  assert.ok(
+    optionsHtml.includes('id="pro-funnel-evidence-pack-copy"'),
+    'options.html should include pro-funnel-evidence-pack-copy'
+  );
+
+  const popupJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.js'], { encoding: 'utf8' });
+  assert.ok(popupJs.includes('pro_entry_opened'), 'popup.js should contain pro_entry_opened');
+  assert.ok(popupJs.includes('pro_waitlist_opened'), 'popup.js should contain pro_waitlist_opened');
+  assert.ok(popupJs.includes('pro_waitlist_copied'), 'popup.js should contain pro_waitlist_copied');
+  assert.ok(popupJs.includes('navigator.clipboard.writeText'), 'popup.js should write to clipboard for waitlist copy');
+
+  const optionsJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/options/options.js'], { encoding: 'utf8' });
+  assert.ok(optionsJs.includes('pro_entry_opened'), 'options.js should contain pro_entry_opened');
+  assert.ok(optionsJs.includes('pro_waitlist_opened'), 'options.js should contain pro_waitlist_opened');
+  assert.ok(optionsJs.includes('pro_waitlist_copied'), 'options.js should contain pro_waitlist_copied');
+  assert.ok(optionsJs.includes('navigator.clipboard.writeText'), 'options.js should write to clipboard for waitlist copy');
+  assert.ok(optionsJs.includes('isAnonymousUsageDataEnabled'), 'options.js should reference anonymous usage data setting');
 
   // prompt-sort.ts (pure functions)
   assert.equal(parsePromptSortMode('most_used'), 'most_used');

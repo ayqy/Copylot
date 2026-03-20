@@ -1,0 +1,44 @@
+{
+  "enabled": false,
+  "disabledReason": "anonymous_usage_data_disabled",
+  "window": {
+    "maxEvents": 100,
+    "policy": "fifo",
+    "scope": "current_window_only"
+  },
+  "bySource": {
+    "popup": {
+      "counts": {
+        "pro_entry_opened": 0,
+        "pro_waitlist_opened": 0,
+        "pro_waitlist_copied": 0
+      },
+      "lastTs": {
+        "pro_entry_opened": null,
+        "pro_waitlist_opened": null,
+        "pro_waitlist_copied": null
+      },
+      "rates": {
+        "waitlist_opened_per_entry_opened": null,
+        "waitlist_copied_per_waitlist_opened": null
+      }
+    },
+    "options": {
+      "counts": {
+        "pro_entry_opened": 0,
+        "pro_waitlist_opened": 0,
+        "pro_waitlist_copied": 0
+      },
+      "lastTs": {
+        "pro_entry_opened": null,
+        "pro_waitlist_opened": null,
+        "pro_waitlist_copied": null
+      },
+      "rates": {
+        "waitlist_opened_per_entry_opened": null,
+        "waitlist_copied_per_waitlist_opened": null
+      }
+    }
+  }
+}
+
