@@ -59,7 +59,7 @@ export interface ChromeWebStoreUtmParams {
 export const DEFAULT_CWS_UTM_PARAMS: ChromeWebStoreUtmParams = {
   utm_source: 'copylot-ext',
   utm_medium: 'popup',
-  utm_campaign: 'v1-43'
+  utm_campaign: 'v1-44'
 };
 
 export type WomUtmMedium = 'popup' | 'options' | 'rating_prompt';
@@ -68,7 +68,7 @@ export function buildWomUtmParams(medium: WomUtmMedium): ChromeWebStoreUtmParams
   return {
     utm_source: 'copylot-ext',
     utm_medium: medium,
-    utm_campaign: 'v1-43'
+    utm_campaign: 'v1-44'
   };
 }
 

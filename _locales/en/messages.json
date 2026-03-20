@@ -76,7 +76,7 @@
     "description": "Title of the one-time rating prompt in popup"
   },
   "ratingPromptDesc": {
-    "message": "If Copylot helps you, a quick review would mean a lot.",
+    "message": "If Copylot helps you, a quick review helps more people discover it.",
     "description": "Description of the one-time rating prompt in popup"
   },
   "ratingPromptRate": {

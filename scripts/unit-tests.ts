@@ -64,18 +64,18 @@ async function run() {
   assert.ok(storeParsed.pathname.endsWith(`/webstore/detail/${extensionId}`));
   assert.equal(storeParsed.searchParams.get('utm_source'), 'copylot-ext');
   assert.equal(storeParsed.searchParams.get('utm_medium'), 'popup');
-  assert.equal(storeParsed.searchParams.get('utm_campaign'), 'v1-43');
+  assert.equal(storeParsed.searchParams.get('utm_campaign'), 'v1-44');
 
   const storeUrlOptions = buildChromeWebStoreDetailUrl(extensionId, buildWomUtmParams('options'));
   const storeOptionsParsed = new URL(storeUrlOptions);
   assert.equal(storeOptionsParsed.searchParams.get('utm_source'), 'copylot-ext');
   assert.equal(storeOptionsParsed.searchParams.get('utm_medium'), 'options');
-  assert.equal(storeOptionsParsed.searchParams.get('utm_campaign'), 'v1-43');
+  assert.equal(storeOptionsParsed.searchParams.get('utm_campaign'), 'v1-44');
 
   const storeUrlRatingPrompt = buildChromeWebStoreDetailUrl(extensionId, buildWomUtmParams('rating_prompt'));
   const storeRatingPromptParsed = new URL(storeUrlRatingPrompt);
   assert.equal(storeRatingPromptParsed.searchParams.get('utm_medium'), 'rating_prompt');
-  assert.equal(storeRatingPromptParsed.searchParams.get('utm_campaign'), 'v1-43');
+  assert.equal(storeRatingPromptParsed.searchParams.get('utm_campaign'), 'v1-44');
 
   const reviewsUrl = buildChromeWebStoreReviewsUrl(extensionId, buildWomUtmParams('popup'));
   const reviewsParsed = new URL(reviewsUrl);
@@ -83,7 +83,7 @@ async function run() {
   assert.ok(reviewsParsed.pathname.endsWith(`/webstore/detail/${extensionId}/reviews`));
   assert.equal(reviewsParsed.searchParams.get('utm_source'), 'copylot-ext');
   assert.equal(reviewsParsed.searchParams.get('utm_medium'), 'popup');
-  assert.equal(reviewsParsed.searchParams.get('utm_campaign'), 'v1-43');
+  assert.equal(reviewsParsed.searchParams.get('utm_campaign'), 'v1-44');
 
   const settings: Parameters<typeof buildFeedbackSettingsSnapshot>[0] = {
     isMagicCopyEnabled: false,
@@ -207,27 +207,36 @@ async function run() {
   assert.ok(shareText.includes(storeUrl));
 
   const now = 1_700_000_000_000;
-  const eligibleStats: GrowthStats = {
+  const eligibleStatsBase: GrowthStats = {
     installedAt: now - RATING_PROMPT_MIN_INSTALL_AGE_MS,
     successfulCopyCount: RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT
   };
-  assert.equal(shouldShowRatingPrompt(eligibleStats, now), true);
+
+  // Prompt users: eligible earlier (but still gated by min install age + min successful copies).
+  const eligiblePromptUserStats: GrowthStats = { ...eligibleStatsBase, firstPromptUsedAt: now - 1000 };
+  assert.equal(shouldShowRatingPrompt(eligiblePromptUserStats, now), true);
+
+  // Non-prompt users: require heavier copy usage to avoid "just installed -> annoying" prompt.
+  assert.equal(shouldShowRatingPrompt(eligibleStatsBase, now), false);
+  assert.equal(shouldShowRatingPrompt({ ...eligibleStatsBase, successfulCopyCount: 19 }, now), false);
+  assert.equal(shouldShowRatingPrompt({ ...eligibleStatsBase, successfulCopyCount: 20 }, now), true);
+
   assert.equal(
     shouldShowRatingPrompt(
-      { ...eligibleStats, installedAt: now - RATING_PROMPT_MIN_INSTALL_AGE_MS + 1 },
+      { ...eligiblePromptUserStats, installedAt: now - RATING_PROMPT_MIN_INSTALL_AGE_MS + 1 },
       now
     ),
     false
   );
   assert.equal(
     shouldShowRatingPrompt(
-      { ...eligibleStats, successfulCopyCount: RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT - 1 },
+      { ...eligiblePromptUserStats, successfulCopyCount: RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT - 1 },
       now
     ),
     false
   );
   assert.equal(
-    shouldShowRatingPrompt({ ...eligibleStats, ratingPromptShownAt: now - 1000 }, now),
+    shouldShowRatingPrompt({ ...eligiblePromptUserStats, ratingPromptShownAt: now - 1000 }, now),
     false
   );
 

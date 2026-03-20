@@ -38,8 +38,10 @@ export interface GrowthFunnelSummary {
   activatedWithin3MinutesFromFirstPopup?: boolean;
 }
 
-export const RATING_PROMPT_MIN_INSTALL_AGE_MS = 72 * 60 * 60 * 1000;
-export const RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT = 20;
+export const RATING_PROMPT_MIN_INSTALL_AGE_MS = 48 * 60 * 60 * 1000;
+export const RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT = 10;
+
+const RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT_HEAVY_USER = 20;
 
 const REUSE_WITHIN_7_DAYS_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 const ACTIVATION_WITHIN_3_MINUTES_MS = 3 * 60 * 1000;
@@ -186,6 +188,12 @@ export function shouldShowRatingPrompt(stats: GrowthStats, now: number): boolean
   if (installedAgeMs < RATING_PROMPT_MIN_INSTALL_AGE_MS) return false;
 
   if (stats.successfulCopyCount < RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT) return false;
+
+  // Precision guard: only show for users who have either used Prompt at least once,
+  // or are heavy pure-copy users (still eligible even without prompt usage).
+  const hasUsedPrompt = isValidTimestamp(stats.firstPromptUsedAt);
+  const isHeavyCopyUser = stats.successfulCopyCount >= RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT_HEAVY_USER;
+  if (!hasUsedPrompt && !isHeavyCopyUser) return false;
 
   return true;
 }

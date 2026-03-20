@@ -76,7 +76,7 @@
     "description": "Popup 内一次性评价引导标题"
   },
   "ratingPromptDesc": {
-    "message": "如果 Copylot 帮到你，给个好评会对我们很有帮助。",
+    "message": "如果 Copylot 对你有帮助，给个评价可以帮助更多人发现我们。",
     "description": "Popup 内一次性评价引导说明"
   },
   "ratingPromptRate": {
