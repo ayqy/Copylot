@@ -1041,6 +1041,22 @@
     "message": "复制证据包",
     "description": "Pro 漏斗证据包复制按钮"
   },
+  "proIntentEvents7dCsvExport": {
+    "message": "导出过去 7 天 Pro 意向明细（CSV）",
+    "description": "隐私页导出过去 7 天 Pro 意向明细 CSV 按钮"
+  },
+  "proIntentEvents7dCsvExportSuccess": {
+    "message": "CSV 已导出（$1 条）",
+    "description": "Pro 意向明细 CSV 导出成功提示（$1=行数）"
+  },
+  "proIntentEvents7dCsvExportFailed": {
+    "message": "导出失败",
+    "description": "Pro 意向明细 CSV 导出失败提示"
+  },
+  "proIntentEvents7dCsvExportTelemetryOff": {
+    "message": "匿名使用数据关闭：不导出事件明细",
+    "description": "匿名开关 OFF 时导出按钮提示"
+  },
   "proIntentWeeklyDigestCopy": {
     "message": "复制本周 Pro 意向证据摘要",
     "description": "隐私页复制本周 Pro 意向证据摘要按钮"

@@ -1041,6 +1041,22 @@
     "message": "Copy evidence pack",
     "description": "Pro funnel evidence pack copy button label"
   },
+  "proIntentEvents7dCsvExport": {
+    "message": "Export last 7 days Pro intent events (CSV)",
+    "description": "Export last 7 days Pro intent events as CSV button label in Options privacy tab"
+  },
+  "proIntentEvents7dCsvExportSuccess": {
+    "message": "CSV exported ($1 rows)",
+    "description": "Pro intent events CSV export success notification ($1=row count)"
+  },
+  "proIntentEvents7dCsvExportFailed": {
+    "message": "Export failed",
+    "description": "Pro intent events CSV export failure notification"
+  },
+  "proIntentEvents7dCsvExportTelemetryOff": {
+    "message": "Anonymous usage data is OFF: no event details exported",
+    "description": "Notification when exporting Pro intent CSV while anonymous usage data is disabled"
+  },
   "proIntentWeeklyDigestCopy": {
     "message": "Copy weekly Pro intent digest",
     "description": "Copy weekly Pro intent digest button label in Options privacy tab"

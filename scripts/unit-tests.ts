@@ -39,6 +39,11 @@ import {
   buildProIntentWeeklyDigestSummary,
   formatProIntentWeeklyDigestMarkdown
 } from '../src/shared/pro-intent-weekly-digest.ts';
+import {
+  PRO_INTENT_EVENTS_CSV_COLUMNS,
+  buildProIntentEventsCsv,
+  formatProIntentEvents7dCsvFilename
+} from '../src/shared/pro-intent-events-csv.ts';
 import { buildWomEvidencePack, buildWomSummary } from '../src/shared/wom-summary.ts';
 import { cleanCodeBlockText } from '../src/shared/code-block-cleaner.ts';
 import { parsePromptSortMode, sortPrompts } from '../src/shared/prompt-sort.ts';
@@ -858,6 +863,112 @@ async function run() {
   assert.ok(proWeeklyDigestMarkdown.includes('waitlist_opened_per_entry_opened'));
   assert.ok(proWeeklyDigestMarkdown.includes('不包含网页内容'));
 
+  // pro-intent-events-csv.ts (pure functions + 7d window -> CSV)
+  const proIntentCsvDisabled = buildProIntentEventsCsv({
+    enabled: false,
+    telemetryEvents: [{ name: 'pro_entry_opened', ts: now, props: { source: 'popup' } }],
+    now,
+    extensionVersion: '1.1.23',
+    lookbackDays: 7
+  });
+  assert.equal(proIntentCsvDisabled.enabled, false);
+  assert.equal(proIntentCsvDisabled.disabledReason, 'anonymous_usage_data_disabled');
+  assert.equal(proIntentCsvDisabled.rows.length, 0);
+  assert.ok(!proIntentCsvDisabled.csv.startsWith('\uFEFF'));
+  assert.equal(proIntentCsvDisabled.csv.trimEnd(), PRO_INTENT_EVENTS_CSV_COLUMNS.join(','));
+
+  const proIntentCsv = buildProIntentEventsCsv({
+    enabled: true,
+    telemetryEvents: [
+      { name: 'pro_entry_opened', ts: sevenDaysAgo, props: { source: 'popup' } }, // included (boundary)
+      { name: 'pro_waitlist_opened', ts: sevenDaysAgo + 1, props: { source: 'popup' } },
+      { name: 'pro_waitlist_survey_copied', ts: now - 1000, props: { source: 'options' } },
+      { name: 'pro_waitlist_copied', ts: now, props: { source: 'options' } }, // included (boundary)
+      { name: 'pro_entry_opened', ts: sevenDaysAgo - 1, props: { source: 'options' } }, // excluded (<from)
+      { name: 'pro_waitlist_opened', ts: now + 1, props: { source: 'options' } }, // excluded (>to)
+      { name: 'popup_opened', ts: now }
+    ],
+    now,
+    extensionVersion: '1.1.23',
+    lookbackDays: 7
+  });
+  assert.equal(proIntentCsv.enabled, true);
+  assert.equal(proIntentCsv.windowFrom, sevenDaysAgo);
+  assert.equal(proIntentCsv.windowTo, now);
+  assert.equal(proIntentCsv.rows.length, 4);
+  assert.equal(proIntentCsv.csv.split('\n')[0], PRO_INTENT_EVENTS_CSV_COLUMNS.join(','));
+  assert.equal(proIntentCsv.csv.trim().split('\n').length, 1 + proIntentCsv.rows.length);
+  assert.ok(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(proIntentCsv.rows[0]?.eventLocalTime || ''));
+
+  const proIntentCsvCounts = proIntentCsv.rows.reduce(
+    (acc, row) => {
+      acc.overall[row.eventName] += 1;
+      acc.bySource[row.source][row.eventName] += 1;
+      return acc;
+    },
+    {
+      overall: {
+        pro_entry_opened: 0,
+        pro_waitlist_opened: 0,
+        pro_waitlist_copied: 0,
+        pro_waitlist_survey_copied: 0
+      },
+      bySource: {
+        popup: {
+          pro_entry_opened: 0,
+          pro_waitlist_opened: 0,
+          pro_waitlist_copied: 0,
+          pro_waitlist_survey_copied: 0
+        },
+        options: {
+          pro_entry_opened: 0,
+          pro_waitlist_opened: 0,
+          pro_waitlist_copied: 0,
+          pro_waitlist_survey_copied: 0
+        }
+      }
+    }
+  );
+
+  assert.deepEqual(proIntentCsvCounts.overall, proWeeklyDigest.overall);
+  assert.deepEqual(proIntentCsvCounts.bySource.popup, proWeeklyDigest.bySource.popup);
+  assert.deepEqual(proIntentCsvCounts.bySource.options, proWeeklyDigest.bySource.options);
+
+  const proIntentCsvTrim = buildProIntentEventsCsv({
+    enabled: true,
+    telemetryEvents: [
+      { name: 'pro_entry_opened', ts: sevenDaysAgo + 10, props: { source: 'popup' } },
+      { name: 'pro_entry_opened', ts: sevenDaysAgo + 20, props: { source: 'popup' } },
+      { name: 'pro_waitlist_opened', ts: sevenDaysAgo + 30, props: { source: 'popup' } }
+    ],
+    now,
+    extensionVersion: '1.1.23',
+    lookbackDays: 7,
+    maxEvents: 2
+  });
+  assert.equal(proIntentCsvTrim.rows.length, 2);
+  assert.deepEqual(
+    proIntentCsvTrim.rows.map((r) => r.eventName),
+    ['pro_entry_opened', 'pro_waitlist_opened']
+  );
+
+  const proWeeklyDigestTrim = buildProIntentWeeklyDigestSummary({
+    enabled: true,
+    telemetryEvents: [
+      { name: 'pro_entry_opened', ts: sevenDaysAgo + 10, props: { source: 'popup' } },
+      { name: 'pro_entry_opened', ts: sevenDaysAgo + 20, props: { source: 'popup' } },
+      { name: 'pro_waitlist_opened', ts: sevenDaysAgo + 30, props: { source: 'popup' } }
+    ],
+    now,
+    lookbackDays: 7,
+    maxEvents: 2
+  });
+  assert.equal(proWeeklyDigestTrim.overall.pro_entry_opened, 1);
+  assert.equal(proWeeklyDigestTrim.overall.pro_waitlist_opened, 1);
+
+  const proIntentCsvFilename = formatProIntentEvents7dCsvFilename(now);
+  assert.ok(/^copylot-pro-intent-events-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proIntentCsvFilename));
+
   // wom-summary.ts (pure functions)
   const womSummaryDisabled = buildWomSummary({
     enabled: false,
@@ -992,6 +1103,14 @@ async function run() {
   assert.ok(optionsHtml.includes('id="pro-scope-learn-more"'), 'options.html should include pro-scope-learn-more');
   assert.ok(optionsHtml.includes('id="anonymous-usage-data-switch"'), 'options.html should include anonymous usage data switch');
   assert.ok(optionsHtml.includes('id="pro-funnel-panel"'), 'options.html should include pro-funnel-panel');
+  assert.ok(
+    optionsHtml.includes('id="export-pro-intent-events-7d-csv"'),
+    'options.html should include export-pro-intent-events-7d-csv'
+  );
+  assert.ok(
+    optionsHtml.includes('id="copy-pro-intent-weekly-digest"'),
+    'options.html should include copy-pro-intent-weekly-digest'
+  );
   assert.ok(
     optionsHtml.includes('id="pro-funnel-evidence-pack-copy"'),
     'options.html should include pro-funnel-evidence-pack-copy'
