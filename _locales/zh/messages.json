@@ -1321,6 +1321,58 @@
     "message": "不包含网页内容/复制内容/URL/标题；仅来源于本地匿名事件统计与扩展环境信息。",
     "description": "按 campaign 周报摘要隐私声明正文"
   },
+  "proAcqEffByCampaignWeeklyReportCopy": {
+    "message": "复制本周获客效率复盘摘要（Markdown，按 campaign）",
+    "description": "隐私页复制本周获客效率复盘摘要（Markdown，按 campaign）按钮"
+  },
+  "proAcqEffByCampaignWeeklyReportCopySuccess": {
+    "message": "本周获客效率摘要已复制到剪贴板",
+    "description": "本周获客效率复盘摘要复制成功提示"
+  },
+  "proAcqEffByCampaignWeeklyReportCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "本周获客效率复盘摘要复制失败提示"
+  },
+  "proAcqEffByCampaignWeeklyReportMdTitle": {
+    "message": "Pro 获客效率复盘摘要（过去 $1 天，按 campaign）",
+    "description": "本周获客效率复盘摘要 Markdown 标题（$1=天数）"
+  },
+  "proAcqEffByCampaignWeeklyReportMdTelemetryOffNotice": {
+    "message": "匿名使用数据关闭（不读取/不推断事件）。本摘要仅包含环境信息，用于可审计。",
+    "description": "匿名开关 OFF 时获客效率周报摘要提示文案"
+  },
+  "proAcqEffByCampaignWeeklyReportMdSectionEnv": {
+    "message": "环境信息",
+    "description": "获客效率周报摘要环境信息区块标题"
+  },
+  "proAcqEffByCampaignWeeklyReportMdSectionTable": {
+    "message": "按 campaign 获客效率表",
+    "description": "获客效率周报摘要表格区块标题"
+  },
+  "proAcqEffByCampaignWeeklyReportMdSectionInsights": {
+    "message": "关键结论（模板）",
+    "description": "获客效率周报摘要关键结论区块标题"
+  },
+  "proAcqEffByCampaignWeeklyReportMdInsightTop1": {
+    "message": "Top1 campaign（按 leadsPerDistCopy）：$1",
+    "description": "获客效率周报摘要 Top1 campaign 行（$1=campaign）"
+  },
+  "proAcqEffByCampaignWeeklyReportMdInsightTop1Metrics": {
+    "message": "Top1 指标：leads=$1，distCopies=$2，leadsPerDistCopy=$3",
+    "description": "获客效率周报摘要 Top1 指标行（$1=leads，$2=distCopies，$3=leadsPerDistCopy）"
+  },
+  "proAcqEffByCampaignWeeklyReportMdInsightEmptyShare": {
+    "message": "空 campaign leads 占比：$1（空=$2，总=$3）",
+    "description": "获客效率周报摘要 空 campaign leads 占比行（$1=占比，$2=空桶 leads，$3=总 leads）"
+  },
+  "proAcqEffByCampaignWeeklyReportMdSectionPrivacy": {
+    "message": "隐私声明",
+    "description": "获客效率周报摘要隐私声明区块标题"
+  },
+  "proAcqEffByCampaignWeeklyReportMdPrivacyStatement": {
+    "message": "不包含网页内容/复制内容/URL/标题；仅基于本地匿名事件派生与扩展环境信息。",
+    "description": "获客效率周报摘要隐私声明正文"
+  },
   "proFunnelRefreshFailed": {
     "message": "刷新失败",
     "description": "Pro 意向漏斗摘要刷新失败提示"

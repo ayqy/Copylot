@@ -1321,6 +1321,58 @@
     "message": "No page content, copied text, URLs, or titles. Derived only from local anonymous telemetry and extension environment info.",
     "description": "Campaign weekly report privacy statement body"
   },
+  "proAcqEffByCampaignWeeklyReportCopy": {
+    "message": "Copy weekly acquisition efficiency summary (Markdown, by campaign)",
+    "description": "Copy weekly acquisition efficiency summary (Markdown, by campaign) button label in Options privacy tab"
+  },
+  "proAcqEffByCampaignWeeklyReportCopySuccess": {
+    "message": "Weekly summary copied to clipboard",
+    "description": "Weekly acquisition efficiency summary copy success notification"
+  },
+  "proAcqEffByCampaignWeeklyReportCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Weekly acquisition efficiency summary copy failure notification"
+  },
+  "proAcqEffByCampaignWeeklyReportMdTitle": {
+    "message": "Pro acquisition efficiency weekly report (last $1 days, by campaign)",
+    "description": "Acquisition efficiency weekly report markdown title ($1=days)"
+  },
+  "proAcqEffByCampaignWeeklyReportMdTelemetryOffNotice": {
+    "message": "Anonymous usage data is OFF (no events). This report only includes environment info and does not read or infer any history.",
+    "description": "Acquisition efficiency weekly report notice when anonymous usage data is disabled"
+  },
+  "proAcqEffByCampaignWeeklyReportMdSectionEnv": {
+    "message": "Environment",
+    "description": "Acquisition efficiency weekly report environment section heading"
+  },
+  "proAcqEffByCampaignWeeklyReportMdSectionTable": {
+    "message": "Acquisition efficiency table (by campaign)",
+    "description": "Acquisition efficiency weekly report table section heading"
+  },
+  "proAcqEffByCampaignWeeklyReportMdSectionInsights": {
+    "message": "Key takeaways (template)",
+    "description": "Acquisition efficiency weekly report key takeaways section heading"
+  },
+  "proAcqEffByCampaignWeeklyReportMdInsightTop1": {
+    "message": "Top1 campaign (by leadsPerDistCopy): $1",
+    "description": "Acquisition efficiency weekly report Top1 campaign line ($1=campaign)"
+  },
+  "proAcqEffByCampaignWeeklyReportMdInsightTop1Metrics": {
+    "message": "Top1 metrics: leads=$1, distCopies=$2, leadsPerDistCopy=$3",
+    "description": "Acquisition efficiency weekly report Top1 metrics line ($1=leads, $2=distCopies, $3=leadsPerDistCopy)"
+  },
+  "proAcqEffByCampaignWeeklyReportMdInsightEmptyShare": {
+    "message": "Empty campaign leads share: $1 (empty=$2, total=$3)",
+    "description": "Acquisition efficiency weekly report empty campaign leads share line ($1=share, $2=empty leads, $3=total leads)"
+  },
+  "proAcqEffByCampaignWeeklyReportMdSectionPrivacy": {
+    "message": "Privacy",
+    "description": "Acquisition efficiency weekly report privacy section heading"
+  },
+  "proAcqEffByCampaignWeeklyReportMdPrivacyStatement": {
+    "message": "No page content, copied text, URLs, or titles. Derived only from local anonymous telemetry and extension environment info.",
+    "description": "Acquisition efficiency weekly report privacy statement body"
+  },
   "proFunnelRefreshFailed": {
     "message": "Refresh failed",
     "description": "Pro funnel summary refresh failure notification"

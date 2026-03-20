@@ -68,6 +68,10 @@ import {
   formatProAcquisitionEfficiencyByCampaign7dCsvFilename
 } from '../src/shared/pro-acquisition-efficiency-by-campaign-csv.ts';
 import {
+  buildProAcquisitionEfficiencyByCampaignWeeklyReportSummary,
+  formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown
+} from '../src/shared/pro-acquisition-efficiency-by-campaign-weekly-report.ts';
+import {
   buildProIntentByCampaignWeeklyReportSummary,
   formatProIntentByCampaignWeeklyReportMarkdown
 } from '../src/shared/pro-intent-by-campaign-weekly-report.ts';
@@ -106,6 +110,18 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
   }
   if (key === 'proIntentByCampWeeklyMdTelemetryOffNotice') {
     return '匿名使用数据关闭（无可用事件）。本摘要仅包含环境信息，不读取/不推断任何历史事件。';
+  }
+  if (key === 'proAcqEffByCampaignWeeklyReportMdTelemetryOffNotice') {
+    return '匿名使用数据关闭（不读取/不推断事件）。本摘要仅包含环境信息，用于可审计。';
+  }
+  if (key === 'proAcqEffByCampaignWeeklyReportMdInsightTop1') {
+    return `Top1 campaign（按 leadsPerDistCopy）：${subs[0]}`;
+  }
+  if (key === 'proAcqEffByCampaignWeeklyReportMdInsightTop1Metrics') {
+    return `Top1 指标：leads=${subs[0]} distCopies=${subs[1]} leadsPerDistCopy=${subs[2]}`;
+  }
+  if (key === 'proAcqEffByCampaignWeeklyReportMdInsightEmptyShare') {
+    return `空 campaign leads 占比：${subs[0]}（空=${subs[1]} 总=${subs[2]}）`;
   }
   return key;
 };
@@ -1477,6 +1493,74 @@ async function run() {
   assert.ok(
     /^copylot-pro-acquisition-efficiency-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proAcqEfficiencyCsvFilename)
   );
+
+  // pro-acquisition-efficiency-by-campaign-weekly-report.ts (pure functions + markdown formatter)
+  const proAcqEffWeeklyReportDisabled = buildProAcquisitionEfficiencyByCampaignWeeklyReportSummary({
+    enabled: false,
+    telemetryEvents: mergedEvents,
+    now,
+    extensionVersion: '1.1.28',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  assert.equal(proAcqEffWeeklyReportDisabled.enabled, false);
+  assert.equal(proAcqEffWeeklyReportDisabled.disabledReason, 'anonymous_usage_data_disabled');
+  assert.equal(proAcqEffWeeklyReportDisabled.rows.length, 0);
+
+  const proAcqEffWeeklyReportDisabledMd = formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown({
+    summary: proAcqEffWeeklyReportDisabled,
+    env: {
+      extensionVersion: '1.1.28',
+      exportedAt: now,
+      isAnonymousUsageDataEnabled: false
+    },
+    getMessage
+  });
+  assert.ok(proAcqEffWeeklyReportDisabledMd.includes('匿名使用数据关闭'));
+  assert.ok(!proAcqEffWeeklyReportDisabledMd.includes('| campaign |'));
+
+  const proAcqEffWeeklyReport = buildProAcquisitionEfficiencyByCampaignWeeklyReportSummary({
+    enabled: true,
+    telemetryEvents: mergedEvents,
+    now,
+    extensionVersion: '1.1.28',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  assert.equal(proAcqEffWeeklyReport.enabled, true);
+  assert.equal(proAcqEffWeeklyReport.windowFrom, proAcqEfficiency.windowFrom);
+  assert.equal(proAcqEffWeeklyReport.windowTo, proAcqEfficiency.windowTo);
+  assert.equal(proAcqEffWeeklyReport.rows.length, proAcqEfficiency.rows.length);
+
+  for (const row of proAcqEffWeeklyReport.rows) {
+    const csvRow = proAcqEfficiency.rows.find((r) => r.campaign === row.campaign);
+    assert.ok(csvRow, `expected campaign row in weekly report summary: ${row.campaign}`);
+    assert.equal(row.leads, csvRow?.leads ?? 0);
+    assert.equal(row.distCopies, csvRow?.distCopies ?? 0);
+    assert.equal(row.leadsPerDistCopy, csvRow?.leadsPerDistCopy ?? 'N/A');
+  }
+
+  const proAcqEffWeeklyReportMd = formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown({
+    summary: proAcqEffWeeklyReport,
+    env: {
+      extensionVersion: '1.1.28',
+      exportedAt: now,
+      isAnonymousUsageDataEnabled: true
+    },
+    getMessage
+  });
+  assert.ok(
+    proAcqEffWeeklyReportMd.includes('| campaign | leads | distCopies | leadsPerDistCopy |'),
+    'weekly acquisition efficiency report markdown table header should be stable'
+  );
+  assert.ok(proAcqEffWeeklyReportMd.includes('| twitter | 2 | 4 | 0.5000 |'));
+  assert.ok(proAcqEffWeeklyReportMd.includes('| 空 campaign | 1 | 2 | 0.5000 |'));
+  assert.ok(proAcqEffWeeklyReportMd.includes('| ph | 1 | 0 | N/A |'));
+  assert.ok(proAcqEffWeeklyReportMd.indexOf('| twitter |') < proAcqEffWeeklyReportMd.indexOf('| 空 campaign |'));
+  assert.ok(proAcqEffWeeklyReportMd.indexOf('| 空 campaign |') < proAcqEffWeeklyReportMd.indexOf('| ph |'));
+  assert.ok(proAcqEffWeeklyReportMd.includes('Top1 campaign（按 leadsPerDistCopy）：twitter'));
+  assert.ok(proAcqEffWeeklyReportMd.includes('Top1 指标：leads=2 distCopies=4 leadsPerDistCopy=0.5000'));
+  assert.ok(proAcqEffWeeklyReportMd.includes('空 campaign leads 占比：25.00%'));
 
   // pro-intent-by-campaign-weekly-report.ts (pure functions + markdown formatter)
   const proIntentByCampaignWeeklyReportDisabled = buildProIntentByCampaignWeeklyReportSummary({

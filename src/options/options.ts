@@ -63,6 +63,11 @@ import {
   formatProAcquisitionEfficiencyByCampaign7dCsvFilename
 } from '../shared/pro-acquisition-efficiency-by-campaign-csv';
 import {
+  buildProAcquisitionEfficiencyByCampaignWeeklyReportSummary,
+  formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown,
+  type ProAcquisitionEfficiencyByCampaignWeeklyReportEnvInfo
+} from '../shared/pro-acquisition-efficiency-by-campaign-weekly-report';
+import {
   buildProIntentByCampaignWeeklyReportSummary,
   formatProIntentByCampaignWeeklyReportMarkdown,
   type ProIntentByCampaignWeeklyReportEnvInfo
@@ -159,6 +164,7 @@ interface OptionsElements {
   exportProIntentByCampaign7dCsvButton: HTMLButtonElement;
   exportProDistributionByCampaign7dCsvButton: HTMLButtonElement;
   exportProAcquisitionEfficiencyByCampaign7dCsvButton: HTMLButtonElement;
+  proAcqEffByCampaignWeeklyReportCopyButton: HTMLButtonElement;
   proIntentWeeklyDigestCopyButton: HTMLButtonElement;
   proIntentByCampaignWeeklyReportCopyButton: HTMLButtonElement;
   womSummaryPanel: HTMLDetailsElement;
@@ -233,6 +239,8 @@ let editingChatServiceId: string | null = null;
 const PROMPT_SORT_MODE_STORAGE_KEY = 'copylot_prompt_sort_mode';
 const EXPORT_PRO_ACQ_EFF_BY_CAMPAIGN_7D_CSV_BUTTON_ID =
   'export-pro-acquisition-' + 'efficiency-by-campaign-' + '7d-csv';
+const COPY_PRO_ACQ_EFF_BY_CAMPAIGN_WEEKLY_REPORT_BUTTON_ID =
+  'copy-pro-acquisition-efficiency-' + 'by-campaign-weekly-report';
 
 /**
  * 获取所有DOM元素
@@ -302,6 +310,9 @@ function getElements(): OptionsElements {
     ) as HTMLButtonElement,
     exportProAcquisitionEfficiencyByCampaign7dCsvButton: document.getElementById(
       EXPORT_PRO_ACQ_EFF_BY_CAMPAIGN_7D_CSV_BUTTON_ID
+    ) as HTMLButtonElement,
+    proAcqEffByCampaignWeeklyReportCopyButton: document.getElementById(
+      COPY_PRO_ACQ_EFF_BY_CAMPAIGN_WEEKLY_REPORT_BUTTON_ID
     ) as HTMLButtonElement,
     proIntentWeeklyDigestCopyButton: document.getElementById('copy-pro-intent-weekly-digest') as HTMLButtonElement,
     proIntentByCampaignWeeklyReportCopyButton: document.getElementById(
@@ -1710,6 +1721,90 @@ async function copyProIntentByCampaignWeeklyReportToClipboard(): Promise<void> {
   }
 }
 
+async function buildProAcquisitionEfficiencyByCampaignWeeklyReportMarkdownForClipboard(): Promise<string> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for pro acquisition efficiency by campaign weekly report:', error);
+  }
+
+  const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+  const env: ProAcquisitionEfficiencyByCampaignWeeklyReportEnvInfo = {
+    extensionVersion,
+    exportedAt,
+    isAnonymousUsageDataEnabled: enabled
+  };
+
+  const emptyCampaignBucketLabel =
+    getMessage('proAcqEffByCampaign7dCsvEmptyBucket') ||
+    getMessage('proIntentByCampaign7dCsvEmptyBucket') ||
+    getMessage('proDistributionByCampaign7dCsvEmptyBucket') ||
+    'N/A';
+
+  // Anonymous usage data OFF: do not read / infer any history.
+  if (!enabled) {
+    const summary = buildProAcquisitionEfficiencyByCampaignWeeklyReportSummary({
+      enabled: false,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      emptyCampaignBucketLabel,
+      lookbackDays: 7
+    });
+    return formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown({ summary, env, getMessage });
+  }
+
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    const summary = buildProAcquisitionEfficiencyByCampaignWeeklyReportSummary({
+      enabled: true,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      emptyCampaignBucketLabel,
+      lookbackDays: 7
+    });
+    return formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown({ summary, env, getMessage });
+  }
+
+  const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+  const summary = buildProAcquisitionEfficiencyByCampaignWeeklyReportSummary({
+    enabled: true,
+    telemetryEvents: result[TELEMETRY_EVENTS_KEY],
+    now: exportedAt,
+    extensionVersion,
+    emptyCampaignBucketLabel,
+    lookbackDays: 7
+  });
+  return formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown({ summary, env, getMessage });
+}
+
+async function copyProAcquisitionEfficiencyByCampaignWeeklyReportToClipboard(): Promise<void> {
+  let text: string;
+
+  try {
+    text = await buildProAcquisitionEfficiencyByCampaignWeeklyReportMarkdownForClipboard();
+  } catch (error) {
+    console.warn('Failed to build pro acquisition efficiency by campaign weekly report markdown:', error);
+    showNotification(getMessage('proAcqEffByCampaignWeeklyReportCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showNotification(getMessage('proAcqEffByCampaignWeeklyReportCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy pro acquisition efficiency by campaign weekly report markdown:', error);
+    const ok = fallbackCopyText(text);
+    if (ok) {
+      showNotification(getMessage('proAcqEffByCampaignWeeklyReportCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('proAcqEffByCampaignWeeklyReportCopyFailed'), 'error');
+  }
+}
+
 function downloadCsvFile(filename: string, csv: string): void {
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
@@ -2308,6 +2403,9 @@ function setupEventListeners() {
   });
   elements.exportProAcquisitionEfficiencyByCampaign7dCsvButton.addEventListener('click', () => {
     void exportProAcquisitionEfficiencyByCampaign7dCsv();
+  });
+  elements.proAcqEffByCampaignWeeklyReportCopyButton.addEventListener('click', () => {
+    void copyProAcquisitionEfficiencyByCampaignWeeklyReportToClipboard();
   });
   elements.proIntentWeeklyDigestCopyButton.addEventListener('click', () => {
     void copyProIntentWeeklyDigestToClipboard();
