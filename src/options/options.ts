@@ -59,6 +59,10 @@ import {
   formatProDistributionByCampaign7dCsvFilename
 } from '../shared/pro-distribution-by-campaign-csv';
 import {
+  buildProAcquisitionEfficiencyByCampaignCsv,
+  formatProAcquisitionEfficiencyByCampaign7dCsvFilename
+} from '../shared/pro-acquisition-efficiency-by-campaign-csv';
+import {
   buildProIntentByCampaignWeeklyReportSummary,
   formatProIntentByCampaignWeeklyReportMarkdown,
   type ProIntentByCampaignWeeklyReportEnvInfo
@@ -154,6 +158,7 @@ interface OptionsElements {
   exportProIntentEvents7dCsvButton: HTMLButtonElement;
   exportProIntentByCampaign7dCsvButton: HTMLButtonElement;
   exportProDistributionByCampaign7dCsvButton: HTMLButtonElement;
+  exportProAcquisitionEfficiencyByCampaign7dCsvButton: HTMLButtonElement;
   proIntentWeeklyDigestCopyButton: HTMLButtonElement;
   proIntentByCampaignWeeklyReportCopyButton: HTMLButtonElement;
   womSummaryPanel: HTMLDetailsElement;
@@ -226,6 +231,8 @@ let editingPromptId: string | null = null;
 let editingChatServiceId: string | null = null;
 
 const PROMPT_SORT_MODE_STORAGE_KEY = 'copylot_prompt_sort_mode';
+const EXPORT_PRO_ACQ_EFF_BY_CAMPAIGN_7D_CSV_BUTTON_ID =
+  'export-pro-acquisition-' + 'efficiency-by-campaign-' + '7d-csv';
 
 /**
  * 获取所有DOM元素
@@ -292,6 +299,9 @@ function getElements(): OptionsElements {
     ) as HTMLButtonElement,
     exportProDistributionByCampaign7dCsvButton: document.getElementById(
       'export-pro-distribution-by-campaign-7d-csv'
+    ) as HTMLButtonElement,
+    exportProAcquisitionEfficiencyByCampaign7dCsvButton: document.getElementById(
+      EXPORT_PRO_ACQ_EFF_BY_CAMPAIGN_7D_CSV_BUTTON_ID
     ) as HTMLButtonElement,
     proIntentWeeklyDigestCopyButton: document.getElementById('copy-pro-intent-weekly-digest') as HTMLButtonElement,
     proIntentByCampaignWeeklyReportCopyButton: document.getElementById(
@@ -420,6 +430,7 @@ async function loadSettings() {
     updateProIntentEvents7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
     updateProIntentByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
     updateProDistributionByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
+    updateProAcquisitionEfficiencyByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
     filterAndRenderPrompts();
     updateSyncStatus();
     console.debug('Settings loaded:', currentSettings);
@@ -1394,6 +1405,11 @@ function updateProDistributionByCampaign7dCsvExportButtonState(enabled: boolean)
   elements.exportProDistributionByCampaign7dCsvButton.disabled = !enabled;
 }
 
+function updateProAcquisitionEfficiencyByCampaign7dCsvExportButtonState(enabled: boolean): void {
+  if (!elements?.exportProAcquisitionEfficiencyByCampaign7dCsvButton) return;
+  elements.exportProAcquisitionEfficiencyByCampaign7dCsvButton.disabled = !enabled;
+}
+
 function updateProWaitlistDistributionToolkitState(): void {
   if (
     !elements?.proIntentCampaignInput ||
@@ -1872,6 +1888,72 @@ async function exportProDistributionByCampaign7dCsv(): Promise<void> {
   showNotification(getMessage('proDistributionByCampaign7dCsvExportSuccess', [String(built.rows.length)]), 'success');
 }
 
+async function exportProAcquisitionEfficiencyByCampaign7dCsv(): Promise<void> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for pro acquisition efficiency by campaign csv export:', error);
+  }
+
+  const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+  if (!enabled) {
+    showNotification(getMessage('proAcqEffByCampaign7dCsvExportTelemetryOff'), 'info');
+    return;
+  }
+
+  const emptyCampaignBucketLabel =
+    getMessage('proAcqEffByCampaign7dCsvEmptyBucket') ||
+    getMessage('proIntentByCampaign7dCsvEmptyBucket') ||
+    getMessage('proDistributionByCampaign7dCsvEmptyBucket') ||
+    'N/A';
+
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    const result = buildProAcquisitionEfficiencyByCampaignCsv({
+      enabled: true,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      emptyCampaignBucketLabel,
+      lookbackDays: 7
+    });
+    const filename = formatProAcquisitionEfficiencyByCampaign7dCsvFilename(exportedAt);
+    downloadCsvFile(filename, result.csv);
+    showNotification(
+      getMessage('proAcqEffByCampaign7dCsvExportSuccess', [String(result.rows.length)]),
+      'success'
+    );
+    return;
+  }
+
+  let stored: unknown;
+  try {
+    const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+    stored = result[TELEMETRY_EVENTS_KEY];
+  } catch (error) {
+    console.warn('Failed to read telemetry events for pro acquisition efficiency by campaign csv export:', error);
+    showNotification(getMessage('proAcqEffByCampaign7dCsvExportFailed'), 'error');
+    return;
+  }
+
+  const built = buildProAcquisitionEfficiencyByCampaignCsv({
+    enabled: true,
+    telemetryEvents: stored,
+    now: exportedAt,
+    extensionVersion,
+    emptyCampaignBucketLabel,
+    lookbackDays: 7
+  });
+
+  const filename = formatProAcquisitionEfficiencyByCampaign7dCsvFilename(exportedAt);
+  downloadCsvFile(filename, built.csv);
+  showNotification(
+    getMessage('proAcqEffByCampaign7dCsvExportSuccess', [String(built.rows.length)]),
+    'success'
+  );
+}
+
 function formatWomSummaryAsJson(summary: WomSummary): string {
   return `${JSON.stringify(summary, null, 2)}\n`;
 }
@@ -2224,6 +2306,9 @@ function setupEventListeners() {
   elements.exportProDistributionByCampaign7dCsvButton.addEventListener('click', () => {
     void exportProDistributionByCampaign7dCsv();
   });
+  elements.exportProAcquisitionEfficiencyByCampaign7dCsvButton.addEventListener('click', () => {
+    void exportProAcquisitionEfficiencyByCampaign7dCsv();
+  });
   elements.proIntentWeeklyDigestCopyButton.addEventListener('click', () => {
     void copyProIntentWeeklyDigestToClipboard();
   });
@@ -2280,6 +2365,7 @@ function setupEventListeners() {
       updateProIntentEvents7dCsvExportButtonState(enabled);
       updateProIntentByCampaign7dCsvExportButtonState(enabled);
       updateProDistributionByCampaign7dCsvExportButtonState(enabled);
+      updateProAcquisitionEfficiencyByCampaign7dCsvExportButtonState(enabled);
 
       showNotification(getMessage('saveSuccessMessage'), 'success');
     } catch (error) {

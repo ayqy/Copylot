@@ -1177,6 +1177,26 @@
     "message": "(none)",
     "description": "Empty campaign bucket label in distribution by campaign aggregated CSV"
   },
+  "proAcqEffByCampaign7dCsvExport": {
+    "message": "Export last 7 days acquisition efficiency by campaign (CSV)",
+    "description": "Privacy page export merged acquisition efficiency by campaign CSV button"
+  },
+  "proAcqEffByCampaign7dCsvExportSuccess": {
+    "message": "CSV exported ($1 rows)",
+    "description": "Merged acquisition efficiency by campaign CSV export success notice ($1=row count)"
+  },
+  "proAcqEffByCampaign7dCsvExportFailed": {
+    "message": "Export failed",
+    "description": "Merged acquisition efficiency by campaign CSV export failure notice"
+  },
+  "proAcqEffByCampaign7dCsvExportTelemetryOff": {
+    "message": "Anonymous usage data is OFF: no acquisition efficiency export",
+    "description": "Notification when exporting acquisition efficiency by campaign CSV while anonymous usage data is disabled"
+  },
+  "proAcqEffByCampaign7dCsvEmptyBucket": {
+    "message": "(none)",
+    "description": "Empty campaign bucket label in merged acquisition efficiency by campaign CSV"
+  },
   "proIntentWeeklyDigestCopy": {
     "message": "Copy weekly Pro intent digest",
     "description": "Copy weekly Pro intent digest button label in Options privacy tab"

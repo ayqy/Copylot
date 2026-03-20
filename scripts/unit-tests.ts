@@ -63,6 +63,11 @@ import {
   formatProDistributionByCampaign7dCsvFilename
 } from '../src/shared/pro-distribution-by-campaign-csv.ts';
 import {
+  PRO_ACQUISITION_EFFICIENCY_BY_CAMPAIGN_CSV_COLUMNS,
+  buildProAcquisitionEfficiencyByCampaignCsv,
+  formatProAcquisitionEfficiencyByCampaign7dCsvFilename
+} from '../src/shared/pro-acquisition-efficiency-by-campaign-csv.ts';
+import {
   buildProIntentByCampaignWeeklyReportSummary,
   formatProIntentByCampaignWeeklyReportMarkdown
 } from '../src/shared/pro-intent-by-campaign-weekly-report.ts';
@@ -1339,6 +1344,139 @@ async function run() {
 
   const proDistributionByCampaignCsvFilename = formatProDistributionByCampaign7dCsvFilename(now);
   assert.ok(/^copylot-pro-distribution-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proDistributionByCampaignCsvFilename));
+
+  // pro-acquisition-efficiency-by-campaign-csv.ts (pure functions + 7d window -> merge leads + distCopies by campaign -> CSV)
+  const proAcqEfficiencyWindow = buildProAcquisitionEfficiencyByCampaignCsv({
+    enabled: true,
+    telemetryEvents: [],
+    now,
+    extensionVersion: '1.1.28',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  assert.equal(
+    proIntentByCampaignWindowA.windowFrom,
+    proAcqEfficiencyWindow.windowFrom,
+    '7d windowFrom should match v1-51/v1-54/v1-57 exports'
+  );
+  assert.equal(
+    proIntentByCampaignWindowA.windowTo,
+    proAcqEfficiencyWindow.windowTo,
+    '7d windowTo should match v1-51/v1-54/v1-57 exports'
+  );
+
+  const proAcqEfficiencyDisabled = buildProAcquisitionEfficiencyByCampaignCsv({
+    enabled: false,
+    telemetryEvents: [
+      { name: 'pro_waitlist_copied', ts: now, props: { source: 'options', campaign: 'twitter' } },
+      { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' } }
+    ],
+    now,
+    extensionVersion: '1.1.28',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  assert.equal(proAcqEfficiencyDisabled.enabled, false);
+  assert.equal(proAcqEfficiencyDisabled.disabledReason, 'anonymous_usage_data_disabled');
+  assert.equal(proAcqEfficiencyDisabled.rows.length, 0);
+  assert.ok(!proAcqEfficiencyDisabled.csv.startsWith('\uFEFF'));
+  assert.equal(proAcqEfficiencyDisabled.csv.trimEnd(), PRO_ACQUISITION_EFFICIENCY_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+
+  const mergedEvents: unknown[] = [
+    // leads: twitter=2, ph=1, empty=1
+    { name: 'pro_waitlist_copied', ts: sevenDaysAgo, props: { source: 'options', campaign: 'twitter' } }, // included (=from)
+    { name: 'pro_waitlist_survey_copied', ts: sevenDaysAgo + 1, props: { source: 'popup', campaign: 'twitter' } },
+    { name: 'pro_waitlist_copied', ts: now - 1000, props: { source: 'options', campaign: 'ph' } },
+    { name: 'pro_waitlist_copied', ts: now - 500, props: { source: 'options' } }, // empty campaign bucket
+    // distCopies: twitter=4, ph=0, empty=2
+    { name: 'pro_distribution_asset_copied', ts: sevenDaysAgo, props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' } },
+    { name: 'pro_distribution_asset_copied', ts: now - 900, props: { source: 'options', campaign: 'twitter', action: 'store_url' } },
+    { name: 'pro_distribution_asset_copied', ts: now - 800, props: { source: 'options', campaign: 'twitter', action: 'recruit_copy' } },
+    { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'options', campaign: 'twitter', action: 'distribution_pack' } }, // included (=to)
+    { name: 'pro_distribution_asset_copied', ts: now - 700, props: { source: 'options', action: 'distribution_pack' } }, // empty campaign bucket
+    { name: 'pro_distribution_asset_copied', ts: now - 600, props: { source: 'options', action: 'waitlist_url' } }, // empty campaign bucket
+    // excluded
+    { name: 'pro_waitlist_copied', ts: sevenDaysAgo - 1, props: { source: 'options', campaign: 'twitter' } }, // <from
+    { name: 'pro_distribution_asset_copied', ts: now + 1, props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' } }, // >to
+    { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'popup', campaign: 'twitter', action: 'waitlist_url' } }, // bad source
+    { name: 'popup_opened', ts: now }
+  ];
+
+  const proAcqEfficiency = buildProAcquisitionEfficiencyByCampaignCsv({
+    enabled: true,
+    telemetryEvents: mergedEvents,
+    now,
+    extensionVersion: '1.1.28',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  assert.equal(proAcqEfficiency.enabled, true);
+  assert.equal(proAcqEfficiency.windowFrom, sevenDaysAgo);
+  assert.equal(proAcqEfficiency.windowTo, now);
+  assert.equal(proAcqEfficiency.rows.length, 3);
+
+  const twitterMerged = proAcqEfficiency.rows.find((r) => r.campaign === 'twitter');
+  const phMerged = proAcqEfficiency.rows.find((r) => r.campaign === 'ph');
+  const emptyMerged = proAcqEfficiency.rows.find((r) => r.campaign === '空 campaign');
+  assert.ok(twitterMerged, 'expected twitter row in merged acquisition efficiency export');
+  assert.ok(phMerged, 'expected ph row in merged acquisition efficiency export');
+  assert.ok(emptyMerged, 'expected empty campaign bucket row in merged acquisition efficiency export');
+
+  assert.equal(twitterMerged?.leads, 2);
+  assert.equal(twitterMerged?.distCopies, 4);
+  assert.equal(twitterMerged?.leadsPerDistCopy, '0.5000');
+
+  assert.equal(phMerged?.leads, 1);
+  assert.equal(phMerged?.distCopies, 0);
+  assert.equal(phMerged?.leadsPerDistCopy, 'N/A');
+
+  assert.equal(emptyMerged?.leads, 1);
+  assert.equal(emptyMerged?.distCopies, 2);
+  assert.equal(emptyMerged?.leadsPerDistCopy, '0.5000');
+
+  // Alignment proof: leads/distCopies should match v1-54 + v1-57 exports for the same window/events.
+  const intentAligned = buildProIntentByCampaignCsv({
+    enabled: true,
+    telemetryEvents: mergedEvents,
+    now,
+    extensionVersion: '1.1.28',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  const distAligned = buildProDistributionByCampaignCsv({
+    enabled: true,
+    telemetryEvents: mergedEvents,
+    now,
+    extensionVersion: '1.1.28',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+
+  for (const row of proAcqEfficiency.rows) {
+    const intentRow = intentAligned.rows.find((r) => r.campaign === row.campaign);
+    const distRow = distAligned.rows.find((r) => r.campaign === row.campaign);
+    assert.equal(
+      row.leads,
+      intentRow?.leads ?? 0,
+      `merged leads should match v1-54 pro-intent-by-campaign for campaign=${row.campaign}`
+    );
+    assert.equal(
+      row.distCopies,
+      distRow?.distCopies ?? 0,
+      `merged distCopies should match v1-57 pro-distribution-by-campaign for campaign=${row.campaign}`
+    );
+  }
+
+  assert.ok(proAcqEfficiency.rows.every((row) => Number.isInteger(row.leads)));
+  assert.ok(proAcqEfficiency.rows.every((row) => Number.isInteger(row.distCopies)));
+  assert.ok(!proAcqEfficiency.csv.startsWith('\uFEFF'));
+  assert.equal(proAcqEfficiency.csv.split('\n')[0], PRO_ACQUISITION_EFFICIENCY_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+  assert.equal(proAcqEfficiency.csv.trim().split('\n').length, 1 + proAcqEfficiency.rows.length);
+
+  const proAcqEfficiencyCsvFilename = formatProAcquisitionEfficiencyByCampaign7dCsvFilename(now);
+  assert.ok(
+    /^copylot-pro-acquisition-efficiency-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proAcqEfficiencyCsvFilename)
+  );
 
   // pro-intent-by-campaign-weekly-report.ts (pure functions + markdown formatter)
   const proIntentByCampaignWeeklyReportDisabled = buildProIntentByCampaignWeeklyReportSummary({
