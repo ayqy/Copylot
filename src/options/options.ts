@@ -52,6 +52,11 @@ import {
   buildProIntentByCampaignCsv,
   formatProIntentByCampaign7dCsvFilename
 } from '../shared/pro-intent-by-campaign-csv';
+import {
+  buildProIntentByCampaignWeeklyReportSummary,
+  formatProIntentByCampaignWeeklyReportMarkdown,
+  type ProIntentByCampaignWeeklyReportEnvInfo
+} from '../shared/pro-intent-by-campaign-weekly-report';
 import { formatCampaignLineForTemplate, sanitizeCampaign } from '../shared/campaign';
 import {
   buildWomEvidencePack,
@@ -143,6 +148,7 @@ interface OptionsElements {
   exportProIntentEvents7dCsvButton: HTMLButtonElement;
   exportProIntentByCampaign7dCsvButton: HTMLButtonElement;
   proIntentWeeklyDigestCopyButton: HTMLButtonElement;
+  proIntentByCampaignWeeklyReportCopyButton: HTMLButtonElement;
   womSummaryPanel: HTMLDetailsElement;
   womSummaryView: HTMLTextAreaElement;
   womSummaryDisabledNotice: HTMLElement;
@@ -276,6 +282,9 @@ function getElements(): OptionsElements {
       'export-pro-intent-by-campaign-7d-csv'
     ) as HTMLButtonElement,
     proIntentWeeklyDigestCopyButton: document.getElementById('copy-pro-intent-weekly-digest') as HTMLButtonElement,
+    proIntentByCampaignWeeklyReportCopyButton: document.getElementById(
+      'copy-pro-intent-by-campaign-weekly-report'
+    ) as HTMLButtonElement,
     womSummaryPanel: document.getElementById('wom-summary-panel') as HTMLDetailsElement,
     womSummaryView: document.getElementById('wom-summary-view') as HTMLTextAreaElement,
     womSummaryDisabledNotice: document.getElementById('wom-summary-disabled-notice') as HTMLElement,
@@ -1579,6 +1588,86 @@ async function copyProIntentWeeklyDigestToClipboard(): Promise<void> {
   }
 }
 
+async function buildProIntentByCampaignWeeklyReportMarkdownForClipboard(): Promise<string> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for pro intent by campaign weekly report:', error);
+  }
+
+  const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+  const env: ProIntentByCampaignWeeklyReportEnvInfo = {
+    extensionVersion,
+    exportedAt,
+    isAnonymousUsageDataEnabled: enabled
+  };
+
+  const emptyCampaignBucketLabel = getMessage('proIntentByCampaign7dCsvEmptyBucket') || 'N/A';
+
+  // Anonymous usage data OFF: do not read / infer any history.
+  if (!enabled) {
+    const summary = buildProIntentByCampaignWeeklyReportSummary({
+      enabled: false,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      emptyCampaignBucketLabel,
+      lookbackDays: 7
+    });
+    return formatProIntentByCampaignWeeklyReportMarkdown({ summary, env, getMessage });
+  }
+
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    const summary = buildProIntentByCampaignWeeklyReportSummary({
+      enabled: true,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      emptyCampaignBucketLabel,
+      lookbackDays: 7
+    });
+    return formatProIntentByCampaignWeeklyReportMarkdown({ summary, env, getMessage });
+  }
+
+  const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+  const summary = buildProIntentByCampaignWeeklyReportSummary({
+    enabled: true,
+    telemetryEvents: result[TELEMETRY_EVENTS_KEY],
+    now: exportedAt,
+    extensionVersion,
+    emptyCampaignBucketLabel,
+    lookbackDays: 7
+  });
+  return formatProIntentByCampaignWeeklyReportMarkdown({ summary, env, getMessage });
+}
+
+async function copyProIntentByCampaignWeeklyReportToClipboard(): Promise<void> {
+  let text: string;
+
+  try {
+    text = await buildProIntentByCampaignWeeklyReportMarkdownForClipboard();
+  } catch (error) {
+    console.warn('Failed to build pro intent by campaign weekly report markdown:', error);
+    showNotification(getMessage('proIntentByCampaignWeeklyReportCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showNotification(getMessage('proIntentByCampaignWeeklyReportCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy pro intent by campaign weekly report markdown:', error);
+    const ok = fallbackCopyText(text);
+    if (ok) {
+      showNotification(getMessage('proIntentByCampaignWeeklyReportCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('proIntentByCampaignWeeklyReportCopyFailed'), 'error');
+  }
+}
+
 function downloadCsvFile(filename: string, csv: string): void {
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
@@ -2051,6 +2140,9 @@ function setupEventListeners() {
   });
   elements.proIntentWeeklyDigestCopyButton.addEventListener('click', () => {
     void copyProIntentWeeklyDigestToClipboard();
+  });
+  elements.proIntentByCampaignWeeklyReportCopyButton.addEventListener('click', () => {
+    void copyProIntentByCampaignWeeklyReportToClipboard();
   });
 
   // WOM 摘要面板

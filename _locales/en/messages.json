@@ -1203,6 +1203,58 @@
     "message": "Copy failed. Please select and copy manually.",
     "description": "Weekly Pro intent digest copy failure notification"
   },
+  "proIntentByCampaignWeeklyReportCopy": {
+    "message": "Copy weekly campaign report (Markdown)",
+    "description": "Copy weekly campaign report (Markdown) button label in Options privacy tab"
+  },
+  "proIntentByCampaignWeeklyReportCopySuccess": {
+    "message": "Weekly report copied to clipboard",
+    "description": "Weekly campaign report copy success notification"
+  },
+  "proIntentByCampaignWeeklyReportCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Weekly campaign report copy failure notification"
+  },
+  "proIntentByCampaignWeeklyReportMdTitle": {
+    "message": "Campaign weekly report (last $1 days)",
+    "description": "Campaign weekly report markdown title ($1=days)"
+  },
+  "proIntentByCampWeeklyMdTelemetryOffNotice": {
+    "message": "Anonymous usage data is OFF (no events). This report only includes environment info and does not read or infer any history.",
+    "description": "Campaign weekly report notice when anonymous usage data is disabled"
+  },
+  "proIntentByCampaignWeeklyReportMdSectionEnv": {
+    "message": "Environment",
+    "description": "Campaign weekly report environment section heading"
+  },
+  "proIntentByCampaignWeeklyReportMdSectionTable": {
+    "message": "Campaign summary table",
+    "description": "Campaign weekly report table section heading"
+  },
+  "proIntentByCampaignWeeklyReportMdSectionInsights": {
+    "message": "Key takeaways (template)",
+    "description": "Campaign weekly report key takeaways section heading"
+  },
+  "proIntentByCampaignWeeklyReportMdInsightTop1": {
+    "message": "Top1 campaign (by leads): $1 (leads=$2)",
+    "description": "Campaign weekly report Top1 line ($1=campaign, $2=leads)"
+  },
+  "proIntentByCampaignWeeklyReportMdInsightTop3": {
+    "message": "Top3 campaign (by leads): $1 (leads=$2)",
+    "description": "Campaign weekly report Top3 line ($1=campaign, $2=leads)"
+  },
+  "proIntentByCampWeeklyMdInsightEmptyShare": {
+    "message": "Empty campaign leads share: $1 (empty=$2, total=$3)",
+    "description": "Campaign weekly report empty campaign leads share line ($1=share, $2=empty leads, $3=total leads)"
+  },
+  "proIntentByCampaignWeeklyReportMdSectionPrivacy": {
+    "message": "Privacy",
+    "description": "Campaign weekly report privacy section heading"
+  },
+  "proIntentByCampaignWeeklyReportMdPrivacyStatement": {
+    "message": "No page content, copied text, URLs, or titles. Derived only from local anonymous telemetry and extension environment info.",
+    "description": "Campaign weekly report privacy statement body"
+  },
   "proFunnelRefreshFailed": {
     "message": "Refresh failed",
     "description": "Pro funnel summary refresh failure notification"

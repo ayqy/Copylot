@@ -1203,6 +1203,58 @@
     "message": "复制失败，请手动选择并复制",
     "description": "本周 Pro 意向证据摘要复制失败提示"
   },
+  "proIntentByCampaignWeeklyReportCopy": {
+    "message": "复制按 campaign 的本周复盘摘要（Markdown）",
+    "description": "隐私页复制按 campaign 的本周复盘摘要（Markdown）按钮"
+  },
+  "proIntentByCampaignWeeklyReportCopySuccess": {
+    "message": "本周复盘摘要已复制到剪贴板",
+    "description": "按 campaign 的本周复盘摘要复制成功提示"
+  },
+  "proIntentByCampaignWeeklyReportCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "按 campaign 的本周复盘摘要复制失败提示"
+  },
+  "proIntentByCampaignWeeklyReportMdTitle": {
+    "message": "按 campaign 的本周复盘摘要（过去 $1 天）",
+    "description": "按 campaign 的本周复盘摘要 Markdown 标题（$1=天数）"
+  },
+  "proIntentByCampWeeklyMdTelemetryOffNotice": {
+    "message": "匿名使用数据关闭（无可用事件）。本摘要仅包含环境信息，不读取/不推断任何历史事件。",
+    "description": "匿名开关 OFF 时按 campaign 周报摘要提示文案"
+  },
+  "proIntentByCampaignWeeklyReportMdSectionEnv": {
+    "message": "环境信息",
+    "description": "按 campaign 周报摘要环境信息区块标题"
+  },
+  "proIntentByCampaignWeeklyReportMdSectionTable": {
+    "message": "按 campaign 汇总表",
+    "description": "按 campaign 周报摘要汇总表区块标题"
+  },
+  "proIntentByCampaignWeeklyReportMdSectionInsights": {
+    "message": "关键结论（模板）",
+    "description": "按 campaign 周报摘要关键结论区块标题"
+  },
+  "proIntentByCampaignWeeklyReportMdInsightTop1": {
+    "message": "Top1 campaign（按 leads）：$1（leads=$2）",
+    "description": "按 campaign 周报摘要 Top1 行（$1=campaign，$2=leads）"
+  },
+  "proIntentByCampaignWeeklyReportMdInsightTop3": {
+    "message": "Top3 campaign（按 leads）：$1（leads=$2）",
+    "description": "按 campaign 周报摘要 Top3 行（$1=campaign，$2=leads）"
+  },
+  "proIntentByCampWeeklyMdInsightEmptyShare": {
+    "message": "空 campaign leads 占比：$1（空=$2，总=$3）",
+    "description": "按 campaign 周报摘要 空 campaign leads 占比行（$1=占比，$2=空桶 leads，$3=总 leads）"
+  },
+  "proIntentByCampaignWeeklyReportMdSectionPrivacy": {
+    "message": "隐私声明",
+    "description": "按 campaign 周报摘要隐私声明区块标题"
+  },
+  "proIntentByCampaignWeeklyReportMdPrivacyStatement": {
+    "message": "不包含网页内容/复制内容/URL/标题；仅来源于本地匿名事件统计与扩展环境信息。",
+    "description": "按 campaign 周报摘要隐私声明正文"
+  },
   "proFunnelRefreshFailed": {
     "message": "刷新失败",
     "description": "Pro 意向漏斗摘要刷新失败提示"

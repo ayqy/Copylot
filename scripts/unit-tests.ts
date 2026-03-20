@@ -55,6 +55,10 @@ import {
   buildProIntentByCampaignCsv,
   formatProIntentByCampaign7dCsvFilename
 } from '../src/shared/pro-intent-by-campaign-csv.ts';
+import {
+  buildProIntentByCampaignWeeklyReportSummary,
+  formatProIntentByCampaignWeeklyReportMarkdown
+} from '../src/shared/pro-intent-by-campaign-weekly-report.ts';
 import { buildWomEvidencePack, buildWomSummary } from '../src/shared/wom-summary.ts';
 import { cleanCodeBlockText } from '../src/shared/code-block-cleaner.ts';
 import { parsePromptSortMode, sortPrompts } from '../src/shared/prompt-sort.ts';
@@ -84,6 +88,9 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
   }
   if (key === 'shareCopyTextTemplate') {
     return `share ${subs[0]}`;
+  }
+  if (key === 'proIntentByCampWeeklyMdTelemetryOffNotice') {
+    return '匿名使用数据关闭（无可用事件）。本摘要仅包含环境信息，不读取/不推断任何历史事件。';
   }
   return key;
 };
@@ -1187,6 +1194,100 @@ async function run() {
   const proIntentByCampaignCsvFilename = formatProIntentByCampaign7dCsvFilename(now);
   assert.ok(/^copylot-pro-intent-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proIntentByCampaignCsvFilename));
 
+  // pro-intent-by-campaign-weekly-report.ts (pure functions + markdown formatter)
+  const proIntentByCampaignWeeklyReportDisabled = buildProIntentByCampaignWeeklyReportSummary({
+    enabled: false,
+    telemetryEvents: [{ name: 'pro_entry_opened', ts: now, props: { source: 'popup', campaign: 'twitter' } }],
+    now,
+    extensionVersion: '1.1.23',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  const proIntentByCampaignWeeklyReportDisabledMd = formatProIntentByCampaignWeeklyReportMarkdown({
+    summary: proIntentByCampaignWeeklyReportDisabled,
+    env: {
+      extensionVersion: '1.1.23',
+      exportedAt: now,
+      isAnonymousUsageDataEnabled: false
+    },
+    getMessage
+  });
+  assert.ok(proIntentByCampaignWeeklyReportDisabledMd.includes('匿名使用数据关闭（无可用事件）'));
+  assert.ok(!proIntentByCampaignWeeklyReportDisabledMd.includes('| campaign |'));
+  assert.ok(!proIntentByCampaignWeeklyReportDisabledMd.includes('pro_entry_opened |'));
+
+  const proIntentByCampaignWeeklyReportEmpty = buildProIntentByCampaignWeeklyReportSummary({
+    enabled: true,
+    telemetryEvents: [],
+    now,
+    extensionVersion: '1.1.23',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  assert.equal(proIntentByCampaignWeeklyReportEmpty.enabled, true);
+  assert.equal(proIntentByCampaignWeeklyReportEmpty.rows.length, 1);
+  assert.equal(proIntentByCampaignWeeklyReportEmpty.rows[0]?.campaign, '空 campaign');
+
+  const proIntentByCampaignWeeklyReport = buildProIntentByCampaignWeeklyReportSummary({
+    enabled: true,
+    telemetryEvents: [
+      // twitter
+      { name: 'pro_entry_opened', ts: now - 1000, props: { source: 'options', campaign: 'twitter' } },
+      { name: 'pro_entry_opened', ts: now - 999, props: { source: 'options', campaign: 'twitter' } },
+      { name: 'pro_waitlist_opened', ts: now - 998, props: { source: 'options', campaign: 'twitter' } },
+      { name: 'pro_waitlist_copied', ts: now - 997, props: { source: 'options', campaign: 'twitter' } },
+      // xhs
+      { name: 'pro_entry_opened', ts: now - 900, props: { source: 'options', campaign: 'xhs' } },
+      { name: 'pro_waitlist_opened', ts: now - 899, props: { source: 'options', campaign: 'xhs' } },
+      { name: 'pro_waitlist_survey_copied', ts: now - 898, props: { source: 'options', campaign: 'xhs' } },
+      // ads (denominator=0 -> N/A)
+      { name: 'pro_waitlist_copied', ts: now - 800, props: { source: 'options', campaign: 'ads' } },
+      // empty campaign bucket (missing/empty string)
+      { name: 'pro_entry_opened', ts: now - 700, props: { source: 'options', campaign: '' } }
+    ],
+    now,
+    extensionVersion: '1.1.23',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+
+  const twitterRow = proIntentByCampaignWeeklyReport.rows.find((r) => r.campaign === 'twitter');
+  assert.ok(twitterRow, 'expected twitter row in weekly report summary');
+  assert.equal(
+    twitterRow?.leads,
+    (twitterRow?.pro_waitlist_copied || 0) + (twitterRow?.pro_waitlist_survey_copied || 0),
+    'leads should equal pro_waitlist_copied + pro_waitlist_survey_copied'
+  );
+  assert.equal(twitterRow?.leads_per_entry_opened, 0.5);
+
+  const adsRow = proIntentByCampaignWeeklyReport.rows.find((r) => r.campaign === 'ads');
+  assert.ok(adsRow, 'expected ads row in weekly report summary');
+  assert.equal(adsRow?.leads_per_entry_opened, null, 'leads_per_entry_opened should be N/A when denominator=0');
+
+  const emptyRow = proIntentByCampaignWeeklyReport.rows.find((r) => r.campaign === '空 campaign');
+  assert.ok(emptyRow, 'expected empty campaign bucket row in weekly report summary');
+  assert.equal(emptyRow?.pro_entry_opened, 1);
+
+  const proIntentByCampaignWeeklyReportMd = formatProIntentByCampaignWeeklyReportMarkdown({
+    summary: proIntentByCampaignWeeklyReport,
+    env: {
+      extensionVersion: '1.1.23',
+      exportedAt: now,
+      isAnonymousUsageDataEnabled: true
+    },
+    getMessage
+  });
+  assert.ok(
+    proIntentByCampaignWeeklyReportMd.includes(
+      '| campaign | pro_entry_opened | pro_waitlist_opened | pro_waitlist_copied | pro_waitlist_survey_copied | leads | leads_per_entry_opened |'
+    ),
+    'weekly report markdown table header should be stable'
+  );
+  assert.ok(proIntentByCampaignWeeklyReportMd.includes('| twitter | 2 | 1 | 1 | 0 | 1 | 0.5 |'));
+  assert.ok(proIntentByCampaignWeeklyReportMd.includes('| xhs | 1 | 1 | 0 | 1 | 1 | 1 |'));
+  assert.ok(proIntentByCampaignWeeklyReportMd.includes('| ads | 0 | 0 | 1 | 0 | 1 | N/A |'));
+  assert.ok(proIntentByCampaignWeeklyReportMd.includes('| 空 campaign | 1 | 0 | 0 | 0 | 0 | 0 |'));
+
   // wom-summary.ts (pure functions)
   const womSummaryDisabled = buildWomSummary({
     enabled: false,
@@ -1338,6 +1439,10 @@ async function run() {
   assert.ok(
     optionsHtml.includes('id="copy-pro-intent-weekly-digest"'),
     'options.html should include copy-pro-intent-weekly-digest'
+  );
+  assert.ok(
+    optionsHtml.includes('id="copy-pro-intent-by-campaign-weekly-report"'),
+    'options.html should include copy-pro-intent-by-campaign-weekly-report'
   );
   assert.ok(
     optionsHtml.includes('id="pro-funnel-evidence-pack-copy"'),
