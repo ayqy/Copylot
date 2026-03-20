@@ -50,7 +50,7 @@
 
 ---
 
-## 3) 发布脚本门禁（dry-run，无网络调用）
+## 3) 发布脚本门禁（dry-run：不执行 upload/publish；会执行 Preflight 最小网络预检用于取证）
 
 - [ ] `npm run publish:cws -- --dry-run` 通过（允许无代理/无凭据演练）
   - 命令（建议留证）：
@@ -58,11 +58,16 @@
   - 通过标准：
     - 必须打印稳定的 Proxy Diagnostic Block（可复制、无敏感信息）：
       - 关键标记：`-----BEGIN CWS PROXY DIAGNOSTIC BLOCK-----` / `-----END CWS PROXY DIAGNOSTIC BLOCK-----`
-    - 必须在“未发生任何上传/发布网络调用”的前提下完成 dry-run
+    - 必须打印 Preflight 预检报告块（可复制、无敏感信息）：
+      - 关键标记：`-----BEGIN CWS PREFLIGHT REPORT BLOCK-----` / `-----END CWS PREFLIGHT REPORT BLOCK-----`
+      - 以及合并块（便于直接贴到 Issue）：`-----BEGIN CWS PUBLISH DIAGNOSTIC PACK-----` / `-----END CWS PUBLISH DIAGNOSTIC PACK-----`
+    - 必须在“未发生任何 upload/publish 网络调用”的前提下完成 dry-run（Preflight 会做最小网络可达性探测并输出 PASS/FAIL，用于取证与定位）
+    - 若 Preflight FAIL：必须输出可执行的修复建议（避免只剩 `fetch failed`），且 dry-run 仍应按约定退出 0
     - 若 `.env` 缺失 CWS 凭据项，dry-run 只告警不失败（真实发布前需补齐）
   - 关键可核验文件路径：
     - 发布脚本入口：`scripts/chrome-webstore.ts`
     - 代理解析/脱敏/诊断块：`scripts/cws-proxy.ts`
+    - Preflight 预检与报告块：`scripts/cws-preflight.ts`
 
 ---
 
@@ -125,4 +130,3 @@
     - `utm_source=copylot-ext`
     - `utm_medium=popup|options|rating_prompt`（以当前实现为准）
     - `utm_campaign=<当前版本口径>`（当前为 `v1-44`；若后续变更，以实现与文档一致为准）
-

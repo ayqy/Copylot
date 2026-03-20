@@ -6,7 +6,7 @@
 所需输入清单（示例）：
 - CWS 开发者账号发布权限（团队成员/角色）
 - 发布 API 凭据（例如 `.env` 中 `client_id` / `client_secret` / `refresh_token` 等）
-- 可访问 Google API 的网络环境（或可用代理/VPN；支持通过 `CWS_PROXY/HTTPS_PROXY/HTTP_PROXY/ALL_PROXY` 配置；代理 URL 必须包含 scheme，例如 `http://127.0.0.1:7890`）
+- 可访问 Google API 的网络环境（或可用代理/VPN；支持通过 `CWS_PROXY/HTTPS_PROXY/HTTP_PROXY/ALL_PROXY` 配置；代理 URL 必须包含 scheme，支持 `http/https/socks5/socks5h`，例如 `http://127.0.0.1:7890` 或 `socks5://127.0.0.1:1080`）
 - 目标上架条目（item）信息确认（若脚本需要）
 
 无凭据情况下可继续推进的替代动作：
@@ -27,9 +27,12 @@ v1-45 进展（已落盘，离线可审计）：
 - 已固化上架后 24h/7d 复盘模板：`docs/growth/post-release-review-template.md`（引用 v1-42/v1-44 基线）
 - 已落盘 v1-45 用例与证据索引模板：`docs/test-cases/v1-45.md`、`docs/evidence/v1-45/index.md`
 
-需要的人类输入（v1-39）：
-- 提供可用的代理/VPN（确保可访问 `www.googleapis.com`），并给出包含 scheme 的代理地址/端口（例如 `http://127.0.0.1:7890`）。若仅有 `socks5://...`，请同时提供本地 HTTP 代理端口或直接使用 VPN。
-- 或在可直连 Google 的网络环境中执行 `npm run publish:cws` 完成发布，并按 `docs/test-cases/v1-39.md` 生成商店端截图/索引取证（写入 `docs/reports/v1-39-report.md`）。
+v1-47 进展（已落盘，离线可审计）：
+- `publish:cws` 已新增 `socks5://`/`socks5h://` 代理支持，并新增网络可达性预检（Preflight）与错误分类；dry-run 输出可复制的 `Proxy Diagnostic Block + Preflight Report Block + Diagnostic Pack`（见 `docs/reports/v1-47-report.md`、`docs/test-cases/v1-47.md`、`docs/evidence/v1-47/index.md`）。
+
+需要的人类输入（持续阻塞：网络可达性）：
+- 提供可用的代理/VPN（确保可访问 `www.googleapis.com` 与 CWS API）；代理可为 `http/https/socks5/socks5h`，并给出包含 scheme 的代理地址/端口（例如 `http://127.0.0.1:7890` 或 `socks5h://127.0.0.1:1080`）。
+- 或在可直连 Google 的网络环境中执行 `npm run publish:cws` 完成发布，并按 `docs/test-cases/v1-45.md` / `docs/test-cases/v1-47.md` 生成商店端截图/索引取证。
 
 ## 2)（非本阶段 MVP）收款/订阅相关输入
 所需输入清单：

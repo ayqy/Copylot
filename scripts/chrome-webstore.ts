@@ -9,7 +9,7 @@
   - 强制执行 `bash scripts/test.sh`（生产回归 + 产物自检）作为唯一发布门禁
   - 校验 `dist/manifest.json` 的 `version === manifest.json.version`
   - 基于当前 `dist/` 重新生成 `plugin-${version}.zip`（若存在则先删除再生成）
-  - 支持 `--dry-run`：不进行任何上传/发布网络调用；允许无 `.env` 凭据演练前置流程
+  - 支持 `--dry-run`：不进行任何 upload/publish 网络调用；允许无 `.env` 凭据演练前置流程；但会执行网络可达性预检（Preflight）并输出可审计报告
 */
 
 import 'dotenv/config';
@@ -28,6 +28,13 @@ import {
   resolveCwsProxyEnv,
   type ResolvedCwsProxyEnv
 } from './cws-proxy.ts';
+import {
+  buildCwsPreflightFixHints,
+  formatCwsPreflightReportBlock,
+  formatCwsPublishDiagnosticPackBlock,
+  getDefaultCwsPreflightTargets,
+  runCwsPreflight
+} from './cws-preflight.ts';
 
 function setupCwsProxyOrExit(env: NodeJS.ProcessEnv): { resolved: ResolvedCwsProxyEnv; dispatcherInstalled: boolean } {
   try {
@@ -53,7 +60,8 @@ const cwsProxySetup = setupCwsProxyOrExit(process.env);
 const cwsProxyResolved = cwsProxySetup.resolved;
 
 // 可复制/可审计：用于排障与简报留证（禁止包含 token/secret）
-console.log(formatCwsProxyDiagnosticBlock(buildCwsProxyDiagnostic(cwsProxyResolved, cwsProxySetup.dispatcherInstalled)));
+const cwsProxyDiagnostic = buildCwsProxyDiagnostic(cwsProxyResolved, cwsProxySetup.dispatcherInstalled);
+console.log(formatCwsProxyDiagnosticBlock(cwsProxyDiagnostic));
 
 const colors = {
   reset: '\x1b[0m',
@@ -129,6 +137,14 @@ function printActionableNetworkHints(error: Error) {
   console.error('\n环境变量示例（任选其一；代理 URL 必须包含 scheme）：');
   console.error('  示例 1（HTTPS_PROXY）：');
   console.error('    export HTTPS_PROXY=http://127.0.0.1:7890');
+  console.error('    export NO_PROXY=localhost,127.0.0.1,::1');
+  console.error('    npm run publish:cws');
+  console.error('  示例 1b（HTTPS_PROXY + socks5）：');
+  console.error('    export HTTPS_PROXY=socks5://127.0.0.1:1080');
+  console.error('    export NO_PROXY=localhost,127.0.0.1,::1');
+  console.error('    npm run publish:cws');
+  console.error('  示例 1c（HTTPS_PROXY + socks5h 远程 DNS）：');
+  console.error('    export HTTPS_PROXY=socks5h://127.0.0.1:1080');
   console.error('    export NO_PROXY=localhost,127.0.0.1,::1');
   console.error('    npm run publish:cws');
   console.error('  示例 2（ALL_PROXY 兜底）：');
@@ -289,6 +305,55 @@ async function main() {
   } catch (err) {
     displayError(err, '发布前置门禁');
     process.exit(1);
+  }
+
+  // --- 网络可达性预检（使用同一套代理配置；dry-run 也会执行，用于取证） ---
+  logInfo('网络可达性预检（Preflight）：开始');
+  const preflightReport = await runCwsPreflight(getDefaultCwsPreflightTargets(), { timeoutMs: 8_000 });
+  for (const check of preflightReport.checks) {
+    if (check.ok) {
+      logSuccess(
+        `Preflight PASS: ${check.hostname} (${check.method} ${check.status ?? 'n/a'}) ${check.elapsedMs}ms`
+      );
+      continue;
+    }
+    const reason =
+      check.failureType === 'http_status'
+        ? `HTTP ${check.status ?? 'n/a'}`
+        : `${check.failureType ?? 'unknown'} ${check.errorCode ?? ''}`.trim();
+    logWarn(`Preflight FAIL: ${check.hostname} (${check.method}) ${reason} ${check.elapsedMs}ms`);
+  }
+
+  console.log(formatCwsPreflightReportBlock(preflightReport));
+  console.log(
+    formatCwsPublishDiagnosticPackBlock({
+      packVersion: 'v1-47',
+      proxy: cwsProxyDiagnostic,
+      preflight: preflightReport
+    })
+  );
+
+  if (preflightReport.summary.fail > 0) {
+    const hints = buildCwsPreflightFixHints(preflightReport, {
+      enabled: cwsProxyResolved.proxyEnabled,
+      envKey: cwsProxyResolved.proxyEnvKey,
+      urlMasked: cwsProxyResolved.proxyUrlMasked,
+      protocol: cwsProxyResolved.proxyUrl?.protocol ?? null
+    });
+
+    if (hints.length > 0) {
+      console.error('\n[CWS] Preflight 失败修复建议（最短可执行）：');
+      for (const line of hints) console.error(`- ${line}`);
+    }
+
+    if (!dryRun) {
+      logError('网络可达性预检失败：已阻断真实发布（不会进行任何 upload/publish 网络调用）。');
+      process.exit(1);
+    }
+
+    logWarn('dry-run：网络可达性预检失败（已输出证据与修复建议）；后续仍会按 dry-run 约定不进行 upload/publish。');
+  } else {
+    logSuccess('网络可达性预检通过：关键外网依赖可达');
   }
 
   // --- 环境变量检查：dry-run 仅提示；非 dry-run 缺失则阻断（且不会发生任何网络调用） ---

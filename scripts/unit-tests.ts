@@ -46,6 +46,7 @@ import {
   parseAndValidateProxyUrl,
   resolveCwsProxyEnv
 } from './cws-proxy.ts';
+import { classifyCwsPreflightError, runCwsPreflight } from './cws-preflight.ts';
 
 const getMessage: I18nGetMessage = (key, substitutions) => {
   const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
@@ -999,6 +1000,7 @@ async function run() {
   );
 
   assert.equal(maskProxyUrl(new URL('http://user:pass@127.0.0.1:7890')), 'http://127.0.0.1:7890');
+  assert.equal(maskProxyUrl(new URL('socks5://user:pass@127.0.0.1:1080')), 'socks5://127.0.0.1:1080');
   assert.equal(mergeNoProxyValue('example.com'), 'example.com');
   assert.equal(mergeNoProxyValue(undefined), 'localhost,127.0.0.1,::1');
 
@@ -1017,6 +1019,66 @@ async function run() {
     } finally {
       setGlobalDispatcher(originalDispatcher);
     }
+  }
+
+  // socks5:// proxy dispatcher should be undici.Agent
+  {
+    const resolved = resolveCwsProxyEnv({
+      HTTPS_PROXY: 'socks5://127.0.0.1:1080'
+    } as NodeJS.ProcessEnv);
+    const dispatcher = createUndiciProxyDispatcher(resolved);
+    assert.ok(dispatcher);
+    assert.equal(dispatcher.constructor.name, 'Agent');
+  }
+
+  // scripts/cws-preflight.ts (v1-47: 预检错误分类 + 离线可测)
+  {
+    const err = new Error('fetch failed') as Error & { cause?: unknown };
+    err.cause = { code: 'ENOTFOUND', message: 'getaddrinfo ENOTFOUND www.googleapis.com' };
+    const classified = classifyCwsPreflightError(err);
+    assert.equal(classified.failureType, 'dns');
+    assert.equal(classified.errorCode, 'ENOTFOUND');
+  }
+
+  {
+    const err = new Error('This operation was aborted');
+    (err as unknown as { name: string }).name = 'AbortError';
+    const classified = classifyCwsPreflightError(err);
+    assert.equal(classified.failureType, 'timeout');
+  }
+
+  {
+    const fakeFetch: typeof fetch = (async (url: string) => {
+      if (url.includes('pass.test')) return new Response('', { status: 404 });
+      if (url.includes('fail.test')) return new Response('', { status: 503 });
+      const err = new Error('fetch failed') as Error & { cause?: unknown };
+      err.cause = { code: 'ECONNREFUSED', message: 'connect ECONNREFUSED 127.0.0.1:1' };
+      throw err;
+    }) as unknown as typeof fetch;
+
+    const report = await runCwsPreflight(
+      [
+        { id: 'pass', url: 'https://pass.test/' },
+        { id: 'fail', url: 'https://fail.test/' },
+        { id: 'throw', url: 'https://throw.test/' }
+      ],
+      {
+        fetchFn: fakeFetch,
+        timeoutMs: 10,
+        now: (() => {
+          let t = 1000;
+          return () => (t += 5);
+        })(),
+        date: () => new Date('2026-03-20T00:00:00.000Z')
+      }
+    );
+    assert.equal(report.reportVersion, 'v1-47');
+    assert.equal(report.summary.total, 3);
+    assert.equal(report.summary.pass, 1);
+    assert.equal(report.summary.fail, 2);
+    assert.equal(report.checks[0].ok, true);
+    assert.equal(report.checks[1].failureType, 'http_status');
+    assert.equal(report.checks[2].failureType, 'connection_refused');
   }
 }
 
