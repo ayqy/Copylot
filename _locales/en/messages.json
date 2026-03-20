@@ -320,6 +320,38 @@
     "message": "Invalid campaign. Cleared (allowed: 1-32 chars letters/numbers/._-).",
     "description": "Options Pro tab: invalid campaign notice"
   },
+  "proWaitlistDistributionToolkitTitle": {
+    "message": "Distribution Toolkit (campaign required)",
+    "description": "Options Pro tab: external distribution toolkit title"
+  },
+  "proWaitlistDistributionToolkitHint": {
+    "message": "For external sharing/ads: one-click copy waitlist URL and recruit copy. Only this toolkit enforces a valid campaign.",
+    "description": "Options Pro tab: external distribution toolkit hint"
+  },
+  "proWaitlistUrlCopyButton": {
+    "message": "Copy waitlist URL (with campaign)",
+    "description": "Options Pro tab: distribution toolkit - copy waitlist URL button"
+  },
+  "proWaitlistRecruitCopyButton": {
+    "message": "Copy recruit copy (with URL)",
+    "description": "Options Pro tab: distribution toolkit - copy recruit copy button"
+  },
+  "proWaitlistDistributionCampaignRequired": {
+    "message": "For attribution, please enter a valid campaign first.",
+    "description": "Options Pro tab: distribution toolkit - campaign required hint"
+  },
+  "proWaitlistRecruitCopyTemplate": {
+    "message": "Copylot Pro (planned) waitlist is open.\\n\\nIf you want better cleaning / batch collection / exports, please join (no webpage or private content needed).\\n\\nWaitlist URL (campaign=$CAMPAIGN$):\\n$WAITLIST_URL$\\n",
+    "description": "Options Pro tab: distribution toolkit - recruit copy template",
+    "placeholders": {
+      "WAITLIST_URL": {
+        "content": "$1"
+      },
+      "CAMPAIGN": {
+        "content": "$2"
+      }
+    }
+  },
   "proPrivacyHint": {
     "message": "The waitlist issue is prefilled with extension version/ID and language only. No webpage or copied content is included.",
     "description": "Options Pro tab privacy hint"

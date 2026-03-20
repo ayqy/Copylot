@@ -35,6 +35,11 @@ import {
   trimTelemetryEvents
 } from '../src/shared/telemetry.ts';
 import { sanitizeCampaign } from '../src/shared/campaign.ts';
+import {
+  buildProWaitlistDistributionIssueUrl,
+  buildProWaitlistRecruitCopyText,
+  computeProWaitlistDistributionState
+} from '../src/shared/pro-waitlist-distribution.ts';
 import { buildProFunnelEvidencePack, buildProFunnelSummary } from '../src/shared/pro-funnel.ts';
 import {
   buildProIntentWeeklyDigestSummary,
@@ -69,6 +74,13 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
   if (key === 'feedbackIssueTitleTemplate') return 'title';
   if (key === 'feedbackIssueBodyTemplate') {
     return `v=${subs[0]} id=${subs[1]} ua=${subs[2]} nav=${subs[3]} ui=${subs[4]} copilot_settings=${subs[5]} copilot_growth_stats=${subs[6]} copilot_growth_funnel_summary=${subs[7]} copilot_telemetry_events=${subs[8]} lastN=${subs[9]}`;
+  }
+  if (key === 'proWaitlistIssueTitleTemplate') return 'pro title';
+  if (key === 'proWaitlistIssueBodyTemplate') {
+    return `v=${subs[0]} id=${subs[1]} nav=${subs[2]} ui=${subs[3]}${subs[4] || ''}`;
+  }
+  if (key === 'proWaitlistRecruitCopyTemplate') {
+    return `recruit url=${subs[0]} campaign=${subs[1]}`;
   }
   if (key === 'shareCopyTextTemplate') {
     return `share ${subs[0]}`;
@@ -454,6 +466,53 @@ async function run() {
   assert.equal(sanitizeCampaign('a b'), null);
   assert.equal(sanitizeCampaign('_abc'), null);
   assert.equal(sanitizeCampaign('小红书'), null);
+
+  // pro-waitlist-distribution.ts (pure functions)
+  assert.deepEqual(computeProWaitlistDistributionState(''), { enabled: false, campaign: null });
+  assert.deepEqual(computeProWaitlistDistributionState('http://x.com'), { enabled: false, campaign: null });
+  assert.deepEqual(computeProWaitlistDistributionState('twitter'), { enabled: true, campaign: 'twitter' });
+
+  const waitlistUrl = buildProWaitlistDistributionIssueUrl({
+    env: {
+      extensionVersion: '1.1.0',
+      extensionId,
+      navigatorLanguage: 'en-US',
+      uiLanguage: 'en'
+    },
+    getMessage,
+    campaign: 'twitter'
+  });
+  const waitlistParsed = new URL(waitlistUrl);
+  assert.equal(waitlistParsed.hostname, 'github.com');
+  assert.ok(waitlistParsed.pathname.endsWith('/issues/new'));
+  assert.equal(waitlistParsed.searchParams.get('title'), 'pro title');
+  assert.ok((waitlistParsed.searchParams.get('body') || '').includes('campaign: twitter'));
+
+  const getMessageNoCampaign: I18nGetMessage = (key, substitutions) => {
+    const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
+    if (key === 'proWaitlistIssueTitleTemplate') return 'pro title';
+    if (key === 'proWaitlistIssueBodyTemplate') return `v=${subs[0]} id=${subs[1]} nav=${subs[2]} ui=${subs[3]}`;
+    return key;
+  };
+  const waitlistUrlNoCampaign = buildProWaitlistDistributionIssueUrl({
+    env: {
+      extensionVersion: '1.1.0',
+      extensionId,
+      navigatorLanguage: 'en-US',
+      uiLanguage: 'en'
+    },
+    getMessage: getMessageNoCampaign,
+    campaign: 'ph'
+  });
+  assert.ok((new URL(waitlistUrlNoCampaign).searchParams.get('body') || '').includes('campaign: ph'));
+
+  const recruitCopyText = buildProWaitlistRecruitCopyText({
+    getMessage,
+    waitlistUrl: 'https://example.com/waitlist',
+    campaign: 'twitter'
+  });
+  assert.ok(recruitCopyText.includes('https://example.com/waitlist'));
+  assert.ok(recruitCopyText.includes('twitter'));
 
   // telemetry.ts (pure functions)
   assert.equal(sanitizeTelemetryEvent({ name: 'unknown', ts: now }), null);
@@ -1260,6 +1319,11 @@ async function run() {
   assert.ok(optionsHtml.includes('id="pro-intent-campaign"'), 'options.html should include pro-intent-campaign');
   assert.ok(optionsHtml.includes('id="pro-waitlist-button"'), 'options.html should include pro-waitlist-button');
   assert.ok(optionsHtml.includes('id="pro-waitlist-copy"'), 'options.html should include pro-waitlist-copy');
+  assert.ok(optionsHtml.includes('id="pro-waitlist-url-copy"'), 'options.html should include pro-waitlist-url-copy');
+  assert.ok(
+    optionsHtml.includes('id="pro-waitlist-recruit-copy"'),
+    'options.html should include pro-waitlist-recruit-copy'
+  );
   assert.ok(optionsHtml.includes('id="pro-scope-learn-more"'), 'options.html should include pro-scope-learn-more');
   assert.ok(optionsHtml.includes('id="anonymous-usage-data-switch"'), 'options.html should include anonymous usage data switch');
   assert.ok(optionsHtml.includes('id="pro-funnel-panel"'), 'options.html should include pro-funnel-panel');

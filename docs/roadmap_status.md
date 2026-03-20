@@ -22,11 +22,13 @@
 - [x] Pro 意向数据资产化 v2（离线可推进）：7d 明细 CSV 导出 + 证据落盘规范固化（v1-51）
 - [x] Pro 意向渠道归因最小闭环（离线可推进）：Pro Tab 增加渠道（campaign）字段 + 候补/问卷模板写入 + 导出证据可复核（v1-53）
 - [x] 渠道分发/投放最小试验（离线可推进）：Pro 意向按 campaign 聚合 7d CSV 导出 + 复盘证据固化（v1-54）
+- [x] 渠道分发/投放效率提升（离线可推进）：Pro 候补“分发工具包”（一键复制候补链接/招募文案，强制带 campaign）+ 用例/证据固化（v1-55）
 
 ## 当前进度
-- 一句话结论：截至 2026-03-21，v1-54 已完成「渠道分发/投放最小试验」可发布交付：Options -> 隐私与可观测性 -> Pro 意向漏斗摘要面板新增「导出过去 7 天 Pro 意向按 campaign 聚合（CSV）」入口（稳定 DOM：`#export-pro-intent-by-campaign-7d-csv`）；匿名开关 OFF 按钮置灰且导出逻辑不读取/不推断本地 events；匿名开关 ON 时基于本地匿名事件日志（白名单 + source 枚举过滤 + 7d window + FIFO 上限）按 campaign 聚合输出 4 个关键事件计数与 `leads`（`proWaitlistCopied + proWaitlistSurveyCopied`），并可与 v1-51 明细 CSV（overall）/证据包 events（campaign 维度）互证复核；`bash scripts/test.sh` 回归 PASS。
+- 一句话结论：截至 2026-03-21，v1-55 已完成「渠道分发/投放效率提升」可发布交付：Options -> Pro Tab 新增“渠道分发工具包”两个稳定入口 `#pro-waitlist-url-copy` / `#pro-waitlist-recruit-copy`，仅对该工具包强制 campaign（为空/非法按钮置灰并提示；合法则可一键复制候补链接与招募文案）；候补链接可解码复核 issue body 含 `campaign: <value>` 行，并与既有 weekly digest（v1-50）/7d 明细 CSV（v1-51）/按 campaign 聚合 CSV（v1-54）形成可复核商业化证据链；`bash scripts/test.sh` 回归 PASS。
 - 下一步（收入优先，阻塞：需要可用代理/VPN + 商店可达）：完成一次真实 CWS 发布并按统一口径取证；同时在渠道分发/投放时强制填写 campaign，并按周导出 weekly digest（v1-50）+ 7d 明细 CSV（v1-51）+ 按 campaign 聚合 CSV（v1-54），把“按 campaign 的 leads/效率对比”沉淀为可持续的商业化增长证据资产（网络恢复后与商店真实跑数对齐）。
 - 本轮最小可交付增量（v1-54，离线可推进）已完成：把“按 campaign 的留资效率复盘”从手工复算升级为一键可导出的证据资产（按 campaign 聚合 7d 导出 + 复盘口径/证据目录固化），用于渠道分发/投放的可转化获客增长与后续真实商店跑数对齐。
+- 下一步最小可交付增量（已完成，v1-55，离线可推进，收入优先）：已补齐“对外分发 Pro 候补/问卷”的低摩擦工具包（候补链接/招募文案一键复制，强制带 campaign），让渠道投放从“可复盘”升级为“更容易做对、做了就能取证”。
 - 可观测性（隐私合规）：已实现“匿名使用数据”开关（默认关闭）+ 本地匿名事件日志导出/清空（仅 name/ts/props 白名单）；并有本地漏斗摘要/增长统计面板
 - 激活（Activation）：Popup 已有 3 步新手引导（可跳过、可手动重开）+ 推荐设置一键应用
 - 口碑闭环（WOM）：Popup/Options/评分引导已统一商店 UTM 口径；Options -> 隐私页新增「WOM 摘要」与「证据包导出」，可按来源统计 `wom_*` / `rating_prompt_*` 并派生转化率（share copy / rating prompt）
@@ -40,12 +42,13 @@
 ## 下一步最重要的 3 件事（收入优先）
 1. 完成一次真实 CWS 发布 + 商店端取证（Top1，阻塞：需要可用代理/VPN + 商店可达）：在网络可达后执行 `npm run publish:cws` 发布到 `default` channel；发布前先用 `npm run publish:cws -- --dry-run` 观察 Preflight 是否 PASS；发布成功后补齐商店端“版本号 + 发布时间 + Pro 候补 CTA 可见”截图/核对清单证据（形成可审计的商业化推进证据）
 2. 真实发布后跑数取证 + 24h 复盘首轮（Top2，阻塞：依赖 Top1 完成真实发布 + 商店可达）：从商店安装当前版本，按 `docs/evidence/v1-42/index.md`、`docs/evidence/v1-44/index.md`、`docs/evidence/v1-46/index.md`、`docs/evidence/v1-48/index.md` 同口径导出/落盘「Pro 意向漏斗摘要/证据包」与「WOM 摘要/证据包」截图索引；然后按 `docs/growth/post-release-review-template.md` 填写发布后 24h 复盘（7d 复盘后置）
-3. 渠道分发/投放最小试验（Top3，收入优先，离线可推进）：对外分发候补/问卷模板时强制填写 campaign；每周导出 3 件套证据 weekly digest（v1-50）+ 7d 明细 CSV（v1-51）+ 按 campaign 聚合 CSV（v1-54），在表格中直接对比 `leads` 与 `leads_per_entry_opened`，形成可复用的增长证据资产（网络恢复后与商店真实跑数对齐）
+3. 渠道分发/投放跑数与复盘固化（Top3，收入优先，离线可推进）：用 v1-55 分发工具包在每个渠道/创意上强制填写 campaign 并对外分发；每周导出 3 件套证据 weekly digest（v1-50）+ 7d 明细 CSV（v1-51）+ 按 campaign 聚合 CSV（v1-54），在表格中直接对比 `leads` 与 `leads_per_entry_opened`，持续沉淀可复用的收入导向增长证据资产（网络恢复后与商店真实跑数对齐）。
 
 ## 阻塞与需要的人类输入
 - v1-53 已完成且无账号/凭据/权限阻塞：campaign 为用户手动填写的渠道标识，已明确提示“不要填写敏感信息”，并保持匿名使用数据默认 OFF 的隐私边界。
 - Top1/Top2 仍受网络可达性阻塞（需要代理/VPN + 商店可达）；已优先交付离线可推进的 v1-50/v1-51（weekly digest + 7d 明细 CSV）+ v1-53（campaign 渠道归因）+ v1-54（按 campaign 聚合导出），保证收入取证资产不断档，网络恢复后可直接与真实商店跑数对齐。
 - v1-54 已完成且无账号/凭据/权限阻塞：已新增「按 campaign 聚合 7d CSV 导出」入口与证据落盘（`docs/evidence/v1-54/`），可在 Top1/Top2 网络阻塞期间先跑渠道分发/投放并形成可审计、可复核的收入导向证据。
+- v1-55 已完成且无账号/凭据/权限阻塞：已新增“候补链接/招募文案一键复制（强制带 campaign）”的本地生成与用例/证据固化，不引入支付/订阅、不新增权限、不联网发送数据、不采集用户复制内容。
 - v1-51 已完成并固化：可导出过去 7 天 Pro 意向明细 CSV（稳定 DOM：`#export-pro-intent-events-7d-csv`），并在 `docs/evidence/v1-51/index.md` 固化最小复盘口径与归档规范；网络恢复后可直接与真实商店跑数对比。
 - Chrome Web Store 真实发布的根因阻塞仍为“网络可达性”：本地凭据已齐全，但需要人类侧提供可用代理/VPN（并提供包含 scheme 的代理地址/端口，例如 `http://127.0.0.1:7890` 或 `socks5://127.0.0.1:1080`）。v1-47 已补齐 `socks5://`/`socks5h://` 支持与可审计 Preflight；当网络不可达时可直接从输出中得到 FAIL 类型与修复建议，避免只剩 `fetch failed`。
 - 若 `chromewebstore.google.com` 亦不可达，则 Top3 的“从商店安装”同样需要代理/VPN；但 v1-42 已以 `plugin-*.zip` 安装回归作为不依赖外网的保底路径，确保基线证据可落盘且可对比。

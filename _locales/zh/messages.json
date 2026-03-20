@@ -320,6 +320,38 @@
     "message": "渠道（campaign）格式不合法，已清空（仅支持 1-32 位字母/数字/._-）",
     "description": "Options Pro Tab：渠道输入项非法提示"
   },
+  "proWaitlistDistributionToolkitTitle": {
+    "message": "渠道分发工具包（强制带 campaign）",
+    "description": "Options Pro Tab：对外分发工具包标题"
+  },
+  "proWaitlistDistributionToolkitHint": {
+    "message": "对外分发/投放使用：一键复制候补链接与招募文案；仅此处强制填写合法 campaign。",
+    "description": "Options Pro Tab：对外分发工具包说明"
+  },
+  "proWaitlistUrlCopyButton": {
+    "message": "复制候补链接（带 campaign）",
+    "description": "Options Pro Tab：分发工具包 - 复制候补链接按钮"
+  },
+  "proWaitlistRecruitCopyButton": {
+    "message": "复制招募文案（含候补链接）",
+    "description": "Options Pro Tab：分发工具包 - 复制招募文案按钮"
+  },
+  "proWaitlistDistributionCampaignRequired": {
+    "message": "为了渠道归因，请先填写合法 campaign",
+    "description": "Options Pro Tab：分发工具包 - campaign 为空/非法时提示"
+  },
+  "proWaitlistRecruitCopyTemplate": {
+    "message": "Copylot Pro（规划中）候补开放中：\\n\\n如果你希望更强的网页清洗/批量整理/导出能力，欢迎加入候补（无需粘贴任何网页内容/隐私信息）。\\n\\n候补链接（已绑定 campaign=$CAMPAIGN$）：\\n$WAITLIST_URL$\\n",
+    "description": "Options Pro Tab：分发工具包 - 招募文案模板（用于 Twitter/小红书/群聊/邮件等渠道）",
+    "placeholders": {
+      "WAITLIST_URL": {
+        "content": "$1"
+      },
+      "CAMPAIGN": {
+        "content": "$2"
+      }
+    }
+  },
   "proPrivacyHint": {
     "message": "候补登记不会预填任何网页内容/复制内容；仅包含扩展版本、扩展 ID 与语言信息。",
     "description": "Options Pro Tab 隐私提示"
