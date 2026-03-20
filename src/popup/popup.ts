@@ -19,9 +19,13 @@ import {
   buildGrowthFunnelSummary,
   getGrowthStats,
   markFirstPopupOpened,
+  markProPromptShown,
   markRatingPromptShown,
+  setProPromptAction,
   setRatingPromptAction,
+  shouldShowProPrompt,
   shouldShowRatingPrompt,
+  type ProPromptAction,
   type GrowthFunnelSummary
 } from '../shared/growth-stats';
 import { recordTelemetryEvent, sanitizeTelemetryEvents, TELEMETRY_EVENTS_KEY } from '../shared/telemetry';
@@ -62,6 +66,12 @@ interface PopupElements {
   shareLink: HTMLAnchorElement;
   copyShareButton: HTMLButtonElement;
   rateLink: HTMLAnchorElement;
+
+  // Pro waitlist prompt (low-disturb)
+  proWaitlistPrompt: HTMLDetailsElement;
+  proWaitlistPromptJoinButton: HTMLButtonElement;
+  proWaitlistPromptLaterButton: HTMLButtonElement;
+  proWaitlistPromptNeverButton: HTMLButtonElement;
 
   // Pro entry
   upgradeProEntry: HTMLButtonElement;
@@ -143,6 +153,17 @@ function getElements(): PopupElements {
     shareLink: document.getElementById('share-link') as HTMLAnchorElement,
     copyShareButton: document.getElementById('copy-share-button') as HTMLButtonElement,
     rateLink: document.getElementById('rate-link') as HTMLAnchorElement,
+
+    proWaitlistPrompt: document.getElementById('pro-waitlist-prompt') as HTMLDetailsElement,
+    proWaitlistPromptJoinButton: document.getElementById(
+      'pro-waitlist-prompt-join'
+    ) as HTMLButtonElement,
+    proWaitlistPromptLaterButton: document.getElementById(
+      'pro-waitlist-prompt-later'
+    ) as HTMLButtonElement,
+    proWaitlistPromptNeverButton: document.getElementById(
+      'pro-waitlist-prompt-never'
+    ) as HTMLButtonElement,
 
     upgradeProEntry: document.getElementById('upgrade-pro-entry') as HTMLButtonElement,
     popupProWaitlistButton: document.getElementById('popup-pro-waitlist') as HTMLButtonElement,
@@ -358,6 +379,11 @@ function hideRatingPrompt() {
   elements.ratingPrompt.hidden = true;
 }
 
+function hideProWaitlistPrompt() {
+  if (!elements?.proWaitlistPrompt) return;
+  elements.proWaitlistPrompt.hidden = true;
+}
+
 async function maybeShowRatingPrompt() {
   try {
     const now = Date.now();
@@ -377,11 +403,67 @@ async function maybeShowRatingPrompt() {
   hideRatingPrompt();
 }
 
+async function maybeShowProWaitlistPrompt() {
+  try {
+    // Avoid stacking prompts in the same popup session.
+    if (!elements.ratingPrompt.hidden) {
+      hideProWaitlistPrompt();
+      return;
+    }
+
+    const now = Date.now();
+    const stats = await getGrowthStats(now);
+
+    if (shouldShowProPrompt(stats, now)) {
+      await markProPromptShown(now);
+      elements.proWaitlistPrompt.hidden = false;
+      elements.proWaitlistPrompt.open = true;
+      void recordTelemetryEvent('pro_prompt_shown', { source: 'popup' });
+      return;
+    }
+  } catch (error) {
+    console.error('Error evaluating pro waitlist prompt:', error);
+  }
+
+  hideProWaitlistPrompt();
+}
+
 /**
  * Setup event listeners for form elements
  */
 function setupEventListeners() {
   const getMessage = createI18nGetMessage();
+
+  const handleProWaitlistPromptAction = (action: ProPromptAction) => {
+    void recordTelemetryEvent('pro_prompt_action', { source: 'popup', action });
+
+    void (async () => {
+      try {
+        await setProPromptAction(action, Date.now());
+      } catch (error) {
+        console.warn('Failed to persist pro waitlist prompt action:', error);
+      }
+    })();
+
+    hideProWaitlistPrompt();
+
+    if (action === 'join') {
+      const url = `${chrome.runtime.getURL('src/options/options.html')}#pro`;
+      chrome.tabs.create({ url });
+      window.close();
+    }
+  };
+
+  // Pro waitlist prompt (low-disturb)
+  elements.proWaitlistPromptJoinButton.addEventListener('click', () => {
+    handleProWaitlistPromptAction('join');
+  });
+  elements.proWaitlistPromptLaterButton.addEventListener('click', () => {
+    handleProWaitlistPromptAction('later');
+  });
+  elements.proWaitlistPromptNeverButton.addEventListener('click', () => {
+    handleProWaitlistPromptAction('never');
+  });
 
   // Pro entry
   elements.upgradeProEntry.addEventListener('click', () => {
@@ -767,6 +849,9 @@ async function initialize() {
 
     // Evaluate one-time rating prompt (non-blocking, based on local growth stats)
     await maybeShowRatingPrompt();
+
+    // Evaluate pro waitlist prompt (low-disturb, based on local growth stats)
+    await maybeShowProWaitlistPrompt();
 
     console.debug('Popup initialized successfully');
   } catch (error) {

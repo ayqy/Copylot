@@ -9,6 +9,8 @@ import {
 export type ProFunnelSource = 'popup' | 'options';
 
 export const PRO_FUNNEL_EVENT_NAMES = [
+  'pro_prompt_shown',
+  'pro_prompt_action',
   'pro_entry_opened',
   'pro_waitlist_opened',
   'pro_waitlist_copied'
@@ -20,6 +22,8 @@ export interface ProFunnelSourceStats {
   counts: Record<ProFunnelEventName, number>;
   lastTs: Record<ProFunnelEventName, number | null>;
   rates: {
+    entry_opened_per_prompt_shown: number | null;
+    waitlist_opened_per_prompt_shown: number | null;
     waitlist_opened_per_entry_opened: number | null;
     waitlist_copied_per_waitlist_opened: number | null;
   };
@@ -34,6 +38,7 @@ export interface ProFunnelSummary {
     scope: 'current_window_only';
   };
   bySource: Record<ProFunnelSource, ProFunnelSourceStats>;
+  overall: ProFunnelSourceStats;
 }
 
 export interface ProFunnelSettingsSnapshot {
@@ -64,16 +69,22 @@ function isProFunnelSource(value: unknown): value is ProFunnelSource {
 function createEmptySourceStats(): ProFunnelSourceStats {
   return {
     counts: {
+      pro_prompt_shown: 0,
+      pro_prompt_action: 0,
       pro_entry_opened: 0,
       pro_waitlist_opened: 0,
       pro_waitlist_copied: 0
     },
     lastTs: {
+      pro_prompt_shown: null,
+      pro_prompt_action: null,
       pro_entry_opened: null,
       pro_waitlist_opened: null,
       pro_waitlist_copied: null
     },
     rates: {
+      entry_opened_per_prompt_shown: null,
+      waitlist_opened_per_prompt_shown: null,
       waitlist_opened_per_entry_opened: null,
       waitlist_copied_per_waitlist_opened: null
     }
@@ -107,6 +118,8 @@ export function buildProFunnelSummary(params: BuildProFunnelSummaryParams): ProF
     options: createEmptySourceStats()
   };
 
+  const overall: ProFunnelSourceStats = createEmptySourceStats();
+
   const window = {
     maxEvents,
     policy: 'fifo' as const,
@@ -118,7 +131,8 @@ export function buildProFunnelSummary(params: BuildProFunnelSummaryParams): ProF
       enabled: false,
       disabledReason: 'anonymous_usage_data_disabled',
       window,
-      bySource
+      bySource,
+      overall
     };
   }
 
@@ -141,6 +155,14 @@ export function buildProFunnelSummary(params: BuildProFunnelSummaryParams): ProF
 
   for (const source of PRO_SOURCES) {
     const stats = bySource[source];
+    stats.rates.entry_opened_per_prompt_shown = safeRate(
+      stats.counts.pro_entry_opened,
+      stats.counts.pro_prompt_shown
+    );
+    stats.rates.waitlist_opened_per_prompt_shown = safeRate(
+      stats.counts.pro_waitlist_opened,
+      stats.counts.pro_prompt_shown
+    );
     stats.rates.waitlist_opened_per_entry_opened = safeRate(
       stats.counts.pro_waitlist_opened,
       stats.counts.pro_entry_opened
@@ -151,10 +173,40 @@ export function buildProFunnelSummary(params: BuildProFunnelSummaryParams): ProF
     );
   }
 
+  for (const source of PRO_SOURCES) {
+    const stats = bySource[source];
+    for (const name of PRO_FUNNEL_EVENT_NAMES) {
+      overall.counts[name] += stats.counts[name];
+      const ts = stats.lastTs[name];
+      const prev = overall.lastTs[name];
+      if (ts !== null && (prev === null || ts > prev)) {
+        overall.lastTs[name] = ts;
+      }
+    }
+  }
+
+  overall.rates.entry_opened_per_prompt_shown = safeRate(
+    overall.counts.pro_entry_opened,
+    overall.counts.pro_prompt_shown
+  );
+  overall.rates.waitlist_opened_per_prompt_shown = safeRate(
+    overall.counts.pro_waitlist_opened,
+    overall.counts.pro_prompt_shown
+  );
+  overall.rates.waitlist_opened_per_entry_opened = safeRate(
+    overall.counts.pro_waitlist_opened,
+    overall.counts.pro_entry_opened
+  );
+  overall.rates.waitlist_copied_per_waitlist_opened = safeRate(
+    overall.counts.pro_waitlist_copied,
+    overall.counts.pro_waitlist_opened
+  );
+
   return {
     enabled: true,
     window,
-    bySource
+    bySource,
+    overall
   };
 }
 

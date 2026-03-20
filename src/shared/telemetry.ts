@@ -10,6 +10,8 @@ export type TelemetryEventName =
   | 'popup_opened'
   | 'copy_success'
   | 'prompt_used'
+  | 'pro_prompt_shown'
+  | 'pro_prompt_action'
   | 'pro_entry_opened'
   | 'pro_waitlist_opened'
   | 'pro_waitlist_copied'
@@ -34,6 +36,8 @@ const TELEMETRY_EVENT_PROP_ALLOWLIST: Record<TelemetryEventName, readonly string
   popup_opened: [],
   copy_success: [],
   prompt_used: [],
+  pro_prompt_shown: ['source'],
+  pro_prompt_action: ['source', 'action'],
   pro_entry_opened: ['source'],
   pro_waitlist_opened: ['source'],
   pro_waitlist_copied: ['source'],
@@ -93,6 +97,12 @@ function isRatingPromptAction(value: unknown): value is RatingPromptAction {
   return value === 'rate' || value === 'later' || value === 'never';
 }
 
+type ProPromptAction = 'join' | 'later' | 'never';
+
+function isProPromptAction(value: unknown): value is ProPromptAction {
+  return value === 'join' || value === 'later' || value === 'never';
+}
+
 function isWomEventName(name: TelemetryEventName): boolean {
   return (
     name === 'wom_feedback_opened' ||
@@ -130,6 +140,11 @@ function sanitizeProps(
 
     // Enum strict filtering for non-WOM events (privacy + consistency).
     if (key === 'source') {
+      if (eventName === 'pro_prompt_shown' || eventName === 'pro_prompt_action') {
+        if (!isWomSource(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
       if (eventName === 'pro_entry_opened' || eventName === 'pro_waitlist_opened') {
         if (!isWomSource(value)) continue;
         sanitized[key] = value;
@@ -155,6 +170,11 @@ function sanitizeProps(
       }
       if (eventName === 'rating_prompt_action') {
         if (!isRatingPromptAction(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
+      if (eventName === 'pro_prompt_action') {
+        if (!isProPromptAction(value)) continue;
         sanitized[key] = value;
         continue;
       }

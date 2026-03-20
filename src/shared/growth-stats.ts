@@ -1,6 +1,7 @@
 export const GROWTH_STATS_KEY = 'copilot_growth_stats';
 
 export type RatingPromptAction = 'rate' | 'later' | 'never';
+export type ProPromptAction = 'join' | 'later' | 'never';
 
 export interface GrowthStats {
   installedAt: number;
@@ -16,6 +17,14 @@ export interface GrowthStats {
   ratingPromptShownAt?: number;
   ratingPromptAction?: RatingPromptAction;
   ratingPromptActionAt?: number;
+
+  // Pro waitlist prompt (popup, low-disturb, local only)
+  proPromptFirstShownAt?: number;
+  proPromptLastShownAt?: number;
+  proPromptShownCount?: number;
+  proPromptAction?: ProPromptAction;
+  proPromptActionAt?: number;
+  proPromptSnoozedUntil?: number;
 }
 
 export interface GrowthFunnelSummary {
@@ -43,6 +52,13 @@ export const RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT = 10;
 
 const RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT_HEAVY_USER = 20;
 
+export const PRO_PROMPT_MIN_INSTALL_AGE_MS = 48 * 60 * 60 * 1000;
+export const PRO_PROMPT_MIN_SUCCESSFUL_COPY_COUNT = 20;
+export const PRO_PROMPT_SNOOZE_MS = 7 * 24 * 60 * 60 * 1000;
+export const PRO_PROMPT_MAX_SHOWN_COUNT = 2;
+
+const PRO_PROMPT_MIN_SUCCESSFUL_COPY_COUNT_HEAVY_USER = 40;
+
 const REUSE_WITHIN_7_DAYS_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 const ACTIVATION_WITHIN_3_MINUTES_MS = 3 * 60 * 1000;
 
@@ -56,6 +72,10 @@ function isValidCount(value: unknown): value is number {
 
 function isValidRatingPromptAction(value: unknown): value is RatingPromptAction {
   return value === 'rate' || value === 'later' || value === 'never';
+}
+
+function isValidProPromptAction(value: unknown): value is ProPromptAction {
+  return value === 'join' || value === 'later' || value === 'never';
 }
 
 function createDefaultGrowthStats(now: number): GrowthStats {
@@ -83,6 +103,19 @@ export function normalizeGrowthStatsValue(stored: unknown, now: number): GrowthS
     : undefined;
   const ratingPromptActionAt = isValidTimestamp(raw.ratingPromptActionAt) ? raw.ratingPromptActionAt : undefined;
 
+  const proPromptFirstShownAt = isValidTimestamp(raw.proPromptFirstShownAt)
+    ? raw.proPromptFirstShownAt
+    : undefined;
+  const proPromptLastShownAt = isValidTimestamp(raw.proPromptLastShownAt)
+    ? raw.proPromptLastShownAt
+    : undefined;
+  const proPromptShownCount = isValidCount(raw.proPromptShownCount) ? raw.proPromptShownCount : undefined;
+  const proPromptAction = isValidProPromptAction(raw.proPromptAction) ? raw.proPromptAction : undefined;
+  const proPromptActionAt = isValidTimestamp(raw.proPromptActionAt) ? raw.proPromptActionAt : undefined;
+  const proPromptSnoozedUntil = isValidTimestamp(raw.proPromptSnoozedUntil)
+    ? raw.proPromptSnoozedUntil
+    : undefined;
+
   const normalized: GrowthStats = {
     installedAt,
     successfulCopyCount
@@ -97,6 +130,13 @@ export function normalizeGrowthStatsValue(stored: unknown, now: number): GrowthS
   if (ratingPromptShownAt) normalized.ratingPromptShownAt = ratingPromptShownAt;
   if (ratingPromptAction) normalized.ratingPromptAction = ratingPromptAction;
   if (ratingPromptActionAt) normalized.ratingPromptActionAt = ratingPromptActionAt;
+
+  if (proPromptFirstShownAt) normalized.proPromptFirstShownAt = proPromptFirstShownAt;
+  if (proPromptLastShownAt) normalized.proPromptLastShownAt = proPromptLastShownAt;
+  if (proPromptShownCount && proPromptShownCount > 0) normalized.proPromptShownCount = proPromptShownCount;
+  if (proPromptAction) normalized.proPromptAction = proPromptAction;
+  if (proPromptActionAt) normalized.proPromptActionAt = proPromptActionAt;
+  if (proPromptSnoozedUntil) normalized.proPromptSnoozedUntil = proPromptSnoozedUntil;
 
   return normalized;
 }
@@ -198,6 +238,36 @@ export function shouldShowRatingPrompt(stats: GrowthStats, now: number): boolean
   return true;
 }
 
+export function shouldShowProPrompt(stats: GrowthStats, now: number): boolean {
+  if (!isValidTimestamp(stats.installedAt)) return false;
+  if (!isValidCount(stats.successfulCopyCount)) return false;
+
+  // If user explicitly decided, never show again.
+  if (stats.proPromptAction === 'never' || stats.proPromptAction === 'join') return false;
+
+  const shownCount = isValidCount(stats.proPromptShownCount) ? stats.proPromptShownCount : 0;
+  if (shownCount >= PRO_PROMPT_MAX_SHOWN_COUNT) return false;
+
+  // If already shown once, only re-prompt when user clicked "later" and snooze passed.
+  if (shownCount > 0) {
+    if (stats.proPromptAction !== 'later') return false;
+    if (!isValidTimestamp(stats.proPromptSnoozedUntil)) return false;
+    if (now < stats.proPromptSnoozedUntil) return false;
+  }
+
+  const installedAgeMs = now - stats.installedAt;
+  if (installedAgeMs < PRO_PROMPT_MIN_INSTALL_AGE_MS) return false;
+  if (stats.successfulCopyCount < PRO_PROMPT_MIN_SUCCESSFUL_COPY_COUNT) return false;
+
+  // Precision guard: only show for users who have either used Prompt at least once,
+  // or are heavy pure-copy users.
+  const hasUsedPrompt = isValidTimestamp(stats.firstPromptUsedAt);
+  const isHeavyCopyUser = stats.successfulCopyCount >= PRO_PROMPT_MIN_SUCCESSFUL_COPY_COUNT_HEAVY_USER;
+  if (!hasUsedPrompt && !isHeavyCopyUser) return false;
+
+  return true;
+}
+
 function shouldPersistNormalizedGrowthStats(stored: unknown): boolean {
   if (!stored || typeof stored !== 'object') return true;
   const raw = stored as Partial<GrowthStats>;
@@ -242,6 +312,46 @@ function shouldPersistNormalizedGrowthStats(stored: unknown): boolean {
   }
 
   if ('ratingPromptActionAt' in raw && raw.ratingPromptActionAt !== undefined && !isValidTimestamp(raw.ratingPromptActionAt)) {
+    return true;
+  }
+
+  if (
+    'proPromptFirstShownAt' in raw &&
+    raw.proPromptFirstShownAt !== undefined &&
+    !isValidTimestamp(raw.proPromptFirstShownAt)
+  ) {
+    return true;
+  }
+
+  if (
+    'proPromptLastShownAt' in raw &&
+    raw.proPromptLastShownAt !== undefined &&
+    !isValidTimestamp(raw.proPromptLastShownAt)
+  ) {
+    return true;
+  }
+
+  if ('proPromptShownCount' in raw && raw.proPromptShownCount !== undefined && !isValidCount(raw.proPromptShownCount)) {
+    return true;
+  }
+
+  if ('proPromptAction' in raw && raw.proPromptAction !== undefined && !isValidProPromptAction(raw.proPromptAction)) {
+    return true;
+  }
+
+  if (
+    'proPromptActionAt' in raw &&
+    raw.proPromptActionAt !== undefined &&
+    !isValidTimestamp(raw.proPromptActionAt)
+  ) {
+    return true;
+  }
+
+  if (
+    'proPromptSnoozedUntil' in raw &&
+    raw.proPromptSnoozedUntil !== undefined &&
+    !isValidTimestamp(raw.proPromptSnoozedUntil)
+  ) {
     return true;
   }
 
@@ -349,6 +459,40 @@ export async function setRatingPromptAction(
 ): Promise<GrowthStats> {
   const stats = await ensureGrowthStatsInitialized(actionAt);
   const next: GrowthStats = { ...stats, ratingPromptAction: action, ratingPromptActionAt: actionAt };
+  await setGrowthStats(next);
+  return next;
+}
+
+export async function markProPromptShown(shownAt: number = Date.now()): Promise<GrowthStats> {
+  const stats = await ensureGrowthStatsInitialized(shownAt);
+
+  const prevCount = isValidCount(stats.proPromptShownCount) ? stats.proPromptShownCount : 0;
+  const nextCount = prevCount + 1;
+
+  const next: GrowthStats = {
+    ...stats,
+    proPromptFirstShownAt: stats.proPromptFirstShownAt || shownAt,
+    proPromptLastShownAt: shownAt,
+    proPromptShownCount: nextCount
+  };
+
+  await setGrowthStats(next);
+  return next;
+}
+
+export async function setProPromptAction(
+  action: ProPromptAction,
+  actionAt: number = Date.now()
+): Promise<GrowthStats> {
+  const stats = await ensureGrowthStatsInitialized(actionAt);
+  const next: GrowthStats = { ...stats, proPromptAction: action, proPromptActionAt: actionAt };
+
+  if (action === 'later') {
+    next.proPromptSnoozedUntil = actionAt + PRO_PROMPT_SNOOZE_MS;
+  } else {
+    next.proPromptSnoozedUntil = undefined;
+  }
+
   await setGrowthStats(next);
   return next;
 }

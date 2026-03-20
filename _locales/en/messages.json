@@ -170,6 +170,14 @@
     "message": "Join waitlist",
     "description": "Popup entry for Pro waitlist"
   },
+  "proPromptTitle": {
+    "message": "Pro waitlist (optional)",
+    "description": "Title of the low-disturb Pro waitlist prompt in popup"
+  },
+  "proPromptDesc": {
+    "message": "Help shape Pro. Join the waitlist to validate your workflow needs first.",
+    "description": "Description of the low-disturb Pro waitlist prompt in popup"
+  },
   "popupProWaitlistCopy": {
     "message": "Copy waitlist template",
     "description": "Popup entry: copy Pro waitlist template"

@@ -17,9 +17,14 @@ import {
 import {
   RATING_PROMPT_MIN_INSTALL_AGE_MS,
   RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
+  PRO_PROMPT_MAX_SHOWN_COUNT,
+  PRO_PROMPT_MIN_INSTALL_AGE_MS,
+  PRO_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
+  PRO_PROMPT_SNOOZE_MS,
   applySuccessfulCopyToGrowthStats,
   buildGrowthFunnelSummary,
   normalizeGrowthStatsValue,
+  shouldShowProPrompt,
   shouldShowRatingPrompt,
   type GrowthStats
 } from '../src/shared/growth-stats.ts';
@@ -237,6 +242,62 @@ async function run() {
   );
   assert.equal(
     shouldShowRatingPrompt({ ...eligiblePromptUserStats, ratingPromptShownAt: now - 1000 }, now),
+    false
+  );
+
+  // Pro waitlist prompt: higher-intent gating + snooze + max shown count.
+  const eligibleProBase: GrowthStats = {
+    installedAt: now - PRO_PROMPT_MIN_INSTALL_AGE_MS,
+    successfulCopyCount: PRO_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
+    firstPromptUsedAt: now - 1000
+  };
+  assert.equal(shouldShowProPrompt(eligibleProBase, now), true);
+
+  const eligibleProNonPromptBase: GrowthStats = {
+    installedAt: now - PRO_PROMPT_MIN_INSTALL_AGE_MS,
+    successfulCopyCount: PRO_PROMPT_MIN_SUCCESSFUL_COPY_COUNT
+  };
+  assert.equal(shouldShowProPrompt(eligibleProNonPromptBase, now), false);
+  assert.equal(shouldShowProPrompt({ ...eligibleProNonPromptBase, successfulCopyCount: 39 }, now), false);
+  assert.equal(shouldShowProPrompt({ ...eligibleProNonPromptBase, successfulCopyCount: 40 }, now), true);
+
+  assert.equal(
+    shouldShowProPrompt({ ...eligibleProBase, installedAt: now - PRO_PROMPT_MIN_INSTALL_AGE_MS + 1 }, now),
+    false
+  );
+  assert.equal(
+    shouldShowProPrompt(
+      { ...eligibleProBase, successfulCopyCount: PRO_PROMPT_MIN_SUCCESSFUL_COPY_COUNT - 1 },
+      now
+    ),
+    false
+  );
+  assert.equal(shouldShowProPrompt({ ...eligibleProBase, proPromptAction: 'never' }, now), false);
+  assert.equal(shouldShowProPrompt({ ...eligibleProBase, proPromptAction: 'join' }, now), false);
+
+  // If already shown once and user didn't click "later", do not show again.
+  assert.equal(shouldShowProPrompt({ ...eligibleProBase, proPromptShownCount: 1 }, now), false);
+
+  // Snooze: only re-prompt after snooze passed (and within max shown count).
+  const snoozedProStats: GrowthStats = {
+    ...eligibleProBase,
+    proPromptShownCount: 1,
+    proPromptAction: 'later',
+    proPromptSnoozedUntil: now + PRO_PROMPT_SNOOZE_MS
+  };
+  assert.equal(shouldShowProPrompt(snoozedProStats, now), false);
+  assert.equal(shouldShowProPrompt({ ...snoozedProStats, proPromptSnoozedUntil: now - 1 }, now), true);
+
+  assert.equal(
+    shouldShowProPrompt(
+      {
+        ...eligibleProBase,
+        proPromptShownCount: PRO_PROMPT_MAX_SHOWN_COUNT,
+        proPromptAction: 'later',
+        proPromptSnoozedUntil: now - 1
+      },
+      now
+    ),
     false
   );
 
@@ -532,6 +593,41 @@ async function run() {
     { name: 'onboarding_shown', ts: now }
   );
 
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_prompt_action',
+      ts: now,
+      props: { source: 'popup', action: 'join', extra: 'x' }
+    }),
+    { name: 'pro_prompt_action', ts: now, props: { source: 'popup', action: 'join' } }
+  );
+
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_prompt_action',
+      ts: now,
+      props: { source: 'popup', action: 'invalid' }
+    }),
+    { name: 'pro_prompt_action', ts: now, props: { source: 'popup' } }
+  );
+
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_prompt_shown',
+      ts: now,
+      props: { source: 'popup', extra: 'x' }
+    }),
+    { name: 'pro_prompt_shown', ts: now, props: { source: 'popup' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_prompt_shown',
+      ts: now,
+      props: { source: 'rating_prompt' }
+    }),
+    { name: 'pro_prompt_shown', ts: now }
+  );
+
   assert.deepEqual(sanitizeTelemetryEvents({ not: 'an array' }), []);
   assert.deepEqual(
     sanitizeTelemetryEvents([
@@ -567,10 +663,14 @@ async function run() {
   const proSummary = buildProFunnelSummary({
     enabled: true,
     telemetryEvents: [
+      { name: 'pro_prompt_shown', ts: 5, props: { source: 'popup' } },
+      { name: 'pro_prompt_action', ts: 6, props: { source: 'popup', action: 'join' } },
       { name: 'pro_entry_opened', ts: 10, props: { source: 'popup' } },
       { name: 'pro_entry_opened', ts: 20, props: { source: 'popup' } },
       { name: 'pro_waitlist_opened', ts: 30, props: { source: 'popup' } },
       { name: 'pro_waitlist_copied', ts: 40, props: { source: 'popup' } },
+      { name: 'pro_prompt_shown', ts: 45, props: { source: 'options' } },
+      { name: 'pro_prompt_action', ts: 46, props: { source: 'options', action: 'later' } },
       { name: 'pro_waitlist_opened', ts: 50, props: { source: 'options' } },
       { name: 'pro_waitlist_copied', ts: 60, props: { source: 'options' } },
       { name: 'pro_entry_opened', ts: 70, props: { source: 'options' } },
@@ -582,30 +682,51 @@ async function run() {
   assert.equal(proSummary.enabled, true);
   assert.equal(proSummary.window.maxEvents, TELEMETRY_MAX_EVENTS);
   assert.deepEqual(proSummary.bySource.popup.counts, {
+    pro_prompt_shown: 1,
+    pro_prompt_action: 1,
     pro_entry_opened: 2,
     pro_waitlist_opened: 1,
     pro_waitlist_copied: 1
   });
   assert.deepEqual(proSummary.bySource.popup.lastTs, {
+    pro_prompt_shown: 5,
+    pro_prompt_action: 6,
     pro_entry_opened: 20,
     pro_waitlist_opened: 30,
     pro_waitlist_copied: 40
   });
   assert.deepEqual(proSummary.bySource.options.counts, {
+    pro_prompt_shown: 1,
+    pro_prompt_action: 1,
     pro_entry_opened: 1,
     pro_waitlist_opened: 1,
     pro_waitlist_copied: 1
   });
+  assert.deepEqual(proSummary.overall.counts, {
+    pro_prompt_shown: 2,
+    pro_prompt_action: 2,
+    pro_entry_opened: 3,
+    pro_waitlist_opened: 2,
+    pro_waitlist_copied: 2
+  });
   assert.equal(proSummary.bySource.popup.rates.waitlist_opened_per_entry_opened, 0.5);
   assert.equal(proSummary.bySource.popup.rates.waitlist_copied_per_waitlist_opened, 1);
+  assert.equal(proSummary.bySource.popup.rates.entry_opened_per_prompt_shown, 2);
+  assert.equal(proSummary.bySource.popup.rates.waitlist_opened_per_prompt_shown, 1);
   assert.equal(proSummary.bySource.options.rates.waitlist_opened_per_entry_opened, 1);
   assert.equal(proSummary.bySource.options.rates.waitlist_copied_per_waitlist_opened, 1);
+  assert.equal(proSummary.overall.rates.waitlist_opened_per_entry_opened, 0.6667);
+  assert.equal(proSummary.overall.rates.waitlist_copied_per_waitlist_opened, 1);
+  assert.equal(proSummary.overall.rates.entry_opened_per_prompt_shown, 1.5);
+  assert.equal(proSummary.overall.rates.waitlist_opened_per_prompt_shown, 1);
 
   const proPack = buildProFunnelEvidencePack({
     exportedAt: 123,
     extensionVersion: '1.1.19',
     settings: { ...settings, isAnonymousUsageDataEnabled: true },
     telemetryEvents: [
+      { name: 'pro_prompt_shown', ts: now - 1, props: { source: 'popup', extra: 'x' } },
+      { name: 'pro_prompt_action', ts: now, props: { source: 'popup', action: 'join', foo: 'bar' } },
       { name: 'pro_entry_opened', ts: now, props: { source: 'popup', url: 'https://example.com' } },
       { name: 'pro_waitlist_opened', ts: now + 1, props: { source: 'options', title: 'x' } },
       { name: 'popup_opened', ts: now + 2 },
@@ -616,10 +737,10 @@ async function run() {
   assert.deepEqual(Object.keys(proPack.meta).sort(), ['exportedAt', 'extensionVersion', 'source']);
   assert.deepEqual(Object.keys(proPack.settings).sort(), ['isAnonymousUsageDataEnabled']);
   assert.equal(proPack.settings.isAnonymousUsageDataEnabled, true);
-  assert.equal(proPack.events.length, 2);
+  assert.equal(proPack.events.length, 4);
   assert.deepEqual(
     proPack.events.map((e) => e.name),
-    ['pro_entry_opened', 'pro_waitlist_opened']
+    ['pro_prompt_shown', 'pro_prompt_action', 'pro_entry_opened', 'pro_waitlist_opened']
   );
   assert.deepEqual(Object.keys(proPack.events[0]?.props || {}).sort(), ['source']);
 
@@ -747,6 +868,19 @@ async function run() {
   assert.ok(popupHtml.includes('id="upgrade-pro-entry"'), 'popup.html should include upgrade-pro-entry');
   assert.ok(popupHtml.includes('id="popup-pro-waitlist"'), 'popup.html should include popup-pro-waitlist');
   assert.ok(popupHtml.includes('id="popup-pro-waitlist-copy"'), 'popup.html should include popup-pro-waitlist-copy');
+  assert.ok(popupHtml.includes('id="pro-waitlist-prompt"'), 'popup.html should include pro-waitlist-prompt');
+  assert.ok(
+    popupHtml.includes('id="pro-waitlist-prompt-join"'),
+    'popup.html should include pro-waitlist-prompt-join'
+  );
+  assert.ok(
+    popupHtml.includes('id="pro-waitlist-prompt-later"'),
+    'popup.html should include pro-waitlist-prompt-later'
+  );
+  assert.ok(
+    popupHtml.includes('id="pro-waitlist-prompt-never"'),
+    'popup.html should include pro-waitlist-prompt-never'
+  );
 
   const optionsHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/options/options.html'], { encoding: 'utf8' });
   assert.ok(optionsHtml.includes('data-tab="pro"'), 'options.html should include pro tab');
@@ -764,6 +898,8 @@ async function run() {
   assert.ok(popupJs.includes('pro_entry_opened'), 'popup.js should contain pro_entry_opened');
   assert.ok(popupJs.includes('pro_waitlist_opened'), 'popup.js should contain pro_waitlist_opened');
   assert.ok(popupJs.includes('pro_waitlist_copied'), 'popup.js should contain pro_waitlist_copied');
+  assert.ok(popupJs.includes('pro_prompt_shown'), 'popup.js should contain pro_prompt_shown');
+  assert.ok(popupJs.includes('pro_prompt_action'), 'popup.js should contain pro_prompt_action');
   assert.ok(popupJs.includes('navigator.clipboard.writeText'), 'popup.js should write to clipboard for waitlist copy');
 
   const optionsJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/options/options.js'], { encoding: 'utf8' });

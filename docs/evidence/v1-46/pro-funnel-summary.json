@@ -1,0 +1,76 @@
+{
+  "enabled": true,
+  "window": {
+    "maxEvents": 100,
+    "policy": "fifo",
+    "scope": "current_window_only"
+  },
+  "bySource": {
+    "popup": {
+      "counts": {
+        "pro_prompt_shown": 1,
+        "pro_prompt_action": 1,
+        "pro_entry_opened": 1,
+        "pro_waitlist_opened": 1,
+        "pro_waitlist_copied": 1
+      },
+      "lastTs": {
+        "pro_prompt_shown": 1773997000001,
+        "pro_prompt_action": 1773997001001,
+        "pro_entry_opened": 1773997002001,
+        "pro_waitlist_opened": 1773997003001,
+        "pro_waitlist_copied": 1773997004001
+      },
+      "rates": {
+        "entry_opened_per_prompt_shown": 1,
+        "waitlist_opened_per_prompt_shown": 1,
+        "waitlist_opened_per_entry_opened": 1,
+        "waitlist_copied_per_waitlist_opened": 1
+      }
+    },
+    "options": {
+      "counts": {
+        "pro_prompt_shown": 0,
+        "pro_prompt_action": 0,
+        "pro_entry_opened": 0,
+        "pro_waitlist_opened": 0,
+        "pro_waitlist_copied": 0
+      },
+      "lastTs": {
+        "pro_prompt_shown": null,
+        "pro_prompt_action": null,
+        "pro_entry_opened": null,
+        "pro_waitlist_opened": null,
+        "pro_waitlist_copied": null
+      },
+      "rates": {
+        "entry_opened_per_prompt_shown": null,
+        "waitlist_opened_per_prompt_shown": null,
+        "waitlist_opened_per_entry_opened": null,
+        "waitlist_copied_per_waitlist_opened": null
+      }
+    }
+  },
+  "overall": {
+    "counts": {
+      "pro_prompt_shown": 1,
+      "pro_prompt_action": 1,
+      "pro_entry_opened": 1,
+      "pro_waitlist_opened": 1,
+      "pro_waitlist_copied": 1
+    },
+    "lastTs": {
+      "pro_prompt_shown": 1773997000001,
+      "pro_prompt_action": 1773997001001,
+      "pro_entry_opened": 1773997002001,
+      "pro_waitlist_opened": 1773997003001,
+      "pro_waitlist_copied": 1773997004001
+    },
+    "rates": {
+      "entry_opened_per_prompt_shown": 1,
+      "waitlist_opened_per_prompt_shown": 1,
+      "waitlist_opened_per_entry_opened": 1,
+      "waitlist_copied_per_waitlist_opened": 1
+    }
+  }
+}

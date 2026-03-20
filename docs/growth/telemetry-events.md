@@ -28,6 +28,8 @@
 | `wom_rate_opened` | 打开去评价入口 | Popup：`src/popup/popup.ts` 点击“去评价”；Options：`src/options/options.ts` 点击 `#wom-rate-open` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容 | 打开商店评价页 |
 | `copy_success` | 确认写入剪贴板成功 | `src/content/content.ts`：主复制、Prompt 复制、右键菜单/消息链路复制、追加模式复制成功路径 | 无 | 不包含任何用户内容 | 仅在写入成功后记录 |
 | `prompt_used` | Prompt 链路触发且复制成功 | `src/content/content.ts`：Prompt 菜单复制 / `PROCESS_*_WITH_PROMPT*` 消息链路复制成功路径 | 无 | 不包含任何用户内容 | 与 `copy_success` 同次成功复制配对出现 |
+| `pro_prompt_shown` | Popup 内 Pro 候补提示曝光 | `src/popup/popup.ts` `maybeShowProWaitlistPrompt()`（仅在展示时记录） | `{ source: 'popup' }` | 不包含任何用户内容 | 仅用于计算“曝光分母 -> 行动”漏斗；开关关闭不记录 |
+| `pro_prompt_action` | Popup 内 Pro 候补提示用户动作 | `src/popup/popup.ts` Pro 候补提示按钮点击 | `{ source: 'popup', action: 'join' \| 'later' \| 'never' }` | 不包含任何用户内容 | `join`=打开 Options -> Pro Tab；`later`=按策略延迟再提示；`never`=永久不再提示 |
 | `pro_entry_opened` | 打开 Pro 入口（升级 Pro / Pro Tab） | Popup：`src/popup/popup.ts` 点击 `#upgrade-pro-entry`；Options：`src/options/options.ts` 激活 `#pro-tab` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容 | 仅记录意向入口触达 |
 | `pro_waitlist_opened` | 打开候补登记页 | Popup：`src/popup/popup.ts` 点击 `#popup-pro-waitlist`；Options：`src/options/options.ts` 点击 `#pro-waitlist-button` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容；候补链接仅预填环境信息与占位提示 | 打开 GitHub `issues/new` |
 | `pro_waitlist_copied` | 复制候补文案成功 | Popup：`src/popup/popup.ts` 点击 `#popup-pro-waitlist-copy` 且写入剪贴板成功；Options：`src/options/options.ts` 点击 `#pro-waitlist-copy` 且写入剪贴板成功 | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容；复制内容为候补模板（仅环境信息 + 占位提示） | 仅在写入成功时记录 |

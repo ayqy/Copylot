@@ -214,6 +214,44 @@
           </button>
         </div>
 
+        <!-- Pro waitlist prompt (low-disturb, one-time / snoozable) -->
+        <details id="pro-waitlist-prompt" class="pro-waitlist-prompt" hidden>
+          <summary class="pro-waitlist-prompt-summary">
+            <span class="pro-waitlist-prompt-title" data-i18n="proPromptTitle">Pro 候补提示</span>
+          </summary>
+          <div class="pro-waitlist-prompt-body">
+            <div class="pro-waitlist-prompt-desc" data-i18n="proPromptDesc">
+              加入 Pro 候补，优先验证你的工作流需求。
+            </div>
+            <div class="pro-waitlist-prompt-actions">
+              <button
+                type="button"
+                id="pro-waitlist-prompt-join"
+                class="rating-prompt-button primary"
+                data-i18n="joinProWaitlist"
+              >
+                加入候补名单
+              </button>
+              <button
+                type="button"
+                id="pro-waitlist-prompt-later"
+                class="rating-prompt-button"
+                data-i18n="ratingPromptLater"
+              >
+                稍后
+              </button>
+              <button
+                type="button"
+                id="pro-waitlist-prompt-never"
+                class="rating-prompt-button"
+                data-i18n="ratingPromptNever"
+              >
+                不再提示
+              </button>
+            </div>
+          </div>
+        </details>
+
         <!-- Pro entry (zero-disturb, discoverable) -->
         <div class="pro-entry-row">
           <button

@@ -170,6 +170,14 @@
     "message": "加入候补名单",
     "description": "Popup Pro 候补入口"
   },
+  "proPromptTitle": {
+    "message": "Pro 候补（可选）",
+    "description": "Popup 内低打扰 Pro 候补提示标题"
+  },
+  "proPromptDesc": {
+    "message": "加入候补，优先验证你的工作流需求（默认不打扰，可关闭）。",
+    "description": "Popup 内低打扰 Pro 候补提示说明"
+  },
   "popupProWaitlistCopy": {
     "message": "复制候补文案",
     "description": "Popup：复制候补文案按钮"
