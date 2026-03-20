@@ -1,0 +1,160 @@
+{
+  "meta": {
+    "exportedAt": 1773989702730,
+    "extensionVersion": "1.1.20",
+    "source": "options"
+  },
+  "settings": {
+    "isAnonymousUsageDataEnabled": true
+  },
+  "womSummary": {
+    "enabled": true,
+    "window": {
+      "maxEvents": 100,
+      "policy": "fifo",
+      "scope": "current_window_only"
+    },
+    "bySource": {
+      "popup": {
+        "counts": {
+          "wom_feedback_opened": 1,
+          "wom_share_opened": 1,
+          "wom_share_copied": 1,
+          "wom_rate_opened": 1,
+          "rating_prompt_shown": 0,
+          "rating_prompt_action": 0
+        },
+        "lastTs": {
+          "wom_feedback_opened": 1773989004000,
+          "wom_share_opened": 1773989001000,
+          "wom_share_copied": 1773989002000,
+          "wom_rate_opened": 1773989003000,
+          "rating_prompt_shown": null,
+          "rating_prompt_action": null
+        },
+        "rates": {
+          "share_copied_per_share_opened": 1,
+          "rating_prompt_rate_clicked_per_prompt_shown": null
+        }
+      },
+      "options": {
+        "counts": {
+          "wom_feedback_opened": 1,
+          "wom_share_opened": 1,
+          "wom_share_copied": 1,
+          "wom_rate_opened": 1,
+          "rating_prompt_shown": 0,
+          "rating_prompt_action": 0
+        },
+        "lastTs": {
+          "wom_feedback_opened": 1773989104000,
+          "wom_share_opened": 1773989101000,
+          "wom_share_copied": 1773989102000,
+          "wom_rate_opened": 1773989103000,
+          "rating_prompt_shown": null,
+          "rating_prompt_action": null
+        },
+        "rates": {
+          "share_copied_per_share_opened": 1,
+          "rating_prompt_rate_clicked_per_prompt_shown": null
+        }
+      },
+      "rating_prompt": {
+        "counts": {
+          "wom_feedback_opened": 0,
+          "wom_share_opened": 0,
+          "wom_share_copied": 0,
+          "wom_rate_opened": 0,
+          "rating_prompt_shown": 1,
+          "rating_prompt_action": 1
+        },
+        "lastTs": {
+          "wom_feedback_opened": null,
+          "wom_share_opened": null,
+          "wom_share_copied": null,
+          "wom_rate_opened": null,
+          "rating_prompt_shown": 1773989201000,
+          "rating_prompt_action": 1773989202000
+        },
+        "rates": {
+          "share_copied_per_share_opened": null,
+          "rating_prompt_rate_clicked_per_prompt_shown": 1
+        }
+      }
+    }
+  },
+  "events": [
+    {
+      "name": "wom_share_opened",
+      "ts": 1773989001000,
+      "props": {
+        "source": "popup"
+      }
+    },
+    {
+      "name": "wom_share_copied",
+      "ts": 1773989002000,
+      "props": {
+        "source": "popup"
+      }
+    },
+    {
+      "name": "wom_rate_opened",
+      "ts": 1773989003000,
+      "props": {
+        "source": "popup"
+      }
+    },
+    {
+      "name": "wom_feedback_opened",
+      "ts": 1773989004000,
+      "props": {
+        "source": "popup"
+      }
+    },
+    {
+      "name": "wom_share_opened",
+      "ts": 1773989101000,
+      "props": {
+        "source": "options"
+      }
+    },
+    {
+      "name": "wom_share_copied",
+      "ts": 1773989102000,
+      "props": {
+        "source": "options"
+      }
+    },
+    {
+      "name": "wom_rate_opened",
+      "ts": 1773989103000,
+      "props": {
+        "source": "options"
+      }
+    },
+    {
+      "name": "wom_feedback_opened",
+      "ts": 1773989104000,
+      "props": {
+        "source": "options"
+      }
+    },
+    {
+      "name": "rating_prompt_shown",
+      "ts": 1773989201000,
+      "props": {
+        "source": "rating_prompt"
+      }
+    },
+    {
+      "name": "rating_prompt_action",
+      "ts": 1773989202000,
+      "props": {
+        "source": "rating_prompt",
+        "action": "rate"
+      }
+    }
+  ]
+}
+

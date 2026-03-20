@@ -901,6 +901,50 @@
     "message": "刷新失败",
     "description": "Pro 意向漏斗摘要刷新失败提示"
   },
+  "womSummaryPanelTitle": {
+    "message": "WOM 摘要",
+    "description": "隐私页 WOM 摘要面板标题"
+  },
+  "womSummaryPanelHint": {
+    "message": "仅本地汇总 `copilot_telemetry_events` 中的 `wom_*` / `rating_prompt_*` 事件（按来源分组计数/最近时间/转化率）；不包含 URL/标题/网页内容/复制内容。",
+    "description": "WOM 摘要面板提示文案"
+  },
+  "womSummaryDisabledNotice": {
+    "message": "未开启，不记录/不导出",
+    "description": "匿名使用数据关闭时 WOM 摘要面板提示"
+  },
+  "womSummaryRefresh": {
+    "message": "刷新",
+    "description": "WOM 摘要刷新按钮"
+  },
+  "womSummaryCopy": {
+    "message": "复制摘要",
+    "description": "WOM 摘要复制按钮"
+  },
+  "womSummaryEvidencePackCopy": {
+    "message": "复制证据包",
+    "description": "WOM 证据包复制按钮"
+  },
+  "womSummaryCopySuccess": {
+    "message": "摘要已复制到剪贴板",
+    "description": "WOM 摘要复制成功提示"
+  },
+  "womSummaryCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "WOM 摘要复制失败提示"
+  },
+  "womSummaryEvidencePackCopySuccess": {
+    "message": "证据包已复制到剪贴板",
+    "description": "WOM 证据包复制成功提示"
+  },
+  "womSummaryEvidencePackCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "WOM 证据包复制失败提示"
+  },
+  "womSummaryRefreshFailed": {
+    "message": "刷新失败",
+    "description": "WOM 摘要刷新失败提示"
+  },
   "growthFunnelPanelTitle": {
     "message": "本地漏斗摘要",
     "description": "隐私页本地漏斗摘要面板标题"

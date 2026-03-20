@@ -20,8 +20,8 @@
 | `popup_opened` | Popup 打开 | `src/popup/popup.ts` `initialize()` | 无 | 不包含任何用户内容 | 仅记录打开动作 |
 | `onboarding_shown` | 新手引导展示 | `src/popup/popup.ts` `openOnboardingModal(source)` | `{ source: 'auto' \| 'manual' }` | 不包含任何用户内容 | `auto`=自动弹出；`manual`=手动重开 |
 | `onboarding_completed` | 新手引导结束 | `src/popup/popup.ts` `completeOnboarding(action)` | `{ source: 'auto' \| 'manual', action: 'finish' \| 'skip' }` | 不包含任何用户内容 | `finish`=完成；`skip`=关闭/跳过/ESC/点击遮罩 |
-| `rating_prompt_shown` | 评价引导展示 | `src/popup/popup.ts` `maybeShowRatingPrompt()` | 无 | 不包含任何用户内容 | 仅在满足条件且展示时记录 |
-| `rating_prompt_action` | 评价引导按钮点击 | `src/popup/popup.ts` 评价引导按钮点击 | `{ action: 'rate' \| 'later' \| 'never' }` | 不包含任何用户内容 | 记录用户选择 |
+| `rating_prompt_shown` | 评价引导展示 | `src/popup/popup.ts` `maybeShowRatingPrompt()` | `{ source: 'rating_prompt' }` | 不包含任何用户内容 | 仅在满足条件且展示时记录（source 用于与 popup/options 口径拆分） |
+| `rating_prompt_action` | 评价引导按钮点击 | `src/popup/popup.ts` 评价引导按钮点击 | `{ source: 'rating_prompt', action: 'rate' \| 'later' \| 'never' }` | 不包含任何用户内容 | 记录用户选择（rate=打开商店评价页） |
 | `wom_feedback_opened` | 打开反馈入口 | Popup：`src/popup/popup.ts` 点击“反馈”；Options：`src/options/options.ts` 点击 `#wom-feedback-open` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容 | 打开 GitHub Issue |
 | `wom_share_opened` | 打开分享入口 | Popup：`src/popup/popup.ts` 点击“分享”；Options：`src/options/options.ts` 点击 `#wom-share-open` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容 | 打开商店详情页 |
 | `wom_share_copied` | 复制分享文案成功 | Popup：`src/popup/popup.ts` 点击“复制分享文案”且写入剪贴板成功；Options：`src/options/options.ts` 点击 `#wom-share-copy` 且写入剪贴板成功 | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容 | 仅在写入成功时记录 |

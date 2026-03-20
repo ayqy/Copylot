@@ -340,6 +340,46 @@
           </div>
 
           <div class="chat-services-section">
+            <details id="wom-summary-panel" class="telemetry-events-panel">
+              <summary class="telemetry-events-summary">
+                <span data-i18n="womSummaryPanelTitle">WOM 摘要</span>
+              </summary>
+
+              <div class="telemetry-events-content">
+                <p class="setting-hint telemetry-events-hint" data-i18n="womSummaryPanelHint">
+                  仅本地汇总 `copilot_telemetry_events` 中的 `wom_*` / `rating_prompt_*` 事件（按来源分组计数/最近时间/转化率）；不包含 URL/标题/网页内容/复制内容。
+                </p>
+                <p
+                  id="wom-summary-disabled-notice"
+                  class="setting-hint telemetry-events-hint"
+                  data-i18n="womSummaryDisabledNotice"
+                  hidden
+                >
+                  未开启，不记录/不导出
+                </p>
+
+                <div class="telemetry-events-actions">
+                  <button id="wom-summary-refresh" class="secondary-btn" data-i18n="womSummaryRefresh">
+                    刷新
+                  </button>
+                  <button id="wom-summary-copy" class="secondary-btn" data-i18n="womSummaryCopy">
+                    复制摘要
+                  </button>
+                  <button
+                    id="wom-summary-evidence-pack-copy"
+                    class="secondary-btn"
+                    data-i18n="womSummaryEvidencePackCopy"
+                  >
+                    复制证据包
+                  </button>
+                </div>
+
+                <textarea id="wom-summary-view" class="telemetry-events-view" readonly rows="10">{}</textarea>
+              </div>
+            </details>
+          </div>
+
+          <div class="chat-services-section">
             <details id="growth-funnel-panel" class="telemetry-events-panel">
               <summary class="telemetry-events-summary">
                 <span data-i18n="growthFunnelPanelTitle">本地漏斗摘要</span>

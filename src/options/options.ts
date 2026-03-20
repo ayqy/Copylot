@@ -25,6 +25,7 @@ import {
 import {
   buildChromeWebStoreDetailUrl,
   buildChromeWebStoreReviewsUrl,
+  buildWomUtmParams,
   buildFeedbackIssueUrl,
   buildFeedbackSettingsSnapshot,
   buildShareCopyText
@@ -36,6 +37,12 @@ import {
   type ProFunnelEvidencePack,
   type ProFunnelSummary
 } from '../shared/pro-funnel';
+import {
+  buildWomEvidencePack,
+  buildWomSummary,
+  type WomEvidencePack,
+  type WomSummary
+} from '../shared/wom-summary';
 import { parsePromptSortMode, sortPrompts, type PromptSortMode } from '../shared/prompt-sort';
 
 // Simple UUID generator
@@ -117,6 +124,12 @@ interface OptionsElements {
   proFunnelRefreshButton: HTMLButtonElement;
   proFunnelCopyButton: HTMLButtonElement;
   proFunnelEvidencePackCopyButton: HTMLButtonElement;
+  womSummaryPanel: HTMLDetailsElement;
+  womSummaryView: HTMLTextAreaElement;
+  womSummaryDisabledNotice: HTMLElement;
+  womSummaryRefreshButton: HTMLButtonElement;
+  womSummaryCopyButton: HTMLButtonElement;
+  womSummaryEvidencePackCopyButton: HTMLButtonElement;
   growthFunnelPanel: HTMLDetailsElement;
   growthFunnelView: HTMLTextAreaElement;
   growthFunnelRefreshButton: HTMLButtonElement;
@@ -223,6 +236,12 @@ function getElements(): OptionsElements {
     proFunnelRefreshButton: document.getElementById('pro-funnel-refresh') as HTMLButtonElement,
     proFunnelCopyButton: document.getElementById('pro-funnel-copy') as HTMLButtonElement,
     proFunnelEvidencePackCopyButton: document.getElementById('pro-funnel-evidence-pack-copy') as HTMLButtonElement,
+    womSummaryPanel: document.getElementById('wom-summary-panel') as HTMLDetailsElement,
+    womSummaryView: document.getElementById('wom-summary-view') as HTMLTextAreaElement,
+    womSummaryDisabledNotice: document.getElementById('wom-summary-disabled-notice') as HTMLElement,
+    womSummaryRefreshButton: document.getElementById('wom-summary-refresh') as HTMLButtonElement,
+    womSummaryCopyButton: document.getElementById('wom-summary-copy') as HTMLButtonElement,
+    womSummaryEvidencePackCopyButton: document.getElementById('wom-summary-evidence-pack-copy') as HTMLButtonElement,
     growthFunnelPanel: document.getElementById('growth-funnel-panel') as HTMLDetailsElement,
     growthFunnelView: document.getElementById('growth-funnel-view') as HTMLTextAreaElement,
     growthFunnelRefreshButton: document.getElementById('growth-funnel-refresh') as HTMLButtonElement,
@@ -1381,6 +1400,135 @@ async function copyProFunnelEvidencePackToClipboard(): Promise<void> {
   }
 }
 
+function formatWomSummaryAsJson(summary: WomSummary): string {
+  return `${JSON.stringify(summary, null, 2)}\n`;
+}
+
+function formatWomEvidencePackAsJson(pack: WomEvidencePack): string {
+  return `${JSON.stringify(pack, null, 2)}\n`;
+}
+
+async function readWomSummaryForDisplay(): Promise<WomSummary> {
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    return buildWomSummary({
+      enabled: Boolean(currentSettings?.isAnonymousUsageDataEnabled),
+      telemetryEvents: []
+    });
+  }
+
+  try {
+    const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+    return buildWomSummary({
+      enabled: Boolean(currentSettings?.isAnonymousUsageDataEnabled),
+      telemetryEvents: result[TELEMETRY_EVENTS_KEY]
+    });
+  } catch (error) {
+    console.warn('Failed to read telemetry events for wom summary:', error);
+    return buildWomSummary({
+      enabled: Boolean(currentSettings?.isAnonymousUsageDataEnabled),
+      telemetryEvents: []
+    });
+  }
+}
+
+async function refreshWomSummaryPanel(): Promise<WomSummary | null> {
+  if (!elements?.womSummaryView) return null;
+
+  try {
+    const summary = await readWomSummaryForDisplay();
+    elements.womSummaryView.value = formatWomSummaryAsJson(summary);
+    if (elements?.womSummaryDisabledNotice) {
+      elements.womSummaryDisabledNotice.hidden = summary.enabled;
+    }
+    return summary;
+  } catch (error) {
+    console.warn('Failed to refresh wom summary:', error);
+    showNotification(getMessage('womSummaryRefreshFailed'), 'error');
+    return null;
+  }
+}
+
+async function copyWomSummaryToClipboard(): Promise<void> {
+  let summary: WomSummary;
+  let text: string;
+
+  try {
+    summary = await readWomSummaryForDisplay();
+    text = formatWomSummaryAsJson(summary);
+  } catch (error) {
+    console.warn('Failed to read wom summary:', error);
+    showNotification(getMessage('womSummaryCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showNotification(getMessage('womSummaryCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy wom summary:', error);
+    const ok = fallbackCopyText(text);
+    if (ok) {
+      showNotification(getMessage('womSummaryCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('womSummaryCopyFailed'), 'error');
+  }
+}
+
+async function buildWomEvidencePackForClipboard(): Promise<WomEvidencePack> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for wom evidence pack:', error);
+  }
+
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    return buildWomEvidencePack({
+      exportedAt,
+      extensionVersion,
+      settings: currentSettings,
+      telemetryEvents: []
+    });
+  }
+
+  const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+  return buildWomEvidencePack({
+    exportedAt,
+    extensionVersion,
+    settings: currentSettings,
+    telemetryEvents: result[TELEMETRY_EVENTS_KEY]
+  });
+}
+
+async function copyWomEvidencePackToClipboard(): Promise<void> {
+  let pack: WomEvidencePack;
+  let text: string;
+
+  try {
+    pack = await buildWomEvidencePackForClipboard();
+    text = formatWomEvidencePackAsJson(pack);
+  } catch (error) {
+    console.warn('Failed to build wom evidence pack:', error);
+    showNotification(getMessage('womSummaryEvidencePackCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showNotification(getMessage('womSummaryEvidencePackCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy wom evidence pack:', error);
+    const ok = fallbackCopyText(text);
+    if (ok) {
+      showNotification(getMessage('womSummaryEvidencePackCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('womSummaryEvidencePackCopyFailed'), 'error');
+  }
+}
+
 function formatGrowthFunnelSummaryAsJson(summary: GrowthFunnelSummary): string {
   return `${JSON.stringify(summary, null, 2)}\n`;
 }
@@ -1596,6 +1744,17 @@ function setupEventListeners() {
     void copyProFunnelEvidencePackToClipboard();
   });
 
+  // WOM 摘要面板
+  elements.womSummaryRefreshButton.addEventListener('click', () => {
+    void refreshWomSummaryPanel();
+  });
+  elements.womSummaryCopyButton.addEventListener('click', () => {
+    void copyWomSummaryToClipboard();
+  });
+  elements.womSummaryEvidencePackCopyButton.addEventListener('click', () => {
+    void copyWomEvidencePackToClipboard();
+  });
+
   // 本地漏斗摘要面板
   elements.growthFunnelRefreshButton.addEventListener('click', () => {
     void refreshGrowthFunnelPanel();
@@ -1630,6 +1789,7 @@ function setupEventListeners() {
       // Settings 变化后，面板必须立刻刷新，避免 UI 残留旧数据造成误解
       await refreshTelemetryEventsPanel();
       await refreshProFunnelPanel();
+      await refreshWomSummaryPanel();
 
       showNotification(getMessage('saveSuccessMessage'), 'success');
     } catch (error) {
@@ -1750,14 +1910,8 @@ function setupEventListeners() {
     });
   }
 
-  const womUtmParams = {
-    utm_source: 'copylot-ext',
-    utm_medium: 'options-entry',
-    utm_campaign: 'v1-21'
-  };
-
   function buildWomStoreUrl(): string {
-    return buildChromeWebStoreDetailUrl(chrome.runtime.id, womUtmParams);
+    return buildChromeWebStoreDetailUrl(chrome.runtime.id, buildWomUtmParams('options'));
   }
 
   async function buildWomFeedbackUrl(): Promise<string> {
@@ -1837,7 +1991,7 @@ function setupEventListeners() {
 
   elements.womRateOpenButton.addEventListener('click', () => {
     void recordTelemetryEvent('wom_rate_opened', { source: 'options' });
-    const url = buildChromeWebStoreReviewsUrl(chrome.runtime.id);
+    const url = buildChromeWebStoreReviewsUrl(chrome.runtime.id, buildWomUtmParams('options'));
     chrome.tabs.create({ url });
   });
 
@@ -2046,6 +2200,7 @@ async function initialize() {
     await loadSettings();
     await refreshTelemetryEventsPanel();
     await refreshProFunnelPanel();
+    await refreshWomSummaryPanel();
     await refreshGrowthFunnelPanel();
     await refreshGrowthStatsPanel();
     renderChatServices();

@@ -58,9 +58,19 @@ export interface ChromeWebStoreUtmParams {
 
 export const DEFAULT_CWS_UTM_PARAMS: ChromeWebStoreUtmParams = {
   utm_source: 'copylot-ext',
-  utm_medium: 'popup-entry',
-  utm_campaign: 'v1-21'
+  utm_medium: 'popup',
+  utm_campaign: 'v1-43'
 };
+
+export type WomUtmMedium = 'popup' | 'options' | 'rating_prompt';
+
+export function buildWomUtmParams(medium: WomUtmMedium): ChromeWebStoreUtmParams {
+  return {
+    utm_source: 'copylot-ext',
+    utm_medium: medium,
+    utm_campaign: 'v1-43'
+  };
+}
 
 export function buildChromeWebStoreDetailUrl(
   extensionId: string,
@@ -72,8 +82,14 @@ export function buildChromeWebStoreDetailUrl(
   return url.toString();
 }
 
-export function buildChromeWebStoreReviewsUrl(extensionId: string): string {
-  return `https://chrome.google.com/webstore/detail/${extensionId}/reviews`;
+export function buildChromeWebStoreReviewsUrl(
+  extensionId: string,
+  utmParams: ChromeWebStoreUtmParams = DEFAULT_CWS_UTM_PARAMS
+): string {
+  const base = `https://chrome.google.com/webstore/detail/${extensionId}/reviews`;
+  const url = new URL(base);
+  url.search = new URLSearchParams({ ...utmParams }).toString();
+  return url.toString();
 }
 
 function safeGetMessage(getMessage: I18nGetMessage, key: string, substitutions?: string | string[]) {

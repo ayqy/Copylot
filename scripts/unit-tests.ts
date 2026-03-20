@@ -8,6 +8,7 @@ import { getGlobalDispatcher, setGlobalDispatcher } from 'undici';
 import {
   buildChromeWebStoreDetailUrl,
   buildChromeWebStoreReviewsUrl,
+  buildWomUtmParams,
   buildFeedbackIssueUrl,
   buildFeedbackSettingsSnapshot,
   buildShareCopyText,
@@ -29,6 +30,7 @@ import {
   trimTelemetryEvents
 } from '../src/shared/telemetry.ts';
 import { buildProFunnelEvidencePack, buildProFunnelSummary } from '../src/shared/pro-funnel.ts';
+import { buildWomEvidencePack, buildWomSummary } from '../src/shared/wom-summary.ts';
 import { cleanCodeBlockText } from '../src/shared/code-block-cleaner.ts';
 import { parsePromptSortMode, sortPrompts } from '../src/shared/prompt-sort.ts';
 import {
@@ -61,21 +63,27 @@ async function run() {
   assert.equal(storeParsed.hostname, 'chrome.google.com');
   assert.ok(storeParsed.pathname.endsWith(`/webstore/detail/${extensionId}`));
   assert.equal(storeParsed.searchParams.get('utm_source'), 'copylot-ext');
-  assert.equal(storeParsed.searchParams.get('utm_medium'), 'popup-entry');
-  assert.equal(storeParsed.searchParams.get('utm_campaign'), 'v1-21');
+  assert.equal(storeParsed.searchParams.get('utm_medium'), 'popup');
+  assert.equal(storeParsed.searchParams.get('utm_campaign'), 'v1-43');
 
-  const storeUrlOptions = buildChromeWebStoreDetailUrl(extensionId, {
-    utm_source: 'copylot-ext',
-    utm_medium: 'options-entry',
-    utm_campaign: 'v1-21'
-  });
+  const storeUrlOptions = buildChromeWebStoreDetailUrl(extensionId, buildWomUtmParams('options'));
   const storeOptionsParsed = new URL(storeUrlOptions);
   assert.equal(storeOptionsParsed.searchParams.get('utm_source'), 'copylot-ext');
-  assert.equal(storeOptionsParsed.searchParams.get('utm_medium'), 'options-entry');
-  assert.equal(storeOptionsParsed.searchParams.get('utm_campaign'), 'v1-21');
+  assert.equal(storeOptionsParsed.searchParams.get('utm_medium'), 'options');
+  assert.equal(storeOptionsParsed.searchParams.get('utm_campaign'), 'v1-43');
 
-  const reviewsUrl = buildChromeWebStoreReviewsUrl(extensionId);
-  assert.equal(reviewsUrl, `https://chrome.google.com/webstore/detail/${extensionId}/reviews`);
+  const storeUrlRatingPrompt = buildChromeWebStoreDetailUrl(extensionId, buildWomUtmParams('rating_prompt'));
+  const storeRatingPromptParsed = new URL(storeUrlRatingPrompt);
+  assert.equal(storeRatingPromptParsed.searchParams.get('utm_medium'), 'rating_prompt');
+  assert.equal(storeRatingPromptParsed.searchParams.get('utm_campaign'), 'v1-43');
+
+  const reviewsUrl = buildChromeWebStoreReviewsUrl(extensionId, buildWomUtmParams('popup'));
+  const reviewsParsed = new URL(reviewsUrl);
+  assert.equal(reviewsParsed.hostname, 'chrome.google.com');
+  assert.ok(reviewsParsed.pathname.endsWith(`/webstore/detail/${extensionId}/reviews`));
+  assert.equal(reviewsParsed.searchParams.get('utm_source'), 'copylot-ext');
+  assert.equal(reviewsParsed.searchParams.get('utm_medium'), 'popup');
+  assert.equal(reviewsParsed.searchParams.get('utm_campaign'), 'v1-43');
 
   const settings: Parameters<typeof buildFeedbackSettingsSnapshot>[0] = {
     isMagicCopyEnabled: false,
@@ -475,6 +483,30 @@ async function run() {
   );
   assert.deepEqual(
     sanitizeTelemetryEvent({
+      name: 'rating_prompt_shown',
+      ts: now,
+      props: { source: 'rating_prompt' }
+    }),
+    { name: 'rating_prompt_shown', ts: now, props: { source: 'rating_prompt' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'rating_prompt_shown',
+      ts: now,
+      props: { source: 'popup' }
+    }),
+    { name: 'rating_prompt_shown', ts: now }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'rating_prompt_action',
+      ts: now,
+      props: { source: 'rating_prompt', action: 'rate' }
+    }),
+    { name: 'rating_prompt_action', ts: now, props: { source: 'rating_prompt', action: 'rate' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
       name: 'rating_prompt_action',
       ts: now,
       props: { action: 'xxx' }
@@ -592,6 +624,84 @@ async function run() {
   assert.equal(proPackTelemetryOff.events.length, 0);
   assert.equal(proPackTelemetryOff.proFunnel.enabled, false);
   assert.equal(proPackTelemetryOff.proFunnel.bySource.popup.counts.pro_entry_opened, 0);
+
+  // wom-summary.ts (pure functions)
+  const womSummaryDisabled = buildWomSummary({
+    enabled: false,
+    telemetryEvents: [{ name: 'wom_share_opened', ts: now, props: { source: 'popup' } }]
+  });
+  assert.equal(womSummaryDisabled.enabled, false);
+  assert.equal(womSummaryDisabled.disabledReason, 'anonymous_usage_data_disabled');
+  assert.equal(womSummaryDisabled.bySource.popup.counts.wom_share_opened, 0);
+  assert.equal(womSummaryDisabled.bySource.rating_prompt.counts.rating_prompt_shown, 0);
+
+  const womSummary = buildWomSummary({
+    enabled: true,
+    telemetryEvents: [
+      { name: 'wom_share_opened', ts: 10, props: { source: 'popup' } },
+      { name: 'wom_share_copied', ts: 20, props: { source: 'popup' } },
+      { name: 'wom_rate_opened', ts: 90, props: { source: 'popup' } },
+      { name: 'wom_share_opened', ts: 30, props: { source: 'options' } },
+      { name: 'wom_share_copied', ts: 40, props: { source: 'options' } },
+      { name: 'rating_prompt_shown', ts: 50, props: { source: 'rating_prompt' } },
+      { name: 'rating_prompt_action', ts: 60, props: { source: 'rating_prompt', action: 'rate' } },
+      { name: 'rating_prompt_action', ts: 70, props: { source: 'rating_prompt', action: 'later' } },
+      { name: 'popup_opened', ts: 80 },
+      { name: 'wom_share_opened', ts: 100, props: { source: 'unknown' } }
+    ]
+  });
+  assert.equal(womSummary.enabled, true);
+  assert.equal(womSummary.window.maxEvents, TELEMETRY_MAX_EVENTS);
+  assert.equal(womSummary.bySource.popup.counts.wom_share_opened, 1);
+  assert.equal(womSummary.bySource.popup.counts.wom_share_copied, 1);
+  assert.equal(womSummary.bySource.popup.counts.wom_rate_opened, 1);
+  assert.equal(womSummary.bySource.popup.lastTs.wom_rate_opened, 90);
+  assert.equal(womSummary.bySource.popup.rates.share_copied_per_share_opened, 1);
+  assert.equal(womSummary.bySource.popup.rates.rating_prompt_rate_clicked_per_prompt_shown, null);
+  assert.equal(womSummary.bySource.options.rates.share_copied_per_share_opened, 1);
+  assert.equal(womSummary.bySource.rating_prompt.counts.rating_prompt_shown, 1);
+  assert.equal(womSummary.bySource.rating_prompt.counts.rating_prompt_action, 2);
+  assert.equal(womSummary.bySource.rating_prompt.rates.rating_prompt_rate_clicked_per_prompt_shown, 1);
+
+  const womPack = buildWomEvidencePack({
+    exportedAt: 123,
+    extensionVersion: '1.1.20',
+    settings: { ...settings, isAnonymousUsageDataEnabled: true },
+    telemetryEvents: [
+      { name: 'wom_share_opened', ts: now, props: { source: 'popup', url: 'https://example.com' } },
+      { name: 'rating_prompt_shown', ts: now + 1, props: { source: 'rating_prompt', extra: 'x' } },
+      {
+        name: 'rating_prompt_action',
+        ts: now + 2,
+        props: { source: 'rating_prompt', action: 'rate', foo: 'bar' }
+      },
+      { name: 'popup_opened', ts: now + 3 },
+      { name: 'unknown', ts: now + 4 }
+    ]
+  });
+  assert.deepEqual(Object.keys(womPack).sort(), ['events', 'meta', 'settings', 'womSummary']);
+  assert.deepEqual(Object.keys(womPack.meta).sort(), ['exportedAt', 'extensionVersion', 'source']);
+  assert.deepEqual(Object.keys(womPack.settings).sort(), ['isAnonymousUsageDataEnabled']);
+  assert.equal(womPack.settings.isAnonymousUsageDataEnabled, true);
+  assert.equal(womPack.events.length, 3);
+  assert.deepEqual(
+    womPack.events.map((e) => e.name),
+    ['wom_share_opened', 'rating_prompt_shown', 'rating_prompt_action']
+  );
+  assert.deepEqual(Object.keys(womPack.events[0]?.props || {}).sort(), ['source']);
+  assert.deepEqual(Object.keys(womPack.events[1]?.props || {}).sort(), ['source']);
+  assert.deepEqual(Object.keys(womPack.events[2]?.props || {}).sort(), ['action', 'source']);
+
+  const womPackTelemetryOff = buildWomEvidencePack({
+    exportedAt: 1,
+    extensionVersion: '1.1.20',
+    settings: { ...settings, isAnonymousUsageDataEnabled: false },
+    telemetryEvents: [{ name: 'wom_share_opened', ts: now, props: { source: 'popup' } }]
+  });
+  assert.equal(womPackTelemetryOff.settings.isAnonymousUsageDataEnabled, false);
+  assert.equal(womPackTelemetryOff.events.length, 0);
+  assert.equal(womPackTelemetryOff.womSummary.enabled, false);
+  assert.equal(womPackTelemetryOff.womSummary.bySource.popup.counts.wom_share_opened, 0);
 
   // v1-42 zip 安装回归（离线可审计）：校验最新 plugin-*.zip 中关键入口与隐私导出面板存在
   const rootDir = process.cwd();

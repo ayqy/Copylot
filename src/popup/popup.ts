@@ -9,6 +9,7 @@ import {
 import {
   buildChromeWebStoreDetailUrl,
   buildChromeWebStoreReviewsUrl,
+  buildWomUtmParams,
   buildFeedbackIssueUrl,
   buildFeedbackSettingsSnapshot,
   buildShareCopyText,
@@ -366,7 +367,7 @@ async function maybeShowRatingPrompt() {
       // Important: once the prompt becomes visible, persist `ratingPromptShownAt` immediately.
       await markRatingPromptShown(now);
       elements.ratingPrompt.hidden = false;
-      void recordTelemetryEvent('rating_prompt_shown');
+      void recordTelemetryEvent('rating_prompt_shown', { source: 'rating_prompt' });
       return;
     }
   } catch (error) {
@@ -525,7 +526,7 @@ function setupEventListeners() {
   elements.shareLink.addEventListener('click', (event) => {
     event.preventDefault();
     void recordTelemetryEvent('wom_share_opened', { source: 'popup' });
-    const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id);
+    const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id, buildWomUtmParams('popup'));
     chrome.tabs.create({ url: storeUrl });
     window.close();
   });
@@ -533,7 +534,7 @@ function setupEventListeners() {
   elements.rateLink.addEventListener('click', (event) => {
     event.preventDefault();
     void recordTelemetryEvent('wom_rate_opened', { source: 'popup' });
-    const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id);
+    const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id, buildWomUtmParams('popup'));
     chrome.tabs.create({ url: reviewsUrl });
     window.close();
   });
@@ -544,9 +545,9 @@ function setupEventListeners() {
     } catch (error) {
       console.error('Error saving rating prompt action:', error);
     }
-    void recordTelemetryEvent('rating_prompt_action', { action: 'rate' });
+    void recordTelemetryEvent('rating_prompt_action', { source: 'rating_prompt', action: 'rate' });
 
-    const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id);
+    const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id, buildWomUtmParams('rating_prompt'));
     chrome.tabs.create({ url: reviewsUrl });
     window.close();
   });
@@ -557,7 +558,7 @@ function setupEventListeners() {
     } catch (error) {
       console.error('Error saving rating prompt action:', error);
     }
-    void recordTelemetryEvent('rating_prompt_action', { action: 'later' });
+    void recordTelemetryEvent('rating_prompt_action', { source: 'rating_prompt', action: 'later' });
     hideRatingPrompt();
   });
 
@@ -567,12 +568,12 @@ function setupEventListeners() {
     } catch (error) {
       console.error('Error saving rating prompt action:', error);
     }
-    void recordTelemetryEvent('rating_prompt_action', { action: 'never' });
+    void recordTelemetryEvent('rating_prompt_action', { source: 'rating_prompt', action: 'never' });
     hideRatingPrompt();
   });
 
   elements.copyShareButton.addEventListener('click', async () => {
-    const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id);
+    const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id, buildWomUtmParams('popup'));
     const shareText = buildShareCopyText(getMessage, storeUrl);
     const originalText = elements.copyShareButton.textContent || '';
 

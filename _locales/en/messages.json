@@ -901,6 +901,50 @@
     "message": "Refresh failed",
     "description": "Pro funnel summary refresh failure notification"
   },
+  "womSummaryPanelTitle": {
+    "message": "WOM summary",
+    "description": "WOM summary panel title in Options privacy tab"
+  },
+  "womSummaryPanelHint": {
+    "message": "Local-only summary of `wom_*` / `rating_prompt_*` events in `copilot_telemetry_events` (counts/last timestamps/conversion rates by source). No URLs, titles, page content, or copied text.",
+    "description": "WOM summary panel hint"
+  },
+  "womSummaryDisabledNotice": {
+    "message": "Disabled: not recording / not exporting.",
+    "description": "WOM summary panel notice when anonymous usage data is disabled"
+  },
+  "womSummaryRefresh": {
+    "message": "Refresh",
+    "description": "WOM summary refresh button label"
+  },
+  "womSummaryCopy": {
+    "message": "Copy summary",
+    "description": "WOM summary copy button label"
+  },
+  "womSummaryEvidencePackCopy": {
+    "message": "Copy evidence pack",
+    "description": "WOM evidence pack copy button label"
+  },
+  "womSummaryCopySuccess": {
+    "message": "Summary copied to clipboard",
+    "description": "WOM summary copy success notification"
+  },
+  "womSummaryCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "WOM summary copy failure notification"
+  },
+  "womSummaryEvidencePackCopySuccess": {
+    "message": "Evidence pack copied to clipboard",
+    "description": "WOM evidence pack copy success notification"
+  },
+  "womSummaryEvidencePackCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "WOM evidence pack copy failure notification"
+  },
+  "womSummaryRefreshFailed": {
+    "message": "Refresh failed",
+    "description": "WOM summary refresh failure notification"
+  },
   "growthFunnelPanelTitle": {
     "message": "Local funnel summary",
     "description": "Growth funnel summary panel title in Options privacy tab"

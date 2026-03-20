@@ -39,8 +39,8 @@ const TELEMETRY_EVENT_PROP_ALLOWLIST: Record<TelemetryEventName, readonly string
   pro_waitlist_copied: ['source'],
   onboarding_shown: ['source'],
   onboarding_completed: ['source', 'action'],
-  rating_prompt_shown: [],
-  rating_prompt_action: ['action'],
+  rating_prompt_shown: ['source'],
+  rating_prompt_action: ['source', 'action'],
   wom_feedback_opened: ['source'],
   wom_share_opened: ['source'],
   wom_share_copied: ['source'],
@@ -67,6 +67,12 @@ type WomSource = 'popup' | 'options';
 
 function isWomSource(value: unknown): value is WomSource {
   return value === 'popup' || value === 'options';
+}
+
+type RatingPromptSource = 'rating_prompt';
+
+function isRatingPromptSource(value: unknown): value is RatingPromptSource {
+  return value === 'rating_prompt';
 }
 
 type OnboardingSource = 'auto' | 'manual';
@@ -109,10 +115,17 @@ function sanitizeProps(
   for (const key of allowlist) {
     if (!(key in raw)) continue;
     const value = raw[key];
-    if (isWomEventName(eventName) && key === 'source') {
-      if (!isWomSource(value)) continue;
-      sanitized[key] = value;
-      continue;
+    if (key === 'source') {
+      if (eventName === 'rating_prompt_shown' || eventName === 'rating_prompt_action') {
+        if (!isRatingPromptSource(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
+      if (isWomEventName(eventName)) {
+        if (!isWomSource(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
     }
 
     // Enum strict filtering for non-WOM events (privacy + consistency).
