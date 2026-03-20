@@ -43,6 +43,10 @@ import {
   type ProIntentWeeklyDigestEnvInfo
 } from '../shared/pro-intent-weekly-digest';
 import { buildProIntentEventsCsv, formatProIntentEvents7dCsvFilename } from '../shared/pro-intent-events-csv';
+import {
+  buildProIntentByCampaignCsv,
+  formatProIntentByCampaign7dCsvFilename
+} from '../shared/pro-intent-by-campaign-csv';
 import { formatCampaignLineForTemplate, sanitizeCampaign } from '../shared/campaign';
 import {
   buildWomEvidencePack,
@@ -132,6 +136,7 @@ interface OptionsElements {
   proFunnelCopyButton: HTMLButtonElement;
   proFunnelEvidencePackCopyButton: HTMLButtonElement;
   exportProIntentEvents7dCsvButton: HTMLButtonElement;
+  exportProIntentByCampaign7dCsvButton: HTMLButtonElement;
   proIntentWeeklyDigestCopyButton: HTMLButtonElement;
   womSummaryPanel: HTMLDetailsElement;
   womSummaryView: HTMLTextAreaElement;
@@ -259,6 +264,9 @@ function getElements(): OptionsElements {
     proFunnelCopyButton: document.getElementById('pro-funnel-copy') as HTMLButtonElement,
     proFunnelEvidencePackCopyButton: document.getElementById('pro-funnel-evidence-pack-copy') as HTMLButtonElement,
     exportProIntentEvents7dCsvButton: document.getElementById('export-pro-intent-events-7d-csv') as HTMLButtonElement,
+    exportProIntentByCampaign7dCsvButton: document.getElementById(
+      'export-pro-intent-by-campaign-7d-csv'
+    ) as HTMLButtonElement,
     proIntentWeeklyDigestCopyButton: document.getElementById('copy-pro-intent-weekly-digest') as HTMLButtonElement,
     womSummaryPanel: document.getElementById('wom-summary-panel') as HTMLDetailsElement,
     womSummaryView: document.getElementById('wom-summary-view') as HTMLTextAreaElement,
@@ -373,6 +381,7 @@ async function loadSettings() {
       elements.proIntentCampaignInput.value = currentSettings.proIntentCampaign || '';
     }
     updateProIntentEvents7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
+    updateProIntentByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
     filterAndRenderPrompts();
     updateSyncStatus();
     console.debug('Settings loaded:', currentSettings);
@@ -1337,6 +1346,11 @@ function updateProIntentEvents7dCsvExportButtonState(enabled: boolean): void {
   elements.exportProIntentEvents7dCsvButton.disabled = !enabled;
 }
 
+function updateProIntentByCampaign7dCsvExportButtonState(enabled: boolean): void {
+  if (!elements?.exportProIntentByCampaign7dCsvButton) return;
+  elements.exportProIntentByCampaign7dCsvButton.disabled = !enabled;
+}
+
 async function readProFunnelSummaryForDisplay(): Promise<ProFunnelSummary> {
   if (typeof chrome === 'undefined' || !chrome.storage?.local) {
     return buildProFunnelSummary({
@@ -1593,6 +1607,62 @@ async function exportProIntentEvents7dCsv(): Promise<void> {
   const filename = formatProIntentEvents7dCsvFilename(exportedAt);
   downloadCsvFile(filename, built.csv);
   showNotification(getMessage('proIntentEvents7dCsvExportSuccess', [String(built.rows.length)]), 'success');
+}
+
+async function exportProIntentByCampaign7dCsv(): Promise<void> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for pro intent by campaign csv export:', error);
+  }
+
+  const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+  if (!enabled) {
+    showNotification(getMessage('proIntentByCampaign7dCsvExportTelemetryOff'), 'info');
+    return;
+  }
+
+  const emptyCampaignBucketLabel = getMessage('proIntentByCampaign7dCsvEmptyBucket') || 'N/A';
+
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    const result = buildProIntentByCampaignCsv({
+      enabled: true,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      emptyCampaignBucketLabel,
+      lookbackDays: 7
+    });
+    const filename = formatProIntentByCampaign7dCsvFilename(exportedAt);
+    downloadCsvFile(filename, result.csv);
+    showNotification(getMessage('proIntentByCampaign7dCsvExportSuccess', [String(result.rows.length)]), 'success');
+    return;
+  }
+
+  let stored: unknown;
+  try {
+    const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+    stored = result[TELEMETRY_EVENTS_KEY];
+  } catch (error) {
+    console.warn('Failed to read telemetry events for pro intent by campaign csv export:', error);
+    showNotification(getMessage('proIntentByCampaign7dCsvExportFailed'), 'error');
+    return;
+  }
+
+  const built = buildProIntentByCampaignCsv({
+    enabled: true,
+    telemetryEvents: stored,
+    now: exportedAt,
+    extensionVersion,
+    emptyCampaignBucketLabel,
+    lookbackDays: 7
+  });
+
+  const filename = formatProIntentByCampaign7dCsvFilename(exportedAt);
+  downloadCsvFile(filename, built.csv);
+  showNotification(getMessage('proIntentByCampaign7dCsvExportSuccess', [String(built.rows.length)]), 'success');
 }
 
 function formatWomSummaryAsJson(summary: WomSummary): string {
@@ -1941,6 +2011,9 @@ function setupEventListeners() {
   elements.exportProIntentEvents7dCsvButton.addEventListener('click', () => {
     void exportProIntentEvents7dCsv();
   });
+  elements.exportProIntentByCampaign7dCsvButton.addEventListener('click', () => {
+    void exportProIntentByCampaign7dCsv();
+  });
   elements.proIntentWeeklyDigestCopyButton.addEventListener('click', () => {
     void copyProIntentWeeklyDigestToClipboard();
   });
@@ -1992,6 +2065,7 @@ function setupEventListeners() {
       await refreshProFunnelPanel();
       await refreshWomSummaryPanel();
       updateProIntentEvents7dCsvExportButtonState(enabled);
+      updateProIntentByCampaign7dCsvExportButtonState(enabled);
 
       showNotification(getMessage('saveSuccessMessage'), 'success');
     } catch (error) {

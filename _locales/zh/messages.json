@@ -1079,6 +1079,26 @@
     "message": "匿名使用数据关闭：不导出事件明细",
     "description": "匿名开关 OFF 时导出按钮提示"
   },
+  "proIntentByCampaign7dCsvExport": {
+    "message": "导出过去 7 天 Pro 意向按 campaign 聚合（CSV）",
+    "description": "隐私页导出过去 7 天 Pro 意向按 campaign 聚合 CSV 按钮"
+  },
+  "proIntentByCampaign7dCsvExportSuccess": {
+    "message": "CSV 已导出（$1 行）",
+    "description": "Pro 意向按 campaign 聚合 CSV 导出成功提示（$1=行数）"
+  },
+  "proIntentByCampaign7dCsvExportFailed": {
+    "message": "导出失败",
+    "description": "Pro 意向按 campaign 聚合 CSV 导出失败提示"
+  },
+  "proIntentByCampaign7dCsvExportTelemetryOff": {
+    "message": "匿名使用数据关闭：不导出 campaign 聚合",
+    "description": "匿名开关 OFF 时按 campaign 聚合导出按钮提示"
+  },
+  "proIntentByCampaign7dCsvEmptyBucket": {
+    "message": "空 campaign",
+    "description": "按 campaign 聚合 CSV 的空 campaign 桶展示文案"
+  },
   "proIntentWeeklyDigestCopy": {
     "message": "复制本周 Pro 意向证据摘要",
     "description": "隐私页复制本周 Pro 意向证据摘要按钮"

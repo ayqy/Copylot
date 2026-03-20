@@ -1079,6 +1079,26 @@
     "message": "Anonymous usage data is OFF: no event details exported",
     "description": "Notification when exporting Pro intent CSV while anonymous usage data is disabled"
   },
+  "proIntentByCampaign7dCsvExport": {
+    "message": "Export last 7 days Pro intent by campaign (CSV)",
+    "description": "Privacy page export Pro intent by campaign aggregated CSV button"
+  },
+  "proIntentByCampaign7dCsvExportSuccess": {
+    "message": "CSV exported ($1 rows)",
+    "description": "Pro intent by campaign aggregated CSV export success notice ($1=row count)"
+  },
+  "proIntentByCampaign7dCsvExportFailed": {
+    "message": "Export failed",
+    "description": "Pro intent by campaign aggregated CSV export failure notice"
+  },
+  "proIntentByCampaign7dCsvExportTelemetryOff": {
+    "message": "Anonymous usage data is OFF: no campaign aggregation exported",
+    "description": "Notification when exporting Pro intent by campaign CSV while anonymous usage data is disabled"
+  },
+  "proIntentByCampaign7dCsvEmptyBucket": {
+    "message": "(none)",
+    "description": "Empty campaign bucket label in Pro intent by campaign aggregated CSV"
+  },
   "proIntentWeeklyDigestCopy": {
     "message": "Copy weekly Pro intent digest",
     "description": "Copy weekly Pro intent digest button label in Options privacy tab"

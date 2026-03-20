@@ -45,6 +45,11 @@ import {
   buildProIntentEventsCsv,
   formatProIntentEvents7dCsvFilename
 } from '../src/shared/pro-intent-events-csv.ts';
+import {
+  PRO_INTENT_BY_CAMPAIGN_CSV_COLUMNS,
+  buildProIntentByCampaignCsv,
+  formatProIntentByCampaign7dCsvFilename
+} from '../src/shared/pro-intent-by-campaign-csv.ts';
 import { buildWomEvidencePack, buildWomSummary } from '../src/shared/wom-summary.ts';
 import { cleanCodeBlockText } from '../src/shared/code-block-cleaner.ts';
 import { parsePromptSortMode, sortPrompts } from '../src/shared/prompt-sort.ts';
@@ -1031,6 +1036,98 @@ async function run() {
   const proIntentCsvFilename = formatProIntentEvents7dCsvFilename(now);
   assert.ok(/^copylot-pro-intent-events-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proIntentCsvFilename));
 
+  // pro-intent-by-campaign-csv.ts (pure functions + 7d window -> by campaign aggregation -> CSV)
+  const proIntentByCampaignWindowA = buildProIntentEventsCsv({
+    enabled: true,
+    telemetryEvents: [],
+    now,
+    extensionVersion: '1.1.23',
+    lookbackDays: 7
+  });
+  const proIntentByCampaignWindowB = buildProIntentByCampaignCsv({
+    enabled: true,
+    telemetryEvents: [],
+    now,
+    extensionVersion: '1.1.23',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  assert.equal(
+    proIntentByCampaignWindowA.windowFrom,
+    proIntentByCampaignWindowB.windowFrom,
+    '7d windowFrom should match v1-51 pro intent events CSV export'
+  );
+  assert.equal(
+    proIntentByCampaignWindowA.windowTo,
+    proIntentByCampaignWindowB.windowTo,
+    '7d windowTo should match v1-51 pro intent events CSV export'
+  );
+
+  const proIntentByCampaignDisabled = buildProIntentByCampaignCsv({
+    enabled: false,
+    telemetryEvents: [{ name: 'pro_entry_opened', ts: now, props: { source: 'popup', campaign: 'twitter' } }],
+    now,
+    extensionVersion: '1.1.23',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  assert.equal(proIntentByCampaignDisabled.enabled, false);
+  assert.equal(proIntentByCampaignDisabled.disabledReason, 'anonymous_usage_data_disabled');
+  assert.equal(proIntentByCampaignDisabled.rows.length, 0);
+  assert.ok(!proIntentByCampaignDisabled.csv.startsWith('\uFEFF'));
+  assert.equal(proIntentByCampaignDisabled.csv.trimEnd(), PRO_INTENT_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+
+  const proIntentByCampaign = buildProIntentByCampaignCsv({
+    enabled: true,
+    telemetryEvents: [
+      { name: 'pro_entry_opened', ts: sevenDaysAgo, props: { source: 'popup', campaign: 'twitter' } }, // included (=from)
+      { name: 'pro_waitlist_opened', ts: sevenDaysAgo + 1, props: { source: 'popup', campaign: 'twitter' } },
+      { name: 'pro_waitlist_survey_copied', ts: now - 1000, props: { source: 'options', campaign: 'ph' } },
+      { name: 'pro_waitlist_copied', ts: now, props: { source: 'options', campaign: 'ph' } }, // included (=to)
+      { name: 'pro_waitlist_copied', ts: now - 500, props: { source: 'options' } }, // empty campaign bucket
+      { name: 'pro_entry_opened', ts: sevenDaysAgo - 1, props: { source: 'options', campaign: 'twitter' } }, // excluded (<from)
+      { name: 'pro_waitlist_opened', ts: now + 1, props: { source: 'options', campaign: 'twitter' } }, // excluded (>to)
+      { name: 'popup_opened', ts: now },
+      { name: 'pro_entry_opened', ts: now, props: { source: 'invalid', campaign: 'twitter' } } // excluded (bad source)
+    ],
+    now,
+    extensionVersion: '1.1.23',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  assert.equal(proIntentByCampaign.enabled, true);
+  assert.equal(proIntentByCampaign.windowFrom, sevenDaysAgo);
+  assert.equal(proIntentByCampaign.windowTo, now);
+  assert.equal(proIntentByCampaign.rows.length, 3);
+
+  assert.equal(proIntentByCampaign.rows[0]?.campaign, 'ph');
+  assert.equal(proIntentByCampaign.rows[0]?.proEntryOpened, 0);
+  assert.equal(proIntentByCampaign.rows[0]?.proWaitlistOpened, 0);
+  assert.equal(proIntentByCampaign.rows[0]?.proWaitlistCopied, 1);
+  assert.equal(proIntentByCampaign.rows[0]?.proWaitlistSurveyCopied, 1);
+  assert.equal(proIntentByCampaign.rows[0]?.leads, 2);
+
+  assert.equal(proIntentByCampaign.rows[1]?.campaign, '空 campaign');
+  assert.equal(proIntentByCampaign.rows[1]?.proWaitlistCopied, 1);
+  assert.equal(proIntentByCampaign.rows[1]?.proWaitlistSurveyCopied, 0);
+  assert.equal(proIntentByCampaign.rows[1]?.leads, 1);
+
+  assert.equal(proIntentByCampaign.rows[2]?.campaign, 'twitter');
+  assert.equal(proIntentByCampaign.rows[2]?.proEntryOpened, 1);
+  assert.equal(proIntentByCampaign.rows[2]?.proWaitlistOpened, 1);
+  assert.equal(proIntentByCampaign.rows[2]?.proWaitlistCopied, 0);
+  assert.equal(proIntentByCampaign.rows[2]?.proWaitlistSurveyCopied, 0);
+  assert.equal(proIntentByCampaign.rows[2]?.leads, 0);
+
+  assert.ok(proIntentByCampaign.rows.every((row) => Number.isInteger(row.proEntryOpened)));
+  assert.ok(proIntentByCampaign.rows.every((row) => Number.isInteger(row.leads)));
+  assert.ok(!proIntentByCampaign.csv.startsWith('\uFEFF'));
+  assert.equal(proIntentByCampaign.csv.split('\n')[0], PRO_INTENT_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+  assert.equal(proIntentByCampaign.csv.trim().split('\n').length, 1 + proIntentByCampaign.rows.length);
+
+  const proIntentByCampaignCsvFilename = formatProIntentByCampaign7dCsvFilename(now);
+  assert.ok(/^copylot-pro-intent-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proIntentByCampaignCsvFilename));
+
   // wom-summary.ts (pure functions)
   const womSummaryDisabled = buildWomSummary({
     enabled: false,
@@ -1169,6 +1266,10 @@ async function run() {
   assert.ok(
     optionsHtml.includes('id="export-pro-intent-events-7d-csv"'),
     'options.html should include export-pro-intent-events-7d-csv'
+  );
+  assert.ok(
+    optionsHtml.includes('id="export-pro-intent-by-campaign-7d-csv"'),
+    'options.html should include export-pro-intent-by-campaign-7d-csv'
   );
   assert.ok(
     optionsHtml.includes('id="copy-pro-intent-weekly-digest"'),
