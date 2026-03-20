@@ -1,4 +1,5 @@
 import type { Settings } from './settings-manager';
+import { sanitizeCampaign } from './campaign.ts';
 
 // Keep in sync with src/shared/settings-manager.ts
 const SETTINGS_STORAGE_KEY = 'copilot_settings';
@@ -39,10 +40,10 @@ const TELEMETRY_EVENT_PROP_ALLOWLIST: Record<TelemetryEventName, readonly string
   prompt_used: [],
   pro_prompt_shown: ['source'],
   pro_prompt_action: ['source', 'action'],
-  pro_entry_opened: ['source'],
-  pro_waitlist_opened: ['source'],
-  pro_waitlist_copied: ['source'],
-  pro_waitlist_survey_copied: ['source'],
+  pro_entry_opened: ['source', 'campaign'],
+  pro_waitlist_opened: ['source', 'campaign'],
+  pro_waitlist_copied: ['source', 'campaign'],
+  pro_waitlist_survey_copied: ['source', 'campaign'],
   onboarding_shown: ['source'],
   onboarding_completed: ['source', 'action'],
   rating_prompt_shown: ['source'],
@@ -127,6 +128,12 @@ function sanitizeProps(
   for (const key of allowlist) {
     if (!(key in raw)) continue;
     const value = raw[key];
+    if (key === 'campaign') {
+      const campaign = sanitizeCampaign(value);
+      if (!campaign) continue;
+      sanitized[key] = campaign;
+      continue;
+    }
     if (key === 'source') {
       if (eventName === 'rating_prompt_shown' || eventName === 'rating_prompt_action') {
         if (!isRatingPromptSource(value)) continue;
@@ -188,6 +195,18 @@ function sanitizeProps(
     }
     if (!isAllowedPropValue(value)) continue;
     sanitized[key] = value;
+  }
+
+  // Pro 意向事件：props 必须至少包含合法 source；否则丢弃 campaign，避免产生“无法归因”的孤立字段。
+  if (
+    (eventName === 'pro_entry_opened' ||
+      eventName === 'pro_waitlist_opened' ||
+      eventName === 'pro_waitlist_copied' ||
+      eventName === 'pro_waitlist_survey_copied') &&
+    'campaign' in sanitized &&
+    !('source' in sanitized)
+  ) {
+    delete sanitized.campaign;
   }
 
   return Object.keys(sanitized).length > 0 ? sanitized : undefined;

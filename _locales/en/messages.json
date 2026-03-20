@@ -145,7 +145,7 @@
     "description": "Default GitHub issue title for Pro waitlist"
   },
   "proWaitlistIssueBodyTemplate": {
-    "message": "## Privacy Notice\\n- Please do NOT paste any webpage content or copied content.\\n- Please do NOT paste any personal data.\\n\\n## Pro scope (Free vs Planned)\\n- Existing free core features will remain free (no paywall).\\n- Pro is optional, planned enhancements (not shipped yet).\\n- Doc: https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md\\n\\n## Environment\\n- Extension Version: $EXT_VERSION$\\n- Extension ID: $EXT_ID$\\n- navigator.language: $NAV_LANG$\\n- UI Language: $UI_LANG$\\n\\n## Use case\\n-\\n\\n## Desired Pro capabilities\\n-\\n\\n## Contact (optional)\\n-\\n",
+    "message": "## Privacy Notice\\n- Please do NOT paste any webpage content or copied content.\\n- Please do NOT paste any personal data.\\n\\n## Pro scope (Free vs Planned)\\n- Existing free core features will remain free (no paywall).\\n- Pro is optional, planned enhancements (not shipped yet).\\n- Doc: https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md\\n\\n## Environment\\n- Extension Version: $EXT_VERSION$\\n- Extension ID: $EXT_ID$\\n- navigator.language: $NAV_LANG$\\n- UI Language: $UI_LANG$$CAMPAIGN_LINE$\\n\\n## Use case\\n-\\n\\n## Desired Pro capabilities\\n-\\n\\n## Contact (optional)\\n-\\n",
     "description": "GitHub issue body template for Pro waitlist",
     "placeholders": {
       "EXT_VERSION": {
@@ -159,11 +159,14 @@
       },
       "UI_LANG": {
         "content": "$4"
+      },
+      "CAMPAIGN_LINE": {
+        "content": "$5"
       }
     }
   },
   "proWaitlistSurveyBodyTemplate": {
-    "message": "## Privacy Notice\\n- No webpage content / copied content / URL / title is included.\\n- Everything comes from extension environment info + what you manually type.\\n- Contact info is optional and voluntary. The extension will not auto-collect/auto-fill/auto-send it.\\n\\n## Environment\\n- Extension Version: $EXT_VERSION$\\n- Extension ID: $EXT_ID$\\n- navigator.language: $NAV_LANG$\\n- UI Language: $UI_LANG$\\n\\n## Payment Interest Survey (Optional)\\n\\n### Use case\\n$USE_CASE$\\n\\n### Desired Pro capabilities (aligned with pro-scope)\\n$PRO_CAPABILITIES$\\n\\n### Payment intent\\n- Willing to pay: $PAY_WILLING$\\n- Acceptable price (monthly): $PAY_MONTHLY$\\n- Acceptable price (annual): $PAY_ANNUAL$\\n\\n### Contact (optional)\\n$CONTACT$\\n",
+    "message": "## Privacy Notice\\n- No webpage content / copied content / URL / title is included.\\n- Everything comes from extension environment info + what you manually type.\\n- Contact info is optional and voluntary. The extension will not auto-collect/auto-fill/auto-send it.\\n\\n## Environment\\n- Extension Version: $EXT_VERSION$\\n- Extension ID: $EXT_ID$\\n- navigator.language: $NAV_LANG$\\n- UI Language: $UI_LANG$$CAMPAIGN_LINE$\\n\\n## Payment Interest Survey (Optional)\\n\\n### Use case\\n$USE_CASE$\\n\\n### Desired Pro capabilities (aligned with pro-scope)\\n$PRO_CAPABILITIES$\\n\\n### Payment intent\\n- Willing to pay: $PAY_WILLING$\\n- Acceptable price (monthly): $PAY_MONTHLY$\\n- Acceptable price (annual): $PAY_ANNUAL$\\n\\n### Contact (optional)\\n$CONTACT$\\n",
     "description": "Options Pro tab: waitlist survey markdown template (copy to clipboard)",
     "placeholders": {
       "EXT_VERSION": {
@@ -177,6 +180,9 @@
       },
       "UI_LANG": {
         "content": "$4"
+      },
+      "CAMPAIGN_LINE": {
+        "content": "$11"
       },
       "USE_CASE": {
         "content": "$5"
@@ -297,6 +303,22 @@
   "proCopyWaitlistCopy": {
     "message": "Copy waitlist template",
     "description": "Options Pro tab copy action"
+  },
+  "proIntentCampaignLabel": {
+    "message": "Campaign (optional)",
+    "description": "Options Pro tab: campaign input label"
+  },
+  "proIntentCampaignPlaceholder": {
+    "message": "e.g. twitter / producthunt / xiaohongshu_2026",
+    "description": "Options Pro tab: campaign input placeholder"
+  },
+  "proIntentCampaignHint": {
+    "message": "Used for channel attribution. Do NOT enter sensitive data. Only 1-32 chars: letters/numbers/._- (use a short id).",
+    "description": "Options Pro tab: campaign input hint (privacy + constraints)"
+  },
+  "proIntentCampaignInvalid": {
+    "message": "Invalid campaign. Cleared (allowed: 1-32 chars letters/numbers/._-).",
+    "description": "Options Pro tab: invalid campaign notice"
   },
   "proPrivacyHint": {
     "message": "The waitlist issue is prefilled with extension version/ID and language only. No webpage or copied content is included.",
@@ -1084,6 +1106,14 @@
   "proIntentWeeklyDigestMdSectionRatesOverall": {
     "message": "Key conversion rates (overall)",
     "description": "Weekly digest overall conversion rates section heading"
+  },
+  "proIntentWeeklyDigestMdSectionCampaignBreakdown": {
+    "message": "Campaign breakdown (lead actions)",
+    "description": "Weekly digest campaign breakdown section heading"
+  },
+  "proIntentWeeklyDigestMdCampaignNone": {
+    "message": "(none)",
+    "description": "Weekly digest label for empty campaign bucket (to reconcile overall counts)"
   },
   "proIntentWeeklyDigestMdSectionEnv": {
     "message": "Environment",

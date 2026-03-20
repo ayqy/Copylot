@@ -43,6 +43,7 @@ import {
   type ProIntentWeeklyDigestEnvInfo
 } from '../shared/pro-intent-weekly-digest';
 import { buildProIntentEventsCsv, formatProIntentEvents7dCsvFilename } from '../shared/pro-intent-events-csv';
+import { formatCampaignLineForTemplate, sanitizeCampaign } from '../shared/campaign';
 import {
   buildWomEvidencePack,
   buildWomSummary,
@@ -149,6 +150,7 @@ interface OptionsElements {
   growthStatsResetButton: HTMLButtonElement;
 
   // Pro / Monetization
+  proIntentCampaignInput: HTMLInputElement;
   proWaitlistButton: HTMLButtonElement;
   proWaitlistCopyButton: HTMLButtonElement;
   proWaitlistSurveyUseCase: HTMLTextAreaElement;
@@ -274,6 +276,7 @@ function getElements(): OptionsElements {
     growthStatsCopyButton: document.getElementById('growth-stats-copy') as HTMLButtonElement,
     growthStatsResetButton: document.getElementById('growth-stats-reset') as HTMLButtonElement,
 
+    proIntentCampaignInput: document.getElementById('pro-intent-campaign') as HTMLInputElement,
     proWaitlistButton: document.getElementById('pro-waitlist-button') as HTMLButtonElement,
     proWaitlistCopyButton: document.getElementById('pro-waitlist-copy') as HTMLButtonElement,
     proWaitlistSurveyUseCase: document.getElementById('pro-waitlist-survey-use-case') as HTMLTextAreaElement,
@@ -365,6 +368,9 @@ async function loadSettings() {
     allPrompts = [...currentSettings.userPrompts];
     if (elements?.anonymousUsageDataSwitch) {
       elements.anonymousUsageDataSwitch.checked = Boolean(currentSettings.isAnonymousUsageDataEnabled);
+    }
+    if (elements?.proIntentCampaignInput) {
+      elements.proIntentCampaignInput.value = currentSettings.proIntentCampaign || '';
     }
     updateProIntentEvents7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
     filterAndRenderPrompts();
@@ -2046,7 +2052,10 @@ function setupEventListeners() {
     }
 
     if (tabName === 'pro') {
-      void recordTelemetryEvent('pro_entry_opened', { source: 'options' });
+      const campaign = getProIntentCampaign();
+      const props: Record<string, string> = { source: 'options' };
+      if (campaign) props.campaign = campaign;
+      void recordTelemetryEvent('pro_entry_opened', props);
     }
   }
 
@@ -2094,7 +2103,54 @@ function setupEventListeners() {
     setActiveMainTab('pro');
   }
 
+  function getProIntentCampaign(): string | undefined {
+    const value = elements.proIntentCampaignInput ? elements.proIntentCampaignInput.value : (currentSettings?.proIntentCampaign || '');
+    const sanitized = sanitizeCampaign(value);
+    return sanitized || undefined;
+  }
+
+  elements.proIntentCampaignInput.addEventListener('change', async () => {
+    const raw = elements.proIntentCampaignInput.value || '';
+    const trimmed = raw.trim();
+
+    // Empty is allowed (campaign is optional).
+    if (!trimmed) {
+      try {
+        await saveSettings({ proIntentCampaign: '' });
+        currentSettings = { ...currentSettings, proIntentCampaign: '' };
+      } catch (error) {
+        console.warn('Failed to save pro intent campaign:', error);
+        showNotification(getMessage('savingFailed'), 'error');
+      }
+      return;
+    }
+
+    const sanitized = sanitizeCampaign(raw);
+    if (!sanitized) {
+      elements.proIntentCampaignInput.value = '';
+      try {
+        await saveSettings({ proIntentCampaign: '' });
+        currentSettings = { ...currentSettings, proIntentCampaign: '' };
+      } catch (error) {
+        console.warn('Failed to save pro intent campaign:', error);
+        showNotification(getMessage('savingFailed'), 'error');
+      }
+      showNotification(getMessage('proIntentCampaignInvalid'), 'info');
+      return;
+    }
+
+    elements.proIntentCampaignInput.value = sanitized;
+    try {
+      await saveSettings({ proIntentCampaign: sanitized });
+      currentSettings = { ...currentSettings, proIntentCampaign: sanitized };
+    } catch (error) {
+      console.warn('Failed to save pro intent campaign:', error);
+      showNotification(getMessage('savingFailed'), 'error');
+    }
+  });
+
   function buildWaitlistUrl(): string {
+    const campaign = getProIntentCampaign();
     return buildProWaitlistIssueUrl({
       env: {
         extensionVersion: chrome.runtime.getManifest().version || '',
@@ -2102,6 +2158,7 @@ function setupEventListeners() {
         navigatorLanguage: navigator.language || '',
         uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
       },
+      campaign,
       getMessage
     });
   }
@@ -2145,6 +2202,7 @@ function setupEventListeners() {
     const payWilling = selectText(elements.proWaitlistSurveyPayWilling);
     const payMonthly = selectText(elements.proWaitlistSurveyPayMonthly);
     const payAnnual = selectText(elements.proWaitlistSurveyPayAnnual);
+    const campaignLine = formatCampaignLineForTemplate(getProIntentCampaign());
 
     return getMessage('proWaitlistSurveyBodyTemplate', [
       extensionVersion,
@@ -2156,17 +2214,21 @@ function setupEventListeners() {
       payWilling,
       payMonthly,
       payAnnual,
-      contact
+      contact,
+      campaignLine
     ]);
   }
 
   async function copyWaitlistSurveyToClipboard(button: HTMLButtonElement): Promise<boolean> {
     const originalText = button.textContent || '';
     const body = buildWaitlistSurveyBody();
+    const campaign = getProIntentCampaign();
+    const props: Record<string, string> = { source: 'options' };
+    if (campaign) props.campaign = campaign;
 
     try {
       await navigator.clipboard.writeText(body);
-      void recordTelemetryEvent('pro_waitlist_survey_copied', { source: 'options' });
+      void recordTelemetryEvent('pro_waitlist_survey_copied', props);
       button.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
         const key =
@@ -2180,7 +2242,7 @@ function setupEventListeners() {
       console.warn('Failed to copy waitlist survey via navigator.clipboard:', error);
       const ok = fallbackCopyText(body);
       if (ok) {
-        void recordTelemetryEvent('pro_waitlist_survey_copied', { source: 'options' });
+        void recordTelemetryEvent('pro_waitlist_survey_copied', props);
         button.textContent = getMessage('copied') || originalText;
         window.setTimeout(() => {
           const key =
@@ -2247,7 +2309,10 @@ function setupEventListeners() {
   }
 
   elements.proWaitlistButton.addEventListener('click', () => {
-    void recordTelemetryEvent('pro_waitlist_opened', { source: 'options' });
+    const campaign = getProIntentCampaign();
+    const props: Record<string, string> = { source: 'options' };
+    if (campaign) props.campaign = campaign;
+    void recordTelemetryEvent('pro_waitlist_opened', props);
     const url = buildWaitlistUrl();
     chrome.tabs.create({ url });
   });
@@ -2258,18 +2323,24 @@ function setupEventListeners() {
 
   elements.proWaitlistSurveyCopyOpenButton.addEventListener('click', async () => {
     await copyWaitlistSurveyToClipboard(elements.proWaitlistSurveyCopyOpenButton);
-    void recordTelemetryEvent('pro_waitlist_opened', { source: 'options' });
+    const campaign = getProIntentCampaign();
+    const props: Record<string, string> = { source: 'options' };
+    if (campaign) props.campaign = campaign;
+    void recordTelemetryEvent('pro_waitlist_opened', props);
     const url = buildWaitlistUrl();
     chrome.tabs.create({ url });
   });
 
   elements.proWaitlistCopyButton.addEventListener('click', async () => {
     const originalText = elements.proWaitlistCopyButton.textContent || '';
+    const campaign = getProIntentCampaign();
+    const props: Record<string, string> = { source: 'options' };
+    if (campaign) props.campaign = campaign;
     try {
       const url = buildWaitlistUrl();
       const body = new URL(url).searchParams.get('body') || '';
       await navigator.clipboard.writeText(body);
-      void recordTelemetryEvent('pro_waitlist_copied', { source: 'options' });
+      void recordTelemetryEvent('pro_waitlist_copied', props);
       elements.proWaitlistCopyButton.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
         elements.proWaitlistCopyButton.textContent =

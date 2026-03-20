@@ -5,6 +5,7 @@
 - **开关控制**：Options 页“匿名使用数据”默认关闭；仅在开启时写入本地匿名事件日志。
 - **严格字段**：事件只允许 `name/ts/props(白名单)`；`props` 仅保留白名单 key 且值为 `string|number|boolean`。
 - **枚举收敛**：对枚举型 props（如 `source/action`）做固定取值校验；非法值会在 `sanitizeTelemetryEvent` 中丢弃（事件保留，但 `props` 可能变为 `undefined`）。
+- **渠道归因（campaign，可选）**：仅用于 Pro 意向事件的可选 `props.campaign`；只允许短字符串（`1-32`，字符集 `[A-Za-z0-9._-]`，且必须以字母/数字开头）；仅来源于用户在 Options -> Pro Tab 的手动输入/本地设置，不允许从网页内容/复制内容/URL/标题中派生。
 - **隐私约束**：不得包含任何用户复制内容/页面内容/URL/标题等。
 - **保留策略**：最多保留最近 `100` 条，超出后 FIFO 丢弃最旧；关闭开关后立刻清空本地日志。
 
@@ -30,10 +31,10 @@
 | `prompt_used` | Prompt 链路触发且复制成功 | `src/content/content.ts`：Prompt 菜单复制 / `PROCESS_*_WITH_PROMPT*` 消息链路复制成功路径 | 无 | 不包含任何用户内容 | 与 `copy_success` 同次成功复制配对出现 |
 | `pro_prompt_shown` | Popup 内 Pro 候补提示曝光 | `src/popup/popup.ts` `maybeShowProWaitlistPrompt()`（仅在展示时记录） | `{ source: 'popup' }` | 不包含任何用户内容 | 仅用于计算“曝光分母 -> 行动”漏斗；开关关闭不记录 |
 | `pro_prompt_action` | Popup 内 Pro 候补提示用户动作 | `src/popup/popup.ts` Pro 候补提示按钮点击 | `{ source: 'popup', action: 'join' \| 'later' \| 'never' }` | 不包含任何用户内容 | `join`=打开 Options -> Pro Tab；`later`=按策略延迟再提示；`never`=永久不再提示 |
-| `pro_entry_opened` | 打开 Pro 入口（升级 Pro / Pro Tab） | Popup：`src/popup/popup.ts` 点击 `#upgrade-pro-entry`；Options：`src/options/options.ts` 激活 `#pro-tab` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容 | 仅记录意向入口触达 |
-| `pro_waitlist_opened` | 打开候补登记页 | Popup：`src/popup/popup.ts` 点击 `#popup-pro-waitlist`；Options：`src/options/options.ts` 点击 `#pro-waitlist-button` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容；候补链接仅预填环境信息与占位提示 | 打开 GitHub `issues/new` |
-| `pro_waitlist_copied` | 复制候补文案成功 | Popup：`src/popup/popup.ts` 点击 `#popup-pro-waitlist-copy` 且写入剪贴板成功；Options：`src/options/options.ts` 点击 `#pro-waitlist-copy` 且写入剪贴板成功 | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容；复制内容为候补模板（仅环境信息 + 占位提示） | 仅在写入成功时记录 |
-| `pro_waitlist_survey_copied` | 复制“付费意向问卷（可选）”成功 | Options：`src/options/options.ts` 点击 `#pro-waitlist-survey-copy` / `#pro-waitlist-survey-copy-open` 且写入剪贴板成功 | `{ source: 'options' }` | 不包含任何网页内容/复制内容/URL/标题；复制内容为“环境信息 + 用户手动填写问卷”Markdown | 仅在写入成功时记录 |
+| `pro_entry_opened` | 打开 Pro 入口（升级 Pro / Pro Tab） | Popup：`src/popup/popup.ts` 点击 `#upgrade-pro-entry`；Options：`src/options/options.ts` 激活 `#pro-tab` | `{ source: 'popup' \| 'options', campaign?: string }` | `campaign` 仅来源于用户输入（Options -> Pro Tab），不包含网页内容/复制内容/URL/标题 | `campaign` 为空不写入 props |
+| `pro_waitlist_opened` | 打开候补登记页 | Popup：`src/popup/popup.ts` 点击 `#popup-pro-waitlist`；Options：`src/options/options.ts` 点击 `#pro-waitlist-button` | `{ source: 'popup' \| 'options', campaign?: string }` | 不包含任何用户内容；候补链接仅预填环境信息与占位提示；`campaign` 仅来源于用户输入 | 打开 GitHub `issues/new` |
+| `pro_waitlist_copied` | 复制候补文案成功 | Popup：`src/popup/popup.ts` 点击 `#popup-pro-waitlist-copy` 且写入剪贴板成功；Options：`src/options/options.ts` 点击 `#pro-waitlist-copy` 且写入剪贴板成功 | `{ source: 'popup' \| 'options', campaign?: string }` | 不包含任何用户内容；复制内容为候补模板（仅环境信息 + 占位提示）；`campaign` 仅来源于用户输入 | 仅在写入成功时记录 |
+| `pro_waitlist_survey_copied` | 复制“付费意向问卷（可选）”成功 | Options：`src/options/options.ts` 点击 `#pro-waitlist-survey-copy` / `#pro-waitlist-survey-copy-open` 且写入剪贴板成功 | `{ source: 'options', campaign?: string }` | 不包含任何网页内容/复制内容/URL/标题；复制内容为“环境信息 + 用户手动填写问卷”Markdown；`campaign` 仅来源于用户输入 | `campaign` 为空不写入 props |
 
 ## 开关与清理
 - 开关字段：`Settings.isAnonymousUsageDataEnabled`

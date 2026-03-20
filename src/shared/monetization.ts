@@ -1,3 +1,5 @@
+import { formatCampaignLineForTemplate } from './campaign.ts';
+
 export type I18nGetMessage = (key: string, substitutions?: string | string[]) => string;
 
 export interface ProWaitlistEnvironmentInfo {
@@ -18,21 +20,23 @@ export interface BuildProWaitlistIssueParams {
   env: ProWaitlistEnvironmentInfo;
   getMessage: I18nGetMessage;
   githubNewIssueUrl?: string;
+  campaign?: unknown;
 }
 
 export function buildProWaitlistIssueUrl(params: BuildProWaitlistIssueParams): string {
   const githubNewIssueUrl = params.githubNewIssueUrl || DEFAULT_PRO_WAITLIST_GITHUB_NEW_ISSUE_URL;
 
   const title = safeGetMessage(params.getMessage, 'proWaitlistIssueTitleTemplate');
+  const campaignLine = formatCampaignLineForTemplate(params.campaign);
   const body = safeGetMessage(params.getMessage, 'proWaitlistIssueBodyTemplate', [
     params.env.extensionVersion,
     params.env.extensionId,
     params.env.navigatorLanguage,
-    params.env.uiLanguage
+    params.env.uiLanguage,
+    campaignLine
   ]);
 
   const url = new URL(githubNewIssueUrl);
   url.search = new URLSearchParams({ title, body }).toString();
   return url.toString();
 }
-

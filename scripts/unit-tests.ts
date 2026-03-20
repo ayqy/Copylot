@@ -34,6 +34,7 @@ import {
   sanitizeTelemetryEvents,
   trimTelemetryEvents
 } from '../src/shared/telemetry.ts';
+import { sanitizeCampaign } from '../src/shared/campaign.ts';
 import { buildProFunnelEvidencePack, buildProFunnelSummary } from '../src/shared/pro-funnel.ts';
 import {
   buildProIntentWeeklyDigestSummary,
@@ -438,6 +439,17 @@ async function run() {
   assert.equal(summaryActivatedByCount.timeFromFirstPopupToFirstCopyMs, undefined);
   assert.equal(summaryActivatedByCount.activatedWithin3MinutesFromFirstPopup, undefined);
 
+  // campaign.ts (pure functions)
+  assert.equal(sanitizeCampaign('twitter'), 'twitter');
+  assert.equal(sanitizeCampaign('  twitter  '), 'twitter');
+  assert.equal(sanitizeCampaign(''), null);
+  assert.equal(sanitizeCampaign('   '), null);
+  assert.equal(sanitizeCampaign('a'.repeat(33)), null);
+  assert.equal(sanitizeCampaign('http://x.com'), null);
+  assert.equal(sanitizeCampaign('a b'), null);
+  assert.equal(sanitizeCampaign('_abc'), null);
+  assert.equal(sanitizeCampaign('小红书'), null);
+
   // telemetry.ts (pure functions)
   assert.equal(sanitizeTelemetryEvent({ name: 'unknown', ts: now }), null);
   assert.equal(sanitizeTelemetryEvent({ name: 'popup_opened', ts: -1 }), null);
@@ -465,7 +477,23 @@ async function run() {
     sanitizeTelemetryEvent({
       name: 'pro_entry_opened',
       ts: now,
-      props: { source: 'unknown' }
+      props: { source: 'options', campaign: 'twitter', extra: 'x' }
+    }),
+    { name: 'pro_entry_opened', ts: now, props: { source: 'options', campaign: 'twitter' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_entry_opened',
+      ts: now,
+      props: { source: 'options', campaign: 'http://x.com' }
+    }),
+    { name: 'pro_entry_opened', ts: now, props: { source: 'options' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_entry_opened',
+      ts: now,
+      props: { source: 'unknown', campaign: 'twitter' }
     }),
     { name: 'pro_entry_opened', ts: now }
   );
@@ -763,20 +791,31 @@ async function run() {
       { name: 'pro_entry_opened', ts: now, props: { source: 'popup', url: 'https://example.com' } },
       { name: 'pro_waitlist_opened', ts: now + 1, props: { source: 'options', title: 'x' } },
       { name: 'pro_waitlist_survey_copied', ts: now + 2, props: { source: 'options', useCase: 'x' } },
+      { name: 'pro_waitlist_copied', ts: now + 3, props: { source: 'options', campaign: 'twitter', extra: 'x' } },
       { name: 'popup_opened', ts: now + 2 },
-      { name: 'unknown', ts: now + 3 }
+      { name: 'unknown', ts: now + 4 }
     ]
   });
   assert.deepEqual(Object.keys(proPack).sort(), ['events', 'meta', 'proFunnel', 'settings']);
   assert.deepEqual(Object.keys(proPack.meta).sort(), ['exportedAt', 'extensionVersion', 'source']);
   assert.deepEqual(Object.keys(proPack.settings).sort(), ['isAnonymousUsageDataEnabled']);
   assert.equal(proPack.settings.isAnonymousUsageDataEnabled, true);
-  assert.equal(proPack.events.length, 5);
+  assert.equal(proPack.events.length, 6);
   assert.deepEqual(
     proPack.events.map((e) => e.name),
-    ['pro_prompt_shown', 'pro_prompt_action', 'pro_entry_opened', 'pro_waitlist_opened', 'pro_waitlist_survey_copied']
+    [
+      'pro_prompt_shown',
+      'pro_prompt_action',
+      'pro_entry_opened',
+      'pro_waitlist_opened',
+      'pro_waitlist_survey_copied',
+      'pro_waitlist_copied'
+    ]
   );
   assert.deepEqual(Object.keys(proPack.events[0]?.props || {}).sort(), ['source']);
+  const waitlistCopiedEvent = proPack.events.find((e) => e.name === 'pro_waitlist_copied');
+  assert.deepEqual(Object.keys(waitlistCopiedEvent?.props || {}).sort(), ['campaign', 'source']);
+  assert.equal(waitlistCopiedEvent?.props?.campaign, 'twitter');
 
   const proPackTelemetryOff = buildProFunnelEvidencePack({
     exportedAt: 1,
@@ -835,6 +874,26 @@ async function run() {
   assert.equal(proWeeklyDigest.rates.waitlist_opened_per_entry_opened, 1);
   assert.equal(proWeeklyDigest.rates.waitlist_copied_per_waitlist_opened, 1);
   assert.equal(proWeeklyDigest.rates.survey_copied_per_entry_opened, 1);
+  assert.deepEqual(proWeeklyDigest.byCampaign, {
+    '%%NO_CAMPAIGN%%': { pro_waitlist_copied: 1, pro_waitlist_survey_copied: 1 }
+  });
+
+  const proWeeklyDigestCampaign = buildProIntentWeeklyDigestSummary({
+    enabled: true,
+    telemetryEvents: [
+      { name: 'pro_waitlist_copied', ts: now - 10, props: { source: 'options', campaign: 'twitter' } },
+      { name: 'pro_waitlist_copied', ts: now - 9, props: { source: 'options' } },
+      { name: 'pro_waitlist_survey_copied', ts: now - 8, props: { source: 'options', campaign: 'twitter' } },
+      { name: 'pro_waitlist_survey_copied', ts: now - 7, props: { source: 'options', campaign: 'ph' } },
+      { name: 'pro_waitlist_opened', ts: now - 6, props: { source: 'options', campaign: 'twitter' } }
+    ],
+    now
+  });
+  assert.deepEqual(proWeeklyDigestCampaign.byCampaign, {
+    twitter: { pro_waitlist_copied: 1, pro_waitlist_survey_copied: 1 },
+    '%%NO_CAMPAIGN%%': { pro_waitlist_copied: 1, pro_waitlist_survey_copied: 0 },
+    ph: { pro_waitlist_copied: 0, pro_waitlist_survey_copied: 1 }
+  });
 
   const digestGetMessage = (key: string, substitutions?: string | string[]) => {
     const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
@@ -844,6 +903,8 @@ async function run() {
     if (key === 'proIntentWeeklyDigestMdSectionCountsOverall') return '关键事件计数（overall）';
     if (key === 'proIntentWeeklyDigestMdSectionCountsBySource') return '关键事件计数（bySource）';
     if (key === 'proIntentWeeklyDigestMdSectionRatesOverall') return '关键转化率（overall）';
+    if (key === 'proIntentWeeklyDigestMdSectionCampaignBreakdown') return '按 campaign 拆分（留资动作）';
+    if (key === 'proIntentWeeklyDigestMdCampaignNone') return '(none)';
     if (key === 'proIntentWeeklyDigestMdSectionEnv') return '环境信息';
     if (key === 'proIntentWeeklyDigestMdSectionPrivacy') return '隐私声明';
     if (key === 'proIntentWeeklyDigestMdPrivacyStatement') return '不包含网页内容';
@@ -862,6 +923,7 @@ async function run() {
   assert.ok(proWeeklyDigestMarkdown.includes('pro_entry_opened'));
   assert.ok(proWeeklyDigestMarkdown.includes('waitlist_opened_per_entry_opened'));
   assert.ok(proWeeklyDigestMarkdown.includes('不包含网页内容'));
+  assert.ok(proWeeklyDigestMarkdown.includes('| (none) |'));
 
   // pro-intent-events-csv.ts (pure functions + 7d window -> CSV)
   const proIntentCsvDisabled = buildProIntentEventsCsv({
@@ -1098,6 +1160,7 @@ async function run() {
 
   const optionsHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/options/options.html'], { encoding: 'utf8' });
   assert.ok(optionsHtml.includes('data-tab="pro"'), 'options.html should include pro tab');
+  assert.ok(optionsHtml.includes('id="pro-intent-campaign"'), 'options.html should include pro-intent-campaign');
   assert.ok(optionsHtml.includes('id="pro-waitlist-button"'), 'options.html should include pro-waitlist-button');
   assert.ok(optionsHtml.includes('id="pro-waitlist-copy"'), 'options.html should include pro-waitlist-copy');
   assert.ok(optionsHtml.includes('id="pro-scope-learn-more"'), 'options.html should include pro-scope-learn-more');

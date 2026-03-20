@@ -35,6 +35,8 @@ export interface Settings {
   isHoverMagicCopyEnabled: boolean;
   // Observability (local-only, privacy-safe). Default: off.
   isAnonymousUsageDataEnabled: boolean;
+  // Pro intent attribution (user-provided, optional).
+  proIntentCampaign?: string;
   outputFormat: 'markdown' | 'plaintext';
   tableOutputFormat: 'markdown' | 'csv'; // Added for table format
   attachTitle: boolean;

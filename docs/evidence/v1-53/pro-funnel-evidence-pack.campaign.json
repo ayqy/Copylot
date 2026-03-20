@@ -1,0 +1,173 @@
+{
+  "meta": {
+    "exportedAt": 1774127999000,
+    "extensionVersion": "1.1.25",
+    "source": "options"
+  },
+  "settings": {
+    "isAnonymousUsageDataEnabled": true
+  },
+  "proFunnel": {
+    "enabled": true,
+    "window": {
+      "maxEvents": 100,
+      "policy": "fifo",
+      "scope": "current_window_only"
+    },
+    "bySource": {
+      "popup": {
+        "counts": {
+          "pro_prompt_shown": 1,
+          "pro_prompt_action": 1,
+          "pro_entry_opened": 1,
+          "pro_waitlist_opened": 0,
+          "pro_waitlist_copied": 0,
+          "pro_waitlist_survey_copied": 0
+        },
+        "lastTs": {
+          "pro_prompt_shown": 1774127000001,
+          "pro_prompt_action": 1774127001001,
+          "pro_entry_opened": 1774127002001,
+          "pro_waitlist_opened": null,
+          "pro_waitlist_copied": null,
+          "pro_waitlist_survey_copied": null
+        },
+        "rates": {
+          "entry_opened_per_prompt_shown": 1,
+          "waitlist_opened_per_prompt_shown": 0,
+          "waitlist_opened_per_entry_opened": 0,
+          "waitlist_copied_per_waitlist_opened": null
+        }
+      },
+      "options": {
+        "counts": {
+          "pro_prompt_shown": 0,
+          "pro_prompt_action": 0,
+          "pro_entry_opened": 2,
+          "pro_waitlist_opened": 2,
+          "pro_waitlist_copied": 2,
+          "pro_waitlist_survey_copied": 1
+        },
+        "lastTs": {
+          "pro_prompt_shown": null,
+          "pro_prompt_action": null,
+          "pro_entry_opened": 1774127200001,
+          "pro_waitlist_opened": 1774127201001,
+          "pro_waitlist_copied": 1774127202001,
+          "pro_waitlist_survey_copied": 1774127203001
+        },
+        "rates": {
+          "entry_opened_per_prompt_shown": null,
+          "waitlist_opened_per_prompt_shown": null,
+          "waitlist_opened_per_entry_opened": 1,
+          "waitlist_copied_per_waitlist_opened": 1
+        }
+      }
+    },
+    "overall": {
+      "counts": {
+        "pro_prompt_shown": 1,
+        "pro_prompt_action": 1,
+        "pro_entry_opened": 3,
+        "pro_waitlist_opened": 2,
+        "pro_waitlist_copied": 2,
+        "pro_waitlist_survey_copied": 1
+      },
+      "lastTs": {
+        "pro_prompt_shown": 1774127000001,
+        "pro_prompt_action": 1774127001001,
+        "pro_entry_opened": 1774127200001,
+        "pro_waitlist_opened": 1774127201001,
+        "pro_waitlist_copied": 1774127202001,
+        "pro_waitlist_survey_copied": 1774127203001
+      },
+      "rates": {
+        "entry_opened_per_prompt_shown": 3,
+        "waitlist_opened_per_prompt_shown": 2,
+        "waitlist_opened_per_entry_opened": 0.6667,
+        "waitlist_copied_per_waitlist_opened": 1
+      }
+    }
+  },
+  "events": [
+    {
+      "name": "pro_prompt_shown",
+      "ts": 1774127000001,
+      "props": {
+        "source": "popup"
+      }
+    },
+    {
+      "name": "pro_prompt_action",
+      "ts": 1774127001001,
+      "props": {
+        "source": "popup",
+        "action": "join"
+      }
+    },
+    {
+      "name": "pro_entry_opened",
+      "ts": 1774127002001,
+      "props": {
+        "source": "popup"
+      }
+    },
+    {
+      "name": "pro_entry_opened",
+      "ts": 1774127100001,
+      "props": {
+        "source": "options",
+        "campaign": "twitter"
+      }
+    },
+    {
+      "name": "pro_waitlist_opened",
+      "ts": 1774127101001,
+      "props": {
+        "source": "options",
+        "campaign": "twitter"
+      }
+    },
+    {
+      "name": "pro_waitlist_copied",
+      "ts": 1774127102001,
+      "props": {
+        "source": "options",
+        "campaign": "twitter"
+      }
+    },
+    {
+      "name": "pro_entry_opened",
+      "ts": 1774127200001,
+      "props": {
+        "source": "options",
+        "campaign": "ph"
+      }
+    },
+    {
+      "name": "pro_waitlist_opened",
+      "ts": 1774127201001,
+      "props": {
+        "source": "options",
+        "campaign": "ph"
+      }
+    },
+    {
+      "name": "pro_waitlist_copied",
+      "ts": 1774127202001,
+      "props": {
+        "source": "options",
+        "campaign": "ph"
+      }
+    },
+    {
+      "name": "pro_waitlist_survey_copied",
+      "ts": 1774127203001,
+      "props": {
+        "source": "options",
+        "campaign": "ph"
+      }
+    }
+  ]
+}
+

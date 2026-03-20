@@ -14,6 +14,8 @@ export const PRO_INTENT_WEEKLY_DIGEST_EVENT_NAMES = [
   'pro_waitlist_survey_copied'
 ] as const;
 
+const NO_CAMPAIGN_BUCKET_KEY = '%%NO_CAMPAIGN%%';
+
 export type ProIntentWeeklyDigestEventName = (typeof PRO_INTENT_WEEKLY_DIGEST_EVENT_NAMES)[number];
 
 export interface ProIntentWeeklyDigestCounts {
@@ -27,6 +29,11 @@ export interface ProIntentWeeklyDigestRates {
   waitlist_opened_per_entry_opened: number | null;
   waitlist_copied_per_waitlist_opened: number | null;
   survey_copied_per_entry_opened: number | null;
+}
+
+export interface ProIntentWeeklyDigestCampaignCounts {
+  pro_waitlist_copied: number;
+  pro_waitlist_survey_copied: number;
 }
 
 export interface ProIntentWeeklyDigestSummary {
@@ -43,6 +50,7 @@ export interface ProIntentWeeklyDigestSummary {
   bySource: Record<ProIntentWeeklyDigestSource, ProIntentWeeklyDigestCounts>;
   overall: ProIntentWeeklyDigestCounts;
   rates: ProIntentWeeklyDigestRates;
+  byCampaign: Record<string, ProIntentWeeklyDigestCampaignCounts>;
 }
 
 export interface BuildProIntentWeeklyDigestSummaryParams {
@@ -78,6 +86,13 @@ function createEmptyCounts(): ProIntentWeeklyDigestCounts {
   return {
     pro_entry_opened: 0,
     pro_waitlist_opened: 0,
+    pro_waitlist_copied: 0,
+    pro_waitlist_survey_copied: 0
+  };
+}
+
+function createEmptyCampaignCounts(): ProIntentWeeklyDigestCampaignCounts {
+  return {
     pro_waitlist_copied: 0,
     pro_waitlist_survey_copied: 0
   };
@@ -147,6 +162,7 @@ export function buildProIntentWeeklyDigestSummary(params: BuildProIntentWeeklyDi
     waitlist_copied_per_waitlist_opened: null,
     survey_copied_per_entry_opened: null
   };
+  const byCampaign: Record<string, ProIntentWeeklyDigestCampaignCounts> = {};
 
   if (!params.enabled) {
     return {
@@ -155,7 +171,8 @@ export function buildProIntentWeeklyDigestSummary(params: BuildProIntentWeeklyDi
       window,
       bySource,
       overall,
-      rates
+      rates,
+      byCampaign
     };
   }
 
@@ -171,6 +188,12 @@ export function buildProIntentWeeklyDigestSummary(params: BuildProIntentWeeklyDi
 
     bySource[source][event.name] += 1;
     overall[event.name] += 1;
+
+    if (event.name === 'pro_waitlist_copied' || event.name === 'pro_waitlist_survey_copied') {
+      const campaign = typeof event.props?.campaign === 'string' && event.props.campaign ? event.props.campaign : NO_CAMPAIGN_BUCKET_KEY;
+      if (!byCampaign[campaign]) byCampaign[campaign] = createEmptyCampaignCounts();
+      byCampaign[campaign][event.name] += 1;
+    }
   }
 
   rates.waitlist_opened_per_entry_opened = safeRate(overall.pro_waitlist_opened, overall.pro_entry_opened);
@@ -182,7 +205,8 @@ export function buildProIntentWeeklyDigestSummary(params: BuildProIntentWeeklyDi
     window,
     bySource,
     overall,
-    rates
+    rates,
+    byCampaign
   };
 }
 
@@ -217,6 +241,10 @@ function formatRate(value: number | null): string {
 
 function renderBySourceRow(source: ProIntentWeeklyDigestSource, counts: ProIntentWeeklyDigestCounts): string {
   return `| ${source} | ${counts.pro_entry_opened} | ${counts.pro_waitlist_opened} | ${counts.pro_waitlist_copied} | ${counts.pro_waitlist_survey_copied} |`;
+}
+
+function renderCampaignRow(campaign: string, counts: ProIntentWeeklyDigestCampaignCounts): string {
+  return `| ${campaign} | ${counts.pro_waitlist_copied} | ${counts.pro_waitlist_survey_copied} |`;
 }
 
 export function formatProIntentWeeklyDigestMarkdown(params: {
@@ -290,6 +318,26 @@ export function formatProIntentWeeklyDigestMarkdown(params: {
 
   lines.push(`## ${safeGetMessage(getMessage, 'proIntentWeeklyDigestMdSectionPrivacy')}`);
   lines.push(safeGetMessage(getMessage, 'proIntentWeeklyDigestMdPrivacyStatement'));
+  lines.push('');
+
+  lines.push(`## ${safeGetMessage(getMessage, 'proIntentWeeklyDigestMdSectionCampaignBreakdown')}`);
+  const campaignHeaderCells = ['campaign', 'pro_waitlist_copied', 'pro_waitlist_survey_copied'];
+  lines.push(`| ${campaignHeaderCells.join(' | ')} |`);
+  lines.push(`| ${campaignHeaderCells.map(() => '---').join(' | ')} |`);
+  const campaignKeys = Object.keys(summary.byCampaign);
+  campaignKeys.sort((a, b) => {
+    const aTotal = summary.byCampaign[a].pro_waitlist_copied + summary.byCampaign[a].pro_waitlist_survey_copied;
+    const bTotal = summary.byCampaign[b].pro_waitlist_copied + summary.byCampaign[b].pro_waitlist_survey_copied;
+    if (bTotal !== aTotal) return bTotal - aTotal;
+    const aName = a === NO_CAMPAIGN_BUCKET_KEY ? '~' : a;
+    const bName = b === NO_CAMPAIGN_BUCKET_KEY ? '~' : b;
+    return aName.localeCompare(bName);
+  });
+  for (const campaign of campaignKeys) {
+    const displayCampaign =
+      campaign === NO_CAMPAIGN_BUCKET_KEY ? safeGetMessage(getMessage, 'proIntentWeeklyDigestMdCampaignNone') : campaign;
+    lines.push(renderCampaignRow(displayCampaign, summary.byCampaign[campaign]));
+  }
   lines.push('');
 
   return `${lines.join('\n')}\n`;
