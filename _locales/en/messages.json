@@ -1373,6 +1373,22 @@
     "message": "No page content, copied text, URLs, or titles. Derived only from local anonymous telemetry and extension environment info.",
     "description": "Acquisition efficiency weekly report privacy statement body"
   },
+  "proAcqEffByCampaignEvidencePackCopy": {
+    "message": "Copy acquisition efficiency evidence pack (JSON: CSV + Markdown + Env)",
+    "description": "Copy acquisition efficiency evidence pack (JSON: CSV + Markdown + Env) button label in Options privacy tab"
+  },
+  "proAcqEffByCampaignEvidencePackCopySuccess": {
+    "message": "Evidence pack copied to clipboard",
+    "description": "Acquisition efficiency evidence pack copy success notification"
+  },
+  "proAcqEffByCampaignEvidencePackCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Acquisition efficiency evidence pack copy failure notification"
+  },
+  "proAcqEffByCampaignEvidencePackTelemetryOffNotice": {
+    "message": "Anonymous usage data is OFF. This evidence pack only includes environment info and empty placeholders for audit, and does not read or infer any events.",
+    "description": "Acquisition efficiency evidence pack notice when anonymous usage data is disabled (for JSON audit)"
+  },
   "proFunnelRefreshFailed": {
     "message": "Refresh failed",
     "description": "Pro funnel summary refresh failure notification"

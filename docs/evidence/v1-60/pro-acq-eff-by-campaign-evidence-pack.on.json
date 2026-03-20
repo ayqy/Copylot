@@ -1,0 +1,35 @@
+{
+  "enabled": true,
+  "disabledReason": null,
+  "telemetryOffNotice": null,
+  "env": {
+    "extensionVersion": "1.1.28",
+    "exportedAt": 1774070100000,
+    "lookbackDays": 7,
+    "windowFrom": 1773465300000,
+    "windowTo": 1774070100000,
+    "isAnonymousUsageDataEnabled": true
+  },
+  "rows": [
+    {
+      "campaign": "twitter",
+      "leads": 2,
+      "distCopies": 4,
+      "leadsPerDistCopy": "0.5000"
+    },
+    {
+      "campaign": "空 campaign",
+      "leads": 1,
+      "distCopies": 2,
+      "leadsPerDistCopy": "0.5000"
+    },
+    {
+      "campaign": "ph",
+      "leads": 1,
+      "distCopies": 0,
+      "leadsPerDistCopy": "N/A"
+    }
+  ],
+  "csv": "exportedAt,extensionVersion,windowFrom,windowTo,lookbackDays,campaign,leads,distCopies,leadsPerDistCopy\n1774070100000,1.1.28,1773465300000,1774070100000,7,twitter,2,4,0.5000\n1774070100000,1.1.28,1773465300000,1774070100000,7,空 campaign,1,2,0.5000\n1774070100000,1.1.28,1773465300000,1774070100000,7,ph,1,0,N/A\n",
+  "weeklyReportMarkdown": "# Pro 获客效率复盘摘要（过去 7 天，按 campaign）\n\n## 环境信息\n- extensionVersion: 1.1.28\n- exportedAt: 2026-03-21 13:15:00 (UTC+08:00) (1774070100000)\n- lookbackDays: 7\n- windowFrom: 2026-03-14 13:15:00 (UTC+08:00) (1773465300000)\n- windowTo: 2026-03-21 13:15:00 (UTC+08:00) (1774070100000)\n- anonymousUsageData: ON\n\n## 按 campaign 获客效率表\n| campaign | leads | distCopies | leadsPerDistCopy |\n| --- | --- | --- | --- |\n| twitter | 2 | 4 | 0.5000 |\n| 空 campaign | 1 | 2 | 0.5000 |\n| ph | 1 | 0 | N/A |\n\n## 关键结论（模板）\n- Top1 campaign（按 leadsPerDistCopy）：twitter\n- Top1 指标：leads=2，distCopies=4，leadsPerDistCopy=0.5000\n- 空 campaign leads 占比：25.00%（空=1，总=4）\n\n## 隐私声明\n不包含网页内容/复制内容/URL/标题；仅基于本地匿名事件派生与扩展环境信息。\n\n"
+}

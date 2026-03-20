@@ -1373,6 +1373,22 @@
     "message": "不包含网页内容/复制内容/URL/标题；仅基于本地匿名事件派生与扩展环境信息。",
     "description": "获客效率周报摘要隐私声明正文"
   },
+  "proAcqEffByCampaignEvidencePackCopy": {
+    "message": "复制获客效率证据包（JSON，含 CSV + Markdown + Env）",
+    "description": "隐私页复制获客效率证据包（JSON，含 CSV + Markdown + Env）按钮"
+  },
+  "proAcqEffByCampaignEvidencePackCopySuccess": {
+    "message": "证据包已复制到剪贴板",
+    "description": "获客效率证据包复制成功提示"
+  },
+  "proAcqEffByCampaignEvidencePackCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "获客效率证据包复制失败提示"
+  },
+  "proAcqEffByCampaignEvidencePackTelemetryOffNotice": {
+    "message": "匿名使用数据关闭（不读取/不推断事件）。本证据包仅包含环境信息与空资产占位，用于可审计。",
+    "description": "匿名开关 OFF 时获客效率证据包提示文案（用于 JSON 审计）"
+  },
   "proFunnelRefreshFailed": {
     "message": "刷新失败",
     "description": "Pro 意向漏斗摘要刷新失败提示"

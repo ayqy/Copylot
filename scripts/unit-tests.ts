@@ -72,6 +72,10 @@ import {
   formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown
 } from '../src/shared/pro-acquisition-efficiency-by-campaign-weekly-report.ts';
 import {
+  buildProAcquisitionEfficiencyByCampaignEvidencePack,
+  formatProAcquisitionEfficiencyByCampaignEvidencePackAsJson
+} from '../src/shared/pro-acquisition-efficiency-by-campaign-evidence-pack.ts';
+import {
   buildProIntentByCampaignWeeklyReportSummary,
   formatProIntentByCampaignWeeklyReportMarkdown
 } from '../src/shared/pro-intent-by-campaign-weekly-report.ts';
@@ -113,6 +117,9 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
   }
   if (key === 'proAcqEffByCampaignWeeklyReportMdTelemetryOffNotice') {
     return '匿名使用数据关闭（不读取/不推断事件）。本摘要仅包含环境信息，用于可审计。';
+  }
+  if (key === 'proAcqEffByCampaignEvidencePackTelemetryOffNotice') {
+    return '匿名使用数据关闭（不读取/不推断事件）。本证据包仅包含环境信息与空资产占位，用于可审计。';
   }
   if (key === 'proAcqEffByCampaignWeeklyReportMdInsightTop1') {
     return `Top1 campaign（按 leadsPerDistCopy）：${subs[0]}`;
@@ -1561,6 +1568,129 @@ async function run() {
   assert.ok(proAcqEffWeeklyReportMd.includes('Top1 campaign（按 leadsPerDistCopy）：twitter'));
   assert.ok(proAcqEffWeeklyReportMd.includes('Top1 指标：leads=2 distCopies=4 leadsPerDistCopy=0.5000'));
   assert.ok(proAcqEffWeeklyReportMd.includes('空 campaign leads 占比：25.00%'));
+
+  // pro-acquisition-efficiency-by-campaign-evidence-pack.ts (pure functions + stable JSON formatter)
+  const telemetryAccessTrap = new Proxy([], {
+    get() {
+      throw new Error('telemetryEvents should not be accessed when anonymous usage data is OFF');
+    }
+  });
+  const proAcqEffEvidenceOff = buildProAcquisitionEfficiencyByCampaignEvidencePack({
+    enabled: false,
+    telemetryEvents: telemetryAccessTrap,
+    now,
+    extensionVersion: '1.1.28',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7,
+    getMessage
+  });
+  assert.equal(proAcqEffEvidenceOff.enabled, false);
+  assert.equal(proAcqEffEvidenceOff.disabledReason, 'anonymous_usage_data_disabled');
+  assert.ok(proAcqEffEvidenceOff.telemetryOffNotice?.includes('匿名使用数据关闭'));
+  assert.equal(proAcqEffEvidenceOff.env.windowFrom, sevenDaysAgo);
+  assert.equal(proAcqEffEvidenceOff.env.windowTo, now);
+  assert.equal(proAcqEffEvidenceOff.env.isAnonymousUsageDataEnabled, false);
+  assert.equal(proAcqEffEvidenceOff.rows.length, 0);
+  assert.equal(proAcqEffEvidenceOff.csv.trimEnd(), PRO_ACQUISITION_EFFICIENCY_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+  assert.ok(proAcqEffEvidenceOff.weeklyReportMarkdown.includes('匿名使用数据关闭'));
+  assert.ok(!proAcqEffEvidenceOff.weeklyReportMarkdown.includes('| campaign |'));
+
+  const proAcqEffEvidenceOffJson = formatProAcquisitionEfficiencyByCampaignEvidencePackAsJson(proAcqEffEvidenceOff);
+  assert.ok(proAcqEffEvidenceOffJson.endsWith('\n'));
+  const proAcqEffEvidenceOffParsed = JSON.parse(proAcqEffEvidenceOffJson) as Record<string, unknown>;
+  assert.deepEqual(Object.keys(proAcqEffEvidenceOffParsed), [
+    'enabled',
+    'disabledReason',
+    'telemetryOffNotice',
+    'env',
+    'rows',
+    'csv',
+    'weeklyReportMarkdown'
+  ]);
+
+  const proAcqEffEvidenceOn = buildProAcquisitionEfficiencyByCampaignEvidencePack({
+    enabled: true,
+    telemetryEvents: mergedEvents,
+    now,
+    extensionVersion: '1.1.28',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7,
+    getMessage
+  });
+  assert.equal(proAcqEffEvidenceOn.enabled, true);
+  assert.equal(proAcqEffEvidenceOn.disabledReason, null);
+  assert.equal(proAcqEffEvidenceOn.telemetryOffNotice, null);
+  assert.equal(proAcqEffEvidenceOn.env.windowFrom, proAcqEfficiency.windowFrom);
+  assert.equal(proAcqEffEvidenceOn.env.windowTo, proAcqEfficiency.windowTo);
+  assert.equal(proAcqEffEvidenceOn.env.isAnonymousUsageDataEnabled, true);
+  assert.equal(proAcqEffEvidenceOn.rows.length, proAcqEfficiency.rows.length);
+  assert.equal(proAcqEffEvidenceOn.rows[0]?.campaign, 'twitter');
+  assert.equal(proAcqEffEvidenceOn.rows[1]?.campaign, '空 campaign');
+  assert.equal(proAcqEffEvidenceOn.rows[2]?.campaign, 'ph');
+  assert.equal(proAcqEffEvidenceOn.rows[0]?.leadsPerDistCopy, '0.5000');
+  assert.equal(proAcqEffEvidenceOn.rows[2]?.leadsPerDistCopy, 'N/A');
+
+  // mutual verification: evidence rows <-> v1-58 CSV rows
+  for (const row of proAcqEffEvidenceOn.rows) {
+    const csvRow = proAcqEfficiency.rows.find((r) => r.campaign === row.campaign);
+    assert.ok(csvRow, `expected campaign row in v1-58 CSV rows: ${row.campaign}`);
+    assert.equal(row.leads, csvRow?.leads ?? 0);
+    assert.equal(row.distCopies, csvRow?.distCopies ?? 0);
+    assert.equal(row.leadsPerDistCopy, csvRow?.leadsPerDistCopy ?? 'N/A');
+  }
+
+  // mutual verification: evidence rows <-> CSV string
+  const evidenceCsvLines = proAcqEffEvidenceOn.csv.trim().split('\n');
+  assert.equal(evidenceCsvLines[0], PRO_ACQUISITION_EFFICIENCY_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+  assert.equal(evidenceCsvLines.length - 1, proAcqEffEvidenceOn.rows.length);
+  for (const line of evidenceCsvLines.slice(1)) {
+    const [exportedAtStr, extV, fromStr, toStr, lookbackStr, campaign, leadsStr, distCopiesStr, leadsPerDistCopy] =
+      line.split(',');
+    assert.equal(Number(exportedAtStr), proAcqEffEvidenceOn.env.exportedAt);
+    assert.equal(extV, proAcqEffEvidenceOn.env.extensionVersion);
+    assert.equal(Number(fromStr), proAcqEffEvidenceOn.env.windowFrom);
+    assert.equal(Number(toStr), proAcqEffEvidenceOn.env.windowTo);
+    assert.equal(Number(lookbackStr), proAcqEffEvidenceOn.env.lookbackDays);
+    const row = proAcqEffEvidenceOn.rows.find((r) => r.campaign === campaign);
+    assert.ok(row, `expected campaign row in evidence pack rows: ${campaign}`);
+    assert.equal(Number(leadsStr), row?.leads ?? 0);
+    assert.equal(Number(distCopiesStr), row?.distCopies ?? 0);
+    assert.equal(leadsPerDistCopy, row?.leadsPerDistCopy ?? 'N/A');
+  }
+
+  // mutual verification: evidence rows <-> weeklyReportMarkdown table
+  const mdTableLines = proAcqEffEvidenceOn.weeklyReportMarkdown
+    .split('\n')
+    .filter((line) => line.startsWith('| ') && !line.includes('---') && !line.startsWith('| campaign |'));
+  assert.equal(mdTableLines.length, proAcqEffEvidenceOn.rows.length);
+  for (const line of mdTableLines) {
+    const cells = line
+      .split('|')
+      .slice(1, -1)
+      .map((c) => c.trim());
+    const [campaign, leadsStr, distCopiesStr, leadsPerDistCopy] = cells;
+    const row = proAcqEffEvidenceOn.rows.find((r) => r.campaign === campaign);
+    assert.ok(row, `expected campaign row in evidence pack rows: ${campaign}`);
+    assert.equal(Number(leadsStr), row?.leads ?? 0);
+    assert.equal(Number(distCopiesStr), row?.distCopies ?? 0);
+    assert.equal(leadsPerDistCopy, row?.leadsPerDistCopy ?? 'N/A');
+  }
+
+  const proAcqEffEvidenceOnJson = formatProAcquisitionEfficiencyByCampaignEvidencePackAsJson(proAcqEffEvidenceOn);
+  const proAcqEffEvidenceOnParsed = JSON.parse(proAcqEffEvidenceOnJson) as Record<string, unknown>;
+  assert.deepEqual(Object.keys(proAcqEffEvidenceOnParsed), [
+    'enabled',
+    'disabledReason',
+    'telemetryOffNotice',
+    'env',
+    'rows',
+    'csv',
+    'weeklyReportMarkdown'
+  ]);
+  assert.ok(
+    String(proAcqEffEvidenceOnParsed.weeklyReportMarkdown || '').includes('| campaign | leads | distCopies | leadsPerDistCopy |'),
+    'evidence pack should embed weekly report markdown for audit and mutual verification'
+  );
 
   // pro-intent-by-campaign-weekly-report.ts (pure functions + markdown formatter)
   const proIntentByCampaignWeeklyReportDisabled = buildProIntentByCampaignWeeklyReportSummary({
