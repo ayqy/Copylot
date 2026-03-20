@@ -13,12 +13,19 @@
 - 继续用 `bash scripts/test.sh` + `npm run build:prod` 完成可发布门禁与产物一致性验证
 - 完成商店页长描述/截图/链接的仓库内审计（PRD 对齐、口径一致、可复用链接可达）
 - 使用 dry-run/离线演练方式验证 `publish`/`publish:cws` 脚本流程（如脚本支持），复制「Proxy Diagnostic Block」作为可审计证据，提前定位非凭据类问题
+- 按 `docs/publish/cws-preflight-checklist.md` 固化“上架前核对清单”（离线可执行），并将门禁日志落盘到 `docs/evidence/v1-45/preflight/`
+- 先准备“上架后 24h/7d 复盘模板”与证据索引占位：`docs/growth/post-release-review-template.md`、`docs/evidence/v1-45/index.md`
 
 已观测阻塞（v1-37）：
 - 在当前环境执行 `npm run publish:cws`，上传阶段报错 `fetch failed`，根因 `ENOTFOUND www.googleapis.com`（DNS/网络不可达），导致无法完成真实 upload/publish。
 
 v1-39 进展（已落盘）：
 - `publish:cws` 已完成代理链路确定性修复 + 一键诊断 + 失败即指路（见 `docs/reports/v1-39-report.md` 与 `docs/test-cases/v1-39.md`）。
+
+v1-45 进展（已落盘，离线可审计）：
+- 已固化上架前核对清单：`docs/publish/cws-preflight-checklist.md`（门禁命令/文件路径可核验）
+- 已固化上架后 24h/7d 复盘模板：`docs/growth/post-release-review-template.md`（引用 v1-42/v1-44 基线）
+- 已落盘 v1-45 用例与证据索引模板：`docs/test-cases/v1-45.md`、`docs/evidence/v1-45/index.md`
 
 需要的人类输入（v1-39）：
 - 提供可用的代理/VPN（确保可访问 `www.googleapis.com`），并给出包含 scheme 的代理地址/端口（例如 `http://127.0.0.1:7890`）。若仅有 `socks5://...`，请同时提供本地 HTTP 代理端口或直接使用 VPN。
