@@ -857,6 +857,50 @@
     "message": "清空失败",
     "description": "匿名事件日志清空失败提示"
   },
+  "proFunnelPanelTitle": {
+    "message": "Pro 意向漏斗摘要",
+    "description": "隐私页 Pro 意向漏斗摘要面板标题"
+  },
+  "proFunnelPanelHint": {
+    "message": "仅本地汇总 `copilot_telemetry_events` 中的 `pro_*` 事件（按来源分组计数/最近时间/转化率）；不包含 URL/标题/网页内容/复制内容。",
+    "description": "Pro 意向漏斗摘要面板提示文案"
+  },
+  "proFunnelDisabledNotice": {
+    "message": "未开启，不记录/不导出",
+    "description": "匿名使用数据关闭时，Pro 漏斗面板提示文案"
+  },
+  "proFunnelRefresh": {
+    "message": "刷新",
+    "description": "Pro 意向漏斗摘要刷新按钮"
+  },
+  "proFunnelCopy": {
+    "message": "复制摘要",
+    "description": "Pro 意向漏斗摘要复制按钮"
+  },
+  "proFunnelEvidencePackCopy": {
+    "message": "复制证据包",
+    "description": "Pro 漏斗证据包复制按钮"
+  },
+  "proFunnelCopySuccess": {
+    "message": "摘要已复制到剪贴板",
+    "description": "Pro 意向漏斗摘要复制成功提示"
+  },
+  "proFunnelCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "Pro 意向漏斗摘要复制失败提示"
+  },
+  "proFunnelEvidencePackCopySuccess": {
+    "message": "证据包已复制到剪贴板",
+    "description": "Pro 漏斗证据包复制成功提示"
+  },
+  "proFunnelEvidencePackCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "Pro 漏斗证据包复制失败提示"
+  },
+  "proFunnelRefreshFailed": {
+    "message": "刷新失败",
+    "description": "Pro 意向漏斗摘要刷新失败提示"
+  },
   "growthFunnelPanelTitle": {
     "message": "本地漏斗摘要",
     "description": "隐私页本地漏斗摘要面板标题"

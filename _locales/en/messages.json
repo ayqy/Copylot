@@ -857,6 +857,50 @@
     "message": "Clear failed",
     "description": "Telemetry events clear failure notification"
   },
+  "proFunnelPanelTitle": {
+    "message": "Pro intent funnel summary",
+    "description": "Pro funnel summary panel title in Options privacy tab"
+  },
+  "proFunnelPanelHint": {
+    "message": "Local-only summary of `pro_*` events in `copilot_telemetry_events` (counts/last timestamps/conversion rates by source). No URLs, titles, page content, or copied text.",
+    "description": "Pro funnel summary panel hint"
+  },
+  "proFunnelDisabledNotice": {
+    "message": "Disabled: not recording / not exporting.",
+    "description": "Pro funnel panel notice when anonymous usage data is disabled"
+  },
+  "proFunnelRefresh": {
+    "message": "Refresh",
+    "description": "Pro funnel summary refresh button label"
+  },
+  "proFunnelCopy": {
+    "message": "Copy summary",
+    "description": "Pro funnel summary copy button label"
+  },
+  "proFunnelEvidencePackCopy": {
+    "message": "Copy evidence pack",
+    "description": "Pro funnel evidence pack copy button label"
+  },
+  "proFunnelCopySuccess": {
+    "message": "Summary copied to clipboard",
+    "description": "Pro funnel summary copy success notification"
+  },
+  "proFunnelCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Pro funnel summary copy failure notification"
+  },
+  "proFunnelEvidencePackCopySuccess": {
+    "message": "Evidence pack copied to clipboard",
+    "description": "Pro funnel evidence pack copy success notification"
+  },
+  "proFunnelEvidencePackCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Pro funnel evidence pack copy failure notification"
+  },
+  "proFunnelRefreshFailed": {
+    "message": "Refresh failed",
+    "description": "Pro funnel summary refresh failure notification"
+  },
   "growthFunnelPanelTitle": {
     "message": "Local funnel summary",
     "description": "Growth funnel summary panel title in Options privacy tab"

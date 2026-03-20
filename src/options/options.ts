@@ -30,6 +30,12 @@ import {
   buildShareCopyText
 } from '../shared/word-of-mouth';
 import { buildProWaitlistIssueUrl } from '../shared/monetization';
+import {
+  buildProFunnelEvidencePack,
+  buildProFunnelSummary,
+  type ProFunnelEvidencePack,
+  type ProFunnelSummary
+} from '../shared/pro-funnel';
 import { parsePromptSortMode, sortPrompts, type PromptSortMode } from '../shared/prompt-sort';
 
 // Simple UUID generator
@@ -105,6 +111,12 @@ interface OptionsElements {
   telemetryEventsRefreshButton: HTMLButtonElement;
   telemetryEventsCopyButton: HTMLButtonElement;
   telemetryEventsClearButton: HTMLButtonElement;
+  proFunnelPanel: HTMLDetailsElement;
+  proFunnelView: HTMLTextAreaElement;
+  proFunnelDisabledNotice: HTMLElement;
+  proFunnelRefreshButton: HTMLButtonElement;
+  proFunnelCopyButton: HTMLButtonElement;
+  proFunnelEvidencePackCopyButton: HTMLButtonElement;
   growthFunnelPanel: HTMLDetailsElement;
   growthFunnelView: HTMLTextAreaElement;
   growthFunnelRefreshButton: HTMLButtonElement;
@@ -205,6 +217,12 @@ function getElements(): OptionsElements {
     telemetryEventsRefreshButton: document.getElementById('telemetry-events-refresh') as HTMLButtonElement,
     telemetryEventsCopyButton: document.getElementById('telemetry-events-copy') as HTMLButtonElement,
     telemetryEventsClearButton: document.getElementById('telemetry-events-clear') as HTMLButtonElement,
+    proFunnelPanel: document.getElementById('pro-funnel-panel') as HTMLDetailsElement,
+    proFunnelView: document.getElementById('pro-funnel-view') as HTMLTextAreaElement,
+    proFunnelDisabledNotice: document.getElementById('pro-funnel-disabled-notice') as HTMLElement,
+    proFunnelRefreshButton: document.getElementById('pro-funnel-refresh') as HTMLButtonElement,
+    proFunnelCopyButton: document.getElementById('pro-funnel-copy') as HTMLButtonElement,
+    proFunnelEvidencePackCopyButton: document.getElementById('pro-funnel-evidence-pack-copy') as HTMLButtonElement,
     growthFunnelPanel: document.getElementById('growth-funnel-panel') as HTMLDetailsElement,
     growthFunnelView: document.getElementById('growth-funnel-view') as HTMLTextAreaElement,
     growthFunnelRefreshButton: document.getElementById('growth-funnel-refresh') as HTMLButtonElement,
@@ -1234,6 +1252,135 @@ async function clearTelemetryEventsAndRefresh(): Promise<void> {
   }
 }
 
+function formatProFunnelSummaryAsJson(summary: ProFunnelSummary): string {
+  return `${JSON.stringify(summary, null, 2)}\n`;
+}
+
+function formatProFunnelEvidencePackAsJson(pack: ProFunnelEvidencePack): string {
+  return `${JSON.stringify(pack, null, 2)}\n`;
+}
+
+async function readProFunnelSummaryForDisplay(): Promise<ProFunnelSummary> {
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    return buildProFunnelSummary({
+      enabled: Boolean(currentSettings?.isAnonymousUsageDataEnabled),
+      telemetryEvents: []
+    });
+  }
+
+  try {
+    const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+    return buildProFunnelSummary({
+      enabled: Boolean(currentSettings?.isAnonymousUsageDataEnabled),
+      telemetryEvents: result[TELEMETRY_EVENTS_KEY]
+    });
+  } catch (error) {
+    console.warn('Failed to read telemetry events for pro funnel summary:', error);
+    return buildProFunnelSummary({
+      enabled: Boolean(currentSettings?.isAnonymousUsageDataEnabled),
+      telemetryEvents: []
+    });
+  }
+}
+
+async function refreshProFunnelPanel(): Promise<ProFunnelSummary | null> {
+  if (!elements?.proFunnelView) return null;
+
+  try {
+    const summary = await readProFunnelSummaryForDisplay();
+    elements.proFunnelView.value = formatProFunnelSummaryAsJson(summary);
+    if (elements?.proFunnelDisabledNotice) {
+      elements.proFunnelDisabledNotice.hidden = summary.enabled;
+    }
+    return summary;
+  } catch (error) {
+    console.warn('Failed to refresh pro funnel summary:', error);
+    showNotification(getMessage('proFunnelRefreshFailed'), 'error');
+    return null;
+  }
+}
+
+async function copyProFunnelSummaryToClipboard(): Promise<void> {
+  let summary: ProFunnelSummary;
+  let text: string;
+
+  try {
+    summary = await readProFunnelSummaryForDisplay();
+    text = formatProFunnelSummaryAsJson(summary);
+  } catch (error) {
+    console.warn('Failed to read pro funnel summary:', error);
+    showNotification(getMessage('proFunnelCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showNotification(getMessage('proFunnelCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy pro funnel summary:', error);
+    const ok = fallbackCopyText(text);
+    if (ok) {
+      showNotification(getMessage('proFunnelCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('proFunnelCopyFailed'), 'error');
+  }
+}
+
+async function buildProFunnelEvidencePackForClipboard(): Promise<ProFunnelEvidencePack> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for pro funnel evidence pack:', error);
+  }
+
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    return buildProFunnelEvidencePack({
+      exportedAt,
+      extensionVersion,
+      settings: currentSettings,
+      telemetryEvents: []
+    });
+  }
+
+  const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+  return buildProFunnelEvidencePack({
+    exportedAt,
+    extensionVersion,
+    settings: currentSettings,
+    telemetryEvents: result[TELEMETRY_EVENTS_KEY]
+  });
+}
+
+async function copyProFunnelEvidencePackToClipboard(): Promise<void> {
+  let pack: ProFunnelEvidencePack;
+  let text: string;
+
+  try {
+    pack = await buildProFunnelEvidencePackForClipboard();
+    text = formatProFunnelEvidencePackAsJson(pack);
+  } catch (error) {
+    console.warn('Failed to build pro funnel evidence pack:', error);
+    showNotification(getMessage('proFunnelEvidencePackCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showNotification(getMessage('proFunnelEvidencePackCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy pro funnel evidence pack:', error);
+    const ok = fallbackCopyText(text);
+    if (ok) {
+      showNotification(getMessage('proFunnelEvidencePackCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('proFunnelEvidencePackCopyFailed'), 'error');
+  }
+}
+
 function formatGrowthFunnelSummaryAsJson(summary: GrowthFunnelSummary): string {
   return `${JSON.stringify(summary, null, 2)}\n`;
 }
@@ -1438,6 +1585,17 @@ function setupEventListeners() {
     void clearTelemetryEventsAndRefresh();
   });
 
+  // Pro 意向漏斗摘要面板
+  elements.proFunnelRefreshButton.addEventListener('click', () => {
+    void refreshProFunnelPanel();
+  });
+  elements.proFunnelCopyButton.addEventListener('click', () => {
+    void copyProFunnelSummaryToClipboard();
+  });
+  elements.proFunnelEvidencePackCopyButton.addEventListener('click', () => {
+    void copyProFunnelEvidencePackToClipboard();
+  });
+
   // 本地漏斗摘要面板
   elements.growthFunnelRefreshButton.addEventListener('click', () => {
     void refreshGrowthFunnelPanel();
@@ -1471,6 +1629,7 @@ function setupEventListeners() {
 
       // Settings 变化后，面板必须立刻刷新，避免 UI 残留旧数据造成误解
       await refreshTelemetryEventsPanel();
+      await refreshProFunnelPanel();
 
       showNotification(getMessage('saveSuccessMessage'), 'success');
     } catch (error) {
@@ -1886,6 +2045,7 @@ async function initialize() {
     loadPromptSortMode();
     await loadSettings();
     await refreshTelemetryEventsPanel();
+    await refreshProFunnelPanel();
     await refreshGrowthFunnelPanel();
     await refreshGrowthStatsPanel();
     renderChatServices();

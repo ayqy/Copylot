@@ -23,6 +23,7 @@ import {
   sanitizeTelemetryEvents,
   trimTelemetryEvents
 } from '../src/shared/telemetry.ts';
+import { buildProFunnelEvidencePack, buildProFunnelSummary } from '../src/shared/pro-funnel.ts';
 import { cleanCodeBlockText } from '../src/shared/code-block-cleaner.ts';
 import { parsePromptSortMode, sortPrompts } from '../src/shared/prompt-sort.ts';
 
@@ -498,6 +499,86 @@ function run() {
   assert.equal(trimmedDefault.length, TELEMETRY_MAX_EVENTS);
   assert.equal(trimmedDefault[0]?.ts, 2);
   assert.equal(trimmedDefault[TELEMETRY_MAX_EVENTS - 1]?.ts, TELEMETRY_MAX_EVENTS + 1);
+
+  // pro-funnel.ts (pure functions)
+  const proSummaryDisabled = buildProFunnelSummary({
+    enabled: false,
+    telemetryEvents: [{ name: 'pro_entry_opened', ts: now, props: { source: 'popup' } }]
+  });
+  assert.equal(proSummaryDisabled.enabled, false);
+  assert.equal(proSummaryDisabled.disabledReason, 'anonymous_usage_data_disabled');
+  assert.equal(proSummaryDisabled.bySource.popup.counts.pro_entry_opened, 0);
+  assert.equal(proSummaryDisabled.bySource.options.counts.pro_waitlist_opened, 0);
+
+  const proSummary = buildProFunnelSummary({
+    enabled: true,
+    telemetryEvents: [
+      { name: 'pro_entry_opened', ts: 10, props: { source: 'popup' } },
+      { name: 'pro_entry_opened', ts: 20, props: { source: 'popup' } },
+      { name: 'pro_waitlist_opened', ts: 30, props: { source: 'popup' } },
+      { name: 'pro_waitlist_copied', ts: 40, props: { source: 'popup' } },
+      { name: 'pro_waitlist_opened', ts: 50, props: { source: 'options' } },
+      { name: 'pro_waitlist_copied', ts: 60, props: { source: 'options' } },
+      { name: 'pro_entry_opened', ts: 70, props: { source: 'options' } },
+      { name: 'popup_opened', ts: 80 },
+      { name: 'pro_entry_opened', ts: 90, props: { source: 'unknown' } },
+      { name: 'pro_waitlist_opened', ts: -1, props: { source: 'popup' } }
+    ]
+  });
+  assert.equal(proSummary.enabled, true);
+  assert.equal(proSummary.window.maxEvents, TELEMETRY_MAX_EVENTS);
+  assert.deepEqual(proSummary.bySource.popup.counts, {
+    pro_entry_opened: 2,
+    pro_waitlist_opened: 1,
+    pro_waitlist_copied: 1
+  });
+  assert.deepEqual(proSummary.bySource.popup.lastTs, {
+    pro_entry_opened: 20,
+    pro_waitlist_opened: 30,
+    pro_waitlist_copied: 40
+  });
+  assert.deepEqual(proSummary.bySource.options.counts, {
+    pro_entry_opened: 1,
+    pro_waitlist_opened: 1,
+    pro_waitlist_copied: 1
+  });
+  assert.equal(proSummary.bySource.popup.rates.waitlist_opened_per_entry_opened, 0.5);
+  assert.equal(proSummary.bySource.popup.rates.waitlist_copied_per_waitlist_opened, 1);
+  assert.equal(proSummary.bySource.options.rates.waitlist_opened_per_entry_opened, 1);
+  assert.equal(proSummary.bySource.options.rates.waitlist_copied_per_waitlist_opened, 1);
+
+  const proPack = buildProFunnelEvidencePack({
+    exportedAt: 123,
+    extensionVersion: '1.1.19',
+    settings: { ...settings, isAnonymousUsageDataEnabled: true },
+    telemetryEvents: [
+      { name: 'pro_entry_opened', ts: now, props: { source: 'popup', url: 'https://example.com' } },
+      { name: 'pro_waitlist_opened', ts: now + 1, props: { source: 'options', title: 'x' } },
+      { name: 'popup_opened', ts: now + 2 },
+      { name: 'unknown', ts: now + 3 }
+    ]
+  });
+  assert.deepEqual(Object.keys(proPack).sort(), ['events', 'meta', 'proFunnel', 'settings']);
+  assert.deepEqual(Object.keys(proPack.meta).sort(), ['exportedAt', 'extensionVersion', 'source']);
+  assert.deepEqual(Object.keys(proPack.settings).sort(), ['isAnonymousUsageDataEnabled']);
+  assert.equal(proPack.settings.isAnonymousUsageDataEnabled, true);
+  assert.equal(proPack.events.length, 2);
+  assert.deepEqual(
+    proPack.events.map((e) => e.name),
+    ['pro_entry_opened', 'pro_waitlist_opened']
+  );
+  assert.deepEqual(Object.keys(proPack.events[0]?.props || {}).sort(), ['source']);
+
+  const proPackTelemetryOff = buildProFunnelEvidencePack({
+    exportedAt: 1,
+    extensionVersion: '1.1.19',
+    settings: { ...settings, isAnonymousUsageDataEnabled: false },
+    telemetryEvents: [{ name: 'pro_entry_opened', ts: now, props: { source: 'popup' } }]
+  });
+  assert.equal(proPackTelemetryOff.settings.isAnonymousUsageDataEnabled, false);
+  assert.equal(proPackTelemetryOff.events.length, 0);
+  assert.equal(proPackTelemetryOff.proFunnel.enabled, false);
+  assert.equal(proPackTelemetryOff.proFunnel.bySource.popup.counts.pro_entry_opened, 0);
 
   // prompt-sort.ts (pure functions)
   assert.equal(parsePromptSortMode('most_used'), 'most_used');

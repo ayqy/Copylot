@@ -304,6 +304,42 @@
           </div>
 
           <div class="chat-services-section">
+            <details id="pro-funnel-panel" class="telemetry-events-panel">
+              <summary class="telemetry-events-summary">
+                <span data-i18n="proFunnelPanelTitle">Pro 意向漏斗摘要</span>
+              </summary>
+
+              <div class="telemetry-events-content">
+                <p class="setting-hint telemetry-events-hint" data-i18n="proFunnelPanelHint">
+                  仅本地汇总 `copilot_telemetry_events` 中的 `pro_*` 事件（按来源分组计数/最近时间/转化率）；不包含 URL/标题/网页内容/复制内容。
+                </p>
+                <p
+                  id="pro-funnel-disabled-notice"
+                  class="setting-hint telemetry-events-hint"
+                  data-i18n="proFunnelDisabledNotice"
+                  hidden
+                >
+                  未开启，不记录/不导出
+                </p>
+
+                <div class="telemetry-events-actions">
+                  <button id="pro-funnel-refresh" class="secondary-btn" data-i18n="proFunnelRefresh">
+                    刷新
+                  </button>
+                  <button id="pro-funnel-copy" class="secondary-btn" data-i18n="proFunnelCopy">
+                    复制摘要
+                  </button>
+                  <button id="pro-funnel-evidence-pack-copy" class="secondary-btn" data-i18n="proFunnelEvidencePackCopy">
+                    复制证据包
+                  </button>
+                </div>
+
+                <textarea id="pro-funnel-view" class="telemetry-events-view" readonly rows="10">{}</textarea>
+              </div>
+            </details>
+          </div>
+
+          <div class="chat-services-section">
             <details id="growth-funnel-panel" class="telemetry-events-panel">
               <summary class="telemetry-events-summary">
                 <span data-i18n="growthFunnelPanelTitle">本地漏斗摘要</span>
