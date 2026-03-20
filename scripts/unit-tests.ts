@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 
+import { getGlobalDispatcher, setGlobalDispatcher } from 'undici';
+
 import {
   buildChromeWebStoreDetailUrl,
   buildChromeWebStoreReviewsUrl,
@@ -26,6 +28,14 @@ import {
 import { buildProFunnelEvidencePack, buildProFunnelSummary } from '../src/shared/pro-funnel.ts';
 import { cleanCodeBlockText } from '../src/shared/code-block-cleaner.ts';
 import { parsePromptSortMode, sortPrompts } from '../src/shared/prompt-sort.ts';
+import {
+  CwsProxyConfigError,
+  createUndiciProxyDispatcher,
+  maskProxyUrl,
+  mergeNoProxyValue,
+  parseAndValidateProxyUrl,
+  resolveCwsProxyEnv
+} from './cws-proxy.ts';
 
 const getMessage: I18nGetMessage = (key, substitutions) => {
   const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
@@ -40,7 +50,7 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
   return key;
 };
 
-function run() {
+async function run() {
   const extensionId = 'abcdefghijklmnopabcdefghijklmnop';
 
   const storeUrl = buildChromeWebStoreDetailUrl(extensionId);
@@ -644,10 +654,55 @@ function run() {
     cleanCodeBlockText('const a = 1;\nCopy\nconst b = 2;'),
     'const a = 1;\nCopy\nconst b = 2;'
   );
+
+  // scripts/cws-proxy.ts (v1-39 publish:cws 代理链路确定性)
+  {
+    const resolvedDefault = resolveCwsProxyEnv({} as NodeJS.ProcessEnv);
+    assert.equal(resolvedDefault.proxyEnabled, false);
+    assert.ok(resolvedDefault.noProxyValue.includes('localhost'));
+    assert.ok(resolvedDefault.noProxyValue.includes('127.0.0.1'));
+  }
+
+  {
+    const resolvedPriority = resolveCwsProxyEnv({
+      CWS_PROXY: 'http://127.0.0.1:1111',
+      HTTPS_PROXY: 'http://127.0.0.1:2222',
+      ALL_PROXY: 'http://127.0.0.1:3333'
+    } as NodeJS.ProcessEnv);
+    assert.equal(resolvedPriority.proxyEnabled, true);
+    assert.equal(resolvedPriority.proxyEnvKey, 'CWS_PROXY');
+    assert.equal(resolvedPriority.proxyUrlMasked, 'http://127.0.0.1:1111');
+  }
+
+  assert.throws(
+    () => parseAndValidateProxyUrl('127.0.0.1:7890', 'HTTPS_PROXY'),
+    (error) => error instanceof CwsProxyConfigError && error.message.includes('缺少 scheme')
+  );
+
+  assert.equal(maskProxyUrl(new URL('http://user:pass@127.0.0.1:7890')), 'http://127.0.0.1:7890');
+  assert.equal(mergeNoProxyValue('example.com'), 'example.com');
+  assert.equal(mergeNoProxyValue(undefined), 'localhost,127.0.0.1,::1');
+
+  {
+    const originalDispatcher = getGlobalDispatcher();
+    try {
+      const resolved = resolveCwsProxyEnv({
+        HTTPS_PROXY: 'http://127.0.0.1:7890',
+        NO_PROXY: 'example.com'
+      } as NodeJS.ProcessEnv);
+      const dispatcher = createUndiciProxyDispatcher(resolved);
+      assert.ok(dispatcher);
+      assert.equal(dispatcher.constructor.name, 'EnvHttpProxyAgent');
+      setGlobalDispatcher(dispatcher);
+      assert.equal(getGlobalDispatcher().constructor.name, 'EnvHttpProxyAgent');
+    } finally {
+      setGlobalDispatcher(originalDispatcher);
+    }
+  }
 }
 
 try {
-  run();
+  await run();
 } catch (error) {
   console.error(error);
   process.exit(1);

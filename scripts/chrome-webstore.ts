@@ -17,31 +17,43 @@ import * as path from 'path';
 import * as fs from 'fs/promises';
 import { existsSync, createReadStream } from 'fs';
 import { execSync } from 'child_process';
-import webstoreUpload from 'chrome-webstore-upload';
 
-// 配置undici代理支持
-import { setGlobalDispatcher, ProxyAgent } from 'undici';
+import { setGlobalDispatcher } from 'undici';
 
-// 设置代理配置
-function setupProxy() {
-  const proxyUrl = process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy;
-  
-  if (proxyUrl) {
-    console.log(`[CWS] 检测到代理设置: ${proxyUrl}`);
-    try {
-      const proxyAgent = new ProxyAgent(proxyUrl);
-      setGlobalDispatcher(proxyAgent);
-      console.log(`[CWS] 代理已配置成功`);
-    } catch (error) {
-      console.error(`[CWS] 代理配置失败:`, error);
+import {
+  CwsProxyConfigError,
+  buildCwsProxyDiagnostic,
+  createUndiciProxyDispatcher,
+  formatCwsProxyDiagnosticBlock,
+  resolveCwsProxyEnv,
+  type ResolvedCwsProxyEnv
+} from './cws-proxy.ts';
+
+function setupCwsProxyOrExit(env: NodeJS.ProcessEnv): { resolved: ResolvedCwsProxyEnv; dispatcherInstalled: boolean } {
+  try {
+    const resolved = resolveCwsProxyEnv(env);
+    const dispatcher = createUndiciProxyDispatcher(resolved);
+    if (dispatcher) {
+      setGlobalDispatcher(dispatcher);
+      return { resolved, dispatcherInstalled: true };
     }
-  } else {
-    console.log(`[CWS] 未检测到代理设置`);
+    return { resolved, dispatcherInstalled: false };
+  } catch (error) {
+    if (error instanceof CwsProxyConfigError) {
+      console.error(`[CWS] ${error.message}`);
+      console.error(error.help);
+      process.exit(1);
+    }
+    console.error('[CWS] Proxy 初始化失败（未知错误）：', error);
+    process.exit(1);
   }
 }
 
-// 初始化代理设置
-setupProxy();
+const cwsProxySetup = setupCwsProxyOrExit(process.env);
+const cwsProxyResolved = cwsProxySetup.resolved;
+
+// 可复制/可审计：用于排障与简报留证（禁止包含 token/secret）
+console.log(formatCwsProxyDiagnosticBlock(buildCwsProxyDiagnostic(cwsProxyResolved, cwsProxySetup.dispatcherInstalled)));
 
 const colors = {
   reset: '\x1b[0m',
@@ -64,6 +76,70 @@ function logError(msg: string) {
   console.error(`${colors.red}[CWS] ${msg}${colors.reset}`);
 }
 
+function extractErrorCode(error: Error): string | null {
+  const anyError = error as unknown as Record<string, unknown>;
+  if (typeof anyError.code === 'string') return anyError.code;
+
+  const cause = anyError.cause;
+  if (cause && typeof cause === 'object') {
+    const anyCause = cause as Record<string, unknown>;
+    if (typeof anyCause.code === 'string') return anyCause.code;
+  }
+
+  return null;
+}
+
+function extractErrorCauseMessage(error: Error): string | null {
+  const anyError = error as unknown as Record<string, unknown>;
+  const cause = anyError.cause;
+  if (cause && typeof cause === 'object') {
+    const anyCause = cause as Record<string, unknown>;
+    if (typeof anyCause.message === 'string' && anyCause.message.trim().length > 0) return anyCause.message.trim();
+  }
+  return null;
+}
+
+function printActionableNetworkHints(error: Error) {
+  const code = extractErrorCode(error);
+  const causeMessage = extractErrorCauseMessage(error);
+
+  console.error('\n下一步排障指引（可复制执行；禁止粘贴任何 token/secret 到日志）：');
+  if (code) console.error(`- 观测到错误码：${code}`);
+  if (causeMessage) console.error(`- 底层原因：${causeMessage}`);
+
+  // 结合当前代理状态给出更可执行的动作
+  if (!cwsProxyResolved.proxyEnabled) {
+    console.error('- 当前 Proxy Diagnostic Block 显示：proxy.enabled=false（未启用代理）。');
+  } else {
+    console.error(
+      `- 当前 Proxy Diagnostic Block 显示：proxy.enabled=true（命中 ${cwsProxyResolved.proxyEnvKey}=${cwsProxyResolved.proxyUrlMasked}）。`
+    );
+  }
+
+  if (code === 'ENOTFOUND' || code === 'EAI_AGAIN') {
+    console.error('- 这通常表示 DNS/网络不可达（常见于直连 Google 被阻断，或代理未生效）。');
+  }
+  if (code === 'ECONNREFUSED') {
+    console.error('- 这通常表示代理地址/端口不可用（本地代理未启动、端口写错、或被防火墙拦截）。');
+  }
+  if (code === 'ETIMEDOUT' || code === 'UND_ERR_CONNECT_TIMEOUT') {
+    console.error('- 这通常表示连接超时（代理不可达、网络不稳定，或目标被阻断）。');
+  }
+
+  console.error('\n环境变量示例（任选其一；代理 URL 必须包含 scheme）：');
+  console.error('  示例 1（HTTPS_PROXY）：');
+  console.error('    export HTTPS_PROXY=http://127.0.0.1:7890');
+  console.error('    export NO_PROXY=localhost,127.0.0.1,::1');
+  console.error('    npm run publish:cws');
+  console.error('  示例 2（ALL_PROXY 兜底）：');
+  console.error('    export ALL_PROXY=http://127.0.0.1:7890');
+  console.error('    export NO_PROXY=localhost,127.0.0.1,::1');
+  console.error('    npm run publish:cws');
+  console.error('\n最小必需信息：代理协议(http/https) + 地址 + 端口。');
+  console.error('提示：可使用 CWS_PROXY 覆盖默认优先级（CWS_PROXY > HTTPS_PROXY > HTTP_PROXY > ALL_PROXY）。');
+  console.error('提示：你也可以先执行 `npm run publish:cws -- --dry-run` 验证前置门禁与诊断块（无网络调用）。');
+}
+
 // 改进的错误显示函数
 function displayError(error: unknown, context: string = '') {
   logError(`${context}发生错误：`);
@@ -71,17 +147,24 @@ function displayError(error: unknown, context: string = '') {
   if (error instanceof Error) {
     console.error(`错误类型: ${error.constructor.name}`);
     console.error(`错误消息: ${error.message}`);
+    const causeMessage = extractErrorCauseMessage(error);
+    if (causeMessage) console.error(`底层原因: ${causeMessage}`);
     if (error.stack) {
       console.error(`错误堆栈:\n${error.stack}`);
     }
     
     // 显示错误的其他属性
-    const errorProps = Object.getOwnPropertyNames(error).filter(prop => 
-      !['name', 'message', 'stack'].includes(prop)
+    const errorProps = Object.getOwnPropertyNames(error).filter(
+      (prop) => !['name', 'message', 'stack'].includes(prop)
     );
     if (errorProps.length > 0) {
       console.error('错误详细信息:');
-      errorProps.forEach(prop => {
+      errorProps.forEach((prop) => {
+        const lower = prop.toLowerCase();
+        if (lower.includes('token') || lower.includes('secret') || lower.includes('authorization')) {
+          console.error(`  ${prop}: [REDACTED]`);
+          return;
+        }
         try {
           const value = (error as unknown as Record<string, unknown>)[prop];
           console.error(`  ${prop}: ${JSON.stringify(value, null, 2)}`);
@@ -92,13 +175,14 @@ function displayError(error: unknown, context: string = '') {
     }
     
     // 特殊处理网络错误
-    if (error.message.includes('fetch failed') || error.message.includes('timeout')) {
-      console.error('\n网络连接问题诊断:');
-      console.error('- 检查网络连接是否正常');
-      console.error('- 确认是否能够访问 Google 服务');
-      console.error('- 如果在中国大陆，可能需要配置代理或 VPN');
-      console.error('- 检查防火墙设置');
-    }
+    const errorCode = extractErrorCode(error);
+    const isNetworkError =
+      error.message.includes('fetch failed') ||
+      error.message.toLowerCase().includes('enotfound') ||
+      error.message.toLowerCase().includes('timeout') ||
+      ['ENOTFOUND', 'EAI_AGAIN', 'ECONNREFUSED', 'ETIMEDOUT', 'UND_ERR_CONNECT_TIMEOUT'].includes(String(errorCode));
+
+    if (isNetworkError) printActionableNetworkHints(error);
   } else {
     console.error('错误对象类型:', typeof error);
     try {
@@ -247,6 +331,7 @@ async function main() {
 
   // 初始化 webstore client
   logInfo('初始化 Chrome Web Store 客户端…');
+  const { default: webstoreUpload } = await import('chrome-webstore-upload');
   const webstore = webstoreUpload({
     extensionId,
     clientId,
