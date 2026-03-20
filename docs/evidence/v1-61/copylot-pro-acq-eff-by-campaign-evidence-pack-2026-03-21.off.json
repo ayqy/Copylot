@@ -1,0 +1,17 @@
+{
+  "enabled": false,
+  "disabledReason": "anonymous_usage_data_disabled",
+  "telemetryOffNotice": "匿名使用数据关闭（不读取/不推断事件）。本证据包仅包含环境信息与空资产占位，用于可审计。",
+  "env": {
+    "extensionVersion": "1.1.28",
+    "exportedAt": 1774070100000,
+    "lookbackDays": 7,
+    "windowFrom": 1773465300000,
+    "windowTo": 1774070100000,
+    "isAnonymousUsageDataEnabled": false
+  },
+  "rows": [],
+  "csv": "exportedAt,extensionVersion,windowFrom,windowTo,lookbackDays,campaign,leads,distCopies,leadsPerDistCopy\n",
+  "weeklyReportMarkdown": "# Pro 获客效率复盘摘要（过去 7 天，按 campaign）\n\n> 匿名使用数据关闭（不读取/不推断事件）。本摘要仅包含环境信息，用于可审计。\n\n## 环境信息\n- extensionVersion: 1.1.28\n- exportedAt: 2026-03-21 13:15:00 (UTC+08:00) (1774070100000)\n- lookbackDays: 7\n- windowFrom: 2026-03-14 13:15:00 (UTC+08:00) (1773465300000)\n- windowTo: 2026-03-21 13:15:00 (UTC+08:00) (1774070100000)\n- anonymousUsageData: OFF\n\n## 隐私声明\n不包含网页内容/复制内容/URL/标题；仅基于本地匿名事件派生与扩展环境信息。\n\n"
+}
+

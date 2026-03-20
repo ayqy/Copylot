@@ -1377,6 +1377,10 @@
     "message": "复制获客效率证据包（JSON，含 CSV + Markdown + Env）",
     "description": "隐私页复制获客效率证据包（JSON，含 CSV + Markdown + Env）按钮"
   },
+  "proAcqEffByCampaignEvidencePackDownload": {
+    "message": "下载获客效率证据包（JSON，含 CSV + Markdown + Env）",
+    "description": "隐私页下载获客效率证据包（JSON，含 CSV + Markdown + Env）按钮"
+  },
   "proAcqEffByCampaignEvidencePackCopySuccess": {
     "message": "证据包已复制到剪贴板",
     "description": "获客效率证据包复制成功提示"
@@ -1384,6 +1388,14 @@
   "proAcqEffByCampaignEvidencePackCopyFailed": {
     "message": "复制失败，请手动选择并复制",
     "description": "获客效率证据包复制失败提示"
+  },
+  "proAcqEffByCampaignEvidencePackDownloadSuccess": {
+    "message": "证据包已下载",
+    "description": "获客效率证据包下载成功提示"
+  },
+  "proAcqEffByCampaignEvidencePackDownloadFailed": {
+    "message": "下载失败",
+    "description": "获客效率证据包下载失败提示"
   },
   "proAcqEffByCampaignEvidencePackTelemetryOffNotice": {
     "message": "匿名使用数据关闭（不读取/不推断事件）。本证据包仅包含环境信息与空资产占位，用于可审计。",

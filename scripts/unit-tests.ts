@@ -75,6 +75,7 @@ import {
   buildProAcquisitionEfficiencyByCampaignEvidencePack,
   formatProAcquisitionEfficiencyByCampaignEvidencePackAsJson
 } from '../src/shared/pro-acquisition-efficiency-by-campaign-evidence-pack.ts';
+import { formatProAcquisitionEfficiencyByCampaignEvidencePackJsonFilename } from '../src/shared/pro-acquisition-efficiency-by-campaign-evidence-pack-filename.ts';
 import {
   buildProIntentByCampaignWeeklyReportSummary,
   formatProIntentByCampaignWeeklyReportMarkdown
@@ -1500,6 +1501,32 @@ async function run() {
   assert.ok(
     /^copylot-pro-acquisition-efficiency-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proAcqEfficiencyCsvFilename)
   );
+
+  // pro-acquisition-efficiency-by-campaign-evidence-pack-filename.ts (pure functions, stable download filename)
+  const d = new Date(now);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const expectedDate = `${yyyy}-${mm}-${dd}`;
+
+  const evidenceFilenameOff = formatProAcquisitionEfficiencyByCampaignEvidencePackJsonFilename(now, false);
+  assert.equal(
+    evidenceFilenameOff,
+    `copylot-pro-acq-eff-by-campaign-evidence-pack-${expectedDate}.off.json`
+  );
+  assert.ok(
+    /^copylot-pro-acq-eff-by-campaign-evidence-pack-\d{4}-\d{2}-\d{2}\.off\.json$/.test(evidenceFilenameOff)
+  );
+
+  const evidenceFilenameOn = formatProAcquisitionEfficiencyByCampaignEvidencePackJsonFilename(now, true);
+  assert.equal(
+    evidenceFilenameOn,
+    `copylot-pro-acq-eff-by-campaign-evidence-pack-${expectedDate}.on.json`
+  );
+  assert.ok(
+    /^copylot-pro-acq-eff-by-campaign-evidence-pack-\d{4}-\d{2}-\d{2}\.on\.json$/.test(evidenceFilenameOn)
+  );
+  assert.ok(!evidenceFilenameOn.includes('twitter'));
 
   // pro-acquisition-efficiency-by-campaign-weekly-report.ts (pure functions + markdown formatter)
   const proAcqEffWeeklyReportDisabled = buildProAcquisitionEfficiencyByCampaignWeeklyReportSummary({

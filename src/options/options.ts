@@ -72,6 +72,7 @@ import {
   formatProAcquisitionEfficiencyByCampaignEvidencePackAsJson,
   type ProAcquisitionEfficiencyByCampaignEvidencePack
 } from '../shared/pro-acquisition-efficiency-by-campaign-evidence-pack';
+import { formatProAcquisitionEfficiencyByCampaignEvidencePackJsonFilename } from '../shared/pro-acquisition-efficiency-by-campaign-evidence-pack-filename';
 import {
   buildProIntentByCampaignWeeklyReportSummary,
   formatProIntentByCampaignWeeklyReportMarkdown,
@@ -171,6 +172,7 @@ interface OptionsElements {
   exportProAcquisitionEfficiencyByCampaign7dCsvButton: HTMLButtonElement;
   proAcqEffByCampaignWeeklyReportCopyButton: HTMLButtonElement;
   proAcqEffByCampaignEvidencePackCopyButton: HTMLButtonElement;
+  proAcqEffByCampaignEvidencePackDownloadButton: HTMLButtonElement;
   proIntentWeeklyDigestCopyButton: HTMLButtonElement;
   proIntentByCampaignWeeklyReportCopyButton: HTMLButtonElement;
   womSummaryPanel: HTMLDetailsElement;
@@ -249,6 +251,8 @@ const COPY_PRO_ACQ_EFF_BY_CAMPAIGN_WEEKLY_REPORT_BUTTON_ID =
   'copy-pro-acquisition-efficiency-' + 'by-campaign-weekly-report';
 const COPY_PRO_ACQ_EFF_BY_CAMPAIGN_EVIDENCE_PACK_BUTTON_ID =
   'copy-pro-acquisition-efficiency-' + 'by-campaign-evidence-pack';
+const DOWNLOAD_PRO_ACQ_EFF_BY_CAMPAIGN_EVIDENCE_PACK_BUTTON_ID =
+  'download-pro-acquisition-efficiency-' + 'by-campaign-evidence-pack';
 
 /**
  * 获取所有DOM元素
@@ -324,6 +328,9 @@ function getElements(): OptionsElements {
     ) as HTMLButtonElement,
     proAcqEffByCampaignEvidencePackCopyButton: document.getElementById(
       COPY_PRO_ACQ_EFF_BY_CAMPAIGN_EVIDENCE_PACK_BUTTON_ID
+    ) as HTMLButtonElement,
+    proAcqEffByCampaignEvidencePackDownloadButton: document.getElementById(
+      DOWNLOAD_PRO_ACQ_EFF_BY_CAMPAIGN_EVIDENCE_PACK_BUTTON_ID
     ) as HTMLButtonElement,
     proIntentWeeklyDigestCopyButton: document.getElementById('copy-pro-intent-weekly-digest') as HTMLButtonElement,
     proIntentByCampaignWeeklyReportCopyButton: document.getElementById(
@@ -1897,8 +1904,35 @@ async function copyProAcquisitionEfficiencyByCampaignEvidencePackToClipboard(): 
   }
 }
 
-function downloadCsvFile(filename: string, csv: string): void {
-  const blob = new Blob([csv], { type: 'text/csv' });
+async function downloadProAcquisitionEfficiencyByCampaignEvidencePackJson(): Promise<void> {
+  let pack: ProAcquisitionEfficiencyByCampaignEvidencePack;
+  let text: string;
+  let filename: string;
+
+  try {
+    pack = await buildProAcquisitionEfficiencyByCampaignEvidencePackForClipboard();
+    text = formatProAcquisitionEfficiencyByCampaignEvidencePackAsJson(pack);
+    filename = formatProAcquisitionEfficiencyByCampaignEvidencePackJsonFilename(
+      pack.env?.exportedAt ?? Date.now(),
+      Boolean(pack.env?.isAnonymousUsageDataEnabled)
+    );
+  } catch (error) {
+    console.warn('Failed to build pro acquisition efficiency by campaign evidence pack for download:', error);
+    showNotification(getMessage('proAcqEffByCampaignEvidencePackDownloadFailed'), 'error');
+    return;
+  }
+
+  try {
+    downloadTextFile(filename, text, 'application/json');
+    showNotification(getMessage('proAcqEffByCampaignEvidencePackDownloadSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to download pro acquisition efficiency by campaign evidence pack:', error);
+    showNotification(getMessage('proAcqEffByCampaignEvidencePackDownloadFailed'), 'error');
+  }
+}
+
+function downloadTextFile(filename: string, text: string, mimeType: string): void {
+  const blob = new Blob([text], { type: mimeType });
   const url = URL.createObjectURL(blob);
 
   const a = document.createElement('a');
@@ -1908,6 +1942,10 @@ function downloadCsvFile(filename: string, csv: string): void {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+function downloadCsvFile(filename: string, csv: string): void {
+  downloadTextFile(filename, csv, 'text/csv');
 }
 
 async function exportProIntentEvents7dCsv(): Promise<void> {
@@ -2501,6 +2539,9 @@ function setupEventListeners() {
   });
   elements.proAcqEffByCampaignEvidencePackCopyButton.addEventListener('click', () => {
     void copyProAcquisitionEfficiencyByCampaignEvidencePackToClipboard();
+  });
+  elements.proAcqEffByCampaignEvidencePackDownloadButton.addEventListener('click', () => {
+    void downloadProAcquisitionEfficiencyByCampaignEvidencePackJson();
   });
   elements.proIntentWeeklyDigestCopyButton.addEventListener('click', () => {
     void copyProIntentWeeklyDigestToClipboard();

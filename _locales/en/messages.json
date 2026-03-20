@@ -1377,6 +1377,10 @@
     "message": "Copy acquisition efficiency evidence pack (JSON: CSV + Markdown + Env)",
     "description": "Copy acquisition efficiency evidence pack (JSON: CSV + Markdown + Env) button label in Options privacy tab"
   },
+  "proAcqEffByCampaignEvidencePackDownload": {
+    "message": "Download acquisition efficiency evidence pack (JSON: CSV + Markdown + Env)",
+    "description": "Download acquisition efficiency evidence pack (JSON: CSV + Markdown + Env) button label in Options privacy tab"
+  },
   "proAcqEffByCampaignEvidencePackCopySuccess": {
     "message": "Evidence pack copied to clipboard",
     "description": "Acquisition efficiency evidence pack copy success notification"
@@ -1384,6 +1388,14 @@
   "proAcqEffByCampaignEvidencePackCopyFailed": {
     "message": "Copy failed. Please select and copy manually.",
     "description": "Acquisition efficiency evidence pack copy failure notification"
+  },
+  "proAcqEffByCampaignEvidencePackDownloadSuccess": {
+    "message": "Evidence pack downloaded",
+    "description": "Acquisition efficiency evidence pack download success notification"
+  },
+  "proAcqEffByCampaignEvidencePackDownloadFailed": {
+    "message": "Download failed",
+    "description": "Acquisition efficiency evidence pack download failure notification"
   },
   "proAcqEffByCampaignEvidencePackTelemetryOffNotice": {
     "message": "Anonymous usage data is OFF. This evidence pack only includes environment info and empty placeholders for audit, and does not read or infer any events.",
