@@ -21,6 +21,12 @@ https://github.com/ayqy/copy/blob/main/docs/tutorials/table-to-csv-markdown.md
 https://github.com/ayqy/copy/blob/main/docs/tutorials/prompt-workflow.md
 https://github.com/ayqy/copy/blob/main/docs/tutorials/code-block-cleaning.md
 
+Copylot Pro (Planned / Waitlist)
+- Copylot Pro is not shipped yet and not available today.
+- How to join the waitlist: open the extension Options -> Pro tab, then click "Join waitlist" (or "Copy waitlist template").
+- Pro scope & boundaries (stable public doc, auditable): https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md
+- Note: there is no payment/subscription promise on the store page; the waitlist is only for intent validation and feedback.
+
 PRIVACY & PERMISSIONS
 - Local by default: extraction/cleanup/formatting runs on your device
 - No copied content collection/upload: we do not collect, store, or upload the web content you copy

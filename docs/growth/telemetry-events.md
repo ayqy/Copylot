@@ -30,7 +30,7 @@
 | `prompt_used` | Prompt 链路触发且复制成功 | `src/content/content.ts`：Prompt 菜单复制 / `PROCESS_*_WITH_PROMPT*` 消息链路复制成功路径 | 无 | 不包含任何用户内容 | 与 `copy_success` 同次成功复制配对出现 |
 | `pro_entry_opened` | 打开 Pro 入口（升级 Pro / Pro Tab） | Popup：`src/popup/popup.ts` 点击 `#upgrade-pro-entry`；Options：`src/options/options.ts` 激活 `#pro-tab` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容 | 仅记录意向入口触达 |
 | `pro_waitlist_opened` | 打开候补登记页 | Popup：`src/popup/popup.ts` 点击 `#popup-pro-waitlist`；Options：`src/options/options.ts` 点击 `#pro-waitlist-button` | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容；候补链接仅预填环境信息与占位提示 | 打开 GitHub `issues/new` |
-| `pro_waitlist_copied` | 复制候补文案成功 | Options：`src/options/options.ts` 点击 `#pro-waitlist-copy` 且写入剪贴板成功 | `{ source: 'options' }` | 不包含任何用户内容；复制内容为候补模板（仅环境信息 + 占位提示） | 仅在写入成功时记录 |
+| `pro_waitlist_copied` | 复制候补文案成功 | Popup：`src/popup/popup.ts` 点击 `#popup-pro-waitlist-copy` 且写入剪贴板成功；Options：`src/options/options.ts` 点击 `#pro-waitlist-copy` 且写入剪贴板成功 | `{ source: 'popup' \| 'options' }` | 不包含任何用户内容；复制内容为候补模板（仅环境信息 + 占位提示） | 仅在写入成功时记录 |
 
 ## 开关与清理
 - 开关字段：`Settings.isAnonymousUsageDataEnabled`

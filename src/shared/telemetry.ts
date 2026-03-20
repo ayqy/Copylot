@@ -123,7 +123,7 @@ function sanitizeProps(
         continue;
       }
       if (eventName === 'pro_waitlist_copied') {
-        if (value !== 'options') continue;
+        if (!isWomSource(value)) continue;
         sanitized[key] = value;
         continue;
       }

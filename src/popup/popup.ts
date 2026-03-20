@@ -65,6 +65,7 @@ interface PopupElements {
   // Pro entry
   upgradeProEntry: HTMLButtonElement;
   popupProWaitlistButton: HTMLButtonElement;
+  popupProWaitlistCopyButton: HTMLButtonElement;
 
   // Popup onboarding
   onboardingReopenButton: HTMLButtonElement;
@@ -144,6 +145,7 @@ function getElements(): PopupElements {
 
     upgradeProEntry: document.getElementById('upgrade-pro-entry') as HTMLButtonElement,
     popupProWaitlistButton: document.getElementById('popup-pro-waitlist') as HTMLButtonElement,
+    popupProWaitlistCopyButton: document.getElementById('popup-pro-waitlist-copy') as HTMLButtonElement,
 
     onboardingReopenButton: document.getElementById('popup-onboarding-reopen') as HTMLButtonElement,
     onboardingModal: document.getElementById('popup-onboarding-modal') as HTMLElement,
@@ -401,6 +403,32 @@ function setupEventListeners() {
     });
     chrome.tabs.create({ url: waitlistUrl });
     window.close();
+  });
+
+  elements.popupProWaitlistCopyButton.addEventListener('click', async () => {
+    const originalText = elements.popupProWaitlistCopyButton.textContent || '';
+    try {
+      const waitlistUrl = buildProWaitlistIssueUrl({
+        env: {
+          extensionVersion: chrome.runtime.getManifest().version || '',
+          extensionId: chrome.runtime.id,
+          navigatorLanguage: navigator.language || '',
+          uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
+        },
+        getMessage
+      });
+      const body = new URL(waitlistUrl).searchParams.get('body') || '';
+      await navigator.clipboard.writeText(body);
+      void recordTelemetryEvent('pro_waitlist_copied', { source: 'popup' });
+      elements.popupProWaitlistCopyButton.textContent = getMessage('copied') || originalText;
+      window.setTimeout(() => {
+        elements.popupProWaitlistCopyButton.textContent =
+          getMessage('popupProWaitlistCopy') || originalText;
+      }, 1200);
+    } catch (error) {
+      console.error('Failed to copy waitlist copy:', error);
+      elements.popupProWaitlistCopyButton.textContent = originalText;
+    }
   });
 
   // Interaction mode radio buttons

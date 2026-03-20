@@ -796,9 +796,13 @@ input:checked + .slider:before {
 
 /* Pro entry */
 .pro-entry-row {
-  padding: 0 20px 12px;
+  padding: 0 20px 8px;
   display: flex;
   gap: 8px;
+}
+
+.pro-entry-row.pro-entry-row-copy {
+  padding-bottom: 12px;
 }
 
 .pro-entry-button {

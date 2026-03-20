@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Semantic Main Content</title>
+  </head>
+  <body>
+    <header>HEADER_NOISE_SHOULD_NOT_COPY</header>
+    <nav>NAV_NOISE_SHOULD_NOT_COPY</nav>
+    <aside>ASIDE_NOISE_SHOULD_NOT_COPY</aside>
+
+    <main>
+      <h1>Semantic Main Content</h1>
+
+      <p>
+        This is the main article content. It is intentionally long to exceed the semantic root threshold, so the
+        conversion should prefer this main container over document.body. The output must not include header, nav, or
+        aside noise.
+      </p>
+
+      <p>
+        Second paragraph continues the content to ensure the total visible text length is comfortably above the minimum
+        threshold. The goal is to make this test stable and easy to assert.
+      </p>
+    </main>
+
+    <footer>FOOTER_NOISE_SHOULD_NOT_COPY</footer>
+  </body>
+</html>

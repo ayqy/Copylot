@@ -170,6 +170,10 @@
     "message": "加入候补名单",
     "description": "Popup Pro 候补入口"
   },
+  "popupProWaitlistCopy": {
+    "message": "复制候补文案",
+    "description": "Popup：复制候补文案按钮"
+  },
   "proTab": {
     "message": "Pro",
     "description": "Options Pro Tab 标签"

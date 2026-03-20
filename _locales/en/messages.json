@@ -170,6 +170,10 @@
     "message": "Join waitlist",
     "description": "Popup entry for Pro waitlist"
   },
+  "popupProWaitlistCopy": {
+    "message": "Copy waitlist template",
+    "description": "Popup entry: copy Pro waitlist template"
+  },
   "proTab": {
     "message": "Pro",
     "description": "Options tab label for Pro"

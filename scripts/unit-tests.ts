@@ -389,7 +389,7 @@ function run() {
       ts: now,
       props: { source: 'popup' }
     }),
-    { name: 'pro_waitlist_copied', ts: now }
+    { name: 'pro_waitlist_copied', ts: now, props: { source: 'popup' } }
   );
   assert.deepEqual(
     sanitizeTelemetryEvent({

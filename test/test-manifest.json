@@ -41,6 +41,11 @@
     "expected": "| Feature | Value |\n| --- | --- |\n| Name | Copylot |\n| Lang | Chinese |"
   },
   {
+    "path": "cases/semantic-main-content.html",
+    "title": "semantic main content",
+    "expected": "# Semantic Main Content\n\nThis is the main article content. It is intentionally long to exceed the semantic root threshold, so the conversion should prefer this main container over document.body. The output must not include header, nav, or aside noise.\n\nSecond paragraph continues the content to ensure the total visible text length is comfortably above the minimum threshold. The goal is to make this test stable and easy to assert."
+  },
+  {
     "path": "cases/table-selection-inside-table.html",
     "title": "table selection inside table",
     "expected": "Outside paragraph (A): select text here to verify non-table selection still uses precise selection. **Bold** and [link](https://example.com/outside).\n\n| Col A | Col B |\n| --- | --- |\n| Cell A1 with [link](https://example.com/a1) and inline `code`. | Cell B1 with **bold** and *em*. |\n| Cell A2 plain text. | Cell B2 with nested inline elements: [`code-link`](https://example.com/b2). |\n\nOutside paragraph (B): used to verify conversion behavior when selection is outside the table.\n"

@@ -967,10 +967,36 @@ export function formatAdditionalInfo(
   return additionalInfo;
 }
 
+const SEMANTIC_MAIN_ROOT_MIN_TEXT_LEN = 200;
+
+function pickSemanticMainRootIfBody(root: Element): Element {
+  if (root.tagName !== 'BODY') return root;
+
+  const candidates = Array.from(root.querySelectorAll('main, article, [role="main"]'));
+  let bestCandidate: Element | null = null;
+  let bestCandidateTextLen = 0;
+
+  for (const candidate of candidates) {
+    if (!(candidate instanceof HTMLElement)) continue;
+    const textLen = candidate.innerText.trim().length;
+    if (textLen > bestCandidateTextLen) {
+      bestCandidateTextLen = textLen;
+      bestCandidate = candidate;
+    }
+  }
+
+  if (bestCandidate && bestCandidateTextLen >= SEMANTIC_MAIN_ROOT_MIN_TEXT_LEN) {
+    return bestCandidate;
+  }
+
+  return root;
+}
+
 export function processContent(element: Element, settings: Settings): string {
   try {
+    const root = pickSemanticMainRootIfBody(element);
     // 统一可见性预处理
-    const workingRoot = createVisibleClone(element);
+    const workingRoot = createVisibleClone(root);
 
     let content: string;
 
