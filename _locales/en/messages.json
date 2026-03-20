@@ -1041,6 +1041,46 @@
     "message": "Copy evidence pack",
     "description": "Pro funnel evidence pack copy button label"
   },
+  "proIntentWeeklyDigestCopy": {
+    "message": "Copy weekly Pro intent digest",
+    "description": "Copy weekly Pro intent digest button label in Options privacy tab"
+  },
+  "proIntentWeeklyDigestMdTitle": {
+    "message": "Pro intent digest (last $1 days)",
+    "description": "Weekly digest markdown title ($1=days)"
+  },
+  "proIntentWeeklyDigestMdTelemetryOffNotice": {
+    "message": "Anonymous usage data is OFF (no events). This digest only includes environment info and does not read or infer any history.",
+    "description": "Weekly digest notice when anonymous usage data is disabled"
+  },
+  "proIntentWeeklyDigestMdSectionWindow": {
+    "message": "Time window (local)",
+    "description": "Weekly digest time window section heading"
+  },
+  "proIntentWeeklyDigestMdSectionCountsOverall": {
+    "message": "Key event counts (overall)",
+    "description": "Weekly digest overall counts section heading"
+  },
+  "proIntentWeeklyDigestMdSectionCountsBySource": {
+    "message": "Key event counts (bySource)",
+    "description": "Weekly digest bySource counts section heading"
+  },
+  "proIntentWeeklyDigestMdSectionRatesOverall": {
+    "message": "Key conversion rates (overall)",
+    "description": "Weekly digest overall conversion rates section heading"
+  },
+  "proIntentWeeklyDigestMdSectionEnv": {
+    "message": "Environment",
+    "description": "Weekly digest environment section heading"
+  },
+  "proIntentWeeklyDigestMdSectionPrivacy": {
+    "message": "Privacy",
+    "description": "Weekly digest privacy section heading"
+  },
+  "proIntentWeeklyDigestMdPrivacyStatement": {
+    "message": "No page content, copied text, URLs, or titles. Derived only from local anonymous telemetry and extension environment info.",
+    "description": "Weekly digest privacy statement body"
+  },
   "proFunnelCopySuccess": {
     "message": "Summary copied to clipboard",
     "description": "Pro funnel summary copy success notification"
@@ -1056,6 +1096,14 @@
   "proFunnelEvidencePackCopyFailed": {
     "message": "Copy failed. Please select and copy manually.",
     "description": "Pro funnel evidence pack copy failure notification"
+  },
+  "proIntentWeeklyDigestCopySuccess": {
+    "message": "Weekly digest copied to clipboard",
+    "description": "Weekly Pro intent digest copy success notification"
+  },
+  "proIntentWeeklyDigestCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Weekly Pro intent digest copy failure notification"
   },
   "proFunnelRefreshFailed": {
     "message": "Refresh failed",

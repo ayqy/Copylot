@@ -18,14 +18,16 @@
 - [x] Pro 候补提示（低打扰）+ 漏斗取证补齐：补齐“曝光 -> 行动”的可量化证据与导出路径（v1-46）
 - [x] 发布阻塞解除 v2（离线可推进）：`publish:cws` 支持 `socks5://`/`socks5h://` 代理 + 网络可达性预检取证（v1-47）
 - [x] Pro 候补留资降摩擦（离线可推进）：Options 内嵌“付费意向问卷”+ 一键复制/打开候补 + 漏斗取证增强（v1-48）
+- [x] Pro 下一步验证节奏固化（离线可推进）：每周“意向证据摘要”一键生成 + 问卷模板渠道化（v1-50）
 
 ## 当前进度
-- 一句话结论：截至 2026-03-20，v1-48 已完成「Pro 候补留资降摩擦 + 付费意向取证」可发布交付：Options -> Pro Tab 内嵌“付费意向问卷（可选）”并提供 `复制问卷（含环境信息）/复制并打开候补` 一键动作；新增匿名事件 `pro_waitlist_survey_copied`（仅匿名开关 ON 才写入本地 telemetry，默认 OFF 不记录）并纳入 Options -> 隐私页「Pro 意向漏斗摘要/证据包」导出，可审计验证该留资动作发生过（count/lastTs 或 events 记录）。已同步埋点清单/用例/证据索引/简报（`docs/growth/telemetry-events.md`、`docs/test-cases/v1-48.md`、`docs/evidence/v1-48/`、`docs/reports/v1-48-report.md`）。`bash scripts/test.sh` 回归 PASS（扩展版本 1.1.22，产物 `plugin-1.1.22.zip`）。真实上架取证仍受网络可达性阻塞（需要人类提供可用代理/VPN），但商业化意向与留资证据链路已可离线推进与复盘。
+- 一句话结论：截至 2026-03-20，v1-50 已完成「每周 Pro 意向证据摘要（7d window）一键生成 + 问卷/复盘模板渠道化」可发布交付：Options -> 隐私与可观测性新增 `复制本周 Pro 意向证据摘要`（稳定 DOM：`#copy-pro-intent-weekly-digest`），复制内容为 Markdown（含时间窗 from/to、关键事件计数 overall+bySource、关键转化率、环境信息与隐私声明）；匿名开关 OFF 时摘要明确提示“匿名使用数据关闭（无可用事件）”，且不读取/不推断历史仅输出环境信息；匿名开关 ON 时摘要仅基于本地 telemetry（白名单 + FIFO window）计算 7d 统计，不新增任何网络请求。已沉淀可复用模板（`docs/monetization/pro-waitlist-survey-template.md`、`docs/growth/pro-intent-weekly-digest-template.md`）并落盘用例/证据索引/简报（`docs/test-cases/v1-50.md`、`docs/evidence/v1-50/`、`docs/reports/v1-50-report.md`）。`bash scripts/test.sh` 回归 PASS（扩展版本 1.1.23，产物 `plugin-1.1.23.zip`）。真实上架取证仍受网络可达性阻塞（需要人类提供可用代理/VPN），但商业化意向与留资证据链路已可按周节奏离线推进、持续获客、持续取证与复盘。
+- 下一步（离线可推进，收入优先）：按周执行“复制本周摘要 -> 粘贴到复盘模板 -> 落盘证据索引 -> 对外分发问卷模板”的闭环，把渠道投放与留资动作变成可持续、可审计的证据资产；网络恢复后可直接与真实商店跑数做对比。
 - 可观测性（隐私合规）：已实现“匿名使用数据”开关（默认关闭）+ 本地匿名事件日志导出/清空（仅 name/ts/props 白名单）；并有本地漏斗摘要/增长统计面板
 - 激活（Activation）：Popup 已有 3 步新手引导（可跳过、可手动重开）+ 推荐设置一键应用
 - 口碑闭环（WOM）：Popup/Options/评分引导已统一商店 UTM 口径；Options -> 隐私页新增「WOM 摘要」与「证据包导出」，可按来源统计 `wom_*` / `rating_prompt_*` 并派生转化率（share copy / rating prompt）
 - 商业化准备：Options -> Pro Tab 已有 Free vs Pro Planned 口径与“加入候补名单/复制候补文案”入口；Popup 已补齐“升级 Pro/加入候补名单/复制候补文案”低摩擦入口；并在隐私页新增「Pro 意向漏斗摘要」与「证据包导出」（v1-38），可量化/可审计/可复盘
-- 发布与质量：`npm run publish:cws -- --dry-run` 已升级为输出「Proxy Diagnostic + Preflight」完整诊断块（含 socks5/socks5h）；强制 `bash scripts/test.sh` + 产物/版本一致性校验 + 重新打包 zip；全量回归近期均 PASS（2026-03-20，扩展版本 1.1.22）
+- 发布与质量：`npm run publish:cws -- --dry-run` 已升级为输出「Proxy Diagnostic + Preflight」完整诊断块（含 socks5/socks5h）；强制 `bash scripts/test.sh` + 产物/版本一致性校验 + 重新打包 zip；全量回归近期均 PASS（2026-03-20，扩展版本 1.1.23）
 - 发布凭据：仓库本地 `.env` 已配置 `CWS_EXTENSION_ID/CWS_CLIENT_ID/CWS_CLIENT_SECRET/CWS_REFRESH_TOKEN`（均为 set）；当前阻塞点仍为网络可达性（但已支持 `http/https/socks5/socks5h` 代理，并可通过 Preflight 输出可审计失败类型与修复建议）
 - 体验增量（近 24h）：已修复悬浮按钮 Prompt 选区作用域（v1-34）与整页转换正文优先（v1-35），降低噪音提升首次成功复制质量
 - 商店物料：已纠偏夸大口径并补齐教程入口（v1-28）；并已在商店长描述补齐“Pro 候补/Planned”CTA 与稳定口径链接（`docs/monetization/pro-scope.md`，v1-36）
@@ -34,9 +36,10 @@
 ## 下一步最重要的 3 件事（收入优先）
 1. 完成一次真实 CWS 发布 + 商店端取证（Top1，阻塞：需要可用代理/VPN + 商店可达）：在网络可达后执行 `npm run publish:cws` 发布到 `default` channel；发布前先用 `npm run publish:cws -- --dry-run` 观察 Preflight 是否 PASS；发布成功后补齐商店端“版本号 + 发布时间 + Pro 候补 CTA 可见”截图/核对清单证据（形成可审计的商业化推进证据）
 2. 真实发布后跑数取证 + 24h 复盘首轮（Top2，阻塞：依赖 Top1 完成真实发布 + 商店可达）：从商店安装当前版本，按 `docs/evidence/v1-42/index.md`、`docs/evidence/v1-44/index.md`、`docs/evidence/v1-46/index.md`、`docs/evidence/v1-48/index.md` 同口径导出/落盘「Pro 意向漏斗摘要/证据包」与「WOM 摘要/证据包」截图索引；然后按 `docs/growth/post-release-review-template.md` 填写发布后 24h 复盘（7d 复盘后置）
-3. 基于问卷留资证据推进 Pro 下一步验证（Top3，离线可推进，收入优先）：用 `pro_waitlist_survey_copied/pro_waitlist_opened/pro_waitlist_copied` 口径形成每周可复制的“意向证据摘要”，并把问卷模板落到可复用渠道（GitHub Issue/邮件/社群），持续收敛定价区间与能力优先级（不引入支付/订阅）
+3. 每周固定输出“意向证据摘要 + 复盘”（Top3，离线可推进，收入优先）：按 `docs/growth/pro-intent-weekly-digest-template.md` 每周粘贴 `复制本周 Pro 意向证据摘要（7d window）` 输出，并把问卷模板 `docs/monetization/pro-waitlist-survey-template.md` 渠道化分发；每周把摘要样例与截图索引落盘到 `docs/evidence/v1-50/`，持续收敛定价区间与能力优先级（不引入支付/订阅）
 
 ## 阻塞与需要的人类输入
+- 由于 Top1/Top2 仍受网络可达性阻塞（需要代理/VPN + 商店可达），已优先交付 v1-50（离线可推进）：每周“意向证据摘要”一键生成 + 问卷/复盘模板渠道化，保证收入路径与取证资产不断档。
 - Chrome Web Store 真实发布的根因阻塞仍为“网络可达性”：本地凭据已齐全，但需要人类侧提供可用代理/VPN（并提供包含 scheme 的代理地址/端口，例如 `http://127.0.0.1:7890` 或 `socks5://127.0.0.1:1080`）。v1-47 已补齐 `socks5://`/`socks5h://` 支持与可审计 Preflight；当网络不可达时可直接从输出中得到 FAIL 类型与修复建议，避免只剩 `fetch failed`。
 - 若 `chromewebstore.google.com` 亦不可达，则 Top3 的“从商店安装”同样需要代理/VPN；但 v1-42 已以 `plugin-*.zip` 安装回归作为不依赖外网的保底路径，确保基线证据可落盘且可对比。
 - 若未来要打通“收款/订阅”（非本阶段 MVP），需要：Stripe/收款账号、定价策略与退款/税务口径（本轮不做）

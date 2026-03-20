@@ -1041,6 +1041,46 @@
     "message": "复制证据包",
     "description": "Pro 漏斗证据包复制按钮"
   },
+  "proIntentWeeklyDigestCopy": {
+    "message": "复制本周 Pro 意向证据摘要",
+    "description": "隐私页复制本周 Pro 意向证据摘要按钮"
+  },
+  "proIntentWeeklyDigestMdTitle": {
+    "message": "Pro 意向证据摘要（过去 $1 天）",
+    "description": "本周 Pro 意向证据摘要 Markdown 标题（$1=天数）"
+  },
+  "proIntentWeeklyDigestMdTelemetryOffNotice": {
+    "message": "匿名使用数据关闭（无可用事件）。本摘要仅包含环境信息，不读取/不推断任何历史事件。",
+    "description": "匿名开关 OFF 时 weekly digest 提示文案"
+  },
+  "proIntentWeeklyDigestMdSectionWindow": {
+    "message": "时间窗（本地时间）",
+    "description": "weekly digest 时间窗区块标题"
+  },
+  "proIntentWeeklyDigestMdSectionCountsOverall": {
+    "message": "关键事件计数（overall）",
+    "description": "weekly digest overall 计数区块标题"
+  },
+  "proIntentWeeklyDigestMdSectionCountsBySource": {
+    "message": "关键事件计数（bySource）",
+    "description": "weekly digest bySource 计数区块标题"
+  },
+  "proIntentWeeklyDigestMdSectionRatesOverall": {
+    "message": "关键转化率（overall）",
+    "description": "weekly digest overall 转化率区块标题"
+  },
+  "proIntentWeeklyDigestMdSectionEnv": {
+    "message": "环境信息",
+    "description": "weekly digest 环境信息区块标题"
+  },
+  "proIntentWeeklyDigestMdSectionPrivacy": {
+    "message": "隐私声明",
+    "description": "weekly digest 隐私声明区块标题"
+  },
+  "proIntentWeeklyDigestMdPrivacyStatement": {
+    "message": "不包含网页内容/复制内容/URL/标题；仅来源于本地匿名事件统计与扩展环境信息。",
+    "description": "weekly digest 隐私声明正文"
+  },
   "proFunnelCopySuccess": {
     "message": "摘要已复制到剪贴板",
     "description": "Pro 意向漏斗摘要复制成功提示"
@@ -1056,6 +1096,14 @@
   "proFunnelEvidencePackCopyFailed": {
     "message": "复制失败，请手动选择并复制",
     "description": "Pro 漏斗证据包复制失败提示"
+  },
+  "proIntentWeeklyDigestCopySuccess": {
+    "message": "本周摘要已复制到剪贴板",
+    "description": "本周 Pro 意向证据摘要复制成功提示"
+  },
+  "proIntentWeeklyDigestCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "本周 Pro 意向证据摘要复制失败提示"
   },
   "proFunnelRefreshFailed": {
     "message": "刷新失败",

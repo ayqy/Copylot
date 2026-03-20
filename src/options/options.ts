@@ -38,6 +38,11 @@ import {
   type ProFunnelSummary
 } from '../shared/pro-funnel';
 import {
+  buildProIntentWeeklyDigestSummary,
+  formatProIntentWeeklyDigestMarkdown,
+  type ProIntentWeeklyDigestEnvInfo
+} from '../shared/pro-intent-weekly-digest';
+import {
   buildWomEvidencePack,
   buildWomSummary,
   type WomEvidencePack,
@@ -124,6 +129,7 @@ interface OptionsElements {
   proFunnelRefreshButton: HTMLButtonElement;
   proFunnelCopyButton: HTMLButtonElement;
   proFunnelEvidencePackCopyButton: HTMLButtonElement;
+  proIntentWeeklyDigestCopyButton: HTMLButtonElement;
   womSummaryPanel: HTMLDetailsElement;
   womSummaryView: HTMLTextAreaElement;
   womSummaryDisabledNotice: HTMLElement;
@@ -248,6 +254,7 @@ function getElements(): OptionsElements {
     proFunnelRefreshButton: document.getElementById('pro-funnel-refresh') as HTMLButtonElement,
     proFunnelCopyButton: document.getElementById('pro-funnel-copy') as HTMLButtonElement,
     proFunnelEvidencePackCopyButton: document.getElementById('pro-funnel-evidence-pack-copy') as HTMLButtonElement,
+    proIntentWeeklyDigestCopyButton: document.getElementById('copy-pro-intent-weekly-digest') as HTMLButtonElement,
     womSummaryPanel: document.getElementById('wom-summary-panel') as HTMLDetailsElement,
     womSummaryView: document.getElementById('wom-summary-view') as HTMLTextAreaElement,
     womSummaryDisabledNotice: document.getElementById('wom-summary-disabled-notice') as HTMLElement,
@@ -1436,6 +1443,78 @@ async function copyProFunnelEvidencePackToClipboard(): Promise<void> {
   }
 }
 
+async function buildProIntentWeeklyDigestMarkdownForClipboard(): Promise<string> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for pro intent weekly digest:', error);
+  }
+
+  const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+  const env: ProIntentWeeklyDigestEnvInfo = {
+    extensionVersion,
+    exportedAt,
+    isAnonymousUsageDataEnabled: enabled
+  };
+
+  // Anonymous usage data OFF: do not read / infer any history.
+  if (!enabled) {
+    const summary = buildProIntentWeeklyDigestSummary({
+      enabled: false,
+      telemetryEvents: [],
+      now: exportedAt,
+      lookbackDays: 7
+    });
+    return formatProIntentWeeklyDigestMarkdown({ summary, env, getMessage });
+  }
+
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    const summary = buildProIntentWeeklyDigestSummary({
+      enabled: true,
+      telemetryEvents: [],
+      now: exportedAt,
+      lookbackDays: 7
+    });
+    return formatProIntentWeeklyDigestMarkdown({ summary, env, getMessage });
+  }
+
+  const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+  const summary = buildProIntentWeeklyDigestSummary({
+    enabled: true,
+    telemetryEvents: result[TELEMETRY_EVENTS_KEY],
+    now: exportedAt,
+    lookbackDays: 7
+  });
+  return formatProIntentWeeklyDigestMarkdown({ summary, env, getMessage });
+}
+
+async function copyProIntentWeeklyDigestToClipboard(): Promise<void> {
+  let text: string;
+
+  try {
+    text = await buildProIntentWeeklyDigestMarkdownForClipboard();
+  } catch (error) {
+    console.warn('Failed to build pro intent weekly digest markdown:', error);
+    showNotification(getMessage('proIntentWeeklyDigestCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showNotification(getMessage('proIntentWeeklyDigestCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy pro intent weekly digest markdown:', error);
+    const ok = fallbackCopyText(text);
+    if (ok) {
+      showNotification(getMessage('proIntentWeeklyDigestCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('proIntentWeeklyDigestCopyFailed'), 'error');
+  }
+}
+
 function formatWomSummaryAsJson(summary: WomSummary): string {
   return `${JSON.stringify(summary, null, 2)}\n`;
 }
@@ -1778,6 +1857,9 @@ function setupEventListeners() {
   });
   elements.proFunnelEvidencePackCopyButton.addEventListener('click', () => {
     void copyProFunnelEvidencePackToClipboard();
+  });
+  elements.proIntentWeeklyDigestCopyButton.addEventListener('click', () => {
+    void copyProIntentWeeklyDigestToClipboard();
   });
 
   // WOM 摘要面板

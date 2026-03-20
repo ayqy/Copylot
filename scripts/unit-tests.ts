@@ -35,6 +35,10 @@ import {
   trimTelemetryEvents
 } from '../src/shared/telemetry.ts';
 import { buildProFunnelEvidencePack, buildProFunnelSummary } from '../src/shared/pro-funnel.ts';
+import {
+  buildProIntentWeeklyDigestSummary,
+  formatProIntentWeeklyDigestMarkdown
+} from '../src/shared/pro-intent-weekly-digest.ts';
 import { buildWomEvidencePack, buildWomSummary } from '../src/shared/wom-summary.ts';
 import { cleanCodeBlockText } from '../src/shared/code-block-cleaner.ts';
 import { parsePromptSortMode, sortPrompts } from '../src/shared/prompt-sort.ts';
@@ -780,6 +784,80 @@ async function run() {
   assert.equal(proPackTelemetryOff.proFunnel.enabled, false);
   assert.equal(proPackTelemetryOff.proFunnel.bySource.popup.counts.pro_entry_opened, 0);
 
+  // pro-intent-weekly-digest.ts (pure functions + markdown formatter)
+  const proWeeklyDigestDisabled = buildProIntentWeeklyDigestSummary({
+    enabled: false,
+    telemetryEvents: [{ name: 'pro_entry_opened', ts: now, props: { source: 'popup' } }],
+    now
+  });
+  assert.equal(proWeeklyDigestDisabled.enabled, false);
+  assert.equal(proWeeklyDigestDisabled.disabledReason, 'anonymous_usage_data_disabled');
+  assert.equal(proWeeklyDigestDisabled.overall.pro_entry_opened, 0);
+  assert.equal(proWeeklyDigestDisabled.rates.waitlist_opened_per_entry_opened, null);
+
+  const proWeeklyDigestEmpty = buildProIntentWeeklyDigestSummary({
+    enabled: true,
+    telemetryEvents: [],
+    now
+  });
+  assert.equal(proWeeklyDigestEmpty.enabled, true);
+  assert.equal(proWeeklyDigestEmpty.overall.pro_entry_opened, 0);
+  assert.equal(proWeeklyDigestEmpty.overall.pro_waitlist_opened, 0);
+  assert.equal(proWeeklyDigestEmpty.rates.waitlist_opened_per_entry_opened, null);
+  assert.equal(proWeeklyDigestEmpty.window.to, now);
+  assert.equal(proWeeklyDigestEmpty.window.from, now - 7 * 24 * 60 * 60 * 1000);
+
+  const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+  const proWeeklyDigest = buildProIntentWeeklyDigestSummary({
+    enabled: true,
+    telemetryEvents: [
+      { name: 'pro_entry_opened', ts: sevenDaysAgo, props: { source: 'popup' } }, // included (boundary)
+      { name: 'pro_waitlist_opened', ts: sevenDaysAgo + 1, props: { source: 'popup' } },
+      { name: 'pro_waitlist_survey_copied', ts: now - 1000, props: { source: 'options' } },
+      { name: 'pro_waitlist_copied', ts: now, props: { source: 'options' } }, // included (boundary)
+      { name: 'pro_entry_opened', ts: sevenDaysAgo - 1, props: { source: 'options' } }, // excluded
+      { name: 'pro_waitlist_opened', ts: now + 1, props: { source: 'options' } }, // excluded
+      { name: 'popup_opened', ts: now }
+    ],
+    now
+  });
+  assert.equal(proWeeklyDigest.overall.pro_entry_opened, 1);
+  assert.equal(proWeeklyDigest.overall.pro_waitlist_opened, 1);
+  assert.equal(proWeeklyDigest.overall.pro_waitlist_survey_copied, 1);
+  assert.equal(proWeeklyDigest.overall.pro_waitlist_copied, 1);
+  assert.equal(proWeeklyDigest.bySource.popup.pro_entry_opened, 1);
+  assert.equal(proWeeklyDigest.bySource.options.pro_entry_opened, 0);
+  assert.equal(proWeeklyDigest.rates.waitlist_opened_per_entry_opened, 1);
+  assert.equal(proWeeklyDigest.rates.waitlist_copied_per_waitlist_opened, 1);
+  assert.equal(proWeeklyDigest.rates.survey_copied_per_entry_opened, 1);
+
+  const digestGetMessage = (key: string, substitutions?: string | string[]) => {
+    const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
+    if (key === 'proIntentWeeklyDigestMdTitle') return `Pro 意向证据摘要（过去 ${subs[0] || ''} 天）`;
+    if (key === 'proIntentWeeklyDigestMdTelemetryOffNotice') return '匿名使用数据关闭（无可用事件）';
+    if (key === 'proIntentWeeklyDigestMdSectionWindow') return '时间窗（本地时间）';
+    if (key === 'proIntentWeeklyDigestMdSectionCountsOverall') return '关键事件计数（overall）';
+    if (key === 'proIntentWeeklyDigestMdSectionCountsBySource') return '关键事件计数（bySource）';
+    if (key === 'proIntentWeeklyDigestMdSectionRatesOverall') return '关键转化率（overall）';
+    if (key === 'proIntentWeeklyDigestMdSectionEnv') return '环境信息';
+    if (key === 'proIntentWeeklyDigestMdSectionPrivacy') return '隐私声明';
+    if (key === 'proIntentWeeklyDigestMdPrivacyStatement') return '不包含网页内容';
+    return key;
+  };
+
+  const proWeeklyDigestMarkdown = formatProIntentWeeklyDigestMarkdown({
+    summary: proWeeklyDigest,
+    env: {
+      extensionVersion: '1.1.23',
+      exportedAt: now,
+      isAnonymousUsageDataEnabled: true
+    },
+    getMessage: digestGetMessage
+  });
+  assert.ok(proWeeklyDigestMarkdown.includes('pro_entry_opened'));
+  assert.ok(proWeeklyDigestMarkdown.includes('waitlist_opened_per_entry_opened'));
+  assert.ok(proWeeklyDigestMarkdown.includes('不包含网页内容'));
+
   // wom-summary.ts (pure functions)
   const womSummaryDisabled = buildWomSummary({
     enabled: false,
@@ -917,6 +995,10 @@ async function run() {
   assert.ok(
     optionsHtml.includes('id="pro-funnel-evidence-pack-copy"'),
     'options.html should include pro-funnel-evidence-pack-copy'
+  );
+  assert.ok(
+    optionsHtml.includes('id="copy-pro-intent-weekly-digest"'),
+    'options.html should include copy-pro-intent-weekly-digest'
   );
 
   const popupJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.js'], { encoding: 'utf8' });
