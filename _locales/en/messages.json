@@ -336,6 +336,32 @@
     "message": "Copy recruit copy (with URL)",
     "description": "Options Pro tab: distribution toolkit - copy recruit copy button"
   },
+  "proStoreUrlCopyButton": {
+    "message": "Copy Chrome Web Store URL (with UTM + campaign)",
+    "description": "Options Pro tab: distribution toolkit - copy store URL button"
+  },
+  "proDistributionPackCopyButton": {
+    "message": "Copy distribution pack (Markdown)",
+    "description": "Options Pro tab: distribution toolkit - copy distribution pack button"
+  },
+  "proDistributionPackTemplate": {
+    "message": "# Copylot Distribution Pack (Auditable)\\n\\n- campaign: $CAMPAIGN$\\n\\n## 1) Chrome Web Store URL (UTM + campaign)\\n$STORE_URL$\\n\\n## 2) Waitlist URL (with campaign)\\n$WAITLIST_URL$\\n\\n## 3) Recruit Copy (ready to share)\\n\\n```text\\n$RECRUIT_COPY$\\n```\\n\\n## 4) Optional: Survey Guide\\n- If you'd like to help us shape Pro: after installing, open Copylot -> Options -> Pro, click \\\"Copy survey (with env info)\\\" and send it to us (no webpage or private content needed).\\n\\n---\\n\\nPrivacy: This pack contains no webpage content, copied content, current page URL, or title. Only fixed template + campaign + store/waitlist links.\\n",
+    "description": "Options Pro tab: distribution toolkit - distribution pack markdown template",
+    "placeholders": {
+      "CAMPAIGN": {
+        "content": "$1"
+      },
+      "STORE_URL": {
+        "content": "$2"
+      },
+      "WAITLIST_URL": {
+        "content": "$3"
+      },
+      "RECRUIT_COPY": {
+        "content": "$4"
+      }
+    }
+  },
   "proWaitlistDistributionCampaignRequired": {
     "message": "For attribution, please enter a valid campaign first.",
     "description": "Options Pro tab: distribution toolkit - campaign required hint"
@@ -1130,6 +1156,26 @@
   "proIntentByCampaign7dCsvEmptyBucket": {
     "message": "(none)",
     "description": "Empty campaign bucket label in Pro intent by campaign aggregated CSV"
+  },
+  "proDistributionByCampaign7dCsvExport": {
+    "message": "Export last 7 days distribution copies by campaign (CSV)",
+    "description": "Privacy page export distribution copies by campaign aggregated CSV button"
+  },
+  "proDistributionByCampaign7dCsvExportSuccess": {
+    "message": "CSV exported ($1 rows)",
+    "description": "Distribution copies by campaign aggregated CSV export success notice ($1=row count)"
+  },
+  "proDistributionByCampaign7dCsvExportFailed": {
+    "message": "Export failed",
+    "description": "Distribution copies by campaign aggregated CSV export failure notice"
+  },
+  "proDistributionByCampaign7dCsvExportTelemetryOff": {
+    "message": "Anonymous usage data is OFF: no distribution aggregation exported",
+    "description": "Notification when exporting distribution by campaign CSV while anonymous usage data is disabled"
+  },
+  "proDistributionByCampaign7dCsvEmptyBucket": {
+    "message": "(none)",
+    "description": "Empty campaign bucket label in distribution by campaign aggregated CSV"
   },
   "proIntentWeeklyDigestCopy": {
     "message": "Copy weekly Pro intent digest",

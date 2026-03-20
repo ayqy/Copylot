@@ -17,6 +17,7 @@ export type TelemetryEventName =
   | 'pro_waitlist_opened'
   | 'pro_waitlist_copied'
   | 'pro_waitlist_survey_copied'
+  | 'pro_distribution_asset_copied'
   | 'onboarding_shown'
   | 'onboarding_completed'
   | 'rating_prompt_shown'
@@ -44,6 +45,7 @@ const TELEMETRY_EVENT_PROP_ALLOWLIST: Record<TelemetryEventName, readonly string
   pro_waitlist_opened: ['source', 'campaign'],
   pro_waitlist_copied: ['source', 'campaign'],
   pro_waitlist_survey_copied: ['source', 'campaign'],
+  pro_distribution_asset_copied: ['source', 'campaign', 'action'],
   onboarding_shown: ['source'],
   onboarding_completed: ['source', 'action'],
   rating_prompt_shown: ['source'],
@@ -104,6 +106,18 @@ type ProPromptAction = 'join' | 'later' | 'never';
 
 function isProPromptAction(value: unknown): value is ProPromptAction {
   return value === 'join' || value === 'later' || value === 'never';
+}
+
+type ProDistributionSource = 'options';
+
+function isProDistributionSource(value: unknown): value is ProDistributionSource {
+  return value === 'options';
+}
+
+type ProDistributionAssetCopiedAction = 'waitlist_url' | 'recruit_copy' | 'store_url' | 'distribution_pack';
+
+function isProDistributionAssetCopiedAction(value: unknown): value is ProDistributionAssetCopiedAction {
+  return value === 'waitlist_url' || value === 'recruit_copy' || value === 'store_url' || value === 'distribution_pack';
 }
 
 function isWomEventName(name: TelemetryEventName): boolean {
@@ -169,6 +183,11 @@ function sanitizeProps(
         sanitized[key] = value;
         continue;
       }
+      if (eventName === 'pro_distribution_asset_copied') {
+        if (!isProDistributionSource(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
       if (eventName === 'onboarding_shown' || eventName === 'onboarding_completed') {
         if (!isOnboardingSource(value)) continue;
         sanitized[key] = value;
@@ -192,6 +211,11 @@ function sanitizeProps(
         sanitized[key] = value;
         continue;
       }
+      if (eventName === 'pro_distribution_asset_copied') {
+        if (!isProDistributionAssetCopiedAction(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
     }
     if (!isAllowedPropValue(value)) continue;
     sanitized[key] = value;
@@ -202,7 +226,8 @@ function sanitizeProps(
     (eventName === 'pro_entry_opened' ||
       eventName === 'pro_waitlist_opened' ||
       eventName === 'pro_waitlist_copied' ||
-      eventName === 'pro_waitlist_survey_copied') &&
+      eventName === 'pro_waitlist_survey_copied' ||
+      eventName === 'pro_distribution_asset_copied') &&
     'campaign' in sanitized &&
     !('source' in sanitized)
   ) {

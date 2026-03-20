@@ -35,6 +35,7 @@
 | `pro_waitlist_opened` | 打开候补登记页 | Popup：`src/popup/popup.ts` 点击 `#popup-pro-waitlist`；Options：`src/options/options.ts` 点击 `#pro-waitlist-button` | `{ source: 'popup' \| 'options', campaign?: string }` | 不包含任何用户内容；候补链接仅预填环境信息与占位提示；`campaign` 仅来源于用户输入 | 打开 GitHub `issues/new` |
 | `pro_waitlist_copied` | 复制候补文案成功 | Popup：`src/popup/popup.ts` 点击 `#popup-pro-waitlist-copy` 且写入剪贴板成功；Options：`src/options/options.ts` 点击 `#pro-waitlist-copy` 且写入剪贴板成功 | `{ source: 'popup' \| 'options', campaign?: string }` | 不包含任何用户内容；复制内容为候补模板（仅环境信息 + 占位提示）；`campaign` 仅来源于用户输入 | 仅在写入成功时记录 |
 | `pro_waitlist_survey_copied` | 复制“付费意向问卷（可选）”成功 | Options：`src/options/options.ts` 点击 `#pro-waitlist-survey-copy` / `#pro-waitlist-survey-copy-open` 且写入剪贴板成功 | `{ source: 'options', campaign?: string }` | 不包含任何网页内容/复制内容/URL/标题；复制内容为“环境信息 + 用户手动填写问卷”Markdown；`campaign` 仅来源于用户输入 | `campaign` 为空不写入 props |
+| `pro_distribution_asset_copied` | 渠道分发工具包资产复制成功 | Options：`src/options/options.ts` 点击 `#pro-waitlist-url-copy` / `#pro-waitlist-recruit-copy` / `#pro-store-url-copy` / `#pro-distribution-pack-copy` 且写入剪贴板成功 | `{ source: 'options', campaign: string, action: 'waitlist_url' \| 'recruit_copy' \| 'store_url' \| 'distribution_pack' }` | 不包含任何网页内容/复制内容/URL/标题；复制内容仅为固定模板 + 环境信息（如有）+ campaign + 商店/候补链接 | 仅在写入成功时记录；仅在匿名开关 ON 时记录 |
 
 ## 开关与清理
 - 开关字段：`Settings.isAnonymousUsageDataEnabled`

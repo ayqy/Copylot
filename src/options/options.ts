@@ -34,6 +34,8 @@ import { buildProWaitlistIssueUrl } from '../shared/monetization';
 import {
   buildProWaitlistDistributionIssueUrl,
   buildProWaitlistRecruitCopyText,
+  buildProStoreUrl,
+  buildProDistributionPackMarkdown,
   computeProWaitlistDistributionState
 } from '../shared/pro-waitlist-distribution';
 import {
@@ -52,6 +54,10 @@ import {
   buildProIntentByCampaignCsv,
   formatProIntentByCampaign7dCsvFilename
 } from '../shared/pro-intent-by-campaign-csv';
+import {
+  buildProDistributionByCampaignCsv,
+  formatProDistributionByCampaign7dCsvFilename
+} from '../shared/pro-distribution-by-campaign-csv';
 import {
   buildProIntentByCampaignWeeklyReportSummary,
   formatProIntentByCampaignWeeklyReportMarkdown,
@@ -147,6 +153,7 @@ interface OptionsElements {
   proFunnelEvidencePackCopyButton: HTMLButtonElement;
   exportProIntentEvents7dCsvButton: HTMLButtonElement;
   exportProIntentByCampaign7dCsvButton: HTMLButtonElement;
+  exportProDistributionByCampaign7dCsvButton: HTMLButtonElement;
   proIntentWeeklyDigestCopyButton: HTMLButtonElement;
   proIntentByCampaignWeeklyReportCopyButton: HTMLButtonElement;
   womSummaryPanel: HTMLDetailsElement;
@@ -171,6 +178,8 @@ interface OptionsElements {
   proWaitlistCopyButton: HTMLButtonElement;
   proWaitlistUrlCopyButton: HTMLButtonElement;
   proWaitlistRecruitCopyButton: HTMLButtonElement;
+  proStoreUrlCopyButton: HTMLButtonElement;
+  proDistributionPackCopyButton: HTMLButtonElement;
   proWaitlistDistributionCampaignRequiredHint: HTMLElement;
   proWaitlistSurveyUseCase: HTMLTextAreaElement;
   proWaitlistSurveyCapabilityAdvancedCleaning: HTMLInputElement;
@@ -281,6 +290,9 @@ function getElements(): OptionsElements {
     exportProIntentByCampaign7dCsvButton: document.getElementById(
       'export-pro-intent-by-campaign-7d-csv'
     ) as HTMLButtonElement,
+    exportProDistributionByCampaign7dCsvButton: document.getElementById(
+      'export-pro-distribution-by-campaign-7d-csv'
+    ) as HTMLButtonElement,
     proIntentWeeklyDigestCopyButton: document.getElementById('copy-pro-intent-weekly-digest') as HTMLButtonElement,
     proIntentByCampaignWeeklyReportCopyButton: document.getElementById(
       'copy-pro-intent-by-campaign-weekly-report'
@@ -306,6 +318,8 @@ function getElements(): OptionsElements {
     proWaitlistCopyButton: document.getElementById('pro-waitlist-copy') as HTMLButtonElement,
     proWaitlistUrlCopyButton: document.getElementById('pro-waitlist-url-copy') as HTMLButtonElement,
     proWaitlistRecruitCopyButton: document.getElementById('pro-waitlist-recruit-copy') as HTMLButtonElement,
+    proStoreUrlCopyButton: document.getElementById('pro-store-url-copy') as HTMLButtonElement,
+    proDistributionPackCopyButton: document.getElementById('pro-distribution-pack-copy') as HTMLButtonElement,
     proWaitlistDistributionCampaignRequiredHint: document.getElementById(
       'pro-waitlist-distribution-campaign-required'
     ) as HTMLElement,
@@ -405,6 +419,7 @@ async function loadSettings() {
     updateProWaitlistDistributionToolkitState();
     updateProIntentEvents7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
     updateProIntentByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
+    updateProDistributionByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
     filterAndRenderPrompts();
     updateSyncStatus();
     console.debug('Settings loaded:', currentSettings);
@@ -1374,11 +1389,18 @@ function updateProIntentByCampaign7dCsvExportButtonState(enabled: boolean): void
   elements.exportProIntentByCampaign7dCsvButton.disabled = !enabled;
 }
 
+function updateProDistributionByCampaign7dCsvExportButtonState(enabled: boolean): void {
+  if (!elements?.exportProDistributionByCampaign7dCsvButton) return;
+  elements.exportProDistributionByCampaign7dCsvButton.disabled = !enabled;
+}
+
 function updateProWaitlistDistributionToolkitState(): void {
   if (
     !elements?.proIntentCampaignInput ||
     !elements?.proWaitlistUrlCopyButton ||
     !elements?.proWaitlistRecruitCopyButton ||
+    !elements?.proStoreUrlCopyButton ||
+    !elements?.proDistributionPackCopyButton ||
     !elements?.proWaitlistDistributionCampaignRequiredHint
   ) {
     return;
@@ -1388,11 +1410,15 @@ function updateProWaitlistDistributionToolkitState(): void {
   const disabled = !state.enabled;
   elements.proWaitlistUrlCopyButton.disabled = disabled;
   elements.proWaitlistRecruitCopyButton.disabled = disabled;
+  elements.proStoreUrlCopyButton.disabled = disabled;
+  elements.proDistributionPackCopyButton.disabled = disabled;
   elements.proWaitlistDistributionCampaignRequiredHint.hidden = state.enabled;
 
   const tooltip = disabled ? (getMessage('proWaitlistDistributionCampaignRequired') || '') : '';
   elements.proWaitlistUrlCopyButton.title = tooltip;
   elements.proWaitlistRecruitCopyButton.title = tooltip;
+  elements.proStoreUrlCopyButton.title = tooltip;
+  elements.proDistributionPackCopyButton.title = tooltip;
 }
 
 async function readProFunnelSummaryForDisplay(): Promise<ProFunnelSummary> {
@@ -1789,6 +1815,63 @@ async function exportProIntentByCampaign7dCsv(): Promise<void> {
   showNotification(getMessage('proIntentByCampaign7dCsvExportSuccess', [String(built.rows.length)]), 'success');
 }
 
+async function exportProDistributionByCampaign7dCsv(): Promise<void> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for pro distribution by campaign csv export:', error);
+  }
+
+  const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+  if (!enabled) {
+    showNotification(getMessage('proDistributionByCampaign7dCsvExportTelemetryOff'), 'info');
+    return;
+  }
+
+  const emptyCampaignBucketLabel =
+    getMessage('proDistributionByCampaign7dCsvEmptyBucket') || getMessage('proIntentByCampaign7dCsvEmptyBucket');
+
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    const result = buildProDistributionByCampaignCsv({
+      enabled: true,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      emptyCampaignBucketLabel,
+      lookbackDays: 7
+    });
+    const filename = formatProDistributionByCampaign7dCsvFilename(exportedAt);
+    downloadCsvFile(filename, result.csv);
+    showNotification(getMessage('proDistributionByCampaign7dCsvExportSuccess', [String(result.rows.length)]), 'success');
+    return;
+  }
+
+  let stored: unknown;
+  try {
+    const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+    stored = result[TELEMETRY_EVENTS_KEY];
+  } catch (error) {
+    console.warn('Failed to read telemetry events for pro distribution by campaign csv export:', error);
+    showNotification(getMessage('proDistributionByCampaign7dCsvExportFailed'), 'error');
+    return;
+  }
+
+  const built = buildProDistributionByCampaignCsv({
+    enabled: true,
+    telemetryEvents: stored,
+    now: exportedAt,
+    extensionVersion,
+    emptyCampaignBucketLabel,
+    lookbackDays: 7
+  });
+
+  const filename = formatProDistributionByCampaign7dCsvFilename(exportedAt);
+  downloadCsvFile(filename, built.csv);
+  showNotification(getMessage('proDistributionByCampaign7dCsvExportSuccess', [String(built.rows.length)]), 'success');
+}
+
 function formatWomSummaryAsJson(summary: WomSummary): string {
   return `${JSON.stringify(summary, null, 2)}\n`;
 }
@@ -2138,6 +2221,9 @@ function setupEventListeners() {
   elements.exportProIntentByCampaign7dCsvButton.addEventListener('click', () => {
     void exportProIntentByCampaign7dCsv();
   });
+  elements.exportProDistributionByCampaign7dCsvButton.addEventListener('click', () => {
+    void exportProDistributionByCampaign7dCsv();
+  });
   elements.proIntentWeeklyDigestCopyButton.addEventListener('click', () => {
     void copyProIntentWeeklyDigestToClipboard();
   });
@@ -2193,6 +2279,7 @@ function setupEventListeners() {
       await refreshWomSummaryPanel();
       updateProIntentEvents7dCsvExportButtonState(enabled);
       updateProIntentByCampaign7dCsvExportButtonState(enabled);
+      updateProDistributionByCampaign7dCsvExportButtonState(enabled);
 
       showNotification(getMessage('saveSuccessMessage'), 'success');
     } catch (error) {
@@ -2389,6 +2476,17 @@ function setupEventListeners() {
     return buildProWaitlistRecruitCopyText({ getMessage, waitlistUrl, campaign });
   }
 
+  function buildProStoreUrlForDistributionToolkit(campaign: string): string {
+    return buildProStoreUrl({ extensionId: chrome.runtime.id, campaign });
+  }
+
+  function buildProDistributionPackForDistributionToolkit(campaign: string): string {
+    const storeUrl = buildProStoreUrlForDistributionToolkit(campaign);
+    const waitlistUrl = buildWaitlistDistributionUrl(campaign);
+    const recruitCopy = buildProWaitlistRecruitCopyText({ getMessage, waitlistUrl, campaign });
+    return buildProDistributionPackMarkdown({ getMessage, campaign, storeUrl, waitlistUrl, recruitCopy });
+  }
+
   function buildWaitlistSurveyBody(): string {
     const extensionVersion = chrome.runtime.getManifest().version || '';
     const extensionId = chrome.runtime.id;
@@ -2569,6 +2667,11 @@ function setupEventListeners() {
     const url = buildWaitlistDistributionUrl(state.campaign);
     try {
       await navigator.clipboard.writeText(url);
+      void recordTelemetryEvent('pro_distribution_asset_copied', {
+        source: 'options',
+        campaign: state.campaign,
+        action: 'waitlist_url'
+      });
       elements.proWaitlistUrlCopyButton.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
         elements.proWaitlistUrlCopyButton.textContent = getMessage('proWaitlistUrlCopyButton') || originalText;
@@ -2577,6 +2680,11 @@ function setupEventListeners() {
       console.warn('Failed to copy waitlist url via navigator.clipboard:', error);
       const ok = fallbackCopyText(url);
       if (ok) {
+        void recordTelemetryEvent('pro_distribution_asset_copied', {
+          source: 'options',
+          campaign: state.campaign,
+          action: 'waitlist_url'
+        });
         elements.proWaitlistUrlCopyButton.textContent = getMessage('copied') || originalText;
         window.setTimeout(() => {
           elements.proWaitlistUrlCopyButton.textContent = getMessage('proWaitlistUrlCopyButton') || originalText;
@@ -2600,6 +2708,11 @@ function setupEventListeners() {
     const text = buildWaitlistRecruitCopy(state.campaign);
     try {
       await navigator.clipboard.writeText(text);
+      void recordTelemetryEvent('pro_distribution_asset_copied', {
+        source: 'options',
+        campaign: state.campaign,
+        action: 'recruit_copy'
+      });
       elements.proWaitlistRecruitCopyButton.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
         elements.proWaitlistRecruitCopyButton.textContent = getMessage('proWaitlistRecruitCopyButton') || originalText;
@@ -2608,6 +2721,11 @@ function setupEventListeners() {
       console.warn('Failed to copy recruit copy via navigator.clipboard:', error);
       const ok = fallbackCopyText(text);
       if (ok) {
+        void recordTelemetryEvent('pro_distribution_asset_copied', {
+          source: 'options',
+          campaign: state.campaign,
+          action: 'recruit_copy'
+        });
         elements.proWaitlistRecruitCopyButton.textContent = getMessage('copied') || originalText;
         window.setTimeout(() => {
           elements.proWaitlistRecruitCopyButton.textContent =
@@ -2617,6 +2735,89 @@ function setupEventListeners() {
       }
       showNotification(getMessage('failedCopyClipboard'), 'error');
       elements.proWaitlistRecruitCopyButton.textContent = originalText;
+    }
+  });
+
+  elements.proStoreUrlCopyButton.addEventListener('click', async () => {
+    const originalText = elements.proStoreUrlCopyButton.textContent || '';
+    const state = computeProWaitlistDistributionState(elements.proIntentCampaignInput.value);
+    if (!state.enabled || !state.campaign) {
+      showNotification(getMessage('proWaitlistDistributionCampaignRequired'), 'info');
+      updateProWaitlistDistributionToolkitState();
+      return;
+    }
+
+    const url = buildProStoreUrlForDistributionToolkit(state.campaign);
+    try {
+      await navigator.clipboard.writeText(url);
+      void recordTelemetryEvent('pro_distribution_asset_copied', {
+        source: 'options',
+        campaign: state.campaign,
+        action: 'store_url'
+      });
+      elements.proStoreUrlCopyButton.textContent = getMessage('copied') || originalText;
+      window.setTimeout(() => {
+        elements.proStoreUrlCopyButton.textContent = getMessage('proStoreUrlCopyButton') || originalText;
+      }, 1200);
+    } catch (error) {
+      console.warn('Failed to copy store url via navigator.clipboard:', error);
+      const ok = fallbackCopyText(url);
+      if (ok) {
+        void recordTelemetryEvent('pro_distribution_asset_copied', {
+          source: 'options',
+          campaign: state.campaign,
+          action: 'store_url'
+        });
+        elements.proStoreUrlCopyButton.textContent = getMessage('copied') || originalText;
+        window.setTimeout(() => {
+          elements.proStoreUrlCopyButton.textContent = getMessage('proStoreUrlCopyButton') || originalText;
+        }, 1200);
+        return;
+      }
+      showNotification(getMessage('failedCopyClipboard'), 'error');
+      elements.proStoreUrlCopyButton.textContent = originalText;
+    }
+  });
+
+  elements.proDistributionPackCopyButton.addEventListener('click', async () => {
+    const originalText = elements.proDistributionPackCopyButton.textContent || '';
+    const state = computeProWaitlistDistributionState(elements.proIntentCampaignInput.value);
+    if (!state.enabled || !state.campaign) {
+      showNotification(getMessage('proWaitlistDistributionCampaignRequired'), 'info');
+      updateProWaitlistDistributionToolkitState();
+      return;
+    }
+
+    const text = buildProDistributionPackForDistributionToolkit(state.campaign);
+    try {
+      await navigator.clipboard.writeText(text);
+      void recordTelemetryEvent('pro_distribution_asset_copied', {
+        source: 'options',
+        campaign: state.campaign,
+        action: 'distribution_pack'
+      });
+      elements.proDistributionPackCopyButton.textContent = getMessage('copied') || originalText;
+      window.setTimeout(() => {
+        elements.proDistributionPackCopyButton.textContent = getMessage('proDistributionPackCopyButton') || originalText;
+      }, 1200);
+    } catch (error) {
+      console.warn('Failed to copy distribution pack via navigator.clipboard:', error);
+      const ok = fallbackCopyText(text);
+      if (ok) {
+        void recordTelemetryEvent('pro_distribution_asset_copied', {
+          source: 'options',
+          campaign: state.campaign,
+          action: 'distribution_pack'
+        });
+        elements.proDistributionPackCopyButton.textContent = getMessage('copied') || originalText;
+        window.setTimeout(() => {
+          elements.proDistributionPackCopyButton.textContent =
+            getMessage('proDistributionPackCopyButton') || originalText;
+        }, 1200);
+        return;
+      }
+      showNotification(getMessage('failedCopyClipboard'), 'error');
+      elements.proDistributionPackCopyButton.textContent = originalText;
     }
   });
 

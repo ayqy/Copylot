@@ -24,13 +24,15 @@
 - [x] 渠道分发/投放最小试验（离线可推进）：Pro 意向按 campaign 聚合 7d CSV 导出 + 复盘证据固化（v1-54）
 - [x] 渠道分发/投放效率提升（离线可推进）：Pro 候补“分发工具包”（一键复制候补链接/招募文案，强制带 campaign）+ 用例/证据固化（v1-55）
 - [x] 渠道分发/投放周报一键生成（离线可推进）：隐私页 Pro 面板新增“按 campaign 的本周复盘摘要（Markdown）”一键复制 + 证据落盘（v1-56）
+- [x] 渠道分发工具包升级（离线可推进）：商店安装链接/完整投放包一键复制 + 分发动作取证导出（v1-57）
 
 ## 当前进度
-- 一句话结论：截至 2026-03-21，v1-56 已完成「按 campaign 的本周复盘摘要（Markdown）一键生成」可发布交付：Options -> 隐私与可观测性 -> Pro 意向漏斗摘要面板新增稳定入口 `#copy-pro-intent-by-campaign-weekly-report`，一键复制可直接粘贴到 Notion/飞书的 Markdown 周报（匿名 OFF：明确提示“匿名使用数据关闭（无可用事件）”，仅输出环境信息 + 隐私声明；匿名 ON：输出 7d window + 按 campaign 汇总表（含 `空 campaign` 行）+ leads/效率指标与模板结论）；证据落盘 `docs/evidence/v1-56/`；`bash scripts/test.sh` 回归 PASS。
+- 一句话结论：截至 2026-03-21，v1-57 已完成「渠道分发工具包升级 + 分发动作取证导出」可发布交付：Options -> Pro 的“渠道分发工具包”新增稳定入口 `#pro-store-url-copy` / `#pro-distribution-pack-copy`（与既有 `#pro-waitlist-url-copy` / `#pro-waitlist-recruit-copy` 一并受强制 campaign 约束）；商店安装链接携带 `utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=<campaign>` 可解码复核；匿名使用数据 ON 且复制成功后记录本地事件 `pro_distribution_asset_copied`（含 `campaign/action/source` 白名单）；Options -> 隐私与可观测性 -> Pro 面板新增稳定导出入口 `#export-pro-distribution-by-campaign-7d-csv` 一键导出过去 7 天按 campaign 聚合 CSV（用于对齐 v1-54 `leads` 复算 `leads_per_dist_copy`）；证据落盘 `docs/evidence/v1-57/`；`bash scripts/test.sh` 回归 PASS。
 - 下一步（收入优先，阻塞：需要可用代理/VPN + 商店可达）：完成一次真实 CWS 发布并按统一口径取证；同时在渠道分发/投放时强制填写 campaign，并按周导出 weekly digest（v1-50）+ 7d 明细 CSV（v1-51）+ 按 campaign 聚合 CSV（v1-54），把“按 campaign 的 leads/效率对比”沉淀为可持续的商业化增长证据资产（网络恢复后与商店真实跑数对齐）。
 - 本轮最小可交付增量（v1-54，离线可推进）已完成：把“按 campaign 的留资效率复盘”从手工复算升级为一键可导出的证据资产（按 campaign 聚合 7d 导出 + 复盘口径/证据目录固化），用于渠道分发/投放的可转化获客增长与后续真实商店跑数对齐。
 - 下一步最小可交付增量（已完成，v1-55，离线可推进，收入优先）：已补齐“对外分发 Pro 候补/问卷”的低摩擦工具包（候补链接/招募文案一键复制，强制带 campaign），让渠道投放从“可复盘”升级为“更容易做对、做了就能取证”。
 - 下一步最小可交付增量（已完成，v1-56，离线可推进，收入优先）：已交付「按 campaign 的本周复盘摘要（Markdown）一键复制 + 证据落盘」，让每周渠道复盘从“导出 CSV 手工算”升级为“可直接粘贴复盘、且可审计可复核”的标准化周报资产。
+- 本轮最小可交付增量（已完成，v1-57，离线可推进，收入优先）：升级“渠道分发工具包”——补齐商店安装链接/完整投放包一键复制，并把分发动作沉淀为可导出的按 campaign 证据口径，用于对齐「分发动作 -> 留资 leads」的效率复盘。
 - 可观测性（隐私合规）：已实现“匿名使用数据”开关（默认关闭）+ 本地匿名事件日志导出/清空（仅 name/ts/props 白名单）；并有本地漏斗摘要/增长统计面板
 - 激活（Activation）：Popup 已有 3 步新手引导（可跳过、可手动重开）+ 推荐设置一键应用
 - 口碑闭环（WOM）：Popup/Options/评分引导已统一商店 UTM 口径；Options -> 隐私页新增「WOM 摘要」与「证据包导出」，可按来源统计 `wom_*` / `rating_prompt_*` 并派生转化率（share copy / rating prompt）
@@ -44,11 +46,12 @@
 ## 下一步最重要的 3 件事（收入优先）
 1. 完成一次真实 CWS 发布 + 商店端取证（Top1，阻塞：需要可用代理/VPN + 商店可达）：在网络可达后执行 `npm run publish:cws` 发布到 `default` channel；发布前先用 `npm run publish:cws -- --dry-run` 观察 Preflight 是否 PASS；发布成功后补齐商店端“版本号 + 发布时间 + Pro 候补 CTA 可见”截图/核对清单证据（形成可审计的商业化推进证据）
 2. 真实发布后跑数取证 + 24h 复盘首轮（Top2，阻塞：依赖 Top1 完成真实发布 + 商店可达）：从商店安装当前版本，按 `docs/evidence/v1-42/index.md`、`docs/evidence/v1-44/index.md`、`docs/evidence/v1-46/index.md`、`docs/evidence/v1-48/index.md` 同口径导出/落盘「Pro 意向漏斗摘要/证据包」与「WOM 摘要/证据包」截图索引；然后按 `docs/growth/post-release-review-template.md` 填写发布后 24h 复盘（7d 复盘后置）
-3. 渠道分发/投放跑数与复盘固化 v2（Top3，收入优先，离线可推进）：用 v1-55 分发工具包在每个渠道/创意上强制填写 campaign 并对外分发；每周导出 3 件套证据 weekly digest（v1-50）+ 7d 明细 CSV（v1-51）+ 按 campaign 聚合 CSV（v1-54）；并使用 v1-56「按 campaign 的本周复盘摘要（Markdown）」一键复制入口（`#copy-pro-intent-by-campaign-weekly-report`）把复盘从“导出 CSV 手工算”升级为“可直接粘贴复盘、且可审计可复核”的标准化周报资产（网络恢复后与商店真实跑数对齐）。
+3. 渠道分发/投放跑数与复盘固化 v4（Top3，收入优先，离线可推进）：用 v1-57 的“商店安装链接/完整投放包”做 1 轮渠道分发跑数；匿名 ON 后导出分发动作按 campaign 聚合 7d CSV（v1-57）并与 v1-54 的 `leads` 按 campaign 对齐复算 `leads_per_dist_copy`；每周同步导出 weekly digest（v1-50）+ 7d 明细（v1-51）+ leads 聚合（v1-54）+ 分发聚合（v1-57），把“分发 -> 留资 -> 效率”的证据链沉淀为可持续商业化增长资产（网络恢复后与商店真实跑数对齐）。
 
 ## 阻塞与需要的人类输入
 - v1-53 已完成且无账号/凭据/权限阻塞：campaign 为用户手动填写的渠道标识，已明确提示“不要填写敏感信息”，并保持匿名使用数据默认 OFF 的隐私边界。
 - Top1/Top2 仍受网络可达性阻塞（需要代理/VPN + 商店可达）；已优先交付离线可推进的 v1-50/v1-51（weekly digest + 7d 明细 CSV）+ v1-53（campaign 渠道归因）+ v1-54（按 campaign 聚合导出），保证收入取证资产不断档，网络恢复后可直接与真实商店跑数对齐。
+- v1-57 已完成且无账号/凭据/权限阻塞：已补齐「商店安装链接（UTM + campaign）/完整投放包（Markdown）一键复制/分发动作取证导出」，让渠道分发从“能复制”升级为“可获客 + 可量化 + 可复盘”的最小闭环证据资产。
 - v1-54 已完成且无账号/凭据/权限阻塞：已新增「按 campaign 聚合 7d CSV 导出」入口与证据落盘（`docs/evidence/v1-54/`），可在 Top1/Top2 网络阻塞期间先跑渠道分发/投放并形成可审计、可复核的收入导向证据。
 - v1-55 已完成且无账号/凭据/权限阻塞：已新增“候补链接/招募文案一键复制（强制带 campaign）”的本地生成与用例/证据固化，不引入支付/订阅、不新增权限、不联网发送数据、不采集用户复制内容。
 - v1-56 已完成且无账号/凭据/权限阻塞：已在 Options -> 隐私与可观测性 -> Pro 面板新增稳定入口 `#copy-pro-intent-by-campaign-weekly-report`；匿名开关 OFF 时不读取/不推断事件并明确提示“匿名使用数据关闭（无可用事件）”；匿名开关 ON 时仅基于本地匿名事件日志派生按 campaign 周报（不包含 URL/标题/网页内容/复制内容）；证据目录 `docs/evidence/v1-56/` 可审计复核。

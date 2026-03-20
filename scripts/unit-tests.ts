@@ -38,6 +38,8 @@ import { sanitizeCampaign } from '../src/shared/campaign.ts';
 import {
   buildProWaitlistDistributionIssueUrl,
   buildProWaitlistRecruitCopyText,
+  buildProStoreUrl,
+  buildProDistributionPackMarkdown,
   computeProWaitlistDistributionState
 } from '../src/shared/pro-waitlist-distribution.ts';
 import { buildProFunnelEvidencePack, buildProFunnelSummary } from '../src/shared/pro-funnel.ts';
@@ -55,6 +57,11 @@ import {
   buildProIntentByCampaignCsv,
   formatProIntentByCampaign7dCsvFilename
 } from '../src/shared/pro-intent-by-campaign-csv.ts';
+import {
+  PRO_DISTRIBUTION_BY_CAMPAIGN_CSV_COLUMNS,
+  buildProDistributionByCampaignCsv,
+  formatProDistributionByCampaign7dCsvFilename
+} from '../src/shared/pro-distribution-by-campaign-csv.ts';
 import {
   buildProIntentByCampaignWeeklyReportSummary,
   formatProIntentByCampaignWeeklyReportMarkdown
@@ -85,6 +92,9 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
   }
   if (key === 'proWaitlistRecruitCopyTemplate') {
     return `recruit url=${subs[0]} campaign=${subs[1]}`;
+  }
+  if (key === 'proDistributionPackTemplate') {
+    return `- campaign: ${subs[0]}\n${subs[1]}\n${subs[2]}\n${subs[3]}`;
   }
   if (key === 'shareCopyTextTemplate') {
     return `share ${subs[0]}`;
@@ -521,6 +531,26 @@ async function run() {
   assert.ok(recruitCopyText.includes('https://example.com/waitlist'));
   assert.ok(recruitCopyText.includes('twitter'));
 
+  const distStoreUrl = buildProStoreUrl({ extensionId, campaign: 'twitter' });
+  const distStoreParsed = new URL(distStoreUrl);
+  assert.equal(distStoreParsed.hostname, 'chrome.google.com');
+  assert.ok(distStoreParsed.pathname.endsWith(`/webstore/detail/${extensionId}`));
+  assert.equal(distStoreParsed.searchParams.get('utm_source'), 'copylot-ext');
+  assert.equal(distStoreParsed.searchParams.get('utm_medium'), 'distribution_toolkit');
+  assert.equal(distStoreParsed.searchParams.get('utm_campaign'), 'twitter');
+
+  const distributionPack = buildProDistributionPackMarkdown({
+    getMessage,
+    campaign: 'twitter',
+    storeUrl: distStoreUrl,
+    waitlistUrl: 'https://example.com/waitlist',
+    recruitCopy: recruitCopyText
+  });
+  assert.ok(distributionPack.includes('- campaign: twitter'));
+  assert.ok(distributionPack.includes(distStoreUrl));
+  assert.ok(distributionPack.includes('https://example.com/waitlist'));
+  assert.ok(distributionPack.includes(recruitCopyText));
+
   // telemetry.ts (pure functions)
   assert.equal(sanitizeTelemetryEvent({ name: 'unknown', ts: now }), null);
   assert.equal(sanitizeTelemetryEvent({ name: 'popup_opened', ts: -1 }), null);
@@ -752,6 +782,35 @@ async function run() {
       props: { source: 'rating_prompt' }
     }),
     { name: 'pro_waitlist_survey_copied', ts: now }
+  );
+
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_distribution_asset_copied',
+      ts: now,
+      props: { source: 'options', campaign: 'twitter', action: 'waitlist_url', extra: 'x' }
+    }),
+    {
+      name: 'pro_distribution_asset_copied',
+      ts: now,
+      props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' }
+    }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_distribution_asset_copied',
+      ts: now,
+      props: { source: 'options', campaign: 'http://x.com', action: 'waitlist_url' }
+    }),
+    { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'options', action: 'waitlist_url' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_distribution_asset_copied',
+      ts: now,
+      props: { source: 'options', campaign: 'twitter', action: 'invalid' }
+    }),
+    { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'options', campaign: 'twitter' } }
   );
 
   assert.deepEqual(sanitizeTelemetryEvents({ not: 'an array' }), []);
@@ -1129,6 +1188,25 @@ async function run() {
     '7d windowTo should match v1-51 pro intent events CSV export'
   );
 
+  const proDistributionByCampaignWindow = buildProDistributionByCampaignCsv({
+    enabled: true,
+    telemetryEvents: [],
+    now,
+    extensionVersion: '1.1.23',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  assert.equal(
+    proIntentByCampaignWindowA.windowFrom,
+    proDistributionByCampaignWindow.windowFrom,
+    '7d windowFrom should match v1-51 pro intent events CSV export'
+  );
+  assert.equal(
+    proIntentByCampaignWindowA.windowTo,
+    proDistributionByCampaignWindow.windowTo,
+    '7d windowTo should match v1-51 pro intent events CSV export'
+  );
+
   const proIntentByCampaignDisabled = buildProIntentByCampaignCsv({
     enabled: false,
     telemetryEvents: [{ name: 'pro_entry_opened', ts: now, props: { source: 'popup', campaign: 'twitter' } }],
@@ -1193,6 +1271,74 @@ async function run() {
 
   const proIntentByCampaignCsvFilename = formatProIntentByCampaign7dCsvFilename(now);
   assert.ok(/^copylot-pro-intent-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proIntentByCampaignCsvFilename));
+
+  // pro-distribution-by-campaign-csv.ts (pure functions + 7d window -> by campaign aggregation -> CSV)
+  const proDistributionByCampaignDisabled = buildProDistributionByCampaignCsv({
+    enabled: false,
+    telemetryEvents: [
+      { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' } }
+    ],
+    now,
+    extensionVersion: '1.1.23',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  assert.equal(proDistributionByCampaignDisabled.enabled, false);
+  assert.equal(proDistributionByCampaignDisabled.disabledReason, 'anonymous_usage_data_disabled');
+  assert.equal(proDistributionByCampaignDisabled.rows.length, 0);
+  assert.ok(!proDistributionByCampaignDisabled.csv.startsWith('\uFEFF'));
+  assert.equal(proDistributionByCampaignDisabled.csv.trimEnd(), PRO_DISTRIBUTION_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+
+  const proDistributionByCampaign = buildProDistributionByCampaignCsv({
+    enabled: true,
+    telemetryEvents: [
+      { name: 'pro_distribution_asset_copied', ts: sevenDaysAgo, props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' } }, // included (=from)
+      { name: 'pro_distribution_asset_copied', ts: now - 1000, props: { source: 'options', campaign: 'ph', action: 'distribution_pack' } },
+      { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'options', campaign: 'twitter', action: 'store_url' } }, // included (=to)
+      { name: 'pro_distribution_asset_copied', ts: now - 500, props: { source: 'options', action: 'recruit_copy' } }, // empty campaign bucket
+      { name: 'pro_distribution_asset_copied', ts: sevenDaysAgo - 1, props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' } }, // excluded (<from)
+      { name: 'pro_distribution_asset_copied', ts: now + 1, props: { source: 'options', campaign: 'twitter', action: 'recruit_copy' } }, // excluded (>to)
+      { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'popup', campaign: 'twitter', action: 'waitlist_url' } }, // excluded (bad source)
+      { name: 'popup_opened', ts: now }
+    ],
+    now,
+    extensionVersion: '1.1.23',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  assert.equal(proDistributionByCampaign.enabled, true);
+  assert.equal(proDistributionByCampaign.windowFrom, sevenDaysAgo);
+  assert.equal(proDistributionByCampaign.windowTo, now);
+  assert.equal(proDistributionByCampaign.rows.length, 3);
+
+  assert.equal(proDistributionByCampaign.rows[0]?.campaign, 'twitter');
+  assert.equal(proDistributionByCampaign.rows[0]?.waitlistUrlCopied, 1);
+  assert.equal(proDistributionByCampaign.rows[0]?.recruitCopyCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[0]?.storeUrlCopied, 1);
+  assert.equal(proDistributionByCampaign.rows[0]?.distributionPackCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[0]?.distCopies, 2);
+
+  assert.equal(proDistributionByCampaign.rows[1]?.campaign, 'ph');
+  assert.equal(proDistributionByCampaign.rows[1]?.waitlistUrlCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[1]?.recruitCopyCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[1]?.storeUrlCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[1]?.distributionPackCopied, 1);
+  assert.equal(proDistributionByCampaign.rows[1]?.distCopies, 1);
+
+  assert.equal(proDistributionByCampaign.rows[2]?.campaign, '空 campaign');
+  assert.equal(proDistributionByCampaign.rows[2]?.waitlistUrlCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[2]?.recruitCopyCopied, 1);
+  assert.equal(proDistributionByCampaign.rows[2]?.storeUrlCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[2]?.distributionPackCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[2]?.distCopies, 1);
+
+  assert.ok(proDistributionByCampaign.rows.every((row) => Number.isInteger(row.distCopies)));
+  assert.ok(!proDistributionByCampaign.csv.startsWith('\uFEFF'));
+  assert.equal(proDistributionByCampaign.csv.split('\n')[0], PRO_DISTRIBUTION_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+  assert.equal(proDistributionByCampaign.csv.trim().split('\n').length, 1 + proDistributionByCampaign.rows.length);
+
+  const proDistributionByCampaignCsvFilename = formatProDistributionByCampaign7dCsvFilename(now);
+  assert.ok(/^copylot-pro-distribution-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proDistributionByCampaignCsvFilename));
 
   // pro-intent-by-campaign-weekly-report.ts (pure functions + markdown formatter)
   const proIntentByCampaignWeeklyReportDisabled = buildProIntentByCampaignWeeklyReportSummary({

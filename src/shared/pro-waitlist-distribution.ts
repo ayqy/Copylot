@@ -68,3 +68,51 @@ export function buildProWaitlistRecruitCopyText(params: BuildProWaitlistRecruitC
   return `Copylot Pro waitlist:\n${params.waitlistUrl}\n\ncampaign: ${params.campaign}\n`;
 }
 
+export const PRO_DISTRIBUTION_TOOLKIT_UTM_SOURCE = 'copylot-ext';
+export const PRO_DISTRIBUTION_TOOLKIT_UTM_MEDIUM = 'distribution_toolkit';
+
+export interface BuildProStoreUrlParams {
+  extensionId: string;
+  campaign: string;
+}
+
+/**
+ * 渠道分发工具包：商店安装链接（可解码复核，带 UTM + campaign）
+ */
+export function buildProStoreUrl(params: BuildProStoreUrlParams): string {
+  const base = `https://chrome.google.com/webstore/detail/${params.extensionId}`;
+  const url = new URL(base);
+  url.search = new URLSearchParams({
+    utm_source: PRO_DISTRIBUTION_TOOLKIT_UTM_SOURCE,
+    utm_medium: PRO_DISTRIBUTION_TOOLKIT_UTM_MEDIUM,
+    utm_campaign: params.campaign
+  }).toString();
+  return url.toString();
+}
+
+export interface BuildProDistributionPackMarkdownParams {
+  getMessage: I18nGetMessage;
+  campaign: string;
+  storeUrl: string;
+  waitlistUrl: string;
+  recruitCopy: string;
+}
+
+/**
+ * 渠道分发工具包：完整投放包（Markdown）。
+ * - 固定模板 + campaign + 商店/候补链接 + 招募文案 + 可选问卷引导
+ * - 不拼入网页内容/复制内容/URL/标题
+ */
+export function buildProDistributionPackMarkdown(params: BuildProDistributionPackMarkdownParams): string {
+  const text = safeGetMessage(params.getMessage, 'proDistributionPackTemplate', [
+    params.campaign,
+    params.storeUrl,
+    params.waitlistUrl,
+    params.recruitCopy.trimEnd()
+  ]);
+
+  if (text) return text;
+
+  // Fallback (should not happen when i18n keys are present).
+  return `${params.storeUrl}\n${params.waitlistUrl}\n${params.recruitCopy.trimEnd()}\n`;
+}

@@ -336,6 +336,32 @@
     "message": "复制招募文案（含候补链接）",
     "description": "Options Pro Tab：分发工具包 - 复制招募文案按钮"
   },
+  "proStoreUrlCopyButton": {
+    "message": "复制商店安装链接（带 UTM + campaign）",
+    "description": "Options Pro Tab：分发工具包 - 复制商店安装链接按钮"
+  },
+  "proDistributionPackCopyButton": {
+    "message": "复制完整投放包（Markdown）",
+    "description": "Options Pro Tab：分发工具包 - 复制完整投放包按钮"
+  },
+  "proDistributionPackTemplate": {
+    "message": "# Copylot 渠道分发投放包（可审计版）\\n\\n- campaign: $CAMPAIGN$\\n\\n## 1) 商店安装链接（带 UTM + campaign）\\n$STORE_URL$\\n\\n## 2) 候补链接（带 campaign）\\n$WAITLIST_URL$\\n\\n## 3) 招募文案（可直接发）\\n\\n```text\\n$RECRUIT_COPY$\\n```\\n\\n## 4) 可选：问卷引导（自愿）\\n- 如果你愿意帮助我们更快打磨 Pro：安装后打开 Copylot -> Options -> Pro，点击「复制问卷（含环境信息）」并发送给我们（不需要粘贴任何网页内容/隐私信息）。\\n\\n---\\n\\n隐私提示：本投放包不包含网页内容/复制内容/URL/标题；仅包含固定模板 + campaign + 商店/候补链接。\\n",
+    "description": "Options Pro Tab：分发工具包 - 完整投放包 Markdown 模板",
+    "placeholders": {
+      "CAMPAIGN": {
+        "content": "$1"
+      },
+      "STORE_URL": {
+        "content": "$2"
+      },
+      "WAITLIST_URL": {
+        "content": "$3"
+      },
+      "RECRUIT_COPY": {
+        "content": "$4"
+      }
+    }
+  },
   "proWaitlistDistributionCampaignRequired": {
     "message": "为了渠道归因，请先填写合法 campaign",
     "description": "Options Pro Tab：分发工具包 - campaign 为空/非法时提示"
@@ -1130,6 +1156,26 @@
   "proIntentByCampaign7dCsvEmptyBucket": {
     "message": "空 campaign",
     "description": "按 campaign 聚合 CSV 的空 campaign 桶展示文案"
+  },
+  "proDistributionByCampaign7dCsvExport": {
+    "message": "导出过去 7 天 分发动作按 campaign 聚合（CSV）",
+    "description": "隐私页导出过去 7 天 分发动作按 campaign 聚合 CSV 按钮"
+  },
+  "proDistributionByCampaign7dCsvExportSuccess": {
+    "message": "CSV 已导出（$1 行）",
+    "description": "分发动作按 campaign 聚合 CSV 导出成功提示（$1=行数）"
+  },
+  "proDistributionByCampaign7dCsvExportFailed": {
+    "message": "导出失败",
+    "description": "分发动作按 campaign 聚合 CSV 导出失败提示"
+  },
+  "proDistributionByCampaign7dCsvExportTelemetryOff": {
+    "message": "匿名使用数据关闭：不导出分发聚合",
+    "description": "匿名开关 OFF 时分发按 campaign 聚合导出按钮提示"
+  },
+  "proDistributionByCampaign7dCsvEmptyBucket": {
+    "message": "空 campaign",
+    "description": "分发动作按 campaign 聚合 CSV 的空 campaign 桶展示文案"
   },
   "proIntentWeeklyDigestCopy": {
     "message": "复制本周 Pro 意向证据摘要",
