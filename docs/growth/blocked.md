@@ -30,6 +30,10 @@ v1-45 进展（已落盘，离线可审计）：
 v1-47 进展（已落盘，离线可审计）：
 - `publish:cws` 已新增 `socks5://`/`socks5h://` 代理支持，并新增网络可达性预检（Preflight）与错误分类；dry-run 输出可复制的 `Proxy Diagnostic Block + Preflight Report Block + Diagnostic Pack`（见 `docs/reports/v1-47-report.md`、`docs/test-cases/v1-47.md`、`docs/evidence/v1-47/index.md`）。
 
+v1-62 进展（已落盘，离线可审计）：
+- `publish:cws` 已新增 `--evidence-dir <dir>`：无论 Preflight PASS/FAIL，退出前都会落盘「诊断证据包（JSON）」文件（`packVersion=v1-62`），内含 zip sha256、Proxy Diagnostic（脱敏）、Preflight Report（v1-47）、FixHints、credentials boolean、publishAttempt（dry-run skipped/非 dry-run 成功或脱敏失败信息）。
+- 证据目录与索引：`docs/evidence/v1-62/`；用例：`docs/test-cases/v1-62.md`；简报：`docs/reports/v1-62-report.md`。
+
 需要的人类输入（持续阻塞：网络可达性）：
 - 提供可用的代理/VPN（确保可访问 `www.googleapis.com` 与 CWS API）；代理可为 `http/https/socks5/socks5h`，并给出包含 scheme 的代理地址/端口（例如 `http://127.0.0.1:7890` 或 `socks5h://127.0.0.1:1080`）。
 - 或在可直连 Google 的网络环境中执行 `npm run publish:cws` 完成发布，并按 `docs/test-cases/v1-45.md` / `docs/test-cases/v1-47.md` 生成商店端截图/索引取证。

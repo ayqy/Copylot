@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import * as os from 'node:os';
 import { execFileSync } from 'node:child_process';
 
 import { getGlobalDispatcher, setGlobalDispatcher } from 'undici';
@@ -91,7 +92,13 @@ import {
   parseAndValidateProxyUrl,
   resolveCwsProxyEnv
 } from './cws-proxy.ts';
-import { classifyCwsPreflightError, runCwsPreflight } from './cws-preflight.ts';
+import { buildCwsPreflightFixHints, classifyCwsPreflightError, runCwsPreflight } from './cws-preflight.ts';
+import {
+  buildCwsPublishEvidencePack,
+  buildCwsPublishEvidenceZip,
+  computeFileSha256,
+  formatCwsPublishEvidencePackFilename
+} from './cws-publish-evidence-pack.ts';
 
 const getMessage: I18nGetMessage = (key, substitutions) => {
   const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
@@ -2162,6 +2169,128 @@ async function run() {
     assert.equal(report.checks[0].ok, true);
     assert.equal(report.checks[1].failureType, 'http_status');
     assert.equal(report.checks[2].failureType, 'connection_refused');
+  }
+
+  // scripts/cws-publish-evidence-pack.ts (v1-62: publish:cws 诊断证据包（JSON）一键落盘)
+  {
+    const exportedAt = new Date('2026-03-21T01:02:03.000Z');
+    const filename = formatCwsPublishEvidencePackFilename({
+      extensionVersion: '1.1.28',
+      exportedAt,
+      dryRun: true
+    });
+    assert.equal(filename, 'copylot-cws-publish-diagnostic-pack-1.1.28-2026-03-21-010203.dry-run.json');
+    assert.ok(!filename.includes('127.0.0.1'));
+    assert.ok(!filename.includes('http'));
+    assert.ok(!filename.includes('user'));
+    assert.ok(!filename.includes('pass'));
+  }
+
+  {
+    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'copylot-unit-tests-v1-62-'));
+    const tmpFilePath = path.join(tmpDir, 'plugin.zip');
+    await fs.writeFile(tmpFilePath, 'hello', 'utf-8');
+
+    const sha256 = await computeFileSha256(tmpFilePath);
+    assert.equal(sha256, '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824');
+
+    const zip = await buildCwsPublishEvidenceZip(tmpFilePath, { cwd: tmpDir });
+    assert.equal(zip.fileName, 'plugin.zip');
+    assert.equal(zip.filePath, 'plugin.zip');
+    assert.equal(zip.bytes, 5);
+    assert.equal(zip.sha256, sha256);
+  }
+
+  {
+    const fakeFetch: typeof fetch = (async () => {
+      const err = new Error('fetch failed') as Error & { cause?: unknown };
+      err.cause = { code: 'ENOTFOUND', message: 'getaddrinfo ENOTFOUND www.googleapis.com' };
+      throw err;
+    }) as unknown as typeof fetch;
+
+    const preflightReport = await runCwsPreflight([{ id: 'googleapis', url: 'https://throw.test/' }], {
+      fetchFn: fakeFetch,
+      timeoutMs: 10,
+      now: (() => {
+        let t = 1000;
+        return () => (t += 5);
+      })(),
+      date: () => new Date('2026-03-21T00:00:00.000Z')
+    });
+
+    const fixHints = buildCwsPreflightFixHints(preflightReport, {
+      enabled: false,
+      envKey: null,
+      urlMasked: null,
+      protocol: null
+    });
+    assert.ok(fixHints.length > 0);
+    assert.ok(fixHints.join('\n').includes('HTTPS_PROXY') || fixHints.join('\n').includes('CWS_PROXY'));
+
+    const proxyDiagnostic = {
+      diagnosticVersion: 'v1-47' as const,
+      proxy: {
+        enabled: false,
+        envKey: null,
+        urlMasked: null,
+        noProxy: { envKey: null, value: 'localhost,127.0.0.1,::1' },
+        precedence: ['CWS_PROXY', 'HTTPS_PROXY', 'HTTP_PROXY', 'ALL_PROXY'] as string[],
+        schemeRequired: true as const
+      },
+      runtime: { node: 'v20.0.0' },
+      script: {
+        entry: 'scripts/chrome-webstore.ts',
+        gitCommit: 'deadbee',
+        packageVersion: '1.1.0',
+        extensionVersion: '1.1.28'
+      },
+      fetch: { globalFetch: true, dispatcher: 'undici.default' }
+    };
+
+    const pack = buildCwsPublishEvidencePack({
+      exportedAt: '2026-03-21T00:00:00.000Z',
+      dryRun: true,
+      extensionVersion: '1.1.28',
+      zip: {
+        fileName: 'plugin-1.1.28.zip',
+        filePath: 'plugin-1.1.28.zip',
+        bytes: 123,
+        sha256: 'deadbeef'
+      },
+      proxyDiagnostic,
+      preflightReport,
+      preflightFixHints: fixHints,
+      credentials: { extensionId: false, clientId: false, clientSecret: false, refreshToken: false },
+      publishAttempt: {
+        uploaded: false,
+        published: false,
+        channel: 'default',
+        errorCode: 'skipped',
+        errorMessage: 'dry-run: upload/publish skipped'
+      }
+    });
+
+    assert.equal(pack.packVersion, 'v1-62');
+    assert.deepEqual(Object.keys(pack), [
+      'packVersion',
+      'exportedAt',
+      'dryRun',
+      'extensionVersion',
+      'zip',
+      'proxyDiagnostic',
+      'preflightReport',
+      'preflightFixHints',
+      'credentials',
+      'publishAttempt'
+    ]);
+    assert.deepEqual(Object.keys(pack.zip), ['fileName', 'filePath', 'bytes', 'sha256']);
+    assert.deepEqual(Object.keys(pack.credentials), ['extensionId', 'clientId', 'clientSecret', 'refreshToken']);
+
+    for (const v of Object.values(pack.credentials)) assert.equal(typeof v, 'boolean');
+
+    const json = JSON.stringify(pack);
+    assert.ok(!json.includes('CWS_CLIENT_SECRET'));
+    assert.ok(!json.includes('CWS_REFRESH_TOKEN'));
   }
 }
 

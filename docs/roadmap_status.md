@@ -11,6 +11,7 @@
 - [x] Pro 转化漏斗取证包：隐私页本地摘要 + 一键导出证据包 + 用例/断言闭环（v1-38）
 - [x] 发布阻塞解除准备：`publish:cws` 代理链路确定性修复 + 一键诊断 + 用例/简报落盘（v1-39）
 - [ ] 真实上架验证：在可用代理/VPN 环境下使用 `npm run publish:cws` 完成一次包含“转化入口”的真实发布，并核对商店端物料一致性（v1-37 门禁演练已完成；v1-39 已加固代理链路与诊断）
+- [x] 真实发布取证再降摩擦（离线可推进）：为 `npm run publish:cws` 增加「诊断证据包（JSON）一键落盘」能力（Proxy Diagnostic + Preflight + zip hash + 凭据缺失项 + 修复建议），为网络恢复后的“一次性真实发布 + 按口径取证”做准备（v1-62）
 - [x] 转化入口跑数基线：从商店（若可达）/或从 `plugin-*.zip` 安装回归 + 导出「Pro 意向漏斗摘要」与「证据包」并落盘截图索引（v1-42）
 - [x] WOM 小实验：对分享/评价/反馈入口做 1 轮低打扰实验，并用本地事件导出形成可量化对比口径（v1-43）
 - [x] 收入导向 WOM 实验：评分引导触发更早但更精准 + 统一更新 CWS UTM `utm_campaign=v1-44` + 证据资产/用例/回归落盘（v1-44）
@@ -31,10 +32,10 @@
 - [x] 渠道获客效率证据包落盘再降摩擦（离线可推进）：新增「下载获客效率证据包（JSON）」入口 + 稳定文件名（v1-61）
 
 ## 当前进度
-- 一句话结论：截至 2026-03-21，v1-61 已完成「获客效率证据包（JSON）一键下载落盘」可发布交付：Options -> 隐私与可观测性 -> Pro 面板新增稳定入口 `#download-pro-acquisition-efficiency-by-campaign-evidence-pack`；下载文件名稳定可按周归档 `copylot-pro-acq-eff-by-campaign-evidence-pack-YYYY-MM-DD.off.json/on.json`；下载内容与 v1-60 复制输出同口径同 schema 可互证一致；匿名 OFF 允许下载但不读取/不推断事件且输出 OFF 提示 + Env；匿名 ON 基于本地匿名事件生成完整 evidence pack（内含 v1-58 CSV + v1-59 Markdown + rows 互证复算一致，`distCopies=0 -> N/A`，小数固定 4 位）；证据落盘 `docs/evidence/v1-61/`；`bash scripts/test.sh` 回归 PASS。
+- 一句话结论：截至 2026-03-21，v1-62 已完成「`publish:cws` 诊断证据包（JSON）一键落盘」可发布交付：新增 `npm run publish:cws -- --dry-run --evidence-dir <dir>`（未提供参数则行为不变）；Preflight PASS/FAIL 均会在退出前落盘证据包（含 zip sha256/Proxy Diagnostic/Preflight Report(v1-47)/FixHints/credentials boolean/publishAttempt）；dry-run Preflight FAIL 仍退出码 0 但可取证；非 dry-run Preflight FAIL 阻断发布退出码 1 且仍可取证；证据索引 `docs/evidence/v1-62/`；`bash scripts/test.sh` 回归 PASS。
 - 本轮最小可交付增量（v1-59，离线可推进，收入优先）已完成：把 v1-58 的合并口径（leads + distCopies + leadsPerDistCopy）变成可直接粘贴的周报 Markdown 资产，并补齐单测/用例/证据闭环，显著降低渠道复盘与审计摩擦。
 - 本轮最小可交付增量（v1-60，离线可推进，收入优先）已完成：在 v1-58（7d 合并 CSV）+ v1-59（周报 Markdown）之上，新增「获客效率证据包（JSON，含 CSV + Markdown + Env）」一键复制入口，把 CSV/Markdown/Env/结构化 rows 统一打包成可直接落盘归档的审计资产，进一步降低“手工归档/丢证据/不可复核”的商业化风险。
-- 下一步（收入优先，阻塞：需要可用代理/VPN + 商店可达）：完成一次真实 CWS 发布并按统一口径取证；同时在渠道分发/投放时强制填写 campaign，并按周导出 weekly digest（v1-50）+ 7d 明细 CSV（v1-51）+ 按 campaign 聚合 CSV（v1-54），把“按 campaign 的 leads/效率对比”沉淀为可持续的商业化增长证据资产（网络恢复后与商店真实跑数对齐）。
+- 本轮最小可交付增量（v1-62，离线可推进，收入优先）已完成：为 `publish:cws` 增加 `--evidence-dir`，把 Proxy Diagnostic + Preflight + zip sha256 + 修复建议 + 凭据缺失项固化为可落盘归档的结构化证据包（JSON），让网络不可达时也能沉淀可追责的 FAIL 证据，并为网络恢复后的“一次性真实发布 + 按口径取证”做准备。
 - 本轮最小可交付增量（v1-61，离线可推进，收入优先）已完成：把 v1-60 的「获客效率证据包（JSON）」从“复制”升级为“下载文件落盘”，新增稳定入口 `#download-pro-acquisition-efficiency-by-campaign-evidence-pack`，让每周渠道复盘证据可低摩擦归档/分享/审计（不依赖剪贴板）。
 - 本轮最小可交付增量（v1-58，离线可推进，收入优先）已完成：把 v1-54 `leads` 与 v1-57 `distCopies` 按 campaign 自动对齐并一键导出 7d 合并 CSV（含 `leadsPerDistCopy`，`distCopies=0 -> N/A`），用于渠道效率对比复盘与审计（见 `docs/evidence/v1-58/`、`docs/test-cases/v1-58.md`）。
 - 本轮最小可交付增量（v1-54，离线可推进）已完成：把“按 campaign 的留资效率复盘”从手工复算升级为一键可导出的证据资产（按 campaign 聚合 7d 导出 + 复盘口径/证据目录固化），用于渠道分发/投放的可转化获客增长与后续真实商店跑数对齐。
@@ -52,13 +53,13 @@
 - 已交付离线增量（收入优先）：v1-46 已把 Pro 候补 CTA 的曝光/动作链路变成可量化漏斗（例如：`pro_prompt_shown -> pro_entry_opened -> pro_waitlist_opened -> pro_waitlist_copied`），并可通过 Options -> 隐私页导出证据包落盘（`docs/evidence/v1-46/`），用于真实发布后与 v1-42/v1-44 基线对比
 
 ## 下一步最重要的 3 件事（收入优先）
-1. 完成一次真实 CWS 发布 + 商店端取证（Top1，阻塞：需要可用代理/VPN + 商店可达）：在网络可达后执行 `npm run publish:cws` 发布到 `default` channel；发布前先用 `npm run publish:cws -- --dry-run` 观察 Preflight 是否 PASS；发布成功后补齐商店端“版本号 + 发布时间 + Pro 候补 CTA 可见”截图/核对清单证据（形成可审计的商业化推进证据）
-2. 真实发布后跑数取证 + 24h 复盘首轮（Top2，阻塞：依赖 Top1 完成真实发布 + 商店可达）：从商店安装当前版本，按 `docs/evidence/v1-42/index.md`、`docs/evidence/v1-44/index.md`、`docs/evidence/v1-46/index.md`、`docs/evidence/v1-48/index.md` 同口径导出/落盘「Pro 意向漏斗摘要/证据包」与「WOM 摘要/证据包」截图索引；并导出 v1-58 的“按 campaign 合并获客效率”7d CSV 作为渠道效率对比证据；然后按 `docs/growth/post-release-review-template.md` 填写发布后 24h 复盘（7d 复盘后置）
-3. 渠道分发/投放跑数与复盘固化 v5（Top3，收入优先，离线可推进）：用 v1-57 的“商店安装链接/完整投放包”做 1 轮渠道分发跑数；匿名 ON 后每周使用 v1-61 下载入口落盘「获客效率证据包（JSON，含 CSV + Markdown + Env）」文件（`#download-pro-acquisition-efficiency-by-campaign-evidence-pack`，文件名稳定 `.on/.off`），并用 v1-58/v1-59（及 v1-60 复制输出）互证口径一致，把证据资产按周持续沉淀（网络恢复后与商店真实跑数对齐）。
+1. 完成一次真实 CWS 发布 + 商店端取证（Top1，阻塞：需要可用代理/VPN + 商店可达）：在网络可达后执行 `npm run publish:cws -- --evidence-dir docs/evidence/v1-62/preflight/` 发布到 `default` channel，并落盘 `.publish.json` 证据包；发布成功后补齐商店端“版本号 + 发布时间 + Pro 候补 CTA 可见”截图索引（见 `docs/evidence/v1-62/index.md`），形成可审计的商业化推进证据。
+2. 渠道分发/投放跑数与复盘固化 v5（Top2，收入优先，离线可推进）：用 v1-57 的“商店安装链接/完整投放包”做 1 轮渠道分发跑数；匿名 ON 后每周使用 v1-61 下载入口落盘「获客效率证据包（JSON，含 CSV + Markdown + Env）」文件（`#download-pro-acquisition-efficiency-by-campaign-evidence-pack`，文件名稳定 `.on/.off`），并用 v1-58/v1-59（及 v1-60 复制输出）互证口径一致，把证据资产按周持续沉淀（网络恢复后与商店真实跑数对齐）。
+3. 发布后回归与复盘证据补齐（Top3，收入优先）：真实发布后从商店安装/或以 `plugin-*.zip` 安装回归，导出并落盘「Pro 意向漏斗摘要/证据包」（v1-38/v1-42）与 “上架后 24h/7d 复盘模板”截图索引（v1-45），确保“发布 -> 转化入口 -> 证据资产”闭环可复核。
 
 ## 阻塞与需要的人类输入
 - v1-53 已完成且无账号/凭据/权限阻塞：campaign 为用户手动填写的渠道标识，已明确提示“不要填写敏感信息”，并保持匿名使用数据默认 OFF 的隐私边界。
-- Top1/Top2 仍受网络可达性阻塞（需要代理/VPN + 商店可达）；已优先交付离线可推进的 v1-50/v1-51（weekly digest + 7d 明细 CSV）+ v1-53（campaign 渠道归因）+ v1-54（按 campaign 聚合导出），保证收入取证资产不断档，网络恢复后可直接与真实商店跑数对齐。
+- Top1 仍受网络可达性阻塞（需要代理/VPN + 商店可达）；Top2/Top3 均可离线推进。已优先交付离线可推进的 v1-50/v1-51（weekly digest + 7d 明细 CSV）+ v1-53（campaign 渠道归因）+ v1-54（按 campaign 聚合导出）+ v1-62（发布诊断证据包落盘），保证收入取证资产不断档，网络恢复后可直接与真实商店跑数对齐。
 - v1-57 已完成且无账号/凭据/权限阻塞：已补齐「商店安装链接（UTM + campaign）/完整投放包（Markdown）一键复制/分发动作取证导出」，让渠道分发从“能复制”升级为“可获客 + 可量化 + 可复盘”的最小闭环证据资产。
 - v1-58 已完成且无账号/凭据/权限阻塞：已新增「按 campaign 合并导出 7d 获客效率（leads + distCopies + leadsPerDistCopy）」入口 `#export-pro-acquisition-efficiency-by-campaign-7d-csv`，可直接与 v1-54/v1-57 导出互证复算，降低复盘摩擦并固化可审计证据资产。
 - v1-59 已完成且无账号/凭据/权限阻塞：已新增「复制本周获客效率复盘摘要（Markdown，按 campaign）」入口 `#copy-pro-acquisition-efficiency-by-campaign-weekly-report`；匿名 OFF 不读取/不推断 events 且输出 OFF 提示 + Env；匿名 ON 仅基于本地匿名事件派生并生成表格/Insights；证据目录 `docs/evidence/v1-59/` 可审计复核。
@@ -69,6 +70,6 @@
 - v1-56 已完成且无账号/凭据/权限阻塞：已在 Options -> 隐私与可观测性 -> Pro 面板新增稳定入口 `#copy-pro-intent-by-campaign-weekly-report`；匿名开关 OFF 时不读取/不推断事件并明确提示“匿名使用数据关闭（无可用事件）”；匿名开关 ON 时仅基于本地匿名事件日志派生按 campaign 周报（不包含 URL/标题/网页内容/复制内容）；证据目录 `docs/evidence/v1-56/` 可审计复核。
 - v1-51 已完成并固化：可导出过去 7 天 Pro 意向明细 CSV（稳定 DOM：`#export-pro-intent-events-7d-csv`），并在 `docs/evidence/v1-51/index.md` 固化最小复盘口径与归档规范；网络恢复后可直接与真实商店跑数对比。
 - Chrome Web Store 真实发布的根因阻塞仍为“网络可达性”：本地凭据已齐全，但需要人类侧提供可用代理/VPN（并提供包含 scheme 的代理地址/端口，例如 `http://127.0.0.1:7890` 或 `socks5://127.0.0.1:1080`）。v1-47 已补齐 `socks5://`/`socks5h://` 支持与可审计 Preflight；当网络不可达时可直接从输出中得到 FAIL 类型与修复建议，避免只剩 `fetch failed`。
-- 若 `chromewebstore.google.com` 亦不可达，则 Top3 的“从商店安装”同样需要代理/VPN；但 v1-42 已以 `plugin-*.zip` 安装回归作为不依赖外网的保底路径，确保基线证据可落盘且可对比。
+- 若 `chromewebstore.google.com` 亦不可达，则 Top2 的“从商店安装回归/取证”同样需要代理/VPN；但 v1-42 已以 `plugin-*.zip` 安装回归作为不依赖外网的保底路径，确保基线证据可落盘且可对比。
 - 若未来要打通“收款/订阅”（非本阶段 MVP），需要：Stripe/收款账号、定价策略与退款/税务口径（本轮不做）
 - v1-45 已把离线门禁与取证/复盘路径固化：可先按 `docs/publish/cws-preflight-checklist.md` 完成离线门禁；网络可达后按 `docs/test-cases/v1-45.md` 完成“真实发布 -> 商店端截图 -> 从商店安装回归 -> 导出证据 -> 更新 `docs/evidence/v1-45/index.md` -> 24h/7d 复盘”。
