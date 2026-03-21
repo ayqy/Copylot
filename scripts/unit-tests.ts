@@ -105,6 +105,12 @@ import {
   formatCwsPublishEvidencePackFilename
 } from './cws-publish-evidence-pack.ts';
 import { buildWeeklyChannelOpsTrend } from './build-weekly-channel-ops-trend.ts';
+import {
+  CWS_LISTING_EVIDENCE_PACK_VERSION,
+  DEFAULT_CWS_LISTING_EVIDENCE_DIR,
+  buildCwsListingEvidencePackFromRepo,
+  formatCwsListingEvidencePackFilename
+} from './build-cws-listing-evidence-pack.ts';
 
 const getMessage: I18nGetMessage = (key, substitutions) => {
   const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
@@ -2514,6 +2520,77 @@ async function run() {
     const json = JSON.stringify(pack);
     assert.ok(!json.includes('CWS_CLIENT_SECRET'));
     assert.ok(!json.includes('CWS_REFRESH_TOKEN'));
+  }
+
+  {
+    const exportedAt = new Date('2026-03-21T01:02:03.000Z');
+    const filename = formatCwsListingEvidencePackFilename({ extensionVersion: '1.1.28', exportedAt });
+    assert.equal(filename, 'cws-listing-evidence-pack-1.1.28-2026-03-21-010203.json');
+    assert.ok(filename.startsWith('cws-listing-evidence-pack-'));
+    assert.ok(filename.endsWith('.json'));
+  }
+
+  {
+    const envKey = 'COPYLOT_UNIT_TEST_SECRET';
+    const envValue = 'copylot-unit-test-secret-should-not-leak';
+    process.env[envKey] = envValue;
+
+    try {
+      const exportedAt = new Date('2026-03-21T00:00:00.000Z');
+      const built1 = await buildCwsListingEvidencePackFromRepo({
+        exportedAt,
+        evidenceDir: DEFAULT_CWS_LISTING_EVIDENCE_DIR,
+        requireDistManifest: false
+      });
+
+      assert.equal(built1.evidenceDir, DEFAULT_CWS_LISTING_EVIDENCE_DIR);
+      assert.ok(built1.packFileName.startsWith('cws-listing-evidence-pack-'));
+      assert.ok(built1.packFileName.endsWith('.json'));
+
+      const pack = built1.pack;
+      assert.equal(pack.packVersion, CWS_LISTING_EVIDENCE_PACK_VERSION);
+      assert.equal(pack.exportedAt, exportedAt.toISOString());
+      assert.ok(pack.extensionVersion.length > 0);
+      assert.ok(pack.inputs.length >= 5);
+
+      assert.deepEqual(Object.keys(pack), ['packVersion', 'exportedAt', 'extensionVersion', 'inputs', 'listing', 'assertions']);
+      assert.deepEqual(Object.keys(pack.listing), [
+        'descriptions',
+        'keywords',
+        'screenshotPlan',
+        'releaseNotesTemplateSha256'
+      ]);
+      assert.deepEqual(Object.keys(pack.listing.descriptions), ['en', 'zh']);
+      assert.deepEqual(Object.keys(pack.listing.keywords), ['en', 'zh']);
+      assert.deepEqual(Object.keys(pack.assertions), [
+        'hasProWaitlistCta',
+        'hasTutorialLinks',
+        'hasPrivacyClaims',
+        'noOverclaimKeywords'
+      ]);
+
+      assert.equal(pack.assertions.hasProWaitlistCta, true);
+      assert.equal(pack.assertions.hasTutorialLinks, true);
+      assert.equal(pack.assertions.hasPrivacyClaims, true);
+      assert.equal(pack.assertions.noOverclaimKeywords, true);
+      assert.equal(built1.assertionFailures.length, 0);
+
+      const json = JSON.stringify(pack);
+      assert.ok(!json.includes(envKey));
+      assert.ok(!json.includes(envValue));
+      assert.ok(!json.includes('CWS_CLIENT_SECRET'));
+      assert.ok(!json.includes('CWS_REFRESH_TOKEN'));
+
+      const built2 = await buildCwsListingEvidencePackFromRepo({
+        exportedAt,
+        evidenceDir: DEFAULT_CWS_LISTING_EVIDENCE_DIR,
+        requireDistManifest: false
+      });
+      assert.equal(JSON.stringify(built2.pack), JSON.stringify(pack));
+      assert.equal(built2.indexMarkdown, built1.indexMarkdown);
+    } finally {
+      delete process.env[envKey];
+    }
   }
 }
 

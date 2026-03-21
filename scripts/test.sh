@@ -21,4 +21,18 @@ node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/verify-weekl
 
 npm run build:prod
 
+node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-cws-listing-evidence-pack.ts --stable-exported-at
+listing_pack_file=$(node --input-type=module -e "import fs from 'node:fs'; const md=fs.readFileSync('docs/evidence/v1-66/index.md','utf-8'); const m=md.match(/cws-listing-evidence-pack-[0-9A-Za-z._-]+\\.json/); if (!m) process.exit(2); console.log(m[0]);")
+if [[ -z "${listing_pack_file}" ]]; then
+  echo "Failed to resolve v1-66 listing evidence pack filename from docs/evidence/v1-66/index.md"
+  exit 1
+fi
+before_listing_hash=$(shasum -a 256 docs/evidence/v1-66/index.md "docs/evidence/v1-66/${listing_pack_file}")
+node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-cws-listing-evidence-pack.ts --stable-exported-at
+after_listing_hash=$(shasum -a 256 docs/evidence/v1-66/index.md "docs/evidence/v1-66/${listing_pack_file}")
+if [[ "$before_listing_hash" != "$after_listing_hash" ]]; then
+  echo "CWS listing evidence pack outputs should be deterministic"
+  exit 1
+fi
+
 bash scripts/verify-prod-build.sh
