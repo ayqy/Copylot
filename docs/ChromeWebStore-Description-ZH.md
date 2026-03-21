@@ -1,7 +1,12 @@
 从网页复制粘贴经常很痛：正文夹杂导航/广告，表格对不齐，代码还带行号和多余按钮文案等噪声。
 
-Copylot 帮你把网页内容一键复制成干净、结构化的文本。
-在网页上点一下区块（或点表格），就能直接粘贴到 AI 对话、文档或笔记里使用，无需二次整理。
+Copylot 帮你把网页区块/表格/代码一键复制成干净、结构化的 Markdown/纯文本/CSV，粘贴到 AI 对话、文档或笔记里即可用。
+隐私优先：默认本地处理，不收集/不上传复制内容；“匿名使用数据”开关默认关闭（仅本地）。
+
+快速上手（30 秒）
+1) 打开 Copylot 的 Popup（建议先固定到工具栏），并选择触发方式（单击/双击/悬停）。
+2) 在网页上对目标区块/表格/代码块触发复制。
+3) 粘贴到 AI 对话或文档即可。
 
 核心功能（以当前实现为准）
 - 智能区块复制：单击/双击提取正文，输出干净的 Markdown 或纯文本
@@ -22,8 +27,8 @@ https://github.com/ayqy/copy/blob/main/docs/tutorials/prompt-workflow.md
 https://github.com/ayqy/copy/blob/main/docs/tutorials/code-block-cleaning.md
 
 Copylot Pro（候补/规划中）
-- 说明：Copylot Pro 目前未上线、不可用（Not shipped yet）。
-- 加入候补方式：在扩展内打开 Options -> Pro Tab，点击“加入候补名单”（或“复制候补文案”）。
+- 说明：Copylot Pro 目前未上线、不可用（仅候补名单）。
+- 加入候补方式（扩展内可复现路径）：在扩展内打开 Options -> Pro Tab，点击“加入候补名单”（或“复制候补文案”）。
 - Pro 范围/边界（稳定对外口径，可审计）：https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md
 - 提醒：商店页不提供任何付费/订阅承诺；候补仅用于意向验证与需求收集。
 

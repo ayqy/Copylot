@@ -1,7 +1,12 @@
 Copy-pasting from the web is messy: ads, navigation, broken tables, and code blocks full of noise.
 
-Copylot helps you copy web content into clean, structured text in seconds.
-Click a block (or a table), and paste straight into AI chats, docs, or notes without reformatting.
+Copylot turns web content into clean, structured text (Markdown / plain text / CSV) in seconds — ready for AI chats, docs, and notes.
+Privacy-first and on-device: extraction/cleanup runs locally, and we do not collect or upload what you copy.
+
+QUICK START (30 seconds)
+1) Open the Copylot Popup (pin it first if you want), and pick an interaction mode (click / double-click / hover).
+2) On the webpage, trigger copy on a block, table, or code snippet.
+3) Paste into your AI chat or document — done.
 
 CORE FEATURES (based on current implementation)
 - Smart block copy: click/double-click to extract the main content and copy clean Markdown or plain text
@@ -22,8 +27,8 @@ https://github.com/ayqy/copy/blob/main/docs/tutorials/prompt-workflow.md
 https://github.com/ayqy/copy/blob/main/docs/tutorials/code-block-cleaning.md
 
 Copylot Pro (Planned / Waitlist)
-- Copylot Pro is not shipped yet and not available today.
-- How to join the waitlist: open the extension Options -> Pro tab, then click "Join waitlist" (or "Copy waitlist template").
+- Copylot Pro is not shipped yet and not available today (waitlist only).
+- How to join the waitlist (reproducible in-extension path): open the extension Options -> Pro tab, then click "Join waitlist" (or "Copy waitlist template").
 - Pro scope & boundaries (stable public doc, auditable): https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md
 - Note: there is no payment/subscription promise on the store page; the waitlist is only for intent validation and feedback.
 

@@ -4,13 +4,15 @@
 
 ## EN Keywords (Groups)
 - copy to markdown
-- web page to markdown
 - webpage to markdown
+- web page to text
+- copy webpage to text
 - smart copy
 - clean copy
-- ai ready copy
-- ai friendly format
+- copy cleaner
+- copy clean text
 - web clipper for ai
+- web clipper markdown
 - table to csv
 - table to markdown
 - html table to csv
@@ -32,7 +34,11 @@
 ## ZH 关键词组（建议）
 - 智能复制
 - 网页转 Markdown
-- 网页复制到 Markdown
+- 网页复制助手
+- 网页转文本
+- 网页转纯文本
+- 一键复制
+- 网页内容提取
 - 表格转 CSV
 - 表格转 Markdown
 - 代码块清理

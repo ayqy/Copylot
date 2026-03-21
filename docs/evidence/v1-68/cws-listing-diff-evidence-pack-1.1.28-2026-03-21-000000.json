@@ -3,10 +3,10 @@
   "exportedAt": "2026-03-21T00:00:00.000Z",
   "extensionVersion": "1.1.28",
   "baseline": {
-    "packPath": "docs/evidence/v1-66/cws-listing-evidence-pack-1.1.28-2026-03-21-000000.json",
-    "sha256": "c1e47d6b12da9759a1722a2ce81dee083ab83eabe82afc4532ea146d51327eb7",
+    "packPath": "docs/evidence/v1-66/cws-listing-evidence-pack-1.1.28-2026-03-21-041147.json",
+    "sha256": "14fa914dea405f79682ed0493888239137a0c2c157cc91aaf18b2af999010ce3",
     "extensionVersion": "1.1.28",
-    "exportedAt": "2026-03-21T00:00:00.000Z",
+    "exportedAt": "2026-03-21T04:11:47.530Z",
     "assertions": {
       "hasProWaitlistCta": true,
       "hasTutorialLinks": true,
@@ -15,7 +15,7 @@
     }
   },
   "current": {
-    "packPath": "docs/evidence/v1-67/cws-listing-evidence-pack-1.1.28-2026-03-21-000000.json",
+    "packPath": "docs/evidence/v1-68/cws-listing-evidence-pack-1.1.28-2026-03-21-000000.json",
     "sha256": "c1e47d6b12da9759a1722a2ce81dee083ab83eabe82afc4532ea146d51327eb7",
     "extensionVersion": "1.1.28",
     "exportedAt": "2026-03-21T00:00:00.000Z",
@@ -28,15 +28,33 @@
   },
   "diff": {
     "keywords": {
-      "enAdded": [],
-      "enRemoved": [],
-      "zhAdded": [],
-      "zhRemoved": []
+      "enAdded": [
+        "copy clean text",
+        "copy cleaner",
+        "copy webpage to text",
+        "web clipper markdown",
+        "web page to text"
+      ],
+      "enRemoved": [
+        "ai friendly format",
+        "ai ready copy",
+        "web page to markdown"
+      ],
+      "zhAdded": [
+        "一键复制",
+        "网页内容提取",
+        "网页复制助手",
+        "网页转文本",
+        "网页转纯文本"
+      ],
+      "zhRemoved": [
+        "网页复制到 Markdown"
+      ]
     },
     "descriptions": {
-      "enSha256From": "0e5ba6e42d46070e59f50a7f6345c6d7fbdb55c399704348b99664f33cbafdc5",
+      "enSha256From": "892f93ec37c5ee9ecd5c7d704be9cd99f38f2d16a7c9e72fb7610fc36e29355a",
       "enSha256To": "0e5ba6e42d46070e59f50a7f6345c6d7fbdb55c399704348b99664f33cbafdc5",
-      "zhSha256From": "29bf693c36657f4893337b6bddf1a2f9cde41a157aa1dafe2a5367ae08e320ab",
+      "zhSha256From": "33107aaf3f68c6505c6d69e9fa94b16656f15d6e65ff93130dca641cf533db1c",
       "zhSha256To": "29bf693c36657f4893337b6bddf1a2f9cde41a157aa1dafe2a5367ae08e320ab"
     },
     "screenshotPlan": {

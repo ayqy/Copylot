@@ -309,9 +309,12 @@ export function buildCwsListingDiffEvidenceIndexMarkdown(input: {
   pack: CwsListingDiffEvidencePack;
 }): string {
   const evidenceDirPosix = toPosixPath(input.evidenceDir);
+  const evidenceDirPosixTrimmed = evidenceDirPosix.replace(/\/+$/, '');
+  const evidenceDirBaseName = evidenceDirPosixTrimmed.split('/').pop() || evidenceDirPosixTrimmed;
+  const evidenceLabel = /^v\d+-\d+$/i.test(evidenceDirBaseName) ? evidenceDirBaseName.toUpperCase() : evidenceDirBaseName;
 
   const lines: string[] = [];
-  lines.push('# V1-67 CWS Listing ASO diff 证据包（可审计/可复核/可复用）');
+  lines.push(`# ${evidenceLabel} CWS Listing ASO diff 证据包（可审计/可复核/可复用）`);
   lines.push('');
   lines.push(`- 证据目录：\`${evidenceDirPosix.replace(/\\/g, '/')}/\``);
   lines.push('- 生成脚本：`scripts/build-cws-listing-diff-evidence-pack.ts`');
@@ -322,7 +325,7 @@ export function buildCwsListingDiffEvidenceIndexMarkdown(input: {
   lines.push(`  - sha256：\`${input.pack.baseline.sha256}\``);
   lines.push(`- current pack：\`${evidenceDirPosix}/${input.currentPackFileName}\``);
   lines.push(`  - sha256：\`${input.currentSha256}\``);
-  lines.push(`- diff pack：\`${input.diffPackFileName}\``);
+  lines.push(`- diff pack：\`${evidenceDirPosix}/${input.diffPackFileName}\``);
   lines.push(`  - sha256：\`${input.diffSha256}\``);
   lines.push('');
 
@@ -360,18 +363,20 @@ export function buildCwsListingDiffEvidenceIndexMarkdown(input: {
 
   lines.push('## 使用说明');
   lines.push('');
-  lines.push('- 生成（写入 `docs/evidence/v1-67/`）：');
-  lines.push('  - `node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-cws-listing-diff-evidence-pack.ts`');
+  lines.push(`- 生成（写入 \`${evidenceDirPosix}/\`）：`);
+  lines.push(
+    `  - \`node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-cws-listing-diff-evidence-pack.ts --evidence-dir ${evidenceDirPosix}\``
+  );
   lines.push('- 门禁/可重复性（固定 exportedAt，便于 diff）：');
   lines.push(
-    '  - `node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-cws-listing-diff-evidence-pack.ts --stable-exported-at`'
+    `  - \`node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-cws-listing-diff-evidence-pack.ts --evidence-dir ${evidenceDirPosix} --stable-exported-at\``
   );
   lines.push('- 指定 baseline pack（可选）：');
   lines.push(
-    '  - `node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-cws-listing-diff-evidence-pack.ts --baseline-pack docs/evidence/v1-66/cws-listing-evidence-pack-<extensionVersion>-<utcCompact>.json`'
+    `  - \`node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-cws-listing-diff-evidence-pack.ts --evidence-dir ${evidenceDirPosix} --baseline-pack docs/evidence/v1-66/cws-listing-evidence-pack-<extensionVersion>-<utcCompact>.json\``
   );
-  lines.push('- 复核 sha256（示例）：`shasum -a 256 docs/evidence/v1-67/*.json`');
-  lines.push('- 敏感信息搜索（示例）：`rg -n "CWS_|TOKEN|SECRET" docs/evidence/v1-67`');
+  lines.push(`- 复核 sha256（示例）：\`shasum -a 256 ${evidenceDirPosix}/*.json\``);
+  lines.push(`- 敏感信息搜索（示例）：\`rg -n "CWS_|TOKEN|SECRET" ${evidenceDirPosix}\``);
   lines.push('');
 
   lines.push('---');
@@ -478,4 +483,3 @@ if (invokedAsScript) {
     process.exitCode = 1;
   });
 }
-
