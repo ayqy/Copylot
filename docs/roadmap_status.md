@@ -31,9 +31,12 @@
 - [x] 渠道获客效率取证再降摩擦（离线可推进）：一键复制“获客效率证据包”（JSON，含 CSV + Markdown + Env）+ 证据落盘（v1-60）
 - [x] 渠道获客效率证据包落盘再降摩擦（离线可推进）：新增「下载获客效率证据包（JSON）」入口 + 稳定文件名（v1-61）
 - [x] 渠道跑数/复盘证据包再降摩擦（离线可推进）：新增「下载周度渠道复盘证据包（JSON）」入口，把“多次导出 + 手工归档”升级为“单文件证据包可落盘/可审计/可复核”（v1-63）
+- [x] 真实渠道跑数基线落盘（离线可推进）：用 v1-63 周度证据包跑 1 轮真实渠道跑数并落盘归档（v1-64）
 
 ## 当前进度
-- 一句话结论：截至 2026-03-21，v1-63 已完成「周度渠道复盘证据包（JSON）」一键下载/落盘可发布交付：Options -> 隐私与可观测性 -> Pro 面板新增稳定入口 `#download-pro-weekly-channel-ops-evidence-pack`；匿名 OFF 允许下载但不读取/不推断 events（含 OFF 提示 + Env + 空资产占位）；匿名 ON 基于本地匿名事件生成单文件证据包（内含 v1-61 evidence pack + v1-57 7d CSV + v1-51 7d CSV + verifyMarkdown 互证说明）；证据索引 `docs/evidence/v1-63/`；`bash scripts/test.sh` 回归 PASS。
+- 一句话结论：截至 2026-03-21，v1-64 已完成「真实渠道跑数基线落盘」可审计交付：周度证据包 `.on.json` 已落盘到 `docs/evidence/v1-64/`，并按 `assets.verifyMarkdown` 互证 PASS（rows <-> 两份 CSV；`distCopies=0 -> N/A`；小数 4 位）；`bash scripts/test.sh` 回归 PASS。
+- 本轮最小可交付增量（已完成，v1-64，离线可推进，收入优先）：用 `plugin-*.zip` 安装回归，至少设置 2 个 campaign + 空 campaign，完成分发/留资动作后下载 `#download-pro-weekly-channel-ops-evidence-pack` 的 `.on.json`；按 `assets.verifyMarkdown` 复核通过后，将文件 + 截图索引 + baseline 表 + 复核结论落盘到 `docs/evidence/v1-64/`（并补齐用例 `docs/test-cases/v1-64.md` + 简报 `docs/reports/v1-64-report.md`）。
+- 下一步最小可交付增量（计划，v1-65，收入优先）：在网络恢复后完成一次真实 CWS 发布 + 商店端取证（v1-62），并在发布后从商店安装回归补齐“复盘证据”（v1-45），形成可对外引用的“发布 -> 转化入口 -> 证据资产”闭环。
 - 本轮最小可交付增量（v1-59，离线可推进，收入优先）已完成：把 v1-58 的合并口径（leads + distCopies + leadsPerDistCopy）变成可直接粘贴的周报 Markdown 资产，并补齐单测/用例/证据闭环，显著降低渠道复盘与审计摩擦。
 - 本轮最小可交付增量（v1-60，离线可推进，收入优先）已完成：在 v1-58（7d 合并 CSV）+ v1-59（周报 Markdown）之上，新增「获客效率证据包（JSON，含 CSV + Markdown + Env）」一键复制入口，把 CSV/Markdown/Env/结构化 rows 统一打包成可直接落盘归档的审计资产，进一步降低“手工归档/丢证据/不可复核”的商业化风险。
 - 本轮最小可交付增量（v1-62，离线可推进，收入优先）已完成：为 `publish:cws` 增加 `--evidence-dir`，把 Proxy Diagnostic + Preflight + zip sha256 + 修复建议 + 凭据缺失项固化为可落盘归档的结构化证据包（JSON），让网络不可达时也能沉淀可追责的 FAIL 证据，并为网络恢复后的“一次性真实发布 + 按口径取证”做准备。
@@ -56,18 +59,19 @@
 
 ## 下一步最重要的 3 件事（收入优先）
 1. 完成一次真实 CWS 发布 + 商店端取证（Top1，阻塞：需要可用代理/VPN + 商店可达）：在网络可达后执行 `npm run publish:cws -- --evidence-dir docs/evidence/v1-62/preflight/` 发布到 `default` channel，并落盘 `.publish.json` 证据包；发布成功后补齐商店端“版本号 + 发布时间 + Pro 候补 CTA 可见”截图索引（见 `docs/evidence/v1-62/index.md`），形成可审计的商业化推进证据。
-2. 用 v1-63 周度证据包跑 1 轮真实渠道跑数并落盘（Top2，收入优先，离线可推进）：用 `plugin-*.zip` 安装回归，至少设置 2 个 campaign + 空 campaign，完成分发/留资动作后下载 `#download-pro-weekly-channel-ops-evidence-pack` 的 `.on.json`；按 `assets.verifyMarkdown` 复核通过后，将文件与截图索引补齐到 `docs/evidence/v1-63/`，形成可审计的周度复盘基线（为网络恢复后的真实商店跑数对齐做准备）。
-3. 发布后回归与复盘证据补齐（Top3，收入优先）：真实发布后从商店安装/或以 `plugin-*.zip` 安装回归，导出并落盘「Pro 意向漏斗摘要/证据包」（v1-38/v1-42）与 “上架后 24h/7d 复盘模板”截图索引（v1-45），确保“发布 -> 转化入口 -> 证据资产”闭环可复核。
+2. 发布后回归与复盘证据补齐（Top2，收入优先）：真实发布后从商店安装/或以 `plugin-*.zip` 安装回归，导出并落盘「Pro 意向漏斗摘要/证据包」（v1-38/v1-42）与 “上架后 24h/7d 复盘模板”截图索引（v1-45），确保“发布 -> 转化入口 -> 证据资产”闭环可复核。
+3. （v1-65）真实渠道跑数持续化（Top3，离线可推进）：基于 v1-64 的口径与互证链路，每周至少跑 2 个真实 campaign + `空 campaign`，导出 `.on.json` 并按 `assets.verifyMarkdown` 复核 PASS 后归档（可追加到 `docs/evidence/v1-64/` 或新目录），形成可审计的环比趋势，为后续真实商店跑数对齐做准备。
 
 ## 阻塞与需要的人类输入
 - v1-53 已完成且无账号/凭据/权限阻塞：campaign 为用户手动填写的渠道标识，已明确提示“不要填写敏感信息”，并保持匿名使用数据默认 OFF 的隐私边界。
-- Top1 仍受网络可达性阻塞（需要代理/VPN + 商店可达）；Top2/Top3 均可离线推进。已优先交付离线可推进的 v1-50/v1-51（weekly digest + 7d 明细 CSV）+ v1-53（campaign 渠道归因）+ v1-54（按 campaign 聚合导出）+ v1-62（发布诊断证据包落盘）+ v1-63（周度渠道复盘证据包一键下载/落盘），保证收入取证资产不断档，网络恢复后可直接与真实商店跑数对齐。
+- Top1 仍受网络可达性阻塞（需要代理/VPN + 商店可达）；Top2（发布后回归取证）依赖 Top1；Top3（渠道跑数持续化）可离线推进。已优先交付离线可推进的 v1-50/v1-51（weekly digest + 7d 明细 CSV）+ v1-53（campaign 渠道归因）+ v1-54（按 campaign 聚合导出）+ v1-62（发布诊断证据包落盘）+ v1-63（周度渠道复盘证据包一键下载/落盘）+ v1-64（真实渠道跑数基线落盘），保证收入取证资产不断档，网络恢复后可直接与真实商店跑数对齐。
 - v1-57 已完成且无账号/凭据/权限阻塞：已补齐「商店安装链接（UTM + campaign）/完整投放包（Markdown）一键复制/分发动作取证导出」，让渠道分发从“能复制”升级为“可获客 + 可量化 + 可复盘”的最小闭环证据资产。
 - v1-58 已完成且无账号/凭据/权限阻塞：已新增「按 campaign 合并导出 7d 获客效率（leads + distCopies + leadsPerDistCopy）」入口 `#export-pro-acquisition-efficiency-by-campaign-7d-csv`，可直接与 v1-54/v1-57 导出互证复算，降低复盘摩擦并固化可审计证据资产。
 - v1-59 已完成且无账号/凭据/权限阻塞：已新增「复制本周获客效率复盘摘要（Markdown，按 campaign）」入口 `#copy-pro-acquisition-efficiency-by-campaign-weekly-report`；匿名 OFF 不读取/不推断 events 且输出 OFF 提示 + Env；匿名 ON 仅基于本地匿名事件派生并生成表格/Insights；证据目录 `docs/evidence/v1-59/` 可审计复核。
 - v1-60 已完成且无账号/凭据/权限阻塞：已新增「复制获客效率证据包（JSON，含 CSV + Markdown + Env）」入口 `#copy-pro-acquisition-efficiency-by-campaign-evidence-pack`；匿名 OFF 不读取/不推断 events 且输出 OFF 提示 + Env；匿名 ON 仅基于本地匿名事件派生 evidence pack（含 v1-58 CSV + v1-59 Markdown + 结构化 rows 互证）；证据目录 `docs/evidence/v1-60/` 可审计复核。
 - v1-61 已完成且无账号/凭据/权限阻塞：已新增「下载获客效率证据包（JSON，含 CSV + Markdown + Env）」入口 `#download-pro-acquisition-efficiency-by-campaign-evidence-pack`；匿名 OFF 允许下载但不读取/不推断 events 且输出 OFF 提示 + Env；匿名 ON 仅基于本地匿名事件派生 evidence pack；文件名稳定可按周归档（`.on/.off`）；证据目录 `docs/evidence/v1-61/` 可审计复核。
 - v1-63 已完成且无账号/凭据/权限阻塞：已新增「下载周度渠道复盘证据包（JSON）」入口 `#download-pro-weekly-channel-ops-evidence-pack`；匿名 OFF 允许下载但不读取/不推断 events 且输出 OFF 提示 + Env + 空资产占位；匿名 ON 仅基于本地匿名事件派生单文件证据包（含 v1-61 evidence pack + v1-57 7d CSV + v1-51 7d CSV + `assets.verifyMarkdown`）；文件名稳定可按周归档（`.on/.off`）；证据目录 `docs/evidence/v1-63/` 可审计复核。
+- v1-64 已完成且无账号/凭据/权限阻塞：已落盘真实渠道跑数基线 `.on.json` + baseline 表 + 截图索引 + 互证 PASS 结论（`docs/evidence/v1-64/`），并补齐用例/简报（`docs/test-cases/v1-64.md`、`docs/reports/v1-64-report.md`），可审计复核。
 - v1-54 已完成且无账号/凭据/权限阻塞：已新增「按 campaign 聚合 7d CSV 导出」入口与证据落盘（`docs/evidence/v1-54/`），可在 Top1/Top2 网络阻塞期间先跑渠道分发/投放并形成可审计、可复核的收入导向证据。
 - v1-55 已完成且无账号/凭据/权限阻塞：已新增“候补链接/招募文案一键复制（强制带 campaign）”的本地生成与用例/证据固化，不引入支付/订阅、不新增权限、不联网发送数据、不采集用户复制内容。
 - v1-56 已完成且无账号/凭据/权限阻塞：已在 Options -> 隐私与可观测性 -> Pro 面板新增稳定入口 `#copy-pro-intent-by-campaign-weekly-report`；匿名开关 OFF 时不读取/不推断事件并明确提示“匿名使用数据关闭（无可用事件）”；匿名开关 ON 时仅基于本地匿名事件日志派生按 campaign 周报（不包含 URL/标题/网页内容/复制内容）；证据目录 `docs/evidence/v1-56/` 可审计复核。

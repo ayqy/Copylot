@@ -7,6 +7,8 @@ npm run check-i18n
 
 node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/unit-tests.ts
 
+node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/verify-weekly-channel-ops-evidence-pack.ts docs/evidence/v1-64
+
 npm run build:prod
 
 bash scripts/verify-prod-build.sh
