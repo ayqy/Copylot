@@ -104,6 +104,7 @@ import {
   computeFileSha256,
   formatCwsPublishEvidencePackFilename
 } from './cws-publish-evidence-pack.ts';
+import { buildWeeklyChannelOpsTrend } from './build-weekly-channel-ops-trend.ts';
 
 const getMessage: I18nGetMessage = (key, substitutions) => {
   const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
@@ -1910,6 +1911,43 @@ async function run() {
     String((proWeeklyOpsOnParsed.assets as Record<string, unknown>)?.verifyMarkdown || '').includes('leadsPerDistCopy'),
     'weekly channel ops evidence pack should embed minimal mutual-verification markdown'
   );
+
+  // build-weekly-channel-ops-trend.ts（fixture -> 可重复生成的 index.md + trend.csv）
+  const weeklyOpsTrendTmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'copylot-weekly-ops-trend-'));
+  const weeklyOpsTrendFixture = path.join(
+    process.cwd(),
+    'docs/evidence/v1-64/copylot-pro-weekly-channel-ops-evidence-pack-2026-03-21.on.json'
+  );
+  const weeklyOpsTrendFixtureName = path.basename(weeklyOpsTrendFixture);
+  await fs.copyFile(weeklyOpsTrendFixture, path.join(weeklyOpsTrendTmpDir, weeklyOpsTrendFixtureName));
+
+  const { indexMarkdown: weeklyOpsIndex1, trendCsv: weeklyOpsCsv1 } = await buildWeeklyChannelOpsTrend(weeklyOpsTrendTmpDir);
+  const weeklyOpsIndexFile1 = await fs.readFile(path.join(weeklyOpsTrendTmpDir, 'index.md'), 'utf8');
+  const weeklyOpsCsvFile1 = await fs.readFile(path.join(weeklyOpsTrendTmpDir, 'trend.csv'), 'utf8');
+  assert.equal(weeklyOpsIndexFile1, weeklyOpsIndex1);
+  assert.equal(weeklyOpsCsvFile1, weeklyOpsCsv1);
+  assert.ok(
+    weeklyOpsCsvFile1.includes('weekEndDate,distCopies,leads,leadsPerDistCopy,campaignsCount,nonEmptyCampaignsCount\n'),
+    'trend.csv header should be stable'
+  );
+  assert.ok(
+    weeklyOpsCsvFile1.includes('2026-03-21,4,4,1.0000,4,3\n'),
+    'trend.csv should compute weekly totals and fixed 4-decimal leadsPerDistCopy'
+  );
+  assert.ok(
+    weeklyOpsIndexFile1.includes('| cpc_control | 0 | 1 | N/A |'),
+    'distCopies=0 should render as N/A in baseline table'
+  );
+  assert.ok(
+    weeklyOpsIndexFile1.includes('| cpc_test_a | 2 | 1 | 0.5000 |'),
+    'leadsPerDistCopy should keep 4 decimals in baseline table'
+  );
+
+  const { indexMarkdown: weeklyOpsIndex2, trendCsv: weeklyOpsCsv2 } = await buildWeeklyChannelOpsTrend(weeklyOpsTrendTmpDir);
+  assert.equal(weeklyOpsIndex2, weeklyOpsIndex1);
+  assert.equal(weeklyOpsCsv2, weeklyOpsCsv1);
+  assert.equal(await fs.readFile(path.join(weeklyOpsTrendTmpDir, 'index.md'), 'utf8'), weeklyOpsIndex1);
+  assert.equal(await fs.readFile(path.join(weeklyOpsTrendTmpDir, 'trend.csv'), 'utf8'), weeklyOpsCsv1);
 
   // pro-intent-by-campaign-weekly-report.ts (pure functions + markdown formatter)
   const proIntentByCampaignWeeklyReportDisabled = buildProIntentByCampaignWeeklyReportSummary({
