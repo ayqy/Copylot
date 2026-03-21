@@ -1401,6 +1401,26 @@
     "message": "匿名使用数据关闭（不读取/不推断事件）。本证据包仅包含环境信息与空资产占位，用于可审计。",
     "description": "匿名开关 OFF 时获客效率证据包提示文案（用于 JSON 审计）"
   },
+  "proWeeklyChannelOpsEvidencePackDownload": {
+    "message": "下载周度渠道复盘证据包（JSON）",
+    "description": "隐私页下载周度渠道复盘证据包（JSON）按钮"
+  },
+  "proWeeklyChannelOpsEvidencePackDownloadSuccess": {
+    "message": "证据包已下载",
+    "description": "周度渠道复盘证据包下载成功提示"
+  },
+  "proWeeklyChannelOpsEvidencePackDownloadFailed": {
+    "message": "下载失败",
+    "description": "周度渠道复盘证据包下载失败提示"
+  },
+  "proWeeklyChannelOpsEvidencePackTelemetryOffNotice": {
+    "message": "匿名使用数据关闭（不读取/不推断事件）。本周度渠道复盘证据包仅包含环境信息与空资产占位，用于可审计。",
+    "description": "匿名开关 OFF 时周度渠道复盘证据包提示文案（用于 JSON 审计）"
+  },
+  "proWeeklyChannelOpsEvidencePackVerifyMarkdown": {
+    "message": "# 周度渠道复盘证据包互证说明（v1-63）\\n\\n本证据包仅用于本地审计/复核：不包含 URL/标题/网页内容/复制内容；不联网发送数据。\\n\\n## 指标定义（与 v1-61/v1-57/v1-51 保持一致）\\n- leads = pro_waitlist_copied + pro_waitlist_survey_copied（过去 7 天，按 campaign 聚合）\\n- distCopies = pro_distribution_asset_copied（过去 7 天，按 campaign 聚合）\\n- leadsPerDistCopy = leads / distCopies（distCopies=0 -> N/A；小数固定 4 位）\\n\\n## 互证步骤（最短可执行）\\n1. 解析 JSON，确认 `env.windowFrom/windowTo/lookbackDays`。\\n2. 复算每行 `leadsPerDistCopy`：\\n   - distCopies=0 => N/A\\n   - 否则 => (leads/distCopies).toFixed(4)\\n3. 核对 distCopies 计数一致：\\n   - 解析 `assets.proDistributionByCampaign7dCsv`，对每行 distCopies 求和\\n   - 与 `assets.acquisitionEfficiencyEvidencePack.rows` 的 distCopies 求和一致\\n4. 核对 leads 计数一致：\\n   - 解析 `assets.proIntentEvents7dCsv`，统计 eventName 为 pro_waitlist_copied / pro_waitlist_survey_copied 的行数\\n   - 与 `assets.acquisitionEfficiencyEvidencePack.rows` 的 leads 求和一致\\n5.（可选）核对 `assets.acquisitionEfficiencyEvidencePack.csv` / `weeklyReportMarkdown` 表格与 rows 逐行一致。\\n\\n",
+    "description": "周度渠道复盘证据包内置互证说明 Markdown（用于 JSON 审计与复核）"
+  },
   "proFunnelRefreshFailed": {
     "message": "刷新失败",
     "description": "Pro 意向漏斗摘要刷新失败提示"

@@ -1401,6 +1401,26 @@
     "message": "Anonymous usage data is OFF. This evidence pack only includes environment info and empty placeholders for audit, and does not read or infer any events.",
     "description": "Acquisition efficiency evidence pack notice when anonymous usage data is disabled (for JSON audit)"
   },
+  "proWeeklyChannelOpsEvidencePackDownload": {
+    "message": "Download weekly channel ops evidence pack (JSON)",
+    "description": "Download weekly channel ops evidence pack (JSON) button label in Options privacy tab"
+  },
+  "proWeeklyChannelOpsEvidencePackDownloadSuccess": {
+    "message": "Evidence pack downloaded",
+    "description": "Weekly channel ops evidence pack download success notification"
+  },
+  "proWeeklyChannelOpsEvidencePackDownloadFailed": {
+    "message": "Download failed",
+    "description": "Weekly channel ops evidence pack download failure notification"
+  },
+  "proWeeklyChannelOpsEvidencePackTelemetryOffNotice": {
+    "message": "Anonymous usage data is OFF. This weekly channel ops evidence pack only includes environment info and empty placeholders for audit, and does not read or infer any events.",
+    "description": "Weekly channel ops evidence pack notice when anonymous usage data is disabled (for JSON audit)"
+  },
+  "proWeeklyChannelOpsEvidencePackVerifyMarkdown": {
+    "message": "# Weekly channel ops evidence pack verification notes (v1-63)\\n\\nThis evidence pack is for local audit/verification only: no URLs, titles, page content, or copied text. No network uploads.\\n\\n## Metric definitions (aligned with v1-61/v1-57/v1-51)\\n- leads = pro_waitlist_copied + pro_waitlist_survey_copied (last 7 days, aggregated by campaign)\\n- distCopies = pro_distribution_asset_copied (last 7 days, aggregated by campaign)\\n- leadsPerDistCopy = leads / distCopies (distCopies=0 -> N/A; fixed 4 decimals)\\n\\n## Verification steps (minimal)\\n1. Parse JSON and confirm `env.windowFrom/windowTo/lookbackDays`.\\n2. Recompute each row `leadsPerDistCopy`:\\n   - distCopies=0 => N/A\\n   - otherwise => (leads/distCopies).toFixed(4)\\n3. Verify distCopies counts:\\n   - parse `assets.proDistributionByCampaign7dCsv` and sum the distCopies column\\n   - matches the sum of distCopies in `assets.acquisitionEfficiencyEvidencePack.rows`\\n4. Verify leads counts:\\n   - parse `assets.proIntentEvents7dCsv` and count rows where eventName is pro_waitlist_copied / pro_waitlist_survey_copied\\n   - matches the sum of leads in `assets.acquisitionEfficiencyEvidencePack.rows`\\n5. (Optional) Verify `assets.acquisitionEfficiencyEvidencePack.csv` / `weeklyReportMarkdown` table matches rows.\\n\\n",
+    "description": "Embedded verification markdown inside the weekly channel ops evidence pack (for JSON audit)"
+  },
   "proFunnelRefreshFailed": {
     "message": "Refresh failed",
     "description": "Pro funnel summary refresh failure notification"

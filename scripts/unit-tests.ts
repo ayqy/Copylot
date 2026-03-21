@@ -78,6 +78,11 @@ import {
 } from '../src/shared/pro-acquisition-efficiency-by-campaign-evidence-pack.ts';
 import { formatProAcquisitionEfficiencyByCampaignEvidencePackJsonFilename } from '../src/shared/pro-acquisition-efficiency-by-campaign-evidence-pack-filename.ts';
 import {
+  buildProWeeklyChannelOpsEvidencePack,
+  formatProWeeklyChannelOpsEvidencePackAsJson
+} from '../src/shared/pro-weekly-channel-ops-evidence-pack.ts';
+import { formatProWeeklyChannelOpsEvidencePackJsonFilename } from '../src/shared/pro-weekly-channel-ops-evidence-pack-filename.ts';
+import {
   buildProIntentByCampaignWeeklyReportSummary,
   formatProIntentByCampaignWeeklyReportMarkdown
 } from '../src/shared/pro-intent-by-campaign-weekly-report.ts';
@@ -128,6 +133,15 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
   }
   if (key === 'proAcqEffByCampaignEvidencePackTelemetryOffNotice') {
     return '匿名使用数据关闭（不读取/不推断事件）。本证据包仅包含环境信息与空资产占位，用于可审计。';
+  }
+  if (key === 'proWeeklyChannelOpsEvidencePackTelemetryOffNotice') {
+    return '匿名使用数据关闭（不读取/不推断事件）。本周度渠道复盘证据包仅包含环境信息与空资产占位，用于可审计。';
+  }
+  if (key === 'proWeeklyChannelOpsEvidencePackVerifyMarkdown') {
+    return (
+      '# 周度渠道复盘证据包互证说明（v1-63）\n\n' +
+      '互证要点：复算 leadsPerDistCopy；并核对 leads/distCopies 与两份 CSV 的计数一致。\n'
+    );
   }
   if (key === 'proAcqEffByCampaignWeeklyReportMdInsightTop1') {
     return `Top1 campaign（按 leadsPerDistCopy）：${subs[0]}`;
@@ -1535,6 +1549,26 @@ async function run() {
   );
   assert.ok(!evidenceFilenameOn.includes('twitter'));
 
+  // pro-weekly-channel-ops-evidence-pack-filename.ts (pure functions, stable download filename)
+  const weeklyOpsFilenameOff = formatProWeeklyChannelOpsEvidencePackJsonFilename(now, false);
+  assert.equal(
+    weeklyOpsFilenameOff,
+    `copylot-pro-weekly-channel-ops-evidence-pack-${expectedDate}.off.json`
+  );
+  assert.ok(
+    /^copylot-pro-weekly-channel-ops-evidence-pack-\d{4}-\d{2}-\d{2}\.off\.json$/.test(weeklyOpsFilenameOff)
+  );
+
+  const weeklyOpsFilenameOn = formatProWeeklyChannelOpsEvidencePackJsonFilename(now, true);
+  assert.equal(
+    weeklyOpsFilenameOn,
+    `copylot-pro-weekly-channel-ops-evidence-pack-${expectedDate}.on.json`
+  );
+  assert.ok(
+    /^copylot-pro-weekly-channel-ops-evidence-pack-\d{4}-\d{2}-\d{2}\.on\.json$/.test(weeklyOpsFilenameOn)
+  );
+  assert.ok(!weeklyOpsFilenameOn.includes('twitter'));
+
   // pro-acquisition-efficiency-by-campaign-weekly-report.ts (pure functions + markdown formatter)
   const proAcqEffWeeklyReportDisabled = buildProAcquisitionEfficiencyByCampaignWeeklyReportSummary({
     enabled: false,
@@ -1724,6 +1758,157 @@ async function run() {
   assert.ok(
     String(proAcqEffEvidenceOnParsed.weeklyReportMarkdown || '').includes('| campaign | leads | distCopies | leadsPerDistCopy |'),
     'evidence pack should embed weekly report markdown for audit and mutual verification'
+  );
+
+  // pro-weekly-channel-ops-evidence-pack.ts (pure functions + stable JSON formatter)
+  const proWeeklyOpsOff = buildProWeeklyChannelOpsEvidencePack({
+    enabled: false,
+    telemetryEvents: telemetryAccessTrap,
+    now,
+    extensionVersion: '1.1.28',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7,
+    getMessage
+  });
+  assert.equal(proWeeklyOpsOff.packVersion, 'v1-63');
+  assert.equal(proWeeklyOpsOff.enabled, false);
+  assert.equal(proWeeklyOpsOff.disabledReason, 'anonymous_usage_data_disabled');
+  assert.ok(proWeeklyOpsOff.telemetryOffNotice?.includes('匿名使用数据关闭'));
+  assert.equal(proWeeklyOpsOff.env.windowFrom, sevenDaysAgo);
+  assert.equal(proWeeklyOpsOff.env.windowTo, now);
+  assert.equal(proWeeklyOpsOff.env.isAnonymousUsageDataEnabled, false);
+  assert.equal(proWeeklyOpsOff.assets.acquisitionEfficiencyEvidencePack.enabled, false);
+  assert.equal(proWeeklyOpsOff.assets.acquisitionEfficiencyEvidencePack.rows.length, 0);
+  assert.equal(
+    proWeeklyOpsOff.assets.proDistributionByCampaign7dCsv.trimEnd(),
+    PRO_DISTRIBUTION_BY_CAMPAIGN_CSV_COLUMNS.join(',')
+  );
+  assert.equal(proWeeklyOpsOff.assets.proIntentEvents7dCsv.trimEnd(), PRO_INTENT_EVENTS_CSV_COLUMNS.join(','));
+  assert.ok(proWeeklyOpsOff.assets.verifyMarkdown.includes('互证'));
+
+  const proWeeklyOpsOffJson = formatProWeeklyChannelOpsEvidencePackAsJson(proWeeklyOpsOff);
+  assert.ok(proWeeklyOpsOffJson.endsWith('\n'));
+  const proWeeklyOpsOffParsed = JSON.parse(proWeeklyOpsOffJson) as Record<string, unknown>;
+  assert.deepEqual(Object.keys(proWeeklyOpsOffParsed), [
+    'packVersion',
+    'enabled',
+    'disabledReason',
+    'telemetryOffNotice',
+    'env',
+    'assets'
+  ]);
+  const proWeeklyOpsOffAssetsParsed = proWeeklyOpsOffParsed.assets as Record<string, unknown>;
+  assert.deepEqual(Object.keys(proWeeklyOpsOffAssetsParsed), [
+    'acquisitionEfficiencyEvidencePack',
+    'proDistributionByCampaign7dCsv',
+    'proIntentEvents7dCsv',
+    'verifyMarkdown'
+  ]);
+
+  const proWeeklyOpsOn = buildProWeeklyChannelOpsEvidencePack({
+    enabled: true,
+    telemetryEvents: mergedEvents,
+    now,
+    extensionVersion: '1.1.28',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7,
+    getMessage
+  });
+  assert.equal(proWeeklyOpsOn.packVersion, 'v1-63');
+  assert.equal(proWeeklyOpsOn.enabled, true);
+  assert.equal(proWeeklyOpsOn.disabledReason, null);
+  assert.equal(proWeeklyOpsOn.telemetryOffNotice, null);
+  assert.equal(proWeeklyOpsOn.env.windowFrom, sevenDaysAgo);
+  assert.equal(proWeeklyOpsOn.env.windowTo, now);
+  assert.equal(proWeeklyOpsOn.env.isAnonymousUsageDataEnabled, true);
+
+  const proWeeklyOpsOnAcqAligned = buildProAcquisitionEfficiencyByCampaignEvidencePack({
+    enabled: true,
+    telemetryEvents: mergedEvents,
+    now,
+    extensionVersion: '1.1.28',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7,
+    getMessage
+  });
+  assert.deepEqual(proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.rows, proWeeklyOpsOnAcqAligned.rows);
+  assert.equal(proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.csv, proWeeklyOpsOnAcqAligned.csv);
+  assert.equal(
+    proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.weeklyReportMarkdown,
+    proWeeklyOpsOnAcqAligned.weeklyReportMarkdown
+  );
+
+  const proWeeklyOpsOnDistAligned = buildProDistributionByCampaignCsv({
+    enabled: true,
+    telemetryEvents: mergedEvents,
+    now,
+    extensionVersion: '1.1.28',
+    emptyCampaignBucketLabel: '空 campaign',
+    lookbackDays: 7
+  });
+  assert.equal(proWeeklyOpsOn.assets.proDistributionByCampaign7dCsv, proWeeklyOpsOnDistAligned.csv);
+
+  const proWeeklyOpsOnIntentEventsAligned = buildProIntentEventsCsv({
+    enabled: true,
+    telemetryEvents: mergedEvents,
+    now,
+    extensionVersion: '1.1.28',
+    lookbackDays: 7
+  });
+  assert.equal(proWeeklyOpsOn.assets.proIntentEvents7dCsv, proWeeklyOpsOnIntentEventsAligned.csv);
+
+  // mutual verification: leadsPerDistCopy can be recomputed from rows
+  for (const row of proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.rows) {
+    const expected = row.distCopies <= 0 ? 'N/A' : (row.leads / row.distCopies).toFixed(4);
+    assert.equal(row.leadsPerDistCopy, expected);
+  }
+
+  // mutual verification: distCopies totals should match v1-57 CSV (sum of distCopies column)
+  const distLines = proWeeklyOpsOn.assets.proDistributionByCampaign7dCsv.trim().split('\n');
+  assert.equal(distLines[0], PRO_DISTRIBUTION_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+  let distCopiesSum = 0;
+  const distByCampaign: Record<string, number> = {};
+  for (const line of distLines.slice(1)) {
+    const cells = line.split(',');
+    const campaign = cells[5] || '';
+    const distCopies = Number(cells[10] || 0);
+    distCopiesSum += distCopies;
+    distByCampaign[campaign] = distCopies;
+  }
+  const rowsDistCopiesSum = proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.rows.reduce(
+    (acc, row) => acc + row.distCopies,
+    0
+  );
+  assert.equal(rowsDistCopiesSum, distCopiesSum);
+  for (const row of proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.rows) {
+    assert.equal(row.distCopies, distByCampaign[row.campaign] ?? 0);
+  }
+
+  // mutual verification: leads totals should match v1-51 event CSV (count lead events)
+  const intentLines = proWeeklyOpsOn.assets.proIntentEvents7dCsv.trim().split('\n');
+  assert.equal(intentLines[0], PRO_INTENT_EVENTS_CSV_COLUMNS.join(','));
+  let leadsFromEvents = 0;
+  for (const line of intentLines.slice(1)) {
+    const cells = line.split(',');
+    const eventName = cells[7] || '';
+    if (eventName === 'pro_waitlist_copied' || eventName === 'pro_waitlist_survey_copied') leadsFromEvents += 1;
+  }
+  const rowsLeadsSum = proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.rows.reduce((acc, row) => acc + row.leads, 0);
+  assert.equal(rowsLeadsSum, leadsFromEvents);
+
+  const proWeeklyOpsOnJson = formatProWeeklyChannelOpsEvidencePackAsJson(proWeeklyOpsOn);
+  const proWeeklyOpsOnParsed = JSON.parse(proWeeklyOpsOnJson) as Record<string, unknown>;
+  assert.deepEqual(Object.keys(proWeeklyOpsOnParsed), [
+    'packVersion',
+    'enabled',
+    'disabledReason',
+    'telemetryOffNotice',
+    'env',
+    'assets'
+  ]);
+  assert.ok(
+    String((proWeeklyOpsOnParsed.assets as Record<string, unknown>)?.verifyMarkdown || '').includes('leadsPerDistCopy'),
+    'weekly channel ops evidence pack should embed minimal mutual-verification markdown'
   );
 
   // pro-intent-by-campaign-weekly-report.ts (pure functions + markdown formatter)

@@ -74,6 +74,12 @@ import {
 } from '../shared/pro-acquisition-efficiency-by-campaign-evidence-pack';
 import { formatProAcquisitionEfficiencyByCampaignEvidencePackJsonFilename } from '../shared/pro-acquisition-efficiency-by-campaign-evidence-pack-filename';
 import {
+  buildProWeeklyChannelOpsEvidencePack,
+  formatProWeeklyChannelOpsEvidencePackAsJson,
+  type ProWeeklyChannelOpsEvidencePack
+} from '../shared/pro-weekly-channel-ops-evidence-pack';
+import { formatProWeeklyChannelOpsEvidencePackJsonFilename } from '../shared/pro-weekly-channel-ops-evidence-pack-filename';
+import {
   buildProIntentByCampaignWeeklyReportSummary,
   formatProIntentByCampaignWeeklyReportMarkdown,
   type ProIntentByCampaignWeeklyReportEnvInfo
@@ -173,6 +179,7 @@ interface OptionsElements {
   proAcqEffByCampaignWeeklyReportCopyButton: HTMLButtonElement;
   proAcqEffByCampaignEvidencePackCopyButton: HTMLButtonElement;
   proAcqEffByCampaignEvidencePackDownloadButton: HTMLButtonElement;
+  proWeeklyChannelOpsEvidencePackDownloadButton: HTMLButtonElement;
   proIntentWeeklyDigestCopyButton: HTMLButtonElement;
   proIntentByCampaignWeeklyReportCopyButton: HTMLButtonElement;
   womSummaryPanel: HTMLDetailsElement;
@@ -253,6 +260,8 @@ const COPY_PRO_ACQ_EFF_BY_CAMPAIGN_EVIDENCE_PACK_BUTTON_ID =
   'copy-pro-acquisition-efficiency-' + 'by-campaign-evidence-pack';
 const DOWNLOAD_PRO_ACQ_EFF_BY_CAMPAIGN_EVIDENCE_PACK_BUTTON_ID =
   'download-pro-acquisition-efficiency-' + 'by-campaign-evidence-pack';
+const DOWNLOAD_PRO_WEEKLY_CHANNEL_OPS_EVIDENCE_PACK_BUTTON_ID =
+  'download-pro-weekly-channel-' + 'ops-evidence-pack';
 
 /**
  * 获取所有DOM元素
@@ -331,6 +340,9 @@ function getElements(): OptionsElements {
     ) as HTMLButtonElement,
     proAcqEffByCampaignEvidencePackDownloadButton: document.getElementById(
       DOWNLOAD_PRO_ACQ_EFF_BY_CAMPAIGN_EVIDENCE_PACK_BUTTON_ID
+    ) as HTMLButtonElement,
+    proWeeklyChannelOpsEvidencePackDownloadButton: document.getElementById(
+      DOWNLOAD_PRO_WEEKLY_CHANNEL_OPS_EVIDENCE_PACK_BUTTON_ID
     ) as HTMLButtonElement,
     proIntentWeeklyDigestCopyButton: document.getElementById('copy-pro-intent-weekly-digest') as HTMLButtonElement,
     proIntentByCampaignWeeklyReportCopyButton: document.getElementById(
@@ -1931,6 +1943,87 @@ async function downloadProAcquisitionEfficiencyByCampaignEvidencePackJson(): Pro
   }
 }
 
+async function buildProWeeklyChannelOpsEvidencePackForDownload(): Promise<ProWeeklyChannelOpsEvidencePack> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for pro weekly channel ops evidence pack:', error);
+  }
+
+  const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+
+  const emptyCampaignBucketLabel =
+    getMessage('proAcqEffByCampaign7dCsvEmptyBucket') ||
+    getMessage('proIntentByCampaign7dCsvEmptyBucket') ||
+    getMessage('proDistributionByCampaign7dCsvEmptyBucket') ||
+    'N/A';
+
+  // Anonymous usage data OFF: allow download, but do not read / infer any history (including storage reads).
+  if (!enabled) {
+    return buildProWeeklyChannelOpsEvidencePack({
+      enabled: false,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      emptyCampaignBucketLabel,
+      lookbackDays: 7,
+      getMessage
+    });
+  }
+
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    return buildProWeeklyChannelOpsEvidencePack({
+      enabled: true,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      emptyCampaignBucketLabel,
+      lookbackDays: 7,
+      getMessage
+    });
+  }
+
+  const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+  return buildProWeeklyChannelOpsEvidencePack({
+    enabled: true,
+    telemetryEvents: result[TELEMETRY_EVENTS_KEY],
+    now: exportedAt,
+    extensionVersion,
+    emptyCampaignBucketLabel,
+    lookbackDays: 7,
+    getMessage
+  });
+}
+
+async function downloadProWeeklyChannelOpsEvidencePackJson(): Promise<void> {
+  let pack: ProWeeklyChannelOpsEvidencePack;
+  let text: string;
+  let filename: string;
+
+  try {
+    pack = await buildProWeeklyChannelOpsEvidencePackForDownload();
+    text = formatProWeeklyChannelOpsEvidencePackAsJson(pack);
+    filename = formatProWeeklyChannelOpsEvidencePackJsonFilename(
+      pack.env?.exportedAt ?? Date.now(),
+      Boolean(pack.env?.isAnonymousUsageDataEnabled)
+    );
+  } catch (error) {
+    console.warn('Failed to build pro weekly channel ops evidence pack for download:', error);
+    showNotification(getMessage('proWeeklyChannelOpsEvidencePackDownloadFailed'), 'error');
+    return;
+  }
+
+  try {
+    downloadTextFile(filename, text, 'application/json');
+    showNotification(getMessage('proWeeklyChannelOpsEvidencePackDownloadSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to download pro weekly channel ops evidence pack:', error);
+    showNotification(getMessage('proWeeklyChannelOpsEvidencePackDownloadFailed'), 'error');
+  }
+}
+
 function downloadTextFile(filename: string, text: string, mimeType: string): void {
   const blob = new Blob([text], { type: mimeType });
   const url = URL.createObjectURL(blob);
@@ -2542,6 +2635,9 @@ function setupEventListeners() {
   });
   elements.proAcqEffByCampaignEvidencePackDownloadButton.addEventListener('click', () => {
     void downloadProAcquisitionEfficiencyByCampaignEvidencePackJson();
+  });
+  elements.proWeeklyChannelOpsEvidencePackDownloadButton.addEventListener('click', () => {
+    void downloadProWeeklyChannelOpsEvidencePackJson();
   });
   elements.proIntentWeeklyDigestCopyButton.addEventListener('click', () => {
     void copyProIntentWeeklyDigestToClipboard();
