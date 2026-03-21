@@ -1,0 +1,50 @@
+{
+  "packVersion": "v1-67",
+  "exportedAt": "2026-03-21T00:00:00.000Z",
+  "extensionVersion": "1.1.28",
+  "baseline": {
+    "packPath": "docs/evidence/v1-66/cws-listing-evidence-pack-1.1.28-2026-03-21-000000.json",
+    "sha256": "40b9656a08bc351b527b0f9bb469cf3c619157907d52cccdc988a5ebe1905e93",
+    "extensionVersion": "1.1.28",
+    "exportedAt": "2026-03-21T00:00:00.000Z",
+    "assertions": {
+      "hasProWaitlistCta": true,
+      "hasTutorialLinks": true,
+      "hasPrivacyClaims": true,
+      "noOverclaimKeywords": true
+    }
+  },
+  "current": {
+    "packPath": "docs/evidence/v1-67/cws-listing-evidence-pack-1.1.28-2026-03-21-000000.json",
+    "sha256": "40b9656a08bc351b527b0f9bb469cf3c619157907d52cccdc988a5ebe1905e93",
+    "extensionVersion": "1.1.28",
+    "exportedAt": "2026-03-21T00:00:00.000Z",
+    "assertions": {
+      "hasProWaitlistCta": true,
+      "hasTutorialLinks": true,
+      "hasPrivacyClaims": true,
+      "noOverclaimKeywords": true
+    }
+  },
+  "diff": {
+    "keywords": {
+      "enAdded": [],
+      "enRemoved": [],
+      "zhAdded": [],
+      "zhRemoved": []
+    },
+    "descriptions": {
+      "enSha256From": "892f93ec37c5ee9ecd5c7d704be9cd99f38f2d16a7c9e72fb7610fc36e29355a",
+      "enSha256To": "892f93ec37c5ee9ecd5c7d704be9cd99f38f2d16a7c9e72fb7610fc36e29355a",
+      "zhSha256From": "33107aaf3f68c6505c6d69e9fa94b16656f15d6e65ff93130dca641cf533db1c",
+      "zhSha256To": "33107aaf3f68c6505c6d69e9fa94b16656f15d6e65ff93130dca641cf533db1c"
+    },
+    "screenshotPlan": {
+      "changedIds": []
+    },
+    "assertions": {
+      "changedKeys": []
+    }
+  },
+  "redlines": []
+}

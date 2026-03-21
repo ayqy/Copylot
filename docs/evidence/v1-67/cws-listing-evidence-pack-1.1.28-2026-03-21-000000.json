@@ -1,0 +1,154 @@
+{
+  "packVersion": "v1-66",
+  "exportedAt": "2026-03-21T00:00:00.000Z",
+  "extensionVersion": "1.1.28",
+  "inputs": [
+    {
+      "path": "docs/ChromeWebStore-Description-EN.md",
+      "bytes": 2957,
+      "sha256": "892f93ec37c5ee9ecd5c7d704be9cd99f38f2d16a7c9e72fb7610fc36e29355a"
+    },
+    {
+      "path": "docs/ChromeWebStore-Description-ZH.md",
+      "bytes": 2836,
+      "sha256": "33107aaf3f68c6505c6d69e9fa94b16656f15d6e65ff93130dca641cf533db1c"
+    },
+    {
+      "path": "docs/aso/keywords.md",
+      "bytes": 1810,
+      "sha256": "72c41a630abad4cbe49923f4241aa4928f9f3e95cb775da11134df09d3107f8f"
+    },
+    {
+      "path": "docs/aso/store-assets.md",
+      "bytes": 10906,
+      "sha256": "9f1509fc4b671ebf9a310faa07d4650cd48a859d4f3eb6019a0a249adf8210a8"
+    },
+    {
+      "path": "docs/aso/cws-release-notes-template.md",
+      "bytes": 1351,
+      "sha256": "4de9cf37ed4cad839640528d8106d5a13604e85dddea05988da1ae4b7c1ca5a3"
+    },
+    {
+      "path": "docs/aso/value-prop.md",
+      "bytes": 3098,
+      "sha256": "0082fb541e8ddc1997832cd7d4e18639f7102b807c218bcde70206a8d4f19d63"
+    }
+  ],
+  "listing": {
+    "descriptions": {
+      "en": "Copy-pasting from the web is messy: ads, navigation, broken tables, and code blocks full of noise.\n\nCopylot helps you copy web content into clean, structured text in seconds.\nClick a block (or a table), and paste straight into AI chats, docs, or notes without reformatting.\n\nCORE FEATURES (based on current implementation)\n- Smart block copy: click/double-click to extract the main content and copy clean Markdown or plain text\n- Table to Markdown / CSV: convert web tables into structured Markdown (GFM) or CSV for spreadsheets\n- Code block cleanup (conservative): keep indentation/blank lines; trim only leading/trailing blank lines; remove line numbers only when the DOM structure is recognizable; conservatively drop leading/trailing whole-line Copy-label text (no in-line replacement); hover-to-copy supported for code blocks\n- Append Mode: hold Shift while copying to merge multiple clips with separators\n- Prompt templates workflow: manage prompts and copy “instruction + content” in one step; optionally auto-open your chosen chat service after copy\n- Optional source info: append page title and source URL if you want attribution\n\nUSE CASES\nFor knowledge work: collect snippets across multiple pages with Append Mode, then paste into Notion/Obsidian/Docs.\nFor developers: copy runnable code from technical articles with less noise (like Copy-label lines or some line numbers) while keeping indentation intact.\nFor data work: copy web tables as CSV for Excel/Google Sheets, or as Markdown tables for docs.\n\nLEARN MORE / TUTORIALS\nhttps://github.com/ayqy/copy/blob/main/docs/tutorials/table-to-csv-markdown.md\nhttps://github.com/ayqy/copy/blob/main/docs/tutorials/prompt-workflow.md\nhttps://github.com/ayqy/copy/blob/main/docs/tutorials/code-block-cleaning.md\n\nCopylot Pro (Planned / Waitlist)\n- Copylot Pro is not shipped yet and not available today.\n- How to join the waitlist: open the extension Options -> Pro tab, then click \"Join waitlist\" (or \"Copy waitlist template\").\n- Pro scope & boundaries (stable public doc, auditable): https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md\n- Note: there is no payment/subscription promise on the store page; the waitlist is only for intent validation and feedback.\n\nPRIVACY & PERMISSIONS\n- Local by default: extraction/cleanup/formatting runs on your device\n- No copied content collection/upload: we do not collect, store, or upload the web content you copy\n- Anonymous usage data toggle (OFF by default): when enabled, it only stores a local anonymous event log (event name, timestamp, a few enum-like fields). No content, no URLs, no network sending. Turning it off clears the local event log immediately\n- Minimal permissions: storage, clipboardWrite, contextMenus\n\nFEEDBACK & REVIEWS\n- Feedback and feature requests: https://github.com/ayqy/copy/issues/new\n- If Copylot helps your workflow, consider sharing it with teammates or leaving an honest review on the Chrome Web Store\n",
+      "zh": "从网页复制粘贴经常很痛：正文夹杂导航/广告，表格对不齐，代码还带行号和多余按钮文案等噪声。\n\nCopylot 帮你把网页内容一键复制成干净、结构化的文本。\n在网页上点一下区块（或点表格），就能直接粘贴到 AI 对话、文档或笔记里使用，无需二次整理。\n\n核心功能（以当前实现为准）\n- 智能区块复制：单击/双击提取正文，输出干净的 Markdown 或纯文本\n- 表格一键转 Markdown/CSV：网页表格复制后可直接粘贴到文档或导入表格工具\n- 代码块专业清理（保守）：保留缩进与空行，仅裁剪首尾空行；在可识别结构下去行号；保守移除首/末端整行 Copy/复制按钮文案（不做行内替换）；代码块支持悬停快速复制\n- 追加模式：按住 Shift 复制即可跨页面合并，多段内容自动分隔\n- Prompt 模板工作流：管理常用 Prompt，一键拼接“指令 + 内容”；可选复制后自动打开你选择的 Chat 服务\n- 可选附加来源：按需在末尾追加页面标题与来源 URL\n\n使用场景\n面向知识工作者：跨页面摘录资料，用追加模式合并，一次性粘贴进 Notion/Obsidian/文档。\n面向开发者：从技术博客或论坛复制可运行的代码块，减少清理成本。\n面向数据工作者：把网页表格转成 CSV 导入 Excel/Google Sheets，或转成 Markdown 表格写报告。\n\n了解更多 / 教程\nhttps://github.com/ayqy/copy/blob/main/docs/tutorials/table-to-csv-markdown.md\nhttps://github.com/ayqy/copy/blob/main/docs/tutorials/prompt-workflow.md\nhttps://github.com/ayqy/copy/blob/main/docs/tutorials/code-block-cleaning.md\n\nCopylot Pro（候补/规划中）\n- 说明：Copylot Pro 目前未上线、不可用（Not shipped yet）。\n- 加入候补方式：在扩展内打开 Options -> Pro Tab，点击“加入候补名单”（或“复制候补文案”）。\n- Pro 范围/边界（稳定对外口径，可审计）：https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md\n- 提醒：商店页不提供任何付费/订阅承诺；候补仅用于意向验证与需求收集。\n\n隐私与权限\n- 默认本地处理：内容提取/清理/格式化在你的设备上完成\n- 不收集/不上传复制内容：我们不会收集、存储或上传你复制的网页内容\n- “匿名使用数据”开关（默认关闭）：开启后仅在本地记录匿名事件（事件名/时间戳/少量枚举字段），不包含任何复制内容/页面内容/URL；不联网发送；关闭后立即清空本地事件记录\n- 最小权限：storage, clipboardWrite, contextMenus\n\n反馈与评价\n- 反馈与建议（GitHub Issues）：https://github.com/ayqy/copy/issues/new\n- 如果 Copylot 帮到你，欢迎分享给同事朋友，或在商店留下真实评价\n"
+    },
+    "keywords": {
+      "en": [
+        "copy to markdown",
+        "web page to markdown",
+        "webpage to markdown",
+        "smart copy",
+        "clean copy",
+        "ai ready copy",
+        "ai friendly format",
+        "web clipper for ai",
+        "table to csv",
+        "table to markdown",
+        "html table to csv",
+        "code block cleanup",
+        "remove line numbers",
+        "prompt template",
+        "prompt manager",
+        "append clipboard",
+        "clipboard append mode"
+      ],
+      "zh": [
+        "智能复制",
+        "网页转 Markdown",
+        "网页复制到 Markdown",
+        "表格转 CSV",
+        "表格转 Markdown",
+        "代码块清理",
+        "去行号",
+        "代码块去噪",
+        "去 Copy 文案（保守）",
+        "保留缩进",
+        "Prompt 模板",
+        "Prompt 管理器",
+        "追加模式",
+        "跨页面合并剪贴板",
+        "AI 友好格式",
+        "网页剪藏"
+      ]
+    },
+    "screenshotPlan": [
+      {
+        "id": "01",
+        "titleZh": "一键复制干净正文（Markdown/纯文本）",
+        "titleEn": "One-click clean copy (Markdown / plain text)",
+        "assertions": [
+          "智能区块复制：点击/双击提取主要内容并复制（`README.md` “智能识别与提取”；`docs/aso/value-prop.md` 核心卖点 1）。",
+          "输出可选 Markdown / 纯文本（`src/popup/popup.html` Output Format）。"
+        ]
+      },
+      {
+        "id": "02",
+        "titleZh": "网页表格一键转 CSV，粘贴即成表格",
+        "titleEn": "One-click web table to CSV (paste-ready)",
+        "assertions": [
+          "表格一键转换 CSV/Markdown（`README.md` “网页表格一键转换 (CSV & Markdown)”；`docs/aso/value-prop.md` 核心卖点 2）。",
+          "Table 输出格式可选 CSV/MD（`src/popup/popup.html` Table Output Format）。"
+        ]
+      },
+      {
+        "id": "03",
+        "titleZh": "Shift 追加模式：跨页面收集资料，一次性粘贴",
+        "titleEn": "Append Mode: collect across pages with Shift",
+        "assertions": [
+          "追加复制模式：按住 Shift 复制即可跨页面合并，并用分隔符整理（`README.md` “追加复制模式 (Append Mode)”；`docs/aso/value-prop.md` 差异化卖点 1）。",
+          "Popup 可开启 Append Mode（`src/popup/popup.html` Enable Append Mode）。"
+        ]
+      },
+      {
+        "id": "04",
+        "titleZh": "Prompt 模板：指令 + 内容一键拼好复制",
+        "titleEn": "Prompt templates: copy “instruction + content” in one step",
+        "assertions": [
+          "Prompt 管理器：创建/管理 Prompt 模板（`README.md` “私人 Prompt 管理器”；Options：`src/options/options.html` Prompts Tab）。",
+          "通过右键菜单/悬浮按钮使用 Prompt（`README.md` “使用右键菜单”；`manifest.json` 包含 `contextMenus` 权限）。"
+        ]
+      },
+      {
+        "id": "05",
+        "titleZh": "代码块悬停复制：保留缩进/空行，保守去噪",
+        "titleEn": "Hover-to-copy code blocks: keep indentation, conservative cleanup",
+        "assertions": [
+          "代码块专业级清理 + 悬停复制：保留缩进/空行；行号仅覆盖可识别结构；Copy 文案仅首/末端整行保守移除（不做行内替换）（`README.md`；`docs/aso/value-prop.md` 差异化卖点 2）。",
+          "Popup 可开启 Hover Trigger（`src/popup/popup.html` Enable Hover Trigger）。"
+        ]
+      },
+      {
+        "id": "06",
+        "titleZh": "Popup 一页设置：触发方式、输出格式、表格与附加信息",
+        "titleEn": "One popup to configure: mode, format, table, extras",
+        "assertions": [
+          "Popup 提供核心开关与格式配置（`src/popup/popup.html`）。",
+          "可选附加 Page title / Source URL（`src/popup/popup.html` Extra）。"
+        ]
+      },
+      {
+        "id": "07",
+        "titleZh": "隐私优先：默认本地处理；匿名使用数据可选且仅本地",
+        "titleEn": "Privacy-first: on-device by default, optional local-only logs",
+        "assertions": [
+          "隐私口径：本地处理、不上传复制内容；匿名使用数据默认关闭且仅本地记录（`docs/aso/value-prop.md`；`docs/privacy-policy.md`）。",
+          "Options -> 隐私与可观测性：匿名使用数据开关与本地日志面板（`src/options/options.html` Privacy Tab）。"
+        ]
+      }
+    ],
+    "releaseNotesTemplateSha256": "4de9cf37ed4cad839640528d8106d5a13604e85dddea05988da1ae4b7c1ca5a3"
+  },
+  "assertions": {
+    "hasProWaitlistCta": true,
+    "hasTutorialLinks": true,
+    "hasPrivacyClaims": true,
+    "noOverclaimKeywords": true
+  }
+}

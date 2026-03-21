@@ -111,6 +111,14 @@ import {
   buildCwsListingEvidencePackFromRepo,
   formatCwsListingEvidencePackFilename
 } from './build-cws-listing-evidence-pack.ts';
+import {
+  CWS_LISTING_DIFF_EVIDENCE_PACK_VERSION,
+  buildCwsListingDiffEvidencePackFromRepo,
+  computeCwsListingDiffRedlines,
+  formatCwsListingDiffEvidencePackFilename,
+  parseCwsListingEvidencePackFileNameFromIndexMarkdown,
+  resolveBaselineListingEvidencePackPathFromIndexFile
+} from './build-cws-listing-diff-evidence-pack.ts';
 
 const getMessage: I18nGetMessage = (key, substitutions) => {
   const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
@@ -2591,6 +2599,103 @@ async function run() {
     } finally {
       delete process.env[envKey];
     }
+  }
+
+  {
+    const exportedAt = new Date('2026-03-21T01:02:03.000Z');
+    const filename = formatCwsListingDiffEvidencePackFilename({ extensionVersion: '1.1.28', exportedAt });
+    assert.equal(filename, 'cws-listing-diff-evidence-pack-1.1.28-2026-03-21-010203.json');
+    assert.ok(filename.startsWith('cws-listing-diff-evidence-pack-'));
+    assert.ok(filename.endsWith('.json'));
+  }
+
+  {
+    const redlines1 = computeCwsListingDiffRedlines({
+      hasProWaitlistCta: false,
+      hasTutorialLinks: true,
+      hasPrivacyClaims: true,
+      noOverclaimKeywords: true
+    });
+    assert.deepEqual(redlines1, ['lostProWaitlistCta']);
+
+    const redlines2 = computeCwsListingDiffRedlines({
+      hasProWaitlistCta: true,
+      hasTutorialLinks: true,
+      hasPrivacyClaims: false,
+      noOverclaimKeywords: true
+    });
+    assert.deepEqual(redlines2, ['lostPrivacyClaims']);
+
+    const redlines3 = computeCwsListingDiffRedlines({
+      hasProWaitlistCta: true,
+      hasTutorialLinks: true,
+      hasPrivacyClaims: true,
+      noOverclaimKeywords: false
+    });
+    assert.deepEqual(redlines3, ['overclaimDetected']);
+
+    const redlines4 = computeCwsListingDiffRedlines({
+      hasProWaitlistCta: true,
+      hasTutorialLinks: true,
+      hasPrivacyClaims: true,
+      noOverclaimKeywords: true
+    });
+    assert.deepEqual(redlines4, []);
+  }
+
+  {
+    const indexMd = await fs.readFile(path.resolve(process.cwd(), 'docs/evidence/v1-66/index.md'), 'utf-8');
+    const fileName = parseCwsListingEvidencePackFileNameFromIndexMarkdown(indexMd);
+    assert.ok(fileName.startsWith('cws-listing-evidence-pack-'));
+    assert.ok(fileName.endsWith('.json'));
+
+    const baselinePackPath = await resolveBaselineListingEvidencePackPathFromIndexFile('docs/evidence/v1-66/index.md');
+    assert.equal(baselinePackPath, `docs/evidence/v1-66/${fileName}`);
+  }
+
+  {
+    const exportedAt = new Date('2026-03-21T00:00:00.000Z');
+    const baselinePackPath = await resolveBaselineListingEvidencePackPathFromIndexFile('docs/evidence/v1-66/index.md');
+
+    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'copylot-unit-test-v1-67-'));
+    const built1 = await buildCwsListingDiffEvidencePackFromRepo({
+      exportedAt,
+      baselinePackPath,
+      evidenceDir: tmpDir,
+      requireDistManifest: false
+    });
+
+    const pack = built1.diff.pack;
+    assert.equal(pack.packVersion, CWS_LISTING_DIFF_EVIDENCE_PACK_VERSION);
+    assert.equal(pack.exportedAt, exportedAt.toISOString());
+    assert.ok(pack.extensionVersion.length > 0);
+
+    assert.deepEqual(Object.keys(pack), ['packVersion', 'exportedAt', 'extensionVersion', 'baseline', 'current', 'diff', 'redlines']);
+    assert.deepEqual(Object.keys(pack.baseline), ['packPath', 'sha256', 'extensionVersion', 'exportedAt', 'assertions']);
+    assert.deepEqual(Object.keys(pack.current), ['packPath', 'sha256', 'extensionVersion', 'exportedAt', 'assertions']);
+    assert.deepEqual(Object.keys(pack.diff), ['keywords', 'descriptions', 'screenshotPlan', 'assertions']);
+    assert.deepEqual(Object.keys(pack.diff.keywords), ['enAdded', 'enRemoved', 'zhAdded', 'zhRemoved']);
+    assert.deepEqual(Object.keys(pack.diff.descriptions), ['enSha256From', 'enSha256To', 'zhSha256From', 'zhSha256To']);
+    assert.deepEqual(Object.keys(pack.diff.screenshotPlan), ['changedIds']);
+    assert.deepEqual(Object.keys(pack.diff.assertions), ['changedKeys']);
+
+    assert.equal(typeof pack.baseline.sha256, 'string');
+    assert.equal(pack.baseline.sha256.length, 64);
+    assert.equal(typeof pack.current.sha256, 'string');
+    assert.equal(pack.current.sha256.length, 64);
+
+    // 当前仓库素材下，红线应为 PASS（与 v1-66 断言保持一致）
+    assert.deepEqual(pack.redlines, []);
+
+    const built2 = await buildCwsListingDiffEvidencePackFromRepo({
+      exportedAt,
+      baselinePackPath,
+      evidenceDir: tmpDir,
+      requireDistManifest: false
+    });
+    assert.equal(built2.diff.json, built1.diff.json);
+    assert.equal(built2.current.json, built1.current.json);
+    assert.equal(built2.indexMarkdown, built1.indexMarkdown);
   }
 }
 

@@ -34,9 +34,11 @@
 - [x] 真实渠道跑数基线落盘（离线可推进）：用 v1-63 周度证据包跑 1 轮真实渠道跑数并落盘归档（v1-64）
 - [x] 真实渠道跑数持续化（离线可推进）：固化周度跑数归档规范 + 趋势索引一键生成 + 门禁/用例/简报闭环（v1-65）
 - [x] CWS Listing 物料证据包一键生成 + 门禁（离线可推进）：把“上架=获客入口”的关键资产（长描述/关键词/截图脚本/更新日志模板）固化为可一键生成、可审计、可复核、可复用的结构化证据包并落盘（`docs/evidence/v1-66/`）（v1-66）
+- [x] CWS Listing ASO 迭代证据化 v2（离线可推进）：基于 `docs/evidence/v1-66/` 的物料基线，新增「证据包 diff + 变更摘要」一键生成与门禁，让每次 Listing 迭代都可审计、可复核、可回归（`docs/evidence/v1-67/`）（v1-67）
 
 ## 当前进度
-- 一句话结论：截至 2026-03-21，v1-66 已完成「CWS Listing 物料证据包一键生成 + 门禁」可审计交付：证据目录 `docs/evidence/v1-66/` 已落盘（`cws-listing-evidence-pack-*.json` + `index.md`），输入文件 `sha256` 清单可追溯“物料基线”；关键断言 `hasProWaitlistCta/hasTutorialLinks/hasPrivacyClaims/noOverclaimKeywords` 均为 PASS；`bash scripts/test.sh` 回归 PASS（含可重复性校验）。
+- 一句话结论：截至 2026-03-21，v1-67 已完成「CWS Listing ASO diff 证据包 + 变更摘要 + 红线门禁」可审计交付：证据目录 `docs/evidence/v1-67/` 已落盘（`cws-listing-diff-evidence-pack-*.json` + `index.md` + current pack），baseline/current sha256 可互证复核；红线断言 `hasProWaitlistCta/hasPrivacyClaims/noOverclaimKeywords` 均为 PASS（`redlines=[]`）；`bash scripts/test.sh` 回归 PASS（含可重复性校验）。
+- 本轮最小可交付增量（已完成，v1-67，离线可推进，收入优先）：新增一键生成脚本 `scripts/build-cws-listing-diff-evidence-pack.ts`，默认从 `docs/evidence/v1-66/index.md` 自动解析 baseline pack，并基于仓库当前 `docs/` 即时生成 current pack（强制 `requireDistManifest=true` 防版本漂移）；输出 diff 证据包（关键词增删/描述指纹/截图计划变更/断言变化）与索引摘要，并在命中红线时以非 0 退出码阻断门禁；补齐单测门禁并接入 `bash scripts/test.sh`；补齐用例 `docs/test-cases/v1-67.md` 与简报 `docs/reports/v1-67-report.md`。
 - 本轮最小可交付增量（已完成，v1-66，离线可推进，收入优先）：新增一键生成脚本 `scripts/build-cws-listing-evidence-pack.ts`，把 CWS 长描述/关键词/截图脚本/更新日志模板固化为结构化证据包并落盘到 `docs/evidence/v1-66/`（含输入文件哈希清单 + 关键断言结果 + Top2 衔接说明）；补齐单测门禁（schema/安全红线/断言 PASS/可重复性）并接入 `bash scripts/test.sh`；补齐用例 `docs/test-cases/v1-66.md` 与简报 `docs/reports/v1-66-report.md`。
 - 下一步最小可交付增量（计划，Top1，收入优先，阻塞：需要可用代理/VPN + 商店可达）：完成一次真实 CWS 发布 + 商店端取证（按 `docs/evidence/v1-62/index.md` 与 `docs/test-cases/v1-45.md` 口径），并在发布证据中引用 v1-66 listing 证据包 `inputs.sha256` 复核“物料一致性/口径可追溯”。
 - 本轮最小可交付增量（v1-59，离线可推进，收入优先）已完成：把 v1-58 的合并口径（leads + distCopies + leadsPerDistCopy）变成可直接粘贴的周报 Markdown 资产，并补齐单测/用例/证据闭环，显著降低渠道复盘与审计摩擦。
@@ -62,11 +64,11 @@
 ## 下一步最重要的 3 件事（收入优先）
 1. 完成一次真实 CWS 发布 + 商店端取证（Top1，阻塞：需要可用代理/VPN + 商店可达）：在网络可达后执行 `npm run publish:cws -- --evidence-dir docs/evidence/v1-62/preflight/` 发布到 `default` channel，并落盘 `.publish.json` 证据包；发布成功后补齐商店端“版本号 + 发布时间 + Pro 候补 CTA 可见”截图索引（见 `docs/evidence/v1-62/index.md`），形成可审计的商业化推进证据（并引用 `docs/evidence/v1-66/` 的 `inputs.sha256` 复核物料一致性）。
 2. 发布后回归与 24h/7d 复盘证据补齐（Top2，收入优先）：真实发布后从商店安装/或以 `plugin-*.zip` 安装回归，导出并落盘「Pro 意向漏斗摘要/证据包」（v1-38/v1-42）与 “上架后 24h/7d 复盘模板”截图索引（v1-45），并继续按周归档 `docs/evidence/v1-65/` 趋势，确保“发布 -> 转化入口 -> 证据资产”闭环可复核。
-3. CWS Listing ASO 迭代节奏固化（Top3，离线可推进）：基于 `docs/evidence/v1-66/` 的基线对长描述/关键词/截图文案做小步迭代（不夸大、与实现一致），每次变更都重新生成证据包并做 diff，确保“物料变更点可追溯、可回归、可审计”。
+3. CWS Listing ASO 迭代节奏固化（Top3，离线可推进）：在每次对长描述/关键词/截图文案做小步迭代（不夸大、与实现一致）后，先生成基线 pack（v1-66），再生成 diff pack（v1-67），确保“物料变更点可追溯、红线不断档、可回归可审计”，为网络恢复后的真实发布与商店转化复盘提供可复核素材链路。
 
 ## 阻塞与需要的人类输入
 - v1-53 已完成且无账号/凭据/权限阻塞：campaign 为用户手动填写的渠道标识，已明确提示“不要填写敏感信息”，并保持匿名使用数据默认 OFF 的隐私边界。
-- 真实 CWS 发布 + 商店端取证仍受网络可达性阻塞（需要代理/VPN + 商店可达）；发布后回归取证依赖该网络环境；v1-66 已先离线交付「CWS Listing 物料证据包 + 门禁」（`docs/evidence/v1-66/`），确保网络恢复后可以“带基线”做真实发布与物料一致性复核。已优先交付离线可推进的 v1-50/v1-51（weekly digest + 7d 明细 CSV）+ v1-53（campaign 渠道归因）+ v1-54（按 campaign 聚合导出）+ v1-62（发布诊断证据包落盘）+ v1-63（周度渠道复盘证据包一键下载/落盘）+ v1-64（真实渠道跑数基线落盘）+ v1-65（真实渠道跑数持续化：趋势索引一键生成 + 门禁/用例闭环），保证收入取证资产不断档，网络恢复后可直接与真实商店跑数对齐。
+- 真实 CWS 发布 + 商店端取证仍受网络可达性阻塞（需要代理/VPN + 商店可达）；发布后回归取证依赖该网络环境；已先离线交付「CWS Listing 物料基线证据包 + 门禁」（v1-66，`docs/evidence/v1-66/`）与「ASO diff 证据包 + 变更摘要 + 红线门禁」（v1-67，`docs/evidence/v1-67/`），确保网络恢复后可以“带基线 + 带 diff”做真实发布、物料一致性复核与转化复盘。已优先交付离线可推进的 v1-50/v1-51（weekly digest + 7d 明细 CSV）+ v1-53（campaign 渠道归因）+ v1-54（按 campaign 聚合导出）+ v1-62（发布诊断证据包落盘）+ v1-63（周度渠道复盘证据包一键下载/落盘）+ v1-64（真实渠道跑数基线落盘）+ v1-65（真实渠道跑数持续化：趋势索引一键生成 + 门禁/用例闭环），保证收入取证资产不断档，网络恢复后可直接与真实商店跑数对齐。
 - v1-57 已完成且无账号/凭据/权限阻塞：已补齐「商店安装链接（UTM + campaign）/完整投放包（Markdown）一键复制/分发动作取证导出」，让渠道分发从“能复制”升级为“可获客 + 可量化 + 可复盘”的最小闭环证据资产。
 - v1-58 已完成且无账号/凭据/权限阻塞：已新增「按 campaign 合并导出 7d 获客效率（leads + distCopies + leadsPerDistCopy）」入口 `#export-pro-acquisition-efficiency-by-campaign-7d-csv`，可直接与 v1-54/v1-57 导出互证复算，降低复盘摩擦并固化可审计证据资产。
 - v1-59 已完成且无账号/凭据/权限阻塞：已新增「复制本周获客效率复盘摘要（Markdown，按 campaign）」入口 `#copy-pro-acquisition-efficiency-by-campaign-weekly-report`；匿名 OFF 不读取/不推断 events 且输出 OFF 提示 + Env；匿名 ON 仅基于本地匿名事件派生并生成表格/Insights；证据目录 `docs/evidence/v1-59/` 可审计复核。

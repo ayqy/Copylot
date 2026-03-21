@@ -37,6 +37,9 @@ v1-62 进展（已落盘，离线可审计）：
 v1-66 进展（已落盘，离线可审计）：
 - 已新增「CWS Listing 物料证据包」一键生成脚本 + 门禁：把上架/获客关键物料（长描述/关键词/截图脚本/更新日志模板）固化为结构化证据包并落盘到 `docs/evidence/v1-66/`，用于网络恢复后真实发布前的“物料一致性/口径可追溯”基线复核。
 
+v1-67 进展（已落盘，离线可审计）：
+- 已新增「CWS Listing ASO diff 证据包」一键生成脚本 + 门禁：基于 v1-66 基线 pack 自动解析 baseline，并即时生成 current pack，输出 diff 证据包（关键词增删/描述指纹/截图计划变更/断言变化）+ 变更摘要索引，并在命中红线（丢 Pro 候补 CTA/丢隐私口径/出现误导性宣称）时以非 0 退出码阻断门禁（见 `docs/evidence/v1-67/`）。
+
 需要的人类输入（持续阻塞：网络可达性）：
 - 提供可用的代理/VPN（确保可访问 `www.googleapis.com` 与 CWS API）；代理可为 `http/https/socks5/socks5h`，并给出包含 scheme 的代理地址/端口（例如 `http://127.0.0.1:7890` 或 `socks5h://127.0.0.1:1080`）。
 - 或在可直连 Google 的网络环境中执行 `npm run publish:cws` 完成发布，并按 `docs/test-cases/v1-45.md` / `docs/test-cases/v1-47.md` 生成商店端截图/索引取证。
