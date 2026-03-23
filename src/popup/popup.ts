@@ -29,7 +29,8 @@ import {
   type GrowthFunnelSummary
 } from '../shared/growth-stats';
 import { recordTelemetryEvent, sanitizeTelemetryEvents, TELEMETRY_EVENTS_KEY } from '../shared/telemetry';
-import { buildProWaitlistIssueUrl } from '../shared/monetization';
+import { buildProWaitlistUrl } from '../shared/external-links';
+import { buildProWaitlistCopyText } from '../shared/monetization';
 
 // DOM Elements
 interface PopupElements {
@@ -467,22 +468,27 @@ function setupEventListeners() {
 
   // Pro entry
   elements.upgradeProEntry.addEventListener('click', () => {
-    void recordTelemetryEvent('pro_entry_opened', { source: 'popup' });
+    const props: Record<string, string> = { source: 'popup' };
+    if (currentSettings?.proIntentCampaign) props.campaign = currentSettings.proIntentCampaign;
+    void recordTelemetryEvent('pro_entry_opened', props);
     const url = `${chrome.runtime.getURL('src/options/options.html')}#pro`;
     chrome.tabs.create({ url });
     window.close();
   });
 
   elements.popupProWaitlistButton.addEventListener('click', () => {
-    void recordTelemetryEvent('pro_waitlist_opened', { source: 'popup' });
-    const waitlistUrl = buildProWaitlistIssueUrl({
+    const props: Record<string, string> = { source: 'popup' };
+    if (currentSettings?.proIntentCampaign) props.campaign = currentSettings.proIntentCampaign;
+    void recordTelemetryEvent('pro_waitlist_opened', props);
+    const waitlistUrl = buildProWaitlistUrl({
+      medium: 'popup',
+      campaign: currentSettings?.proIntentCampaign,
       env: {
         extensionVersion: chrome.runtime.getManifest().version || '',
         extensionId: chrome.runtime.id,
         navigatorLanguage: navigator.language || '',
         uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
-      },
-      getMessage
+      }
     });
     chrome.tabs.create({ url: waitlistUrl });
     window.close();
@@ -491,18 +497,20 @@ function setupEventListeners() {
   elements.popupProWaitlistCopyButton.addEventListener('click', async () => {
     const originalText = elements.popupProWaitlistCopyButton.textContent || '';
     try {
-      const waitlistUrl = buildProWaitlistIssueUrl({
+      const body = buildProWaitlistCopyText({
         env: {
           extensionVersion: chrome.runtime.getManifest().version || '',
           extensionId: chrome.runtime.id,
           navigatorLanguage: navigator.language || '',
           uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
         },
+        campaign: currentSettings?.proIntentCampaign,
         getMessage
       });
-      const body = new URL(waitlistUrl).searchParams.get('body') || '';
       await navigator.clipboard.writeText(body);
-      void recordTelemetryEvent('pro_waitlist_copied', { source: 'popup' });
+      const props: Record<string, string> = { source: 'popup' };
+      if (currentSettings?.proIntentCampaign) props.campaign = currentSettings.proIntentCampaign;
+      void recordTelemetryEvent('pro_waitlist_copied', props);
       elements.popupProWaitlistCopyButton.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
         elements.popupProWaitlistCopyButton.textContent =

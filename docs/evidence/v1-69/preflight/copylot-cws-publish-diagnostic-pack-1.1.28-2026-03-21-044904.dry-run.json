@@ -1,0 +1,105 @@
+{
+  "packVersion": "v1-62",
+  "exportedAt": "2026-03-21T04:49:04.905Z",
+  "dryRun": true,
+  "extensionVersion": "1.1.28",
+  "zip": {
+    "fileName": "plugin-1.1.28.zip",
+    "filePath": "plugin-1.1.28.zip",
+    "bytes": 115027,
+    "sha256": "8a73bbd025c70f1e2b9013c4cfa0468f148f20a4ced7fae6d53f05364aa19aab"
+  },
+  "proxyDiagnostic": {
+    "diagnosticVersion": "v1-47",
+    "proxy": {
+      "enabled": false,
+      "envKey": null,
+      "urlMasked": null,
+      "noProxy": {
+        "envKey": null,
+        "value": "localhost,127.0.0.1,::1"
+      },
+      "precedence": [
+        "CWS_PROXY",
+        "HTTPS_PROXY",
+        "https_proxy",
+        "HTTP_PROXY",
+        "http_proxy",
+        "ALL_PROXY",
+        "all_proxy"
+      ],
+      "schemeRequired": true
+    },
+    "runtime": {
+      "node": "v23.6.1"
+    },
+    "script": {
+      "entry": "scripts/chrome-webstore.ts",
+      "gitCommit": "b07f3f4",
+      "packageVersion": "1.1.0",
+      "extensionVersion": "1.1.28"
+    },
+    "fetch": {
+      "globalFetch": true,
+      "dispatcher": "undici.default"
+    }
+  },
+  "preflightReport": {
+    "reportVersion": "v1-47",
+    "generatedAt": "2026-03-21T04:49:28.506Z",
+    "timeoutMs": 8000,
+    "checks": [
+      {
+        "id": "googleapis",
+        "url": "https://www.googleapis.com/discovery/v1/apis",
+        "hostname": "www.googleapis.com",
+        "method": "GET",
+        "ok": false,
+        "status": null,
+        "failureType": "dns",
+        "errorCode": "ENOTFOUND",
+        "errorMessage": "getaddrinfo ENOTFOUND www.googleapis.com",
+        "elapsedMs": 30
+      },
+      {
+        "id": "chromewebstore-googleapis-host",
+        "url": "https://chromewebstore.googleapis.com/",
+        "hostname": "chromewebstore.googleapis.com",
+        "method": "GET",
+        "ok": false,
+        "status": null,
+        "failureType": "dns",
+        "errorCode": "ENOTFOUND",
+        "errorMessage": "getaddrinfo ENOTFOUND chromewebstore.googleapis.com",
+        "elapsedMs": 2
+      }
+    ],
+    "summary": {
+      "total": 2,
+      "pass": 0,
+      "fail": 2
+    }
+  },
+  "preflightFixHints": [
+    "当前未启用代理：请设置 CWS_PROXY 或 HTTPS_PROXY（支持 http/https/socks5/socks5h）。",
+    "示例：export HTTPS_PROXY=http://127.0.0.1:7890",
+    "示例：export HTTPS_PROXY=socks5://127.0.0.1:1080",
+    "示例：export HTTPS_PROXY=socks5h://127.0.0.1:1080  # 远程 DNS（推荐排查 DNS 失败）",
+    "建议：export NO_PROXY=localhost,127.0.0.1,::1",
+    "观测到 DNS 失败：通常表示直连 DNS 不可用/被污染或代理未生效。请检查代理是否生效或切换 socks5h://。",
+    "提示：可先执行 `npm run publish:cws -- --dry-run` 获取完整诊断块与预检报告，再粘贴到 Issue 排障。"
+  ],
+  "credentials": {
+    "extensionId": true,
+    "clientId": true,
+    "clientSecret": true,
+    "refreshToken": true
+  },
+  "publishAttempt": {
+    "uploaded": false,
+    "published": false,
+    "channel": "default",
+    "errorCode": "skipped",
+    "errorMessage": "dry-run: upload/publish skipped"
+  }
+}

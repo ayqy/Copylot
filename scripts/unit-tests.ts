@@ -16,6 +16,11 @@ import {
   type I18nGetMessage
 } from '../src/shared/word-of-mouth.ts';
 import {
+  buildChromeWebStoreUrl,
+  buildOfficialSiteUrl,
+  buildProWaitlistUrl
+} from '../src/shared/external-links.ts';
+import {
   RATING_PROMPT_MIN_INSTALL_AGE_MS,
   RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
   PRO_PROMPT_MAX_SHOWN_COUNT,
@@ -37,9 +42,7 @@ import {
 } from '../src/shared/telemetry.ts';
 import { sanitizeCampaign } from '../src/shared/campaign.ts';
 import {
-  buildProWaitlistDistributionIssueUrl,
   buildProWaitlistRecruitCopyText,
-  buildProStoreUrl,
   buildProDistributionPackMarkdown,
   computeProWaitlistDistributionState
 } from '../src/shared/pro-waitlist-distribution.ts';
@@ -135,7 +138,7 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
     return `recruit url=${subs[0]} campaign=${subs[1]}`;
   }
   if (key === 'proDistributionPackTemplate') {
-    return `- campaign: ${subs[0]}\n${subs[1]}\n${subs[2]}\n${subs[3]}`;
+    return `- campaign: ${subs[0]}\n${subs[1]}\n${subs[2]}\n${subs[3]}\n${subs[4]}`;
   }
   if (key === 'shareCopyTextTemplate') {
     return `share ${subs[0]}`;
@@ -172,23 +175,26 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
 
 async function run() {
   const extensionId = 'abcdefghijklmnopabcdefghijklmnop';
+  const publishedExtensionId = 'ehfglnbhoefcdedpkcdnainiifpflbic';
 
   const storeUrl = buildChromeWebStoreDetailUrl(extensionId);
   const storeParsed = new URL(storeUrl);
-  assert.equal(storeParsed.hostname, 'chrome.google.com');
-  assert.ok(storeParsed.pathname.endsWith(`/webstore/detail/${extensionId}`));
+  assert.equal(storeParsed.hostname, 'chromewebstore.google.com');
+  assert.ok(storeParsed.pathname.endsWith(`/${publishedExtensionId}`));
   assert.equal(storeParsed.searchParams.get('utm_source'), 'copylot-ext');
   assert.equal(storeParsed.searchParams.get('utm_medium'), 'popup');
   assert.equal(storeParsed.searchParams.get('utm_campaign'), 'v1-44');
 
   const storeUrlOptions = buildChromeWebStoreDetailUrl(extensionId, buildWomUtmParams('options'));
   const storeOptionsParsed = new URL(storeUrlOptions);
+  assert.equal(storeOptionsParsed.hostname, 'chromewebstore.google.com');
   assert.equal(storeOptionsParsed.searchParams.get('utm_source'), 'copylot-ext');
   assert.equal(storeOptionsParsed.searchParams.get('utm_medium'), 'options');
   assert.equal(storeOptionsParsed.searchParams.get('utm_campaign'), 'v1-44');
 
   const storeUrlRatingPrompt = buildChromeWebStoreDetailUrl(extensionId, buildWomUtmParams('rating_prompt'));
   const storeRatingPromptParsed = new URL(storeUrlRatingPrompt);
+  assert.equal(storeRatingPromptParsed.hostname, 'chromewebstore.google.com');
   assert.equal(storeRatingPromptParsed.searchParams.get('utm_medium'), 'rating_prompt');
   assert.equal(storeRatingPromptParsed.searchParams.get('utm_campaign'), 'v1-44');
 
@@ -549,44 +555,62 @@ async function run() {
   assert.equal(sanitizeCampaign('_abc'), null);
   assert.equal(sanitizeCampaign('小红书'), null);
 
+  // external-links.ts (pure functions)
+  const officialSiteUrl = buildOfficialSiteUrl({ medium: 'popup' });
+  const officialSiteParsed = new URL(officialSiteUrl);
+  assert.equal(officialSiteParsed.origin, 'https://copy.useai.online');
+  assert.equal(officialSiteParsed.pathname, '/');
+  assert.equal(officialSiteParsed.hash, '');
+  assert.equal(officialSiteParsed.searchParams.get('utm_source'), 'copylot-ext');
+  assert.equal(officialSiteParsed.searchParams.get('utm_medium'), 'popup');
+  assert.equal(officialSiteParsed.searchParams.get('utm_campaign'), null);
+
+  const officialSiteUrlWithCampaign = buildOfficialSiteUrl({ medium: 'options', campaign: 'twitter' });
+  const officialSiteCampaignParsed = new URL(officialSiteUrlWithCampaign);
+  assert.equal(officialSiteCampaignParsed.searchParams.get('utm_campaign'), 'twitter');
+
+  const proWaitlistUrl = buildProWaitlistUrl({
+    medium: 'popup',
+    campaign: 'twitter',
+    env: {
+      extensionVersion: '1.1.0',
+      extensionId,
+      navigatorLanguage: 'en-US',
+      uiLanguage: 'en',
+      pageUrl: 'https://evil.example.com',
+      title: 'secret-title',
+      copiedText: 'secret-copy'
+    }
+  });
+  const proWaitlistParsed = new URL(proWaitlistUrl);
+  assert.equal(proWaitlistParsed.origin, 'https://copy.useai.online');
+  assert.equal(proWaitlistParsed.hash, '#pro');
+  assert.equal(proWaitlistParsed.searchParams.get('utm_source'), 'copylot-ext');
+  assert.equal(proWaitlistParsed.searchParams.get('utm_medium'), 'popup');
+  assert.equal(proWaitlistParsed.searchParams.get('utm_campaign'), 'twitter');
+  assert.equal(proWaitlistParsed.searchParams.get('ext_version'), '1.1.0');
+  assert.equal(proWaitlistParsed.searchParams.get('ext_id'), extensionId);
+  assert.equal(proWaitlistParsed.searchParams.get('nav_lang'), 'en-US');
+  assert.equal(proWaitlistParsed.searchParams.get('ui_lang'), 'en');
+  assert.equal(proWaitlistParsed.searchParams.get('pageUrl'), null);
+  assert.equal(proWaitlistParsed.searchParams.get('title'), null);
+  assert.equal(proWaitlistParsed.searchParams.get('copiedText'), null);
+  assert.ok(!proWaitlistUrl.includes('evil.example.com'));
+  assert.ok(!proWaitlistUrl.includes('secret-title'));
+  assert.ok(!proWaitlistUrl.includes('secret-copy'));
+
+  const chromeWebStoreUrl = buildChromeWebStoreUrl({ medium: 'distribution_toolkit', campaign: 'twitter' });
+  const chromeWebStoreParsed = new URL(chromeWebStoreUrl);
+  assert.equal(chromeWebStoreParsed.hostname, 'chromewebstore.google.com');
+  assert.ok(chromeWebStoreParsed.pathname.endsWith(`/${publishedExtensionId}`));
+  assert.equal(chromeWebStoreParsed.searchParams.get('utm_source'), 'copylot-ext');
+  assert.equal(chromeWebStoreParsed.searchParams.get('utm_medium'), 'distribution_toolkit');
+  assert.equal(chromeWebStoreParsed.searchParams.get('utm_campaign'), 'twitter');
+
   // pro-waitlist-distribution.ts (pure functions)
   assert.deepEqual(computeProWaitlistDistributionState(''), { enabled: false, campaign: null });
   assert.deepEqual(computeProWaitlistDistributionState('http://x.com'), { enabled: false, campaign: null });
   assert.deepEqual(computeProWaitlistDistributionState('twitter'), { enabled: true, campaign: 'twitter' });
-
-  const waitlistUrl = buildProWaitlistDistributionIssueUrl({
-    env: {
-      extensionVersion: '1.1.0',
-      extensionId,
-      navigatorLanguage: 'en-US',
-      uiLanguage: 'en'
-    },
-    getMessage,
-    campaign: 'twitter'
-  });
-  const waitlistParsed = new URL(waitlistUrl);
-  assert.equal(waitlistParsed.hostname, 'github.com');
-  assert.ok(waitlistParsed.pathname.endsWith('/issues/new'));
-  assert.equal(waitlistParsed.searchParams.get('title'), 'pro title');
-  assert.ok((waitlistParsed.searchParams.get('body') || '').includes('campaign: twitter'));
-
-  const getMessageNoCampaign: I18nGetMessage = (key, substitutions) => {
-    const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
-    if (key === 'proWaitlistIssueTitleTemplate') return 'pro title';
-    if (key === 'proWaitlistIssueBodyTemplate') return `v=${subs[0]} id=${subs[1]} nav=${subs[2]} ui=${subs[3]}`;
-    return key;
-  };
-  const waitlistUrlNoCampaign = buildProWaitlistDistributionIssueUrl({
-    env: {
-      extensionVersion: '1.1.0',
-      extensionId,
-      navigatorLanguage: 'en-US',
-      uiLanguage: 'en'
-    },
-    getMessage: getMessageNoCampaign,
-    campaign: 'ph'
-  });
-  assert.ok((new URL(waitlistUrlNoCampaign).searchParams.get('body') || '').includes('campaign: ph'));
 
   const recruitCopyText = buildProWaitlistRecruitCopyText({
     getMessage,
@@ -596,23 +620,16 @@ async function run() {
   assert.ok(recruitCopyText.includes('https://example.com/waitlist'));
   assert.ok(recruitCopyText.includes('twitter'));
 
-  const distStoreUrl = buildProStoreUrl({ extensionId, campaign: 'twitter' });
-  const distStoreParsed = new URL(distStoreUrl);
-  assert.equal(distStoreParsed.hostname, 'chrome.google.com');
-  assert.ok(distStoreParsed.pathname.endsWith(`/webstore/detail/${extensionId}`));
-  assert.equal(distStoreParsed.searchParams.get('utm_source'), 'copylot-ext');
-  assert.equal(distStoreParsed.searchParams.get('utm_medium'), 'distribution_toolkit');
-  assert.equal(distStoreParsed.searchParams.get('utm_campaign'), 'twitter');
-
   const distributionPack = buildProDistributionPackMarkdown({
     getMessage,
     campaign: 'twitter',
-    storeUrl: distStoreUrl,
+    officialSiteUrl: 'https://example.com',
+    storeUrl: chromeWebStoreUrl,
     waitlistUrl: 'https://example.com/waitlist',
     recruitCopy: recruitCopyText
   });
   assert.ok(distributionPack.includes('- campaign: twitter'));
-  assert.ok(distributionPack.includes(distStoreUrl));
+  assert.ok(distributionPack.includes(chromeWebStoreUrl));
   assert.ok(distributionPack.includes('https://example.com/waitlist'));
   assert.ok(distributionPack.includes(recruitCopyText));
 

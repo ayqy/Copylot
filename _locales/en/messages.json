@@ -345,20 +345,23 @@
     "description": "Options Pro tab: distribution toolkit - copy distribution pack button"
   },
   "proDistributionPackTemplate": {
-    "message": "# Copylot Distribution Pack (Auditable)\\n\\n- campaign: $CAMPAIGN$\\n\\n## 1) Chrome Web Store URL (UTM + campaign)\\n$STORE_URL$\\n\\n## 2) Waitlist URL (with campaign)\\n$WAITLIST_URL$\\n\\n## 3) Recruit Copy (ready to share)\\n\\n```text\\n$RECRUIT_COPY$\\n```\\n\\n## 4) Optional: Survey Guide\\n- If you'd like to help us shape Pro: after installing, open Copylot -> Options -> Pro, click \\\"Copy survey (with env info)\\\" and send it to us (no webpage or private content needed).\\n\\n---\\n\\nPrivacy: This pack contains no webpage content, copied content, current page URL, or title. Only fixed template + campaign + store/waitlist links.\\n",
+    "message": "# Copylot Distribution Pack (Auditable)\\n\\n- campaign: $CAMPAIGN$\\n\\n## 1) Official Site URL (UTM + campaign)\\n$OFFICIAL_SITE_URL$\\n\\n## 2) Chrome Web Store URL (UTM + campaign)\\n$STORE_URL$\\n\\n## 3) Pro Waitlist URL (UTM + campaign)\\n$WAITLIST_URL$\\n\\n## 4) Recruit Copy (ready to share)\\n\\n```text\\n$RECRUIT_COPY$\\n```\\n\\n## 5) Optional: Survey Guide\\n- If you'd like to help us shape Pro: after installing, open Copylot -> Options -> Pro, click \\\"Copy survey (with env info)\\\" and send it to us (no webpage or private content needed).\\n\\n---\\n\\nPrivacy: This pack contains no webpage content, copied content, current page URL, or title. Only fixed template + campaign + official/store/waitlist links.\\n",
     "description": "Options Pro tab: distribution toolkit - distribution pack markdown template",
     "placeholders": {
       "CAMPAIGN": {
         "content": "$1"
       },
-      "STORE_URL": {
+      "OFFICIAL_SITE_URL": {
         "content": "$2"
       },
-      "WAITLIST_URL": {
+      "STORE_URL": {
         "content": "$3"
       },
-      "RECRUIT_COPY": {
+      "WAITLIST_URL": {
         "content": "$4"
+      },
+      "RECRUIT_COPY": {
+        "content": "$5"
       }
     }
   },
@@ -379,7 +382,7 @@
     }
   },
   "proPrivacyHint": {
-    "message": "The waitlist issue is prefilled with extension version/ID and language only. No webpage or copied content is included.",
+    "message": "The waitlist link contains extension version/ID and language only. No webpage or copied content is included.",
     "description": "Options Pro tab privacy hint"
   },
   "proWaitlistSurveyTitle": {

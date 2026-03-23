@@ -30,11 +30,10 @@ import {
   buildFeedbackSettingsSnapshot,
   buildShareCopyText
 } from '../shared/word-of-mouth';
-import { buildProWaitlistIssueUrl } from '../shared/monetization';
+import { buildProWaitlistCopyText } from '../shared/monetization';
+import { buildChromeWebStoreUrl, buildOfficialSiteUrl, buildProWaitlistUrl } from '../shared/external-links';
 import {
-  buildProWaitlistDistributionIssueUrl,
   buildProWaitlistRecruitCopyText,
-  buildProStoreUrl,
   buildProDistributionPackMarkdown,
   computeProWaitlistDistributionState
 } from '../shared/pro-waitlist-distribution';
@@ -2862,28 +2861,28 @@ function setupEventListeners() {
 
   function buildWaitlistUrl(): string {
     const campaign = getProIntentCampaign();
-    return buildProWaitlistIssueUrl({
+    return buildProWaitlistUrl({
+      medium: 'options',
+      campaign,
       env: {
         extensionVersion: chrome.runtime.getManifest().version || '',
         extensionId: chrome.runtime.id,
         navigatorLanguage: navigator.language || '',
         uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
-      },
-      campaign,
-      getMessage
+      }
     });
   }
 
   function buildWaitlistDistributionUrl(campaign: string): string {
-    return buildProWaitlistDistributionIssueUrl({
+    return buildProWaitlistUrl({
+      medium: 'distribution_toolkit',
+      campaign,
       env: {
         extensionVersion: chrome.runtime.getManifest().version || '',
         extensionId: chrome.runtime.id,
         navigatorLanguage: navigator.language || '',
         uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
-      },
-      campaign,
-      getMessage
+      }
     });
   }
 
@@ -2893,14 +2892,22 @@ function setupEventListeners() {
   }
 
   function buildProStoreUrlForDistributionToolkit(campaign: string): string {
-    return buildProStoreUrl({ extensionId: chrome.runtime.id, campaign });
+    return buildChromeWebStoreUrl({ medium: 'distribution_toolkit', campaign });
   }
 
   function buildProDistributionPackForDistributionToolkit(campaign: string): string {
+    const officialSiteUrl = buildOfficialSiteUrl({ medium: 'distribution_toolkit', campaign });
     const storeUrl = buildProStoreUrlForDistributionToolkit(campaign);
     const waitlistUrl = buildWaitlistDistributionUrl(campaign);
     const recruitCopy = buildProWaitlistRecruitCopyText({ getMessage, waitlistUrl, campaign });
-    return buildProDistributionPackMarkdown({ getMessage, campaign, storeUrl, waitlistUrl, recruitCopy });
+    return buildProDistributionPackMarkdown({
+      getMessage,
+      campaign,
+      officialSiteUrl,
+      storeUrl,
+      waitlistUrl,
+      recruitCopy
+    });
   }
 
   function buildWaitlistSurveyBody(): string {
@@ -3243,8 +3250,16 @@ function setupEventListeners() {
     const props: Record<string, string> = { source: 'options' };
     if (campaign) props.campaign = campaign;
     try {
-      const url = buildWaitlistUrl();
-      const body = new URL(url).searchParams.get('body') || '';
+      const body = buildProWaitlistCopyText({
+        env: {
+          extensionVersion: chrome.runtime.getManifest().version || '',
+          extensionId: chrome.runtime.id,
+          navigatorLanguage: navigator.language || '',
+          uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
+        },
+        getMessage,
+        campaign
+      });
       await navigator.clipboard.writeText(body);
       void recordTelemetryEvent('pro_waitlist_copied', props);
       elements.proWaitlistCopyButton.textContent = getMessage('copied') || originalText;

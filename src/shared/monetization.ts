@@ -23,6 +23,27 @@ export interface BuildProWaitlistIssueParams {
   campaign?: unknown;
 }
 
+export interface BuildProWaitlistCopyTextParams {
+  env: ProWaitlistEnvironmentInfo;
+  getMessage: I18nGetMessage;
+  campaign?: unknown;
+}
+
+/**
+ * 低摩擦留资备选：复制候补文案（不依赖联网/账号）。
+ * 注意：该文案来自 i18n 模板，与“打开官网候补落地页”并行存在。
+ */
+export function buildProWaitlistCopyText(params: BuildProWaitlistCopyTextParams): string {
+  const campaignLine = formatCampaignLineForTemplate(params.campaign);
+  return safeGetMessage(params.getMessage, 'proWaitlistIssueBodyTemplate', [
+    params.env.extensionVersion,
+    params.env.extensionId,
+    params.env.navigatorLanguage,
+    params.env.uiLanguage,
+    campaignLine
+  ]);
+}
+
 export function buildProWaitlistIssueUrl(params: BuildProWaitlistIssueParams): string {
   const githubNewIssueUrl = params.githubNewIssueUrl || DEFAULT_PRO_WAITLIST_GITHUB_NEW_ISSUE_URL;
 
