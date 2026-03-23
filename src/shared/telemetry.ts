@@ -44,7 +44,19 @@ const TELEMETRY_EVENT_PROP_ALLOWLIST: Record<TelemetryEventName, readonly string
   pro_entry_opened: ['source', 'campaign'],
   pro_waitlist_opened: ['source', 'campaign'],
   pro_waitlist_copied: ['source', 'campaign'],
-  pro_waitlist_survey_copied: ['source', 'campaign'],
+  pro_waitlist_survey_copied: [
+    'source',
+    'campaign',
+    'pay_willing',
+    'pay_monthly',
+    'pay_annual',
+    'cap_advanced_cleaning',
+    'cap_batch_collection',
+    'cap_prompt_pack',
+    'cap_note_export',
+    'has_other_capability',
+    'has_contact'
+  ],
   pro_distribution_asset_copied: ['source', 'campaign', 'action'],
   onboarding_shown: ['source'],
   onboarding_completed: ['source', 'action'],
@@ -118,6 +130,38 @@ type ProDistributionAssetCopiedAction = 'waitlist_url' | 'recruit_copy' | 'store
 
 function isProDistributionAssetCopiedAction(value: unknown): value is ProDistributionAssetCopiedAction {
   return value === 'waitlist_url' || value === 'recruit_copy' || value === 'store_url' || value === 'distribution_pack';
+}
+
+type ProWaitlistSurveyPayWilling = 'yes' | 'maybe' | 'no' | 'unknown';
+
+function isProWaitlistSurveyPayWilling(value: unknown): value is ProWaitlistSurveyPayWilling {
+  return value === 'yes' || value === 'maybe' || value === 'no' || value === 'unknown';
+}
+
+type ProWaitlistSurveyPayMonthly = 'lt_5' | '5_10' | '10_20' | '20_50' | '50_plus' | 'unknown';
+
+function isProWaitlistSurveyPayMonthly(value: unknown): value is ProWaitlistSurveyPayMonthly {
+  return (
+    value === 'lt_5' ||
+    value === '5_10' ||
+    value === '10_20' ||
+    value === '20_50' ||
+    value === '50_plus' ||
+    value === 'unknown'
+  );
+}
+
+type ProWaitlistSurveyPayAnnual = 'lt_50' | '50_100' | '100_200' | '200_500' | '500_plus' | 'unknown';
+
+function isProWaitlistSurveyPayAnnual(value: unknown): value is ProWaitlistSurveyPayAnnual {
+  return (
+    value === 'lt_50' ||
+    value === '50_100' ||
+    value === '100_200' ||
+    value === '200_500' ||
+    value === '500_plus' ||
+    value === 'unknown'
+  );
 }
 
 function isWomEventName(name: TelemetryEventName): boolean {
@@ -217,6 +261,37 @@ function sanitizeProps(
         continue;
       }
     }
+
+    if (eventName === 'pro_waitlist_survey_copied') {
+      if (key === 'pay_willing') {
+        if (!isProWaitlistSurveyPayWilling(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
+      if (key === 'pay_monthly') {
+        if (!isProWaitlistSurveyPayMonthly(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
+      if (key === 'pay_annual') {
+        if (!isProWaitlistSurveyPayAnnual(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
+      if (
+        key === 'cap_advanced_cleaning' ||
+        key === 'cap_batch_collection' ||
+        key === 'cap_prompt_pack' ||
+        key === 'cap_note_export' ||
+        key === 'has_other_capability' ||
+        key === 'has_contact'
+      ) {
+        if (typeof value !== 'boolean') continue;
+        sanitized[key] = value;
+        continue;
+      }
+    }
+
     if (!isAllowedPropValue(value)) continue;
     sanitized[key] = value;
   }

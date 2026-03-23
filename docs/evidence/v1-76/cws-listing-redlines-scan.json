@@ -1,0 +1,59 @@
+{
+  "policy": {
+    "path": "docs/publish/cws-listing-redlines-policy.md",
+    "sha256": "dacea615d63a76dc5f6fa3313770217bfe23329c5d6b7d1e6315591221ee7745"
+  },
+  "inputs": [
+    {
+      "path": "docs/ChromeWebStore-Description-EN.md",
+      "bytes": 3335,
+      "sha256": "0e5ba6e42d46070e59f50a7f6345c6d7fbdb55c399704348b99664f33cbafdc5"
+    },
+    {
+      "path": "docs/ChromeWebStore-Description-ZH.md",
+      "bytes": 3193,
+      "sha256": "29bf693c36657f4893337b6bddf1a2f9cde41a157aa1dafe2a5367ae08e320ab"
+    },
+    {
+      "path": "docs/aso/keywords.md",
+      "bytes": 1917,
+      "sha256": "76ec62d6759bfb012054d1e4e62491b5690ff2ecf3d95ffa8b1ed6a204490227"
+    }
+  ],
+  "hits": [
+    {
+      "file": "docs/ChromeWebStore-Description-EN.md",
+      "line": 33,
+      "term": "payment",
+      "rule": "desc_allowed_negation_disclaimer",
+      "result": "allowed"
+    },
+    {
+      "file": "docs/ChromeWebStore-Description-EN.md",
+      "line": 33,
+      "term": "subscription",
+      "rule": "desc_allowed_negation_disclaimer",
+      "result": "allowed"
+    },
+    {
+      "file": "docs/ChromeWebStore-Description-ZH.md",
+      "line": 33,
+      "term": "付费",
+      "rule": "desc_allowed_negation_disclaimer",
+      "result": "allowed"
+    },
+    {
+      "file": "docs/ChromeWebStore-Description-ZH.md",
+      "line": 33,
+      "term": "订阅",
+      "rule": "desc_allowed_negation_disclaimer",
+      "result": "allowed"
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "allowed": 4,
+    "blocked": 0,
+    "result": "PASS"
+  }
+}

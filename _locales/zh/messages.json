@@ -212,6 +212,10 @@
     "message": "加入候补名单",
     "description": "Popup Pro 候补入口"
   },
+  "popupProWaitlistSurvey": {
+    "message": "Pro 问卷（1 分钟）",
+    "description": "Popup Pro 意向问卷入口"
+  },
   "proPromptTitle": {
     "message": "Pro 候补（可选）",
     "description": "Popup 内低打扰 Pro 候补提示标题"
@@ -1123,6 +1127,22 @@
   "proFunnelEvidencePackCopy": {
     "message": "复制证据包",
     "description": "Pro 漏斗证据包复制按钮"
+  },
+  "proWaitlistSurveyIntentDistribution7dExport": {
+    "message": "导出问卷意向分布（过去 7 天，JSON）",
+    "description": "隐私页导出过去 7 天问卷意向分布 JSON 按钮"
+  },
+  "proWaitlistSurveyIntentDistribution7dExportSuccess": {
+    "message": "JSON 已导出（survey_intent=$1）",
+    "description": "问卷意向分布 JSON 导出成功提示（$1=survey_intent 计数）"
+  },
+  "proWaitlistSurveyIntentDistribution7dExportFailed": {
+    "message": "导出失败",
+    "description": "问卷意向分布 JSON 导出失败提示"
+  },
+  "proWaitlistSurveyIntentDistribution7dExportTelemetryOff": {
+    "message": "未开启，不记录/不导出",
+    "description": "匿名开关 OFF 时导出问卷意向分布提示"
   },
   "proIntentEvents7dCsvExport": {
     "message": "导出过去 7 天 Pro 意向明细（CSV）",

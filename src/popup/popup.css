@@ -863,6 +863,10 @@ input:checked + .slider:before {
   padding-bottom: 12px;
 }
 
+.pro-entry-row.pro-entry-row-survey .pro-entry-button {
+  height: 34px;
+}
+
 .pro-entry-button {
   flex: 1;
   height: 30px;

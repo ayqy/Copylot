@@ -1,6 +1,6 @@
-Copy-pasting from the web is messy: ads, navigation, broken tables, and code blocks full of noise.
+Copy-pasting from the web is messy: ads, navigation, broken tables, and noisy code blocks.
 
-Copylot turns web content into clean, structured text (Markdown / plain text / CSV) in seconds — ready for AI chats, docs, and notes.
+Copylot is a privacy-first web-to-text copier: copy blocks to clean Markdown or plain text, convert tables to CSV, and clean code blocks — ready for AI chats, docs, and notes.
 Privacy-first and on-device: extraction/cleanup runs locally, and we do not collect or upload what you copy.
 
 QUICK START (30 seconds)

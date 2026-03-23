@@ -40,6 +40,10 @@ import {
   sanitizeTelemetryEvents,
   trimTelemetryEvents
 } from '../src/shared/telemetry.ts';
+import {
+  consumeProWaitlistSurveySourceOnce,
+  parseProWaitlistSurveySourceOnceFromUrl
+} from '../src/shared/pro-waitlist-survey-source-once.ts';
 import { sanitizeCampaign } from '../src/shared/campaign.ts';
 import {
   buildProWaitlistRecruitCopyText,
@@ -56,6 +60,7 @@ import {
   buildProIntentEventsCsv,
   formatProIntentEvents7dCsvFilename
 } from '../src/shared/pro-intent-events-csv.ts';
+import { buildProWaitlistSurveyIntentDistribution } from '../src/shared/pro-waitlist-survey-intent-distribution.ts';
 import {
   PRO_INTENT_BY_CAMPAIGN_CSV_COLUMNS,
   buildProIntentByCampaignCsv,
@@ -107,6 +112,11 @@ import {
   computeFileSha256,
   formatCwsPublishEvidencePackFilename
 } from './cws-publish-evidence-pack.ts';
+import {
+  DEFAULT_PRO_INTENT_DECISION_THRESHOLDS,
+  buildProIntentDecisionPackSummary,
+  formatProIntentDecisionPackMarkdown
+} from './build-pro-intent-decision-pack.ts';
 import { buildWeeklyChannelOpsTrend } from './build-weekly-channel-ops-trend.ts';
 import {
   CWS_LISTING_EVIDENCE_PACK_VERSION,
@@ -122,6 +132,11 @@ import {
   parseCwsListingEvidencePackFileNameFromIndexMarkdown,
   resolveBaselineListingEvidencePackPathFromIndexFile
 } from './build-cws-listing-diff-evidence-pack.ts';
+import {
+  DEFAULT_CWS_LISTING_REDLINES_POLICY_PATH,
+  parseCwsListingRedlinesPolicyFromMarkdown,
+  scanCwsListingRedlinesFromText
+} from './scan-cws-listing-redlines.ts';
 
 const getMessage: I18nGetMessage = (key, substitutions) => {
   const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
@@ -861,10 +876,110 @@ async function run() {
     sanitizeTelemetryEvent({
       name: 'pro_waitlist_survey_copied',
       ts: now,
+      props: { source: 'popup', extra: 'x' }
+    }),
+    { name: 'pro_waitlist_survey_copied', ts: now, props: { source: 'popup' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_waitlist_survey_copied',
+      ts: now,
+      props: {
+        source: 'options',
+        campaign: 'twitter',
+        pay_willing: 'yes',
+        pay_monthly: '10_20',
+        pay_annual: '100_200',
+        cap_advanced_cleaning: true,
+        cap_batch_collection: false,
+        cap_prompt_pack: true,
+        cap_note_export: false,
+        has_other_capability: true,
+        has_contact: false,
+        // Privacy redlines: must never be stored.
+        useCase: 'use case text',
+        contact: 'email@example.com',
+        otherCapabilities: 'other capability text',
+        url: 'https://example.com',
+        title: 'Example Title',
+        clipboardText: 'copied text',
+        extra: 'x'
+      }
+    }),
+    {
+      name: 'pro_waitlist_survey_copied',
+      ts: now,
+      props: {
+        source: 'options',
+        campaign: 'twitter',
+        pay_willing: 'yes',
+        pay_monthly: '10_20',
+        pay_annual: '100_200',
+        cap_advanced_cleaning: true,
+        cap_batch_collection: false,
+        cap_prompt_pack: true,
+        cap_note_export: false,
+        has_other_capability: true,
+        has_contact: false
+      }
+    }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_waitlist_survey_copied',
+      ts: now,
+      props: {
+        source: 'options',
+        pay_willing: 'invalid',
+        pay_monthly: 'invalid',
+        pay_annual: 'invalid',
+        cap_advanced_cleaning: 'true',
+        has_contact: 1
+      }
+    }),
+    { name: 'pro_waitlist_survey_copied', ts: now, props: { source: 'options' } }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_waitlist_survey_copied',
+      ts: now,
       props: { source: 'rating_prompt' }
     }),
     { name: 'pro_waitlist_survey_copied', ts: now }
   );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_waitlist_survey_copied',
+      ts: now,
+      props: { source: 'unknown', campaign: 'twitter' }
+    }),
+    { name: 'pro_waitlist_survey_copied', ts: now }
+  );
+
+  const parsedProSurveySourceA = parseProWaitlistSurveySourceOnceFromUrl(
+    'https://example.com/src/options/options.html?pro_survey_source=popup#pro-waitlist-survey'
+  );
+  assert.equal(parsedProSurveySourceA.onceSource, 'popup');
+  assert.equal(parsedProSurveySourceA.hadSourceParam, true);
+  assert.equal(
+    parsedProSurveySourceA.cleanedUrl,
+    'https://example.com/src/options/options.html#pro-waitlist-survey'
+  );
+
+  const parsedProSurveySourceB = parseProWaitlistSurveySourceOnceFromUrl(
+    'https://example.com/src/options/options.html?pro_survey_source=invalid&x=1#pro-waitlist-survey'
+  );
+  assert.equal(parsedProSurveySourceB.onceSource, null);
+  assert.equal(parsedProSurveySourceB.hadSourceParam, true);
+  assert.equal(
+    parsedProSurveySourceB.cleanedUrl,
+    'https://example.com/src/options/options.html?x=1#pro-waitlist-survey'
+  );
+
+  const proSurveySourceOnce1 = consumeProWaitlistSurveySourceOnce('popup');
+  assert.equal(proSurveySourceOnce1.source, 'popup');
+  const proSurveySourceOnce2 = consumeProWaitlistSurveySourceOnce(proSurveySourceOnce1.nextOnceSource);
+  assert.equal(proSurveySourceOnce2.source, 'options');
 
   assert.deepEqual(
     sanitizeTelemetryEvent({
@@ -916,6 +1031,196 @@ async function run() {
   assert.equal(trimmedDefault.length, TELEMETRY_MAX_EVENTS);
   assert.equal(trimmedDefault[0]?.ts, 2);
   assert.equal(trimmedDefault[TELEMETRY_MAX_EVENTS - 1]?.ts, TELEMETRY_MAX_EVENTS + 1);
+
+  // pro-waitlist-survey-intent-distribution.ts (pure functions)
+  const distNow = 1_000_000_000;
+  const dist = buildProWaitlistSurveyIntentDistribution({
+    enabled: true,
+    telemetryEvents: [
+      {
+        name: 'pro_waitlist_survey_copied',
+        ts: distNow - 1000,
+        props: {
+          source: 'options',
+          pay_willing: 'yes',
+          pay_monthly: '10_20',
+          pay_annual: '100_200',
+          cap_advanced_cleaning: true,
+          cap_batch_collection: true,
+          cap_prompt_pack: false,
+          cap_note_export: false
+        }
+      },
+      {
+        name: 'pro_waitlist_survey_copied',
+        ts: distNow - 2000,
+        props: {
+          source: 'options',
+          pay_willing: 'no',
+          pay_monthly: 'unknown',
+          pay_annual: 'unknown',
+          cap_prompt_pack: true
+        }
+      },
+      {
+        name: 'pro_waitlist_survey_copied',
+        ts: distNow - 999_999_999,
+        props: { source: 'options', pay_willing: 'maybe' }
+      },
+      { name: 'pro_waitlist_opened', ts: distNow - 1000, props: { source: 'options' } },
+      {
+        name: 'pro_waitlist_survey_copied',
+        ts: distNow - 3000,
+        props: {
+          source: 'options',
+          pay_willing: 'yes',
+          pay_monthly: '5_10',
+          pay_annual: '50_100',
+          cap_note_export: true,
+          contact: 'email@example.com',
+          useCase: 'secret',
+          otherCapabilities: 'secret',
+          url: 'https://example.com',
+          title: 'Example Title',
+          clipboardText: 'copied text'
+        }
+      }
+    ],
+    now: distNow,
+    extensionVersion: '1.2.3',
+    lookbackDays: 7
+  });
+  assert.equal(dist.enabled, true);
+  assert.equal(dist.lookbackDays, 7);
+  assert.equal(dist.survey_intent, 3);
+
+  assert.equal(dist.pay_willing_yes, 2);
+  assert.equal(dist.pay_willing_maybe, 0);
+  assert.equal(dist.pay_willing_no, 1);
+  assert.equal(dist.pay_willing_unknown, 0);
+
+  assert.equal(dist.price_monthly_10_20, 1);
+  assert.equal(dist.price_monthly_5_10, 1);
+  assert.equal(dist.price_monthly_unknown, 1);
+
+  assert.equal(dist.price_annual_100_200, 1);
+  assert.equal(dist.price_annual_50_100, 1);
+  assert.equal(dist.price_annual_unknown, 1);
+
+  assert.equal(dist.capability_advanced_cleaning, 1);
+  assert.equal(dist.capability_batch_collection, 1);
+  assert.equal(dist.capability_prompt_pack, 1);
+  assert.equal(dist.capability_note_export, 1);
+
+  const distText = JSON.stringify(dist);
+  assert.ok(!distText.includes('email@example.com'));
+  assert.ok(!distText.includes('secret'));
+  assert.ok(!distText.includes('https://example.com'));
+
+  // build-pro-intent-decision-pack.ts (pure functions)
+  const decisionSummaryA = buildProIntentDecisionPackSummary({
+    rawDistribution: {
+      ...dist,
+      contact: 'email@example.com',
+      useCase: 'secret',
+      otherCapabilities: 'secret',
+      url: 'https://evil.example.com',
+      title: 'secret-title',
+      clipboardText: 'copied text'
+    },
+    distributionFile: 'docs/evidence/v1-81/copylot-pro-waitlist-survey-intent-distribution-7d-2026-03-23.json',
+    distributionSha256: 'sha256-test'
+  });
+  assert.equal(decisionSummaryA.thresholds.version, DEFAULT_PRO_INTENT_DECISION_THRESHOLDS.version);
+  assert.equal(decisionSummaryA.metrics.survey_intent, 3);
+  assert.equal(decisionSummaryA.metrics.high_intent_rate, 0.6667);
+  assert.equal(decisionSummaryA.decision.code, 'A');
+  assert.ok(decisionSummaryA.decision.reasons.includes('survey_intent_insufficient'));
+
+  const decisionSummaryAText = JSON.stringify(decisionSummaryA);
+  assert.ok(!decisionSummaryAText.includes('email@example.com'));
+  assert.ok(!decisionSummaryAText.includes('secret'));
+  assert.ok(!decisionSummaryAText.includes('https://evil.example.com'));
+
+  const decisionSummaryAMd = formatProIntentDecisionPackMarkdown(decisionSummaryA);
+  assert.ok(decisionSummaryAMd.includes('code：`A`'));
+  assert.ok(!decisionSummaryAMd.includes('email@example.com'));
+  assert.ok(!decisionSummaryAMd.includes('secret'));
+  assert.ok(!decisionSummaryAMd.includes('https://evil.example.com'));
+
+  const decisionSummaryB = buildProIntentDecisionPackSummary({
+    rawDistribution: {
+      enabled: true,
+      exportedAt: 1000,
+      extensionVersion: '1.2.3',
+      windowFrom: 1,
+      windowTo: 1000,
+      lookbackDays: 7,
+      maxEvents: 100,
+      survey_intent: 30,
+      pay_willing_yes: 10,
+      pay_willing_maybe: 5,
+      pay_willing_no: 15,
+      pay_willing_unknown: 0,
+      price_monthly_lt_5: 0,
+      price_monthly_5_10: 0,
+      price_monthly_10_20: 10,
+      price_monthly_20_50: 10,
+      price_monthly_50_plus: 10,
+      price_monthly_unknown: 0,
+      price_annual_lt_50: 0,
+      price_annual_50_100: 10,
+      price_annual_100_200: 10,
+      price_annual_200_500: 10,
+      price_annual_500_plus: 0,
+      price_annual_unknown: 0,
+      capability_advanced_cleaning: 10,
+      capability_batch_collection: 10,
+      capability_prompt_pack: 10,
+      capability_note_export: 10
+    },
+    distributionFile: 'x.json',
+    distributionSha256: 'sha256-test'
+  });
+  assert.equal(decisionSummaryB.decision.code, 'B');
+  assert.ok(decisionSummaryB.decision.reasons.includes('high_intent_rate_insufficient'));
+
+  const decisionSummaryC = buildProIntentDecisionPackSummary({
+    rawDistribution: {
+      enabled: true,
+      exportedAt: 1000,
+      extensionVersion: '1.2.3',
+      windowFrom: 1,
+      windowTo: 1000,
+      lookbackDays: 7,
+      maxEvents: 100,
+      survey_intent: 30,
+      pay_willing_yes: 12,
+      pay_willing_maybe: 6,
+      pay_willing_no: 12,
+      pay_willing_unknown: 0,
+      price_monthly_lt_5: 0,
+      price_monthly_5_10: 0,
+      price_monthly_10_20: 12,
+      price_monthly_20_50: 10,
+      price_monthly_50_plus: 8,
+      price_monthly_unknown: 0,
+      price_annual_lt_50: 0,
+      price_annual_50_100: 12,
+      price_annual_100_200: 10,
+      price_annual_200_500: 8,
+      price_annual_500_plus: 0,
+      price_annual_unknown: 0,
+      capability_advanced_cleaning: 18,
+      capability_batch_collection: 12,
+      capability_prompt_pack: 10,
+      capability_note_export: 8
+    },
+    distributionFile: 'x.json',
+    distributionSha256: 'sha256-test'
+  });
+  assert.equal(decisionSummaryC.decision.code, 'C');
+  assert.ok(decisionSummaryC.decision.reasons.includes('go_for_subscription_mvp'));
 
   // pro-funnel.ts (pure functions)
   const proSummaryDisabled = buildProFunnelSummary({
@@ -2616,6 +2921,89 @@ async function run() {
     } finally {
       delete process.env[envKey];
     }
+  }
+
+  {
+    const policyMd = await fs.readFile(path.resolve(process.cwd(), DEFAULT_CWS_LISTING_REDLINES_POLICY_PATH), 'utf-8');
+    const policy = parseCwsListingRedlinesPolicyFromMarkdown(policyMd);
+
+    const keywordsMd = [
+      '# keywords',
+      '',
+      '## EN Keywords (Groups)',
+      '- copy to markdown',
+      '',
+      '## ZH 关键词组（建议）',
+      '- 智能复制',
+      ''
+    ].join('\n');
+
+    const scan = scanCwsListingRedlinesFromText({
+      policy,
+      descriptionEnMarkdown: 'Note: there is no payment/subscription promise on the store page.',
+      descriptionZhMarkdown: '提醒：商店页不提供任何付费/订阅承诺。',
+      keywordsMarkdown: keywordsMd
+    });
+
+    assert.equal(scan.summary.result, 'PASS');
+    assert.equal(scan.summary.blocked, 0);
+    assert.ok(scan.hits.some((h) => h.term === 'payment' && h.result === 'allowed'));
+    assert.ok(scan.hits.some((h) => h.term === 'subscription' && h.result === 'allowed'));
+    assert.ok(scan.hits.some((h) => h.term === '付费' && h.result === 'allowed'));
+    assert.ok(scan.hits.some((h) => h.term === '订阅' && h.result === 'allowed'));
+  }
+
+  {
+    const policyMd = await fs.readFile(path.resolve(process.cwd(), DEFAULT_CWS_LISTING_REDLINES_POLICY_PATH), 'utf-8');
+    const policy = parseCwsListingRedlinesPolicyFromMarkdown(policyMd);
+
+    const keywordsMd = [
+      '# keywords',
+      '',
+      '## EN Keywords (Groups)',
+      '- copy to markdown',
+      '',
+      '## ZH 关键词组（建议）',
+      '- 智能复制',
+      ''
+    ].join('\n');
+
+    const scan = scanCwsListingRedlinesFromText({
+      policy,
+      descriptionEnMarkdown: 'Subscribe now, and upgrade to pro.',
+      descriptionZhMarkdown: 'Pro 已上线，立即订阅，马上付费。',
+      keywordsMarkdown: keywordsMd
+    });
+
+    assert.equal(scan.summary.result, 'BLOCKED');
+    assert.ok(scan.summary.blocked > 0);
+    assert.ok(scan.hits.some((h) => h.result === 'blocked'));
+  }
+
+  {
+    const policyMd = await fs.readFile(path.resolve(process.cwd(), DEFAULT_CWS_LISTING_REDLINES_POLICY_PATH), 'utf-8');
+    const policy = parseCwsListingRedlinesPolicyFromMarkdown(policyMd);
+
+    const keywordsMd = [
+      '# keywords',
+      '',
+      '## EN Keywords (Groups)',
+      '- subscription',
+      '',
+      '## ZH 关键词组（建议）',
+      '- 智能复制',
+      ''
+    ].join('\n');
+
+    const scan = scanCwsListingRedlinesFromText({
+      policy,
+      descriptionEnMarkdown: '',
+      descriptionZhMarkdown: '',
+      keywordsMarkdown: keywordsMd
+    });
+
+    assert.equal(scan.summary.result, 'BLOCKED');
+    assert.ok(scan.hits.some((h) => h.file === 'docs/aso/keywords.md' && h.result === 'blocked'));
   }
 
   {

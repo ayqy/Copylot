@@ -49,13 +49,14 @@ v1-71 进展（已落盘，但 Listing 同步/截图仍 BLOCKED）：
 - 已固化可粘贴字段包：`docs/evidence/v1-71/listing-paste-pack.md`（EN/ZH 长描述 + keywords；记录来源 sha256，避免临场改字/口径漂移）
 - 已固化证据索引：`docs/evidence/v1-71/index.md`（引用 v1-68 `inputs.sha256` + 截图命名规范 + PASS/BLOCKED 结论口径）
 - 已补齐用例/简报：`docs/test-cases/v1-71.md`、`docs/reports/v1-71-report.md`
-- BLOCKED 原因：当前环境无法访问 CWS Developer Dashboard/公开商店页；且子 PRD `prds/v1-71.md` 的敏感词门禁命中需先明确处理口径（否定语境是否允许出现 payment/subscription/付费/订阅 等字样）
+- BLOCKED 原因：当前环境无法访问 CWS Developer Dashboard/公开商店页（无法完成粘贴同步与截图取证）
+- 合规门禁进展（已解除口径阻塞）：v1-76 已落盘“敏感词/夸大口径”门禁口径 + 自动扫描 + 证据（并已接入 `bash scripts/test.sh`），允许否定语境免责声明出现 `payment/subscription/付费/订阅` 并可审计（见 `docs/evidence/v1-76/`）。
 
 需要的人类输入（持续阻塞：网络/商店可达 + 账号权限）：
 - 提供可用的代理/VPN（确保可访问 `www.googleapis.com` 与 CWS API）；代理可为 `http/https/socks5/socks5h`，并给出包含 scheme 的代理地址/端口（例如 `http://127.0.0.1:7890` 或 `socks5h://127.0.0.1:1080`）。
 - 或在可直连 Google 的网络环境中执行 `npm run publish:cws` 完成发布，并按 `docs/test-cases/v1-45.md` / `docs/test-cases/v1-47.md` 生成商店端截图/索引取证。
 - 提供可登录 CWS Developer Dashboard 且具备 Store listing 编辑权限的账号/权限（用于 v1-71 的 EN/ZH descriptions + keywords 粘贴同步与截图取证）。
-- 明确 v1-71“敏感词门禁”处理口径：命中是否一律阻断；若不允许否定语境出现 payment/subscription/付费/订阅，则需先更新素材与 evidence pack（将导致不再是“同步 v1-68 素材”口径）。
+- （无）敏感词/夸大口径口径阻塞已解除：以 v1-76 门禁与证据为准；若未来需调整红线词表/规则，直接修改 `docs/publish/cws-listing-redlines-policy.md` 并确保 `bash scripts/test.sh` PASS。
 
 ## 2)（非本阶段 MVP）收款/订阅相关输入
 所需输入清单：
@@ -65,3 +66,82 @@ v1-71 进展（已落盘，但 Listing 同步/截图仍 BLOCKED）：
 
 无凭据情况下可继续推进的替代动作：
 - 仅推进意向验证闭环（候补入口 + 可导出证据 + 用例/回归），不引入支付链路
+
+## 3) 官网 / CWS / 外部渠道网络不可达（DNS）导致增长自动化阻塞
+
+已观测阻塞（2026-03-23，本机环境）：
+- `curl -I -L https://copy.useai.online/` → `Could not resolve host: copy.useai.online`
+- `curl -I -L https://chromewebstore.google.com/` → `Could not resolve host: chromewebstore.google.com`
+- `curl -I --max-time 8 https://1.1.1.1` → `Failed to connect to 1.1.1.1 port 443: Couldn't connect to server`（外网直连也不可达，非仅 DNS）
+- 系统抓取（非本机网络）也无法打开官网：`open https://copy.useai.online/` → `Failed to fetch https://copy.useai.online/: Cache miss`（疑似站点防爬/WAF/需 JS 渲染，导致自动化取证失败）
+- 复测（2026-03-23 12:38 CST）：以上 3 条仍失败（环境仍处于外网不可达状态）
+- 复测（2026-03-23 15:21 CST）：以上 3 条仍失败（环境仍处于外网不可达状态）
+- 复测（2026-03-23 15:48 CST）：以上 3 条仍失败（环境仍处于外网不可达状态）
+
+影响：
+- 无法抓取官网落地页真实文案/截图 → 无法基于真实落地页做渠道内容对齐
+- 无法打开 CWS 安装页/评价页 → 无法做“从商店安装回归/截图取证/评价引导”自动化
+- 无法用 Playwright 自动化登录社媒/社区发布（X/LinkedIn/Reddit/HN/PH/IH 等）
+
+所需输入清单：
+- 可直连外网的网络环境，或可用代理/VPN（支持 `HTTP_PROXY/HTTPS_PROXY/ALL_PROXY` 等标准代理变量）
+- 若使用代理：提供包含 scheme 的代理地址（例如 `http://127.0.0.1:7890` 或 `socks5h://127.0.0.1:1080`）
+
+无网络情况下可继续推进的替代动作（已落盘）：
+- 生成“可复制发布内容包”（多渠道）：`docs/growth/publish-pack-2026-03-23.md`
+- 生成今日增长执行记录（含节奏/指标）：`docs/growth/executions/2026-03-23.md`
+- 落盘“可访问落地页基准”快照（CWS 安装页）：`docs/growth/assets/landing/2026-03-23/cws-listing-snapshot.md`
+- 生成 7 天增长执行计划（含指标/渠道/反馈闭环）：`docs/growth/plan.md`
+- 生成手动发布清单（逐步操作）：`docs/growth/checklists/manual-posting-2026-03-23.md`
+- 生成指标记录表（便于复盘）：`docs/growth/metrics-tracker-2026-03-23.md`
+
+网络恢复后的第一优先动作（30–60 分钟，建议尽量自动化并落盘证据）：
+1. 官网落地页取证（优先 Playwright；否则手动）：
+   - 抓取 Hero/首屏标题、副标题、CTA 文案（复制到文本）
+   - 截图至少 2 张：首屏 + 任意 1 个功能区块
+   - 落盘到：`docs/growth/assets/landing/`（按日期建子目录）
+2. 对齐渠道文案（不新增能力、不夸大）：
+   - 将 `docs/growth/publish-pack-2026-03-23.md` 中 Slogan/开头 1–2 句与官网 Hero 做“小幅一致化”
+3. CWS 安装页/Listing 取证与同步（按 v1-71 规范）：
+   - 完成 EN/ZH descriptions + keywords 同步
+   - 按固定文件名补齐 3 张必选截图，并落盘到 `docs/evidence/v1-71/screenshots/`
+4. 渠道首发/补发 + 指标落盘：
+   - 按 `docs/growth/checklists/manual-posting-2026-03-23.md` 完成 D0 3 渠道首发
+   - 将帖子 URL、曝光/点击/安装/反馈补齐到 `docs/growth/metrics-tracker-2026-03-23.md`
+
+## 4) 渠道发布所需账号/凭据清单（用于自动化或手动发布）
+
+> 原则：若要“自动化真实发布”，需要已登录会话（cookies）或账号密码 + 2FA；若仅手动发布，则只需要账号登录。
+
+基础（必需）：
+- 官网分析后台权限（用于看 UTM/访问/转化）：例如 Vercel/Cloudflare/自建统计后台账号
+- Chrome Web Store Developer Console 权限（用于看 installs/转化/评价、配置 store listing）
+
+社媒/社区账号（按优先级）：
+- X / Twitter：账号登录（可能含 2FA）；若要自动化发布，需可复用的已登录会话（cookies）或自动化可用的登录方式
+- LinkedIn：账号登录（可能含 2FA）；同上
+- Reddit：账号登录；目标子版发帖权限（有些需要 Karma/账号年龄）
+- Hacker News：账号登录（发帖/评论用）
+- Product Hunt：Maker 账号（发布产品、写 Maker comment）；可选：Hunter 账号
+- Indie Hackers：账号登录（发帖/评论用）
+
+反馈与协作（建议）：
+- GitHub 账号（用于及时回复 Issues、关闭重复问题、打标签）
+
+## 5) 可复制发布内容（离线降级，已生成）
+
+完整内容包：
+- `docs/growth/publish-pack-2026-03-23.md`
+
+快速复制（最短版，中英文各 1 条）：
+```text
+从网页复制粘贴太痛了：正文夹杂广告/导航、表格对不齐、代码块噪声一堆。
+我做了 Copylot：一键复制成干净的 Markdown/纯文本/CSV（隐私优先，默认本地处理，不收集/不上传复制内容）。
+安装：https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter
+```
+
+```text
+Copy-pasting from the web is messy (ads/nav, broken tables, noisy code blocks).
+Copylot turns web content into clean, AI-ready Markdown/plain text/CSV (privacy-first, on-device; no copied content collected).
+Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter
+```

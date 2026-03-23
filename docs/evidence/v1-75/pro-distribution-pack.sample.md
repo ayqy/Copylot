@@ -1,0 +1,13 @@
+# v1-75 对外投放包样例（campaign=twitter）
+
+---
+
+## EN
+
+# Copylot Distribution Pack (Auditable)\n\n- campaign: twitter\n\n## 1) Official Site URL (UTM + campaign)\nhttps://copy.useai.online/?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter\n\n## 2) Chrome Web Store URL (UTM + campaign)\nhttps://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter\n\n## 3) Pro Waitlist URL (UTM + campaign)\nhttps://copy.useai.online/?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter&ext_version=1.1.28&ext_id=ehfglnbhoefcdedpkcdnainiifpflbic&nav_lang=en-US&ui_lang=en#pro\n\n## 4) Recruit Copy (ready to share)\n\n```text\nCopylot Pro (planned) waitlist is open.\n\nIf you want better cleaning / batch collection / exports, please join (no webpage or private content needed).\n\nWaitlist URL (campaign=twitter):\nhttps://copy.useai.online/?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter&ext_version=1.1.28&ext_id=ehfglnbhoefcdedpkcdnainiifpflbic&nav_lang=en-US&ui_lang=en#pro\n\n```\n\n## 5) Optional: Survey Guide\n- If you'd like to help us shape Pro: after installing, open Copylot -> Options -> Pro, click \"Copy survey (with env info)\" and send it to us (no webpage or private content needed).\n\n---\n\nPrivacy: This pack contains no webpage content, copied content, current page URL, or title. Only fixed template + campaign + official/store/waitlist links.\n
+
+---
+
+## ZH
+
+# Copylot 渠道分发投放包（可审计版）\n\n- campaign: twitter\n\n## 1) 官网链接（带 UTM + campaign）\nhttps://copy.useai.online/?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter\n\n## 2) 商店安装链接（带 UTM + campaign）\nhttps://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter\n\n## 3) Pro 候补链接（带 UTM + campaign）\nhttps://copy.useai.online/?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter&ext_version=1.1.28&ext_id=ehfglnbhoefcdedpkcdnainiifpflbic&nav_lang=en-US&ui_lang=en#pro\n\n## 4) 招募文案（可直接发）\n\n```text\nCopylot Pro（规划中）候补开放中：\n\n如果你希望更强的网页清洗/批量整理/导出能力，欢迎加入候补（无需粘贴任何网页内容/隐私信息）。\n\n候补链接（已绑定 campaign=twitter）：\nhttps://copy.useai.online/?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter&ext_version=1.1.28&ext_id=ehfglnbhoefcdedpkcdnainiifpflbic&nav_lang=en-US&ui_lang=en#pro\n\n```\n\n## 5) 可选：问卷引导（自愿）\n- 如果你愿意帮助我们更快打磨 Pro：安装后打开 Copylot -> Options -> Pro，点击「复制问卷（含环境信息）」并发送给我们（不需要粘贴任何网页内容/隐私信息）。\n\n---\n\n隐私提示：本投放包不包含网页内容/复制内容/URL/标题；仅包含固定模板 + campaign + 官网/商店/候补链接。\n

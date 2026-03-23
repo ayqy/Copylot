@@ -1,0 +1,67 @@
+{
+  "packVersion": "v1-81",
+  "thresholds": {
+    "version": "v1-81",
+    "sampleSizeMinSurveyIntent": 30,
+    "highIntentRateMinForC": 0.6,
+    "pricePeakRateMinForC": 0.4
+  },
+  "input": {
+    "distributionFile": "docs/evidence/v1-81/copylot-pro-waitlist-survey-intent-distribution-7d-2026-03-23.json",
+    "distributionSha256": "abf2058c8d362fcca2b85b33a815b6d3a86576f84e81f312abaa9f5d7c1d6170",
+    "enabled": true,
+    "disabledReason": null,
+    "exportedAt": 1774224000000,
+    "extensionVersion": "1.1.28",
+    "windowFrom": 1773619200000,
+    "windowTo": 1774224000000,
+    "lookbackDays": 7,
+    "maxEvents": 100
+  },
+  "definitions": {
+    "survey_intent": "survey_intent = count(pro_waitlist_survey_copied)。",
+    "high_intent_rate": "high_intent_rate = (pay_willing_yes + pay_willing_maybe) / survey_intent。用于判断“高意向占比”。",
+    "price_peak": "price_*_peak：找出 price_monthly_* / price_annual_* 的主峰 bucket（含 unknown）与占比（count / survey_intent）。",
+    "capability_top2": "capability_top2：按 capability_* 计数降序取 Top2，并给出各自覆盖率（count / survey_intent）。"
+  },
+  "metrics": {
+    "survey_intent": 3,
+    "high_intent_count": 2,
+    "high_intent_rate": 0.6667,
+    "pay_willing": {
+      "yes": 1,
+      "maybe": 1,
+      "no": 1,
+      "unknown": 0
+    },
+    "price_monthly_peak": {
+      "bucket": "10_20",
+      "count": 1,
+      "rate": 0.3333
+    },
+    "price_annual_peak": {
+      "bucket": "100_200",
+      "count": 1,
+      "rate": 0.3333
+    },
+    "capability_top2": [
+      {
+        "capability": "advanced_cleaning",
+        "count": 1,
+        "rate": 0.3333
+      },
+      {
+        "capability": "batch_collection",
+        "count": 1,
+        "rate": 0.3333
+      }
+    ]
+  },
+  "decision": {
+    "code": "A",
+    "conclusion": "继续收集（样本量不足）",
+    "reasons": [
+      "survey_intent_insufficient"
+    ]
+  }
+}

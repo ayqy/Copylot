@@ -1,0 +1,52 @@
+{
+  "packVersion": "v1-75",
+  "utmSource": "copylot-ext",
+  "samples": [
+    {
+      "campaign": null,
+      "surfaces": [
+        {
+          "medium": "popup",
+          "officialSiteUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=popup",
+          "chromeWebStoreUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=popup",
+          "proWaitlistUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=popup&ext_version=1.1.28&ext_id=ehfglnbhoefcdedpkcdnainiifpflbic&nav_lang=en-US&ui_lang=en#pro"
+        },
+        {
+          "medium": "options",
+          "officialSiteUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=options",
+          "chromeWebStoreUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=options",
+          "proWaitlistUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=options&ext_version=1.1.28&ext_id=ehfglnbhoefcdedpkcdnainiifpflbic&nav_lang=en-US&ui_lang=en#pro"
+        },
+        {
+          "medium": "distribution_toolkit",
+          "officialSiteUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=distribution_toolkit",
+          "chromeWebStoreUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=distribution_toolkit",
+          "proWaitlistUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=distribution_toolkit&ext_version=1.1.28&ext_id=ehfglnbhoefcdedpkcdnainiifpflbic&nav_lang=en-US&ui_lang=en#pro"
+        }
+      ]
+    },
+    {
+      "campaign": "twitter",
+      "surfaces": [
+        {
+          "medium": "popup",
+          "officialSiteUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=popup&utm_campaign=twitter",
+          "chromeWebStoreUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=popup&utm_campaign=twitter",
+          "proWaitlistUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=popup&utm_campaign=twitter&ext_version=1.1.28&ext_id=ehfglnbhoefcdedpkcdnainiifpflbic&nav_lang=en-US&ui_lang=en#pro"
+        },
+        {
+          "medium": "options",
+          "officialSiteUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=options&utm_campaign=twitter",
+          "chromeWebStoreUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=options&utm_campaign=twitter",
+          "proWaitlistUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=options&utm_campaign=twitter&ext_version=1.1.28&ext_id=ehfglnbhoefcdedpkcdnainiifpflbic&nav_lang=en-US&ui_lang=en#pro"
+        },
+        {
+          "medium": "distribution_toolkit",
+          "officialSiteUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter",
+          "chromeWebStoreUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter",
+          "proWaitlistUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter&ext_version=1.1.28&ext_id=ehfglnbhoefcdedpkcdnainiifpflbic&nav_lang=en-US&ui_lang=en#pro"
+        }
+      ]
+    }
+  ]
+}

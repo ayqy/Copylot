@@ -13,7 +13,8 @@ import {
   recordTelemetryEvent,
   sanitizeTelemetryEvents,
   TELEMETRY_EVENTS_KEY,
-  type TelemetryEvent
+  type TelemetryEvent,
+  type TelemetryPropPrimitive
 } from '../shared/telemetry';
 import {
   buildGrowthFunnelSummary,
@@ -49,6 +50,10 @@ import {
   type ProIntentWeeklyDigestEnvInfo
 } from '../shared/pro-intent-weekly-digest';
 import { buildProIntentEventsCsv, formatProIntentEvents7dCsvFilename } from '../shared/pro-intent-events-csv';
+import {
+  buildProWaitlistSurveyIntentDistribution,
+  formatProWaitlistSurveyIntentDistribution7dJsonFilename
+} from '../shared/pro-waitlist-survey-intent-distribution';
 import {
   buildProIntentByCampaignCsv,
   formatProIntentByCampaign7dCsvFilename
@@ -91,6 +96,10 @@ import {
   type WomSummary
 } from '../shared/wom-summary';
 import { parsePromptSortMode, sortPrompts, type PromptSortMode } from '../shared/prompt-sort';
+import {
+  consumeProWaitlistSurveySourceOnce,
+  parseProWaitlistSurveySourceOnceFromUrl
+} from '../shared/pro-waitlist-survey-source-once';
 
 // Simple UUID generator
 function generateUUID(): string {
@@ -171,6 +180,7 @@ interface OptionsElements {
   proFunnelRefreshButton: HTMLButtonElement;
   proFunnelCopyButton: HTMLButtonElement;
   proFunnelEvidencePackCopyButton: HTMLButtonElement;
+  exportProWaitlistSurveyIntentDistribution7dJsonButton: HTMLButtonElement;
   exportProIntentEvents7dCsvButton: HTMLButtonElement;
   exportProIntentByCampaign7dCsvButton: HTMLButtonElement;
   exportProDistributionByCampaign7dCsvButton: HTMLButtonElement;
@@ -251,6 +261,7 @@ let editingPromptId: string | null = null;
 let editingChatServiceId: string | null = null;
 
 const PROMPT_SORT_MODE_STORAGE_KEY = 'copylot_prompt_sort_mode';
+const PRO_WAITLIST_SURVEY_SOURCE_ONCE_STORAGE_KEY = 'copylot_pro_waitlist_survey_source_once';
 const EXPORT_PRO_ACQ_EFF_BY_CAMPAIGN_7D_CSV_BUTTON_ID =
   'export-pro-acquisition-' + 'efficiency-by-campaign-' + '7d-csv';
 const COPY_PRO_ACQ_EFF_BY_CAMPAIGN_WEEKLY_REPORT_BUTTON_ID =
@@ -321,6 +332,9 @@ function getElements(): OptionsElements {
     proFunnelRefreshButton: document.getElementById('pro-funnel-refresh') as HTMLButtonElement,
     proFunnelCopyButton: document.getElementById('pro-funnel-copy') as HTMLButtonElement,
     proFunnelEvidencePackCopyButton: document.getElementById('pro-funnel-evidence-pack-copy') as HTMLButtonElement,
+    exportProWaitlistSurveyIntentDistribution7dJsonButton: document.getElementById(
+      'export-pro-waitlist-survey-intent-distribution-7d-json'
+    ) as HTMLButtonElement,
     exportProIntentEvents7dCsvButton: document.getElementById('export-pro-intent-events-7d-csv') as HTMLButtonElement,
     exportProIntentByCampaign7dCsvButton: document.getElementById(
       'export-pro-intent-by-campaign-7d-csv'
@@ -468,6 +482,7 @@ async function loadSettings() {
     }
     updateProWaitlistDistributionToolkitState();
     updateProIntentEvents7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
+    updateProWaitlistSurveyIntentDistribution7dExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
     updateProIntentByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
     updateProDistributionByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
     updateProAcquisitionEfficiencyByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
@@ -1435,6 +1450,11 @@ function updateProIntentEvents7dCsvExportButtonState(enabled: boolean): void {
   elements.exportProIntentEvents7dCsvButton.disabled = !enabled;
 }
 
+function updateProWaitlistSurveyIntentDistribution7dExportButtonState(enabled: boolean): void {
+  if (!elements?.exportProWaitlistSurveyIntentDistribution7dJsonButton) return;
+  elements.exportProWaitlistSurveyIntentDistribution7dJsonButton.disabled = !enabled;
+}
+
 function updateProIntentByCampaign7dCsvExportButtonState(enabled: boolean): void {
   if (!elements?.exportProIntentByCampaign7dCsvButton) return;
   elements.exportProIntentByCampaign7dCsvButton.disabled = !enabled;
@@ -2092,6 +2112,64 @@ async function exportProIntentEvents7dCsv(): Promise<void> {
   showNotification(getMessage('proIntentEvents7dCsvExportSuccess', [String(built.rows.length)]), 'success');
 }
 
+async function exportProWaitlistSurveyIntentDistribution7dJson(): Promise<void> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for pro waitlist survey intent distribution export:', error);
+  }
+
+  const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+  if (!enabled) {
+    showNotification(getMessage('proWaitlistSurveyIntentDistribution7dExportTelemetryOff'), 'info');
+    return;
+  }
+
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    const built = buildProWaitlistSurveyIntentDistribution({
+      enabled: true,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      lookbackDays: 7
+    });
+    const filename = formatProWaitlistSurveyIntentDistribution7dJsonFilename(exportedAt);
+    downloadTextFile(filename, `${JSON.stringify(built, null, 2)}\n`, 'application/json');
+    showNotification(
+      getMessage('proWaitlistSurveyIntentDistribution7dExportSuccess', [String(built.survey_intent)]),
+      'success'
+    );
+    return;
+  }
+
+  let stored: unknown;
+  try {
+    const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+    stored = result[TELEMETRY_EVENTS_KEY];
+  } catch (error) {
+    console.warn('Failed to read telemetry events for pro waitlist survey intent distribution export:', error);
+    showNotification(getMessage('proWaitlistSurveyIntentDistribution7dExportFailed'), 'error');
+    return;
+  }
+
+  const built = buildProWaitlistSurveyIntentDistribution({
+    enabled: true,
+    telemetryEvents: stored,
+    now: exportedAt,
+    extensionVersion,
+    lookbackDays: 7
+  });
+
+  const filename = formatProWaitlistSurveyIntentDistribution7dJsonFilename(exportedAt);
+  downloadTextFile(filename, `${JSON.stringify(built, null, 2)}\n`, 'application/json');
+  showNotification(
+    getMessage('proWaitlistSurveyIntentDistribution7dExportSuccess', [String(built.survey_intent)]),
+    'success'
+  );
+}
+
 async function exportProIntentByCampaign7dCsv(): Promise<void> {
   const exportedAt = Date.now();
   let extensionVersion = '';
@@ -2614,6 +2692,9 @@ function setupEventListeners() {
   elements.proFunnelEvidencePackCopyButton.addEventListener('click', () => {
     void copyProFunnelEvidencePackToClipboard();
   });
+  elements.exportProWaitlistSurveyIntentDistribution7dJsonButton.addEventListener('click', () => {
+    void exportProWaitlistSurveyIntentDistribution7dJson();
+  });
   elements.exportProIntentEvents7dCsvButton.addEventListener('click', () => {
     void exportProIntentEvents7dCsv();
   });
@@ -2692,6 +2773,7 @@ function setupEventListeners() {
       await refreshProFunnelPanel();
       await refreshWomSummaryPanel();
       updateProIntentEvents7dCsvExportButtonState(enabled);
+      updateProWaitlistSurveyIntentDistribution7dExportButtonState(enabled);
       updateProIntentByCampaign7dCsvExportButtonState(enabled);
       updateProDistributionByCampaign7dCsvExportButtonState(enabled);
       updateProAcquisitionEfficiencyByCampaign7dCsvExportButtonState(enabled);
@@ -2801,9 +2883,31 @@ function setupEventListeners() {
     });
   });
 
-  // Hash定位：src/options/options.html#pro -> 默认激活 Pro Tab
-  if (window.location.hash === '#pro') {
+  // 一次性来源归因：Popup -> Options（仅影响下一次问卷复制事件）
+  try {
+    const parsed = parseProWaitlistSurveySourceOnceFromUrl(window.location.href);
+    if (parsed.onceSource) {
+      try {
+        sessionStorage.setItem(PRO_WAITLIST_SURVEY_SOURCE_ONCE_STORAGE_KEY, parsed.onceSource);
+      } catch (error) {
+        console.warn('Failed to persist pro waitlist survey source once:', error);
+      }
+    }
+    if (parsed.hadSourceParam) {
+      history.replaceState(null, '', parsed.cleanedUrl);
+    }
+  } catch (error) {
+    console.warn('Failed to parse pro waitlist survey source from url:', error);
+  }
+
+  // Hash定位：src/options/options.html#pro / #pro-waitlist-survey -> 默认激活 Pro Tab
+  if (window.location.hash === '#pro' || window.location.hash === '#pro-waitlist-survey') {
     setActiveMainTab('pro');
+  }
+  if (window.location.hash === '#pro-waitlist-survey') {
+    window.setTimeout(() => {
+      document.getElementById('pro-waitlist-survey')?.scrollIntoView({ block: 'start' });
+    }, 0);
   }
 
   function getProIntentCampaign(): string | undefined {
@@ -2970,12 +3074,65 @@ function setupEventListeners() {
     const originalText = button.textContent || '';
     const body = buildWaitlistSurveyBody();
     const campaign = getProIntentCampaign();
-    const props: Record<string, string> = { source: 'options' };
+
+    let storedOnceSource: string | null = null;
+    try {
+      storedOnceSource = sessionStorage.getItem(PRO_WAITLIST_SURVEY_SOURCE_ONCE_STORAGE_KEY);
+    } catch (error) {
+      console.warn('Failed to read pro waitlist survey source once:', error);
+    }
+
+    const consumed = consumeProWaitlistSurveySourceOnce(storedOnceSource);
+    const shouldClearOnceSource = storedOnceSource !== null;
+
+    const clearOnceSource = () => {
+      if (!shouldClearOnceSource) return;
+      try {
+        sessionStorage.removeItem(PRO_WAITLIST_SURVEY_SOURCE_ONCE_STORAGE_KEY);
+      } catch (error) {
+        console.warn('Failed to clear pro waitlist survey source once:', error);
+      }
+    };
+
+    const props: Record<string, TelemetryPropPrimitive> = { source: consumed.source };
     if (campaign) props.campaign = campaign;
+
+    const payWillingRaw = elements.proWaitlistSurveyPayWilling?.value || '';
+    props.pay_willing =
+      payWillingRaw === 'yes' || payWillingRaw === 'maybe' || payWillingRaw === 'no' ? payWillingRaw : 'unknown';
+
+    const payMonthlyRaw = elements.proWaitlistSurveyPayMonthly?.value || '';
+    props.pay_monthly =
+      payMonthlyRaw === 'lt_5' ||
+      payMonthlyRaw === '5_10' ||
+      payMonthlyRaw === '10_20' ||
+      payMonthlyRaw === '20_50' ||
+      payMonthlyRaw === '50_plus'
+        ? payMonthlyRaw
+        : 'unknown';
+
+    const payAnnualRaw = elements.proWaitlistSurveyPayAnnual?.value || '';
+    props.pay_annual =
+      payAnnualRaw === 'lt_50' ||
+      payAnnualRaw === '50_100' ||
+      payAnnualRaw === '100_200' ||
+      payAnnualRaw === '200_500' ||
+      payAnnualRaw === '500_plus'
+        ? payAnnualRaw
+        : 'unknown';
+
+    props.cap_advanced_cleaning = Boolean(elements.proWaitlistSurveyCapabilityAdvancedCleaning?.checked);
+    props.cap_batch_collection = Boolean(elements.proWaitlistSurveyCapabilityBatchCollection?.checked);
+    props.cap_prompt_pack = Boolean(elements.proWaitlistSurveyCapabilityPromptPack?.checked);
+    props.cap_note_export = Boolean(elements.proWaitlistSurveyCapabilityNoteExport?.checked);
+
+    props.has_other_capability = Boolean(elements.proWaitlistSurveyCapabilitiesOther?.value?.trim());
+    props.has_contact = Boolean(elements.proWaitlistSurveyContact?.value?.trim());
 
     try {
       await navigator.clipboard.writeText(body);
       void recordTelemetryEvent('pro_waitlist_survey_copied', props);
+      clearOnceSource();
       button.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
         const key =
@@ -2990,6 +3147,7 @@ function setupEventListeners() {
       const ok = fallbackCopyText(body);
       if (ok) {
         void recordTelemetryEvent('pro_waitlist_survey_copied', props);
+        clearOnceSource();
         button.textContent = getMessage('copied') || originalText;
         window.setTimeout(() => {
           const key =

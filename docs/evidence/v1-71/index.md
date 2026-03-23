@@ -4,7 +4,7 @@
 - 证据目录：`docs/evidence/v1-71/`
 - 结论：**BLOCKED**
   - BLOCKED-1：当前环境无法访问 Chrome Web Store（Developer Dashboard/公开商店页），无法完成“粘贴同步 + 截图取证”。
-  - BLOCKED-2：按子 PRD `prds/v1-71.md` 的离线门禁要求，敏感词搜索命中（即使为否定语境）也需阻断本轮同步。
+  - PASS-2：敏感词/夸大口径门禁已由 v1-76 自动扫描 + 证据落盘覆盖（见 `docs/evidence/v1-76/index.md`），离线可持续复核。
 
 ## 1) 引用源（v1-68 evidence pack：仓库素材基线）
 
@@ -38,11 +38,10 @@ v1-68 `inputs.sha256`（本轮需与 paste pack 互证的 3 个来源）：
 - `docs/ChromeWebStore-Description-ZH.md` sha256：`29bf693c36657f4893337b6bddf1a2f9cde41a157aa1dafe2a5367ae08e320ab`
 - `docs/aso/keywords.md` sha256：`76ec62d6759bfb012054d1e4e62491b5690ff2ecf3d95ffa8b1ed6a204490227`
 
-3) 敏感词/夸大口径搜索（按 PRD：命中直接阻断同步）：
-- 执行命令：`rg -n "付费|订阅|升级|pricing|subscription|trial" docs/ChromeWebStore-Description-*.md docs/aso/keywords.md`
-- 命中（本轮 BLOCKED-2）：
-  - `docs/ChromeWebStore-Description-ZH.md:33`（包含“付费/订阅”字样：否定语境免责声明）
-  - `docs/ChromeWebStore-Description-EN.md:33`（包含“payment/subscription”字样：否定语境免责声明）
+3) 敏感词/夸大口径门禁复核（离线，可审计）：
+- v1-76 扫描证据索引：`docs/evidence/v1-76/index.md`
+- 扫描明细：`docs/evidence/v1-76/cws-listing-redlines-scan.json`
+- 结论：PASS（允许否定语境免责声明出现 `payment/subscription/付费/订阅`，且在 v1-76 证据中可解释归因）
 
 ## 4) CWS 同步与生效时间（待补齐）
 
@@ -75,11 +74,8 @@ v1-68 `inputs.sha256`（本轮需与 paste pack 互证的 3 个来源）：
 - 原因：
   - 未完成 CWS Dashboard 粘贴同步与公开页生效复核（BLOCKED-1）
   - 未补齐商店端截图取证（BLOCKED-1）
-  - 离线门禁敏感词搜索命中（BLOCKED-2）
 
 网络恢复后的下一步动作（按 `prds/v1-71.md`）：
-1. 先处理 BLOCKED-2（敏感词门禁）：在不更改 v1-68 素材口径的前提下，明确“是否允许否定语境出现 payment/subscription/付费/订阅”等字样；若不允许，则需先更新素材与 evidence pack（将导致不再是“同步 v1-68 素材”口径）。
-2. 处理 BLOCKED-1：按 `docs/evidence/v1-71/listing-paste-pack.md` 逐字段粘贴到 CWS（EN/ZH descriptions + keywords），保存并等待生效。
-3. 补齐 `docs/evidence/v1-71/screenshots/` 3 张必选截图，并在本索引中逐条写明断言结论。
-4. 将本索引的“一致性结论”更新为 PASS（并记录提交时间/生效时间/差异）。
-
+1. 处理 BLOCKED-1：按 `docs/evidence/v1-71/listing-paste-pack.md` 逐字段粘贴到 CWS（EN/ZH descriptions + keywords），保存并等待生效。
+2. 补齐 `docs/evidence/v1-71/screenshots/` 3 张必选截图，并在本索引中逐条写明断言结论。
+3. 将本索引的“一致性结论”更新为 PASS（并记录提交时间/生效时间/差异）。

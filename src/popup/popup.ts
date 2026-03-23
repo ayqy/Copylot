@@ -75,6 +75,7 @@ interface PopupElements {
   proWaitlistPromptNeverButton: HTMLButtonElement;
 
   // Pro entry
+  popupProWaitlistSurveyButton: HTMLButtonElement;
   upgradeProEntry: HTMLButtonElement;
   popupProWaitlistButton: HTMLButtonElement;
   popupProWaitlistCopyButton: HTMLButtonElement;
@@ -166,6 +167,9 @@ function getElements(): PopupElements {
       'pro-waitlist-prompt-never'
     ) as HTMLButtonElement,
 
+    popupProWaitlistSurveyButton: document.getElementById(
+      'popup-pro-waitlist-survey'
+    ) as HTMLButtonElement,
     upgradeProEntry: document.getElementById('upgrade-pro-entry') as HTMLButtonElement,
     popupProWaitlistButton: document.getElementById('popup-pro-waitlist') as HTMLButtonElement,
     popupProWaitlistCopyButton: document.getElementById('popup-pro-waitlist-copy') as HTMLButtonElement,
@@ -467,6 +471,12 @@ function setupEventListeners() {
   });
 
   // Pro entry
+  elements.popupProWaitlistSurveyButton.addEventListener('click', () => {
+    const url = `${chrome.runtime.getURL('src/options/options.html')}?pro_survey_source=popup#pro-waitlist-survey`;
+    chrome.tabs.create({ url });
+    window.close();
+  });
+
   elements.upgradeProEntry.addEventListener('click', () => {
     const props: Record<string, string> = { source: 'popup' };
     if (currentSettings?.proIntentCampaign) props.campaign = currentSettings.proIntentCampaign;

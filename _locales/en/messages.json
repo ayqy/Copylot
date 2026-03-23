@@ -212,6 +212,10 @@
     "message": "Join waitlist",
     "description": "Popup entry for Pro waitlist"
   },
+  "popupProWaitlistSurvey": {
+    "message": "Pro survey (1 min)",
+    "description": "Popup entry for the Pro waitlist survey"
+  },
   "proPromptTitle": {
     "message": "Pro waitlist (optional)",
     "description": "Title of the low-disturb Pro waitlist prompt in popup"
@@ -1123,6 +1127,22 @@
   "proFunnelEvidencePackCopy": {
     "message": "Copy evidence pack",
     "description": "Pro funnel evidence pack copy button label"
+  },
+  "proWaitlistSurveyIntentDistribution7dExport": {
+    "message": "Export last 7 days survey intent distribution (JSON)",
+    "description": "Export last 7 days Pro waitlist survey intent distribution as JSON button label in Options privacy tab"
+  },
+  "proWaitlistSurveyIntentDistribution7dExportSuccess": {
+    "message": "JSON exported (survey_intent=$1)",
+    "description": "Pro waitlist survey intent distribution JSON export success notification ($1=survey_intent count)"
+  },
+  "proWaitlistSurveyIntentDistribution7dExportFailed": {
+    "message": "Export failed",
+    "description": "Pro waitlist survey intent distribution JSON export failure notification"
+  },
+  "proWaitlistSurveyIntentDistribution7dExportTelemetryOff": {
+    "message": "Anonymous usage data is OFF: no distribution exported",
+    "description": "Notification when exporting survey intent distribution while anonymous usage data is disabled"
   },
   "proIntentEvents7dCsvExport": {
     "message": "Export last 7 days Pro intent events (CSV)",
