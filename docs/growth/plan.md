@@ -70,5 +70,6 @@ UTM 约定（分渠道归因）：
 每日落盘（手动执行）：
 - 记录发布链接、曝光/点击/安装/反馈：`docs/growth/metrics-tracker-2026-03-23.md`
 - 手动发布步骤清单：`docs/growth/checklists/manual-posting-2026-03-23.md`
+- D1 手动发布清单（Indie Hackers + 教程贴）：`docs/growth/checklists/manual-posting-2026-03-24.md`
 - 每日执行清单：`docs/growth/checklists/daily-ops-2026-03-23.md`
 - 反馈处理清单：`docs/growth/checklists/feedback-triage-2026-03-23.md`

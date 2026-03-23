@@ -1,17 +1,17 @@
 # Roadmap 状态（断点续孵化）
 
 ## 当前阶段
-- Stage：S0 上架与商店端取证闭环（收入优先）
+- Stage：S4 Pro 商业化 MVP（试水，不破坏免费核心体验）
 - 当前版本：`manifest.json` = `1.1.28`
 - 当前状态：插件已发布到 Chrome Web Store；官网已上线，进入“并行推广获客 + 商业化验证”模式
   - 官网：`https://copy.useai.online/`
   - 商店：`https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic`
-- 核心目标：把“上架 = 获客入口 + Pro 候补 CTA = 商业化验证入口”的链路真正跑通：一边开始增长循环，一边补齐商店端取证与可导出的漏斗/留资证据，确保可审计/可复核/可复盘。
+- 核心目标（收入第一）：把「Pro 候补（问卷意向）-> 可导出证据 -> 离线决策摘要 -> 订阅 MVP go/no-go」这条真实收入回报路径跑通；并与“并行推广获客”形成闭环（可审计/可复核/可复盘）。
 
 ## 当前进度
-- 当前进度一句话结论：v1-90 已完成「Pro 意向跑数取证」执行闭环（Options 一键导出单文件证据包 + 离线脚本落盘到 `docs/evidence/v1-90/` 并固化 sha256）；下一步以收入为先：持续跑数提升 `survey_intent` 样本量 + 例行生成离线决策摘要，为 S4「收款/订阅链路打通」go/no-go 提供更可信输入。
-- S0 进度：8/10（80%）（以 `docs/roadmap.md` 为准）
-- S4 进度：4/6（66.7%）（以 `docs/roadmap.md` 为准）
+- 当前进度一句话结论：v1-90 已完成「Pro 意向跑数取证」执行闭环（Options 一键导出单文件证据包 + 离线脚本落盘到 `docs/evidence/v1-90/` 并固化 sha256）；当前阻塞不在“取证链路”，而在“意向样本量不足（`survey_intent < 30`）”：下一步必须通过产品内低打扰引导，把 `pro_waitlist_survey_copied` 跑起来，并持续导出 v1-90 证据包供周度复盘与对账。
+- S0 进度：8/10（80%）（以 `docs/roadmap.md` 为准；商店端取证仍受外网/权限阻塞）
+- S4 进度：4/7（57.1%）（以 `docs/roadmap.md` 为准；下一步先提升意向样本量，再推进收款/订阅）
 
 本轮推进的阶段里程碑：
 - [x] （S4 / v1-80）问卷信号结构化 + 7d 分布导出 + 可审计证据/用例/单测门禁
@@ -38,9 +38,9 @@
 - 本轮交付主题：已交付（v1-90 / S4）Pro 意向跑数取证执行闭环：证据包一键导出 + 落盘复盘材料（子 PRD：`prds/v1-90.md`）
 
 ## 下一步最重要的 3 件事（收入优先）
-1. （S4）持续跑数提升 `survey_intent`：引导真实用户完成问卷并产生 `pro_waitlist_survey_copied`，例行导出 v1-90 证据包并落盘到 `docs/evidence/v1-90/`（用于周度复盘与对账）
+1. （S4 / v1-91）提升 `survey_intent` 样本量：在 Popup 侧新增/调整“1 分钟问卷”低打扰引导（可稍后/不再提示）并补齐可导出的漏斗证据口径，推动真实用户产生 `pro_waitlist_survey_copied`
 2. （S4）例行生成离线决策摘要：基于最新 7d 分布执行 `scripts/build-pro-intent-decision-pack.ts`，判断是否接近/达到订阅 MVP 决策阈值（不足则继续收集）
-3. （S4）推进「收款/订阅链路打通」前置输入：确认 Stripe/定价/退款口径与账号权限；在输入齐备前，先补齐订阅 MVP 的接口/页面最小设计与可审计验收清单
+3. （增长并行）执行首发/分发与回填指标：按 `docs/growth/checklists/manual-posting-2026-03-23.md` 发帖并回填 `docs/growth/metrics-tracker-2026-03-23.md`，确保增长循环可复盘（带 campaign）
 
 ## 阻塞与需要的人类输入
 - 并行增长循环“手动首发/回填指标”：需要外网可达（DNS/网络）+ 渠道账号/登录会话（X/LinkedIn/Reddit/HN/PH/IH 等），并按 `docs/growth/checklists/manual-posting-2026-03-23.md` 执行后回填 `docs/growth/metrics-tracker-2026-03-23.md`。

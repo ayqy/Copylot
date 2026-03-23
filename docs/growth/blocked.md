@@ -77,6 +77,7 @@ v1-71 进展（已落盘，但 Listing 同步/截图仍 BLOCKED）：
 - 复测（2026-03-23 12:38 CST）：以上 3 条仍失败（环境仍处于外网不可达状态）
 - 复测（2026-03-23 15:21 CST）：以上 3 条仍失败（环境仍处于外网不可达状态）
 - 复测（2026-03-23 15:48 CST）：以上 3 条仍失败（环境仍处于外网不可达状态）
+- 复测（2026-03-24）：`copy.useai.online`/`chromewebstore.google.com` 仍无法解析，且 `https://1.1.1.1` 仍无法直连（环境仍处于外网不可达状态）
 
 影响：
 - 无法抓取官网落地页真实文案/截图 → 无法基于真实落地页做渠道内容对齐
@@ -150,6 +151,7 @@ Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy
 
 已观测阻塞：
 - 在当前环境执行 `git commit`/`git restore` 等需要写入 `.git/` 的操作会失败：`fatal: Unable to create '.git/index.lock': Operation not permitted`
+- 复测（2026-03-24）：执行 `git add`/`git commit` 仍失败，错误同上
 
 所需输入清单：
 - 在人类开发环境中执行提交与推送（或授予本环境对 `.git/` 的写权限）
