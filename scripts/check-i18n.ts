@@ -91,7 +91,15 @@ function isSelectorContext(node: ts.Node): boolean {
       if (
         ts.isPropertyAccessExpression(parent.expression) &&
         ts.isIdentifier(parent.expression.name) &&
-        ['querySelector', 'querySelectorAll', 'matches', 'closest'].includes(parent.expression.name.text) &&
+        [
+          'querySelector',
+          'querySelectorAll',
+          'matches',
+          'closest',
+          'getElementById',
+          'getElementsByClassName',
+          'getElementsByTagName'
+        ].includes(parent.expression.name.text) &&
         parent.arguments.length > 0
       ) {
         // Check if our node is somewhere in the arguments chain
@@ -100,6 +108,52 @@ function isSelectorContext(node: ts.Node): boolean {
             return true;
           }
         }
+      }
+    }
+    parent = parent.parent;
+  }
+  return false;
+}
+
+function isGetMessageCall(node: ts.Node): boolean {
+  let parent = node.parent;
+  while (parent) {
+    if (ts.isCallExpression(parent)) {
+      if (
+        ts.isIdentifier(parent.expression) &&
+        parent.expression.text === 'getMessage' &&
+        parent.arguments.length > 0 &&
+        isNodeDescendantOf(node, parent.arguments[0])
+      ) {
+        return true;
+      }
+      if (
+        ts.isPropertyAccessExpression(parent.expression) &&
+        ts.isIdentifier(parent.expression.name) &&
+        parent.expression.name.text === 'getMessage' &&
+        parent.arguments.length > 0 &&
+        isNodeDescendantOf(node, parent.arguments[0])
+      ) {
+        return true;
+      }
+    }
+    parent = parent.parent;
+  }
+  return false;
+}
+
+function isDefinitionsContext(node: ts.Node): boolean {
+  let parent = node.parent;
+  while (parent) {
+    if (ts.isPropertyAssignment(parent)) {
+      const name = parent.name;
+      if (
+        ts.isIdentifier(name) &&
+        name.text === 'definitions' &&
+        parent.initializer &&
+        isNodeDescendantOf(node, parent.initializer)
+      ) {
+        return true;
       }
     }
     parent = parent.parent;
@@ -474,7 +528,12 @@ function checkStringLiteral(
   }
 
   // 排除 chrome.i18n.getMessage 调用
-  if (isI18nCall(node)) {
+  if (isI18nCall(node) || isGetMessageCall(node)) {
+    return;
+  }
+
+  // 排除定义/说明类输出（用于导出数据结构的 definitions 字段）
+  if (isDefinitionsContext(node)) {
     return;
   }
 
