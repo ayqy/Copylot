@@ -60,6 +60,7 @@ import {
   buildProIntentEventsCsv,
   formatProIntentEvents7dCsvFilename
 } from '../src/shared/pro-intent-events-csv.ts';
+import { buildProIntentRunEvidencePack, formatProIntentRunEvidencePackAsJson } from '../src/shared/pro-intent-run-evidence-pack.ts';
 import { buildProWaitlistSurveyIntentDistribution } from '../src/shared/pro-waitlist-survey-intent-distribution.ts';
 import {
   PRO_INTENT_BY_CAMPAIGN_CSV_COLUMNS,
@@ -1547,6 +1548,79 @@ async function run() {
 
   const proIntentCsvFilename = formatProIntentEvents7dCsvFilename(now);
   assert.ok(/^copylot-pro-intent-events-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proIntentCsvFilename));
+
+  // pro-intent-run-evidence-pack.ts (one-file audit pack; OFF must not include details/CSV)
+  const proIntentRunPackOff = buildProIntentRunEvidencePack({
+    enabled: false,
+    telemetryEvents: [{ name: 'pro_waitlist_survey_copied', ts: now, props: { source: 'popup', url: 'https://x' } }],
+    now,
+    extensionVersion: '1.1.28',
+    lookbackDays: 7,
+    getMessage: digestGetMessage
+  });
+  assert.deepEqual(Object.keys(proIntentRunPackOff).sort(), [
+    'disabledReason',
+    'enabled',
+    'env',
+    'packVersion',
+    'proFunnelSummary',
+    'proIntentEvents7dCsv',
+    'proIntentWeeklyDigestMarkdown',
+    'proWaitlistSurveyIntentDistribution'
+  ]);
+  assert.equal(proIntentRunPackOff.enabled, false);
+  assert.equal(proIntentRunPackOff.disabledReason, 'anonymous_usage_data_disabled');
+  assert.equal(proIntentRunPackOff.env.isAnonymousUsageDataEnabled, false);
+  assert.equal(proIntentRunPackOff.proFunnelSummary.enabled, false);
+  assert.equal(proIntentRunPackOff.proWaitlistSurveyIntentDistribution.enabled, false);
+  assert.equal(proIntentRunPackOff.proWaitlistSurveyIntentDistribution.disabledReason, 'anonymous_usage_data_disabled');
+  assert.equal(proIntentRunPackOff.proIntentEvents7dCsv, '');
+  assert.ok(proIntentRunPackOff.proIntentWeeklyDigestMarkdown.includes('匿名使用数据关闭'));
+
+  const proIntentRunPackOffJson = formatProIntentRunEvidencePackAsJson(proIntentRunPackOff);
+  assert.ok(!proIntentRunPackOffJson.includes('https://'));
+  assert.equal(JSON.parse(proIntentRunPackOffJson).disabledReason, 'anonymous_usage_data_disabled');
+
+  const proIntentRunPackOn = buildProIntentRunEvidencePack({
+    enabled: true,
+    telemetryEvents: [
+      { name: 'pro_prompt_shown', ts: now - 1000, props: { source: 'popup', url: 'https://evil.example.com' } },
+      { name: 'pro_entry_opened', ts: now - 900, props: { source: 'popup', title: 'secret-title' } },
+      { name: 'pro_waitlist_opened', ts: now - 800, props: { source: 'popup', copiedText: 'secret' } },
+      { name: 'pro_waitlist_copied', ts: now - 700, props: { source: 'popup', campaign: 'twitter' } },
+      {
+        name: 'pro_waitlist_survey_copied',
+        ts: now - 600,
+        props: {
+          source: 'options',
+          campaign: 'twitter',
+          pay_willing: 'yes',
+          pay_monthly: '10_20',
+          pay_annual: '100_200',
+          cap_advanced_cleaning: true,
+          contact: 'pii@example.com'
+        }
+      }
+    ],
+    now,
+    extensionVersion: '1.1.28',
+    lookbackDays: 7,
+    getMessage: digestGetMessage
+  });
+  assert.equal(proIntentRunPackOn.enabled, true);
+  assert.equal(proIntentRunPackOn.disabledReason, null);
+  assert.equal(proIntentRunPackOn.env.isAnonymousUsageDataEnabled, true);
+  assert.equal(proIntentRunPackOn.env.exportedAt, now);
+  assert.equal(proIntentRunPackOn.proFunnelSummary.enabled, true);
+  assert.equal(proIntentRunPackOn.proWaitlistSurveyIntentDistribution.enabled, true);
+  assert.equal(proIntentRunPackOn.proWaitlistSurveyIntentDistribution.survey_intent, 1);
+  assert.ok(proIntentRunPackOn.proIntentEvents7dCsv.startsWith(PRO_INTENT_EVENTS_CSV_COLUMNS.join(',')));
+  assert.ok(proIntentRunPackOn.proIntentWeeklyDigestMarkdown.includes('pro_waitlist_survey_copied'));
+
+  const proIntentRunPackOnJson = formatProIntentRunEvidencePackAsJson(proIntentRunPackOn);
+  assert.ok(!proIntentRunPackOnJson.includes('evil.example.com'));
+  assert.ok(!proIntentRunPackOnJson.includes('secret-title'));
+  assert.ok(!proIntentRunPackOnJson.includes('pii@example.com'));
 
   // pro-intent-by-campaign-csv.ts (pure functions + 7d window -> by campaign aggregation -> CSV)
   const proIntentByCampaignWindowA = buildProIntentEventsCsv({

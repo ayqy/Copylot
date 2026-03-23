@@ -25,6 +25,15 @@ if [[ "$before_growth_loop_hash" != "$after_growth_loop_hash" ]]; then
   exit 1
 fi
 
+node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-pro-intent-run-evidence-pack.ts docs/evidence/v1-90/pro-intent-run-evidence-pack.json
+before_intent_run_hash=$(shasum -a 256 docs/evidence/v1-90/index.md docs/evidence/v1-90/pro-intent-run-evidence-pack.json docs/evidence/v1-90/sha256.json)
+node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-pro-intent-run-evidence-pack.ts docs/evidence/v1-90/pro-intent-run-evidence-pack.json
+after_intent_run_hash=$(shasum -a 256 docs/evidence/v1-90/index.md docs/evidence/v1-90/pro-intent-run-evidence-pack.json docs/evidence/v1-90/sha256.json)
+if [[ "$before_intent_run_hash" != "$after_intent_run_hash" ]]; then
+  echo "Pro intent run evidence pack outputs should be deterministic"
+  exit 1
+fi
+
 node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-pro-intent-decision-pack.ts docs/evidence/v1-81/copylot-pro-waitlist-survey-intent-distribution-7d-2026-03-23.json
 before_intent_decision_hash=$(shasum -a 256 docs/evidence/v1-81/copylot-pro-intent-decision-summary-v1-81.md docs/evidence/v1-81/copylot-pro-intent-decision-summary-v1-81.json)
 node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-pro-intent-decision-pack.ts docs/evidence/v1-81/copylot-pro-waitlist-survey-intent-distribution-7d-2026-03-23.json

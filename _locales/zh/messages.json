@@ -1128,6 +1128,22 @@
     "message": "复制证据包",
     "description": "Pro 漏斗证据包复制按钮"
   },
+  "proIntentRunEvidencePackDownload": {
+    "message": "下载 Pro 意向跑数证据包（JSON）",
+    "description": "隐私页一键下载 Pro 意向跑数证据包 JSON 按钮"
+  },
+  "proIntentRunEvidencePackDownloadSuccess": {
+    "message": "已下载 Pro 意向跑数证据包",
+    "description": "Pro 意向跑数证据包下载成功提示"
+  },
+  "proIntentRunEvidencePackDownloadFailed": {
+    "message": "下载失败",
+    "description": "Pro 意向跑数证据包下载失败提示"
+  },
+  "proIntentRunEvidencePackDownloadTelemetryOffNotice": {
+    "message": "匿名使用数据关闭：已导出禁用证据包（不含明细）",
+    "description": "匿名开关 OFF 时下载 Pro 意向跑数证据包提示"
+  },
   "proWaitlistSurveyIntentDistribution7dExport": {
     "message": "导出问卷意向分布（过去 7 天，JSON）",
     "description": "隐私页导出过去 7 天问卷意向分布 JSON 按钮"

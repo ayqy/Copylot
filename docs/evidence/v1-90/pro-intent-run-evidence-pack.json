@@ -1,0 +1,132 @@
+{
+  "packVersion": "v1-90",
+  "enabled": true,
+  "disabledReason": null,
+  "env": {
+    "exportedAt": 1700000000000,
+    "extensionVersion": "1.1.28",
+    "isAnonymousUsageDataEnabled": true
+  },
+  "proFunnelSummary": {
+    "enabled": true,
+    "window": {
+      "maxEvents": 100,
+      "policy": "fifo",
+      "scope": "current_window_only"
+    },
+    "bySource": {
+      "popup": {
+        "counts": {
+          "pro_prompt_shown": 1,
+          "pro_prompt_action": 1,
+          "pro_entry_opened": 1,
+          "pro_waitlist_opened": 1,
+          "pro_waitlist_copied": 1,
+          "pro_waitlist_survey_copied": 0
+        },
+        "lastTs": {
+          "pro_prompt_shown": 1699999999000,
+          "pro_prompt_action": 1699999999100,
+          "pro_entry_opened": 1699999999200,
+          "pro_waitlist_opened": 1699999999300,
+          "pro_waitlist_copied": 1699999999400,
+          "pro_waitlist_survey_copied": null
+        },
+        "rates": {
+          "entry_opened_per_prompt_shown": 1,
+          "waitlist_opened_per_prompt_shown": 1,
+          "waitlist_opened_per_entry_opened": 1,
+          "waitlist_copied_per_waitlist_opened": 1
+        }
+      },
+      "options": {
+        "counts": {
+          "pro_prompt_shown": 0,
+          "pro_prompt_action": 0,
+          "pro_entry_opened": 0,
+          "pro_waitlist_opened": 0,
+          "pro_waitlist_copied": 0,
+          "pro_waitlist_survey_copied": 1
+        },
+        "lastTs": {
+          "pro_prompt_shown": null,
+          "pro_prompt_action": null,
+          "pro_entry_opened": null,
+          "pro_waitlist_opened": null,
+          "pro_waitlist_copied": null,
+          "pro_waitlist_survey_copied": 1699999999500
+        },
+        "rates": {
+          "entry_opened_per_prompt_shown": null,
+          "waitlist_opened_per_prompt_shown": null,
+          "waitlist_opened_per_entry_opened": null,
+          "waitlist_copied_per_waitlist_opened": null
+        }
+      }
+    },
+    "overall": {
+      "counts": {
+        "pro_prompt_shown": 1,
+        "pro_prompt_action": 1,
+        "pro_entry_opened": 1,
+        "pro_waitlist_opened": 1,
+        "pro_waitlist_copied": 1,
+        "pro_waitlist_survey_copied": 1
+      },
+      "lastTs": {
+        "pro_prompt_shown": 1699999999000,
+        "pro_prompt_action": 1699999999100,
+        "pro_entry_opened": 1699999999200,
+        "pro_waitlist_opened": 1699999999300,
+        "pro_waitlist_copied": 1699999999400,
+        "pro_waitlist_survey_copied": 1699999999500
+      },
+      "rates": {
+        "entry_opened_per_prompt_shown": 1,
+        "waitlist_opened_per_prompt_shown": 1,
+        "waitlist_opened_per_entry_opened": 1,
+        "waitlist_copied_per_waitlist_opened": 1
+      }
+    }
+  },
+  "proWaitlistSurveyIntentDistribution": {
+    "enabled": true,
+    "exportedAt": 1700000000000,
+    "extensionVersion": "1.1.28",
+    "windowFrom": 1699395200000,
+    "windowTo": 1700000000000,
+    "lookbackDays": 7,
+    "maxEvents": 100,
+    "definitions": {
+      "window": "仅统计 windowFrom..windowTo（毫秒时间戳，闭区间）内的事件；超出窗口不计入。",
+      "survey_intent": "survey_intent = count(pro_waitlist_survey_copied)。",
+      "pay_willing": "pay_willing_*：按 props.pay_willing 聚合计数（yes|maybe|no|unknown）。空/非法 -> unknown。",
+      "price_monthly": "price_monthly_*：按 props.pay_monthly 聚合计数（lt_5|5_10|10_20|20_50|50_plus|unknown）。空/非法 -> unknown。",
+      "price_annual": "price_annual_*：按 props.pay_annual 聚合计数（lt_50|50_100|100_200|200_500|500_plus|unknown）。空/非法 -> unknown。",
+      "capability": "capability_*：按 cap_* 为 true 聚合计数（可多选，总和允许 > survey_intent）。未勾选/缺失 -> 不计入该能力。"
+    },
+    "survey_intent": 1,
+    "pay_willing_yes": 1,
+    "pay_willing_maybe": 0,
+    "pay_willing_no": 0,
+    "pay_willing_unknown": 0,
+    "price_monthly_lt_5": 0,
+    "price_monthly_5_10": 0,
+    "price_monthly_10_20": 1,
+    "price_monthly_20_50": 0,
+    "price_monthly_50_plus": 0,
+    "price_monthly_unknown": 0,
+    "price_annual_lt_50": 0,
+    "price_annual_50_100": 0,
+    "price_annual_100_200": 1,
+    "price_annual_200_500": 0,
+    "price_annual_500_plus": 0,
+    "price_annual_unknown": 0,
+    "capability_advanced_cleaning": 1,
+    "capability_batch_collection": 0,
+    "capability_prompt_pack": 0,
+    "capability_note_export": 0
+  },
+  "proIntentEvents7dCsv": "exportedAt,extensionVersion,windowFrom,windowTo,lookbackDays,eventTs,eventLocalTime,eventName,source\n1700000000000,1.1.28,1699395200000,1700000000000,7,1699999999200,2023-11-15 06:13:19,pro_entry_opened,popup\n1700000000000,1.1.28,1699395200000,1700000000000,7,1699999999300,2023-11-15 06:13:19,pro_waitlist_opened,popup\n1700000000000,1.1.28,1699395200000,1700000000000,7,1699999999400,2023-11-15 06:13:19,pro_waitlist_copied,popup\n1700000000000,1.1.28,1699395200000,1700000000000,7,1699999999500,2023-11-15 06:13:19,pro_waitlist_survey_copied,options\n",
+  "proIntentWeeklyDigestMarkdown": "# proIntentWeeklyDigestMdTitle\n\n## proIntentWeeklyDigestMdSectionWindow\n- from: 2023-11-08 06:13:20 (UTC+08:00)\n- to: 2023-11-15 06:13:20 (UTC+08:00)\n\n## proIntentWeeklyDigestMdSectionCountsOverall\n- pro_entry_opened: 1\n- pro_waitlist_opened: 1\n- pro_waitlist_copied: 1\n- pro_waitlist_survey_copied: 1\n\n## proIntentWeeklyDigestMdSectionCountsBySource\n| source | pro_entry_opened | pro_waitlist_opened | pro_waitlist_copied | pro_waitlist_survey_copied |\n| --- | --- | --- | --- | --- |\n| popup | 1 | 1 | 1 | 0 |\n| options | 0 | 0 | 0 | 1 |\n\n## proIntentWeeklyDigestMdSectionRatesOverall\n- waitlist_opened_per_entry_opened: 1\n- waitlist_copied_per_waitlist_opened: 1\n- survey_copied_per_entry_opened: 1\n\n## proIntentWeeklyDigestMdSectionEnv\n- extensionVersion: 1.1.28\n- exportedAt: 2023-11-15 06:13:20 (UTC+08:00) (1700000000000)\n- anonymousUsageData: ON\n\n## proIntentWeeklyDigestMdSectionPrivacy\nproIntentWeeklyDigestMdPrivacyStatement\n\n## proIntentWeeklyDigestMdSectionCampaignBreakdown\n| campaign | pro_waitlist_copied | pro_waitlist_survey_copied |\n| --- | --- | --- |\n| twitter | 1 | 1 |\n\n"
+}

@@ -145,3 +145,15 @@ Copy-pasting from the web is messy (ads/nav, broken tables, noisy code blocks).
 Copylot turns web content into clean, AI-ready Markdown/plain text/CSV (privacy-first, on-device; no copied content collected).
 Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter
 ```
+
+## 6) Git 自动 commit+push 受限（当前环境）
+
+已观测阻塞：
+- 在当前环境执行 `git commit`/`git restore` 等需要写入 `.git/` 的操作会失败：`fatal: Unable to create '.git/index.lock': Operation not permitted`
+
+所需输入清单：
+- 在人类开发环境中执行提交与推送（或授予本环境对 `.git/` 的写权限）
+
+无权限情况下可继续推进的替代动作：
+- 继续在工作区完成实现、生成离线证据与文档（`docs/evidence/`、`docs/test-cases/`、`docs/reports/`），并确保 `bash scripts/test.sh` 全量 PASS
+- 由人类在本地对照文件变更列表进行 `git add/commit/push`（或直接用 IDE 的 Source Control 完成）

@@ -84,6 +84,12 @@ import {
 } from '../shared/pro-weekly-channel-ops-evidence-pack';
 import { formatProWeeklyChannelOpsEvidencePackJsonFilename } from '../shared/pro-weekly-channel-ops-evidence-pack-filename';
 import {
+  buildProIntentRunEvidencePack,
+  formatProIntentRunEvidencePackAsJson,
+  formatProIntentRunEvidencePackJsonFilename,
+  type ProIntentRunEvidencePack
+} from '../shared/pro-intent-run-evidence-pack';
+import {
   buildProIntentByCampaignWeeklyReportSummary,
   formatProIntentByCampaignWeeklyReportMarkdown,
   type ProIntentByCampaignWeeklyReportEnvInfo
@@ -180,6 +186,7 @@ interface OptionsElements {
   proFunnelRefreshButton: HTMLButtonElement;
   proFunnelCopyButton: HTMLButtonElement;
   proFunnelEvidencePackCopyButton: HTMLButtonElement;
+  downloadProIntentRunEvidencePackButton: HTMLButtonElement;
   exportProWaitlistSurveyIntentDistribution7dJsonButton: HTMLButtonElement;
   exportProIntentEvents7dCsvButton: HTMLButtonElement;
   exportProIntentByCampaign7dCsvButton: HTMLButtonElement;
@@ -332,6 +339,9 @@ function getElements(): OptionsElements {
     proFunnelRefreshButton: document.getElementById('pro-funnel-refresh') as HTMLButtonElement,
     proFunnelCopyButton: document.getElementById('pro-funnel-copy') as HTMLButtonElement,
     proFunnelEvidencePackCopyButton: document.getElementById('pro-funnel-evidence-pack-copy') as HTMLButtonElement,
+    downloadProIntentRunEvidencePackButton: document.getElementById(
+      'download-pro-intent-run-evidence-pack'
+    ) as HTMLButtonElement,
     exportProWaitlistSurveyIntentDistribution7dJsonButton: document.getElementById(
       'export-pro-waitlist-survey-intent-distribution-7d-json'
     ) as HTMLButtonElement,
@@ -2043,6 +2053,82 @@ async function downloadProWeeklyChannelOpsEvidencePackJson(): Promise<void> {
   }
 }
 
+async function buildProIntentRunEvidencePackForDownload(): Promise<ProIntentRunEvidencePack> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for pro intent run evidence pack:', error);
+  }
+
+  const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+
+  // Anonymous usage data OFF: allow download, but do not read / infer any history (including storage reads).
+  if (!enabled) {
+    return buildProIntentRunEvidencePack({
+      enabled: false,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      lookbackDays: 7,
+      getMessage
+    });
+  }
+
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    return buildProIntentRunEvidencePack({
+      enabled: true,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      lookbackDays: 7,
+      getMessage
+    });
+  }
+
+  const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+  return buildProIntentRunEvidencePack({
+    enabled: true,
+    telemetryEvents: result[TELEMETRY_EVENTS_KEY],
+    now: exportedAt,
+    extensionVersion,
+    lookbackDays: 7,
+    getMessage
+  });
+}
+
+async function downloadProIntentRunEvidencePackJson(): Promise<void> {
+  let pack: ProIntentRunEvidencePack;
+  let text: string;
+  let filename: string;
+
+  try {
+    pack = await buildProIntentRunEvidencePackForDownload();
+    text = formatProIntentRunEvidencePackAsJson(pack);
+    filename = formatProIntentRunEvidencePackJsonFilename(
+      pack.env?.exportedAt ?? Date.now(),
+      Boolean(pack.env?.isAnonymousUsageDataEnabled)
+    );
+  } catch (error) {
+    console.warn('Failed to build pro intent run evidence pack for download:', error);
+    showNotification(getMessage('proIntentRunEvidencePackDownloadFailed'), 'error');
+    return;
+  }
+
+  try {
+    downloadTextFile(filename, text, 'application/json');
+    if (pack.enabled) {
+      showNotification(getMessage('proIntentRunEvidencePackDownloadSuccess'), 'success');
+    } else {
+      showNotification(getMessage('proIntentRunEvidencePackDownloadTelemetryOffNotice'), 'info');
+    }
+  } catch (error) {
+    console.warn('Failed to download pro intent run evidence pack:', error);
+    showNotification(getMessage('proIntentRunEvidencePackDownloadFailed'), 'error');
+  }
+}
+
 function downloadTextFile(filename: string, text: string, mimeType: string): void {
   const blob = new Blob([text], { type: mimeType });
   const url = URL.createObjectURL(blob);
@@ -2691,6 +2777,9 @@ function setupEventListeners() {
   });
   elements.proFunnelEvidencePackCopyButton.addEventListener('click', () => {
     void copyProFunnelEvidencePackToClipboard();
+  });
+  elements.downloadProIntentRunEvidencePackButton.addEventListener('click', () => {
+    void downloadProIntentRunEvidencePackJson();
   });
   elements.exportProWaitlistSurveyIntentDistribution7dJsonButton.addEventListener('click', () => {
     void exportProWaitlistSurveyIntentDistribution7dJson();

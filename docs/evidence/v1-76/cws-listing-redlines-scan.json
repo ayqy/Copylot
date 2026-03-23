@@ -6,18 +6,18 @@
   "inputs": [
     {
       "path": "docs/ChromeWebStore-Description-EN.md",
-      "bytes": 3335,
-      "sha256": "0e5ba6e42d46070e59f50a7f6345c6d7fbdb55c399704348b99664f33cbafdc5"
+      "bytes": 3369,
+      "sha256": "9d77013eb3ec54391b9bd5d775116f4dd1489885a7dc786cfa19f4d7b0bcff3d"
     },
     {
       "path": "docs/ChromeWebStore-Description-ZH.md",
-      "bytes": 3193,
-      "sha256": "29bf693c36657f4893337b6bddf1a2f9cde41a157aa1dafe2a5367ae08e320ab"
+      "bytes": 3235,
+      "sha256": "22bba47de6a5b41fe87cba18a79af21b73bab1713f8d3f9ff4588a1215bc84ac"
     },
     {
       "path": "docs/aso/keywords.md",
-      "bytes": 1917,
-      "sha256": "76ec62d6759bfb012054d1e4e62491b5690ff2ecf3d95ffa8b1ed6a204490227"
+      "bytes": 2217,
+      "sha256": "eb702760c5b5895d7388b193966aa5f1643ec0ec536c22d42315b5ec6b345ac8"
     }
   ],
   "hits": [

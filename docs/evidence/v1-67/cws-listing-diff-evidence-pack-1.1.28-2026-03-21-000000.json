@@ -4,7 +4,7 @@
   "extensionVersion": "1.1.28",
   "baseline": {
     "packPath": "docs/evidence/v1-66/cws-listing-evidence-pack-1.1.28-2026-03-21-000000.json",
-    "sha256": "c1e47d6b12da9759a1722a2ce81dee083ab83eabe82afc4532ea146d51327eb7",
+    "sha256": "cb20bf54f20a61b6e5b6c15c02bb36022eba4ddd59e2e7389479fc1c6d94db8d",
     "extensionVersion": "1.1.28",
     "exportedAt": "2026-03-21T00:00:00.000Z",
     "assertions": {
@@ -16,7 +16,7 @@
   },
   "current": {
     "packPath": "docs/evidence/v1-67/cws-listing-evidence-pack-1.1.28-2026-03-21-000000.json",
-    "sha256": "c1e47d6b12da9759a1722a2ce81dee083ab83eabe82afc4532ea146d51327eb7",
+    "sha256": "cb20bf54f20a61b6e5b6c15c02bb36022eba4ddd59e2e7389479fc1c6d94db8d",
     "extensionVersion": "1.1.28",
     "exportedAt": "2026-03-21T00:00:00.000Z",
     "assertions": {
@@ -34,10 +34,10 @@
       "zhRemoved": []
     },
     "descriptions": {
-      "enSha256From": "0e5ba6e42d46070e59f50a7f6345c6d7fbdb55c399704348b99664f33cbafdc5",
-      "enSha256To": "0e5ba6e42d46070e59f50a7f6345c6d7fbdb55c399704348b99664f33cbafdc5",
-      "zhSha256From": "29bf693c36657f4893337b6bddf1a2f9cde41a157aa1dafe2a5367ae08e320ab",
-      "zhSha256To": "29bf693c36657f4893337b6bddf1a2f9cde41a157aa1dafe2a5367ae08e320ab"
+      "enSha256From": "9d77013eb3ec54391b9bd5d775116f4dd1489885a7dc786cfa19f4d7b0bcff3d",
+      "enSha256To": "9d77013eb3ec54391b9bd5d775116f4dd1489885a7dc786cfa19f4d7b0bcff3d",
+      "zhSha256From": "22bba47de6a5b41fe87cba18a79af21b73bab1713f8d3f9ff4588a1215bc84ac",
+      "zhSha256To": "22bba47de6a5b41fe87cba18a79af21b73bab1713f8d3f9ff4588a1215bc84ac"
     },
     "screenshotPlan": {
       "changedIds": []

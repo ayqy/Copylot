@@ -1128,6 +1128,22 @@
     "message": "Copy evidence pack",
     "description": "Pro funnel evidence pack copy button label"
   },
+  "proIntentRunEvidencePackDownload": {
+    "message": "Download Pro intent run evidence pack (JSON)",
+    "description": "One-click download Pro intent run evidence pack JSON in Options privacy tab"
+  },
+  "proIntentRunEvidencePackDownloadSuccess": {
+    "message": "Evidence pack downloaded",
+    "description": "Pro intent run evidence pack download success notification"
+  },
+  "proIntentRunEvidencePackDownloadFailed": {
+    "message": "Download failed",
+    "description": "Pro intent run evidence pack download failure notification"
+  },
+  "proIntentRunEvidencePackDownloadTelemetryOffNotice": {
+    "message": "Anonymous usage data is OFF: exported a disabled evidence pack (no details)",
+    "description": "Notification when downloading Pro intent run evidence pack while anonymous usage data is disabled"
+  },
   "proWaitlistSurveyIntentDistribution7dExport": {
     "message": "Export last 7 days survey intent distribution (JSON)",
     "description": "Export last 7 days Pro waitlist survey intent distribution as JSON button label in Options privacy tab"
