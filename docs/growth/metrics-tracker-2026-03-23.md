@@ -15,10 +15,10 @@
 | 2026-03-23 | Reddit/HN | reddit/hn |  |  |  |  |  |  |  |  |  |  |
 | 2026-03-24 | Indie Hackers | indiehackers |  |  |  |  |  |  |  |  |  |  |
 | 2026-03-25 | Reddit/HN（补齐） | reddit/hn |  |  |  |  |  |  |  |  |  |  |
-| 2026-03-26 | X/Twitter（用例贴） | twitter |  |  |  |  |  |  |  |  |  |  |
-| 2026-03-27 | Product Hunt / 替代渠道 | producthunt |  |  |  |  |  |  |  |  |  |  |
-| 2026-03-28 | 中文渠道二次分发 | wechat/jike |  |  |  |  |  |  |  |  |  |  |
-| 2026-03-29 | 隐私与可观测性说明贴 | twitter/linkedin |  |  |  |  |  |  |  |  |  |  |
+| 2026-03-26 | Product Hunt / 替代渠道 | producthunt |  |  |  |  |  |  |  |  |  |  |
+| 2026-03-27 | 中文渠道二次分发 | wechat/jike |  |  |  |  |  |  |  |  |  |  |
+| 2026-03-28 | 隐私与可观测性说明贴 | twitter/linkedin |  |  |  |  |  |  |  |  |  |  |
+| 2026-03-29 | 反馈复盘征集（投票/问题贴） | twitter/wechat/jike |  |  |  |  |  |  |  |  |  |  |
 
 ## 2) 反馈记录（可复现优先）
 

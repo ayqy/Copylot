@@ -78,6 +78,7 @@ v1-71 进展（已落盘，但 Listing 同步/截图仍 BLOCKED）：
 - 复测（2026-03-23 15:21 CST）：以上 3 条仍失败（环境仍处于外网不可达状态）
 - 复测（2026-03-23 15:48 CST）：以上 3 条仍失败（环境仍处于外网不可达状态）
 - 复测（2026-03-24）：`curl -I --max-time 10 https://copy.useai.online/` / `curl -I --max-time 10 https://chromewebstore.google.com/` 仍为 `Could not resolve host`；且 `curl -I --max-time 10 https://1.1.1.1` 仍为 `Couldn't connect to server`（外网直连也不可达，非仅 DNS）
+- 复测（2026-03-24）：`scutil --dns` → `No DNS configuration available`（本机无 DNS 配置）；`dig/nslookup` 报 `bind: Operation not permitted`（环境权限限制导致无法进一步诊断）
 
 影响：
 - 无法抓取官网落地页真实文案/截图 → 无法基于真实落地页做渠道内容对齐
@@ -93,7 +94,7 @@ v1-71 进展（已落盘，但 Listing 同步/截图仍 BLOCKED）：
 - 生成今日增长执行记录（含节奏/指标）：`docs/growth/executions/2026-03-23.md`
 - 落盘“可访问落地页基准”快照（CWS 安装页）：`docs/growth/assets/landing/2026-03-23/cws-listing-snapshot.md`
 - 生成 7 天增长执行计划（含指标/渠道/反馈闭环）：`docs/growth/plan.md`
-- 生成手动发布清单（逐步操作）：`docs/growth/checklists/manual-posting-2026-03-23.md`
+- 生成手动发布清单（逐步操作）：`docs/growth/checklists/manual-posting-2026-03-23.md` ~ `docs/growth/checklists/manual-posting-2026-03-29.md`
 - 生成指标记录表（便于复盘）：`docs/growth/metrics-tracker-2026-03-23.md`
 
 网络恢复后的第一优先动作（30–60 分钟，建议尽量自动化并落盘证据）：

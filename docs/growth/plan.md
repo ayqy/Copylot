@@ -72,5 +72,9 @@ UTM 约定（分渠道归因）：
 - 手动发布步骤清单：`docs/growth/checklists/manual-posting-2026-03-23.md`
 - D1 手动发布清单（Indie Hackers + 教程贴）：`docs/growth/checklists/manual-posting-2026-03-24.md`
 - D2 手动发布清单（补齐 Reddit/HN + Append Mode 用例贴）：`docs/growth/checklists/manual-posting-2026-03-25.md`
+- D3 手动发布清单（Product Hunt / 替代渠道）：`docs/growth/checklists/manual-posting-2026-03-26.md`
+- D4 手动发布清单（中文渠道二次分发）：`docs/growth/checklists/manual-posting-2026-03-27.md`
+- D5 手动发布清单（隐私与可观测性说明贴）：`docs/growth/checklists/manual-posting-2026-03-28.md`
+- D6 手动发布清单（反馈复盘征集 + 迭代清单输出）：`docs/growth/checklists/manual-posting-2026-03-29.md`
 - 每日执行清单：`docs/growth/checklists/daily-ops-2026-03-23.md`
 - 反馈处理清单：`docs/growth/checklists/feedback-triage-2026-03-23.md`
