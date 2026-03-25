@@ -19,9 +19,8 @@
 ## 文案与链接
 - `xhs-post-copy.md`（发布文案）
 - `cta-links.md`（统一 CTA 链接）
-- `conversion-evidence-index.json`（campaign/source 与漏斗索引）
+- `conversion-evidence-index.json`（统一参数 + 漏斗索引 + 可审计字段：`channel/postUrl/targetUrl/campaign/source/intentSignal/evidencePath`）
 
 ## 校验要点
 - 所有入口必须统一：`utm_source=xhs` / `utm_medium=organic_social` / `utm_campaign=v1_96_growth_regression`
 - 素材页覆盖：封面 + 第 3-8 页
-

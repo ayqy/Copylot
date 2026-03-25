@@ -1,0 +1,11 @@
+{
+  "caseId": "A",
+  "pass": true,
+  "checkedEntries": 3,
+  "namingRules": {
+    "campaign": "v1_96_growth_regression",
+    "source": "xhs",
+    "medium": "organic_social"
+  },
+  "mismatches": []
+}

@@ -38,8 +38,9 @@
 - [ ] 将帖子 URL、发布时间、曝光/点击/评论、私信关键词记录到执行记录补充段。
 - [ ] 在 `docs/growth/assets/social/xhs/v1-96/conversion-evidence-index.json` 对照核验：
   - `campaign/source/medium` 是否一致；
-  - 入口链接是否完整可点；
-  - 漏斗事件索引是否可映射。
+  - `channel/postUrl/targetUrl/campaign/source/intentSignal/evidencePath` 是否齐全；
+  - 入口链接是否完整可点，且每条记录都能追溯到证据文件。
+- [ ] 发布完成后回填 `conversionEntries[*].postUrl`，并同步更新 `auditChainSamples[*].postUrl`。
 - [ ] 如出现账号/权限阻塞，执行：
   1) 更新 `docs/growth/blocked.md`（触发环节、影响范围、替代动作、恢复条件）；
   2) 执行 `make todo` 刷新 `docs/growth/todo.md`。

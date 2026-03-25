@@ -1,0 +1,15 @@
+{
+  "caseId": "B",
+  "pass": true,
+  "checkedEntries": 3,
+  "requiredFields": [
+    "channel",
+    "postUrl",
+    "targetUrl",
+    "campaign",
+    "source",
+    "intentSignal",
+    "evidencePath"
+  ],
+  "issues": []
+}

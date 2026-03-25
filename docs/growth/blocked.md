@@ -66,6 +66,15 @@ v1-95 仍需人类输入（阻塞清单）：
 - 持续执行 `bash scripts/test.sh`，保证代理门禁、证据字段和既有发布链路稳定无回归。
 - 继续维护 Listing 文案与差异证据（`docs/evidence/v1-66/`、`docs/evidence/v1-67/`），待权限恢复后直接粘贴并截图取证。
 
+v1-96 顺延执行补充（Top1 -> Top2）：
+- 所需输入清单：
+  - 在目标 shell 启动 CWS 代理：`source ~/.bash_profile && pxy`（或 `pxy`）。
+  - 提供 CWS Developer Dashboard 编辑/发布权限，用于回切完成 v1-70/v1-71。
+- 无输入情况下可继续推进的替代动作：
+  - 持续维护 `docs/growth/assets/social/xhs/v1-96/conversion-evidence-index.json`，保持 `campaign/source/medium` 统一口径。
+  - 按 `docs/growth/checklists/manual-posting-xhs-v1-96.md` 执行手动发布并回填 `postUrl`、点击、安装、意向信号。
+  - 持续执行 `bash scripts/test.sh`，保证 Top2 文档与既有发布链路无回归。
+
 需要的人类输入（持续阻塞：网络/商店可达 + 账号权限）：
 - 提供可用的代理/VPN（确保可访问 `www.googleapis.com` 与 CWS API）；代理可为 `http/https/socks5/socks5h`，并给出包含 scheme 的代理地址/端口（例如 `http://127.0.0.1:7890` 或 `socks5h://127.0.0.1:1080`）。
 - 或在可直连 Google 的网络环境中执行 `npm run publish:cws` 完成发布，并按 `docs/test-cases/v1-45.md` / `docs/test-cases/v1-47.md` 生成商店端截图/索引取证。

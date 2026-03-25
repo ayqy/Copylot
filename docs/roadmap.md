@@ -2,7 +2,7 @@
 
 ## 现状摘要（以仓库为准）
 - 当前版本：`manifest.json` 显示为 `1.1.28`
-- 当前状态：已发布到 Chrome Web Store；官网已上线，并开始并行推广获客
+- 当前状态：已发布到 Chrome Web Store；官网已上线，并已进入并行推广获客
   - 官网：`https://copy.useai.online/`
   - 商店：`https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic`
 - 现有核心能力（用户可感知）
@@ -29,15 +29,16 @@
 
 ## 路线图（按 Stage 顺序，去时间化）
 - [ ] S0 上架与商店端取证闭环（收入优先）
-  - 进度：9/11（81.8%）
+  - 进度：10/12（83.3%）
   - [x] 发布诊断与证据包：`publish:cws` Proxy Diagnostic + Preflight + zip sha256 + `.publish.json` 口径固化（v1-47/v1-62）
   - [x] 上架前门禁与复盘模板：发布前检查清单 + 上架后复盘模板/用例/证据（v1-45）
   - [x] Listing 物料证据化：baseline pack + diff pack + 迭代落盘（v1-66/v1-67/v1-68）
   - [x] 离线可验证的“转化入口跑数基线”：从 `plugin-*.zip` 安装回归 + 导出 Pro 漏斗证据（v1-42）
   - [x] 真实 CWS 发布（default channel）（v1-69；已发布到商店，开始并行推广获客）
   - [x] 并行增长循环启动：官网/商店/Pro 候补转化入口一致化 + 可导出复盘证据（v1-75）
-  - [ ] 发布后回归与复盘证据补齐（从商店安装为准）（v1-70）
-  - [ ] Listing 同步落地 + 商店端取证（EN/ZH descriptions + keywords）（v1-71）
+  - [x] Top2 顺延交付：官网/CWS/Pro 候补入口参数统一 + 可导出转化证据索引补齐（v1-96）
+  - [ ] 发布后回归与复盘证据补齐（从商店安装为准；依赖 CWS 权限与 `pxy` 代理就绪）（v1-70）
+  - [ ] Listing 同步落地 + 商店端取证（EN/ZH descriptions + keywords；依赖 CWS 权限与 `pxy` 代理就绪）（v1-71）
   - [x] CWS 代理就绪门禁（`pxy`）与发布前置校验自动化（v1-95）
   - [x] 敏感词/夸大口径门禁口径定稿 + 自动化扫描/证据落盘（v1-72/v1-76）
   - [x] 合规 ASO 小步迭代（离线先落盘）：关键词矩阵 + 长描述微调 + diff 证据包（v1-77）
