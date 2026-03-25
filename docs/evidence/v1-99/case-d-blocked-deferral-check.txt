@@ -1,0 +1,7 @@
+用例 D：阻塞顺延一致性校验
+结论：PASS（Top1 持续阻塞，顺延执行记录一致）
+
+核验项：
+1) `docs/roadmap_status.md` 已明确 Top1 阻塞，并记录本轮按顺延规则执行 `prds/v1-99.md`。
+2) `docs/growth/blocked.md` 已补充 v1-99 所需人类输入清单与无凭据替代动作。
+3) `docs/growth/executions/v1-99-growth-backfill.md` 已记录阻塞分流结果与证据落盘。

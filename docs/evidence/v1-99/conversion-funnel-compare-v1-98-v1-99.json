@@ -1,0 +1,97 @@
+{
+  "runId": "v1-99-xhs-backfill",
+  "baselineRunId": "v1-98-xhs-backfill",
+  "metrics": [
+    "clicks",
+    "installs",
+    "proIntentSignals"
+  ],
+  "summary": {
+    "v1_98": {
+      "clicks": 62,
+      "installs": 12,
+      "proIntentSignals": 7
+    },
+    "v1_99": {
+      "clicks": 74,
+      "installs": 15,
+      "proIntentSignals": 9
+    },
+    "delta": {
+      "clicks": 12,
+      "installs": 3,
+      "proIntentSignals": 2
+    },
+    "deltaRate": {
+      "clicks": 0.1935,
+      "installs": 0.25,
+      "proIntentSignals": 0.2857
+    }
+  },
+  "entryBreakdown": [
+    {
+      "entry": "official_site",
+      "v1_98": {
+        "clicks": 26,
+        "installs": 5,
+        "proIntentSignals": 2
+      },
+      "v1_99": {
+        "clicks": 31,
+        "installs": 7,
+        "proIntentSignals": 3
+      },
+      "delta": {
+        "clicks": 5,
+        "installs": 2,
+        "proIntentSignals": 1
+      }
+    },
+    {
+      "entry": "chrome_web_store",
+      "v1_98": {
+        "clicks": 19,
+        "installs": 6,
+        "proIntentSignals": 1
+      },
+      "v1_99": {
+        "clicks": 24,
+        "installs": 6,
+        "proIntentSignals": 1
+      },
+      "delta": {
+        "clicks": 5,
+        "installs": 0,
+        "proIntentSignals": 0
+      }
+    },
+    {
+      "entry": "pro_waitlist",
+      "v1_98": {
+        "clicks": 17,
+        "installs": 1,
+        "proIntentSignals": 4
+      },
+      "v1_99": {
+        "clicks": 19,
+        "installs": 2,
+        "proIntentSignals": 5
+      },
+      "delta": {
+        "clicks": 2,
+        "installs": 1,
+        "proIntentSignals": 1
+      }
+    }
+  ],
+  "consistencyCheck": {
+    "result": "PASS",
+    "description": "v1-99 汇总值与 conversion-funnel-v1-99.csv、sample-audit-v1-99.json、docs/growth/metrics.md 一致。"
+  },
+  "sourceFiles": [
+    "docs/evidence/v1-98/conversion-funnel-v1-98.csv",
+    "docs/evidence/v1-99/conversion-funnel-v1-99.csv",
+    "docs/evidence/v1-99/sample-audit-v1-99.json",
+    "docs/growth/metrics.md"
+  ]
+}

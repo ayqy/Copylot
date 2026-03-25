@@ -1,0 +1,125 @@
+{
+  "runId": "v1-99-xhs-backfill",
+  "objective": "三入口样本持续回填与 v1-98-v1-99 漏斗对比证据导出",
+  "sourceIndexPath": "docs/growth/assets/social/xhs/v1-96/conversion-evidence-index.json",
+  "newSampleCount": 3,
+  "requiredFields": [
+    "postUrl",
+    "targetUrl",
+    "campaign",
+    "source",
+    "medium",
+    "intentSignal",
+    "clicks",
+    "installs",
+    "proIntentSignals",
+    "evidencePath"
+  ],
+  "fieldCompleteness": {
+    "allRequiredFieldsPresent": true,
+    "missingBySample": []
+  },
+  "samples": [
+    {
+      "sampleId": "xhs-v1-99-official",
+      "entry": "official_site",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e37312000000002102a7c1",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "intentSignal": "landing_click",
+      "clicks": 31,
+      "installs": 7,
+      "proIntentSignals": 3,
+      "evidencePath": "docs/evidence/v1-99/sample-audit-v1-99.json"
+    },
+    {
+      "sampleId": "xhs-v1-99-cws",
+      "entry": "chrome_web_store",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e3734a000000002102a98f",
+      "targetUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "intentSignal": "store_visit_or_install",
+      "clicks": 24,
+      "installs": 6,
+      "proIntentSignals": 1,
+      "evidencePath": "docs/evidence/v1-99/sample-audit-v1-99.json"
+    },
+    {
+      "sampleId": "xhs-v1-99-pro",
+      "entry": "pro_waitlist",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e3737c000000002102ab43",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression#pro",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "intentSignal": "pro_waitlist_survey_copied",
+      "clicks": 19,
+      "installs": 2,
+      "proIntentSignals": 5,
+      "evidencePath": "docs/evidence/v1-99/sample-audit-v1-99.json"
+    }
+  ],
+  "rollup": {
+    "clicks": 74,
+    "installs": 15,
+    "proIntentSignals": 9,
+    "clickToInstallRate": 0.2027,
+    "installToIntentRate": 0.6
+  },
+  "compareBaseline": {
+    "baselineRunId": "v1-98-xhs-backfill",
+    "baseline": {
+      "clicks": 62,
+      "installs": 12,
+      "proIntentSignals": 7
+    },
+    "delta": {
+      "clicks": 12,
+      "installs": 3,
+      "proIntentSignals": 2
+    }
+  },
+  "consistencyChecks": [
+    {
+      "name": "utm_campaign/source/medium 口径一致",
+      "result": "PASS"
+    },
+    {
+      "name": "新增样本覆盖官网/CWS/Pro 候补三入口",
+      "result": "PASS"
+    },
+    {
+      "name": "至少两条样本满足 clicks>0 且 (installs>0 或 proIntentSignals>0)",
+      "result": "PASS"
+    }
+  ],
+  "auditTrailChecks": [
+    {
+      "name": "sampleId 与 conversionEntries 一一对应",
+      "result": "PASS"
+    },
+    {
+      "name": "auditChainSamples 存在同名链路",
+      "result": "PASS"
+    },
+    {
+      "name": "evidencePath 可映射到 v1-99 证据目录",
+      "result": "PASS"
+    }
+  ],
+  "exportables": [
+    "docs/evidence/v1-99/conversion-funnel-v1-99.csv",
+    "docs/evidence/v1-99/conversion-funnel-compare-v1-98-v1-99.json",
+    "docs/evidence/v1-99/sample-audit-v1-99.json",
+    "docs/growth/executions/v1-99-growth-backfill.md"
+  ],
+  "riskHandling": {
+    "top1Blocked": "CWS 权限 + source ~/.bash_profile && pxy 未就绪",
+    "deferredExecution": "按顺延规则执行 Top3 第 2 项（v1-99）",
+    "status": "completed_with_offline_auditable_artifacts"
+  }
+}

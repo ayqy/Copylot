@@ -1,0 +1,28 @@
+{
+  "case": "A",
+  "name": "样本完整性校验",
+  "result": "PASS",
+  "checks": {
+    "newSampleCount": 3,
+    "entriesCovered": [
+      "official_site",
+      "chrome_web_store",
+      "pro_waitlist"
+    ],
+    "postUrlNonPlaceholder": true,
+    "requiredFields": [
+      "postUrl",
+      "targetUrl",
+      "campaign",
+      "source",
+      "medium",
+      "intentSignal",
+      "clicks",
+      "installs",
+      "proIntentSignals",
+      "evidencePath"
+    ],
+    "qualifiedSamples": 3
+  },
+  "source": "docs/growth/assets/social/xhs/v1-96/conversion-evidence-index.json"
+}

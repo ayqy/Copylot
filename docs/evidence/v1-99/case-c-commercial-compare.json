@@ -1,0 +1,25 @@
+{
+  "case": "C",
+  "name": "商业化对比证据校验",
+  "result": "PASS",
+  "requiredExports": [
+    "docs/evidence/v1-99/conversion-funnel-v1-99.csv",
+    "docs/evidence/v1-99/conversion-funnel-compare-v1-98-v1-99.json",
+    "docs/evidence/v1-99/sample-audit-v1-99.json"
+  ],
+  "compareResult": {
+    "baselineRunId": "v1-98-xhs-backfill",
+    "currentRunId": "v1-99-xhs-backfill",
+    "delta": {
+      "clicks": 12,
+      "installs": 3,
+      "proIntentSignals": 2
+    }
+  },
+  "metricsReviewed": {
+    "clicks": 74,
+    "installs": 15,
+    "proIntentSignals": 9
+  },
+  "indexTraceable": true
+}

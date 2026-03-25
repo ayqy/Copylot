@@ -29,7 +29,7 @@
 
 ## 路线图（按 Stage 顺序，去时间化）
 - [ ] S0 上架与商店端取证闭环（收入优先）
-  - 进度：12/14（85.7%）
+  - 进度：13/15（86.7%）
   - [x] 发布诊断与证据包：`publish:cws` Proxy Diagnostic + Preflight + zip sha256 + `.publish.json` 口径固化（v1-47/v1-62）
   - [x] 上架前门禁与复盘模板：发布前检查清单 + 上架后复盘模板/用例/证据（v1-45）
   - [x] Listing 物料证据化：baseline pack + diff pack + 迭代落盘（v1-66/v1-67/v1-68）
@@ -39,6 +39,7 @@
   - [x] Top2 顺延交付：官网/CWS/Pro 候补入口参数统一 + 可导出转化证据索引补齐（v1-96）
   - [x] 并行增长循环真实发布回填 + 转化证据入索引（v1-97）
   - [x] Top2 顺延增量：xhs 可转化样本扩展 + 转化证据索引批量回填与一致性门禁（v1-98）
+  - [x] Top2 持续增量：新增样本回填 + `clicks -> installs -> proIntentSignals` 对比证据导出（v1-99）
   - [ ] 发布后回归与复盘证据补齐（从商店安装为准；依赖 CWS 权限与 `pxy` 代理就绪）（v1-70）
   - [ ] Listing 同步落地 + 商店端取证（EN/ZH descriptions + keywords；依赖 CWS 权限与 `pxy` 代理就绪）（v1-71）
   - [x] CWS 代理就绪门禁（`pxy`）与发布前置校验自动化（v1-95）

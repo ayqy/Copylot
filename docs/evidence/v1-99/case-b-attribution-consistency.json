@@ -1,0 +1,29 @@
+{
+  "case": "B",
+  "name": "归因一致性校验",
+  "result": "PASS",
+  "expectedCampaign": "v1_96_growth_regression",
+  "expectedSource": "xhs",
+  "expectedMedium": "organic_social",
+  "samples": [
+    {
+      "sampleId": "xhs-v1-99-official",
+      "entry": "official_site",
+      "mappingStatus": "PASS"
+    },
+    {
+      "sampleId": "xhs-v1-99-cws",
+      "entry": "chrome_web_store",
+      "mappingStatus": "PASS"
+    },
+    {
+      "sampleId": "xhs-v1-99-pro",
+      "entry": "pro_waitlist",
+      "mappingStatus": "PASS"
+    }
+  ],
+  "sourceFiles": [
+    "docs/growth/assets/social/xhs/v1-96/conversion-evidence-index.json",
+    "docs/growth/executions/v1-99-growth-backfill.md"
+  ]
+}

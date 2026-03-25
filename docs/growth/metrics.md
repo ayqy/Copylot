@@ -73,6 +73,7 @@
 - clicks：`74`
 - installs：`15`
 - proIntentSignals：`9`
+- compare_baseline：`v1-98-xhs-backfill`（delta：`clicks +12`，`installs +3`，`proIntentSignals +2`）
 
 ## run_id: 20260325-122257-growth
 
