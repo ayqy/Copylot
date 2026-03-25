@@ -212,3 +212,29 @@ Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy
 - `curl` 预检至少满足官网/CWS 任一主链路可达，且外网连接稳定；
 - 小红书账号可正常登录并完成至少 1 次图文发布；
 - 发布后可回填转化证据（campaign/source + 三入口链接 + 意向信号）。
+
+## 8) 20260325-111835-growth 阻塞清单（PRD 门禁）
+
+已观测阻塞（2026-03-25 11:19 CST）：
+- `curl -I -L --max-time 12 https://copy.useai.online/` → `Could not resolve host: copy.useai.online`
+- `curl -I -L --max-time 12 https://chromewebstore.google.com/` → `Could not resolve host: chromewebstore.google.com`
+- `curl -I -L --max-time 12 https://1.1.1.1` → `Couldn't connect to server`
+- 证据目录：`docs/evidence/growth/20260325-111835-growth/`
+
+影响：
+- 触发 `network_blocked`，禁止所有 Playwright/MCP 浏览器自动化（外网与本地渲染均禁用）。
+- 无法真实发布到 `x/linkedin/reddit/hn/producthunt/indiehackers/xhs`，仅可离线生成内容与素材。
+
+需要的人类输入/凭据（短句、可执行、可复盘）：
+- [阻塞] 提供可访问外网的网络环境或代理（可用 `HTTP_PROXY/HTTPS_PROXY/ALL_PROXY`，含 scheme）。
+- [阻塞] 提供 7 个渠道账号登录态（至少 cookies 或可登录会话）：`x`、`linkedin`、`reddit`、`hn`、`producthunt`、`indiehackers`、`xhs`。
+- [阻塞] 若触发验证码/滑块，请先人工通过一次并保持 30 分钟有效会话。
+- [严重] 提供 Product Hunt 上线窗口（具体日期 + 时区），否则仅能持续预热不能正式发布。
+- [严重] 人工回填每条帖子 URL 与 24h 指标到 `docs/growth/metrics.md`，否则无法闭环复盘。
+- [可忽略] 若本轮无法渲染 PNG，可先发布纯文案并在下一轮补图。
+
+本轮已完成降级产物：
+- 渠道文案：`docs/growth/assets/generated/20260325-111835-growth/channel-posts.md`
+- xhs 成套素材源文件：`docs/growth/assets/generated/20260325-111835-growth/`
+- 手动发布清单：`docs/growth/checklists/manual-posting-20260325-111835-growth.md`
+- 执行记录：`docs/growth/executions/20260325-111835-growth.md`
