@@ -1,0 +1,8 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: chromewebstore.google.com
+
+# target: https://chromewebstore.google.com/
+# started_at: 2026-03-25T10:36:52+08:00
+# ended_at: 2026-03-25T10:36:52+08:00
+# exit_code: 6

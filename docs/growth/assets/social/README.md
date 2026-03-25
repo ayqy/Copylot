@@ -2,6 +2,14 @@
 
 目标：在无法实时抓取官网落地页截图时，先复用仓库内已有素材，保证 D0-D6 发帖“有图可配”，提升点击与安装转化。
 
+## v1-96 小红书成套竖版资产（可直接发布）
+
+- 目录：`docs/growth/assets/social/xhs/v1-96/`
+- 覆盖：封面 + 第 3-8 页内页（1080x1440 PNG）
+- 索引：`asset-index.md`
+- 文案：`xhs-post-copy.md`
+- CTA：`cta-links.md`
+
 ## 1) 推荐优先级（从高到低）
 
 1. 动图（最能解释价值）
@@ -26,4 +34,3 @@
 一旦能访问 `https://copy.useai.online/`，优先抓取官网 Hero/首屏截图并替换发帖配图（避免口径漂移）：
 - 取证目录：`docs/growth/assets/landing/`（按日期落盘）
 - 取证说明：`docs/growth/assets/landing/README.md`
-

@@ -1,0 +1,9 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (7) Failed to connect to 1.1.1.1 port 443 after 2 ms: Couldn't connect to server
+
+# target: https://1.1.1.1
+# started_at: 2026-03-25T10:36:52+08:00
+# ended_at: 2026-03-25T10:36:52+08:00
+# exit_code: 7

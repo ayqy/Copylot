@@ -174,3 +174,32 @@ Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy
 无权限情况下可继续推进的替代动作：
 - 继续在工作区完成实现、生成离线证据与文档（`docs/evidence/`、`docs/test-cases/`、`docs/reports/`），并确保 `bash scripts/test.sh` 全量 PASS
 - 由人类在本地对照文件变更列表进行 `git add/commit/push`（或直接用 IDE 的 Source Control 完成）
+
+## 7) v1-96 工厂增长回归阻塞（外网预检命中 `network_blocked`）
+
+已观测阻塞（2026-03-25，本机环境）：
+- `curl -I -L --max-time 15 https://copy.useai.online/` → `Could not resolve host: copy.useai.online`
+- `curl -I -L --max-time 15 https://chromewebstore.google.com/` → `Could not resolve host: chromewebstore.google.com`
+- `curl -I --max-time 10 https://1.1.1.1` → `Failed to connect to 1.1.1.1 port 443`
+- 证据：`docs/evidence/growth/v1-96-20260325-103441/network-preflight-summary.json`（`network_blocked=true`，`playwright_external_access=forbidden`）
+
+影响范围：
+- 无法执行 Playwright 外网自动化发布与自动化截图取证；
+- 无法直接完成真实小红书账号登录发布链路的自动化回归；
+- 只能执行“素材生成 + 手动清单 + 阻塞留痕”降级闭环。
+
+所需输入清单（人类）：
+- 可访问外网的网络环境或代理（支持 `HTTP_PROXY/HTTPS_PROXY/ALL_PROXY`，含 scheme）。
+- 可用小红书发布账号（含发布权限、稳定登录态；如开启 2FA 需可配合验证）。
+- 网络恢复后允许执行真实发布回填（帖子 URL、曝光、点击、评论、私信意向）。
+
+无凭据/无网络情况下可继续推进的替代动作（本轮已完成）：
+- 已生成 xhs 成套竖版图片资产：`docs/growth/assets/social/xhs/v1-96/`
+- 已生成手动发布清单：`docs/growth/checklists/manual-posting-xhs-v1-96.md`
+- 已生成执行记录与转化证据索引：`docs/growth/executions/v1-96-growth-regression.md`
+- 已执行 `make todo`，落盘待办队列：`docs/growth/todo.md`
+
+恢复条件：
+- `curl` 预检至少满足官网/CWS 任一主链路可达，且外网连接稳定；
+- 小红书账号可正常登录并完成至少 1 次图文发布；
+- 发布后可回填转化证据（campaign/source + 三入口链接 + 意向信号）。

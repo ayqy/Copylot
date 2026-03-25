@@ -1,0 +1,12 @@
+{
+  "run_id": "v1-96-20260325-103441",
+  "checked_at": "2026-03-25T02:37:31Z",
+  "targets": [
+    "https://copy.useai.online/",
+    "https://chromewebstore.google.com/",
+    "https://1.1.1.1"
+  ],
+  "network_blocked": true,
+  "routing_decision": "degrade_to_manual",
+  "playwright_external_access": "forbidden"
+}
