@@ -348,3 +348,10 @@ Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy
 - 按 `docs/growth/assets/social/xhs/v1-96/conversion-evidence-index.json` 持续回填新增样本，并保持 `campaign/source/medium` 一致。
 - 继续执行 `bash scripts/test.sh`，稳定门禁与证据生成脚本。
 - 继续补齐 `docs/evidence/v1-98/` 后续批次 CSV/JSON 证据，待 Top1 阻塞解除后直接回切 S0 主路径。
+
+## 9) 20260325-122257-growth 阻塞清单（按影响等级）
+
+- [阻塞] 外网/DNS 不可达：`copy.useai.online`、`chromewebstore.google.com` 解析失败，`1.1.1.1` 连接失败；需提供可用代理或可直连外网后复跑三目标 `curl --max-time 15` 预检。
+- [阻塞] 7 渠道登录态缺失：`x/linkedin/reddit/hn/producthunt/indiehackers/xhs` 均无可复用会话；需提供可发布账号登录态（cookies/session）。
+- [严重] 首次验证码/滑块未首过：社媒渠道真实发布链路不可自动化；需人工先通过一次挑战并保持会话。
+- [可忽略] Product Hunt 本轮顺延：受 `max_posts_per_cycle=6` 限制，仅保留预热文案，下一轮优先补发。

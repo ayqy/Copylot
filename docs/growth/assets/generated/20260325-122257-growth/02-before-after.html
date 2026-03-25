@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1080, initial-scale=1" />
+  <title>Copylot XHS 02 Before After</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      width: 1080px;
+      height: 1440px;
+      padding: 72px 68px;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color: #fff;
+      background: #0f172a;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 72px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+    .row {
+      display: flex;
+      gap: 22px;
+      margin-top: 8px;
+    }
+    .panel {
+      flex: 1;
+      border-radius: 24px;
+      padding: 24px;
+      min-height: 980px;
+    }
+    .before {
+      background: #1f2937;
+      border: 2px solid #374151;
+    }
+    .after {
+      background: linear-gradient(160deg, #1d4ed8 0%, #7c3aed 55%, #db2777 100%);
+      border: 2px solid rgba(255,255,255,0.35);
+    }
+    .title {
+      font-size: 42px;
+      font-weight: 900;
+      margin-bottom: 18px;
+    }
+    .item {
+      font-size: 34px;
+      line-height: 1.5;
+      margin: 0 0 16px;
+      font-weight: 600;
+    }
+    .bottom {
+      margin-top: auto;
+      font-size: 36px;
+      font-weight: 800;
+      color: #fbbf24;
+    }
+  </style>
+</head>
+<body>
+  <h1>复制前后对比</h1>
+  <div class="row">
+    <div class="panel before">
+      <div class="title">Before 😵</div>
+      <p class="item">• 正文混进导航与广告</p>
+      <p class="item">• 表格粘贴后列错位</p>
+      <p class="item">• 代码块带噪声与行号</p>
+      <p class="item">• 资料分散在多个页面</p>
+      <p class="item">• 输入 AI 前还要返工</p>
+    </div>
+    <div class="panel after">
+      <div class="title">After ⚡</div>
+      <p class="item">• 单击/双击复制核心区块</p>
+      <p class="item">• 表格一键转 Markdown / CSV</p>
+      <p class="item">• Shift 追加合并多页素材</p>
+      <p class="item">• 结果可直接进入 AI</p>
+      <p class="item">• 调研流程更稳定</p>
+    </div>
+  </div>
+  <div class="bottom">目标：减少“复制后清洗”的重复劳动</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "version": "v1-96",
-  "schemaVersion": "v1-96.3",
+  "schemaVersion": "v1-96.4",
   "namingRules": {
     "campaign": "v1_96_growth_regression",
     "source": "xhs",
@@ -114,6 +114,57 @@
       "proIntentSignals": 4,
       "expectedBehavior": "打开候补入口并提交/复制意向问卷",
       "evidencePath": "docs/evidence/v1-98/sample-audit-v1-98.json"
+    },
+    {
+      "sampleId": "xhs-v1-99-official",
+      "batchId": "v1-99-xhs-backfill",
+      "channel": "xhs",
+      "entry": "official_site",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e37312000000002102a7c1",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "intentSignal": "landing_click",
+      "clicks": 31,
+      "installs": 7,
+      "proIntentSignals": 3,
+      "expectedBehavior": "访问官网并进入安装或升级路径",
+      "evidencePath": "docs/evidence/v1-99/sample-audit-v1-99.json"
+    },
+    {
+      "sampleId": "xhs-v1-99-cws",
+      "batchId": "v1-99-xhs-backfill",
+      "channel": "xhs",
+      "entry": "chrome_web_store",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e3734a000000002102a98f",
+      "targetUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "intentSignal": "store_visit_or_install",
+      "clicks": 24,
+      "installs": 6,
+      "proIntentSignals": 1,
+      "expectedBehavior": "进入商店页面并触发安装",
+      "evidencePath": "docs/evidence/v1-99/sample-audit-v1-99.json"
+    },
+    {
+      "sampleId": "xhs-v1-99-pro",
+      "batchId": "v1-99-xhs-backfill",
+      "channel": "xhs",
+      "entry": "pro_waitlist",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e3737c000000002102ab43",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression#pro",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "intentSignal": "pro_waitlist_survey_copied",
+      "clicks": 19,
+      "installs": 2,
+      "proIntentSignals": 5,
+      "expectedBehavior": "打开候补入口并提交/复制意向问卷",
+      "evidencePath": "docs/evidence/v1-99/sample-audit-v1-99.json"
     }
   ],
   "funnelIndex": [
@@ -131,8 +182,12 @@
       "docs/growth/executions/v1-96-growth-regression.md",
       "docs/growth/executions/v1-97-growth-backfill.md",
       "docs/growth/executions/v1-98-growth-backfill.md",
+      "docs/growth/executions/v1-99-growth-backfill.md",
       "docs/evidence/v1-97/post-screenshot-index.json",
-      "docs/evidence/v1-98/post-screenshot-index.json"
+      "docs/evidence/v1-98/post-screenshot-index.json",
+      "docs/evidence/v1-99/conversion-funnel-v1-99.csv",
+      "docs/evidence/v1-99/conversion-funnel-compare-v1-98-v1-99.json",
+      "docs/evidence/v1-99/sample-audit-v1-99.json"
     ],
     "proIntentEvidence": [
       "docs/evidence/v1-90/pro-intent-run-evidence-pack.json",
@@ -199,26 +254,69 @@
       "installs": 1,
       "proIntentSignals": 4,
       "evidencePath": "docs/evidence/v1-98/sample-audit-v1-98.json"
+    },
+    {
+      "chainId": "xhs-v1-99-official-to-install",
+      "channel": "xhs",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e37312000000002102a7c1",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "conversionAction": "点击官网入口并触发安装",
+      "intentSignal": "landing_click",
+      "clicks": 31,
+      "installs": 7,
+      "proIntentSignals": 3,
+      "evidencePath": "docs/evidence/v1-99/sample-audit-v1-99.json"
+    },
+    {
+      "chainId": "xhs-v1-99-cws-to-install",
+      "channel": "xhs",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e3734a000000002102a98f",
+      "targetUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "conversionAction": "点击 CWS 入口并触发安装",
+      "intentSignal": "store_visit_or_install",
+      "clicks": 24,
+      "installs": 6,
+      "proIntentSignals": 1,
+      "evidencePath": "docs/evidence/v1-99/sample-audit-v1-99.json"
+    },
+    {
+      "chainId": "xhs-v1-99-pro-to-intent",
+      "channel": "xhs",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e3737c000000002102ab43",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression#pro",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "conversionAction": "点击 Pro 候补入口并产生意向信号",
+      "intentSignal": "pro_waitlist_survey_copied",
+      "clicks": 19,
+      "installs": 2,
+      "proIntentSignals": 5,
+      "evidencePath": "docs/evidence/v1-99/sample-audit-v1-99.json"
     }
   ],
   "backfillMeta": {
-    "runId": "v1-98-xhs-conversion-backfill",
+    "runId": "v1-99-xhs-backfill",
     "status": "completed",
     "postUrls": [
-      "https://www.xiaohongshu.com/explore/67e33a9f00000000210261f1",
-      "https://www.xiaohongshu.com/explore/67e33ac9000000002102637a",
-      "https://www.xiaohongshu.com/explore/67e33af400000000210264f0"
+      "https://www.xiaohongshu.com/explore/67e37312000000002102a7c1",
+      "https://www.xiaohongshu.com/explore/67e3734a000000002102a98f",
+      "https://www.xiaohongshu.com/explore/67e3737c000000002102ab43"
     ],
-    "evidenceIndexPath": "docs/evidence/v1-98/post-screenshot-index.json",
+    "evidenceIndexPath": "docs/evidence/v1-99/sample-audit-v1-99.json",
     "evidenceBundle": [
-      "docs/evidence/v1-98/conversion-funnel-v1-98.csv",
-      "docs/evidence/v1-98/sample-audit-v1-98.json"
+      "docs/evidence/v1-99/conversion-funnel-v1-99.csv",
+      "docs/evidence/v1-99/conversion-funnel-compare-v1-98-v1-99.json",
+      "docs/evidence/v1-99/sample-audit-v1-99.json"
     ],
     "rollupMetrics": {
       "addedSamples": 3,
-      "addedClicks": 62,
-      "addedInstalls": 12,
-      "addedProIntentSignals": 7
+      "addedClicks": 74,
+      "addedInstalls": 15,
+      "addedProIntentSignals": 9
     }
   },
   "assets": [

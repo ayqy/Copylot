@@ -1,0 +1,4 @@
+target	status	exit_code	message
+https://copy.useai.online/	failed	6	Could not resolve host
+https://chromewebstore.google.com/	failed	6	Could not resolve host
+https://1.1.1.1	failed	7	Couldn't connect to server
