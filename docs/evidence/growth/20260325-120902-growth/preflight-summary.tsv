@@ -1,0 +1,4 @@
+target	url	exit_code	verdict
+deployment_url	https://copy.useai.online/	6	blocked
+chrome_web_store	https://chromewebstore.google.com/	6	blocked
+cloudflare_dns	https://1.1.1.1	7	blocked
