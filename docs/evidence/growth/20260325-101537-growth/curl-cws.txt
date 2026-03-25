@@ -1,0 +1,6 @@
+# curl CWS 探测
+time: 2026-03-25 10:15:57 CST
+$ curl -I -L --max-time 20 https://chromewebstore.google.com/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: chromewebstore.google.com

@@ -1,0 +1,7 @@
+# curl 1.1.1.1 探测
+time: 2026-03-25 10:15:57 CST
+$ curl -I --max-time 10 https://1.1.1.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (7) Failed to connect to 1.1.1.1 port 443 after 3 ms: Couldn't connect to server
