@@ -14,7 +14,7 @@
 - 已知体验缺口（来自 `docs/Future-Features.md` 的方向性记录）
   - “真正的页面去噪/阅读模式级清洗”仍有提升空间
   - Popup 语言切换 UI 缺失（当前跟随系统语言）
-  - Prompt 数据（usageCount/lastUsedAt）未充分转化为排序/效率功能
+  - Prompt 数据（`usageCount`/`lastUsedAt`）未充分转化为排序/效率功能
   - 不同入口下 Prompt 应用范围可能不一致，需要统一预期
 
 ## 指标口径（Growth Metrics）
@@ -29,7 +29,7 @@
 
 ## 路线图（按 Stage 顺序，去时间化）
 - [ ] S0 上架与商店端取证闭环（收入优先）
-  - 进度：8/10（80%）
+  - 进度：9/11（81.8%）
   - [x] 发布诊断与证据包：`publish:cws` Proxy Diagnostic + Preflight + zip sha256 + `.publish.json` 口径固化（v1-47/v1-62）
   - [x] 上架前门禁与复盘模板：发布前检查清单 + 上架后复盘模板/用例/证据（v1-45）
   - [x] Listing 物料证据化：baseline pack + diff pack + 迭代落盘（v1-66/v1-67/v1-68）
@@ -38,6 +38,7 @@
   - [x] 并行增长循环启动：官网/商店/Pro 候补转化入口一致化 + 可导出复盘证据（v1-75）
   - [ ] 发布后回归与复盘证据补齐（从商店安装为准）（v1-70）
   - [ ] Listing 同步落地 + 商店端取证（EN/ZH descriptions + keywords）（v1-71）
+  - [x] CWS 代理就绪门禁（`pxy`）与发布前置校验自动化（v1-95）
   - [x] 敏感词/夸大口径门禁口径定稿 + 自动化扫描/证据落盘（v1-72/v1-76）
   - [x] 合规 ASO 小步迭代（离线先落盘）：关键词矩阵 + 长描述微调 + diff 证据包（v1-77）
 

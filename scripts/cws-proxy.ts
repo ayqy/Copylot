@@ -26,6 +26,17 @@ export type NoProxyEnvKey = (typeof NO_PROXY_ENV_PRIORITY)[number];
 export const CWS_PROXY_SUPPORTED_PROTOCOLS = ['http:', 'https:', 'socks5:', 'socks5h:'] as const;
 export type CwsProxySupportedProtocol = (typeof CWS_PROXY_SUPPORTED_PROTOCOLS)[number];
 
+export const CWS_PROXY_FIX_COMMANDS = Object.freeze({
+  startProxy: 'pxy',
+  startProxyWithProfile: 'source ~/.bash_profile && pxy',
+  retryDryRun: 'npm run publish:cws -- --dry-run'
+});
+
+export function buildProxyNotStartedFixCommand(options?: { retryCommand?: string | null }): string {
+  const retryCommand = options?.retryCommand?.trim() || CWS_PROXY_FIX_COMMANDS.retryDryRun;
+  return `${CWS_PROXY_FIX_COMMANDS.startProxyWithProfile} && ${retryCommand}`;
+}
+
 export class CwsProxyConfigError extends Error {
   public readonly help: string;
 

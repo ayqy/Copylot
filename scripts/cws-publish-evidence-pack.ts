@@ -2,7 +2,7 @@ import * as crypto from 'node:crypto';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
-import type { CwsPreflightReport } from './cws-preflight.ts';
+import type { CwsPreflightReport, CwsProxyReadiness } from './cws-preflight.ts';
 import type { CwsProxyDiagnostic } from './cws-proxy.ts';
 
 export const CWS_PUBLISH_EVIDENCE_PACK_VERSION = 'v1-62' as const;
@@ -38,6 +38,7 @@ export type CwsPublishEvidencePack = Readonly<{
   proxyDiagnostic: CwsProxyDiagnostic;
   preflightReport: CwsPreflightReport;
   preflightFixHints: string[];
+  proxyReadiness: CwsProxyReadiness;
   credentials: CwsPublishEvidenceCredentials;
   publishAttempt: CwsPublishEvidencePublishAttempt;
 }>;
@@ -112,6 +113,7 @@ export function buildCwsPublishEvidencePack(input: {
   proxyDiagnostic: CwsProxyDiagnostic;
   preflightReport: CwsPreflightReport;
   preflightFixHints: string[];
+  proxyReadiness: CwsProxyReadiness;
   credentials: CwsPublishEvidenceCredentials;
   publishAttempt: CwsPublishEvidencePublishAttempt;
 }): CwsPublishEvidencePack {
@@ -129,6 +131,11 @@ export function buildCwsPublishEvidencePack(input: {
     proxyDiagnostic: input.proxyDiagnostic,
     preflightReport: input.preflightReport,
     preflightFixHints: [...input.preflightFixHints],
+    proxyReadiness: {
+      status: input.proxyReadiness.status,
+      fixCommand: input.proxyReadiness.fixCommand,
+      blocking: input.proxyReadiness.blocking
+    },
     credentials: {
       extensionId: input.credentials.extensionId,
       clientId: input.credentials.clientId,
@@ -156,4 +163,3 @@ export async function writeCwsPublishEvidencePackJsonFile(options: {
   await fs.writeFile(outPath, json, 'utf-8');
   return { filePath: outPath };
 }
-

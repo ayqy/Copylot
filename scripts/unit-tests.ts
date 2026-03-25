@@ -99,6 +99,7 @@ import { buildWomEvidencePack, buildWomSummary } from '../src/shared/wom-summary
 import { cleanCodeBlockText } from '../src/shared/code-block-cleaner.ts';
 import { parsePromptSortMode, sortPrompts } from '../src/shared/prompt-sort.ts';
 import {
+  CWS_PROXY_FIX_COMMANDS,
   CwsProxyConfigError,
   createUndiciProxyDispatcher,
   maskProxyUrl,
@@ -106,7 +107,12 @@ import {
   parseAndValidateProxyUrl,
   resolveCwsProxyEnv
 } from './cws-proxy.ts';
-import { buildCwsPreflightFixHints, classifyCwsPreflightError, runCwsPreflight } from './cws-preflight.ts';
+import {
+  buildCwsPreflightFixHints,
+  classifyCwsPreflightError,
+  evaluateCwsProxyReadiness,
+  runCwsPreflight
+} from './cws-preflight.ts';
 import {
   buildCwsPublishEvidencePack,
   buildCwsPublishEvidenceZip,
@@ -2804,6 +2810,57 @@ async function run() {
     assert.equal(report.checks[2].failureType, 'connection_refused');
   }
 
+  {
+    const fakeFetch: typeof fetch = (async () => {
+      const err = new Error('fetch failed') as Error & { cause?: unknown };
+      err.cause = { code: 'ENOTFOUND', message: 'getaddrinfo ENOTFOUND www.googleapis.com' };
+      throw err;
+    }) as unknown as typeof fetch;
+    const report = await runCwsPreflight([{ id: 'throw', url: 'https://throw.test/' }], {
+      fetchFn: fakeFetch,
+      timeoutMs: 10,
+      now: (() => {
+        let t = 1000;
+        return () => (t += 5);
+      })(),
+      date: () => new Date('2026-03-21T00:00:00.000Z')
+    });
+
+    const readiness = evaluateCwsProxyReadiness(report, { enabled: false });
+    assert.equal(readiness.status, 'proxy_not_started');
+    assert.equal(readiness.blocking, true);
+    assert.ok(readiness.fixCommand?.includes('pxy'));
+    assert.ok(readiness.fixCommand?.includes(CWS_PROXY_FIX_COMMANDS.retryDryRun));
+
+    const hints = buildCwsPreflightFixHints(report, {
+      enabled: false,
+      envKey: null,
+      urlMasked: null,
+      protocol: null
+    });
+    const hintsText = hints.join('\n');
+    assert.ok(hintsText.includes('proxy_not_started'));
+    assert.ok(hintsText.includes(CWS_PROXY_FIX_COMMANDS.startProxy));
+    assert.ok(hintsText.includes(CWS_PROXY_FIX_COMMANDS.startProxyWithProfile));
+  }
+
+  {
+    const fakeFetch: typeof fetch = (async () => new Response('', { status: 404 })) as unknown as typeof fetch;
+    const report = await runCwsPreflight([{ id: 'ok', url: 'https://ok.test/' }], {
+      fetchFn: fakeFetch,
+      timeoutMs: 10,
+      now: (() => {
+        let t = 2000;
+        return () => (t += 5);
+      })(),
+      date: () => new Date('2026-03-21T00:00:00.000Z')
+    });
+    const readiness = evaluateCwsProxyReadiness(report, { enabled: true });
+    assert.equal(readiness.status, 'ready');
+    assert.equal(readiness.blocking, false);
+    assert.equal(readiness.fixCommand, null);
+  }
+
   // scripts/cws-publish-evidence-pack.ts (v1-62: publish:cws 诊断证据包（JSON）一键落盘)
   {
     const exportedAt = new Date('2026-03-21T01:02:03.000Z');
@@ -2857,8 +2914,12 @@ async function run() {
       urlMasked: null,
       protocol: null
     });
+    const proxyReadiness = evaluateCwsProxyReadiness(preflightReport, { enabled: false });
     assert.ok(fixHints.length > 0);
     assert.ok(fixHints.join('\n').includes('HTTPS_PROXY') || fixHints.join('\n').includes('CWS_PROXY'));
+    assert.equal(proxyReadiness.status, 'proxy_not_started');
+    assert.equal(proxyReadiness.blocking, true);
+    assert.ok(proxyReadiness.fixCommand?.includes('pxy'));
 
     const proxyDiagnostic = {
       diagnosticVersion: 'v1-47' as const,
@@ -2893,6 +2954,7 @@ async function run() {
       proxyDiagnostic,
       preflightReport,
       preflightFixHints: fixHints,
+      proxyReadiness,
       credentials: { extensionId: false, clientId: false, clientSecret: false, refreshToken: false },
       publishAttempt: {
         uploaded: false,
@@ -2913,9 +2975,11 @@ async function run() {
       'proxyDiagnostic',
       'preflightReport',
       'preflightFixHints',
+      'proxyReadiness',
       'credentials',
       'publishAttempt'
     ]);
+    assert.deepEqual(Object.keys(pack.proxyReadiness), ['status', 'fixCommand', 'blocking']);
     assert.deepEqual(Object.keys(pack.zip), ['fileName', 'filePath', 'bytes', 'sha256']);
     assert.deepEqual(Object.keys(pack.credentials), ['extensionId', 'clientId', 'clientSecret', 'refreshToken']);
 

@@ -21,6 +21,7 @@ import { execSync } from 'child_process';
 import { setGlobalDispatcher } from 'undici';
 
 import {
+  CWS_PROXY_FIX_COMMANDS,
   CwsProxyConfigError,
   buildCwsProxyDiagnostic,
   createUndiciProxyDispatcher,
@@ -30,6 +31,7 @@ import {
 } from './cws-proxy.ts';
 import {
   buildCwsPreflightFixHints,
+  evaluateCwsProxyReadiness,
   formatCwsPreflightReportBlock,
   formatCwsPublishDiagnosticPackBlock,
   getDefaultCwsPreflightTargets,
@@ -317,7 +319,7 @@ async function main() {
   const dryRun = hasFlag('--dry-run');
   const evidenceDirRaw = getFlagValue('--evidence-dir');
   if (evidenceDirRaw === '') {
-    logError('参数错误：--evidence-dir 需要提供一个目录路径（例如：--evidence-dir docs/evidence/v1-62/preflight/）');
+    logError('参数错误：--evidence-dir 需要提供一个目录路径（例如：--evidence-dir docs/evidence/v1-95/preflight/）');
     process.exit(1);
   }
   const evidenceDir = evidenceDirRaw === null ? null : evidenceDirRaw;
@@ -341,6 +343,11 @@ async function main() {
   let zipEvidence: Awaited<ReturnType<typeof buildCwsPublishEvidenceZip>> | null = null;
   let preflightFixHints: string[] = [];
   let preflightReport: Awaited<ReturnType<typeof runCwsPreflight>> | null = null;
+  let preflightProxyReadiness: ReturnType<typeof evaluateCwsProxyReadiness> = {
+    status: 'non_proxy_blocking',
+    fixCommand: null,
+    blocking: false
+  };
   let publishAttempt: CwsPublishEvidencePublishAttempt = {
     uploaded: false,
     published: false,
@@ -367,6 +374,18 @@ async function main() {
     if (exitCode === 0) {
       logInfo('网络可达性预检（Preflight）：开始');
       preflightReport = await runCwsPreflight(getDefaultCwsPreflightTargets(), { timeoutMs: 8_000 });
+      preflightProxyReadiness = evaluateCwsProxyReadiness(preflightReport, {
+        enabled: cwsProxyResolved.proxyEnabled
+      });
+      logInfo(`代理就绪状态（proxyReadiness.status）：${preflightProxyReadiness.status}`);
+
+      if (preflightProxyReadiness.status === 'proxy_not_started') {
+        console.error('\n[CWS] 预检阻塞分类：proxy_not_started');
+        console.error(`[CWS] 修复动作 1/2：${CWS_PROXY_FIX_COMMANDS.startProxy}`);
+        console.error(`[CWS] 修复动作 1/2（bash profile）：${CWS_PROXY_FIX_COMMANDS.startProxyWithProfile}`);
+        console.error(`[CWS] 修复动作 2/2：${CWS_PROXY_FIX_COMMANDS.retryDryRun}`);
+      }
+
       for (const check of preflightReport.checks) {
         if (check.ok) {
           logSuccess(
@@ -386,7 +405,8 @@ async function main() {
         formatCwsPublishDiagnosticPackBlock({
           packVersion: 'v1-47',
           proxy: cwsProxyDiagnostic,
-          preflight: preflightReport
+          preflight: preflightReport,
+          proxyReadiness: preflightProxyReadiness
         })
       );
 
@@ -410,7 +430,7 @@ async function main() {
             uploaded: false,
             published: false,
             channel: 'default',
-            errorCode: 'preflight_failed',
+            errorCode: preflightProxyReadiness.status,
             errorMessage: 'preflight failed: publish blocked'
           };
         } else {
@@ -552,6 +572,7 @@ async function main() {
             proxyDiagnostic: cwsProxyDiagnostic,
             preflightReport,
             preflightFixHints,
+            proxyReadiness: preflightProxyReadiness,
             credentials,
             publishAttempt
           });

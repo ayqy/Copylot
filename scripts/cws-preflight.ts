@@ -1,4 +1,4 @@
-import type { CwsProxyDiagnostic } from './cws-proxy.ts';
+import { CWS_PROXY_FIX_COMMANDS, buildProxyNotStartedFixCommand, type CwsProxyDiagnostic } from './cws-proxy.ts';
 
 export type CwsPreflightFailureType =
   | 'dns'
@@ -42,6 +42,15 @@ export type CwsPublishDiagnosticPack = Readonly<{
   packVersion: 'v1-47';
   proxy: CwsProxyDiagnostic;
   preflight: CwsPreflightReport;
+  proxyReadiness?: CwsProxyReadiness;
+}>;
+
+export type CwsProxyReadinessStatus = 'ready' | 'proxy_not_started' | 'network_blocked' | 'non_proxy_blocking';
+
+export type CwsProxyReadiness = Readonly<{
+  status: CwsProxyReadinessStatus;
+  fixCommand: string | null;
+  blocking: boolean;
 }>;
 
 export function getDefaultCwsPreflightTargets(): CwsPreflightTarget[] {
@@ -242,6 +251,42 @@ export function formatCwsPublishDiagnosticPackBlock(pack: CwsPublishDiagnosticPa
   ].join('\n');
 }
 
+function isNetworkReachabilityFailure(check: CwsPreflightCheckResult): boolean {
+  if (check.ok) return false;
+  if (check.failureType === 'dns') return true;
+  if (check.failureType === 'timeout') return true;
+  if (check.failureType === 'connection_refused') return true;
+  if (check.failureType === 'permission') return true;
+  if (check.failureType === 'unknown') return true;
+  if (check.failureType !== 'http_status') return false;
+  return check.status === 407 || (typeof check.status === 'number' && check.status >= 500);
+}
+
+export function evaluateCwsProxyReadiness(
+  report: CwsPreflightReport,
+  proxy: { enabled: boolean }
+): CwsProxyReadiness {
+  const failures = report.checks.filter((check) => !check.ok);
+  if (failures.length === 0) {
+    return { status: 'ready', fixCommand: null, blocking: false };
+  }
+
+  const hasNetworkReachabilityFailure = failures.some((check) => isNetworkReachabilityFailure(check));
+  if (hasNetworkReachabilityFailure && !proxy.enabled) {
+    return {
+      status: 'proxy_not_started',
+      fixCommand: buildProxyNotStartedFixCommand({ retryCommand: CWS_PROXY_FIX_COMMANDS.retryDryRun }),
+      blocking: true
+    };
+  }
+
+  if (hasNetworkReachabilityFailure) {
+    return { status: 'network_blocked', fixCommand: null, blocking: true };
+  }
+
+  return { status: 'non_proxy_blocking', fixCommand: null, blocking: true };
+}
+
 export function buildCwsPreflightFixHints(
   report: CwsPreflightReport,
   proxy: { enabled: boolean; envKey: string | null; urlMasked: string | null; protocol: string | null }
@@ -250,8 +295,19 @@ export function buildCwsPreflightFixHints(
   if (failures.length === 0) return [];
 
   const hints: string[] = [];
+  const proxyReadiness = evaluateCwsProxyReadiness(report, { enabled: proxy.enabled });
 
-  if (!proxy.enabled) {
+  if (proxyReadiness.status === 'proxy_not_started') {
+    hints.push('阻塞分类：proxy_not_started（目标网络不可达，且未检测到可用代理配置）。');
+    hints.push(`先启动代理：${CWS_PROXY_FIX_COMMANDS.startProxy}`);
+    hints.push(`若当前 shell 未加载 profile：${CWS_PROXY_FIX_COMMANDS.startProxyWithProfile}`);
+    hints.push(`然后重试：${CWS_PROXY_FIX_COMMANDS.retryDryRun}`);
+    if (proxyReadiness.fixCommand) {
+      hints.push(`一键串联命令：${proxyReadiness.fixCommand}`);
+    }
+    hints.push('当前未命中 CWS_PROXY/HTTPS_PROXY/HTTP_PROXY/ALL_PROXY。');
+    hints.push('若使用环境变量配置代理，请确保代理 URL 含 scheme（http/https/socks5/socks5h）。');
+  } else if (!proxy.enabled) {
     hints.push('当前未启用代理：请设置 CWS_PROXY 或 HTTPS_PROXY（支持 http/https/socks5/socks5h）。');
     hints.push('示例：export HTTPS_PROXY=http://127.0.0.1:7890');
     hints.push('示例：export HTTPS_PROXY=socks5://127.0.0.1:1080');

@@ -52,6 +52,20 @@ v1-71 进展（已落盘，但 Listing 同步/截图仍 BLOCKED）：
 - BLOCKED 原因：当前环境无法访问 CWS Developer Dashboard/公开商店页（无法完成粘贴同步与截图取证）
 - 合规门禁进展（已解除口径阻塞）：v1-76 已落盘“敏感词/夸大口径”门禁口径 + 自动扫描 + 证据（并已接入 `bash scripts/test.sh`），允许否定语境免责声明出现 `payment/subscription/付费/订阅` 并可审计（见 `docs/evidence/v1-76/`）。
 
+v1-95 进展（已落盘，代理门禁可审计）：
+- `publish:cws` 预检新增稳定分类：当 CWS 目标不可达且未命中可用代理配置时，输出 `proxy_not_started`，并给出可复制修复动作：`pxy` / `source ~/.bash_profile && pxy` / `npm run publish:cws -- --dry-run`。
+- 诊断证据包（`packVersion=v1-62`）新增 `proxyReadiness.status`、`proxyReadiness.fixCommand`、`proxyReadiness.blocking`，已落盘到 `docs/evidence/v1-95/preflight/`。
+- 用例与简报已补齐：`docs/test-cases/v1-95.md`、`docs/reports/v1-95-report.md`。
+
+v1-95 仍需人类输入（阻塞清单）：
+- 在真实发布所用 shell 先执行 `source ~/.bash_profile && pxy`（或 `pxy`），确保代理服务已启动。
+- 提供可用的 CWS Developer Dashboard 编辑/发布权限与登录态，用于完成 v1-70/v1-71 的商店端实操取证。
+
+无凭据/无权限情况下可继续推进的替代动作：
+- 持续执行 `npm run publish:cws -- --dry-run --evidence-dir docs/evidence/v1-95/preflight/`，沉淀 `proxyReadiness.*` 回归证据并监控分类命中率。
+- 持续执行 `bash scripts/test.sh`，保证代理门禁、证据字段和既有发布链路稳定无回归。
+- 继续维护 Listing 文案与差异证据（`docs/evidence/v1-66/`、`docs/evidence/v1-67/`），待权限恢复后直接粘贴并截图取证。
+
 需要的人类输入（持续阻塞：网络/商店可达 + 账号权限）：
 - 提供可用的代理/VPN（确保可访问 `www.googleapis.com` 与 CWS API）；代理可为 `http/https/socks5/socks5h`，并给出包含 scheme 的代理地址/端口（例如 `http://127.0.0.1:7890` 或 `socks5h://127.0.0.1:1080`）。
 - 或在可直连 Google 的网络环境中执行 `npm run publish:cws` 完成发布，并按 `docs/test-cases/v1-45.md` / `docs/test-cases/v1-47.md` 生成商店端截图/索引取证。
