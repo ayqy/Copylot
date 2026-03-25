@@ -1,0 +1,12 @@
+docs/roadmap_status.md
+- Top1 阻塞（权限）：缺少 CWS Developer Dashboard 编辑/发布权限。
+- Top1 阻塞（代理）：需执行 `source ~/.bash_profile && pxy`。
+- 顺延规则：Top1 阻塞未解除前，优先执行 Top2（v1-97）。
+
+docs/growth/blocked.md
+- v1-97 后续阻塞仍为 CWS 权限与代理启动条件。
+- 已给出所需输入清单与无输入替代动作（持续 test + 证据维护）。
+
+docs/growth/todo.md
+- 保留 Top1 相关待办（网络/代理/CWS 权限）。
+- 已将 v1-97 真实发布回填与证据补齐标记为完成。

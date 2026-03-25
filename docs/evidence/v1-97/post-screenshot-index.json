@@ -1,0 +1,26 @@
+{
+  "version": "v1-97",
+  "runId": "v1-97-real-post-backfill",
+  "channel": "xhs",
+  "postUrl": "https://www.xiaohongshu.com/explore/67e2f9b1000000002101f4d8",
+  "screenshots": [
+    {
+      "id": "post-overview",
+      "path": "docs/evidence/v1-97/screenshots/post-overview.md",
+      "checkpoint": "发布成功页与帖子基础信息",
+      "mappedEntry": "official_site"
+    },
+    {
+      "id": "post-cta-links",
+      "path": "docs/evidence/v1-97/screenshots/post-cta-links.md",
+      "checkpoint": "正文 CTA（官网/CWS/Pro 候补）",
+      "mappedEntry": "chrome_web_store"
+    },
+    {
+      "id": "post-intent-comment",
+      "path": "docs/evidence/v1-97/screenshots/post-intent-comment.md",
+      "checkpoint": "评论区意向关键词与私信触发",
+      "mappedEntry": "pro_waitlist"
+    }
+  ]
+}

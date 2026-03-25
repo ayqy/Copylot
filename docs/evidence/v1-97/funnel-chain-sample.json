@@ -1,0 +1,28 @@
+{
+  "version": "v1-97",
+  "chainId": "xhs-distribution-to-pro-intent-v1-97-sample-01",
+  "distribution": {
+    "channel": "xhs",
+    "postUrl": "https://www.xiaohongshu.com/explore/67e2f9b1000000002101f4d8",
+    "evidencePath": "docs/evidence/v1-97/post-screenshot-index.json"
+  },
+  "conversion": {
+    "entry": "pro_waitlist",
+    "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression#pro",
+    "campaign": "v1_96_growth_regression",
+    "source": "xhs",
+    "medium": "organic_social",
+    "action": "打开 Pro 候补入口并复制问卷链接"
+  },
+  "intent": {
+    "signal": "pro_waitlist_survey_copied",
+    "sourceEvidence": "docs/evidence/v1-90/pro-intent-run-evidence-pack.json",
+    "evidenceField": "proFunnelSummary.overall.counts.pro_waitlist_survey_copied",
+    "value": 1
+  },
+  "replayChecklist": [
+    "从 postUrl 打开帖子并确认 CTA 三入口",
+    "点击带 utm_campaign=v1_96_growth_regression 的 Pro 候补链接",
+    "在 v1-90 证据包复核 pro_waitlist_survey_copied 计数"
+  ]
+}

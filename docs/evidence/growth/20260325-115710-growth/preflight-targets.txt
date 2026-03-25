@@ -1,0 +1,3 @@
+deployment_url	https://copy.useai.online/
+chrome_web_store	https://chromewebstore.google.com/
+cloudflare_dns	https://1.1.1.1

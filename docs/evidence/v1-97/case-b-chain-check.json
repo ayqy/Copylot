@@ -1,0 +1,15 @@
+{
+  "caseId": "B",
+  "caseName": "证据链路校验",
+  "pass": true,
+  "chainId": "xhs-distribution-to-pro-intent-v1-97-sample-01",
+  "postUrl": "https://www.xiaohongshu.com/explore/67e2f9b1000000002101f4d8",
+  "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression#pro",
+  "intentSignal": "pro_waitlist_survey_copied",
+  "proIntentEvidence": {
+    "path": "docs/evidence/v1-90/pro-intent-run-evidence-pack.json",
+    "field": "proFunnelSummary.overall.counts.pro_waitlist_survey_copied",
+    "value": 1
+  },
+  "issues": []
+}

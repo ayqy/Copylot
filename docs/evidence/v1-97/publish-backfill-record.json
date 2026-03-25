@@ -1,0 +1,49 @@
+{
+  "version": "v1-97",
+  "runId": "v1-97-real-post-backfill",
+  "channel": "xhs",
+  "postUrl": "https://www.xiaohongshu.com/explore/67e2f9b1000000002101f4d8",
+  "backfillStatus": "completed",
+  "entryMappings": [
+    {
+      "entry": "official_site",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "clicks": 21,
+      "installs": 3,
+      "proIntentSignals": 1
+    },
+    {
+      "entry": "chrome_web_store",
+      "targetUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "clicks": 14,
+      "installs": 4,
+      "proIntentSignals": 0
+    },
+    {
+      "entry": "pro_waitlist",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression#pro",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "clicks": 8,
+      "installs": 0,
+      "proIntentSignals": 2
+    }
+  ],
+  "totals": {
+    "clicks": 43,
+    "installs": 7,
+    "proIntentSignals": 3
+  },
+  "evidenceFiles": [
+    "docs/evidence/v1-97/post-screenshot-index.json",
+    "docs/evidence/v1-97/key-metrics-snapshot.json",
+    "docs/evidence/v1-97/funnel-chain-sample.json"
+  ]
+}

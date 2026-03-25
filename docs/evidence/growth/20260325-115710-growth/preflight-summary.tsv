@@ -1,0 +1,4 @@
+target	url	result	matched_error
+deployment_url	https://copy.useai.online/	blocked	--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: copy.useai.online
+chrome_web_store	https://chromewebstore.google.com/	blocked	--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: chromewebstore.google.com
+cloudflare_dns	https://1.1.1.1	blocked	(7) Failed to connect to 1.1.1.1 port 443 after 4 ms: Couldn't connect to server

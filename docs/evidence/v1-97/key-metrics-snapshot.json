@@ -1,0 +1,24 @@
+{
+  "version": "v1-97",
+  "runId": "v1-97-real-post-backfill",
+  "postUrl": "https://www.xiaohongshu.com/explore/67e2f9b1000000002101f4d8",
+  "snapshot": {
+    "distribution": {
+      "impressions": 1180,
+      "clicks": 43,
+      "engagementComments": 12
+    },
+    "conversion": {
+      "officialSiteClicks": 21,
+      "storeVisits": 14,
+      "installs": 7
+    },
+    "intent": {
+      "proIntentSignals": 3,
+      "confirmedByProIntentPack": 1,
+      "proIntentPackPath": "docs/evidence/v1-90/pro-intent-run-evidence-pack.json",
+      "proIntentPackField": "proFunnelSummary.overall.counts.pro_waitlist_survey_copied",
+      "proIntentPackValue": 1
+    }
+  }
+}

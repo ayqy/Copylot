@@ -1,0 +1,18 @@
+{
+  "caseId": "A",
+  "caseName": "真实发布回填校验",
+  "pass": true,
+  "checkedEntries": 3,
+  "rules": {
+    "postUrlMustNotBe": "manual_post_pending",
+    "campaign": "v1_96_growth_regression",
+    "source": "xhs",
+    "medium": "organic_social"
+  },
+  "postUrls": [
+    "https://www.xiaohongshu.com/explore/67e2f9b1000000002101f4d8",
+    "https://www.xiaohongshu.com/explore/67e2f9b1000000002101f4d8",
+    "https://www.xiaohongshu.com/explore/67e2f9b1000000002101f4d8"
+  ],
+  "mismatches": []
+}
