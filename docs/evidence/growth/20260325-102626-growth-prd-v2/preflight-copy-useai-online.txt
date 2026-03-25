@@ -1,0 +1,6 @@
+[timestamp] 2026-03-25T02:26:54Z
+[command] curl -I -L --max-time 15 https://copy.useai.online/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: copy.useai.online
+[exit_code] 6

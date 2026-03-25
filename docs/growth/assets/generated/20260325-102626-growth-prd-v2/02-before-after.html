@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1080, initial-scale=1" />
+  <title>Before After</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      width: 1080px;
+      height: 1440px;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(180deg, #101828 0%, #1d2939 100%);
+      color: #f8fafc;
+      padding: 78px 70px;
+    }
+    h1 { margin: 0 0 24px; font-size: 74px; line-height: 1.1; font-weight: 900; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 40px; }
+    .card { border-radius: 24px; padding: 30px; min-height: 920px; }
+    .bad { background: #3f3f46; border: 2px solid #71717a; }
+    .good { background: #0f766e; border: 2px solid #14b8a6; }
+    .title { font-size: 42px; font-weight: 900; margin-bottom: 18px; }
+    ul { margin: 0; padding-left: 28px; font-size: 34px; line-height: 1.45; font-weight: 600; }
+    li { margin: 18px 0; }
+    .note { margin-top: 30px; font-size: 34px; font-weight: 700; color: #fbbf24; }
+  </style>
+</head>
+<body>
+  <h1>复制前后对比</h1>
+  <div class="grid">
+    <div class="card bad">
+      <div class="title">❌ 以前</div>
+      <ul>
+        <li>广告、导航一起复制</li>
+        <li>表格粘贴后全乱</li>
+        <li>代码块夹杂无关内容</li>
+        <li>整理一次要反复改格式</li>
+      </ul>
+    </div>
+    <div class="card good">
+      <div class="title">✅ 现在</div>
+      <ul>
+        <li>单击/双击快速复制干净内容</li>
+        <li>表格一键转 Markdown / CSV</li>
+        <li>代码块可悬停精准复制</li>
+        <li>直接喂给 ChatGPT/Claude</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note">场景：写周报 / 做研究 / 整理 Prompt 素材</div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "run_id": "20260325-102626-growth-prd-v2",
+  "started_at": "2026-03-25T02:26:26Z",
+  "deployment_url": "https://copy.useai.online/",
+  "channels": ["x", "reddit", "producthunt", "hn"],
+  "language": "auto",
+  "assets": {"enabled": true, "style": "bold"},
+  "cadence": {"max_posts_per_cycle": 6, "cooldown_sec": 900}
+}

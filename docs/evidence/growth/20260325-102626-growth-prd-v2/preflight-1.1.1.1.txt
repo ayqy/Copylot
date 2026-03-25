@@ -1,0 +1,7 @@
+[timestamp] 2026-03-25T02:26:54Z
+[command] curl -I -L --max-time 15 https://1.1.1.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (7) Failed to connect to 1.1.1.1 port 443 after 1 ms: Couldn't connect to server
+[exit_code] 7
