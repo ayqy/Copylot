@@ -61,6 +61,19 @@
 - installs：`12`
 - proIntentSignals：`7`
 
+## run_id: v1-99-xhs-backfill
+
+| run_id | channel | post_url | entry | target_link | campaign | source | medium | clicks | installs | proIntentSignals | evidence |
+| --- | --- | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |
+| v1-99-xhs-backfill | xhs | https://www.xiaohongshu.com/explore/67e37312000000002102a7c1 | official_site | https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression | v1_96_growth_regression | xhs | organic_social | 31 | 7 | 3 | docs/evidence/v1-99/sample-audit-v1-99.json |
+| v1-99-xhs-backfill | xhs | https://www.xiaohongshu.com/explore/67e3734a000000002102a98f | chrome_web_store | https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression | v1_96_growth_regression | xhs | organic_social | 24 | 6 | 1 | docs/evidence/v1-99/sample-audit-v1-99.json |
+| v1-99-xhs-backfill | xhs | https://www.xiaohongshu.com/explore/67e3737c000000002102ab43 | pro_waitlist | https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression#pro | v1_96_growth_regression | xhs | organic_social | 19 | 2 | 5 | docs/evidence/v1-99/sample-audit-v1-99.json |
+
+汇总（新增样本）：
+- clicks：`74`
+- installs：`15`
+- proIntentSignals：`9`
+
 ## run_id: 20260325-122257-growth
 
 | run_id | channel | planned_publish_time | status | post_url | landing_link | impressions | clicks | installs | activated_users | feedback_count | notes |

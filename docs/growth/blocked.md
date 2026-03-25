@@ -355,3 +355,45 @@ Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy
 - [阻塞] 7 渠道登录态缺失：`x/linkedin/reddit/hn/producthunt/indiehackers/xhs` 均无可复用会话；需提供可发布账号登录态（cookies/session）。
 - [严重] 首次验证码/滑块未首过：社媒渠道真实发布链路不可自动化；需人工先通过一次挑战并保持会话。
 - [可忽略] Product Hunt 本轮顺延：受 `max_posts_per_cycle=6` 限制，仅保留预热文案，下一轮优先补发。
+
+## 13) v1-99 完成后阻塞与需要的人类输入（Top1 回切前置）
+
+已完成事项：
+- 已完成 v1-99：三入口新增样本持续回填、`v1-98` vs `v1-99` 漏斗对比导出、测试门禁与执行记录落盘。
+- 证据目录：`docs/evidence/v1-99/`；执行记录：`docs/growth/executions/v1-99-growth-backfill.md`。
+
+所需输入清单（人类）：
+- 提供 CWS Developer Dashboard 编辑/发布权限（用于回切执行 v1-70/v1-71）。
+- 在目标 shell 执行 `source ~/.bash_profile && pxy`（或 `pxy`）并保持代理可用。
+- 提供可访问 CWS 与 Google API 的稳定网络链路。
+
+无凭据/无权限情况下可继续推进的替代动作：
+- 按 `docs/growth/assets/social/xhs/v1-96/conversion-evidence-index.json` 继续回填三入口样本，保持 `campaign/source/medium` 统一。
+- 持续更新 `docs/evidence/v1-99/conversion-funnel-v1-99.csv` 与对比文件，保证商业化漏斗可审计。
+- 持续执行 `bash scripts/test.sh` 并将日志落盘到后续证据目录，确保回切前门禁稳定。
+
+## 9) 20260325-123121-growth 阻塞清单（PRD 门禁）
+
+已观测阻塞（2026-03-25 12:31 CST）：
+- `curl -I -L --max-time 15 https://copy.useai.online/` → `Could not resolve host: copy.useai.online`
+- `curl -I -L --max-time 15 https://chromewebstore.google.com/` → `Could not resolve host: chromewebstore.google.com`
+- `curl -I -L --max-time 15 https://1.1.1.1` → `Failed to connect to 1.1.1.1 port 443: Couldn't connect to server`
+- 证据目录：`docs/evidence/growth/20260325-123121-growth/`
+
+影响：
+- 命中 `network_blocked=true`，按 PRD 禁止所有 Playwright/MCP 浏览器自动化（外网 URL 与本地渲染均禁用）。
+- `x/linkedin/reddit/hn/producthunt/indiehackers/xhs` 无法真实自动发布，只能离线降级。
+
+需要的人类输入/凭据（短句、可执行、可复盘）：
+- [阻塞] 提供可访问外网的网络环境或代理，复跑三目标预检并回填结果。
+- [阻塞] 提供 7 渠道登录态（`x/linkedin/reddit/hn/producthunt/indiehackers/xhs`），至少可完成 6 条发布节奏。
+- [阻塞] 若触发验证码/滑块，先人工首过并保持 30 分钟有效会话，再执行发布。
+- [严重] 提供 Product Hunt 本周可用上线窗口（日期+时区），否则继续保持预热策略。
+- [严重] 发布后 24h 回填每渠道 URL 与 `impressions/clicks/installs/activated_users/feedback_count` 到 `docs/growth/metrics.md`。
+- [可忽略] 若无法立即导出 PNG，可先用 HTML 素材发布并在下一轮补 PNG 与 hash。
+
+本轮已完成降级产物：
+- 渠道文案：`docs/growth/assets/generated/20260325-123121-growth/channel-posts.md`
+- xhs 成套素材源文件：`docs/growth/assets/generated/20260325-123121-growth/`
+- 手动发布清单：`docs/growth/checklists/manual-posting-20260325-123121-growth.md`
+- 执行记录：`docs/growth/executions/20260325-123121-growth.md`

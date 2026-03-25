@@ -20,6 +20,12 @@
 - [ ] 按 v1-98 证据模板继续回填新增样本，保持 `conversion-evidence-index` 与 `metrics` 同步。
 - [ ] 若真实发布触发登录/验证码/风控，先更新 `docs/growth/blocked.md` 再继续回填证据。
 
+## v1-99 后续待办（回切 Top1 前）
+
+- [ ] 解除 `CWS 权限 + source ~/.bash_profile && pxy 未就绪` 阻塞并回切 v1-70/v1-71。
+- [ ] 按 v1-99 对比模板持续维护 `conversion-funnel-compare-v1-98-v1-99.json` 的后续迭代版本。
+- [ ] 持续同步 `conversion-evidence-index`、`docs/growth/metrics.md`、执行记录三方一致性。
+
 ## 20260325-113320-growth 待办（本轮新增）
 
 - [ ] 提供外网可达环境并复跑三目标预检：`https://copy.useai.online/`、`https://chromewebstore.google.com/`、`https://1.1.1.1`。
@@ -46,4 +52,11 @@
 - [ ] 提供外网可达环境并复跑三目标预检：`https://copy.useai.online/`、`https://chromewebstore.google.com/`、`https://1.1.1.1`。
 - [ ] 提供 7 渠道登录态（`x/linkedin/reddit/hn/producthunt/indiehackers/xhs`），按清单补发本轮 6 条。
 - [ ] 完成 xhs 6 张 HTML 到 PNG 手动渲染并将 hash 追加到 `docs/evidence/growth/20260325-122257-growth/asset-hashes.sha256`。
+- [ ] 回填本轮每渠道 URL 与 24h 指标到 `docs/growth/metrics.md`。
+
+## 20260325-123121-growth 待办（本轮新增）
+
+- [ ] 提供外网可达环境并复跑三目标预检：`https://copy.useai.online/`、`https://chromewebstore.google.com/`、`https://1.1.1.1`。
+- [ ] 提供 7 渠道登录态（`x/linkedin/reddit/hn/producthunt/indiehackers/xhs`），按清单补发本轮 6 条。
+- [ ] 完成 xhs 6 张 HTML 到 PNG 手动渲染并将 hash 追加到 `docs/evidence/growth/20260325-123121-growth/asset-hashes.sha256`。
 - [ ] 回填本轮每渠道 URL 与 24h 指标到 `docs/growth/metrics.md`。
