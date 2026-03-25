@@ -1,0 +1,4 @@
+target	url	exit_code	outcome
+deployment_url	https://copy.useai.online/	6	network_error
+chrome_web_store	https://chromewebstore.google.com/	6	network_error
+cloudflare_dns	https://1.1.1.1	7	network_error

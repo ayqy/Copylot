@@ -1,0 +1,9 @@
+{
+  "run_id": "20260325-125244-growth",
+  "timestamp": "2026-03-25T12:52:44+0800",
+  "network_blocked": true,
+  "routing_decision": "degrade_to_manual",
+  "playwright_external_access": "forbidden",
+  "playwright_local_render": "forbidden",
+  "reason": "preflight_gate"
+}
