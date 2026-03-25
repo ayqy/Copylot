@@ -1,0 +1,9 @@
+用例 D：阻塞分流一致性校验
+结论：PASS（存在阻塞但分流记录一致）
+
+核验项：
+1) docs/roadmap_status.md 已明确 Top1 阻塞：
+   CWS 权限 + source ~/.bash_profile && pxy 未就绪。
+2) docs/growth/blocked.md 已记录所需人类输入清单与无凭据替代动作。
+3) docs/growth/todo.md 已同步阻塞优先级与后续动作。
+4) docs/growth/executions/v1-98-growth-backfill.md 已记录“顺延执行 Top2 v1-98”与风险处置结果。

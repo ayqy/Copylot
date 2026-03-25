@@ -306,3 +306,45 @@ Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy
 - xhs 成套素材：`docs/growth/assets/generated/20260325-115710-growth/`
 - 手动发布清单：`docs/growth/checklists/manual-posting-20260325-115710-growth.md`
 - 执行记录：`docs/growth/executions/20260325-115710-growth.md`
+
+## 12) 20260325-120902-growth 阻塞清单（PRD 门禁）
+
+已观测阻塞（2026-03-25 12:09 CST）：
+- `curl --max-time 15 -I -L https://copy.useai.online/` → `Could not resolve host: copy.useai.online`
+- `curl --max-time 15 -I -L https://chromewebstore.google.com/` → `Could not resolve host: chromewebstore.google.com`
+- `curl --max-time 15 -I -L https://1.1.1.1` → `Couldn't connect to server`
+- 证据目录：`docs/evidence/growth/20260325-120902-growth/`
+
+影响：
+- 命中 `network_blocked`，按 PRD 禁止全部 Playwright/MCP 自动化（外网与本地渲染均禁用）。
+- 无法执行真实自动发布（`x/linkedin/reddit/hn/producthunt/indiehackers/xhs`），已降级为离线发布包。
+
+需要的人类输入/凭据（短句、可执行、可复盘）：
+- [阻塞] 提供可访问外网的网络环境或代理（可用 `HTTP_PROXY/HTTPS_PROXY/ALL_PROXY`，含 scheme）。
+- [阻塞] 提供 7 渠道登录态（cookies 或可登录会话）：`x`、`linkedin`、`reddit`、`hn`、`producthunt`、`indiehackers`、`xhs`。
+- [阻塞] 若触发验证码/滑块，请先人工通过一次并保持至少 30 分钟有效会话。
+- [严重] 确认 Product Hunt 正式上线窗口（日期+时区），否则仅可预热不能 launch。
+- [严重] 人工回填每条发布 URL 与 24h 指标到 `docs/growth/metrics.md`，否则无法完成复盘。
+- [可忽略] 若本轮暂未渲染 PNG，可先按文案发布，下一轮补齐图片证据。
+
+本轮已完成降级产物：
+- 渠道文案：`docs/growth/assets/generated/20260325-120902-growth/channel-posts.md`
+- xhs 成套素材：`docs/growth/assets/generated/20260325-120902-growth/`
+- 手动发布清单：`docs/growth/checklists/manual-posting-20260325-120902-growth.md`
+- 执行记录：`docs/growth/executions/20260325-120902-growth.md`
+
+## 12) v1-98 完成后阻塞与人类输入（Top1 回切前置）
+
+已完成事项：
+- v1-98 已完成：新增 3 条 xhs 可转化样本、批量回填转化索引、补齐可导出证据包与测试门禁日志。
+- 证据目录：`docs/evidence/v1-98/`；执行记录：`docs/growth/executions/v1-98-growth-backfill.md`。
+
+所需输入清单（人类）：
+- 提供 CWS Developer Dashboard 编辑/发布权限（用于回切完成 v1-70/v1-71）。
+- 在目标 shell 执行 `source ~/.bash_profile && pxy`（或 `pxy`）并保持代理可用。
+- 提供可访问 CWS 与 Google API 的稳定外网链路。
+
+无凭据/无权限情况下可继续推进的替代动作：
+- 按 `docs/growth/assets/social/xhs/v1-96/conversion-evidence-index.json` 持续回填新增样本，并保持 `campaign/source/medium` 一致。
+- 继续执行 `bash scripts/test.sh`，稳定门禁与证据生成脚本。
+- 继续补齐 `docs/evidence/v1-98/` 后续批次 CSV/JSON 证据，待 Top1 阻塞解除后直接回切 S0 主路径。

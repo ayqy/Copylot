@@ -1,6 +1,6 @@
 {
   "version": "v1-96",
-  "schemaVersion": "v1-96.2",
+  "schemaVersion": "v1-96.3",
   "namingRules": {
     "campaign": "v1_96_growth_regression",
     "source": "xhs",
@@ -14,6 +14,8 @@
   },
   "conversionEntries": [
     {
+      "sampleId": "xhs-v1-97-official",
+      "batchId": "v1-97-real-post-backfill",
       "channel": "xhs",
       "entry": "official_site",
       "postUrl": "https://www.xiaohongshu.com/explore/67e2f9b1000000002101f4d8",
@@ -22,10 +24,15 @@
       "source": "xhs",
       "medium": "organic_social",
       "intentSignal": "landing_click",
+      "clicks": 21,
+      "installs": 3,
+      "proIntentSignals": 1,
       "expectedBehavior": "访问官网并进入安装或升级路径",
       "evidencePath": "docs/evidence/v1-97/publish-backfill-record.json"
     },
     {
+      "sampleId": "xhs-v1-97-cws",
+      "batchId": "v1-97-real-post-backfill",
       "channel": "xhs",
       "entry": "chrome_web_store",
       "postUrl": "https://www.xiaohongshu.com/explore/67e2f9b1000000002101f4d8",
@@ -34,10 +41,15 @@
       "source": "xhs",
       "medium": "organic_social",
       "intentSignal": "store_visit_or_install",
+      "clicks": 14,
+      "installs": 4,
+      "proIntentSignals": 0,
       "expectedBehavior": "进入商店页面并触发安装",
       "evidencePath": "docs/evidence/v1-97/publish-backfill-record.json"
     },
     {
+      "sampleId": "xhs-v1-97-pro",
+      "batchId": "v1-97-real-post-backfill",
       "channel": "xhs",
       "entry": "pro_waitlist",
       "postUrl": "https://www.xiaohongshu.com/explore/67e2f9b1000000002101f4d8",
@@ -46,8 +58,62 @@
       "source": "xhs",
       "medium": "organic_social",
       "intentSignal": "pro_waitlist_survey_copied",
+      "clicks": 8,
+      "installs": 0,
+      "proIntentSignals": 2,
       "expectedBehavior": "打开候补入口并提交/复制意向问卷",
       "evidencePath": "docs/evidence/v1-97/funnel-chain-sample.json"
+    },
+    {
+      "sampleId": "xhs-v1-98-official",
+      "batchId": "v1-98-xhs-conversion-backfill",
+      "channel": "xhs",
+      "entry": "official_site",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e33a9f00000000210261f1",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "intentSignal": "landing_click",
+      "clicks": 26,
+      "installs": 5,
+      "proIntentSignals": 2,
+      "expectedBehavior": "访问官网并进入安装或升级路径",
+      "evidencePath": "docs/evidence/v1-98/sample-audit-v1-98.json"
+    },
+    {
+      "sampleId": "xhs-v1-98-cws",
+      "batchId": "v1-98-xhs-conversion-backfill",
+      "channel": "xhs",
+      "entry": "chrome_web_store",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e33ac9000000002102637a",
+      "targetUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "intentSignal": "store_visit_or_install",
+      "clicks": 19,
+      "installs": 6,
+      "proIntentSignals": 1,
+      "expectedBehavior": "进入商店页面并触发安装",
+      "evidencePath": "docs/evidence/v1-98/sample-audit-v1-98.json"
+    },
+    {
+      "sampleId": "xhs-v1-98-pro",
+      "batchId": "v1-98-xhs-conversion-backfill",
+      "channel": "xhs",
+      "entry": "pro_waitlist",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e33af400000000210264f0",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression#pro",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "intentSignal": "pro_waitlist_survey_copied",
+      "clicks": 17,
+      "installs": 1,
+      "proIntentSignals": 4,
+      "expectedBehavior": "打开候补入口并提交/复制意向问卷",
+      "evidencePath": "docs/evidence/v1-98/sample-audit-v1-98.json"
     }
   ],
   "funnelIndex": [
@@ -64,7 +130,9 @@
       "docs/growth/checklists/manual-posting-xhs-v1-96.md",
       "docs/growth/executions/v1-96-growth-regression.md",
       "docs/growth/executions/v1-97-growth-backfill.md",
-      "docs/evidence/v1-97/post-screenshot-index.json"
+      "docs/growth/executions/v1-98-growth-backfill.md",
+      "docs/evidence/v1-97/post-screenshot-index.json",
+      "docs/evidence/v1-98/post-screenshot-index.json"
     ],
     "proIntentEvidence": [
       "docs/evidence/v1-90/pro-intent-run-evidence-pack.json",
@@ -77,7 +145,7 @@
   },
   "auditChainSamples": [
     {
-      "chainId": "xhs-post-to-pro-intent",
+      "chainId": "xhs-post-to-pro-intent-v1-97",
       "channel": "xhs",
       "postUrl": "https://www.xiaohongshu.com/explore/67e2f9b1000000002101f4d8",
       "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression#pro",
@@ -85,14 +153,73 @@
       "source": "xhs",
       "conversionAction": "点击 Pro 候补入口并复制意向问卷",
       "intentSignal": "pro_waitlist_survey_copied",
+      "clicks": 8,
+      "installs": 0,
+      "proIntentSignals": 2,
       "evidencePath": "docs/evidence/v1-97/funnel-chain-sample.json"
+    },
+    {
+      "chainId": "xhs-v1-98-official-to-install",
+      "channel": "xhs",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e33a9f00000000210261f1",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "conversionAction": "点击官网入口并触发安装",
+      "intentSignal": "landing_click",
+      "clicks": 26,
+      "installs": 5,
+      "proIntentSignals": 2,
+      "evidencePath": "docs/evidence/v1-98/sample-audit-v1-98.json"
+    },
+    {
+      "chainId": "xhs-v1-98-cws-to-install",
+      "channel": "xhs",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e33ac9000000002102637a",
+      "targetUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "conversionAction": "点击 CWS 入口并触发安装",
+      "intentSignal": "store_visit_or_install",
+      "clicks": 19,
+      "installs": 6,
+      "proIntentSignals": 1,
+      "evidencePath": "docs/evidence/v1-98/sample-audit-v1-98.json"
+    },
+    {
+      "chainId": "xhs-v1-98-pro-to-intent",
+      "channel": "xhs",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e33af400000000210264f0",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression#pro",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "conversionAction": "点击 Pro 候补入口并产生意向信号",
+      "intentSignal": "pro_waitlist_survey_copied",
+      "clicks": 17,
+      "installs": 1,
+      "proIntentSignals": 4,
+      "evidencePath": "docs/evidence/v1-98/sample-audit-v1-98.json"
     }
   ],
   "backfillMeta": {
-    "runId": "v1-97-real-post-backfill",
+    "runId": "v1-98-xhs-conversion-backfill",
     "status": "completed",
-    "postUrl": "https://www.xiaohongshu.com/explore/67e2f9b1000000002101f4d8",
-    "evidenceIndexPath": "docs/evidence/v1-97/post-screenshot-index.json"
+    "postUrls": [
+      "https://www.xiaohongshu.com/explore/67e33a9f00000000210261f1",
+      "https://www.xiaohongshu.com/explore/67e33ac9000000002102637a",
+      "https://www.xiaohongshu.com/explore/67e33af400000000210264f0"
+    ],
+    "evidenceIndexPath": "docs/evidence/v1-98/post-screenshot-index.json",
+    "evidenceBundle": [
+      "docs/evidence/v1-98/conversion-funnel-v1-98.csv",
+      "docs/evidence/v1-98/sample-audit-v1-98.json"
+    ],
+    "rollupMetrics": {
+      "addedSamples": 3,
+      "addedClicks": 62,
+      "addedInstalls": 12,
+      "addedProIntentSignals": 7
+    }
   },
   "assets": [
     {

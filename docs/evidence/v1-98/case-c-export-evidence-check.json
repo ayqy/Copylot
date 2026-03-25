@@ -1,0 +1,16 @@
+{
+  "case": "C",
+  "name": "商业化证据可导出校验",
+  "result": "PASS",
+  "requiredExports": [
+    "docs/evidence/v1-98/conversion-funnel-v1-98.csv",
+    "docs/evidence/v1-98/sample-audit-v1-98.json",
+    "docs/evidence/v1-98/post-screenshot-index.json"
+  ],
+  "metricsReviewed": {
+    "clicks": 62,
+    "installs": 12,
+    "proIntentSignals": 7
+  },
+  "indexTraceable": true
+}

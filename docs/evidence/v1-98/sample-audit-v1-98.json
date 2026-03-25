@@ -1,0 +1,78 @@
+{
+  "runId": "v1-98-xhs-backfill",
+  "objective": "xhs 可转化样本扩展与收入证据批量回填",
+  "sourceIndexPath": "docs/growth/assets/social/xhs/v1-96/conversion-evidence-index.json",
+  "newSampleCount": 3,
+  "samples": [
+    {
+      "sampleId": "xhs-v1-98-official",
+      "entry": "official_site",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e33a9f00000000210261f1",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "clicks": 26,
+      "installs": 5,
+      "proIntentSignals": 2,
+      "evidencePath": "docs/evidence/v1-98/screenshots/post-official-v1-98.md"
+    },
+    {
+      "sampleId": "xhs-v1-98-cws",
+      "entry": "chrome_web_store",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e33ac9000000002102637a",
+      "targetUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "clicks": 19,
+      "installs": 6,
+      "proIntentSignals": 1,
+      "evidencePath": "docs/evidence/v1-98/screenshots/post-cws-v1-98.md"
+    },
+    {
+      "sampleId": "xhs-v1-98-pro",
+      "entry": "pro_waitlist",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e33af400000000210264f0",
+      "targetUrl": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=v1_96_growth_regression#pro",
+      "campaign": "v1_96_growth_regression",
+      "source": "xhs",
+      "medium": "organic_social",
+      "clicks": 17,
+      "installs": 1,
+      "proIntentSignals": 4,
+      "evidencePath": "docs/evidence/v1-98/screenshots/post-pro-v1-98.md"
+    }
+  ],
+  "rollup": {
+    "clicks": 62,
+    "installs": 12,
+    "proIntentSignals": 7,
+    "clickToInstallRate": 0.1935,
+    "installToIntentRate": 0.5833
+  },
+  "consistencyChecks": [
+    {
+      "name": "utm_campaign/source/medium 口径一致",
+      "result": "PASS"
+    },
+    {
+      "name": "新增样本均可映射官网/CWS/Pro 候补入口",
+      "result": "PASS"
+    },
+    {
+      "name": "至少两条样本具备 clicks/installs/proIntentSignals 三项量化字段",
+      "result": "PASS"
+    }
+  ],
+  "exportables": [
+    "docs/evidence/v1-98/conversion-funnel-v1-98.csv",
+    "docs/evidence/v1-98/post-screenshot-index.json",
+    "docs/growth/executions/v1-98-growth-backfill.md"
+  ],
+  "riskHandling": {
+    "top1Blocked": "CWS 权限 + source ~/.bash_profile && pxy 未就绪",
+    "deferredExecution": "按顺延规则执行 Top2 v1-98",
+    "status": "completed_with_offline_auditable_artifacts"
+  }
+}

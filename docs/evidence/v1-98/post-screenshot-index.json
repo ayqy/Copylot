@@ -1,0 +1,24 @@
+{
+  "version": "v1-98",
+  "description": "xhs 新增可转化样本截图索引（官网/CWS/Pro 候补）",
+  "samples": [
+    {
+      "sampleId": "xhs-v1-98-official",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e33a9f00000000210261f1",
+      "entry": "official_site",
+      "screenshotNotePath": "docs/evidence/v1-98/screenshots/post-official-v1-98.md"
+    },
+    {
+      "sampleId": "xhs-v1-98-cws",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e33ac9000000002102637a",
+      "entry": "chrome_web_store",
+      "screenshotNotePath": "docs/evidence/v1-98/screenshots/post-cws-v1-98.md"
+    },
+    {
+      "sampleId": "xhs-v1-98-pro",
+      "postUrl": "https://www.xiaohongshu.com/explore/67e33af400000000210264f0",
+      "entry": "pro_waitlist",
+      "screenshotNotePath": "docs/evidence/v1-98/screenshots/post-pro-v1-98.md"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "case": "A",
+  "name": "样本回填完整性",
+  "result": "PASS",
+  "checks": {
+    "newSampleCount": 3,
+    "postUrlNonPlaceholder": true,
+    "fieldsCompleted": [
+      "postUrl",
+      "targetUrl",
+      "campaign",
+      "source",
+      "medium",
+      "clicks",
+      "installs",
+      "proIntentSignals",
+      "evidencePath"
+    ],
+    "quantifiedSampleCount": 3
+  },
+  "source": "docs/growth/assets/social/xhs/v1-96/conversion-evidence-index.json"
+}
