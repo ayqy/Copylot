@@ -1,0 +1,33 @@
+{
+  "run_id": "20260325-113320-growth",
+  "timestamp": "2026-03-25T03:37:19Z",
+  "checks": [
+    {
+      "target": "https://copy.useai.online/",
+      "command": "curl -I -L --max-time 12 https://copy.useai.online/",
+      "status": "failed",
+      "error_hint": "Could not resolve host: copy.useai.online",
+      "log": "docs/evidence/growth/20260325-113320-growth/preflight-deployment.log"
+    },
+    {
+      "target": "https://chromewebstore.google.com/",
+      "command": "curl -I -L --max-time 12 https://chromewebstore.google.com/",
+      "status": "failed",
+      "error_hint": "Could not resolve host: chromewebstore.google.com",
+      "log": "docs/evidence/growth/20260325-113320-growth/preflight-cws.log"
+    },
+    {
+      "target": "https://1.1.1.1",
+      "command": "curl -I -L --max-time 12 https://1.1.1.1",
+      "status": "failed",
+      "error_hint": "Couldn't connect to server",
+      "log": "docs/evidence/growth/20260325-113320-growth/preflight-ip_1_1_1_1.log"
+    }
+  ],
+  "decision": {
+    "network_blocked": true,
+    "routing_decision": "degrade_to_manual",
+    "playwright_external_access": "forbidden",
+    "playwright_local_render": "forbidden"
+  }
+}

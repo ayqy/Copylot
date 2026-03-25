@@ -12,3 +12,10 @@
 - [x] 已生成成套竖版资产：`docs/growth/assets/social/xhs/v1-96/`
 - [x] 已生成手动发布清单：`docs/growth/checklists/manual-posting-xhs-v1-96.md`
 - [x] 已生成执行记录与转化证据索引：`docs/growth/executions/v1-96-growth-regression.md`
+
+## 20260325-113320-growth 待办（本轮新增）
+
+- [ ] 提供外网可达环境并复跑三目标预检：`https://copy.useai.online/`、`https://chromewebstore.google.com/`、`https://1.1.1.1`。
+- [ ] 提供 7 渠道登录态（`x/linkedin/reddit/hn/producthunt/indiehackers/xhs`），优先补发本轮 6 条。
+- [ ] 完成 xhs 6 张 HTML 到 PNG 手动渲染并将 hash 追加到 `docs/evidence/growth/20260325-113320-growth/asset-hashes.sha256`。
+- [ ] 回填本轮每渠道 URL 与 24h 指标到 `docs/growth/metrics.md`。
