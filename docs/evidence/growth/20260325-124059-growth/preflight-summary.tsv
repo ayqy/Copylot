@@ -1,0 +1,4 @@
+target	url	exit_code	error
+deployment_url	https://copy.useai.online/	6	Could not resolve host
+chrome_web_store	https://chromewebstore.google.com/	6	Could not resolve host
+cloudflare_dns	https://1.1.1.1	7	Couldn't connect to server

@@ -371,3 +371,29 @@ Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy
 - 按 `docs/growth/assets/social/xhs/v1-96/conversion-evidence-index.json` 继续回填三入口样本，保持 `campaign/source/medium` 统一。
 - 持续更新 `docs/evidence/v1-99/conversion-funnel-v1-99.csv` 与对比文件，保证商业化漏斗可审计。
 - 持续执行 `bash scripts/test.sh` 并将日志落盘到后续证据目录，确保回切前门禁稳定。
+
+## 20260325-124059-growth 阻塞清单（按影响等级）
+
+已观测阻塞（2026-03-25 12:49 CST）：
+- `curl --max-time 15 -I -L https://copy.useai.online/` → `Could not resolve host: copy.useai.online`
+- `curl --max-time 15 -I -L https://chromewebstore.google.com/` → `Could not resolve host: chromewebstore.google.com`
+- `curl --max-time 15 -I -L https://1.1.1.1` → `Couldn't connect to server`
+- 证据目录：`docs/evidence/growth/20260325-124059-growth/`
+
+影响：
+- 命中 `network_blocked`，按 PRD 禁止全部 Playwright/MCP 自动化（外网与本地渲染均禁用）。
+- 无法执行真实自动发布（`x/linkedin/reddit/hn/producthunt/indiehackers/xhs`），已降级为离线发布包。
+
+需要的人类输入/凭据（短句、可执行、可复盘）：
+- [阻塞] 提供可访问外网的网络环境或代理（可用 `HTTP_PROXY/HTTPS_PROXY/ALL_PROXY`，含 scheme）。
+- [阻塞] 提供 7 渠道登录态（cookies 或可登录会话）：`x`、`linkedin`、`reddit`、`hn`、`producthunt`、`indiehackers`、`xhs`。
+- [阻塞] 若触发验证码/滑块，请先人工通过一次并保持至少 30 分钟有效会话。
+- [严重] 确认 Product Hunt 正式上线窗口（日期+时区），否则仅可预热不能 launch。
+- [严重] 人工回填每条发布 URL 与 24h 指标到 `docs/growth/metrics.md`，否则无法完成复盘。
+- [可忽略] 若本轮暂未渲染 PNG，可先按文案发布，下一轮补齐图片证据。
+
+本轮已完成降级产物：
+- 渠道文案：`docs/growth/assets/generated/20260325-124059-growth/channel-posts.md`
+- xhs 成套素材：`docs/growth/assets/generated/20260325-124059-growth/`
+- 手动发布清单：`docs/growth/checklists/manual-posting-20260325-124059-growth.md`
+- 执行记录：`docs/growth/executions/20260325-124059-growth.md`
