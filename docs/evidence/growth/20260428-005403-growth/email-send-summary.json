@@ -1,0 +1,76 @@
+{
+  "run_id": "20260428-005403-growth",
+  "attempt_count": 5,
+  "attempts": [
+    {
+      "channel": "email_public",
+      "target_name": "ElloAI Directory",
+      "target_ref": "el***@gmail.com",
+      "status": "done",
+      "notes": "sendmail 已提交",
+      "transport": "sendmail",
+      "evidence_paths": [
+        "el***@gmail.com.eml",
+        "el***_at_gmail.com.sendmail.json"
+      ],
+      "accepted_at": "2026-04-27T16:54:36.969725+00:00",
+      "response_code": null
+    },
+    {
+      "channel": "email_public",
+      "target_name": "AI Directory",
+      "target_ref": "in***@aidirectory.org",
+      "status": "done",
+      "notes": "sendmail 已提交",
+      "transport": "sendmail",
+      "evidence_paths": [
+        "in***@aidirectory.org.eml",
+        "in***_at_aidirectory.org.sendmail.json"
+      ],
+      "accepted_at": "2026-04-27T16:54:36.995650+00:00",
+      "response_code": null
+    },
+    {
+      "channel": "email_public",
+      "target_name": "Toolify",
+      "target_ref": "bu***@toolify.ai",
+      "status": "done",
+      "notes": "sendmail 已提交",
+      "transport": "sendmail",
+      "evidence_paths": [
+        "bu***@toolify.ai.eml",
+        "bu***_at_toolify.ai.sendmail.json"
+      ],
+      "accepted_at": "2026-04-27T16:54:37.021212+00:00",
+      "response_code": null
+    },
+    {
+      "channel": "email_public",
+      "target_name": "AI Directory Now",
+      "target_ref": "in***@aidirectorynow.com",
+      "status": "done",
+      "notes": "sendmail 已提交",
+      "transport": "sendmail",
+      "evidence_paths": [
+        "in***@aidirectorynow.com.eml",
+        "in***_at_aidirectorynow.com.sendmail.json"
+      ],
+      "accepted_at": "2026-04-27T16:54:37.046262+00:00",
+      "response_code": null
+    },
+    {
+      "channel": "email_public",
+      "target_name": "AI Directory .com",
+      "target_ref": "in***@ai-directory.com",
+      "status": "done",
+      "notes": "sendmail 已提交",
+      "transport": "sendmail",
+      "evidence_paths": [
+        "in***@ai-directory.com.eml",
+        "in***_at_ai-directory.com.sendmail.json"
+      ],
+      "accepted_at": "2026-04-27T16:54:37.071652+00:00",
+      "response_code": null
+    }
+  ]
+}
