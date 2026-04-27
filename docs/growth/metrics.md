@@ -140,3 +140,9 @@
 | run_id | leads | public_emails | email_attempts | email_done | form_candidates | integrations_done | status |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 | 20260428-005914-growth | 12 | 9 | 2 | 2 | 4 | 0 | success |
+
+## run_id: 20260428-010125-growth
+
+| run_id | leads | public_emails | email_attempts | email_done | form_candidates | integrations_done | status |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| 20260428-010125-growth | 14 | 11 | 1 | 1 | 4 | 0 | success |

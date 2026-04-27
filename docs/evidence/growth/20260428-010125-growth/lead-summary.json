@@ -1,0 +1,303 @@
+{
+  "run_id": "20260428-010125-growth",
+  "project_tags": [
+    "chrome-extension",
+    "ai",
+    "copilot",
+    "copy",
+    "markdown",
+    "web-scraping",
+    "content-extraction",
+    "browser-extension",
+    "productivity",
+    "developer-tools"
+  ],
+  "lead_count": 14,
+  "leads": [
+    {
+      "target_id": "elloai",
+      "name": "ElloAI Directory",
+      "kind": "directory",
+      "homepage": "https://elloai.com/",
+      "contact_page": "https://elloai.com/contact/",
+      "public_email": "el***@gmail.com",
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 360,
+      "notes": "AI 目录站公开 Gmail 联系地址。",
+      "submission_url": "https://elloai.com/contact/",
+      "contact_form": {
+        "action": "https://elloai.com/contact/",
+        "method": "post",
+        "field_names": [
+          "email"
+        ],
+        "can_submit": false,
+        "reason": "missing_required_fields"
+      }
+    },
+    {
+      "target_id": "aidirectoryorg",
+      "name": "AI Directory",
+      "kind": "directory",
+      "homepage": "https://www.aidirectory.org/",
+      "contact_page": "https://www.aidirectory.org/user-submit/",
+      "public_email": "in***@aidirectory.org",
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 360,
+      "notes": "公开 submit 页与联系邮箱，可邮件触达。",
+      "submission_url": "https://www.aidirectory.org/user-submit/",
+      "contact_form": {
+        "action": "https://www.aidirectory.org/user-submit/",
+        "method": "post",
+        "field_names": [
+          "post_title",
+          "category",
+          "company_name",
+          "website_address",
+          "street",
+          "city",
+          "state",
+          "zip_code",
+          "country",
+          "phone_number",
+          "email",
+          "ai_category",
+          "post_content",
+          "g-recaptcha-response",
+          "_wpnonce",
+          "_wp_http_referer",
+          "form_id",
+          "page_id",
+          "delete_attachments[]",
+          "action",
+          "submit"
+        ],
+        "can_submit": false,
+        "reason": "csrf_or_bot_protection"
+      }
+    },
+    {
+      "target_id": "aianytool",
+      "name": "AI AnyTool",
+      "kind": "directory",
+      "homepage": "https://aianytool.com/",
+      "contact_page": "https://aianytool.com/",
+      "public_email": "co***@aianytool.com",
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 360,
+      "notes": "目录主页公开 contact 邮箱。",
+      "submission_url": "https://aianytool.com/",
+      "contact_form": {
+        "action": "https://aianytool.com/",
+        "method": "post",
+        "field_names": [],
+        "can_submit": false,
+        "reason": "missing_required_fields"
+      }
+    },
+    {
+      "target_id": "toolify",
+      "name": "Toolify",
+      "kind": "directory",
+      "homepage": "https://www.toolify.ai/",
+      "contact_page": "https://www.toolify.ai/contact",
+      "public_email": "bu***@toolify.ai",
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 360,
+      "notes": "AI 工具目录，适合作为无登录的线索发现源。 contact_fetch_failed",
+      "submission_url": "https://www.toolify.ai/contact",
+      "contact_form": null
+    },
+    {
+      "target_id": "aiworkbench",
+      "name": "AI Workbench",
+      "kind": "directory",
+      "homepage": "https://www.aiworkbench.tech/",
+      "contact_page": "https://www.aiworkbench.tech/submit/",
+      "public_email": "su***@aiworkbench.tech",
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 360,
+      "notes": "Submit 页公开 support 邮箱，可直接邮件触达。",
+      "submission_url": "https://www.aiworkbench.tech/submit/",
+      "contact_form": null
+    },
+    {
+      "target_id": "aitoolnet",
+      "name": "AI Tool Net",
+      "kind": "directory",
+      "homepage": "https://aitoolnet.com/",
+      "contact_page": "https://aitoolnet.com/contact-us",
+      "public_email": "su***@aitoolnet.com",
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 360,
+      "notes": "AI 工具目录，优先搜公开联系地址。 contact_fetch_failed",
+      "submission_url": "https://aitoolnet.com/contact-us",
+      "contact_form": null
+    },
+    {
+      "target_id": "aidirectorynow",
+      "name": "AI Directory Now",
+      "kind": "directory",
+      "homepage": "https://www.aidirectorynow.com/",
+      "contact_page": "https://www.aidirectorynow.com/",
+      "public_email": "in***@aidirectorynow.com",
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 360,
+      "notes": "AI 工具目录主页公开了编辑联系邮箱。",
+      "submission_url": "https://www.aidirectorynow.com/",
+      "contact_form": null
+    },
+    {
+      "target_id": "aidirectorycom",
+      "name": "AI Directory .com",
+      "kind": "directory",
+      "homepage": "https://ai-directory.com/",
+      "contact_page": "https://ai-directory.com/contact-us/",
+      "public_email": "in***@ai-directory.com",
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 360,
+      "notes": "目录站公开 contact email 与 contact-us 页面。",
+      "submission_url": "https://ai-directory.com/contact-us/",
+      "contact_form": null
+    },
+    {
+      "target_id": "thereisanaiforthat",
+      "name": "There's An AI For That",
+      "kind": "directory",
+      "homepage": "https://theresanaiforthat.com/",
+      "contact_page": "https://theresanaiforthat.com/contact/",
+      "public_email": null,
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 325,
+      "notes": "AI 工具目录，可发现收录或合作入口。 contact_fetch_failed",
+      "submission_url": "https://theresanaiforthat.com/contact/",
+      "contact_form": null
+    },
+    {
+      "target_id": "futurepedia",
+      "name": "Futurepedia",
+      "kind": "directory",
+      "homepage": "https://www.futurepedia.io/",
+      "contact_page": "https://www.futurepedia.io/submit-a-tool",
+      "public_email": null,
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 325,
+      "notes": "大型 AI 工具目录，提供公开 submit 入口。 contact_fetch_failed",
+      "submission_url": "https://www.futurepedia.io/submit-a-tool",
+      "contact_form": null
+    },
+    {
+      "target_id": "futuretools",
+      "name": "Future Tools",
+      "kind": "directory",
+      "homepage": "https://futuretools.io/",
+      "contact_page": "https://futuretools.io/contact",
+      "public_email": null,
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 325,
+      "notes": "AI 工具目录，可用于发现收录入口或公开联系方式。 contact_fetch_failed",
+      "submission_url": "https://futuretools.io/contact",
+      "contact_form": null
+    },
+    {
+      "target_id": "bensbites",
+      "name": "Ben's Bites",
+      "kind": "newsletter",
+      "homepage": "https://www.bensbites.com/",
+      "contact_page": "https://catalog.bensbites.com/partners",
+      "public_email": "he***@bensbites.com",
+      "matched_tags": [
+        "ai",
+        "productivity"
+      ],
+      "score": 260,
+      "notes": "AI newsletter / partner page，适合面向 AI 工具做媒体合作触达。",
+      "submission_url": "https://catalog.bensbites.com/partners",
+      "contact_form": {
+        "action": "https://catalog.bensbites.com/search",
+        "method": "post",
+        "field_names": [
+          "query"
+        ],
+        "can_submit": false,
+        "reason": "csrf_or_bot_protection"
+      }
+    },
+    {
+      "target_id": "therundown",
+      "name": "The Rundown AI",
+      "kind": "newsletter",
+      "homepage": "https://www.therundown.ai/",
+      "contact_page": "https://www.therundown.ai/contact",
+      "public_email": "bu***@therundown.ai",
+      "matched_tags": [
+        "ai",
+        "productivity"
+      ],
+      "score": 260,
+      "notes": "AI newsletter，优先寻找公开邮箱或 contact page。 contact_fetch_failed",
+      "submission_url": "https://www.therundown.ai/contact",
+      "contact_form": null
+    },
+    {
+      "target_id": "aiarttools",
+      "name": "AIArtTools",
+      "kind": "directory",
+      "homepage": "https://aiart.tools/",
+      "contact_page": "https://aiart.tools/submit",
+      "public_email": "co***@aiart.tools",
+      "matched_tags": [
+        "ai",
+        "productivity"
+      ],
+      "score": 260,
+      "notes": "AI 工具目录 submit 页公开了 contact 邮箱。",
+      "submission_url": "https://aiart.tools/submit",
+      "contact_form": null
+    }
+  ]
+}
