@@ -1,0 +1,126 @@
+{
+  "run_id": "20260428-003808-growth",
+  "project_tags": [
+    "chrome-extension",
+    "ai",
+    "copilot",
+    "copy",
+    "markdown",
+    "web-scraping",
+    "content-extraction",
+    "browser-extension",
+    "productivity",
+    "developer-tools"
+  ],
+  "lead_count": 6,
+  "leads": [
+    {
+      "target_id": "aitoolnet",
+      "name": "AI Tool Net",
+      "kind": "directory",
+      "homepage": "https://aitoolnet.com/",
+      "contact_page": "https://aitoolnet.com/contact-us",
+      "public_email": "su***@aitoolnet.com",
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 360,
+      "notes": "AI 工具目录，优先搜公开联系地址。 contact_fetch_failed",
+      "submission_url": "https://aitoolnet.com/contact-us",
+      "contact_form": null
+    },
+    {
+      "target_id": "toolify",
+      "name": "Toolify",
+      "kind": "directory",
+      "homepage": "https://www.toolify.ai/",
+      "contact_page": "https://www.toolify.ai/contact",
+      "public_email": null,
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 325,
+      "notes": "AI 工具目录，适合作为无登录的线索发现源。 contact_fetch_failed",
+      "submission_url": "https://www.toolify.ai/contact",
+      "contact_form": null
+    },
+    {
+      "target_id": "thereisanaiforthat",
+      "name": "There's An AI For That",
+      "kind": "directory",
+      "homepage": "https://theresanaiforthat.com/",
+      "contact_page": "https://theresanaiforthat.com/contact/",
+      "public_email": null,
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 325,
+      "notes": "AI 工具目录，可发现收录或合作入口。 contact_fetch_failed",
+      "submission_url": "https://theresanaiforthat.com/contact/",
+      "contact_form": null
+    },
+    {
+      "target_id": "futuretools",
+      "name": "Future Tools",
+      "kind": "directory",
+      "homepage": "https://futuretools.io/",
+      "contact_page": "https://futuretools.io/contact",
+      "public_email": null,
+      "matched_tags": [
+        "ai",
+        "browser-extension",
+        "productivity"
+      ],
+      "score": 325,
+      "notes": "AI 工具目录，可用于发现收录入口或公开联系方式。 contact_fetch_failed",
+      "submission_url": "https://futuretools.io/contact",
+      "contact_form": null
+    },
+    {
+      "target_id": "bensbites",
+      "name": "Ben's Bites",
+      "kind": "newsletter",
+      "homepage": "https://www.bensbites.com/",
+      "contact_page": "https://catalog.bensbites.com/partners",
+      "public_email": "he***@bensbites.com",
+      "matched_tags": [
+        "ai",
+        "productivity"
+      ],
+      "score": 260,
+      "notes": "AI newsletter / partner page，适合面向 AI 工具做媒体合作触达。",
+      "submission_url": "https://catalog.bensbites.com/partners",
+      "contact_form": {
+        "action": "https://catalog.bensbites.com/search",
+        "method": "post",
+        "field_names": [
+          "query"
+        ],
+        "can_submit": false,
+        "reason": "missing_required_fields"
+      }
+    },
+    {
+      "target_id": "therundown",
+      "name": "The Rundown AI",
+      "kind": "newsletter",
+      "homepage": "https://www.therundown.ai/",
+      "contact_page": "https://www.therundown.ai/contact",
+      "public_email": "bu***@therundown.ai",
+      "matched_tags": [
+        "ai",
+        "productivity"
+      ],
+      "score": 260,
+      "notes": "AI newsletter，优先寻找公开邮箱或 contact page。 contact_fetch_failed",
+      "submission_url": "https://www.therundown.ai/contact",
+      "contact_form": null
+    }
+  ]
+}

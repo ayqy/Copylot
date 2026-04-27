@@ -1,0 +1,30 @@
+HTTP/2 302 
+date: Mon, 27 Apr 2026 02:38:43 GMT
+content-type: text/html; charset=utf-8
+content-length: 47
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-27=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, h3-Q039=":443"; ma=2592000, quic=":443"; ma=2592000; v="39,43,46"
+server: openresty
+set-cookie: acw_tc=0a00daeb17772575238953736e8f48cfdcede36399d74c4d9776b4137e1245;path=/;HttpOnly;Max-Age=1800
+location: /explore
+set-cookie: abRequestId=4d7d63b4-437b-5561-96b3-1da93eaf54fe; path=/; expires=Tue, 27 Apr 2027 02:38:43 GMT; domain=xiaohongshu.com
+access-control-allow-origin: 0
+access-control-allow-credentials: true
+access-control-allow-methods: GET,OPTIONS
+access-control-max-age: 86400
+xhs-request-time: 0.016
+xhs-real-ip: 183.241.207.27
+
+HTTP/2 200 
+date: Mon, 27 Apr 2026 02:38:44 GMT
+content-type: text/html; charset=utf-8
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-27=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, h3-Q039=":443"; ma=2592000, quic=":443"; ma=2592000; v="39,43,46"
+server: openresty
+set-cookie: acw_tc=0a00d49317772575239461308eb2182829893dffa0f73bc82627b9df40d114;path=/;HttpOnly;Max-Age=1800
+set-cookie: abRequestId=0223d8f9-cb72-5f79-9e09-16b2c99b32f1; path=/; expires=Tue, 27 Apr 2027 02:38:44 GMT; domain=xiaohongshu.com
+access-control-allow-origin: 0
+access-control-allow-credentials: true
+access-control-allow-methods: GET,OPTIONS
+access-control-max-age: 86400
+xhs-request-time: 0.137
+xhs-real-ip: 183.241.207.27
+

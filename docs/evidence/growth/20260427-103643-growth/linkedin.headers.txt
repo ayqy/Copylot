@@ -1,0 +1,36 @@
+HTTP/2 302 
+date: Mon, 27 Apr 2026 02:38:08 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+location: https://www.linkedin.cn/incareer/home
+content-language: en
+x-li-fabric: prod-lor1
+report-to: {"group":"network-errors","max_age":2592000,"endpoints":[{"url":"https://www.linkedin.com/li/rep"}],"include_subdomains":true}
+nel: {"report_to":"network-errors","max_age":1296000,"success_fraction":0.00066,"failure_fraction":1,"include_subdomains":true}
+pragma: no-cache
+expires: Thu, 01 Jan 1970 00:00:00 GMT
+cache-control: no-cache, no-store, no-transform
+x-li-pop: prod-lor1-x
+x-li-proto: http/1.1
+x-li-uuid: AAZQaAFKu0b9gt9XuoiltQ==
+set-cookie: bcookie="v=2&82f8b69d-380e-41fb-8dee-4e888374e1bc"; domain=.linkedin.com; Path=/; Secure; Expires=Tue, 27-Apr-2027 02:38:08 GMT; SameSite=None
+set-cookie: bscookie="v=1&202604270238087dec906b-a246-4b29-81f3-70283474798aAQEdLFepgmgr5oXXV-emgsYm_NI6cejL"; domain=.www.linkedin.com; Path=/; Secure; Expires=Tue, 27-Apr-2027 02:38:08 GMT; HttpOnly; SameSite=None
+set-cookie: lidc="b=OGST06:s=O:r=O:a=O:p=O:g=3519:u=1:x=1:i=1777257488:t=1777343888:v=2:sig=AQFuca73Wg_sO4DBGWN4ezbJ_ZeD2dou"; Expires=Tue, 28 Apr 2026 02:38:08 GMT; domain=.linkedin.com; Path=/; SameSite=None; Secure
+x-az-pop: az-sh-lor1
+
+HTTP/2 451 
+date: Mon, 27 Apr 2026 02:38:09 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+content-language: en
+x-li-fabric: prod-lor1
+pragma: no-cache
+expires: Thu, 01 Jan 1970 00:00:00 GMT
+cache-control: no-cache, no-store, no-transform
+x-li-pop: prod-lor1-x
+x-li-proto: http/1.1
+x-li-uuid: AAZQaAFRIufJFCJ2Vwo5PA==
+set-cookie: bcookie="v=2&c05b483d-0376-43b1-8233-1fc5f9dba876"; domain=.linkedin.cn; Path=/; Secure; Expires=Tue, 27-Apr-2027 02:38:09 GMT; SameSite=None
+set-cookie: bscookie="v=1&202604270238091980b461-1cea-4e3f-8620-f6ddf99b1291AQFj2AQj0i00E15IVivGY45bA-E33F58"; domain=.www.linkedin.cn; Path=/; Secure; Expires=Tue, 27-Apr-2027 02:38:09 GMT; HttpOnly; SameSite=None
+x-az-pop: az-sh-lor1
+

@@ -1,0 +1,48 @@
+{
+  "run_id": "20260428-003808-growth",
+  "attempt_count": 3,
+  "attempts": [
+    {
+      "channel": "email_public",
+      "target_name": "AI Tool Net",
+      "target_ref": "su***@aitoolnet.com",
+      "status": "done",
+      "notes": "sendmail 已提交",
+      "transport": "sendmail",
+      "evidence_paths": [
+        "su***@aitoolnet.com.eml",
+        "su***_at_aitoolnet.com.sendmail.json"
+      ],
+      "accepted_at": "2026-04-27T16:38:37.265397+00:00",
+      "response_code": null
+    },
+    {
+      "channel": "email_public",
+      "target_name": "Ben's Bites",
+      "target_ref": "he***@bensbites.com",
+      "status": "done",
+      "notes": "sendmail 已提交",
+      "transport": "sendmail",
+      "evidence_paths": [
+        "he***@bensbites.com.eml",
+        "he***_at_bensbites.com.sendmail.json"
+      ],
+      "accepted_at": "2026-04-27T16:38:37.291630+00:00",
+      "response_code": null
+    },
+    {
+      "channel": "email_public",
+      "target_name": "The Rundown AI",
+      "target_ref": "bu***@therundown.ai",
+      "status": "done",
+      "notes": "sendmail 已提交",
+      "transport": "sendmail",
+      "evidence_paths": [
+        "bu***@therundown.ai.eml",
+        "bu***_at_therundown.ai.sendmail.json"
+      ],
+      "accepted_at": "2026-04-27T16:38:37.319597+00:00",
+      "response_code": null
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+# 20260427-103643-growth Growth Evidence Index
+
+- external attempt logs:
+  - `x.attempt.log`
+  - `reddit.attempt.log`
+  - `hn.attempt.log`
+- external response headers:
+  - `linkedin.headers.txt`
+  - `producthunt.headers.txt`
+  - `indiehackers.headers.txt`
+  - `xhs.headers.txt`
+  - `xhs_creator.headers.txt`
+- external response html:
+  - `linkedin.html`
+  - `producthunt.html`
+  - `indiehackers.html`
+  - `xhs.html`
+  - `xhs_creator.html`
+- structured outputs:
+  - `attempt-results.json`
+  - `publish-results.json`

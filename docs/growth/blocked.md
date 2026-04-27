@@ -2,6 +2,29 @@
 
 本文件用于集中记录“需要人类输入才能继续”的事项，并给出在无凭据/无权限情况下可继续推进的替代动作，避免研发卡死。
 
+## 0) 20260427-140500-growth 自动增长执行阻塞（v1-105）
+
+已观测结果（2026-04-27，本机自动执行）：
+- `x`：`fetch failed`
+- `linkedin`：重定向到 `linkedin.cn` 后返回 `HTTP 451`
+- `reddit`：`fetch failed`
+- `hn`：`fetch failed`
+- `indiehackers`：`HTTP 200` 可达，但无已认证发布态，记为 `attempted`
+- `xhs`：creator publish shell `HTTP 200`，但无已认证发布态，记为 `attempted`
+- `producthunt`：`HTTP 403` Cloudflare challenge
+
+证据目录：
+- `docs/evidence/growth/20260427-140500-growth/`
+- `docs/growth/executions/20260427-140500-growth.md`
+
+影响：
+- 自动化流程已能稳定完成“生成投放包 -> 发起 HTTP 尝试 -> 留痕 -> 回写 metrics”，但仍无法在无登录态条件下完成真实发布。
+
+需要的人类输入：
+- 提供可复用的渠道登录态或可用 cookies：`x`、`linkedin`、`reddit`、`hn`、`indiehackers`、`xhs`、`producthunt`
+- 若继续走浏览器发布链路，需先人工处理验证码 / Cloudflare / 风控页
+- 发布完成后回填真实帖子 URL 与 24h 指标，用于后续复盘
+
 ## 1) Chrome Web Store 真实发布权限/凭据
 所需输入清单（示例）：
 - CWS 开发者账号发布权限（团队成员/角色）
@@ -259,6 +282,26 @@ Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy
 - [严重] 人工回填每条发布 URL 与 24h 指标到 `docs/growth/metrics.md`，否则无法完成复盘。
 - [可忽略] 若本轮暂未渲染 PNG，可先按文案发布，下一轮补齐图片证据。
 
+## 10) 20260427-103643-growth 外部渠道真实尝试阻塞
+
+已观测结果（2026-04-27 10:38-10:41 CST）：
+- `x`：分享 intent 页在当前网络下 `timeout`（证据：`docs/evidence/growth/20260427-103643-growth/x.attempt.log`）
+- `linkedin`：`share-offsite` 跳转到 `https://www.linkedin.cn/incareer/home`，`HTTP 451`（证据：`linkedin.headers.txt`）
+- `reddit`：提交页 `timeout`（证据：`reddit.attempt.log`）
+- `hn`：`submitlink` `timeout`（证据：`hn.attempt.log`）
+- `indiehackers`：`/new-post` 返回匿名 `join` 墙标记（证据：`indiehackers.html`）
+- `producthunt`：`/posts/new` 命中 Cloudflare challenge，`HTTP 403`（证据：`producthunt.headers.txt`、`producthunt.html`）
+- `xhs`：创作发布 shell `HTTP 200`，但当前 headless HTTP 流程无认证发布会话，记为 `attempted`（证据：`xhs_creator.headers.txt`、`xhs_creator.html`）
+
+本轮已完成：
+- 生成带 UTM 的渠道文案包：`docs/growth/assets/generated/20260427-103643-growth/`
+- 生成结构化尝试结果：`docs/evidence/growth/20260427-103643-growth/attempt-results.json`
+- 生成执行记录与 metrics 回写：`docs/growth/executions/20260427-103643-growth.md`、`docs/growth/metrics.md`
+
+仍需人类输入：
+- 各渠道可用登录态/账号权限（尤其 `x/linkedin/reddit/hn/producthunt/indiehackers/xhs`）
+- 若要把 `xhs attempted` 推进到 `published`，需要真实创作者会话并完成上传/发布
+
 本轮已完成降级产物：
 - 渠道文案：`docs/growth/assets/generated/20260325-113320-growth/channel-posts.md`
 - xhs 成套素材：`docs/growth/assets/generated/20260325-113320-growth/`
@@ -397,3 +440,9 @@ Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy
 - xhs 成套素材：`docs/growth/assets/generated/20260325-124059-growth/`
 - 手动发布清单：`docs/growth/checklists/manual-posting-20260325-124059-growth.md`
 - 执行记录：`docs/growth/executions/20260325-124059-growth.md`
+
+## 20260428-003808-growth
+- 联系表单触达: 外网预检失败，跳过表单提交
+- n8n webhook 适配: 缺少 GROWTH_N8N_WEBHOOK_URL
+- listmonk API 适配: 缺少 GROWTH_LISTMONK_URL
+- PostHog event 适配: 缺少 capture_url 或 api_key

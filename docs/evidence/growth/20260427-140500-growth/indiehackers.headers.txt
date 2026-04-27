@@ -1,0 +1,19 @@
+URL: https://www.indiehackers.com/new-post
+HTTP 200
+cache-control: public, max-age=0
+cf-cache-status: DYNAMIC
+cf-ray: 9f2e9e928fea6814-SEA
+connection: keep-alive
+content-encoding: br
+content-type: text/html; charset=UTF-8
+date: Mon, 27 Apr 2026 14:46:55 GMT
+last-modified: Wed, 15 Apr 2026 06:50:55 GMT
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=64idzZaMK6PtFePHq2qqEmBtoiWFHrDIS%2FezcwDo2FbfQP%2B%2F4xIHBkLlyOctlIY7U7Rn%2B9qcJ5jtaG2DZRuiV7cqsKi69ahtT34cfsvDzGvy2C%2BHIQdNl9zI1orlbVifOO63Uz1j"}]}
+rndr-id: 45738c05-f1e1-44f2
+server: cloudflare
+set-cookie: ih-ab-bucket=65; Max-Age=2592000; Path=/; Expires=Wed, 27 May 2026 14:46:55 GMT
+transfer-encoding: chunked
+vary: Accept-Encoding
+x-powered-by: Express
+x-render-origin-server: Render

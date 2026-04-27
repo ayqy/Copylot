@@ -1,0 +1,24 @@
+URL: https://creator.xiaohongshu.com/publish/publish
+HTTP 200
+cache-control: no-cache
+connection: keep-alive
+content-length: 19228
+content-type: text/html; charset=UTF-8
+date: Mon, 27 Apr 2026 14:46:55 GMT
+eagleid: 6f0d681717773012156286821e
+etag: "2758850610"
+last-modified: Thu, 23 Apr 2026 02:24:29 GMT
+server: Tengine
+server-timing: beforeHtml;dur=0.10,getAppConfig;dur=2.84,setHeader;dur=0.03,judgeCacheTime;dur=0.03
+set-cookie: acw_tc=0a0d096b17773012156781664e7751c33db072477740152b1c62f77aa44246;path=/;HttpOnly;Max-Age=1800
+timing-allow-origin: *
+via: ens-cache18.l2eo166-17[47,0], ens-cache3.cn5721[75,0]
+x-biz-id: 
+x-content-type-options: nosniff
+x-download-options: noopen
+x-edith-status: none
+x-fe-app: feugc
+x-fe-status: online
+x-html-version: 1.7.0-20260423-101715-master-01f091e0
+x-readtime: 4
+x-xss-protection: 1; mode=block

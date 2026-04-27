@@ -1,0 +1,123 @@
+{
+  "runId": "20260427-103643-growth",
+  "campaign": "20260427-103643-growth_reader_mode_push",
+  "summary": {
+    "channels": 7,
+    "impressions": 0,
+    "clicks": 0,
+    "installs": 0,
+    "activatedUsers": 0,
+    "feedbackCount": 0,
+    "byStatus": {
+      "blocked": 6,
+      "attempted": 1
+    }
+  },
+  "results": [
+    {
+      "channel": "x",
+      "status": "blocked",
+      "attemptedAt": "2026-04-27T10:40:15+08:00",
+      "postUrl": "https://twitter.com/intent/tweet?text=Copylot%20reader-mode%20quality%20update&url=https%3A%2F%2Fcopy.useai.online%2F%3Futm_source%3Dx%26utm_medium%3Dorganic_social%26utm_campaign%3D20260427-103643-growth_reader_mode_push",
+      "landingLink": "https://copy.useai.online/?utm_source=x&utm_medium=organic_social&utm_campaign=20260427-103643-growth_reader_mode_push",
+      "ctaVariant": "official_site_primary",
+      "impressions": 0,
+      "clicks": 0,
+      "installs": 0,
+      "activatedUsers": 0,
+      "feedbackCount": 0,
+      "notes": "share intent timed out after 12s; evidence=x.attempt.log",
+      "publishedAt": null
+    },
+    {
+      "channel": "linkedin",
+      "status": "blocked",
+      "attemptedAt": "2026-04-27T10:38:08+08:00",
+      "postUrl": "https://www.linkedin.cn/incareer/home",
+      "landingLink": "https://copy.useai.online/?utm_source=linkedin&utm_medium=organic_social&utm_campaign=20260427-103643-growth_reader_mode_push",
+      "ctaVariant": "official_site_primary",
+      "impressions": 0,
+      "clicks": 0,
+      "installs": 0,
+      "activatedUsers": 0,
+      "feedbackCount": 0,
+      "notes": "share-offsite redirected to regional blocked page with HTTP 451; evidence=linkedin.headers.txt",
+      "publishedAt": null
+    },
+    {
+      "channel": "reddit",
+      "status": "blocked",
+      "attemptedAt": "2026-04-27T10:40:17+08:00",
+      "postUrl": "https://www.reddit.com/submit?title=Built%20a%20Chrome%20extension%20update%20to%20strip%20more%20article%20clutter%20before%20pasting%20into%20AI&url=https%3A%2F%2Fcopy.useai.online%2F%3Futm_source%3Dreddit%26utm_medium%3Dorganic_social%26utm_campaign%3D20260427-103643-growth_reader_mode_push",
+      "landingLink": "https://copy.useai.online/?utm_source=reddit&utm_medium=organic_social&utm_campaign=20260427-103643-growth_reader_mode_push",
+      "ctaVariant": "official_site_primary",
+      "impressions": 0,
+      "clicks": 0,
+      "installs": 0,
+      "activatedUsers": 0,
+      "feedbackCount": 0,
+      "notes": "submit page timed out after 12s; evidence=reddit.attempt.log",
+      "publishedAt": null
+    },
+    {
+      "channel": "hn",
+      "status": "blocked",
+      "attemptedAt": "2026-04-27T10:40:19+08:00",
+      "postUrl": "https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fcopy.useai.online%2F%3Futm_source%3Dhn%26utm_medium%3Dorganic_social%26utm_campaign%3D20260427-103643-growth_reader_mode_push&t=Show%20HN%3A%20Copylot%20now%20extracts%20dense%20article%20content%20with%20less%20page%20clutter",
+      "landingLink": "https://copy.useai.online/?utm_source=hn&utm_medium=organic_social&utm_campaign=20260427-103643-growth_reader_mode_push",
+      "ctaVariant": "official_site_primary",
+      "impressions": 0,
+      "clicks": 0,
+      "installs": 0,
+      "activatedUsers": 0,
+      "feedbackCount": 0,
+      "notes": "submitlink timed out after 12s; evidence=hn.attempt.log",
+      "publishedAt": null
+    },
+    {
+      "channel": "indiehackers",
+      "status": "blocked",
+      "attemptedAt": "2026-04-27T10:38:44+08:00",
+      "postUrl": "https://www.indiehackers.com/new-post",
+      "landingLink": "https://copy.useai.online/?utm_source=indiehackers&utm_medium=organic_social&utm_campaign=20260427-103643-growth_reader_mode_push",
+      "ctaVariant": "official_site_primary",
+      "impressions": 0,
+      "clicks": 0,
+      "installs": 0,
+      "activatedUsers": 0,
+      "feedbackCount": 0,
+      "notes": "new-post route returned anonymous join wall markers without authenticated compose state; evidence=indiehackers.html",
+      "publishedAt": null
+    },
+    {
+      "channel": "xhs",
+      "status": "attempted",
+      "attemptedAt": "2026-04-27T10:39:08+08:00",
+      "postUrl": "https://creator.xiaohongshu.com/publish/publish",
+      "landingLink": "https://copy.useai.online/?utm_source=xhs&utm_medium=organic_social&utm_campaign=20260427-103643-growth_reader_mode_push",
+      "ctaVariant": "official_site_primary",
+      "impressions": 0,
+      "clicks": 0,
+      "installs": 0,
+      "activatedUsers": 0,
+      "feedbackCount": 0,
+      "notes": "creator publish shell returned HTTP 200, but no authenticated publish session or posted URL was available in headless HTTP flow; evidence=xhs_creator.headers.txt,xhs_creator.html",
+      "publishedAt": null
+    },
+    {
+      "channel": "producthunt",
+      "status": "blocked",
+      "attemptedAt": "2026-04-27T10:38:45+08:00",
+      "postUrl": "https://www.producthunt.com/posts/new",
+      "landingLink": "https://copy.useai.online/?utm_source=producthunt&utm_medium=organic_social&utm_campaign=20260427-103643-growth_reader_mode_push",
+      "ctaVariant": "official_site_primary",
+      "impressions": 0,
+      "clicks": 0,
+      "installs": 0,
+      "activatedUsers": 0,
+      "feedbackCount": 0,
+      "notes": "Cloudflare challenge returned HTTP 403; evidence=producthunt.headers.txt,producthunt.html",
+      "publishedAt": null
+    }
+  ]
+}
