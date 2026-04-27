@@ -1,0 +1,83 @@
+{
+  "capturedAt": "2026-04-27",
+  "sources": [
+    {
+      "name": "Reader Mode",
+      "url": "https://readermode.org/",
+      "observations": [
+        "官方首页把“清除网页杂乱内容，包括 ads、cookie notices、popups”作为核心卖点。",
+        "这说明显式噪音剔除已经是 reader-mode 类产品的基础预期。"
+      ]
+    },
+    {
+      "name": "Obsidian Web Clipper Capture",
+      "url": "https://obsidian.md/help/web-clipper/capture",
+      "observations": [
+        "官方帮助文档写明默认会智能提取 main article content，并排除其他元素。",
+        "这说明正文定位本身就是剪藏产品的主路径，不是附属能力。"
+      ]
+    },
+    {
+      "name": "Obsidian Web Clipper Troubleshoot",
+      "url": "https://obsidian.md/help/web-clipper/troubleshoot",
+      "observations": [
+        "官方承认 main-content 抽取在部分网站上会过于保守，导致内容缺失。",
+        "这表明“跨站点正确定位正文”仍是现阶段公开痛点。"
+      ]
+    },
+    {
+      "name": "Mozilla Readability",
+      "url": "https://github.com/mozilla/readability",
+      "observations": [
+        "Firefox Reader View 背后的官方库，核心职责就是抽取可读正文。",
+        "这类能力已经沉淀为成熟的 reader-mode 心智。"
+      ]
+    },
+    {
+      "name": "go-readability",
+      "url": "https://github.com/mackee/go-readability",
+      "observations": [
+        "README 直接把 removing clutter like navigation、ads、unnecessary elements 写成主能力。",
+        "说明导航/广告/边栏去噪仍是市场竞争位。"
+      ]
+    }
+  ],
+  "candidates": {
+    "semantic_main_article_priority": {
+      "painFrequency": 3,
+      "growthLeverage": 3,
+      "competitiveGap": 2,
+      "evidence": [
+        "Obsidian Capture 已把 main article extraction 作为默认能力，属行业基线。",
+        "本仓库 v1-35 已实现 body->main/article/[role=main] 优先，因此新增差距有限。"
+      ]
+    },
+    "nav_aside_footer_blacklist_pruning": {
+      "painFrequency": 5,
+      "growthLeverage": 4,
+      "competitiveGap": 4,
+      "evidence": [
+        "Reader Mode 和 go-readability 都把去除 ads/navigation/clutter 作为核心承诺。",
+        "该能力能直接改善“复制后还要手删 related/share/footer”的即时体验。"
+      ]
+    },
+    "density_based_main_content_selection": {
+      "painFrequency": 5,
+      "growthLeverage": 5,
+      "competitiveGap": 4,
+      "evidence": [
+        "Obsidian Capture/ Troubleshoot 共同证明：跨站点 main-content 抽取准确率仍是持续痛点。",
+        "Mozilla Readability 的长期存在说明正文定位算法是 reader-mode 竞争核心。"
+      ]
+    },
+    "reader_mode_fallback_notice": {
+      "painFrequency": 2,
+      "growthLeverage": 2,
+      "competitiveGap": 3,
+      "evidence": [
+        "Obsidian 在帮助文档里提供了选区/高亮/模板绕过方案，说明 notice 只能缓解，不直接提升抽取结果。",
+        "相比正文定位和噪音裁剪，它更偏支持性 UX。"
+      ]
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "capturedAt": "2026-04-27",
+  "aggregateCounts": {
+    "noise_nav_ads_mentions": 26,
+    "main_content_mentions": 20,
+    "code_cleanup_mentions": 42,
+    "table_mentions": 135,
+    "new_reader_mode_test_fixtures": 3
+  },
+  "repoSignals": [
+    {
+      "path": "docs/Future-Features.md",
+      "observation": "明确记录当前缺少主动识别并移除 sidebar/nav/footer/related 的能力。"
+    },
+    {
+      "path": "docs/reports/v1-35-report.md",
+      "observation": "现有实现只在 body 路径做语义 main/article 优先，未覆盖无语义标签页面。"
+    },
+    {
+      "path": "docs/growth/publish-pack-2026-03-23.md",
+      "observation": "对外增长文案多次强调 ads/nav noise，说明这仍是获客主诉求之一。"
+    },
+    {
+      "path": "docs/evidence/v1-66/cws-listing-evidence-pack-1.1.28-2026-03-21-000000.json",
+      "observation": "商店物料持续承诺 main content + clean copy，需求与转化口径长期一致。"
+    },
+    {
+      "path": "scripts/content-interaction-tests.ts",
+      "observation": "已新增 semantic/density/pruning 三条 reader-mode 自动化回归，具备低风险持续验证条件。"
+    }
+  ],
+  "candidates": {
+    "semantic_main_article_priority": {
+      "stabilityTestability": 5,
+      "timeToShip": 5,
+      "evidence": [
+        "已有 v1-35 基线和现成测试样例，继续加码风险最低。",
+        "但该能力已存在，继续投入的边际收益低于缺口更大的候选项。"
+      ]
+    },
+    "nav_aside_footer_blacklist_pruning": {
+      "stabilityTestability": 5,
+      "timeToShip": 5,
+      "evidence": [
+        "可以在 clone 后做保守 DOM 裁剪，不影响点击/选区主链路。",
+        "已补 article 内 related/share/footer 噪音回归用例。"
+      ]
+    },
+    "density_based_main_content_selection": {
+      "stabilityTestability": 4,
+      "timeToShip": 4,
+      "evidence": [
+        "只扩展 body 路径根节点选择，影响面可控，但需要额外评分启发式。",
+        "已补无语义标签页面的 density fallback 用例。"
+      ]
+    },
+    "reader_mode_fallback_notice": {
+      "stabilityTestability": 4,
+      "timeToShip": 3,
+      "evidence": [
+        "实现简单，但需要新增 UI 表达与文案，本轮不如直接提升抽取正确率更值当。",
+        "对获客文案与口碑的拉动弱于真实结果改进。"
+      ]
+    }
+  }
+}

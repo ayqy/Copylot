@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <body>
+    <header>Dense mode top navigation</header>
+    <div class="page-shell">
+      <div class="left-rail">
+        <a href="#one">Navigation one</a>
+        <a href="#two">Navigation two</a>
+        <a href="#three">Navigation three</a>
+      </div>
+      <div id="story-content" class="story-content">
+        <h1>Density fallback article</h1>
+        <p>
+          This article body intentionally avoids semantic main or article tags so the reader mode fallback must locate
+          the densest content container instead of copying the entire page shell. The main copy should keep this
+          paragraph and ignore the surrounding navigation rail.
+        </p>
+        <p>
+          A second paragraph adds enough visible text to make the candidate score stable. It also reflects the real
+          world case where many documentation or CMS pages render primary content in a generic div with only a class
+          name such as story content or post body.
+        </p>
+      </div>
+      <div class="sidebar related-links">
+        <a href="#alpha">Related alpha</a>
+        <a href="#beta">Related beta</a>
+        <a href="#gamma">Related gamma</a>
+      </div>
+    </div>
+    <footer>Density mode footer links</footer>
+  </body>
+</html>

@@ -1,0 +1,92 @@
+{
+  "generatedAt": "2026-04-27T00:00:00+08:00",
+  "inputs": {
+    "marketScan": "docs/evidence/v1-102/market-scan.json",
+    "userSignal": "docs/evidence/v1-102/user-signal.json"
+  },
+  "weights": {
+    "painFrequency": 0.3,
+    "growthLeverage": 0.25,
+    "competitiveGap": 0.2,
+    "stabilityTestability": 0.15,
+    "timeToShip": 0.1
+  },
+  "selectedKeys": [
+    "density_based_main_content_selection",
+    "nav_aside_footer_blacklist_pruning"
+  ],
+  "scores": [
+    {
+      "key": "density_based_main_content_selection",
+      "label": "Density-based main content selection",
+      "total": 4.55,
+      "breakdown": {
+        "painFrequency": 5,
+        "growthLeverage": 5,
+        "competitiveGap": 4,
+        "stabilityTestability": 4,
+        "timeToShip": 4
+      },
+      "evidence": [
+        "Obsidian Capture/ Troubleshoot 共同证明：跨站点 main-content 抽取准确率仍是持续痛点。",
+        "Mozilla Readability 的长期存在说明正文定位算法是 reader-mode 竞争核心。",
+        "只扩展 body 路径根节点选择，影响面可控，但需要额外评分启发式。",
+        "已补无语义标签页面的 density fallback 用例。"
+      ]
+    },
+    {
+      "key": "nav_aside_footer_blacklist_pruning",
+      "label": "Nav/aside/footer blacklist pruning",
+      "total": 4.55,
+      "breakdown": {
+        "painFrequency": 5,
+        "growthLeverage": 4,
+        "competitiveGap": 4,
+        "stabilityTestability": 5,
+        "timeToShip": 5
+      },
+      "evidence": [
+        "Reader Mode 和 go-readability 都把去除 ads/navigation/clutter 作为核心承诺。",
+        "该能力能直接改善“复制后还要手删 related/share/footer”的即时体验。",
+        "可以在 clone 后做保守 DOM 裁剪，不影响点击/选区主链路。",
+        "已补 article 内 related/share/footer 噪音回归用例。"
+      ]
+    },
+    {
+      "key": "semantic_main_article_priority",
+      "label": "Semantic main/article priority",
+      "total": 3.3,
+      "breakdown": {
+        "painFrequency": 3,
+        "growthLeverage": 3,
+        "competitiveGap": 2,
+        "stabilityTestability": 5,
+        "timeToShip": 5
+      },
+      "evidence": [
+        "Obsidian Capture 已把 main article extraction 作为默认能力，属行业基线。",
+        "本仓库 v1-35 已实现 body->main/article/[role=main] 优先，因此新增差距有限。",
+        "已有 v1-35 基线和现成测试样例，继续加码风险最低。",
+        "但该能力已存在，继续投入的边际收益低于缺口更大的候选项。"
+      ]
+    },
+    {
+      "key": "reader_mode_fallback_notice",
+      "label": "Reader-mode fallback notice",
+      "total": 2.6,
+      "breakdown": {
+        "painFrequency": 2,
+        "growthLeverage": 2,
+        "competitiveGap": 3,
+        "stabilityTestability": 4,
+        "timeToShip": 3
+      },
+      "evidence": [
+        "Obsidian 在帮助文档里提供了选区/高亮/模板绕过方案，说明 notice 只能缓解，不直接提升抽取结果。",
+        "相比正文定位和噪音裁剪，它更偏支持性 UX。",
+        "实现简单，但需要新增 UI 表达与文案，本轮不如直接提升抽取正确率更值当。",
+        "对获客文案与口碑的拉动弱于真实结果改进。"
+      ]
+    }
+  ]
+}

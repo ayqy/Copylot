@@ -123,7 +123,7 @@ function getPreciseSelectedElement(): Element | null {
 
     // 3. 创建一个临时容器元素
     const tempDiv = document.createElement('div');
-    tempDiv.dataset.fromEditableSelection = 'true';
+    tempDiv.dataset.fromPreciseSelection = 'true';
 
     // 4. 将Fragment附加到临时容器中
     tempDiv.appendChild(fragment);
@@ -207,10 +207,6 @@ function getSelectionRootElementForProcessing(): Element | null {
 function isFromEditableContext(element: Element | null): boolean {
   if (!element) {
     return false;
-  }
-
-  if (element instanceof HTMLElement && element.dataset.fromEditableSelection === 'true') {
-    return true;
   }
 
   // @ts-ignore: findEditableContext is available from inlined block-identifier.ts
@@ -812,7 +808,7 @@ async function handlePromptClick(promptId: string): Promise<void> {
     const selection = window.getSelection();
     const hasValidSelection = Boolean(selection && hasMeaningfulSelection(selection));
     const isCurrentTargetFromSelection =
-      currentTarget instanceof HTMLElement && currentTarget.dataset.fromEditableSelection === 'true';
+      currentTarget instanceof HTMLElement && currentTarget.dataset.fromPreciseSelection === 'true';
 
     let rootForProcessing: Element = currentTarget;
 

@@ -222,8 +222,8 @@ async function run() {
 
   const reviewsUrl = buildChromeWebStoreReviewsUrl(extensionId, buildWomUtmParams('popup'));
   const reviewsParsed = new URL(reviewsUrl);
-  assert.equal(reviewsParsed.hostname, 'chrome.google.com');
-  assert.ok(reviewsParsed.pathname.endsWith(`/webstore/detail/${extensionId}/reviews`));
+  assert.equal(reviewsParsed.hostname, 'chromewebstore.google.com');
+  assert.ok(reviewsParsed.pathname.endsWith(`/${publishedExtensionId}/reviews`));
   assert.equal(reviewsParsed.searchParams.get('utm_source'), 'copylot-ext');
   assert.equal(reviewsParsed.searchParams.get('utm_medium'), 'popup');
   assert.equal(reviewsParsed.searchParams.get('utm_campaign'), 'v1-44');

@@ -1,7 +1,7 @@
 // Content processor functionality (using TurndownService from global scope)
 import type { Settings } from './settings-manager'; // Import type for Settings
 import { cleanCodeBlockText } from './code-block-cleaner';
-import { createVisibleClone } from './dom-preprocessor';
+import { createVisibleClone, stripReaderModeNoise } from './dom-preprocessor';
 import { normalizeLink } from './link-utils';
 
 
@@ -968,6 +968,77 @@ export function formatAdditionalInfo(
 }
 
 const SEMANTIC_MAIN_ROOT_MIN_TEXT_LEN = 200;
+const DENSE_MAIN_ROOT_MIN_TEXT_LEN = 220;
+const LOCAL_READER_MODE_ROOT_MIN_TEXT_LEN = 160;
+const LOCAL_READER_MODE_ROOT_MAX_LINK_DENSITY = 0.6;
+const DENSE_MAIN_CANDIDATE_TAGS = ['main', 'article', 'section', 'div'];
+const DENSE_MAIN_CANDIDATE_SELECTOR = DENSE_MAIN_CANDIDATE_TAGS.join(', ');
+const DENSE_MAIN_NEGATIVE_NAME_REGEX =
+  /\b(nav|navigation|footer|header|aside|sidebar|promo|advert|ads?|share|social|related|recommend|comment(?:s)?|breadcrumb|newsletter|subscribe|cookie|consent|toolbar|rail)\b/i;
+const DENSE_MAIN_POSITIVE_NAME_REGEX = /\b(article|content|main|post|entry|story|body|doc|read)\b/i;
+const LOCAL_READER_MODE_ROOT_TAGS = new Set(DENSE_MAIN_CANDIDATE_TAGS);
+
+function normalizeCandidateText(text: string): string {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+function getCandidateTextLength(element: Element): number {
+  return normalizeCandidateText((element as HTMLElement).innerText || element.textContent || '').length;
+}
+
+function getCandidateLinkDensity(element: HTMLElement): number {
+  const totalTextLength = getCandidateTextLength(element);
+  if (totalTextLength <= 0) return 0;
+
+  let linkTextLength = 0;
+  const links = Array.from(element.querySelectorAll('a'));
+  for (const link of links) {
+    linkTextLength += getCandidateTextLength(link);
+  }
+
+  return Math.min(1, linkTextLength / totalTextLength);
+}
+
+function getCandidateNameSignal(element: HTMLElement): string {
+  return [element.id, element.className, element.getAttribute('aria-label'), element.getAttribute('data-testid')]
+    .filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
+    .join(' ');
+}
+
+function scoreDenseMainCandidate(element: HTMLElement): number {
+  const textLength = getCandidateTextLength(element);
+  if (textLength < DENSE_MAIN_ROOT_MIN_TEXT_LEN) {
+    return Number.NEGATIVE_INFINITY;
+  }
+
+  const linkDensity = getCandidateLinkDensity(element);
+  if (linkDensity >= 0.72) {
+    return Number.NEGATIVE_INFINITY;
+  }
+
+  const linkCount = element.querySelectorAll('a').length;
+  const paragraphCount = element.querySelectorAll('p').length;
+  const blockCount = element.querySelectorAll('p, pre, table, ul, ol, blockquote').length;
+  const headingCount = element.querySelectorAll('h1, h2, h3').length;
+  const nameSignal = getCandidateNameSignal(element);
+
+  let score = textLength;
+  score += paragraphCount * 90;
+  score += blockCount * 45;
+  score += headingCount * 60;
+  score -= Math.round(linkDensity * 900);
+  score -= linkCount * 12;
+
+  if (DENSE_MAIN_POSITIVE_NAME_REGEX.test(nameSignal)) {
+    score += 180;
+  }
+
+  if (DENSE_MAIN_NEGATIVE_NAME_REGEX.test(nameSignal)) {
+    score -= 260;
+  }
+
+  return score;
+}
 
 function pickSemanticMainRootIfBody(root: Element): Element {
   if (root.tagName !== 'BODY') return root;
@@ -978,7 +1049,7 @@ function pickSemanticMainRootIfBody(root: Element): Element {
 
   for (const candidate of candidates) {
     if (!(candidate instanceof HTMLElement)) continue;
-    const textLen = candidate.innerText.trim().length;
+    const textLen = getCandidateTextLength(candidate);
     if (textLen > bestCandidateTextLen) {
       bestCandidateTextLen = textLen;
       bestCandidate = candidate;
@@ -992,11 +1063,75 @@ function pickSemanticMainRootIfBody(root: Element): Element {
   return root;
 }
 
+function pickDenseMainRootIfBody(root: Element): Element {
+  if (root.tagName !== 'BODY') return root;
+
+  const candidates = Array.from(root.querySelectorAll(DENSE_MAIN_CANDIDATE_SELECTOR));
+  let bestCandidate: Element | null = null;
+  let bestScore = Number.NEGATIVE_INFINITY;
+
+  for (const candidate of candidates) {
+    if (!(candidate instanceof HTMLElement)) continue;
+    const score = scoreDenseMainCandidate(candidate);
+    if (score > bestScore) {
+      bestScore = score;
+      bestCandidate = candidate;
+    }
+  }
+
+  if (bestCandidate && bestScore > DENSE_MAIN_ROOT_MIN_TEXT_LEN) {
+    return bestCandidate;
+  }
+
+  return root;
+}
+
+function shouldStripReaderModeNoiseForLocalRoot(root: Element): boolean {
+  if (!(root instanceof HTMLElement)) return false;
+
+  const tagName = root.tagName.toLowerCase();
+  if (!LOCAL_READER_MODE_ROOT_TAGS.has(tagName)) {
+    return false;
+  }
+
+  const textLength = getCandidateTextLength(root);
+  if (textLength < LOCAL_READER_MODE_ROOT_MIN_TEXT_LEN) {
+    return false;
+  }
+
+  const linkDensity = getCandidateLinkDensity(root);
+  if (linkDensity >= LOCAL_READER_MODE_ROOT_MAX_LINK_DENSITY) {
+    return false;
+  }
+
+  const paragraphLikeCount = root.querySelectorAll('p, pre, blockquote, li, table').length;
+  const headingCount = root.querySelectorAll('h1, h2, h3').length;
+  const nameSignal = getCandidateNameSignal(root);
+  const hasPositiveNameSignal = DENSE_MAIN_POSITIVE_NAME_REGEX.test(nameSignal);
+  const hasNegativeNameSignal = DENSE_MAIN_NEGATIVE_NAME_REGEX.test(nameSignal);
+
+  if (hasNegativeNameSignal && !hasPositiveNameSignal) {
+    return false;
+  }
+
+  return hasPositiveNameSignal || paragraphLikeCount >= 2 || (headingCount >= 1 && paragraphLikeCount >= 1);
+}
+
+function prepareReaderModeRoot(element: Element): { sourceRoot: Element; workingRoot: Element } {
+  const semanticRoot = pickSemanticMainRootIfBody(element);
+  const sourceRoot = semanticRoot !== element ? semanticRoot : pickDenseMainRootIfBody(element);
+  const workingRoot = createVisibleClone(sourceRoot);
+
+  if (element.tagName === 'BODY' || sourceRoot !== element || shouldStripReaderModeNoiseForLocalRoot(sourceRoot)) {
+    stripReaderModeNoise(workingRoot);
+  }
+
+  return { sourceRoot, workingRoot };
+}
+
 export function processContent(element: Element, settings: Settings): string {
   try {
-    const root = pickSemanticMainRootIfBody(element);
-    // 统一可见性预处理
-    const workingRoot = createVisibleClone(root);
+    const { workingRoot } = prepareReaderModeRoot(element);
 
     let content: string;
 
@@ -1054,6 +1189,6 @@ export function processContent(element: Element, settings: Settings): string {
 
   } catch (error) {
     console.error('[Debug Content Processor] Error in processContent:', error);
-    return (element as HTMLElement).innerText || '';
+    return (element as HTMLElement).innerText || element.textContent || '';
   }
 }

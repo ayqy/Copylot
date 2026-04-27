@@ -21,6 +21,9 @@
     "apply": "ts-node scripts/apply-snapshots.ts",
     "build:tests": "ts-node scripts/build-test-manifest.ts",
     "check-i18n": "ts-node scripts/check-i18n.ts",
+    "test:ui": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/ui-integration-tests.ts",
+    "test:content": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/content-interaction-tests.ts",
+    "build:feature-priority": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-feature-priority-report.ts",
     "postinstall": "echo 'Dependencies installed successfully'",
     "prepare": "husky"
   },
@@ -48,6 +51,7 @@
     "eslint-plugin-prettier": "^5.1.3",
     "glob": "*",
     "husky": "^9.1.7",
+    "jsdom": "^26.1.0",
     "lint-staged": "^16.1.6",
     "prettier": "^3.3.2",
     "sharp": "^0.33.4",

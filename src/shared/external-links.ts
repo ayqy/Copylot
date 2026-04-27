@@ -94,6 +94,13 @@ export function buildChromeWebStoreUrl(params: BuildExternalLinkParams): string 
   return url.toString();
 }
 
+export function buildChromeWebStoreReviewsUrl(params: BuildExternalLinkParams): string {
+  const url = new URL(CHROME_WEB_STORE_CANONICAL_URL);
+  url.pathname = `${url.pathname.replace(/\/$/, '')}/reviews`;
+  url.search = buildUtmSearchParams(params).toString();
+  return url.toString();
+}
+
 function appendProWaitlistEnvParams(search: URLSearchParams, env: unknown): void {
   const sanitized = sanitizeProWaitlistEnv(env);
   if (sanitized.extensionVersion) search.set('ext_version', sanitized.extensionVersion);
@@ -123,4 +130,3 @@ export function buildProWaitlistUrl(params: BuildProWaitlistUrlParams): string {
 
   return url.toString();
 }
-

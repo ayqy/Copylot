@@ -56,6 +56,8 @@ node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/verify-weekl
 node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/verify-weekly-channel-ops-evidence-pack.ts docs/evidence/v1-65
 
 npm run build:prod
+npm run test:ui
+npm run test:content
 
 node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-cws-listing-evidence-pack.ts --stable-exported-at
 listing_pack_file=$(node --input-type=module -e "import fs from 'node:fs'; const md=fs.readFileSync('docs/evidence/v1-66/index.md','utf-8'); const m=md.match(/cws-listing-evidence-pack-[0-9A-Za-z._-]+\\.json/); if (!m) process.exit(2); console.log(m[0]);")

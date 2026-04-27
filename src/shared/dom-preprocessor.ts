@@ -176,6 +176,82 @@ function shouldSkipIconFontElement(el: HTMLElement): boolean {
   return containsOnlyIconFontGlyphs(textContent);
 }
 
+const READER_MODE_STRUCTURAL_NOISE_TAGS = new Set(['header', 'footer', 'nav', 'aside', 'form', 'dialog', 'menu']);
+const READER_MODE_STRUCTURAL_NOISE_ROLES = new Set(['banner', 'navigation', 'complementary', 'contentinfo']);
+const READER_MODE_NEGATIVE_NAME_REGEX =
+  /\b(nav|navigation|footer|header|aside|sidebar|promo|advert|ads?|newsletter|subscribe|share|social|related|recommend|breadcrumb|comment(?:s)?|cookie|consent|toolbar|rail)\b/i;
+const READER_MODE_POSITIVE_NAME_REGEX =
+  /\b(article|content|main|post|entry|story|body|doc|markdown|read)\b/i;
+
+function getReaderModeElementTextLength(el: Element): number {
+  return (el.textContent ?? '').replace(/\s+/g, ' ').trim().length;
+}
+
+function getReaderModeLinkDensity(el: HTMLElement): number {
+  const totalTextLength = getReaderModeElementTextLength(el);
+  if (totalTextLength <= 0) return 0;
+
+  let linkTextLength = 0;
+  const links = Array.from(el.querySelectorAll('a'));
+  for (const link of links) {
+    linkTextLength += getReaderModeElementTextLength(link);
+  }
+
+  return Math.min(1, linkTextLength / totalTextLength);
+}
+
+function getReaderModeNameSignal(el: HTMLElement): string {
+  return [el.id, el.className, el.getAttribute('aria-label'), el.getAttribute('data-testid')]
+    .filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
+    .join(' ');
+}
+
+function shouldStripReaderModeNoiseNode(el: HTMLElement): boolean {
+  const tagName = el.tagName.toLowerCase();
+  const role = (el.getAttribute('role') || '').toLowerCase();
+  const textLength = getReaderModeElementTextLength(el);
+  const linkDensity = getReaderModeLinkDensity(el);
+  const nameSignal = getReaderModeNameSignal(el);
+  const hasPositiveNameSignal = READER_MODE_POSITIVE_NAME_REGEX.test(nameSignal);
+  const hasNegativeNameSignal = READER_MODE_NEGATIVE_NAME_REGEX.test(nameSignal);
+
+  if (READER_MODE_STRUCTURAL_NOISE_TAGS.has(tagName) || READER_MODE_STRUCTURAL_NOISE_ROLES.has(role)) {
+    return true;
+  }
+
+  if (hasNegativeNameSignal && !hasPositiveNameSignal) {
+    if (textLength <= 1200 || linkDensity >= 0.35) {
+      return true;
+    }
+  }
+
+  const linkCount = el.querySelectorAll('a').length;
+  const paragraphLikeCount = el.querySelectorAll('p, pre, blockquote, li, table').length;
+  if (linkCount >= 4 && linkDensity >= 0.55 && textLength <= 900 && paragraphLikeCount <= 4) {
+    return true;
+  }
+
+  return false;
+}
+
+export function stripReaderModeNoise(root: Element): Element {
+  const removableNodes = Array.from(root.querySelectorAll('*')).filter(
+    (node): node is HTMLElement => node instanceof HTMLElement
+  );
+
+  for (const node of removableNodes) {
+    if (node === root || !node.parentElement || !root.contains(node)) {
+      continue;
+    }
+
+    if (shouldStripReaderModeNoiseNode(node)) {
+      node.remove();
+    }
+  }
+
+  return root;
+}
+
 export function createVisibleClone(root: Element): Element {
   // Create a shallow clone of the root (without children for now)
   const cloneRoot = root.cloneNode(false) as Element;

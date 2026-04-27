@@ -1,7 +1,10 @@
 import type { Settings } from './settings-manager';
 import type { GrowthFunnelSummary, GrowthStats } from './growth-stats';
 import type { TelemetryEvent } from './telemetry';
-import { buildChromeWebStoreUrl } from './external-links.ts';
+import {
+  buildChromeWebStoreReviewsUrl as buildCanonicalChromeWebStoreReviewsUrl,
+  buildChromeWebStoreUrl
+} from './external-links.ts';
 
 export type I18nGetMessage = (key: string, substitutions?: string | string[]) => string;
 
@@ -84,13 +87,13 @@ export function buildChromeWebStoreDetailUrl(
 }
 
 export function buildChromeWebStoreReviewsUrl(
-  extensionId: string,
+  _extensionId: string,
   utmParams: ChromeWebStoreUtmParams = DEFAULT_CWS_UTM_PARAMS
 ): string {
-  const base = `https://chrome.google.com/webstore/detail/${extensionId}/reviews`;
-  const url = new URL(base);
-  url.search = new URLSearchParams({ ...utmParams }).toString();
-  return url.toString();
+  return buildCanonicalChromeWebStoreReviewsUrl({
+    medium: utmParams.utm_medium,
+    campaign: utmParams.utm_campaign
+  });
 }
 
 function safeGetMessage(getMessage: I18nGetMessage, key: string, substitutions?: string | string[]) {

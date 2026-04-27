@@ -1,0 +1,271 @@
+type StorageNamespace = 'sync' | 'local' | 'managed' | 'session';
+
+type StorageChanges = Record<string, { oldValue?: unknown; newValue?: unknown }>;
+
+type StorageChangeListener = (changes: StorageChanges, areaName: StorageNamespace) => void;
+type RuntimeMessageListener = (
+  message: unknown,
+  sender: chrome.runtime.MessageSender,
+  sendResponse: (response?: unknown) => void
+) => void | boolean;
+
+export interface ChromeMockOptions {
+  extensionId?: string;
+  manifestVersion?: string;
+  activeTabId?: number;
+  syncData?: Record<string, unknown>;
+  localData?: Record<string, unknown>;
+}
+
+export interface ChromeMockLogs {
+  createdTabs: Array<{ url?: string }>;
+  queriedTabs: Array<chrome.tabs.QueryInfo>;
+  sentTabMessages: Array<{ tabId: number; message: unknown }>;
+  runtimeMessages: unknown[];
+  openedOptionsPageCount: number;
+  badgeText: string[];
+}
+
+class StorageAreaMock {
+  private data: Map<string, unknown>;
+  private readonly areaName: StorageNamespace;
+  private readonly emit: (changes: StorageChanges, areaName: StorageNamespace) => void;
+
+  constructor(
+    areaName: StorageNamespace,
+    initialData: Record<string, unknown>,
+    emit: (changes: StorageChanges, areaName: StorageNamespace) => void
+  ) {
+    this.areaName = areaName;
+    this.emit = emit;
+    this.data = new Map(Object.entries(initialData));
+  }
+
+  async get(keys?: string | string[] | Record<string, unknown> | null): Promise<Record<string, unknown>> {
+    if (keys == null) {
+      return Object.fromEntries(this.data.entries());
+    }
+
+    if (typeof keys === 'string') {
+      return { [keys]: this.data.get(keys) };
+    }
+
+    if (Array.isArray(keys)) {
+      return Object.fromEntries(keys.map((key) => [key, this.data.get(key)]));
+    }
+
+    const result: Record<string, unknown> = {};
+    for (const [key, fallback] of Object.entries(keys)) {
+      result[key] = this.data.has(key) ? this.data.get(key) : fallback;
+    }
+    return result;
+  }
+
+  async set(items: Record<string, unknown>): Promise<void> {
+    const changes: StorageChanges = {};
+    for (const [key, value] of Object.entries(items)) {
+      const oldValue = this.data.get(key);
+      this.data.set(key, value);
+      changes[key] = { oldValue, newValue: value };
+    }
+    this.emit(changes, this.areaName);
+  }
+
+  async remove(keys: string | string[]): Promise<void> {
+    const keyList = Array.isArray(keys) ? keys : [keys];
+    const changes: StorageChanges = {};
+    for (const key of keyList) {
+      const oldValue = this.data.get(key);
+      this.data.delete(key);
+      changes[key] = { oldValue, newValue: undefined };
+    }
+    this.emit(changes, this.areaName);
+  }
+
+  async clear(): Promise<void> {
+    const changes: StorageChanges = {};
+    for (const [key, oldValue] of this.data.entries()) {
+      changes[key] = { oldValue, newValue: undefined };
+    }
+    this.data.clear();
+    this.emit(changes, this.areaName);
+  }
+
+  snapshot(): Record<string, unknown> {
+    return Object.fromEntries(this.data.entries());
+  }
+}
+
+export interface ChromeMockController {
+  chrome: typeof chrome;
+  logs: ChromeMockLogs;
+  storage: {
+    sync: StorageAreaMock;
+    local: StorageAreaMock;
+  };
+  dispatchRuntimeMessage(message: unknown): Promise<unknown[]>;
+}
+
+export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockController {
+  const logs: ChromeMockLogs = {
+    createdTabs: [],
+    queriedTabs: [],
+    sentTabMessages: [],
+    runtimeMessages: [],
+    openedOptionsPageCount: 0,
+    badgeText: []
+  };
+
+  const storageListeners = new Set<StorageChangeListener>();
+  const runtimeMessageListeners = new Set<RuntimeMessageListener>();
+
+  const emitStorageChanges = (changes: StorageChanges, areaName: StorageNamespace) => {
+    if (Object.keys(changes).length === 0) return;
+    for (const listener of storageListeners) {
+      listener(changes, areaName);
+    }
+  };
+
+  const sync = new StorageAreaMock('sync', options.syncData ?? {}, emitStorageChanges);
+  const local = new StorageAreaMock('local', options.localData ?? {}, emitStorageChanges);
+
+  const extensionId = options.extensionId ?? 'ehfglnbhoefcdedpkcdnainiifpflbic';
+  const manifestVersion = options.manifestVersion ?? '1.1.28';
+  const activeTabId = options.activeTabId ?? 101;
+
+  const chromeMock = {
+    action: {
+      async setBadgeText(details: { text: string }) {
+        logs.badgeText.push(details.text);
+      }
+    },
+    contextMenus: {
+      create() {
+        return undefined;
+      },
+      async removeAll() {
+        return undefined;
+      }
+    },
+    i18n: {
+      getMessage(key: string, substitutions?: string | string[]) {
+        if (Array.isArray(substitutions) && substitutions.length > 0) {
+          return `${key}:${substitutions.join('|')}`;
+        }
+        if (typeof substitutions === 'string') {
+          return `${key}:${substitutions}`;
+        }
+        return key;
+      },
+      getUILanguage() {
+        return 'en';
+      }
+    },
+    runtime: {
+      id: extensionId,
+      lastError: undefined as chrome.runtime.LastError | undefined,
+      getManifest() {
+        return { version: manifestVersion } as chrome.runtime.Manifest;
+      },
+      getURL(path: string) {
+        return `chrome-extension://${extensionId}/${path}`;
+      },
+      onInstalled: {
+        addListener() {
+          return undefined;
+        }
+      },
+      onStartup: {
+        addListener() {
+          return undefined;
+        }
+      },
+      onMessage: {
+        addListener(listener: RuntimeMessageListener) {
+          runtimeMessageListeners.add(listener);
+        },
+        removeListener(listener: RuntimeMessageListener) {
+          runtimeMessageListeners.delete(listener);
+        }
+      },
+      async openOptionsPage() {
+        logs.openedOptionsPageCount += 1;
+      },
+      async sendMessage(message: unknown) {
+        logs.runtimeMessages.push(message);
+        const responses: unknown[] = [];
+        for (const listener of runtimeMessageListeners) {
+          const maybeAsync = listener(
+            message,
+            {} as chrome.runtime.MessageSender,
+            (response?: unknown) => {
+              responses.push(response);
+            }
+          );
+          if (maybeAsync && typeof ((maybeAsync as unknown) as PromiseLike<unknown>).then === 'function') {
+            await maybeAsync;
+          }
+        }
+        return responses.at(-1);
+      }
+    },
+    storage: {
+      sync: {
+        get: sync.get.bind(sync),
+        set: sync.set.bind(sync),
+        remove: sync.remove.bind(sync),
+        clear: sync.clear.bind(sync)
+      },
+      local: {
+        get: local.get.bind(local),
+        set: local.set.bind(local),
+        remove: local.remove.bind(local),
+        clear: local.clear.bind(local)
+      },
+      onChanged: {
+        addListener(listener: StorageChangeListener) {
+          storageListeners.add(listener);
+        },
+        removeListener(listener: StorageChangeListener) {
+          storageListeners.delete(listener);
+        }
+      }
+    },
+    tabs: {
+      create(details: { url?: string }, callback?: (tab: chrome.tabs.Tab) => void) {
+        logs.createdTabs.push(details);
+        callback?.({ id: activeTabId, url: details.url } as chrome.tabs.Tab);
+      },
+      query(queryInfo: chrome.tabs.QueryInfo, callback: (tabs: chrome.tabs.Tab[]) => void) {
+        logs.queriedTabs.push(queryInfo);
+        callback([{ id: activeTabId, active: true } as chrome.tabs.Tab]);
+      },
+      sendMessage(tabId: number, message: unknown, callback?: (response: { success: boolean }) => void) {
+        logs.sentTabMessages.push({ tabId, message });
+        callback?.({ success: true });
+      }
+    }
+  } as unknown as typeof chrome;
+
+  return {
+    chrome: chromeMock,
+    logs,
+    storage: { sync, local },
+    async dispatchRuntimeMessage(message: unknown) {
+      const responses: unknown[] = [];
+      for (const listener of runtimeMessageListeners) {
+        const maybeAsync = listener(
+          message,
+          {} as chrome.runtime.MessageSender,
+          (response?: unknown) => {
+            responses.push(response);
+          }
+        );
+        if (maybeAsync && typeof ((maybeAsync as unknown) as PromiseLike<unknown>).then === 'function') {
+          await maybeAsync;
+        }
+      }
+      return responses;
+    }
+  };
+}

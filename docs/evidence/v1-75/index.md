@@ -2,7 +2,7 @@
 
 ## 单一事实来源（可审计）
 - `src/shared/external-links.ts`
-  - sha256: `5596968ccf928858de2474087a2ee365ca2453202e35cbacd3bd97ea807e6219`
+  - sha256: `22e4ccff22c2579b05e146250d2576dd5a2f98b814b65c7098a148bdb2e131c4`
 
 ## 输出文件清单（可复核）
 - `docs/evidence/v1-75/official-links.json`
