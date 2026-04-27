@@ -1,0 +1,34 @@
+{
+  "run_id": "20260428-005914-growth",
+  "attempt_count": 2,
+  "attempts": [
+    {
+      "channel": "email_public",
+      "target_name": "AI AnyTool",
+      "target_ref": "co***@aianytool.com",
+      "status": "done",
+      "notes": "sendmail 已提交",
+      "transport": "sendmail",
+      "evidence_paths": [
+        "co***@aianytool.com.eml",
+        "co***_at_aianytool.com.sendmail.json"
+      ],
+      "accepted_at": "2026-04-27T17:00:01.047726+00:00",
+      "response_code": null
+    },
+    {
+      "channel": "email_public",
+      "target_name": "AI Workbench",
+      "target_ref": "su***@aiworkbench.tech",
+      "status": "done",
+      "notes": "sendmail 已提交",
+      "transport": "sendmail",
+      "evidence_paths": [
+        "su***@aiworkbench.tech.eml",
+        "su***_at_aiworkbench.tech.sendmail.json"
+      ],
+      "accepted_at": "2026-04-27T17:00:01.073996+00:00",
+      "response_code": null
+    }
+  ]
+}
