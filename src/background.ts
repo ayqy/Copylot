@@ -1,4 +1,5 @@
-import { getSettings, saveSettings, type Prompt, type ChatService } from './shared/settings-manager';
+import { getActivePrompts, getSettings, saveSettings, type Prompt, type ChatService } from './shared/settings-manager';
+import { buildPromptContextMenuItems } from './shared/context-menu-model';
 import {
   ensureGrowthStatsInitialized,
   getGrowthStats,
@@ -26,24 +27,28 @@ async function updateContextMenu() {
     });
 
     const { userPrompts } = await getSettings();
+    const activePrompts = getActivePrompts(userPrompts);
 
-    if (userPrompts && userPrompts.length > 0) {
+    if (activePrompts.length > 0) {
       chrome.contextMenus.create({
         id: PARENT_MENU_ID,
         title: chrome.i18n.getMessage('magicCopyWithPrompt') || 'Magic Copy with Prompt',
         contexts: ['page', 'selection']
       });
 
-      userPrompts.forEach((prompt: Prompt) => {
+      buildPromptContextMenuItems({
+        prompts: activePrompts,
+        parentId: PARENT_MENU_ID
+      }).forEach((item) => {
         try {
           chrome.contextMenus.create({
-            id: prompt.id,
-            title: prompt.title,
-            parentId: PARENT_MENU_ID,
-            contexts: ['page', 'selection']
+            id: item.id,
+            title: item.title,
+            parentId: item.parentId,
+            contexts: item.contexts
           });
         } catch (error) {
-          console.warn(`Failed to create menu item for prompt ${prompt.id}:`, error);
+          console.warn(`Failed to create menu item for prompt ${item.id}:`, error);
         }
       });
     }
@@ -219,7 +224,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const { promptId, usageCount, lastUsedAt } = message;
         try {
           const settings = await getSettings();
-          const prompt = settings.userPrompts.find((p: Prompt) => p.id === promptId);
+          const prompt = getActivePrompts(settings.userPrompts).find((p: Prompt) => p.id === promptId);
           if (prompt) {
             prompt.usageCount = usageCount;
             prompt.lastUsedAt = lastUsedAt;
@@ -275,7 +280,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
   if (info.parentMenuItemId === PARENT_MENU_ID && tab && tab.id) {
     const settings = await getSettings();
-    const prompt = settings.userPrompts.find((p: Prompt) => p.id === info.menuItemId);
+    const prompt = getActivePrompts(settings.userPrompts).find((p: Prompt) => p.id === info.menuItemId);
     if (prompt) {
       // 更新使用次数和最后使用时间
       prompt.usageCount = (prompt.usageCount || 0) + 1;

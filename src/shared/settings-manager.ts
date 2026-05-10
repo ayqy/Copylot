@@ -3,7 +3,7 @@
 export const FORCE_UI_LANGUAGE = '';
 
 // Import getMessage function for i18n support
-import { getMessage } from './ui-injector';
+import { getMessage } from './ui-injector.ts';
 
 // Settings manager functionality
 export interface ChatService {
@@ -28,6 +28,14 @@ export interface Prompt {
   builtIn?: boolean;
   deleted?: boolean;
   templateVersion?: number;
+}
+
+export function isPromptActive(prompt: Prompt): boolean {
+  return !(prompt.builtIn && prompt.deleted);
+}
+
+export function getActivePrompts(prompts: Prompt[]): Prompt[] {
+  return prompts.filter(isPromptActive);
 }
 
 export interface Settings {
@@ -321,14 +329,6 @@ export async function getSettings(): Promise<Settings> {
             // 保留：usageCount, lastUsedAt, targetChatId, autoOpenChat 等用户相关设置
           }
         }
-      });
-
-      // 过滤掉已删除的内置prompt
-      mergedSettings.userPrompts = mergedSettings.userPrompts.filter(prompt => {
-        if (prompt.builtIn && prompt.deleted) {
-          return false;
-        }
-        return true;
       });
 
       // 迁移逻辑：为现有用户添加新的内置聊天服务和更新现有服务

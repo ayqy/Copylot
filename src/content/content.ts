@@ -1,7 +1,7 @@
 // Import types and specific functions/constants that might be needed by the outer shell
 // before inlining. This helps with TypeScript checking for the main script file.
 // The actual functions/constants from these modules will be globally available after inlining.
-import type { Settings } from '../shared/settings-manager';
+import type { Prompt, Settings } from '../shared/settings-manager';
 // No need to import specific functions like isViableBlock, createButton etc. here,
 // as they will be part of the global scope after the inline build step.
 // The /* INLINE:... */ comments will bring their definitions directly into this file.
@@ -9,6 +9,7 @@ import type { Settings } from '../shared/settings-manager';
 declare function findEditableContext(element: Element | null): HTMLElement | null;
 declare const DEFAULT_EDITOR_EXCLUSION_CLASSES: string[] | undefined;
 declare const DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS: string[] | undefined;
+declare function getActivePrompts(prompts: Prompt[]): Prompt[];
 declare function getMessage(key: string): string;
 declare function recordTelemetryEvent(name: string, props?: Record<string, unknown>): Promise<void>;
 
@@ -512,7 +513,7 @@ function showMagicCopy(element: Element, event?: MouseEvent, showOutline: boolea
   // Update prompt menu with current user prompts
   if (userSettings && userSettings.userPrompts) {
     // @ts-ignore: updatePromptMenu is available from inlined ui-injector.ts
-    updatePromptMenu(copyButtonElement, userSettings.userPrompts);
+    updatePromptMenu(copyButtonElement, getActivePrompts(userSettings.userPrompts));
   }
 
   // @ts-ignore: showButton is available from inlined ui-injector.ts
@@ -729,10 +730,10 @@ function setupButtonClickHandler(): void {
     if (!userSettings) return;
     
     try {
-      const { userPrompts } = userSettings;
-      if (userPrompts && userPrompts.length > 0) {
+      const activePrompts = getActivePrompts(userSettings.userPrompts);
+      if (activePrompts.length > 0) {
         // @ts-ignore: updatePromptMenu is available from inlined ui-injector.ts
-        updatePromptMenu(copyButtonElement!, userPrompts);
+        updatePromptMenu(copyButtonElement!, activePrompts);
         // @ts-ignore: showPromptMenu is available from inlined ui-injector.ts
         showPromptMenu(copyButtonElement!);
       }
@@ -800,8 +801,7 @@ async function handlePromptClick(promptId: string): Promise<void> {
   if (!currentTarget || !userSettings) return;
 
   try {
-    const { userPrompts } = userSettings;
-    const prompt = userPrompts.find((p) => p.id === promptId);
+    const prompt = getActivePrompts(userSettings.userPrompts).find((p) => p.id === promptId);
     if (!prompt) return;
 
     // 悬浮按钮 Prompt：当存在有效选区且选区位于当前块内时，优先对选区进行处理（表格优先整表）。

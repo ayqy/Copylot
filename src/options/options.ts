@@ -1,6 +1,7 @@
 // @ts-ignore: CSS import for build process
 import './options.css';
 import {
+  getActivePrompts,
   getSettings,
   saveSettings,
   type Settings,
@@ -576,13 +577,9 @@ function setPromptSortMode(value: unknown): void {
 function filterAndRenderPrompts() {
   const searchTerm = elements.searchInput.value.toLowerCase();
   const categoryFilter = elements.categoryFilter.value;
+  const activePrompts = getActivePrompts(allPrompts);
 
-  filteredPrompts = allPrompts.filter(prompt => {
-    // 过滤掉已删除的内置prompt
-    if (prompt.builtIn && prompt.deleted) {
-      return false;
-    }
-    
+  filteredPrompts = activePrompts.filter(prompt => {
     const matchesSearch = !searchTerm || 
       prompt.title.toLowerCase().includes(searchTerm) ||
       prompt.template.toLowerCase().includes(searchTerm);
@@ -1061,7 +1058,7 @@ async function deletePrompt(promptId: string) {
  */
 async function savePrompts() {
   try {
-    const wasEmpty = allPrompts.length === 0;
+    const wasEmpty = getActivePrompts(allPrompts).length === 0;
     
     // 显示同步中状态
     elements.syncStatusText.textContent = getMessage('syncStatusSyncing');
@@ -1076,7 +1073,7 @@ async function savePrompts() {
     elements.syncStatusBtn.style.color = 'var(--success-color)';
     
     // 如果是第一次创建prompt，显示使用说明
-    if (wasEmpty && allPrompts.length === 1) {
+    if (wasEmpty && getActivePrompts(allPrompts).length === 1) {
       showUsageInstructions();
     }
     

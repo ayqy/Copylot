@@ -24,6 +24,9 @@ export interface ChromeMockLogs {
   runtimeMessages: unknown[];
   openedOptionsPageCount: number;
   badgeText: string[];
+  devtoolsSidebarPages: string[];
+  devtoolsSelectionChangedListenerCount: number;
+  devtoolsEvalExpressions: string[];
 }
 
 class StorageAreaMock {
@@ -113,11 +116,15 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
     sentTabMessages: [],
     runtimeMessages: [],
     openedOptionsPageCount: 0,
-    badgeText: []
+    badgeText: [],
+    devtoolsSidebarPages: [],
+    devtoolsSelectionChangedListenerCount: 0,
+    devtoolsEvalExpressions: []
   };
 
   const storageListeners = new Set<StorageChangeListener>();
   const runtimeMessageListeners = new Set<RuntimeMessageListener>();
+  const devtoolsSelectionChangedListeners = new Set<() => void>();
 
   const emitStorageChanges = (changes: StorageChanges, areaName: StorageNamespace) => {
     if (Object.keys(changes).length === 0) return;
@@ -159,6 +166,49 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
       },
       getUILanguage() {
         return 'en';
+      }
+    },
+    devtools: {
+      panels: {
+        elements: {
+          createSidebarPane(title: string, callback: (sidebar: { setPage(path: string): void }) => void) {
+            void title;
+            callback({
+              setPage(path: string) {
+                logs.devtoolsSidebarPages.push(path);
+              }
+            });
+          },
+          onSelectionChanged: {
+            addListener(listener: () => void) {
+              devtoolsSelectionChangedListeners.add(listener);
+              logs.devtoolsSelectionChangedListenerCount = devtoolsSelectionChangedListeners.size;
+            },
+            removeListener(listener: () => void) {
+              devtoolsSelectionChangedListeners.delete(listener);
+              logs.devtoolsSelectionChangedListenerCount = devtoolsSelectionChangedListeners.size;
+            }
+          }
+        }
+      },
+      inspectedWindow: {
+        eval(expression: string, callback?: (result: unknown, isException: boolean) => void) {
+          logs.devtoolsEvalExpressions.push(expression);
+          callback?.(
+            {
+              tagName: 'div',
+              attributes: { id: 'inspected-node' },
+              innerText: 'Mocked inspected node',
+              selectors: {
+                xpath: 'id("inspected-node")',
+                css: '#inspected-node',
+                stable: '#inspected-node'
+              },
+              children: []
+            },
+            false
+          );
+        }
       }
     },
     runtime: {

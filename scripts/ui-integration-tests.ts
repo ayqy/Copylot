@@ -336,9 +336,51 @@ async function runOptionsAssertions(): Promise<void> {
   }
 }
 
+async function runDevtoolsAssertions(): Promise<void> {
+  const chromeMock = createChromeMock({
+    extensionId: 'abcdefghijklmnopabcdefghijklmnop'
+  });
+
+  const devtoolsPage = await loadExtensionPage({
+    htmlPath: 'src/devtools/devtools.html',
+    builtScriptPath: 'dist/src/devtools/devtools.js',
+    pageUrl: 'https://example.com/src/devtools/devtools.html',
+    chrome: chromeMock
+  });
+
+  try {
+    assert.deepEqual(chromeMock.logs.devtoolsSidebarPages, ['src/devtools/sidebar.html']);
+  } finally {
+    devtoolsPage.restore();
+  }
+
+  const sidebarPage = await loadExtensionPage({
+    htmlPath: 'src/devtools/sidebar.html',
+    builtScriptPath: 'dist/src/devtools/sidebar.js',
+    pageUrl: 'https://example.com/src/devtools/sidebar.html',
+    chrome: chromeMock
+  });
+
+  try {
+    await sidebarPage.waitForIdle();
+    const jsonContainer = getRequiredElement<HTMLTextAreaElement>(sidebarPage.dom.window.document, '#json-container');
+    assert.ok(jsonContainer.value.includes('"tagName": "div"'));
+    assert.ok(chromeMock.logs.devtoolsEvalExpressions.length >= 1);
+    assert.equal(chromeMock.logs.devtoolsSelectionChangedListenerCount, 1);
+
+    const copyButton = getRequiredElement<HTMLButtonElement>(sidebarPage.dom.window.document, '#copy-button');
+    clickElement(copyButton);
+    await sidebarPage.waitForIdle();
+    assert.ok((await sidebarPage.clipboard.readText()).includes('"tagName": "div"'));
+  } finally {
+    sidebarPage.restore();
+  }
+}
+
 async function run(): Promise<void> {
   await runPopupAssertions();
   await runOptionsAssertions();
+  await runDevtoolsAssertions();
   console.log('PASS ui-integration-tests');
 }
 

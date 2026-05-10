@@ -58,6 +58,7 @@ node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/verify-weekl
 npm run build:prod
 npm run test:ui
 npm run test:content
+COPYLOT_E2E_SKIP_BUILD=1 npm run e2e
 
 node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-cws-listing-evidence-pack.ts --stable-exported-at
 listing_pack_file=$(node --input-type=module -e "import fs from 'node:fs'; const md=fs.readFileSync('docs/evidence/v1-66/index.md','utf-8'); const m=md.match(/cws-listing-evidence-pack-[0-9A-Za-z._-]+\\.json/); if (!m) process.exit(2); console.log(m[0]);")

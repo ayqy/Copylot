@@ -23,6 +23,8 @@
     "check-i18n": "ts-node scripts/check-i18n.ts",
     "test:ui": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/ui-integration-tests.ts",
     "test:content": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/content-interaction-tests.ts",
+    "e2e": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/e2e.ts",
+    "e2e:headed": "COPYLOT_E2E_HEADED=1 node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/e2e.ts",
     "build:feature-priority": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/build-feature-priority-report.ts",
     "postinstall": "echo 'Dependencies installed successfully'",
     "prepare": "husky"
@@ -39,6 +41,7 @@
     "@types/node": "^20.14.8",
     "@types/turndown": "^5.0.4",
     "@types/uuid": "^10.0.0",
+    "@playwright/test": "^1.59.1",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "@vitejs/plugin-legacy": "^5.4.1",

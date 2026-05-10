@@ -98,6 +98,8 @@ import {
 import { buildWomEvidencePack, buildWomSummary } from '../src/shared/wom-summary.ts';
 import { cleanCodeBlockText } from '../src/shared/code-block-cleaner.ts';
 import { parsePromptSortMode, sortPrompts } from '../src/shared/prompt-sort.ts';
+import { buildPromptContextMenuItems } from '../src/shared/context-menu-model.ts';
+import { getActivePrompts, isPromptActive } from '../src/shared/settings-manager.ts';
 import {
   CWS_PROXY_FIX_COMMANDS,
   CwsProxyConfigError,
@@ -2684,6 +2686,36 @@ async function run() {
   ];
   const defaultSorted = sortPrompts(samplePromptsDefault, 'default');
   assert.deepEqual(defaultSorted.map((p) => p.id), ['x', 'y'], 'default: keep input order');
+
+  const promptVisibilitySamples = [
+    { id: 'builtin-visible', title: 'Visible', template: '{content}', builtIn: true, deleted: false },
+    { id: 'builtin-deleted', title: 'Deleted', template: '{content}', builtIn: true, deleted: true },
+    { id: 'custom-visible', title: 'Custom', template: '{content}' }
+  ];
+  assert.equal(isPromptActive(promptVisibilitySamples[0]), true);
+  assert.equal(isPromptActive(promptVisibilitySamples[1]), false);
+  assert.equal(isPromptActive(promptVisibilitySamples[2]), true);
+  assert.deepEqual(getActivePrompts(promptVisibilitySamples).map((prompt) => prompt.id), ['builtin-visible', 'custom-visible']);
+  assert.deepEqual(
+    buildPromptContextMenuItems({
+      prompts: getActivePrompts(promptVisibilitySamples),
+      parentId: 'parent-menu'
+    }),
+    [
+      {
+        id: 'builtin-visible',
+        title: 'Visible',
+        parentId: 'parent-menu',
+        contexts: ['page', 'selection']
+      },
+      {
+        id: 'custom-visible',
+        title: 'Custom',
+        parentId: 'parent-menu',
+        contexts: ['page', 'selection']
+      }
+    ]
+  );
 
   // code-block-cleaner.ts (pure function)
   assert.equal(cleanCodeBlockText('const Copy = 1;\nconsole.log(Copy);'), 'const Copy = 1;\nconsole.log(Copy);');

@@ -25,6 +25,8 @@ dist-ssr
 
 .env
 .tmp_build/
+.tmp_build_prod/
+.tmp_e2e/
 
 # Build artifacts from publish script
 plugin-*.zip
