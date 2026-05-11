@@ -22,10 +22,19 @@
     "node": true,
     "webextensions": true
   },
+  "overrides": [
+    {
+      "files": [
+        "e2e/fixtures.ts"
+      ],
+      "rules": {
+        "no-empty-pattern": "off"
+      }
+    }
+  ],
   "ignorePatterns": [
     "dist/**",
     "node_modules/**",
-    "*.js",
-    "vite.config.ts"
+    "*.js"
   ]
 } 

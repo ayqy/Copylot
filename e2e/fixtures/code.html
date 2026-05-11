@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Fixture</title>
+    <style>
+      body {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        margin: 32px;
+      }
+
+      .code-article {
+        max-width: 760px;
+      }
+
+      .code-shell {
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .intro {
+        margin-bottom: 16px;
+        font-family: Georgia, serif;
+        line-height: 1.7;
+      }
+
+      pre {
+        margin: 0;
+        background: #111827;
+        color: #e5e7eb;
+        padding: 16px;
+        overflow: auto;
+      }
+
+      ol.hljs-ln {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .hljs-ln-row {
+        display: grid;
+        grid-template-columns: 40px 1fr;
+        gap: 12px;
+      }
+
+      .hljs-ln-numbers {
+        color: #94a3b8;
+        user-select: none;
+      }
+
+      .hljs-ln-code {
+        white-space: pre;
+      }
+
+      .hljs-ln-row,
+      .hljs-ln-row * {
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Code Cleaning Fixture</h1>
+    <article id="code-article" class="code-article">
+      <p class="intro">
+        This snippet builds a prompt payload and should preserve code fences when copied as a mixed Markdown block.
+      </p>
+      <div class="code-shell">
+        <pre id="code-block"><code><ol class="hljs-ln">
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">1</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">Copy</span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">2</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">function buildPrompt() {</span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">3</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">  const tag = "\\#summary";</span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">4</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">  const docs = ["\\[intro\\]", "outline"];</span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">5</span></span><span class="hljs-ln-code"><span class="hljs-ln-line"></span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">6</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">  return docs.join("\\n");</span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">7</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">}</span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">8</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">复制代码</span></span></li>
+        </ol></code></pre>
+      </div>
+    </article>
+  </body>
+</html>

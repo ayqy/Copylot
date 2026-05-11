@@ -10,9 +10,67 @@ import {
 } from './shared/growth-stats';
 
 const PARENT_MENU_ID = 'magic-copy-with-prompt';
+const isE2EBuild = process.env.BUILD_TARGET === 'e2e';
+const E2E_LAST_COPIED_TEXT_KEY = 'copilot_e2e_last_copied_text';
+const E2E_OPENED_URLS_KEY = 'copilot_e2e_opened_urls';
+let e2ePopupTabId: number | null = null;
+type E2EContextMenuSnapshotItem = {
+  id: string;
+  title: string;
+  parentId?: string;
+  contexts: chrome.contextMenus.ContextType[];
+};
+let e2eContextMenuSnapshot: E2EContextMenuSnapshotItem[] = [];
+
+async function setE2ELastCopiedText(text: string) {
+  if (!isE2EBuild) {
+    return;
+  }
+
+  await chrome.storage.local.set({
+    [E2E_LAST_COPIED_TEXT_KEY]: text
+  });
+}
+
+async function getE2ELastCopiedText(): Promise<string> {
+  if (!isE2EBuild) {
+    return '';
+  }
+
+  const result = await chrome.storage.local.get(E2E_LAST_COPIED_TEXT_KEY);
+  return typeof result[E2E_LAST_COPIED_TEXT_KEY] === 'string' ? result[E2E_LAST_COPIED_TEXT_KEY] : '';
+}
+
+async function reportE2EOpenedUrl(url: string) {
+  if (!isE2EBuild) {
+    return;
+  }
+
+  const result = await chrome.storage.local.get(E2E_OPENED_URLS_KEY);
+  const existing = Array.isArray(result[E2E_OPENED_URLS_KEY])
+    ? (result[E2E_OPENED_URLS_KEY] as unknown[]).filter((item): item is string => typeof item === 'string')
+    : [];
+
+  existing.push(url);
+  await chrome.storage.local.set({
+    [E2E_OPENED_URLS_KEY]: existing.slice(-20)
+  });
+}
+
+async function getE2EOpenedUrls(): Promise<string[]> {
+  if (!isE2EBuild) {
+    return [];
+  }
+
+  const result = await chrome.storage.local.get(E2E_OPENED_URLS_KEY);
+  return Array.isArray(result[E2E_OPENED_URLS_KEY])
+    ? (result[E2E_OPENED_URLS_KEY] as unknown[]).filter((item): item is string => typeof item === 'string')
+    : [];
+}
 
 async function updateContextMenu() {
   try {
+    e2eContextMenuSnapshot = [];
     // 完全清除所有菜单项
     await chrome.contextMenus.removeAll();
     
@@ -25,12 +83,22 @@ async function updateContextMenu() {
       title: chrome.i18n.getMessage('convertPage') || 'Convert Page to AI-Friendly Format',
       contexts: ['page']
     });
+    e2eContextMenuSnapshot.push({
+      id: 'convert-page-to-ai-friendly-format',
+      title: chrome.i18n.getMessage('convertPage') || 'Convert Page to AI-Friendly Format',
+      contexts: ['page']
+    });
 
     const { userPrompts } = await getSettings();
     const activePrompts = getActivePrompts(userPrompts);
 
     if (activePrompts.length > 0) {
       chrome.contextMenus.create({
+        id: PARENT_MENU_ID,
+        title: chrome.i18n.getMessage('magicCopyWithPrompt') || 'Magic Copy with Prompt',
+        contexts: ['page', 'selection']
+      });
+      e2eContextMenuSnapshot.push({
         id: PARENT_MENU_ID,
         title: chrome.i18n.getMessage('magicCopyWithPrompt') || 'Magic Copy with Prompt',
         contexts: ['page', 'selection']
@@ -47,6 +115,12 @@ async function updateContextMenu() {
             parentId: item.parentId,
             contexts: item.contexts
           });
+          e2eContextMenuSnapshot.push({
+            id: item.id,
+            title: item.title,
+            parentId: item.parentId,
+            contexts: [...item.contexts]
+          });
         } catch (error) {
           console.warn(`Failed to create menu item for prompt ${item.id}:`, error);
         }
@@ -58,6 +132,159 @@ async function updateContextMenu() {
 }
 
 let clipboardStack: string[] = [];
+
+async function handleConvertPageContextMenu(tabId: number) {
+  return chrome.tabs.sendMessage(tabId, {
+    type: 'CONVERT_PAGE_WITH_SELECTION'
+  });
+}
+
+async function handlePromptContextMenuClick(
+  info: chrome.contextMenus.OnClickData,
+  tab: chrome.tabs.Tab
+) {
+  if (!tab.id) {
+    return;
+  }
+
+  const settings = await getSettings();
+  const prompt = getActivePrompts(settings.userPrompts).find((item: Prompt) => item.id === info.menuItemId);
+  if (!prompt) {
+    return;
+  }
+
+  prompt.usageCount = (prompt.usageCount || 0) + 1;
+  prompt.lastUsedAt = Date.now();
+
+  try {
+    await saveSettings({ userPrompts: settings.userPrompts });
+    console.debug(`Updated usage count for prompt "${prompt.title}": ${prompt.usageCount}`);
+  } catch (error) {
+    console.error('Failed to update prompt usage:', error);
+  }
+
+  const shouldOpenChat = prompt.autoOpenChat !== undefined ? prompt.autoOpenChat : settings.defaultAutoOpenChat;
+  const targetChatId = prompt.targetChatId || settings.defaultChatServiceId;
+
+  const selectionText = typeof info.selectionText === 'string' ? info.selectionText.trim() : '';
+  const hasSelection = selectionText.length > 0;
+
+  if (hasSelection) {
+    if (shouldOpenChat && targetChatId) {
+      const chatService = settings.chatServices.find((service: ChatService) => service.id === targetChatId && service.enabled);
+      if (chatService) {
+        return chrome.tabs.sendMessage(tab.id, {
+          type: 'PROCESS_SELECTION_WITH_PROMPT',
+          promptTemplate: prompt.template,
+          chatServiceUrl: chatService.url,
+          chatServiceName: chatService.name
+        });
+      }
+    }
+
+    return chrome.tabs.sendMessage(tab.id, {
+      type: 'PROCESS_SELECTION_WITH_PROMPT',
+      promptTemplate: prompt.template
+    });
+  }
+
+  if (shouldOpenChat && targetChatId) {
+    const chatService = settings.chatServices.find((service: ChatService) => service.id === targetChatId && service.enabled);
+    if (chatService) {
+      return chrome.tabs.sendMessage(tab.id, {
+        type: 'PROCESS_PAGE_WITH_PROMPT_AND_CHAT',
+        promptTemplate: prompt.template,
+        chatServiceUrl: chatService.url,
+        chatServiceName: chatService.name
+      });
+    }
+
+    return chrome.tabs.sendMessage(tab.id, {
+      type: 'PROCESS_PAGE_WITH_PROMPT',
+      promptTemplate: prompt.template
+    });
+  }
+
+  return chrome.tabs.sendMessage(tab.id, {
+    type: 'PROCESS_PAGE_WITH_PROMPT',
+    promptTemplate: prompt.template
+  });
+}
+
+async function handleContextMenuClick(info: chrome.contextMenus.OnClickData, tab?: chrome.tabs.Tab) {
+  if (!tab?.id) {
+    return;
+  }
+
+  if (info.menuItemId === 'convert-page-to-ai-friendly-format') {
+    await handleConvertPageContextMenu(tab.id);
+    return;
+  }
+
+  if (info.parentMenuItemId === PARENT_MENU_ID) {
+    await handlePromptContextMenuClick(info, tab);
+  }
+}
+
+async function resetE2EState() {
+  clipboardStack = [];
+  e2ePopupTabId = null;
+  await chrome.storage.sync.clear();
+  await chrome.storage.local.clear();
+  await chrome.action.setBadgeText({ text: '' });
+  await getSettings();
+  await ensureGrowthStatsInitialized();
+  await setE2ELastCopiedText('');
+  await updateContextMenu();
+}
+
+async function openPopupForTab(tabId?: number) {
+  if (typeof tabId === 'number') {
+    e2ePopupTabId = tabId;
+    const tab = await chrome.tabs.get(tabId);
+    if (tab.windowId !== undefined) {
+      await chrome.windows.update(tab.windowId, { focused: true });
+    }
+    await chrome.tabs.update(tabId, { active: true });
+  } else {
+    const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+    e2ePopupTabId = tabs[0]?.id ?? null;
+  }
+
+  await chrome.action.openPopup();
+}
+
+async function invokeContextMenuFromBridge(message: { tabId?: number; info: Partial<chrome.contextMenus.OnClickData> }) {
+  let tab: chrome.tabs.Tab | null = null;
+
+  if (typeof message.tabId === 'number') {
+    tab = await chrome.tabs.get(message.tabId);
+  } else {
+    const activeTabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+    tab = activeTabs[0] || null;
+  }
+
+  if (!tab?.id) {
+    throw new Error(chrome.i18n.getMessage('e2eContextMenuTabResolveFailed'));
+  }
+
+  const clickInfo = {
+    menuItemId: message.info.menuItemId || '',
+    parentMenuItemId: message.info.parentMenuItemId,
+    selectionText: message.info.selectionText,
+    pageUrl: message.info.pageUrl,
+    editable: message.info.editable ?? false,
+    mediaType: message.info.mediaType,
+    linkUrl: message.info.linkUrl,
+    srcUrl: message.info.srcUrl,
+    frameUrl: message.info.frameUrl,
+    frameId: message.info.frameId,
+    wasChecked: message.info.wasChecked,
+    checked: message.info.checked
+  } as chrome.contextMenus.OnClickData;
+
+  await handleContextMenuClick(clickInfo, tab);
+}
 
 // Extension lifecycle events
 chrome.runtime.onInstalled.addListener(async (details) => {
@@ -246,6 +473,186 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       sendResponse({ success: true });
       break;
 
+    case 'e2e:reset-state':
+      (async () => {
+        try {
+          await resetE2EState();
+          sendResponse({ success: true });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:seed-sync-storage':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          await chrome.storage.sync.set(message.data || {});
+          await updateContextMenu();
+          sendResponse({ success: true });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:seed-local-storage':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          await chrome.storage.local.set(message.data || {});
+          sendResponse({ success: true });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:get-storage-snapshot':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          const [sync, local] = await Promise.all([chrome.storage.sync.get(null), chrome.storage.local.get(null)]);
+          sendResponse({ success: true, sync, local });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:get-context-menu-items':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          sendResponse({
+            success: true,
+            items: e2eContextMenuSnapshot.map((item) => ({
+              id: item.id,
+              title: item.title,
+              parentId: item.parentId,
+              contexts: [...item.contexts]
+            }))
+          });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:report-copied-text':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          await setE2ELastCopiedText(typeof message.text === 'string' ? message.text : '');
+          sendResponse({ success: true });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:clear-last-copied-text':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          await setE2ELastCopiedText('');
+          sendResponse({ success: true });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:get-last-copied-text':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          const text = await getE2ELastCopiedText();
+          sendResponse({ success: true, text });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:report-opened-url':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          await reportE2EOpenedUrl(typeof message.url === 'string' ? message.url : '');
+          sendResponse({ success: true });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:get-opened-urls':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          const urls = await getE2EOpenedUrls();
+          sendResponse({ success: true, urls });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:open-popup':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          await openPopupForTab(typeof message.tabId === 'number' ? message.tabId : undefined);
+          sendResponse({ success: true });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:invoke-context-menu':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          await invokeContextMenuFromBridge(message as { tabId?: number; info: Partial<chrome.contextMenus.OnClickData> });
+          sendResponse({ success: true });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:get-popup-tab-id':
+      sendResponse({ success: true, tabId: e2ePopupTabId });
+      break;
+
+    case 'e2e:get-active-tab-id':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+          const tab = tabs[0] || null;
+          sendResponse({ success: true, tabId: tab?.id ?? null });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:get-badge-text':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          const text = await chrome.action.getBadgeText({});
+          sendResponse({ success: true, text });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
     case 'error-report':
       // Future: handle error reporting
       console.error('Error reported from content script:', message.error);
@@ -271,84 +678,7 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 
 // Handle context menu click
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  if (info.menuItemId === 'convert-page-to-ai-friendly-format' && tab && tab.id) {
-    chrome.tabs.sendMessage(tab.id, {
-      type: 'CONVERT_PAGE_WITH_SELECTION'  // 使用新的消息类型
-    });
-    return;
-  }
-
-  if (info.parentMenuItemId === PARENT_MENU_ID && tab && tab.id) {
-    const settings = await getSettings();
-    const prompt = getActivePrompts(settings.userPrompts).find((p: Prompt) => p.id === info.menuItemId);
-    if (prompt) {
-      // 更新使用次数和最后使用时间
-      prompt.usageCount = (prompt.usageCount || 0) + 1;
-      prompt.lastUsedAt = Date.now();
-      
-      // 保存更新后的设置
-      try {
-        await saveSettings({ userPrompts: settings.userPrompts });
-        console.debug(`Updated usage count for prompt "${prompt.title}": ${prompt.usageCount}`);
-      } catch (error) {
-        console.error('Failed to update prompt usage:', error);
-      }
-      
-      // 决定是否需要跳转到chat服务
-      const shouldOpenChat = prompt.autoOpenChat !== undefined ? prompt.autoOpenChat : settings.defaultAutoOpenChat;
-      const targetChatId = prompt.targetChatId || settings.defaultChatServiceId;
-
-      const selectionText = typeof info.selectionText === 'string' ? info.selectionText.trim() : '';
-      const hasSelection = selectionText.length > 0;
-
-      if (hasSelection) {
-        // 选区优先：有选区时只处理选区（不新增权限/事件名，复用既有 selection prompt 链路）
-        if (shouldOpenChat && targetChatId) {
-          const chatService = settings.chatServices.find((c: ChatService) => c.id === targetChatId && c.enabled);
-          if (chatService) {
-            chrome.tabs.sendMessage(tab.id, {
-              type: 'PROCESS_SELECTION_WITH_PROMPT',
-              promptTemplate: prompt.template,
-              chatServiceUrl: chatService.url,
-              chatServiceName: chatService.name
-            });
-            return;
-          }
-        }
-
-        chrome.tabs.sendMessage(tab.id, {
-          type: 'PROCESS_SELECTION_WITH_PROMPT',
-          promptTemplate: prompt.template
-        });
-        return;
-      }
-      
-      if (shouldOpenChat && targetChatId) {
-        const chatService = settings.chatServices.find((c: ChatService) => c.id === targetChatId && c.enabled);
-        if (chatService) {
-          // 发送消息给content script处理内容并获取结果
-          chrome.tabs.sendMessage(tab.id, {
-            type: 'PROCESS_PAGE_WITH_PROMPT_AND_CHAT',
-            promptTemplate: prompt.template,
-            chatServiceUrl: chatService.url,
-            chatServiceName: chatService.name
-          });
-        } else {
-          // 如果找不到chat服务，只执行prompt处理不跳转
-          chrome.tabs.sendMessage(tab.id, {
-            type: 'PROCESS_PAGE_WITH_PROMPT',
-            promptTemplate: prompt.template
-          });
-        }
-      } else {
-        // 不跳转，只处理prompt
-        chrome.tabs.sendMessage(tab.id, {
-          type: 'PROCESS_PAGE_WITH_PROMPT',
-          promptTemplate: prompt.template
-        });
-      }
-    }
-  }
+  await handleContextMenuClick(info, tab);
 });
 
 // Performance monitoring (development only)

@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "exportDate": "2026-05-11T00:00:00.000Z",
+  "prompts": [
+    {
+      "id": "imported-summary-prompt",
+      "title": "Imported Summary Prompt",
+      "template": "Summarize this source:\n\n{content}",
+      "category": "summary",
+      "targetChatId": "chatgpt",
+      "autoOpenChat": true,
+      "usageCount": 3,
+      "createdAt": 1715385600000
+    },
+    {
+      "id": "imported-writing-prompt",
+      "title": "Imported Writing Prompt",
+      "template": "Rewrite in concise style:\n\n{content}",
+      "category": "writing",
+      "usageCount": 0,
+      "createdAt": 1715385601000
+    }
+  ]
+}

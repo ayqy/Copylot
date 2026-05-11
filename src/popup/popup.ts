@@ -112,6 +112,67 @@ const POPUP_ONBOARDING_RECOMMENDED_SETTINGS: Partial<Settings> = {
 let onboardingCurrentStep = 1;
 let isOnboardingOpen = false;
 let onboardingSource: 'auto' | 'manual' = 'manual';
+const isE2EBuild = process.env.BUILD_TARGET === 'e2e';
+
+async function reportE2ECopiedText(text: string): Promise<void> {
+  if (!isE2EBuild) {
+    return;
+  }
+
+  try {
+    await chrome.runtime.sendMessage({
+      type: 'e2e:report-copied-text',
+      text
+    });
+  } catch (error) {
+    console.warn('Failed to report popup copied text for E2E:', error);
+  }
+}
+
+async function reportE2EOpenedUrl(url: string): Promise<void> {
+  if (!isE2EBuild) {
+    return;
+  }
+
+  try {
+    await chrome.runtime.sendMessage({
+      type: 'e2e:report-opened-url',
+      url
+    });
+  } catch (error) {
+    console.warn('Failed to report popup opened url for E2E:', error);
+  }
+}
+
+async function writeTextToClipboard(text: string): Promise<void> {
+  await navigator.clipboard.writeText(text);
+  await reportE2ECopiedText(text);
+}
+
+function getResolvedPopupTabId(): number | null {
+  const url = new URL(window.location.href);
+  const raw = url.searchParams.get('tab');
+  if (!raw) {
+    return null;
+  }
+
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+async function resolveActiveTab(): Promise<chrome.tabs.Tab | null> {
+  const resolvedTabId = getResolvedPopupTabId();
+  if (resolvedTabId !== null) {
+    try {
+      return await chrome.tabs.get(resolvedTabId);
+    } catch (error) {
+      console.warn('Failed to resolve popup tab by query param:', error);
+    }
+  }
+
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+  return tabs[0] || null;
+}
 
 /**
  * Get all required DOM elements
@@ -348,8 +409,8 @@ function closeOnboardingModal() {
 }
 
 async function completeOnboarding(action: 'finish' | 'skip') {
-  void recordTelemetryEvent('onboarding_completed', { source: onboardingSource, action });
   try {
+    await recordTelemetryEvent('onboarding_completed', { source: onboardingSource, action });
     const completedVersion = currentSettings.popupOnboardingVersion;
     const completedAt = Date.now();
     await saveSettings({
@@ -439,21 +500,20 @@ async function maybeShowProWaitlistPrompt() {
 function setupEventListeners() {
   const getMessage = createI18nGetMessage();
 
-  const handleProWaitlistPromptAction = (action: ProPromptAction) => {
-    void recordTelemetryEvent('pro_prompt_action', { source: 'popup', action });
+  const handleProWaitlistPromptAction = async (action: ProPromptAction) => {
+    await recordTelemetryEvent('pro_prompt_action', { source: 'popup', action });
 
-    void (async () => {
-      try {
-        await setProPromptAction(action, Date.now());
-      } catch (error) {
-        console.warn('Failed to persist pro waitlist prompt action:', error);
-      }
-    })();
+    try {
+      await setProPromptAction(action, Date.now());
+    } catch (error) {
+      console.warn('Failed to persist pro waitlist prompt action:', error);
+    }
 
     hideProWaitlistPrompt();
 
     if (action === 'join') {
       const url = `${chrome.runtime.getURL('src/options/options.html')}#pro`;
+      await reportE2EOpenedUrl(url);
       chrome.tabs.create({ url });
       window.close();
     }
@@ -461,35 +521,37 @@ function setupEventListeners() {
 
   // Pro waitlist prompt (low-disturb)
   elements.proWaitlistPromptJoinButton.addEventListener('click', () => {
-    handleProWaitlistPromptAction('join');
+    void handleProWaitlistPromptAction('join');
   });
   elements.proWaitlistPromptLaterButton.addEventListener('click', () => {
-    handleProWaitlistPromptAction('later');
+    void handleProWaitlistPromptAction('later');
   });
   elements.proWaitlistPromptNeverButton.addEventListener('click', () => {
-    handleProWaitlistPromptAction('never');
+    void handleProWaitlistPromptAction('never');
   });
 
   // Pro entry
-  elements.popupProWaitlistSurveyButton.addEventListener('click', () => {
+  elements.popupProWaitlistSurveyButton.addEventListener('click', async () => {
     const url = `${chrome.runtime.getURL('src/options/options.html')}?pro_survey_source=popup#pro-waitlist-survey`;
+    await reportE2EOpenedUrl(url);
     chrome.tabs.create({ url });
     window.close();
   });
 
-  elements.upgradeProEntry.addEventListener('click', () => {
+  elements.upgradeProEntry.addEventListener('click', async () => {
     const props: Record<string, string> = { source: 'popup' };
     if (currentSettings?.proIntentCampaign) props.campaign = currentSettings.proIntentCampaign;
-    void recordTelemetryEvent('pro_entry_opened', props);
+    await recordTelemetryEvent('pro_entry_opened', props);
     const url = `${chrome.runtime.getURL('src/options/options.html')}#pro`;
+    await reportE2EOpenedUrl(url);
     chrome.tabs.create({ url });
     window.close();
   });
 
-  elements.popupProWaitlistButton.addEventListener('click', () => {
+  elements.popupProWaitlistButton.addEventListener('click', async () => {
     const props: Record<string, string> = { source: 'popup' };
     if (currentSettings?.proIntentCampaign) props.campaign = currentSettings.proIntentCampaign;
-    void recordTelemetryEvent('pro_waitlist_opened', props);
+    await recordTelemetryEvent('pro_waitlist_opened', props);
     const waitlistUrl = buildProWaitlistUrl({
       medium: 'popup',
       campaign: currentSettings?.proIntentCampaign,
@@ -500,6 +562,7 @@ function setupEventListeners() {
         uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
       }
     });
+    await reportE2EOpenedUrl(waitlistUrl);
     chrome.tabs.create({ url: waitlistUrl });
     window.close();
   });
@@ -517,7 +580,7 @@ function setupEventListeners() {
         campaign: currentSettings?.proIntentCampaign,
         getMessage
       });
-      await navigator.clipboard.writeText(body);
+      await writeTextToClipboard(body);
       const props: Record<string, string> = { source: 'popup' };
       if (currentSettings?.proIntentCampaign) props.campaign = currentSettings.proIntentCampaign;
       void recordTelemetryEvent('pro_waitlist_copied', props);
@@ -555,14 +618,15 @@ function setupEventListeners() {
 
   // Conversion button
   elements.convertButton.addEventListener('click', () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0] && tabs[0].id) {
-        chrome.tabs.sendMessage(tabs[0].id, {
-          type: 'CONVERT_PAGE_WITH_SELECTION' // 使用新的消息类型
+    void (async () => {
+      const tab = await resolveActiveTab();
+      if (tab?.id) {
+        chrome.tabs.sendMessage(tab.id, {
+          type: 'CONVERT_PAGE_WITH_SELECTION'
         });
-        window.close(); // Close popup after clicking
+        window.close();
       }
-    });
+    })();
   });
 
   // Prompt manager event listeners - now opens options page
@@ -573,8 +637,8 @@ function setupEventListeners() {
 
   elements.feedbackLink.addEventListener('click', (event) => {
     event.preventDefault();
-    void recordTelemetryEvent('wom_feedback_opened', { source: 'popup' });
     void (async () => {
+      await recordTelemetryEvent('wom_feedback_opened', { source: 'popup' });
       const mergedSettings = { ...currentSettings, ...getSettingsFromUI() } as Settings;
       const settingsSnapshot = buildFeedbackSettingsSnapshot(mergedSettings);
 
@@ -618,6 +682,7 @@ function setupEventListeners() {
         telemetryEventsSnapshot,
         getMessage
       });
+      await reportE2EOpenedUrl(feedbackUrl);
       chrome.tabs.create({ url: feedbackUrl });
       window.close();
     })();
@@ -625,18 +690,24 @@ function setupEventListeners() {
 
   elements.shareLink.addEventListener('click', (event) => {
     event.preventDefault();
-    void recordTelemetryEvent('wom_share_opened', { source: 'popup' });
-    const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id, buildWomUtmParams('popup'));
-    chrome.tabs.create({ url: storeUrl });
-    window.close();
+    void (async () => {
+      await recordTelemetryEvent('wom_share_opened', { source: 'popup' });
+      const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id, buildWomUtmParams('popup'));
+      await reportE2EOpenedUrl(storeUrl);
+      chrome.tabs.create({ url: storeUrl });
+      window.close();
+    })();
   });
 
   elements.rateLink.addEventListener('click', (event) => {
     event.preventDefault();
-    void recordTelemetryEvent('wom_rate_opened', { source: 'popup' });
-    const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id, buildWomUtmParams('popup'));
-    chrome.tabs.create({ url: reviewsUrl });
-    window.close();
+    void (async () => {
+      await recordTelemetryEvent('wom_rate_opened', { source: 'popup' });
+      const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id, buildWomUtmParams('popup'));
+      await reportE2EOpenedUrl(reviewsUrl);
+      chrome.tabs.create({ url: reviewsUrl });
+      window.close();
+    })();
   });
 
   elements.ratingPromptRateButton.addEventListener('click', async () => {
@@ -645,9 +716,10 @@ function setupEventListeners() {
     } catch (error) {
       console.error('Error saving rating prompt action:', error);
     }
-    void recordTelemetryEvent('rating_prompt_action', { source: 'rating_prompt', action: 'rate' });
+    await recordTelemetryEvent('rating_prompt_action', { source: 'rating_prompt', action: 'rate' });
 
     const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id, buildWomUtmParams('rating_prompt'));
+    await reportE2EOpenedUrl(reviewsUrl);
     chrome.tabs.create({ url: reviewsUrl });
     window.close();
   });
@@ -678,7 +750,7 @@ function setupEventListeners() {
     const originalText = elements.copyShareButton.textContent || '';
 
     try {
-      await navigator.clipboard.writeText(shareText);
+      await writeTextToClipboard(shareText);
       void recordTelemetryEvent('wom_share_copied', { source: 'popup' });
       elements.copyShareButton.textContent = chrome.i18n.getMessage('copied') || originalText;
       window.setTimeout(() => {

@@ -1,47 +1,94 @@
 # V2 E2E 审计记录
 
 ## 目标
-- 留存本轮 E2E 与回归门禁的实现口径、失败修复和最终结论
+- 记录本轮 QA 验收级 E2E 的实现口径、失败修复和最终结果
 
 ## 实现口径
 - Playwright 版本：`@playwright/test@1.59.1`
 - 浏览器：`chromium` channel + persistent context
-- 扩展加载方式：
-  - `--disable-extensions-except=dist`
-  - `--load-extension=dist`
+- E2E 产物目录：
+  - `.tmp_e2e/extension`
+- 扩展控制方式：
+  - 真实加载扩展
+  - 通过 `src/e2e/driver.html` 调 background E2E bridge
+  - popup 主套件使用真实 popup 页面 + `?tab=<id>` 绑定当前 QA tab
 - Fixture Server：
   - `http://127.0.0.1:4173`
-  - 提供 `e2e/fixtures/index.html`
-- 产物目录：
-  - `.tmp_e2e/`
+  - 提供 `article.html` / `table.html` / `editor.html` / `chat.html`
+- Project 划分：
+  - `main`：稳定主回归，纳入 `npm run e2e`
+  - `native-ui`：原生 icon / 原生右键真实入口回归，不默认执行
 
-## 首轮失败与修复
-- 问题 1：
-  - 现象：并行触发 `build:prod` 与 `e2e` 时，`.tmp_build_prod` 被互相清理，出现 `spawn sh ENOENT`
-  - 修复：后续严格串行执行构建与测试
-- 问题 2：
-  - 现象：E2E 启动时默认查找 `chromium_headless_shell`
-  - 修复：扩展启动改为 `channel: 'chromium'`
-- 问题 3：
-  - 现象：Content E2E 在 teardown 卡住
-  - 修复：fixture server 禁用 keep-alive、跟踪并销毁 sockets，测试内显式关闭 page
-- 问题 4：
-  - 现象：Options E2E 使用英文标题断言，受 i18n 实际文案影响
-  - 修复：改为按 `data-id="builtin-summary-article"` 断言内置 Prompt
-- 问题 5：
-  - 现象：新建 Prompt 后 `.prompt-card-title` 命中多个元素触发 strict mode 失败
-  - 修复：改为精确过滤包含 `E2E Prompt` 的标题
+## 本轮关键修复
+- 修复 E2E 构建与 prod 构建共享 `dist/` 带来的污染风险：
+  - 新增 `BUILD_TARGET=e2e`
+  - 新增 `.tmp_e2e/extension`
+- 修复 popup 与 context-menu 入口无法稳定绑定目标 tab：
+  - popup 增加 `?tab=` 解析
+  - background 增加 E2E bridge
+- 修复 popup 外链/增长入口 telemetry 在 `window.close()` 前丢失的问题：
+  - popup 的 share / feedback / rate / pro entry / onboarding complete 改为显式等待持久化
+- 修复部分 seed settings 场景下 `saveSettings()` 因缺失数组字段而静默失败：
+  - 保存前先与 `DEFAULT_SETTINGS` 合并
+  - `chatServices` / `userPrompts` / editor exclusion 字段补齐默认值
+- 修复 popup growth 对外部页面可达性的脆弱依赖：
+  - E2E bridge 新增 opened URL 审计
+  - 改为验真实点击后的目标 URL 与 telemetry
+- 修复 native-ui `Convert Page` 原生右键链路对 OCR 文案误识别过于脆弱：
+  - 补充 `AI -> Al / A1` 误识别 query
+  - 原生 `Copylot` 子菜单改用 `Right -> Enter` 触发首项，降低坐标漂移风险
+- 修复 onboarding 自动弹层遮挡 popup 操作：
+  - 测试中显式完成 onboarding
+- 修复对宿主系统剪贴板的脆弱依赖：
+  - 核心断言切换为 growth stats / telemetry / settings 持久化结果
 
-## 最终通过项
-- `npm run e2e`
-- `npm run test:ui`
-- `npm run test:content`
-- `node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/unit-tests.ts`
-- `bash scripts/verify-prod-build.sh`
-- `bash scripts/test.sh`
+## 主套件覆盖
+- Content：
+  - 真实选区 + 页面点击 + Magic Copy 按钮
+  - 编辑器排除区
+  - 代码块 hover copy 清洗
+  - 代码页整页转换
+  - 普通表格 CSV
+  - 复杂表格 Markdown
+- Context Menu：
+  - 通过 background 生产 handler 触发 prompt 链路
+  - 自动打开 chat 页
+  - prompt usage 持久化
+  - 整页 Convert Page 噪音过滤
+- Popup：
+  - 真实 popup 页面
+  - onboarding
+  - convert
+  - 打开 options
+  - Pro waitlist copy telemetry
+  - settings toggle 持久化
+  - growth 分享 / 反馈 / 评分 / survey 入口
+- Options：
+  - 内置 Prompt
+  - 新建自定义 Prompt
+  - prompts 高级管理
+  - chat service 管理与 auto-open
+  - telemetry / growth / WOM / Pro distribution / survey / funnel 导出链路
+
+## Native UI 覆盖
+- 工具栏扩展入口：
+  - 通过 macOS Accessibility API 点击浏览器原生 `扩展程序 / Extensions`
+  - 通过扩展面板真实点击 `Copylot`
+  - 校验 popup 打开并可执行一次 `Convert`
+- 原生右键入口：
+  - 通过 CoreGraphics 系统级右键事件拉起浏览器原生上下文菜单
+  - 通过 OCR 命中 `智能复制+自定义提示 / Magic Copy with Prompt`
+  - 通过 OCR 命中子菜单 Prompt `QA Native Summary`
+  - 通过 `Right -> Enter` 命中 `转换为AI友好格式`
+  - 校验 prompt `usageCount` 与 growth stats 成功计数
+
+## 当前结果
+- `COPYLOT_E2E_SKIP_BUILD=1 COPYLOT_E2E_NATIVE_UI_SKIP=1 npx playwright test --config=playwright.config.ts --project=main`：PASS
+- `npx playwright test --config=playwright.config.ts --project=main`：`35 passed`
+- `npm run e2e`：PASS
+- `npm run e2e:native-ui`：`3 passed`
 
 ## 例外说明
-- 原生 context menu 本轮不做 Playwright 直接点击，改为：
-  - 共享 prompt 可见性规则单测
-  - background/context menu 纯函数模型单测
-  - content/options/background 共用规则回归
+- `native-ui` 继续单独执行：
+  - 依赖 macOS 辅助功能权限、桌面会话、屏幕 OCR 与 headed 浏览器
+  - 为避免默认门禁受 GUI 环境波动影响，当前不纳入默认 `npm run e2e`

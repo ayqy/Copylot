@@ -10,6 +10,22 @@ import { existsSync, readdirSync, statSync, unlinkSync } from 'fs';
 const scriptToBuild = process.env.SCRIPT;
 // 检查是否为生产环境构建（不包含测试代码和彩蛋）
 const isProductionBuild = process.env.BUILD_TARGET === 'production';
+const isE2EBuild = process.env.BUILD_TARGET === 'e2e';
+
+const extensionHtmlAssets = [
+  { source: './src/popup/popup.html', fileName: 'src/popup/popup.html', label: 'popup.html' },
+  { source: './src/options/options.html', fileName: 'src/options/options.html', label: 'options.html' },
+  { source: './src/devtools/devtools.html', fileName: 'src/devtools/devtools.html', label: 'devtools.html' },
+  { source: './src/devtools/sidebar.html', fileName: 'src/devtools/sidebar.html', label: 'sidebar.html' }
+];
+
+if (isE2EBuild) {
+  extensionHtmlAssets.push({
+    source: './src/e2e/driver.html',
+    fileName: 'src/e2e/driver.html',
+    label: 'driver.html'
+  });
+}
 
 export default defineConfig({
   build: {
@@ -78,7 +94,7 @@ export default defineConfig({
           }
         }
       },
-      generateBundle(options, bundle) {
+      generateBundle() {
         // 只有完整构建时才复制资源文件
         if (!scriptToBuild) {
           // Copy manifest.json to dist
@@ -108,53 +124,18 @@ export default defineConfig({
             }
           });
 
-          // Copy popup HTML
-          try {
-            const popupHtml = readFileSync('./src/popup/popup.html', 'utf-8');
-            this.emitFile({
-              type: 'asset',
-              fileName: 'src/popup/popup.html',
-              source: popupHtml
-            });
-          } catch (error) {
-            console.warn('Warning: Could not copy popup.html:', error.message);
-          }
-
-          // Copy options HTML
-          try {
-            const optionsHtml = readFileSync('./src/options/options.html', 'utf-8');
-            this.emitFile({
-              type: 'asset',
-              fileName: 'src/options/options.html',
-              source: optionsHtml
-            });
-          } catch (error) {
-            console.warn('Warning: Could not copy options.html:', error.message);
-          }
-
-          // Copy devtools HTML
-          try {
-            const devtoolsHtml = readFileSync('./src/devtools/devtools.html', 'utf-8');
-            this.emitFile({
-              type: 'asset',
-              fileName: 'src/devtools/devtools.html',
-              source: devtoolsHtml
-            });
-          } catch (error) {
-            console.warn('Warning: Could not copy devtools.html:', error.message);
-          }
-
-          // Copy sidebar HTML
-          try {
-            const sidebarHtml = readFileSync('./src/devtools/sidebar.html', 'utf-8');
-            this.emitFile({
-              type: 'asset',
-              fileName: 'src/devtools/sidebar.html',
-              source: sidebarHtml
-            });
-          } catch (error) {
-            console.warn('Warning: Could not copy sidebar.html:', error.message);
-          }
+          extensionHtmlAssets.forEach(({ source, fileName, label }) => {
+            try {
+              const html = readFileSync(source, 'utf-8');
+              this.emitFile({
+                type: 'asset',
+                fileName,
+                source: html
+              });
+            } catch (error) {
+              console.warn(`Warning: Could not copy ${label}:`, (error as Error).message);
+            }
+          });
 
           // Ensure turndown scripts are copied for content script
           try {
@@ -233,7 +214,18 @@ export default defineConfig({
 
 // 单个脚本构建配置
 function getSingleScriptConfig(script: string) {
-  const configs: Record<string, any> = {
+  const configs: Record<
+    string,
+    {
+      input: string;
+      output: {
+        format: 'iife' | 'umd';
+        name: string;
+        file: string;
+        inlineDynamicImports: boolean;
+      };
+    }
+  > = {
     content: {
       input: resolve(__dirname, 'src/content/content.ts'),
       output: {
@@ -268,15 +260,21 @@ function getSingleScriptConfig(script: string) {
 
 // 所有脚本构建配置（使用 ES 模块，适合现代浏览器）
 function getAllScriptsConfig() {
+  const input: Record<string, string> = {
+    content: resolve(__dirname, 'src/content/content.ts'),
+    popup: resolve(__dirname, 'src/popup/popup.ts'),
+    options: resolve(__dirname, 'src/options/options.ts'),
+    background: resolve(__dirname, 'src/background.ts'),
+    devtools: resolve(__dirname, 'src/devtools/devtools.js'),
+    sidebar: resolve(__dirname, 'src/devtools/sidebar.js')
+  };
+
+  if (isE2EBuild) {
+    input['e2e-driver'] = resolve(__dirname, 'src/e2e/driver.ts');
+  }
+
   return {
-    input: {
-      content: resolve(__dirname, 'src/content/content.ts'),
-      popup: resolve(__dirname, 'src/popup/popup.ts'),
-      options: resolve(__dirname, 'src/options/options.ts'),
-      background: resolve(__dirname, 'src/background.ts'),
-      devtools: resolve(__dirname, 'src/devtools/devtools.js'),
-      sidebar: resolve(__dirname, 'src/devtools/sidebar.js')
-    },
+    input,
     output: {
       format: 'es',
       entryFileNames: (chunkInfo) => {
@@ -287,6 +285,7 @@ function getAllScriptsConfig() {
         if (name === 'background') return 'src/background.js';
         if (name === 'devtools') return 'src/devtools/devtools.js';
         if (name === 'sidebar') return 'src/devtools/sidebar.js';
+        if (name === 'e2e-driver') return 'src/e2e/driver.js';
         return '[name].js';
       },
       chunkFileNames: 'chunks/[name]-[hash].js',

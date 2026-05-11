@@ -1,0 +1,18 @@
+[
+  {
+    "id": "qa-imported-summary",
+    "title": "Imported Summary",
+    "template": "Summarize for QA:\n\n{content}",
+    "category": "summary",
+    "usageCount": 0,
+    "createdAt": 1
+  },
+  {
+    "id": "qa-imported-translate",
+    "title": "Imported Translate",
+    "template": "Translate for QA:\n\n{content}",
+    "category": "translate",
+    "usageCount": 0,
+    "createdAt": 2
+  }
+]

@@ -374,7 +374,10 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
       let currentSettings: Settings;
       try {
         const result = await chrome.storage.sync.get(SETTINGS_KEY);
-        currentSettings = result[SETTINGS_KEY] || DEFAULT_SETTINGS;
+        currentSettings = {
+          ...DEFAULT_SETTINGS,
+          ...(result[SETTINGS_KEY] || {})
+        };
       } catch {
         currentSettings = DEFAULT_SETTINGS;
       }
@@ -386,13 +389,28 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
       mergedSettings.popupOnboardingVersion = DEFAULT_SETTINGS.popupOnboardingVersion;
 
       // 再次清除潜在的 icon 字段，避免写回占用空间
-      mergedSettings.chatServices = mergedSettings.chatServices.map((service) => {
+      mergedSettings.chatServices = (Array.isArray(mergedSettings.chatServices)
+        ? mergedSettings.chatServices
+        : DEFAULT_CHAT_SERVICES
+      ).map((service) => {
         const normalized = { ...service } as ChatService & { icon?: unknown };
         if ('icon' in normalized) {
           delete normalized.icon;
         }
         return normalized;
       });
+
+      if (!Array.isArray(mergedSettings.userPrompts)) {
+        mergedSettings.userPrompts = [...DEFAULT_BUILT_IN_PROMPTS];
+      }
+
+      if (!Array.isArray(mergedSettings.editorExclusionClassNames)) {
+        mergedSettings.editorExclusionClassNames = [...DEFAULT_EDITOR_EXCLUSION_CLASSES];
+      }
+
+      if (!Array.isArray(mergedSettings.editorExclusionAttributeSelectors)) {
+        mergedSettings.editorExclusionAttributeSelectors = [...DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS];
+      }
 
       // Check storage size limits
       const dataString = JSON.stringify({ [SETTINGS_KEY]: mergedSettings });

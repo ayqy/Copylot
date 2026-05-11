@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editor Fixture</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 32px;
+      }
+      .ProseMirror {
+        border: 1px solid #cbd5e1;
+        padding: 16px;
+        min-height: 160px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Editor Exclusion Fixture</h1>
+    <div class="ProseMirror" contenteditable="true" id="editor-root">
+      This editable region simulates a rich-text editor and should not trigger the Magic Copy button.
+    </div>
+  </body>
+</html>

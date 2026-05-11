@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Article Noise Fixture</title>
+    <style>
+      body {
+        font-family: Georgia, serif;
+        margin: 0;
+        background: #f8fafc;
+      }
+
+      header,
+      aside,
+      footer,
+      nav {
+        padding: 16px 24px;
+        background: #e2e8f0;
+      }
+
+      main {
+        max-width: 760px;
+        margin: 24px auto;
+        background: white;
+        padding: 32px;
+      }
+
+      .related {
+        margin-top: 24px;
+        padding: 16px;
+        background: #f1f5f9;
+      }
+    </style>
+  </head>
+  <body>
+    <header id="noise-header">Header promo that should not appear in the main article extraction.</header>
+    <nav id="noise-nav">Navigation link cluster that should be ignored.</nav>
+    <main>
+      <article id="noise-article">
+        <h1 id="noise-article-title">Primary Article For Full-Page Conversion</h1>
+        <p id="noise-article-paragraph-1">
+          The real article body starts here and should remain in the copied AI-friendly content.
+        </p>
+        <p id="noise-article-paragraph-2">
+          A follow-up paragraph provides enough density for the page-level extraction path to prefer the article body.
+        </p>
+        <section class="related" id="noise-related">
+          Related reading cards should not dominate the extracted result.
+        </section>
+      </article>
+    </main>
+    <aside id="noise-aside">Sidebar signup module that should be treated as noise.</aside>
+    <footer id="noise-footer">Footer copyright text that should not appear in the extraction.</footer>
+  </body>
+</html>

@@ -19,6 +19,7 @@ declare function recordTelemetryEvent(name: string, props?: Record<string, unkno
 /* INLINE:ui-injector */
 /* INLINE:link-utils */
 /* INLINE:dom-preprocessor */
+/* INLINE:code-block-cleaner */
 /* INLINE:content-processor */
 
 // Main content script logic
@@ -33,6 +34,7 @@ let clickTimer: number | null = null;
 let lastClickTimestamp = 0;
 let isShiftPressed = false; // Tracks if Shift key is currently pressed
 const DOUBLE_CLICK_THRESHOLD = 300; // ms
+const isE2EBuild = process.env.BUILD_TARGET === 'e2e';
 const FALLBACK_EDITOR_EXCLUSION_CLASSES = [
   'CodeMirror',
   'cm-editor',
@@ -325,6 +327,26 @@ async function copyToClipboard(text: string): Promise<void> {
   if (!success) {
     throw new Error(getMessage('failedCopyClipboard'));
   }
+}
+
+async function recordE2ECopiedText(text: string): Promise<void> {
+  if (!isE2EBuild) {
+    return;
+  }
+
+  try {
+    await chrome.runtime.sendMessage({
+      type: 'e2e:report-copied-text',
+      text
+    });
+  } catch (error) {
+    console.warn('Failed to report copied text for E2E:', error);
+  }
+}
+
+async function writeTextToClipboard(text: string): Promise<void> {
+  await navigator.clipboard.writeText(text);
+  await recordE2ECopiedText(text);
 }
 
 type ReportSuccessfulCopyOptions = {
@@ -772,7 +794,7 @@ async function handleMainCopyClick(): Promise<void> {
         }, 1500);
       });
     } else {
-      await navigator.clipboard.writeText(content);
+      await writeTextToClipboard(content);
       void recordTelemetryEvent('copy_success');
       await reportSuccessfulCopy();
       // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
@@ -841,7 +863,7 @@ async function handlePromptClick(promptId: string): Promise<void> {
 
     // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
     const finalText = combinePromptWithContent(prompt.template, content);
-    await navigator.clipboard.writeText(finalText);
+    await writeTextToClipboard(finalText);
     void recordTelemetryEvent('copy_success');
     void recordTelemetryEvent('prompt_used');
     await reportSuccessfulCopy({ isPromptUsed: true });
@@ -1081,6 +1103,7 @@ async function initializeContentScript(): Promise<void> {
           if (content.trim()) {
             try {
               await copyToClipboard(content);
+              await recordE2ECopiedText(content);
               void recordTelemetryEvent('copy_success');
               await reportSuccessfulCopy();
               sendResponse({ success: true });
@@ -1118,6 +1141,7 @@ async function initializeContentScript(): Promise<void> {
           if (content.trim()) {
             try {
               await copyToClipboard(content);
+              await recordE2ECopiedText(content);
               void recordTelemetryEvent('copy_success');
               await reportSuccessfulCopy();
               sendResponse({ success: true });
@@ -1149,6 +1173,7 @@ async function initializeContentScript(): Promise<void> {
 
             try {
               await copyToClipboard(finalText);
+              await recordE2ECopiedText(finalText);
               void recordTelemetryEvent('copy_success');
               void recordTelemetryEvent('prompt_used');
               await reportSuccessfulCopy({ isPromptUsed: true });
@@ -1175,6 +1200,7 @@ async function initializeContentScript(): Promise<void> {
               const finalText = combinePromptWithContent(message.promptTemplate, selectedText);
               try {
                 await copyToClipboard(finalText);
+                await recordE2ECopiedText(finalText);
                 void recordTelemetryEvent('copy_success');
                 void recordTelemetryEvent('prompt_used');
                 await reportSuccessfulCopy({ isPromptUsed: true });
@@ -1213,6 +1239,7 @@ async function initializeContentScript(): Promise<void> {
             const finalText = combinePromptWithContent(message.promptTemplate, content);
             try {
               await copyToClipboard(finalText);
+              await recordE2ECopiedText(finalText);
               void recordTelemetryEvent('copy_success');
               void recordTelemetryEvent('prompt_used');
               await reportSuccessfulCopy({ isPromptUsed: true });
@@ -1243,6 +1270,7 @@ async function initializeContentScript(): Promise<void> {
             const finalText = combinePromptWithContent(message.promptTemplate, content);
             try {
               await copyToClipboard(finalText);
+              await recordE2ECopiedText(finalText);
               void recordTelemetryEvent('copy_success');
               void recordTelemetryEvent('prompt_used');
               await reportSuccessfulCopy({ isPromptUsed: true });
@@ -1282,6 +1310,7 @@ async function initializeContentScript(): Promise<void> {
           document.body.removeChild(textarea);
 
           if (success) {
+            await recordE2ECopiedText(text);
             void recordTelemetryEvent('copy_success');
             await reportSuccessfulCopy();
             sendResponse({ success: true });

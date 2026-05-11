@@ -2,26 +2,34 @@
 /*
   inline-build.ts
   ---------------
-  在临时目录 .tmp_build 内完成源码内联，然后调用 Vite 进行正式构建。
-  构建完成后把 .tmp_build/dist 移动到项目根目录的 dist/。
+  在临时目录内完成源码内联，然后调用 Vite 进行正式构建。
+  构建完成后把临时 dist 移动到目标输出目录。
 */
 
 import { cpSync, rmSync, mkdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
 
-// 检查是否为生产环境构建
-const isProductionBuild = process.env.BUILD_TARGET === 'production';
+const buildTarget = process.env.BUILD_TARGET ?? 'development';
+const isProductionBuild = buildTarget === 'production';
+const isE2EBuild = buildTarget === 'e2e';
+
+function getTmpDirName(): string {
+  if (isProductionBuild) return '.tmp_build_prod';
+  if (isE2EBuild) return '.tmp_build_e2e';
+  return '.tmp_build';
+}
 
 function log(message: string) {
   if (message.includes('⚠️')) {
-    console.log(`[inline-build${isProductionBuild ? '-prod' : ''}] ${message}`);
+    const suffix = isProductionBuild ? '-prod' : isE2EBuild ? '-e2e' : '';
+    console.log(`[inline-build${suffix}] ${message}`);
   }
 }
 
 const ROOT_DIR = process.cwd();
-const TMP_DIR = join(ROOT_DIR, isProductionBuild ? '.tmp_build_prod' : '.tmp_build');
-const DIST_DIR = join(ROOT_DIR, 'dist');
+const TMP_DIR = join(ROOT_DIR, getTmpDirName());
+const DIST_DIR = join(ROOT_DIR, process.env.BUILD_OUTPUT_DIR || 'dist');
 
 // ---------------------------------------------------------------------------
 // Step 1: Prepare temporary directory
@@ -30,7 +38,7 @@ if (existsSync(TMP_DIR)) {
   rmSync(TMP_DIR, { recursive: true, force: true });
 }
 mkdirSync(TMP_DIR);
-log(`Created temporary directory ${isProductionBuild ? '.tmp_build_prod' : '.tmp_build'}`);
+log(`Created temporary directory ${getTmpDirName()}`);
 
 // ---------------------------------------------------------------------------
 // Step 2: Copy required project files into temporary directory
@@ -76,7 +84,7 @@ for (const p of COPY_PATHS) {
     cpSync(absSrc, join(TMP_DIR, p), { recursive: true });
   }
 }
-log(`Copied project files to ${isProductionBuild ? '.tmp_build_prod' : '.tmp_build'}${isProductionBuild ? ' (excluding test directory)' : ''}`);
+log(`Copied project files to ${getTmpDirName()}${isProductionBuild ? ' (excluding test directory)' : ''}`);
 
 // ---------------------------------------------------------------------------
 // Step 2.1: Copy test directory (only for development builds)
@@ -147,14 +155,18 @@ if (existsSync(TURNDOWN_PLUGIN_SRC)) {
 // ---------------------------------------------------------------------------
 // Step 5: Run Vite build in temporary directory
 // ---------------------------------------------------------------------------
-log(`Running Vite build (${isProductionBuild ? 'production, no sourcemap, no tests' : 'production, no sourcemap'})...`);
+log(
+  `Running Vite build (${
+    isProductionBuild ? 'production, no sourcemap, no tests' : isE2EBuild ? 'e2e, no sourcemap' : 'production, no sourcemap'
+  })...`
+);
 execSync('npx vite build --no-sourcemap --logLevel error', {
   cwd: TMP_DIR,
   stdio: 'inherit',
   env: { 
     ...process.env, 
     NODE_ENV: 'production',
-    BUILD_TARGET: isProductionBuild ? 'production' : 'development'
+    BUILD_TARGET: buildTarget
   }
 });
 
@@ -189,14 +201,22 @@ if (existsSync(TURNDOWN_PLUGIN_SRC)) {
   log('⚠️  turndown-plugin-gfm.js not found in final copy step');
 }
 
-log('Moved build output to ./dist');
+log(`Moved build output to ./${process.env.BUILD_OUTPUT_DIR || 'dist'}`);
 
 // ---------------------------------------------------------------------------
 // Step 8: Clean up temporary directory (production builds only)
 // ---------------------------------------------------------------------------
-if (isProductionBuild) {
+if (isProductionBuild || isE2EBuild) {
   rmSync(TMP_DIR, { recursive: true, force: true });
   log('Cleaned up temporary directory');
 }
 
-log(`✅ ${isProductionBuild ? 'Production build finished successfully - ready for Chrome Web Store!' : 'Build finished successfully'}`);
+log(
+  `✅ ${
+    isProductionBuild
+      ? 'Production build finished successfully - ready for Chrome Web Store!'
+      : isE2EBuild
+        ? 'E2E build finished successfully'
+        : 'Build finished successfully'
+  }`
+);

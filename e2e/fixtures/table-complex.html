@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Complex Table Fixture</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 32px;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 720px;
+      }
+
+      td,
+      th {
+        border: 1px solid #cbd5e1;
+        padding: 10px;
+        vertical-align: top;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Complex Table Fixture</h1>
+    <table id="complex-table">
+      <tbody>
+        <tr>
+          <td>Plan</td>
+          <td>Price</td>
+          <td>Notes</td>
+        </tr>
+        <tr>
+          <td rowspan="2" id="complex-starter">Starter</td>
+          <td>$5</td>
+          <td>Line one<br />Line two with | pipe</td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            Nested details
+            <table>
+              <tbody>
+                <tr>
+                  <td>Region</td>
+                  <td>US</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
