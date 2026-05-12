@@ -1,5 +1,9 @@
 import { normalizeLink } from './link-utils';
 
+function isHtmlElement(node: Node | null | undefined): node is HTMLElement {
+  return !!node && node.nodeType === Node.ELEMENT_NODE;
+}
+
 /**
  * Utility to clone a DOM subtree while stripping out nodes that are not visible to the user.
  * This is used by Magic Copy before any text/markdown conversion so that hidden or decorative
@@ -178,10 +182,13 @@ function shouldSkipIconFontElement(el: HTMLElement): boolean {
 
 const READER_MODE_STRUCTURAL_NOISE_TAGS = new Set(['header', 'footer', 'nav', 'aside', 'form', 'dialog', 'menu']);
 const READER_MODE_STRUCTURAL_NOISE_ROLES = new Set(['banner', 'navigation', 'complementary', 'contentinfo']);
+const READER_MODE_TABLE_STRUCTURAL_TAGS = new Set(['table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th']);
 const READER_MODE_NEGATIVE_NAME_REGEX =
   /\b(nav|navigation|footer|header|aside|sidebar|promo|advert|ads?|newsletter|subscribe|share|social|related|recommend|breadcrumb|comment(?:s)?|cookie|consent|toolbar|rail)\b/i;
 const READER_MODE_POSITIVE_NAME_REGEX =
   /\b(article|content|main|post|entry|story|body|doc|markdown|read)\b/i;
+const READER_MODE_NEGATIVE_TEXT_REGEX =
+  /(?:推荐阅读|继续滑动看下一个|向上滑动看下一个|轻触阅读原文|Comment|LikeSharePopularComment)/i;
 
 function getReaderModeElementTextLength(el: Element): number {
   return (el.textContent ?? '').replace(/\s+/g, ' ').trim().length;
@@ -208,14 +215,24 @@ function getReaderModeNameSignal(el: HTMLElement): string {
 
 function shouldStripReaderModeNoiseNode(el: HTMLElement): boolean {
   const tagName = el.tagName.toLowerCase();
+  if (READER_MODE_TABLE_STRUCTURAL_TAGS.has(tagName)) {
+    return false;
+  }
+
   const role = (el.getAttribute('role') || '').toLowerCase();
   const textLength = getReaderModeElementTextLength(el);
   const linkDensity = getReaderModeLinkDensity(el);
   const nameSignal = getReaderModeNameSignal(el);
+  const textSignal = (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
   const hasPositiveNameSignal = READER_MODE_POSITIVE_NAME_REGEX.test(nameSignal);
   const hasNegativeNameSignal = READER_MODE_NEGATIVE_NAME_REGEX.test(nameSignal);
+  const hasNegativeTextSignal = READER_MODE_NEGATIVE_TEXT_REGEX.test(textSignal);
 
   if (READER_MODE_STRUCTURAL_NOISE_TAGS.has(tagName) || READER_MODE_STRUCTURAL_NOISE_ROLES.has(role)) {
+    return true;
+  }
+
+  if (hasNegativeTextSignal && !hasPositiveNameSignal && textLength <= 1200) {
     return true;
   }
 
@@ -236,7 +253,7 @@ function shouldStripReaderModeNoiseNode(el: HTMLElement): boolean {
 
 export function stripReaderModeNoise(root: Element): Element {
   const removableNodes = Array.from(root.querySelectorAll('*')).filter(
-    (node): node is HTMLElement => node instanceof HTMLElement
+    (node): node is HTMLElement => isHtmlElement(node)
   );
 
   for (const node of removableNodes) {

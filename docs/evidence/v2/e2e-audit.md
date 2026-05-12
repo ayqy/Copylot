@@ -16,7 +16,7 @@
   - `http://127.0.0.1:4173`
   - 提供 `article.html` / `table.html` / `editor.html` / `chat.html`
 - Project 划分：
-  - `main`：稳定主回归，纳入 `npm run e2e`
+  - `main`：稳定主回归，纳入 `npm run test`
   - `native-ui`：原生 icon / 原生右键真实入口回归，不默认执行
 
 ## 本轮关键修复
@@ -85,10 +85,10 @@
 ## 当前结果
 - `COPYLOT_E2E_SKIP_BUILD=1 COPYLOT_E2E_NATIVE_UI_SKIP=1 npx playwright test --config=playwright.config.ts --project=main`：PASS
 - `npx playwright test --config=playwright.config.ts --project=main`：`35 passed`
-- `npm run e2e`：PASS
-- `npm run e2e:native-ui`：`3 passed`
+- `npm run test`：PASS
+- `COPYLOT_TEST_ONLY_NATIVE_UI=1 npm run test`：`3 passed`
 
 ## 例外说明
 - `native-ui` 继续单独执行：
   - 依赖 macOS 辅助功能权限、桌面会话、屏幕 OCR 与 headed 浏览器
-  - 为避免默认门禁受 GUI 环境波动影响，当前不纳入默认 `npm run e2e`
+  - 为避免默认门禁受 GUI 环境波动影响，当前不纳入默认 `npm run test`

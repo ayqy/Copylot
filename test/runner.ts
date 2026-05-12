@@ -77,6 +77,10 @@ interface LineDiffResult {
   actual?: string;
 }
 
+function normalizeSnapshotForComparison(text: string): string {
+  return text.replace(/\r\n/g, '\n').replace(/\n+$/, '');
+}
+
 function diffLines(expected: string[], actual: string[]): LineDiffResult[] {
   const results: LineDiffResult[] = [];
   let i = 0;
@@ -335,15 +339,17 @@ async function runTest(testCase: TestCase): Promise<TestResult> {
       diff = '<ins>' + escapeHtml(actual) + '</ins>';
       perfLog('Diff (fallback empty expected)', diffStart);
     } else {
-      const expectedHash = fnv1aHash(expected);
-      const actualHash = fnv1aHash(actual);
+      const normalizedExpected = normalizeSnapshotForComparison(expected);
+      const normalizedActual = normalizeSnapshotForComparison(actual);
+      const expectedHash = fnv1aHash(normalizedExpected);
+      const actualHash = fnv1aHash(normalizedActual);
 
-      if (expected.length === actual.length && expectedHash === actualHash) {
+      if (normalizedExpected.length === normalizedActual.length && expectedHash === actualHash) {
         diff = '';
         perfLog('Diff.hashEqual', diffStart);
       } else {
-        const expectedLines = expected.split('\n');
-        const actualLines = actual.split('\n');
+        const expectedLines = normalizedExpected.split('\n');
+        const actualLines = normalizedActual.split('\n');
         const lineDiffResults = diffLines(expectedLines, actualLines);
         diff = buildDiffFromLineResults(lineDiffResults);
         const hasChanges = lineDiffResults.some(result => result.type !== 'equal');

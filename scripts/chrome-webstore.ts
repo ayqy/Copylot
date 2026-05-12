@@ -6,7 +6,7 @@
   可单独执行，也可被 publish.ts 调用。
 
   V1-33 要求：
-  - 强制执行 `bash scripts/test.sh`（生产回归 + 产物自检）作为唯一发布门禁
+  - 强制执行 `npm run test`（生产回归 + 产物自检）作为唯一发布门禁
   - 校验 `dist/manifest.json` 的 `version === manifest.json.version`
   - 基于当前 `dist/` 重新生成 `plugin-${version}.zip`（若存在则先删除再生成）
   - 支持 `--dry-run`：不进行任何 upload/publish 网络调用；允许无 `.env` 凭据演练前置流程；但会执行网络可达性预检（Preflight）并输出可审计报告
@@ -227,7 +227,7 @@ async function ensureZipExists(version: string): Promise<string> {
   const zipFilePath = path.resolve(rootDir, zipFileName);
 
   if (!existsSync(distDir)) {
-    throw new Error('dist 目录不存在，请先确保已通过 `bash scripts/test.sh` 生成生产构建产物。');
+    throw new Error('dist 目录不存在，请先确保已通过 `npm run test` 生成生产构建产物。');
   }
 
   // V1-33：必须基于当前 dist/ 重新生成 zip（若存在则先删除）
@@ -292,8 +292,8 @@ async function readManifestVersion(manifestPath: string): Promise<string> {
 
 async function runPreflight(): Promise<{ version: string; zipFilePath: string }> {
   // 1) 强制生产回归（唯一门禁）
-  logInfo('发布前置门禁：开始执行全量回归 bash scripts/test.sh');
-  execSync('bash scripts/test.sh', { stdio: 'inherit' });
+  logInfo('发布前置门禁：开始执行全量回归 npm run test');
+  execSync('npm run test', { stdio: 'inherit' });
   logSuccess('发布前置门禁：全量回归通过');
 
   // 2) 读取 root manifest 版本 + 校验 dist manifest 版本一致

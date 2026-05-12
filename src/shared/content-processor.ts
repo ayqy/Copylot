@@ -13,6 +13,54 @@ declare const turndownPluginGfm: any; // Assume turndown-plugin-gfm is loaded gl
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let cachedTurndown: any = null;
 
+function isElementNode(node: unknown): node is Element {
+  return !!node && typeof (node as Node).nodeType === 'number' && (node as Node).nodeType === Node.ELEMENT_NODE;
+}
+
+function hasTagName(element: unknown, tagName: string): element is Element {
+  return isElementNode(element) && element.tagName.toLowerCase() === tagName.toLowerCase();
+}
+
+function isTableElement(element: unknown): element is HTMLTableElement {
+  return hasTagName(element, 'table');
+}
+
+function isImageElement(element: unknown): element is HTMLImageElement {
+  return hasTagName(element, 'img');
+}
+
+function isPictureElement(element: unknown): element is HTMLPictureElement {
+  return hasTagName(element, 'picture');
+}
+
+function isVideoElement(element: unknown): element is HTMLVideoElement {
+  return hasTagName(element, 'video');
+}
+
+function isSvgElement(element: unknown): element is SVGSVGElement {
+  return hasTagName(element, 'svg');
+}
+
+function isCanvasElement(element: unknown): element is HTMLCanvasElement {
+  return hasTagName(element, 'canvas');
+}
+
+function isEmbedElement(element: unknown): element is HTMLEmbedElement {
+  return hasTagName(element, 'embed');
+}
+
+function isObjectElement(element: unknown): element is HTMLObjectElement {
+  return hasTagName(element, 'object');
+}
+
+function isPreElement(element: unknown): element is HTMLPreElement {
+  return hasTagName(element, 'pre');
+}
+
+function isCodeElement(element: unknown): element is HTMLElement {
+  return hasTagName(element, 'code');
+}
+
 /**
  * 判断一段文本中是否仍包含 HTML table 结构
  */
@@ -110,10 +158,10 @@ function processCodeBlock(node: HTMLElement): string {
  * @returns 表格元素数组
  */
 function detectTablesInElement(element: Element): HTMLTableElement[] {
-  if (element instanceof HTMLTableElement) {
+  if (isTableElement(element)) {
     return [element];
   }
-  return Array.from(element.querySelectorAll('table'));
+  return Array.from(element.querySelectorAll('table')) as HTMLTableElement[];
 }
 
 /**
@@ -259,10 +307,26 @@ function convertNonStandardTableToMarkdown(table: HTMLTableElement, headerPlaceh
   return generateMarkdownTableFromGrid(grid, headerPlaceholder);
 }
 
+function shouldUseNonStandardTableFallback(table: HTMLTableElement): boolean {
+  const firstRow = table.rows[0];
+  const hasHeaderCells = table.querySelector('th') !== null;
+  const firstRowUsesOnlyTd =
+    !!firstRow && Array.from(firstRow.cells).every((cell) => cell.tagName.toLowerCase() === 'td');
+  const hasComplexCellContent = Array.from(table.querySelectorAll('td')).some((cell) =>
+    !!cell.querySelector('h1, h2, h3, h4, h5, h6, div, p, ul, ol, br, img, svg')
+  );
+
+  return !hasHeaderCells && firstRowUsesOnlyTd && hasComplexCellContent;
+}
+
 /**
  * 优先使用 GFM 转换；若仍包含 <table>，回退为自研 Markdown 表格
  */
 function toGfmMarkdownOrFallback(table: HTMLTableElement): string {
+  if (shouldUseNonStandardTableFallback(table)) {
+    return convertNonStandardTableToMarkdown(table);
+  }
+
   const gfm = convertHtmlToMarkdown(table.outerHTML);
   if (containsHtmlTable(gfm)) {
     return convertNonStandardTableToMarkdown(table);
@@ -419,10 +483,12 @@ function convertHtmlToMarkdown(html: string): string {
 
 function cleanInvalidLinks(markdown: string): string {
   // 同时匹配普通链接与图片链接，可选的感叹号捕获在第1组
-  return markdown.replace(/(!?)\[([^\]]*)\]\(([^)]*)\)/g, (_match, bang, text, url) => {
+  return markdown.replace(/(!?)\[([^\]]*)\]\(([^)]*)\)/g, (match, bang, text, url, offset, source) => {
     const trimmedUrl = (url || '').trim();
     const trimmedText = text.trim();
     const isImage = bang === '!';
+    const nextChar = source.slice(offset + match.length, offset + match.length + 1);
+    const needsTrailingSpace = !trimmedText && !!nextChar && !/\s/.test(nextChar);
 
     const normalized = normalizeLink(
       trimmedUrl,
@@ -438,7 +504,7 @@ function cleanInvalidLinks(markdown: string): string {
       if (isImage) {
         return `![](${normalized.href})`;
       } else {
-        return normalized.href;
+        return `${normalized.href}${needsTrailingSpace ? ' ' : ''}`;
       }
     }
 
@@ -702,20 +768,20 @@ export function convertToMarkdown(element: Element): string {
   // 始终使用 GFM 服务来确保表格等元素被正确处理
   const turndown = getTurndownService(true);
   try {
-    if (element instanceof HTMLTableElement) {
+    if (isTableElement(element)) {
       // 优先 GFM，失败则兜底生成占位表头的 Markdown 表
       return toGfmMarkdownOrFallback(element);
-    } else if (element instanceof HTMLImageElement) {
-      return processImageNodeForMarkdown(element as HTMLImageElement);
-    } else if (element instanceof HTMLPictureElement) {
-      const pictureElement = element as HTMLPictureElement;
+    } else if (isImageElement(element)) {
+      return processImageNodeForMarkdown(element);
+    } else if (isPictureElement(element)) {
+      const pictureElement = element;
       const img = pictureElement.querySelector('img');
       if (img) {
         return convertToMarkdown(img); // Delegate to HTMLImageElement handling
       }
       return getI18nMessage('pictureElementNoImage') || '[Picture Element - No image found]';
-    } else if (element instanceof HTMLVideoElement) {
-      const videoElement = element as HTMLVideoElement;
+    } else if (isVideoElement(element)) {
+      const videoElement = element;
       const posterUrl = videoElement.poster;
       const videoSrc =
         videoElement.src ||
@@ -730,32 +796,32 @@ export function convertToMarkdown(element: Element): string {
         return `[${linkText}](${videoSrc})`;
       }
       return `[Video: ${title || getI18nMessage('noSourceOrPoster') || 'No source or poster'}]`;
-    } else if (element instanceof SVGSVGElement) {
+    } else if (isSvgElement(element)) {
       const svgOuterHTML = element.outerHTML;
       return `\`\`\`svg\n${svgOuterHTML}\n\`\`\``;
-    } else if (element instanceof HTMLCanvasElement) {
-      const canvasElement = element as HTMLCanvasElement;
+    } else if (isCanvasElement(element)) {
+      const canvasElement = element;
       const id = canvasElement.id ? `id: '${canvasElement.id}'` : '';
       const classes = canvasElement.className ? `class: '${canvasElement.className}'` : '';
       const attributes = [id, classes].filter(Boolean).join(', ');
       return `[Canvas Element${attributes ? ` (${attributes})` : ''}]`;
-    } else if (element instanceof HTMLEmbedElement) {
-      const embedElement = element as HTMLEmbedElement;
+    } else if (isEmbedElement(element)) {
+      const embedElement = element;
       const src = embedElement.src;
       const type = embedElement.type;
       if (src) {
         return `[Embedded Content${type ? ` (type: ${type})` : ''}](${src})`;
       }
       return `[Embedded Content${type ? ` (type: ${type})` : ''}]`;
-    } else if (element instanceof HTMLObjectElement) {
-      const objectElement = element as HTMLObjectElement;
+    } else if (isObjectElement(element)) {
+      const objectElement = element;
       const data = objectElement.data;
       const type = objectElement.type;
       if (data) {
         return `[Object Content${type ? ` (type: ${type})` : ''}](${data})`;
       }
       return `[Object Content${type ? ` (type: ${type})` : ''}]`;
-    } else if (element.tagName.toLowerCase() === 'pre' || element.tagName.toLowerCase() === 'code') {
+    } else if (isPreElement(element) || isCodeElement(element)) {
       // 当用户直接复制code或pre元素时，使用统一的文本提取函数
       return extractCodeBlockText(element);
     } else {
@@ -883,17 +949,17 @@ export function convertToPlainText(element: Element): string {
     // Remove the copy button from the cloned element
     clonedElement.querySelectorAll('#ai-copilot-copy-btn').forEach((btn) => btn.remove());
 
-    if (element instanceof HTMLImageElement) {
-      return processImageNodeToPlainText(element as HTMLImageElement);
-    } else if (element instanceof HTMLPictureElement) {
-      const pictureElement = element as HTMLPictureElement;
+    if (isImageElement(element)) {
+      return processImageNodeToPlainText(element);
+    } else if (isPictureElement(element)) {
+      const pictureElement = element;
       const img = pictureElement.querySelector('img');
       if (img) {
         return convertToPlainText(img); // Delegate to HTMLImageElement handling
       }
       return '';
-    } else if (element instanceof HTMLVideoElement) {
-      const videoElement = element as HTMLVideoElement;
+    } else if (isVideoElement(element)) {
+      const videoElement = element;
       const videoSrc =
         videoElement.src ||
         (videoElement.querySelector('source') ? videoElement.querySelector('source')!.src : '');
@@ -902,19 +968,19 @@ export function convertToPlainText(element: Element): string {
       }
       // Fallback to poster URL if no video source
       return videoElement.poster || '';
-    } else if (element instanceof SVGSVGElement) {
+    } else if (isSvgElement(element)) {
       return element.outerHTML;
-    } else if (element instanceof HTMLCanvasElement) {
-      const canvasElement = element as HTMLCanvasElement;
+    } else if (isCanvasElement(element)) {
+      const canvasElement = element;
       const id = canvasElement.id ? `id: '${canvasElement.id}'` : '';
       const classes = canvasElement.className ? `class: '${canvasElement.className}'` : '';
       const attributes = [id, classes].filter(Boolean).join(', ');
       return `[Canvas Element${attributes ? ` (${attributes})` : ''}]`;
-    } else if (element instanceof HTMLEmbedElement) {
+    } else if (isEmbedElement(element)) {
       return element.src || getI18nMessage('embeddedContent') || '[Embedded Content]';
-    } else if (element instanceof HTMLObjectElement) {
+    } else if (isObjectElement(element)) {
       return element.data || getI18nMessage('objectContent') || '[Object Content]';
-    } else if (element.tagName.toLowerCase() === 'pre' || element.tagName.toLowerCase() === 'code') {
+    } else if (isPreElement(element) || isCodeElement(element)) {
       // 对于代码块，使用统一的文本提取函数
       return extractCodeBlockText(element);
     } else {
@@ -986,7 +1052,7 @@ function getCandidateTextLength(element: Element): number {
   return normalizeCandidateText((element as HTMLElement).innerText || element.textContent || '').length;
 }
 
-function getCandidateLinkDensity(element: HTMLElement): number {
+function getCandidateLinkDensity(element: Element): number {
   const totalTextLength = getCandidateTextLength(element);
   if (totalTextLength <= 0) return 0;
 
@@ -999,13 +1065,13 @@ function getCandidateLinkDensity(element: HTMLElement): number {
   return Math.min(1, linkTextLength / totalTextLength);
 }
 
-function getCandidateNameSignal(element: HTMLElement): string {
+function getCandidateNameSignal(element: Element): string {
   return [element.id, element.className, element.getAttribute('aria-label'), element.getAttribute('data-testid')]
     .filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
     .join(' ');
 }
 
-function scoreDenseMainCandidate(element: HTMLElement): number {
+function scoreDenseMainCandidate(element: Element): number {
   const textLength = getCandidateTextLength(element);
   if (textLength < DENSE_MAIN_ROOT_MIN_TEXT_LEN) {
     return Number.NEGATIVE_INFINITY;
@@ -1048,7 +1114,6 @@ function pickSemanticMainRootIfBody(root: Element): Element {
   let bestCandidateTextLen = 0;
 
   for (const candidate of candidates) {
-    if (!(candidate instanceof HTMLElement)) continue;
     const textLen = getCandidateTextLength(candidate);
     if (textLen > bestCandidateTextLen) {
       bestCandidateTextLen = textLen;
@@ -1071,7 +1136,6 @@ function pickDenseMainRootIfBody(root: Element): Element {
   let bestScore = Number.NEGATIVE_INFINITY;
 
   for (const candidate of candidates) {
-    if (!(candidate instanceof HTMLElement)) continue;
     const score = scoreDenseMainCandidate(candidate);
     if (score > bestScore) {
       bestScore = score;
@@ -1087,8 +1151,6 @@ function pickDenseMainRootIfBody(root: Element): Element {
 }
 
 function shouldStripReaderModeNoiseForLocalRoot(root: Element): boolean {
-  if (!(root instanceof HTMLElement)) return false;
-
   const tagName = root.tagName.toLowerCase();
   if (!LOCAL_READER_MODE_ROOT_TAGS.has(tagName)) {
     return false;
@@ -1136,7 +1198,7 @@ export function processContent(element: Element, settings: Settings): string {
     let content: string;
 
     // 检查是否为单纯的表格元素
-    if (workingRoot instanceof HTMLTableElement) {
+    if (isTableElement(workingRoot)) {
       if (settings.tableOutputFormat === 'csv') {
         content = convertTableToCSV(workingRoot);
       } else {
@@ -1162,7 +1224,7 @@ export function processContent(element: Element, settings: Settings): string {
     // Apply blockquote styling for Markdown output if additional info is attached
     if (
       settings.outputFormat === 'markdown' &&
-      !(element instanceof HTMLTableElement && settings.tableOutputFormat === 'csv')
+      !(isTableElement(element) && settings.tableOutputFormat === 'csv')
     ) {
       if (settings.attachTitle || settings.attachURL) {
         if (content) {

@@ -167,9 +167,9 @@ async function main() {
   }
 
   // --- 步骤 8: 全量回归（唯一门禁：失败直接退出，且恢复 manifest） ---
-  log.info('开始全量回归：bash scripts/test.sh');
+  log.info('开始全量回归：npm run test');
   try {
-    execSync('bash scripts/test.sh', { stdio: 'inherit' });
+    execSync('npm run test', { stdio: 'inherit' });
     log.success('全量回归通过。');
   } catch (error) {
     log.error('全量回归失败，已阻断发布（不会创建 commit/tag/zip，也不会 push/release）。');
