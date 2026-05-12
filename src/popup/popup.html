@@ -50,40 +50,6 @@
           </div>
         </div>
 
-        <!-- One-time rating prompt (shown based on local growth stats) -->
-        <div id="rating-prompt" class="rating-prompt" hidden>
-          <div class="rating-prompt-title" data-i18n="ratingPromptTitle">Rate Copylot</div>
-          <div class="rating-prompt-desc" data-i18n="ratingPromptDesc">
-            If Copylot helps you, a quick review would mean a lot.
-          </div>
-          <div class="rating-prompt-actions">
-            <button
-              type="button"
-              id="rating-prompt-rate"
-              class="rating-prompt-button primary"
-              data-i18n="ratingPromptRate"
-            >
-              Rate
-            </button>
-            <button
-              type="button"
-              id="rating-prompt-later"
-              class="rating-prompt-button"
-              data-i18n="ratingPromptLater"
-            >
-              Later
-            </button>
-            <button
-              type="button"
-              id="rating-prompt-never"
-              class="rating-prompt-button"
-              data-i18n="ratingPromptNever"
-            >
-              Never
-            </button>
-          </div>
-        </div>
-
         <!-- Settings Form -->
         <form id="settings-form">
           <!-- Enable/Disable Magic Copy Section -->
@@ -214,60 +180,11 @@
           </button>
         </div>
 
-        <!-- Pro waitlist prompt (low-disturb, one-time / snoozable) -->
-        <details id="pro-waitlist-prompt" class="pro-waitlist-prompt" hidden>
-          <summary class="pro-waitlist-prompt-summary">
-            <span class="pro-waitlist-prompt-title" data-i18n="proPromptTitle">Pro 候补提示</span>
-          </summary>
-          <div class="pro-waitlist-prompt-body">
-            <div class="pro-waitlist-prompt-desc" data-i18n="proPromptDesc">
-              加入 Pro 候补，优先验证你的工作流需求。
-            </div>
-            <div class="pro-waitlist-prompt-actions">
-              <button
-                type="button"
-                id="pro-waitlist-prompt-join"
-                class="rating-prompt-button primary"
-                data-i18n="joinProWaitlist"
-              >
-                加入候补名单
-              </button>
-              <button
-                type="button"
-                id="pro-waitlist-prompt-later"
-                class="rating-prompt-button"
-                data-i18n="ratingPromptLater"
-              >
-                稍后
-              </button>
-              <button
-                type="button"
-                id="pro-waitlist-prompt-never"
-                class="rating-prompt-button"
-                data-i18n="ratingPromptNever"
-              >
-                不再提示
-              </button>
-            </div>
-          </div>
-        </details>
-
-        <!-- Pro entry (zero-disturb, discoverable) -->
-        <div class="pro-entry-row pro-entry-row-survey">
-          <button
-            type="button"
-            id="popup-pro-waitlist-survey"
-            class="pro-entry-button"
-            data-i18n="popupProWaitlistSurvey"
-          >
-            Pro 问卷（1 分钟）
-          </button>
-        </div>
-        <div class="pro-entry-row">
+        <div class="popup-footer-actions">
           <button
             type="button"
             id="upgrade-pro-entry"
-            class="pro-entry-button"
+            class="popup-footer-button"
             data-i18n="upgradePro"
           >
             升级 Pro
@@ -275,30 +192,17 @@
           <button
             type="button"
             id="popup-pro-waitlist"
-            class="pro-entry-button secondary"
+            class="popup-footer-button"
             data-i18n="joinProWaitlist"
           >
             加入候补名单
           </button>
-        </div>
-        <div class="pro-entry-row pro-entry-row-copy">
-          <button
-            type="button"
-            id="popup-pro-waitlist-copy"
-            class="pro-entry-button secondary"
-            data-i18n="popupProWaitlistCopy"
-          >
-            复制候补文案
-          </button>
-        </div>
-
-        <!-- Onboarding entry -->
-        <div class="onboarding-entry-row">
           <button
             type="button"
             id="popup-onboarding-reopen"
-            class="onboarding-entry-button"
+            class="popup-footer-button popup-footer-button-subtle"
             data-i18n="popupOnboardingReopen"
+            hidden
           >
             新手引导
           </button>
@@ -406,9 +310,6 @@
             <div class="onboarding-header">
               <div class="onboarding-title" data-i18n="popupOnboardingTitle">欢迎使用 Copylot</div>
               <div id="popup-onboarding-progress" class="onboarding-progress">1/3</div>
-              <button type="button" id="popup-onboarding-close" class="onboarding-close-button">
-                &times;
-              </button>
             </div>
 
             <div class="onboarding-body">
@@ -420,18 +321,8 @@
                   选择你习惯的触发方式：单击 / 双击 / 悬停。
                 </p>
                 <p class="onboarding-step-text" data-i18n="popupOnboardingStep1Desc2">
-                  你也可以一键应用推荐配置（不打开打扰性功能）。
+                  先用默认设置也可以，后续随时都能调整。
                 </p>
-                <div class="onboarding-step-actions">
-                  <button
-                    type="button"
-                    id="popup-onboarding-apply-recommended"
-                    class="button"
-                    data-i18n="popupOnboardingApplyRecommended"
-                  >
-                    应用推荐设置
-                  </button>
-                </div>
               </div>
 
               <div id="popup-onboarding-step-2" class="onboarding-step" data-step="2" hidden>
@@ -451,18 +342,8 @@
                   第 3 步：管理 Prompts
                 </h3>
                 <p class="onboarding-step-text" data-i18n="popupOnboardingStep3Desc1">
-                  通过“管理 Prompts”添加/编辑指令模板，并可配置自动跳转 Chat。
+                  通过“管理 Prompts”添加或编辑模板；需要更细设置时，再进入 Options 页。
                 </p>
-                <div class="onboarding-step-actions">
-                  <button
-                    type="button"
-                    id="popup-onboarding-open-options"
-                    class="button secondary"
-                    data-i18n="popupOnboardingOpenOptions"
-                  >
-                    打开管理 Prompts
-                  </button>
-                </div>
               </div>
             </div>
 
@@ -492,15 +373,6 @@
                   data-i18n="popupOnboardingNext"
                 >
                   下一步
-                </button>
-                <button
-                  type="button"
-                  id="popup-onboarding-finish"
-                  class="button"
-                  data-i18n="popupOnboardingFinish"
-                  hidden
-                >
-                  完成
                 </button>
               </div>
             </div>

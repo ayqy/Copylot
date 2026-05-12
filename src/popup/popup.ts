@@ -19,27 +19,15 @@ import {
   buildGrowthFunnelSummary,
   getGrowthStats,
   markFirstPopupOpened,
-  markProPromptShown,
-  markRatingPromptShown,
-  setProPromptAction,
-  setRatingPromptAction,
-  shouldShowProPrompt,
-  shouldShowRatingPrompt,
-  type ProPromptAction,
   type GrowthFunnelSummary
 } from '../shared/growth-stats';
 import { recordTelemetryEvent, sanitizeTelemetryEvents, TELEMETRY_EVENTS_KEY } from '../shared/telemetry';
 import { buildProWaitlistUrl } from '../shared/external-links';
-import { buildProWaitlistCopyText } from '../shared/monetization';
 
 // DOM Elements
 interface PopupElements {
   versionDisplay: HTMLElement;
   devBadge: HTMLElement;
-  ratingPrompt: HTMLElement;
-  ratingPromptRateButton: HTMLButtonElement;
-  ratingPromptLaterButton: HTMLButtonElement;
-  ratingPromptNeverButton: HTMLButtonElement;
   enableMagicCopySwitch: HTMLInputElement;
   enableHoverMagicCopySwitch: HTMLInputElement;
   enableClipboardAccumulatorSwitch: HTMLInputElement;
@@ -68,29 +56,17 @@ interface PopupElements {
   copyShareButton: HTMLButtonElement;
   rateLink: HTMLAnchorElement;
 
-  // Pro waitlist prompt (low-disturb)
-  proWaitlistPrompt: HTMLDetailsElement;
-  proWaitlistPromptJoinButton: HTMLButtonElement;
-  proWaitlistPromptLaterButton: HTMLButtonElement;
-  proWaitlistPromptNeverButton: HTMLButtonElement;
-
   // Pro entry
-  popupProWaitlistSurveyButton: HTMLButtonElement;
   upgradeProEntry: HTMLButtonElement;
   popupProWaitlistButton: HTMLButtonElement;
-  popupProWaitlistCopyButton: HTMLButtonElement;
 
   // Popup onboarding
   onboardingReopenButton: HTMLButtonElement;
   onboardingModal: HTMLElement;
   onboardingProgress: HTMLElement;
-  onboardingCloseButton: HTMLButtonElement;
   onboardingSkipButton: HTMLButtonElement;
   onboardingPrevButton: HTMLButtonElement;
   onboardingNextButton: HTMLButtonElement;
-  onboardingFinishButton: HTMLButtonElement;
-  onboardingApplyRecommendedButton: HTMLButtonElement;
-  onboardingOpenOptionsButton: HTMLButtonElement;
   onboardingStep1: HTMLElement;
   onboardingStep2: HTMLElement;
   onboardingStep3: HTMLElement;
@@ -100,15 +76,6 @@ let elements: PopupElements;
 let currentSettings: Settings;
 
 const POPUP_ONBOARDING_TOTAL_STEPS = 3;
-const POPUP_ONBOARDING_RECOMMENDED_SETTINGS: Partial<Settings> = {
-  interactionMode: 'click',
-  isHoverMagicCopyEnabled: false,
-  outputFormat: 'markdown',
-  tableOutputFormat: 'markdown',
-  attachTitle: false,
-  attachURL: false
-};
-
 let onboardingCurrentStep = 1;
 let isOnboardingOpen = false;
 let onboardingSource: 'auto' | 'manual' = 'manual';
@@ -181,10 +148,6 @@ function getElements(): PopupElements {
   return {
     versionDisplay: document.getElementById('version-display') as HTMLElement,
     devBadge: document.getElementById('dev-badge') as HTMLElement,
-    ratingPrompt: document.getElementById('rating-prompt') as HTMLElement,
-    ratingPromptRateButton: document.getElementById('rating-prompt-rate') as HTMLButtonElement,
-    ratingPromptLaterButton: document.getElementById('rating-prompt-later') as HTMLButtonElement,
-    ratingPromptNeverButton: document.getElementById('rating-prompt-never') as HTMLButtonElement,
     enableMagicCopySwitch: document.getElementById('enable-magic-copy-switch') as HTMLInputElement,
     enableHoverMagicCopySwitch: document.getElementById(
       'enable-hover-magic-copy-switch'
@@ -217,38 +180,15 @@ function getElements(): PopupElements {
     copyShareButton: document.getElementById('copy-share-button') as HTMLButtonElement,
     rateLink: document.getElementById('rate-link') as HTMLAnchorElement,
 
-    proWaitlistPrompt: document.getElementById('pro-waitlist-prompt') as HTMLDetailsElement,
-    proWaitlistPromptJoinButton: document.getElementById(
-      'pro-waitlist-prompt-join'
-    ) as HTMLButtonElement,
-    proWaitlistPromptLaterButton: document.getElementById(
-      'pro-waitlist-prompt-later'
-    ) as HTMLButtonElement,
-    proWaitlistPromptNeverButton: document.getElementById(
-      'pro-waitlist-prompt-never'
-    ) as HTMLButtonElement,
-
-    popupProWaitlistSurveyButton: document.getElementById(
-      'popup-pro-waitlist-survey'
-    ) as HTMLButtonElement,
     upgradeProEntry: document.getElementById('upgrade-pro-entry') as HTMLButtonElement,
     popupProWaitlistButton: document.getElementById('popup-pro-waitlist') as HTMLButtonElement,
-    popupProWaitlistCopyButton: document.getElementById('popup-pro-waitlist-copy') as HTMLButtonElement,
 
     onboardingReopenButton: document.getElementById('popup-onboarding-reopen') as HTMLButtonElement,
     onboardingModal: document.getElementById('popup-onboarding-modal') as HTMLElement,
     onboardingProgress: document.getElementById('popup-onboarding-progress') as HTMLElement,
-    onboardingCloseButton: document.getElementById('popup-onboarding-close') as HTMLButtonElement,
     onboardingSkipButton: document.getElementById('popup-onboarding-skip') as HTMLButtonElement,
     onboardingPrevButton: document.getElementById('popup-onboarding-prev') as HTMLButtonElement,
     onboardingNextButton: document.getElementById('popup-onboarding-next') as HTMLButtonElement,
-    onboardingFinishButton: document.getElementById('popup-onboarding-finish') as HTMLButtonElement,
-    onboardingApplyRecommendedButton: document.getElementById(
-      'popup-onboarding-apply-recommended'
-    ) as HTMLButtonElement,
-    onboardingOpenOptionsButton: document.getElementById(
-      'popup-onboarding-open-options'
-    ) as HTMLButtonElement,
     onboardingStep1: document.getElementById('popup-onboarding-step-1') as HTMLElement,
     onboardingStep2: document.getElementById('popup-onboarding-step-2') as HTMLElement,
     onboardingStep3: document.getElementById('popup-onboarding-step-3') as HTMLElement
@@ -341,6 +281,10 @@ function updateUIFromSettings(settings: Settings) {
   // language field removed from UI; keep default stored value
 }
 
+function syncOnboardingEntryVisibility(settings: Settings) {
+  elements.onboardingReopenButton.hidden = !shouldAutoShowOnboarding(settings);
+}
+
 /**
  * Get settings from UI
  */
@@ -389,10 +333,6 @@ function setOnboardingStep(step: number) {
   elements.onboardingProgress.textContent = `${onboardingCurrentStep}/${POPUP_ONBOARDING_TOTAL_STEPS}`;
 
   elements.onboardingPrevButton.disabled = onboardingCurrentStep === 1;
-
-  const isLast = onboardingCurrentStep === POPUP_ONBOARDING_TOTAL_STEPS;
-  elements.onboardingNextButton.hidden = isLast;
-  elements.onboardingFinishButton.hidden = !isLast;
 }
 
 function openOnboardingModal(source: 'auto' | 'manual') {
@@ -424,6 +364,7 @@ async function completeOnboarding(action: 'finish' | 'skip') {
       popupOnboardingCompletedAt: completedAt
     };
 
+    syncOnboardingEntryVisibility(currentSettings);
     closeOnboardingModal();
   } catch (error) {
     console.error('Error completing onboarding:', error);
@@ -431,112 +372,11 @@ async function completeOnboarding(action: 'finish' | 'skip') {
   }
 }
 
-async function applyRecommendedSettings() {
-  try {
-    await saveSettings(POPUP_ONBOARDING_RECOMMENDED_SETTINGS);
-    currentSettings = { ...currentSettings, ...POPUP_ONBOARDING_RECOMMENDED_SETTINGS };
-    updateUIFromSettings(currentSettings);
-  } catch (error) {
-    console.error('Error applying recommended settings:', error);
-  }
-}
-
-function hideRatingPrompt() {
-  elements.ratingPrompt.hidden = true;
-}
-
-function hideProWaitlistPrompt() {
-  if (!elements?.proWaitlistPrompt) return;
-  elements.proWaitlistPrompt.hidden = true;
-}
-
-async function maybeShowRatingPrompt() {
-  try {
-    const now = Date.now();
-    const stats = await getGrowthStats(now);
-
-    if (shouldShowRatingPrompt(stats, now)) {
-      // Important: once the prompt becomes visible, persist `ratingPromptShownAt` immediately.
-      await markRatingPromptShown(now);
-      elements.ratingPrompt.hidden = false;
-      void recordTelemetryEvent('rating_prompt_shown', { source: 'rating_prompt' });
-      return;
-    }
-  } catch (error) {
-    console.error('Error evaluating rating prompt:', error);
-  }
-
-  hideRatingPrompt();
-}
-
-async function maybeShowProWaitlistPrompt() {
-  try {
-    // Avoid stacking prompts in the same popup session.
-    if (!elements.ratingPrompt.hidden) {
-      hideProWaitlistPrompt();
-      return;
-    }
-
-    const now = Date.now();
-    const stats = await getGrowthStats(now);
-
-    if (shouldShowProPrompt(stats, now)) {
-      await markProPromptShown(now);
-      elements.proWaitlistPrompt.hidden = false;
-      elements.proWaitlistPrompt.open = true;
-      void recordTelemetryEvent('pro_prompt_shown', { source: 'popup' });
-      return;
-    }
-  } catch (error) {
-    console.error('Error evaluating pro waitlist prompt:', error);
-  }
-
-  hideProWaitlistPrompt();
-}
-
 /**
  * Setup event listeners for form elements
  */
 function setupEventListeners() {
   const getMessage = createI18nGetMessage();
-
-  const handleProWaitlistPromptAction = async (action: ProPromptAction) => {
-    await recordTelemetryEvent('pro_prompt_action', { source: 'popup', action });
-
-    try {
-      await setProPromptAction(action, Date.now());
-    } catch (error) {
-      console.warn('Failed to persist pro waitlist prompt action:', error);
-    }
-
-    hideProWaitlistPrompt();
-
-    if (action === 'join') {
-      const url = `${chrome.runtime.getURL('src/options/options.html')}#pro`;
-      await reportE2EOpenedUrl(url);
-      chrome.tabs.create({ url });
-      window.close();
-    }
-  };
-
-  // Pro waitlist prompt (low-disturb)
-  elements.proWaitlistPromptJoinButton.addEventListener('click', () => {
-    void handleProWaitlistPromptAction('join');
-  });
-  elements.proWaitlistPromptLaterButton.addEventListener('click', () => {
-    void handleProWaitlistPromptAction('later');
-  });
-  elements.proWaitlistPromptNeverButton.addEventListener('click', () => {
-    void handleProWaitlistPromptAction('never');
-  });
-
-  // Pro entry
-  elements.popupProWaitlistSurveyButton.addEventListener('click', async () => {
-    const url = `${chrome.runtime.getURL('src/options/options.html')}?pro_survey_source=popup#pro-waitlist-survey`;
-    await reportE2EOpenedUrl(url);
-    chrome.tabs.create({ url });
-    window.close();
-  });
 
   elements.upgradeProEntry.addEventListener('click', async () => {
     const props: Record<string, string> = { source: 'popup' };
@@ -565,34 +405,6 @@ function setupEventListeners() {
     await reportE2EOpenedUrl(waitlistUrl);
     chrome.tabs.create({ url: waitlistUrl });
     window.close();
-  });
-
-  elements.popupProWaitlistCopyButton.addEventListener('click', async () => {
-    const originalText = elements.popupProWaitlistCopyButton.textContent || '';
-    try {
-      const body = buildProWaitlistCopyText({
-        env: {
-          extensionVersion: chrome.runtime.getManifest().version || '',
-          extensionId: chrome.runtime.id,
-          navigatorLanguage: navigator.language || '',
-          uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
-        },
-        campaign: currentSettings?.proIntentCampaign,
-        getMessage
-      });
-      await writeTextToClipboard(body);
-      const props: Record<string, string> = { source: 'popup' };
-      if (currentSettings?.proIntentCampaign) props.campaign = currentSettings.proIntentCampaign;
-      void recordTelemetryEvent('pro_waitlist_copied', props);
-      elements.popupProWaitlistCopyButton.textContent = getMessage('copied') || originalText;
-      window.setTimeout(() => {
-        elements.popupProWaitlistCopyButton.textContent =
-          getMessage('popupProWaitlistCopy') || originalText;
-      }, 1200);
-    } catch (error) {
-      console.error('Failed to copy waitlist copy:', error);
-      elements.popupProWaitlistCopyButton.textContent = originalText;
-    }
   });
 
   // Interaction mode radio buttons
@@ -710,40 +522,6 @@ function setupEventListeners() {
     })();
   });
 
-  elements.ratingPromptRateButton.addEventListener('click', async () => {
-    try {
-      await setRatingPromptAction('rate');
-    } catch (error) {
-      console.error('Error saving rating prompt action:', error);
-    }
-    await recordTelemetryEvent('rating_prompt_action', { source: 'rating_prompt', action: 'rate' });
-
-    const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id, buildWomUtmParams('rating_prompt'));
-    await reportE2EOpenedUrl(reviewsUrl);
-    chrome.tabs.create({ url: reviewsUrl });
-    window.close();
-  });
-
-  elements.ratingPromptLaterButton.addEventListener('click', async () => {
-    try {
-      await setRatingPromptAction('later');
-    } catch (error) {
-      console.error('Error saving rating prompt action:', error);
-    }
-    void recordTelemetryEvent('rating_prompt_action', { source: 'rating_prompt', action: 'later' });
-    hideRatingPrompt();
-  });
-
-  elements.ratingPromptNeverButton.addEventListener('click', async () => {
-    try {
-      await setRatingPromptAction('never');
-    } catch (error) {
-      console.error('Error saving rating prompt action:', error);
-    }
-    void recordTelemetryEvent('rating_prompt_action', { source: 'rating_prompt', action: 'never' });
-    hideRatingPrompt();
-  });
-
   elements.copyShareButton.addEventListener('click', async () => {
     const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id, buildWomUtmParams('popup'));
     const shareText = buildShareCopyText(getMessage, storeUrl);
@@ -777,9 +555,6 @@ function setupEventListeners() {
   });
 
   // Onboarding modal controls
-  elements.onboardingCloseButton.addEventListener('click', () => {
-    completeOnboarding('skip');
-  });
   elements.onboardingSkipButton.addEventListener('click', () => {
     completeOnboarding('skip');
   });
@@ -787,16 +562,11 @@ function setupEventListeners() {
     setOnboardingStep(onboardingCurrentStep - 1);
   });
   elements.onboardingNextButton.addEventListener('click', () => {
+    if (onboardingCurrentStep >= POPUP_ONBOARDING_TOTAL_STEPS) {
+      void completeOnboarding('finish');
+      return;
+    }
     setOnboardingStep(onboardingCurrentStep + 1);
-  });
-  elements.onboardingFinishButton.addEventListener('click', () => {
-    completeOnboarding('finish');
-  });
-  elements.onboardingApplyRecommendedButton.addEventListener('click', () => {
-    applyRecommendedSettings();
-  });
-  elements.onboardingOpenOptionsButton.addEventListener('click', () => {
-    chrome.runtime.openOptionsPage();
   });
 
   // Click outside modal-content closes onboarding (acts like skip)
@@ -920,6 +690,7 @@ async function initialize() {
 
     // Load and display current settings
     await loadSettings();
+    syncOnboardingEntryVisibility(currentSettings);
 
     // Setup event handlers
     setupEventListeners();
@@ -936,12 +707,6 @@ async function initialize() {
       // Auto show onboarding for new users (zero-disturb: only when not completed)
       openOnboardingModal('auto');
     }
-
-    // Evaluate one-time rating prompt (non-blocking, based on local growth stats)
-    await maybeShowRatingPrompt();
-
-    // Evaluate pro waitlist prompt (low-disturb, based on local growth stats)
-    await maybeShowProWaitlistPrompt();
 
     console.debug('Popup initialized successfully');
   } catch (error) {

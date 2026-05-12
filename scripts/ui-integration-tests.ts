@@ -168,15 +168,9 @@ async function runPopupAssertions(): Promise<void> {
     assert.ok(rateUrl.includes('/reviews?'));
     assert.ok(rateUrl.includes('utm_medium=popup'));
 
-    const ratingPromptRateButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#rating-prompt-rate'
-    );
-    clickElement(ratingPromptRateButton);
-    await page.waitForIdle();
-    const ratingPromptUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
-    assert.ok(ratingPromptUrl.includes('/reviews?'));
-    assert.ok(ratingPromptUrl.includes('utm_medium=rating_prompt'));
+    assert.equal(page.dom.window.document.querySelector('#rating-prompt'), null);
+    assert.equal(page.dom.window.document.querySelector('#popup-pro-waitlist-survey'), null);
+    assert.equal(page.dom.window.document.querySelector('#popup-pro-waitlist-copy'), null);
 
     const popupProWaitlistButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
@@ -188,24 +182,6 @@ async function runPopupAssertions(): Promise<void> {
     assert.ok(waitlistUrl.includes('https://copy.useai.online/'));
     assert.ok(waitlistUrl.includes('#pro'));
     assert.ok(waitlistUrl.includes('utm_medium=popup'));
-
-    const popupProWaitlistCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#popup-pro-waitlist-copy'
-    );
-    clickElement(popupProWaitlistCopyButton);
-    await page.waitForIdle();
-    const popupClipboardText = await page.clipboard.readText();
-    assert.ok(popupClipboardText.includes('proWaitlistIssueBodyTemplate'));
-
-    const popupProWaitlistSurveyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#popup-pro-waitlist-survey'
-    );
-    clickElement(popupProWaitlistSurveyButton);
-    await page.waitForIdle();
-    const surveyUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
-    assert.ok(surveyUrl.includes('src/options/options.html?pro_survey_source=popup#pro-waitlist-survey'));
   } finally {
     page.restore();
   }
@@ -241,6 +217,7 @@ async function runOptionsAssertions(): Promise<void> {
 
   try {
     const campaignInput = getRequiredElement<HTMLInputElement>(page.dom.window.document, '#pro-intent-campaign');
+    assert.equal(campaignInput.closest('.form-group')?.hasAttribute('hidden'), true);
     campaignInput.value = 'twitter';
     campaignInput.dispatchEvent(new window.Event('input', { bubbles: true }));
     campaignInput.dispatchEvent(new window.Event('change', { bubbles: true }));
@@ -255,13 +232,15 @@ async function runOptionsAssertions(): Promise<void> {
     assert.ok(waitlistUrl.includes('utm_medium=options'));
 
     const proWaitlistCopyButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#pro-waitlist-copy');
-    clickElement(proWaitlistCopyButton);
-    await page.waitForIdle();
-    assert.ok((await page.clipboard.readText()).includes('proWaitlistIssueBodyTemplate'));
+    assert.equal(proWaitlistCopyButton.hidden, true);
 
     const proWaitlistUrlCopyButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
       '#pro-waitlist-url-copy'
+    );
+    assert.equal(
+      getRequiredElement<HTMLElement>(page.dom.window.document, '#pro-waitlist-distribution-toolkit').hidden,
+      true
     );
     clickElement(proWaitlistUrlCopyButton);
     await page.waitForIdle();

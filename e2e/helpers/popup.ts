@@ -10,7 +10,7 @@ export async function completePopupOnboardingIfVisible(popup: Page): Promise<voi
 
   await popup.locator('#popup-onboarding-next').click();
   await popup.locator('#popup-onboarding-next').click();
-  await popup.locator('#popup-onboarding-finish').click();
+  await popup.locator('#popup-onboarding-next').click();
   await expect(modal).toBeHidden();
 }
 

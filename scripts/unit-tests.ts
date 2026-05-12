@@ -2573,26 +2573,30 @@ async function run() {
   const popupHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.html'], { encoding: 'utf8' });
   assert.ok(popupHtml.includes('id="upgrade-pro-entry"'), 'popup.html should include upgrade-pro-entry');
   assert.ok(popupHtml.includes('id="popup-pro-waitlist"'), 'popup.html should include popup-pro-waitlist');
-  assert.ok(popupHtml.includes('id="popup-pro-waitlist-copy"'), 'popup.html should include popup-pro-waitlist-copy');
-  assert.ok(popupHtml.includes('id="pro-waitlist-prompt"'), 'popup.html should include pro-waitlist-prompt');
+  assert.ok(popupHtml.includes('id="popup-onboarding-reopen"'), 'popup.html should include popup-onboarding-reopen');
+  assert.ok(!popupHtml.includes('id="popup-pro-waitlist-copy"'), 'popup.html should not include popup-pro-waitlist-copy');
+  assert.ok(!popupHtml.includes('id="popup-pro-waitlist-survey"'), 'popup.html should not include popup-pro-waitlist-survey');
+  assert.ok(!popupHtml.includes('id="pro-waitlist-prompt"'), 'popup.html should not include pro-waitlist-prompt');
   assert.ok(
-    popupHtml.includes('id="pro-waitlist-prompt-join"'),
-    'popup.html should include pro-waitlist-prompt-join'
+    !popupHtml.includes('id="popup-onboarding-apply-recommended"'),
+    'popup.html should not include popup-onboarding-apply-recommended'
   );
   assert.ok(
-    popupHtml.includes('id="pro-waitlist-prompt-later"'),
-    'popup.html should include pro-waitlist-prompt-later'
+    !popupHtml.includes('id="popup-onboarding-open-options"'),
+    'popup.html should not include popup-onboarding-open-options'
   );
-  assert.ok(
-    popupHtml.includes('id="pro-waitlist-prompt-never"'),
-    'popup.html should include pro-waitlist-prompt-never'
-  );
+  assert.ok(!popupHtml.includes('id="popup-onboarding-finish"'), 'popup.html should not include popup-onboarding-finish');
+  assert.ok(!popupHtml.includes('id="popup-onboarding-close"'), 'popup.html should not include popup-onboarding-close');
 
   const optionsHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/options/options.html'], { encoding: 'utf8' });
   assert.ok(optionsHtml.includes('data-tab="pro"'), 'options.html should include pro tab');
+  assert.ok(/id="options-onboarding-panel"[^>]*hidden/.test(optionsHtml), 'options onboarding panel should be hidden by default');
   assert.ok(optionsHtml.includes('id="pro-intent-campaign"'), 'options.html should include pro-intent-campaign');
   assert.ok(optionsHtml.includes('id="pro-waitlist-button"'), 'options.html should include pro-waitlist-button');
   assert.ok(optionsHtml.includes('id="pro-waitlist-copy"'), 'options.html should include pro-waitlist-copy');
+  assert.ok(optionsHtml.includes('id="options-onboarding-panel"'), 'options.html should include options-onboarding-panel');
+  assert.ok(optionsHtml.includes('id="pro-intent-campaign"'), 'options.html should include hidden pro-intent-campaign');
+  assert.ok(optionsHtml.includes('id="pro-waitlist-distribution-toolkit"'), 'options.html should include hidden distribution toolkit');
   assert.ok(optionsHtml.includes('id="pro-waitlist-url-copy"'), 'options.html should include pro-waitlist-url-copy');
   assert.ok(
     optionsHtml.includes('id="pro-waitlist-recruit-copy"'),
@@ -2629,10 +2633,10 @@ async function run() {
   const popupJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.js'], { encoding: 'utf8' });
   assert.ok(popupJs.includes('pro_entry_opened'), 'popup.js should contain pro_entry_opened');
   assert.ok(popupJs.includes('pro_waitlist_opened'), 'popup.js should contain pro_waitlist_opened');
-  assert.ok(popupJs.includes('pro_waitlist_copied'), 'popup.js should contain pro_waitlist_copied');
-  assert.ok(popupJs.includes('pro_prompt_shown'), 'popup.js should contain pro_prompt_shown');
-  assert.ok(popupJs.includes('pro_prompt_action'), 'popup.js should contain pro_prompt_action');
-  assert.ok(popupJs.includes('navigator.clipboard.writeText'), 'popup.js should write to clipboard for waitlist copy');
+  assert.ok(popupJs.includes('wom_feedback_opened'), 'popup.js should contain wom_feedback_opened');
+  assert.ok(popupJs.includes('wom_share_opened'), 'popup.js should contain wom_share_opened');
+  assert.ok(popupJs.includes('wom_rate_opened'), 'popup.js should contain wom_rate_opened');
+  assert.ok(popupJs.includes('popupOnboardingCompletedVersion'), 'popup.js should sync onboarding completion state');
 
   const optionsJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/options/options.js'], { encoding: 'utf8' });
   assert.ok(optionsJs.includes('pro_entry_opened'), 'options.js should contain pro_entry_opened');

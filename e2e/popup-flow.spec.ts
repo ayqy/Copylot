@@ -40,7 +40,7 @@ test('popup opens via extension action and can convert current page selection', 
   }
 });
 
-test('popup entry points can open options and copy waitlist text', async ({
+test('popup entry points can open options and passive pro targets', async ({
   extensionContext,
   extensionId,
   driverPage,
@@ -75,15 +75,31 @@ test('popup entry points can open options and copy waitlist text', async ({
     await page.bringToFront();
     const popupAgain = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
     await completePopupOnboardingIfVisible(popupAgain);
-    await popupAgain.locator('#popup-pro-waitlist-copy').click();
-    await expect(popupAgain.locator('#popup-pro-waitlist-copy')).toContainText(/copied|已复制/i);
+    const [proPage] = await Promise.all([
+      extensionContext.waitForEvent('page'),
+      popupAgain.locator('#upgrade-pro-entry').click()
+    ]);
+    await proPage.waitForLoadState('domcontentloaded');
+    await expect(proPage.locator('#pro-tab')).toHaveCount(1);
+    await proPage.close();
+
+    await page.bringToFront();
+    const popupWaitlist = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
+    await completePopupOnboardingIfVisible(popupWaitlist);
+    await popupWaitlist.locator('#popup-pro-waitlist').click();
     await expect
       .poll(async () => {
         const snapshot = await getStorageSnapshot(driverPage);
         const events = snapshot.local.copilot_telemetry_events as Array<{ name?: string }> | undefined;
-        return events?.some((event) => event.name === 'pro_waitlist_copied') ?? false;
+        return {
+          proEntryOpened: events?.some((event) => event.name === 'pro_entry_opened') ?? false,
+          proWaitlistOpened: events?.some((event) => event.name === 'pro_waitlist_opened') ?? false
+        };
       })
-      .toBe(true);
+      .toEqual({
+        proEntryOpened: true,
+        proWaitlistOpened: true
+      });
   } finally {
     await page.close();
   }

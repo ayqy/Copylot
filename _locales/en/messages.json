@@ -233,15 +233,15 @@
     "description": "Options tab label for Pro"
   },
   "proTitle": {
-    "message": "Copylot Pro (Waitlist)",
+    "message": "Copylot Pro",
     "description": "Options Pro tab title"
   },
   "proSubtitle": {
-    "message": "No popups, no pressure. Validate intent first, then decide what to build.",
+    "message": "If you want a more complete organization and export experience, here are the directions we are currently exploring.",
     "description": "Options Pro tab subtitle"
   },
   "proIntro": {
-    "message": "Pro focuses on stronger workflows and saving time, as an optional enhancement without breaking the free core experience.",
+    "message": "This page shows the enhancements we are currently evaluating. The existing core features will remain available.",
     "description": "Options Pro tab intro"
   },
   "proFreeScopeTitle": {
@@ -277,11 +277,11 @@
     "description": "Options Pro tab: free capability bullet 6"
   },
   "proPlannedScopeTitle": {
-    "message": "Pro (Planned, not shipped yet)",
+    "message": "Directions under evaluation",
     "description": "Options Pro tab: planned scope section title"
   },
   "proPlannedScopeHint": {
-    "message": "The following are waitlist/planned ideas (not shipped yet).",
+    "message": "These are the areas where we are gathering feedback. The final experience will be shaped by actual usage.",
     "description": "Options Pro tab: planned scope section hint"
   },
   "proFeature1": {
@@ -309,7 +309,7 @@
     "description": "Options Pro tab copy action"
   },
   "proIntentCampaignLabel": {
-    "message": "Campaign (optional)",
+    "message": "Source tag (optional)",
     "description": "Options Pro tab: campaign input label"
   },
   "proIntentCampaignPlaceholder": {
@@ -317,35 +317,35 @@
     "description": "Options Pro tab: campaign input placeholder"
   },
   "proIntentCampaignHint": {
-    "message": "Used for channel attribution. Do NOT enter sensitive data. Only 1-32 chars: letters/numbers/._- (use a short id).",
+    "message": "If you came from a specific post or campaign, you can add a short label here so it is easier to tell sources apart later.",
     "description": "Options Pro tab: campaign input hint (privacy + constraints)"
   },
   "proIntentCampaignInvalid": {
-    "message": "Invalid campaign. Cleared (allowed: 1-32 chars letters/numbers/._-).",
+    "message": "That source tag was not valid, so it was cleared. Use 1-32 letters, numbers, dots, underscores, or hyphens only.",
     "description": "Options Pro tab: invalid campaign notice"
   },
   "proWaitlistDistributionToolkitTitle": {
-    "message": "Distribution Toolkit (campaign required)",
+    "message": "Share links and copy",
     "description": "Options Pro tab: external distribution toolkit title"
   },
   "proWaitlistDistributionToolkitHint": {
-    "message": "For external sharing/ads: one-click copy waitlist URL and recruit copy. Only this toolkit enforces a valid campaign.",
+    "message": "If you want to share the waitlist with someone else, you can copy ready-to-use links and text here.",
     "description": "Options Pro tab: external distribution toolkit hint"
   },
   "proWaitlistUrlCopyButton": {
-    "message": "Copy waitlist URL (with campaign)",
+    "message": "Copy waitlist link",
     "description": "Options Pro tab: distribution toolkit - copy waitlist URL button"
   },
   "proWaitlistRecruitCopyButton": {
-    "message": "Copy recruit copy (with URL)",
+    "message": "Copy share text",
     "description": "Options Pro tab: distribution toolkit - copy recruit copy button"
   },
   "proStoreUrlCopyButton": {
-    "message": "Copy Chrome Web Store URL (with UTM + campaign)",
+    "message": "Copy install link",
     "description": "Options Pro tab: distribution toolkit - copy store URL button"
   },
   "proDistributionPackCopyButton": {
-    "message": "Copy distribution pack (Markdown)",
+    "message": "Copy share pack",
     "description": "Options Pro tab: distribution toolkit - copy distribution pack button"
   },
   "proDistributionPackTemplate": {
@@ -370,7 +370,7 @@
     }
   },
   "proWaitlistDistributionCampaignRequired": {
-    "message": "For attribution, please enter a valid campaign first.",
+    "message": "Please enter a valid source tag first.",
     "description": "Options Pro tab: distribution toolkit - campaign required hint"
   },
   "proWaitlistRecruitCopyTemplate": {
@@ -386,15 +386,15 @@
     }
   },
   "proPrivacyHint": {
-    "message": "The waitlist link contains extension version/ID and language only. No webpage or copied content is included.",
+    "message": "The waitlist page will not prefill webpage content. It only carries basic environment details so you can confirm the source.",
     "description": "Options Pro tab privacy hint"
   },
   "proWaitlistSurveyTitle": {
-    "message": "Payment Interest Survey (Optional)",
+    "message": "Tell us about your use case",
     "description": "Options Pro tab: waitlist survey title"
   },
   "proWaitlistSurveyHint": {
-    "message": "Fill it only if you want. Used to validate Pro direction. No auto-collection and no network sending.",
+    "message": "If you want, you can share your use case and the capabilities you care about most so we can prioritize the right improvements.",
     "description": "Options Pro tab: waitlist survey hint"
   },
   "proWaitlistSurveyUseCaseLabel": {
@@ -402,15 +402,15 @@
     "description": "Options Pro tab: survey field label (use case)"
   },
   "proWaitlistSurveyUseCasePlaceholder": {
-    "message": "e.g. summarize long articles / meeting notes / competitor research...",
+    "message": "For example: organizing long reads, collecting research, gathering information across pages...",
     "description": "Options Pro tab: survey field placeholder (use case)"
   },
   "proWaitlistSurveyCapabilitiesLabel": {
-    "message": "Desired Pro capabilities",
+    "message": "What would you most like to see first?",
     "description": "Options Pro tab: survey field label (desired capabilities)"
   },
   "proWaitlistSurveyCapabilitiesOtherPlaceholder": {
-    "message": "Other notes (optional)",
+    "message": "Other ideas (optional)",
     "description": "Options Pro tab: survey field placeholder (other capabilities)"
   },
   "proWaitlistSurveyCapabilitiesOtherPrefix": {
@@ -418,7 +418,7 @@
     "description": "Copied survey: other capabilities prefix"
   },
   "proWaitlistSurveyPayWillingLabel": {
-    "message": "Willing to pay",
+    "message": "If an enhanced version existed in the future, would you consider it?",
     "description": "Options Pro tab: survey field label (willing to pay)"
   },
   "proWaitlistSurveySelectPlaceholder": {
@@ -438,7 +438,7 @@
     "description": "Options Pro tab: willing to pay option (No)"
   },
   "proWaitlistSurveyPayMonthlyLabel": {
-    "message": "Acceptable price (monthly)",
+    "message": "What monthly range would feel reasonable to you?",
     "description": "Options Pro tab: survey field label (monthly price)"
   },
   "proWaitlistSurveyPriceMonthly1": {
@@ -462,7 +462,7 @@
     "description": "Options Pro tab: monthly price option 5"
   },
   "proWaitlistSurveyPayAnnualLabel": {
-    "message": "Acceptable price (annual)",
+    "message": "What annual range would feel reasonable to you?",
     "description": "Options Pro tab: survey field label (annual price)"
   },
   "proWaitlistSurveyPriceAnnual1": {
@@ -486,23 +486,23 @@
     "description": "Options Pro tab: annual price option 5"
   },
   "proWaitlistSurveyContactLabel": {
-    "message": "Contact (optional)",
+    "message": "Leave a contact method (optional)",
     "description": "Options Pro tab: survey field label (contact)"
   },
   "proWaitlistSurveyContactPlaceholder": {
-    "message": "Email / Telegram / other (voluntary)",
+    "message": "Email / Telegram / another way to reach you (fully optional)",
     "description": "Options Pro tab: survey field placeholder (contact)"
   },
   "proWaitlistSurveyCopyButton": {
-    "message": "Copy survey (with environment info)",
+    "message": "Copy feedback",
     "description": "Options Pro tab: copy survey button"
   },
   "proWaitlistSurveyCopyOpenButton": {
-    "message": "Copy and open waitlist",
+    "message": "Copy and go to waitlist",
     "description": "Options Pro tab: copy then open waitlist button"
   },
   "proWaitlistSurveyPrivacyHint": {
-    "message": "No webpage content / copied content / URL / title is included. Everything comes from extension environment info + what you manually type.",
+    "message": "Only basic environment details such as extension version and language are included. No webpage content or copied text is included.",
     "description": "Options Pro tab: survey privacy hint"
   },
   "proScopeLearnMore": {
@@ -597,7 +597,7 @@
     "description": "Onboarding step 1 description"
   },
   "popupOnboardingStep1Desc2": {
-    "message": "You can also apply our recommended settings (no intrusive features).",
+    "message": "You can start with the default setup and adjust things later whenever you want.",
     "description": "Onboarding step 1 description"
   },
   "popupOnboardingApplyRecommended": {
@@ -621,7 +621,7 @@
     "description": "Onboarding step 3 title"
   },
   "popupOnboardingStep3Desc1": {
-    "message": "Create/edit prompt templates and configure auto-open chat in the Options page.",
+    "message": "Use \"Manage Prompts\" to add or edit templates, and open Options later only when you need more detailed settings.",
     "description": "Onboarding step 3 description"
   },
   "popupOnboardingOpenOptions": {
@@ -652,11 +652,11 @@
     "description": "Options onboarding panel title"
   },
   "optionsOnboardingDescription": {
-    "message": "Reopen the 3-step guide anytime to quickly learn the essentials.",
+    "message": "It appears automatically for first-time use so you can quickly learn the core workflow.",
     "description": "Options onboarding panel description"
   },
   "optionsOnboardingOpenButton": {
-    "message": "View onboarding",
+    "message": "Open onboarding",
     "description": "Button to open popup onboarding from options"
   },
   "promptManagerTitle": {

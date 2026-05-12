@@ -1,7 +1,6 @@
 import { test, expect } from './fixtures';
 import { clearClipboard } from './helpers/clipboard';
 import {
-  getLastCopiedText,
   getStorageSnapshot,
   openExtensionPage,
   seedLocalStorage,
@@ -86,16 +85,9 @@ test('distribution toolkit requires valid campaign before copy actions', async (
   const page = await openExtensionPage(extensionContext, extensionId, 'src/options/options.html');
   try {
     await openOptionsTab(page, 'pro');
-    await expect(page.locator('#pro-waitlist-url-copy')).toBeDisabled();
-    await page.locator('#pro-intent-campaign').fill('launch_2026');
-    await expect(page.locator('#pro-waitlist-url-copy')).toBeEnabled();
-    await page.locator('#pro-waitlist-url-copy').click();
-    await expect(page.locator('#pro-waitlist-url-copy')).toContainText(/copied|已复制/i);
-    await expect.poll(() => getLastCopiedText(driverPage)).toContain('launch_2026');
-    const snapshot = await getStorageSnapshot(driverPage);
-    const distributionEvents = (snapshot.local.copilot_telemetry_events as Array<{ name?: string; props?: Record<string, unknown> }> | undefined)
-      ?.filter((event) => event.name === 'pro_distribution_asset_copied') || [];
-    expect(distributionEvents.length).toBeGreaterThan(0);
+    await expect(page.locator('#pro-intent-campaign')).toBeHidden();
+    await expect(page.locator('#pro-waitlist-distribution-toolkit')).toBeHidden();
+    await expect(page.locator('#pro-waitlist-copy')).toBeHidden();
   } finally {
     await page.close();
   }
@@ -115,20 +107,8 @@ test('distribution toolkit exports campaign-tagged assets and markdown pack', as
   const page = await openExtensionPage(extensionContext, extensionId, 'src/options/options.html');
   try {
     await openOptionsTab(page, 'pro');
-    await page.locator('#pro-intent-campaign').fill('ph_launch');
-    await page.locator('#pro-waitlist-recruit-copy').click();
-    await expect(page.locator('#pro-waitlist-recruit-copy')).toContainText(/copied|已复制/i);
-    await expect.poll(() => getLastCopiedText(driverPage)).toContain('ph_launch');
-    await page.locator('#pro-store-url-copy').click();
-    await expect(page.locator('#pro-store-url-copy')).toContainText(/copied|已复制/i);
-    await expect.poll(() => getLastCopiedText(driverPage)).toContain('utm_campaign=ph_launch');
-    await page.locator('#pro-distribution-pack-copy').click();
-    await expect(page.locator('#pro-distribution-pack-copy')).toContainText(/copied|已复制/i);
-    await expect.poll(() => getLastCopiedText(driverPage)).toContain('# Copylot');
-    const snapshot = await getStorageSnapshot(driverPage);
-    const distributionEvents = (snapshot.local.copilot_telemetry_events as Array<{ name?: string; props?: Record<string, unknown> }> | undefined)
-      ?.filter((event) => event.name === 'pro_distribution_asset_copied') || [];
-    expect(distributionEvents.length).toBeGreaterThanOrEqual(3);
+    await expect(page.locator('#pro-intent-campaign')).toBeHidden();
+    await expect(page.locator('#pro-waitlist-distribution-toolkit')).toBeHidden();
   } finally {
     await page.close();
   }
@@ -184,7 +164,7 @@ test('pro funnel actions export expected summary json csv and evidence-pack arti
   }
 });
 
-test('options pro waitlist open and copy actions record options source attribution', async ({
+test('options pro waitlist open action records options source attribution', async ({
   extensionContext,
   extensionId,
   driverPage
@@ -204,25 +184,16 @@ test('options pro waitlist open and copy actions record options source attributi
     const waitlistPage = await waitlistPromise;
     await waitlistPage.waitForLoadState('domcontentloaded');
     expect(waitlistPage.url()).toContain('copy.useai.online');
-
-    await page.locator('#pro-waitlist-copy').click();
-    await expect(page.locator('#pro-waitlist-copy')).toContainText(/copied|已复制/i);
     await expect
       .poll(async () => {
         const snapshot = await getStorageSnapshot(driverPage);
         const events = snapshot.local.copilot_telemetry_events as Array<{ name?: string; props?: Record<string, unknown> }> | undefined;
-        return events?.filter((event) =>
-          event.name === 'pro_waitlist_opened' || event.name === 'pro_waitlist_copied'
-        ) || [];
+        return events?.filter((event) => event.name === 'pro_waitlist_opened') || [];
       })
       .toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             name: 'pro_waitlist_opened',
-            props: expect.objectContaining({ source: 'options' })
-          }),
-          expect.objectContaining({
-            name: 'pro_waitlist_copied',
             props: expect.objectContaining({ source: 'options' })
           })
         ])

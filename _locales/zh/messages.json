@@ -233,15 +233,15 @@
     "description": "Options Pro Tab 标签"
   },
   "proTitle": {
-    "message": "Copylot Pro（候补）",
+    "message": "Copylot Pro",
     "description": "Options Pro Tab 标题"
   },
   "proSubtitle": {
-    "message": "不打扰、不强引导；先验证意向，再决定是否投入实现。",
+    "message": "如果你想要更完整的整理与导出体验，可以先看看我们正在收集的方向。",
     "description": "Options Pro Tab 副标题"
   },
   "proIntro": {
-    "message": "Pro 会聚焦“更强工作流 / 更省时间”，在不破坏免费核心体验的前提下提供可选增强。",
+    "message": "这里展示的是我们正在评估的增强能力。现有核心功能会继续保持可用。",
     "description": "Options Pro Tab 说明"
   },
   "proFreeScopeTitle": {
@@ -277,11 +277,11 @@
     "description": "Options Pro Tab：Free 能力要点 6"
   },
   "proPlannedScopeTitle": {
-    "message": "Pro（规划中，未上线）",
+    "message": "正在评估的增强方向",
     "description": "Options Pro Tab：Pro 规划区块标题"
   },
   "proPlannedScopeHint": {
-    "message": "以下仅为候补/规划方向（Not shipped yet），不代表已提供。",
+    "message": "以下是我们正在收集反馈的方向，最终形态会以实际体验为准。",
     "description": "Options Pro Tab：Pro 规划区块提示"
   },
   "proFeature1": {
@@ -309,7 +309,7 @@
     "description": "Options Pro Tab 复制按钮"
   },
   "proIntentCampaignLabel": {
-    "message": "渠道（campaign，可选）",
+    "message": "来源标记（可选）",
     "description": "Options Pro Tab：渠道输入项标签"
   },
   "proIntentCampaignPlaceholder": {
@@ -317,35 +317,35 @@
     "description": "Options Pro Tab：渠道输入项占位"
   },
   "proIntentCampaignHint": {
-    "message": "用于渠道归因；不要填写敏感信息。仅支持 1-32 位字母/数字/._-（建议用短标识）。",
+    "message": "如果你是从某篇文章或活动页进入的，可以填一个简短标记，方便后续区分来源。",
     "description": "Options Pro Tab：渠道输入项提示（隐私与约束）"
   },
   "proIntentCampaignInvalid": {
-    "message": "渠道（campaign）格式不合法，已清空（仅支持 1-32 位字母/数字/._-）",
+    "message": "来源标记格式不正确，已清空。请只使用 1-32 位字母、数字、.、_ 或 -。",
     "description": "Options Pro Tab：渠道输入项非法提示"
   },
   "proWaitlistDistributionToolkitTitle": {
-    "message": "渠道分发工具包（强制带 campaign）",
+    "message": "分享链接与文案",
     "description": "Options Pro Tab：对外分发工具包标题"
   },
   "proWaitlistDistributionToolkitHint": {
-    "message": "对外分发/投放使用：一键复制候补链接与招募文案；仅此处强制填写合法 campaign。",
+    "message": "如果你想把候补链接分享给他人，这里可以一键复制可直接使用的链接和文案。",
     "description": "Options Pro Tab：对外分发工具包说明"
   },
   "proWaitlistUrlCopyButton": {
-    "message": "复制候补链接（带 campaign）",
+    "message": "复制候补链接",
     "description": "Options Pro Tab：分发工具包 - 复制候补链接按钮"
   },
   "proWaitlistRecruitCopyButton": {
-    "message": "复制招募文案（含候补链接）",
+    "message": "复制分享文案",
     "description": "Options Pro Tab：分发工具包 - 复制招募文案按钮"
   },
   "proStoreUrlCopyButton": {
-    "message": "复制商店安装链接（带 UTM + campaign）",
+    "message": "复制安装链接",
     "description": "Options Pro Tab：分发工具包 - 复制商店安装链接按钮"
   },
   "proDistributionPackCopyButton": {
-    "message": "复制完整投放包（Markdown）",
+    "message": "复制分享资料",
     "description": "Options Pro Tab：分发工具包 - 复制完整投放包按钮"
   },
   "proDistributionPackTemplate": {
@@ -370,7 +370,7 @@
     }
   },
   "proWaitlistDistributionCampaignRequired": {
-    "message": "为了渠道归因，请先填写合法 campaign",
+    "message": "请先填写有效的来源标记。",
     "description": "Options Pro Tab：分发工具包 - campaign 为空/非法时提示"
   },
   "proWaitlistRecruitCopyTemplate": {
@@ -386,15 +386,15 @@
     }
   },
   "proPrivacyHint": {
-    "message": "候补登记不会预填任何网页内容/复制内容；仅包含扩展版本、扩展 ID 与语言信息。",
+    "message": "候补页不会预填网页内容；只会带上基础环境信息，方便你确认来源。",
     "description": "Options Pro Tab 隐私提示"
   },
   "proWaitlistSurveyTitle": {
-    "message": "付费意向问卷（可选）",
+    "message": "告诉我们你的使用场景",
     "description": "Options Pro Tab：付费意向问卷标题"
   },
   "proWaitlistSurveyHint": {
-    "message": "仅在你愿意时填写，用于验证 Pro 方向；不会自动采集/联网发送。",
+    "message": "如果你愿意，可以补充你的使用场景和期待能力，帮助我们优先打磨更有价值的体验。",
     "description": "Options Pro Tab：付费意向问卷提示"
   },
   "proWaitlistSurveyUseCaseLabel": {
@@ -402,15 +402,15 @@
     "description": "Options Pro Tab：问卷字段标签（使用场景）"
   },
   "proWaitlistSurveyUseCasePlaceholder": {
-    "message": "例如：总结长文/做会议纪要/整理竞品资料...",
+    "message": "例如：整理长文、沉淀研究资料、批量收集网页信息……",
     "description": "Options Pro Tab：问卷字段占位（使用场景）"
   },
   "proWaitlistSurveyCapabilitiesLabel": {
-    "message": "期望的 Pro 能力",
+    "message": "你最希望优先看到什么",
     "description": "Options Pro Tab：问卷字段标签（期望的 Pro 能力）"
   },
   "proWaitlistSurveyCapabilitiesOtherPlaceholder": {
-    "message": "其他补充（可选）",
+    "message": "其他想法（可选）",
     "description": "Options Pro Tab：问卷字段占位（其他补充）"
   },
   "proWaitlistSurveyCapabilitiesOtherPrefix": {
@@ -418,7 +418,7 @@
     "description": "复制问卷：其他能力前缀"
   },
   "proWaitlistSurveyPayWillingLabel": {
-    "message": "是否愿意付费",
+    "message": "如果未来提供增强版，你会考虑吗",
     "description": "Options Pro Tab：问卷字段标签（是否愿意付费）"
   },
   "proWaitlistSurveySelectPlaceholder": {
@@ -438,7 +438,7 @@
     "description": "Options Pro Tab：是否愿意付费选项（No）"
   },
   "proWaitlistSurveyPayMonthlyLabel": {
-    "message": "可接受价位（按月）",
+    "message": "你觉得按月大概在哪个区间更合适",
     "description": "Options Pro Tab：问卷字段标签（按月价位）"
   },
   "proWaitlistSurveyPriceMonthly1": {
@@ -462,7 +462,7 @@
     "description": "Options Pro Tab：按月价位选项 5"
   },
   "proWaitlistSurveyPayAnnualLabel": {
-    "message": "可接受价位（按年）",
+    "message": "按年订阅的话，大概在哪个区间更合适",
     "description": "Options Pro Tab：问卷字段标签（按年价位）"
   },
   "proWaitlistSurveyPriceAnnual1": {
@@ -486,23 +486,23 @@
     "description": "Options Pro Tab：按年价位选项 5"
   },
   "proWaitlistSurveyContactLabel": {
-    "message": "联系方式（可选）",
+    "message": "留下一个联系方式（可选）",
     "description": "Options Pro Tab：问卷字段标签（联系方式）"
   },
   "proWaitlistSurveyContactPlaceholder": {
-    "message": "邮箱/Telegram/其他（自愿填写）",
+    "message": "邮箱 / Telegram / 其他方式（完全自愿）",
     "description": "Options Pro Tab：问卷字段占位（联系方式）"
   },
   "proWaitlistSurveyCopyButton": {
-    "message": "复制问卷（含环境信息）",
+    "message": "复制反馈内容",
     "description": "Options Pro Tab：复制问卷按钮"
   },
   "proWaitlistSurveyCopyOpenButton": {
-    "message": "复制并打开候补",
+    "message": "复制后前往候补",
     "description": "Options Pro Tab：复制并打开候补按钮"
   },
   "proWaitlistSurveyPrivacyHint": {
-    "message": "不包含网页内容/复制内容/URL/标题；所有内容均来自“扩展环境信息 + 你手动填写”。",
+    "message": "只会带上扩展版本与语言等基础环境信息；不会包含网页内容或你复制过的内容。",
     "description": "Options Pro Tab：问卷隐私提示"
   },
   "proScopeLearnMore": {
@@ -597,7 +597,7 @@
     "description": "引导第 1 步说明"
   },
   "popupOnboardingStep1Desc2": {
-    "message": "你也可以一键应用推荐配置（不打开打扰性功能）。",
+    "message": "先用默认设置也可以，后续随时都能调整。",
     "description": "引导第 1 步说明"
   },
   "popupOnboardingApplyRecommended": {
@@ -621,7 +621,7 @@
     "description": "引导第 3 步标题"
   },
   "popupOnboardingStep3Desc1": {
-    "message": "通过“管理 Prompts”添加/编辑指令模板，并可在 Options 页配置自动跳转 Chat。",
+    "message": "通过“管理 Prompts”添加或编辑模板；需要更细设置时，再进入 Options 页。",
     "description": "引导第 3 步说明"
   },
   "popupOnboardingOpenOptions": {
@@ -652,11 +652,11 @@
     "description": "Options 新手引导入口标题"
   },
   "optionsOnboardingDescription": {
-    "message": "随时重新查看三步引导，快速了解 Copylot 的核心用法。",
+    "message": "第一次使用时会自动出现，帮助你快速熟悉核心操作。",
     "description": "Options 新手引导入口说明"
   },
   "optionsOnboardingOpenButton": {
-    "message": "重新查看新手引导",
+    "message": "查看新手引导",
     "description": "Options 一键打开引导按钮"
   },
   "promptManagerTitle": {

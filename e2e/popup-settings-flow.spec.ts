@@ -59,7 +59,7 @@ test('popup setting toggles persist interaction mode format table format extras 
   }
 });
 
-test('popup onboarding recommended settings and reopen flow persist completion state', async ({
+test('popup onboarding next-only flow persists completion state and hides reopen entry after completion', async ({
   extensionContext,
   extensionId,
   driverPage,
@@ -80,10 +80,12 @@ test('popup onboarding recommended settings and reopen flow persist completion s
     const popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
 
     await expect(popup.locator('#popup-onboarding-modal')).toBeVisible();
-    await popup.locator('#popup-onboarding-apply-recommended').click();
+    await expect(popup.locator('#popup-onboarding-apply-recommended')).toHaveCount(0);
+    await expect(popup.locator('#popup-onboarding-open-options')).toHaveCount(0);
+    await expect(popup.locator('#popup-onboarding-finish')).toHaveCount(0);
     await popup.locator('#popup-onboarding-next').click();
     await popup.locator('#popup-onboarding-next').click();
-    await popup.locator('#popup-onboarding-finish').click();
+    await popup.locator('#popup-onboarding-next').click();
 
     await expect
       .poll(async () => {
@@ -98,16 +100,14 @@ test('popup onboarding recommended settings and reopen flow persist completion s
         popupOnboardingCompletedAt: 'number'
       });
 
-    await popup.locator('#popup-onboarding-reopen').click();
-    await expect(popup.locator('#popup-onboarding-modal')).toBeVisible();
-    await popup.locator('#popup-onboarding-close').click();
     await expect(popup.locator('#popup-onboarding-modal')).toBeHidden();
+    await expect(popup.locator('#popup-onboarding-reopen')).toBeHidden();
   } finally {
     await page.close();
   }
 });
 
-test('popup onboarding open-options action opens options deeplink', async ({
+test('popup onboarding reopen entry only appears before completion', async ({
   extensionContext,
   extensionId,
   driverPage,
@@ -127,17 +127,10 @@ test('popup onboarding open-options action opens options deeplink', async ({
     await page.goto(`${fixtureOrigin}/article.html`);
     const popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
     await expect(popup.locator('#popup-onboarding-modal')).toBeVisible();
-    await popup.locator('#popup-onboarding-next').click();
-    await popup.locator('#popup-onboarding-next').click();
-
-    const optionsPromise = extensionContext.waitForEvent('page', {
-      predicate: (candidate) => candidate.url().includes('/src/options/options.html')
-    });
-    await popup.locator('#popup-onboarding-open-options').click();
-    const optionsPage = await optionsPromise;
-    await optionsPage.waitForLoadState('domcontentloaded');
-    await expect(optionsPage.locator('#add-prompt-btn')).toBeVisible();
-    await optionsPage.close();
+    await expect(popup.locator('#popup-onboarding-close')).toHaveCount(0);
+    await popup.locator('#popup-onboarding-skip').click();
+    await expect(popup.locator('#popup-onboarding-modal')).toBeHidden();
+    await expect(popup.locator('#popup-onboarding-reopen')).toBeHidden();
   } finally {
     await page.close();
   }

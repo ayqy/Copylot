@@ -499,6 +499,12 @@ function localizeUI() {
   document.title = getMessage('optionsTitle') || 'Prompt Manager - Copylot';
 }
 
+function syncOptionsOnboardingPanelVisibility(settings: Settings): void {
+  if (!elements?.onboardingPanel) return;
+  elements.onboardingPanel.hidden =
+    settings.popupOnboardingCompletedVersion >= settings.popupOnboardingVersion;
+}
+
 /**
  * 加载设置
  */
@@ -518,6 +524,7 @@ async function loadSettings() {
     updateProIntentByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
     updateProDistributionByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
     updateProAcquisitionEfficiencyByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
+    syncOptionsOnboardingPanelVisibility(currentSettings);
     filterAndRenderPrompts();
     updateSyncStatus();
     console.debug('Settings loaded:', currentSettings);

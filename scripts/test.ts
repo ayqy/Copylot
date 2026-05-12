@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import { spawn, execSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -70,6 +70,24 @@ function runCommand(command: string, args: string[], env?: NodeJS.ProcessEnv): P
     });
     child.on('error', reject);
   });
+}
+
+async function ensureProductionZipArtifact(): Promise<void> {
+  const rootDir = process.cwd();
+  const rootManifest = JSON.parse(await fs.readFile(path.resolve(rootDir, 'manifest.json'), 'utf-8')) as {
+    version?: string;
+  };
+  const version = rootManifest.version;
+  if (!version) {
+    throw new Error('manifest.json version is required before creating plugin zip artifact');
+  }
+
+  const distDir = path.resolve(rootDir, 'dist');
+  const zipFileName = `plugin-${version}.zip`;
+  const zipFilePath = path.resolve(rootDir, zipFileName);
+
+  await fs.rm(zipFilePath, { force: true });
+  execSync(`zip -r ../${zipFileName} .`, { cwd: distDir, stdio: 'inherit' });
 }
 
 async function sha256Files(paths: string[]): Promise<string> {
@@ -322,9 +340,7 @@ async function run(): Promise<void> {
   await runStep(startStep('lint', 'quality'), () => runCommand('npm', ['run', 'lint']));
   await runStep(startStep('type-check', 'quality'), () => runCommand('npm', ['run', 'type-check']));
   await runStep(startStep('check-i18n', 'quality'), () => runCommand('npm', ['run', 'check-i18n']));
-  await runStep(startStep('unit-tests', 'script'), () =>
-    runCommand('node', ['--no-warnings=ExperimentalWarning', '--loader=ts-node/esm', 'scripts/unit-tests.ts'])
-  );
+  const unitTestsStep = startStep('unit-tests', 'script');
   await runStep(startStep('build-test-manifest', 'build'), () =>
     runCommand('./node_modules/.bin/ts-node', ['scripts/build-test-manifest.ts'])
   );
@@ -390,6 +406,10 @@ async function run(): Promise<void> {
     runCommand('./node_modules/.bin/ts-node', ['scripts/verify-weekly-channel-ops-evidence-pack.ts', 'docs/evidence/v1-65'])
   );
   await runStep(startStep('build:prod', 'build'), () => runCommand('npm', ['run', 'build:prod']));
+  await runStep(startStep('build:prod-zip', 'build'), () => ensureProductionZipArtifact());
+  await runStep(unitTestsStep, () =>
+    runCommand('node', ['--no-warnings=ExperimentalWarning', '--loader=ts-node/esm', 'scripts/unit-tests.ts'])
+  );
 
   if (!skipBuild) {
     await runStep(startStep('build:e2e', 'build'), () => runCommand('npm', ['run', 'build:e2e']));
