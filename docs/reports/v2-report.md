@@ -22,6 +22,15 @@
 - `native-ui`：`3 passed`
 - `COPYLOT_TEST_ONLY_NATIVE_UI=1 npm run test`：PASS
 
+## 技术经验沉淀
+- 总入口：`docs/engineering/README.md`
+- 这组文档把本轮实现里最重要的约束、失败教训和排障套路固定下来，后续继续扩展测试体系时应优先遵守：
+  - `docs/engineering/constraints.md`
+  - `docs/engineering/unified-test-pipeline.md`
+  - `docs/engineering/real-ui-testing.md`
+  - `docs/engineering/html-to-markdown-regression.md`
+  - `docs/engineering/debug-playbook.md`
+
 ## 修改范围
 - `scripts/inline-build.ts`
 - `scripts/test.ts`

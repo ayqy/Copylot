@@ -24,6 +24,9 @@ export interface ChromeMockLogs {
   runtimeMessages: unknown[];
   openedOptionsPageCount: number;
   badgeText: string[];
+  actionPopupOpenCount: number;
+  updatedTabs: Array<{ tabId: number; properties: chrome.tabs.UpdateProperties }>;
+  updatedWindows: Array<{ windowId: number; updateInfo: chrome.windows.UpdateInfo }>;
   devtoolsSidebarPages: string[];
   devtoolsSelectionChangedListenerCount: number;
   devtoolsEvalExpressions: string[];
@@ -116,10 +119,13 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
     sentTabMessages: [],
     runtimeMessages: [],
     openedOptionsPageCount: 0,
-    badgeText: [],
-    devtoolsSidebarPages: [],
-    devtoolsSelectionChangedListenerCount: 0,
-    devtoolsEvalExpressions: []
+  badgeText: [],
+  actionPopupOpenCount: 0,
+  updatedTabs: [],
+  updatedWindows: [],
+  devtoolsSidebarPages: [],
+  devtoolsSelectionChangedListenerCount: 0,
+  devtoolsEvalExpressions: []
   };
 
   const storageListeners = new Set<StorageChangeListener>();
@@ -139,11 +145,23 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
   const extensionId = options.extensionId ?? 'ehfglnbhoefcdedpkcdnainiifpflbic';
   const manifestVersion = options.manifestVersion ?? '1.1.28';
   const activeTabId = options.activeTabId ?? 101;
+  const activeTab: chrome.tabs.Tab = {
+    id: activeTabId,
+    active: true,
+    windowId: 1,
+    url: 'https://example.com/'
+  } as chrome.tabs.Tab;
 
   const chromeMock = {
     action: {
       async setBadgeText(details: { text: string }) {
         logs.badgeText.push(details.text);
+      },
+      async getBadgeText() {
+        return logs.badgeText.at(-1) ?? '';
+      },
+      async openPopup() {
+        logs.actionPopupOpenCount += 1;
       }
     },
     contextMenus: {
@@ -281,18 +299,36 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
         }
       }
     },
+    windows: {
+      async update(windowId: number, updateInfo: chrome.windows.UpdateInfo) {
+        logs.updatedWindows.push({ windowId, updateInfo });
+        return { id: windowId, focused: updateInfo.focused } as chrome.windows.Window;
+      }
+    },
     tabs: {
       create(details: { url?: string }, callback?: (tab: chrome.tabs.Tab) => void) {
         logs.createdTabs.push(details);
-        callback?.({ id: activeTabId, url: details.url } as chrome.tabs.Tab);
+        const createdTab = { ...activeTab, url: details.url } as chrome.tabs.Tab;
+        callback?.(createdTab);
+        return Promise.resolve(createdTab);
       },
-      query(queryInfo: chrome.tabs.QueryInfo, callback: (tabs: chrome.tabs.Tab[]) => void) {
+      query(queryInfo: chrome.tabs.QueryInfo, callback?: (tabs: chrome.tabs.Tab[]) => void) {
         logs.queriedTabs.push(queryInfo);
-        callback([{ id: activeTabId, active: true } as chrome.tabs.Tab]);
+        const tabs = [{ ...activeTab } as chrome.tabs.Tab];
+        callback?.(tabs);
+        return Promise.resolve(tabs);
+      },
+      async get(tabId: number) {
+        return { ...activeTab, id: tabId } as chrome.tabs.Tab;
+      },
+      async update(tabId: number, properties: chrome.tabs.UpdateProperties) {
+        logs.updatedTabs.push({ tabId, properties });
+        return { ...activeTab, id: tabId, ...properties } as chrome.tabs.Tab;
       },
       sendMessage(tabId: number, message: unknown, callback?: (response: { success: boolean }) => void) {
         logs.sentTabMessages.push({ tabId, message });
         callback?.({ success: true });
+        return Promise.resolve({ success: true });
       }
     }
   } as unknown as typeof chrome;

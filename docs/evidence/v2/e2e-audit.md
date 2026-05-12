@@ -17,7 +17,7 @@
   - 提供 `article.html` / `table.html` / `editor.html` / `chat.html`
 - Project 划分：
   - `main`：稳定主回归，纳入 `npm run test`
-  - `native-ui`：原生 icon / 原生右键真实入口回归，不默认执行
+  - `native-ui`：原生 icon / 原生右键真实入口回归；macOS 默认纳入 `npm run test`，非 macOS 自动跳过，也可用环境变量显式跳过
 
 ## 本轮关键修复
 - 修复 E2E 构建与 prod 构建共享 `dist/` 带来的污染风险：
@@ -88,7 +88,18 @@
 - `npm run test`：PASS
 - `COPYLOT_TEST_ONLY_NATIVE_UI=1 npm run test`：`3 passed`
 
+## 长期经验入口
+- `docs/engineering/README.md`
+- 关键约束：
+  - `docs/engineering/constraints.md`
+  - `docs/engineering/real-ui-testing.md`
+  - `docs/engineering/html-to-markdown-regression.md`
+  - `docs/engineering/debug-playbook.md`
+
 ## 例外说明
-- `native-ui` 继续单独执行：
-  - 依赖 macOS 辅助功能权限、桌面会话、屏幕 OCR 与 headed 浏览器
-  - 为避免默认门禁受 GUI 环境波动影响，当前不纳入默认 `npm run test`
+- `native-ui` 依赖：
+  - macOS 辅助功能权限
+  - 桌面会话
+  - 屏幕 OCR
+  - headed 浏览器
+- 在非 macOS 环境不执行；在 macOS 环境可通过 `COPYLOT_TEST_NATIVE_UI_SKIP=1` 跳过

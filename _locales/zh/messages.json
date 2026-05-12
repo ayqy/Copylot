@@ -1696,6 +1696,22 @@
     "message": "未知消息类型",
     "description": "无法识别的消息类型的错误消息"
   },
+  "e2eBridgeUnavailable": {
+    "message": "E2E 桥接仅在 e2e 构建中可用",
+    "description": "非 e2e 构建访问 E2E 桥接时的错误消息"
+  },
+  "e2eContextMenuTabResolveFailed": {
+    "message": "无法解析右键菜单桥接对应的标签页",
+    "description": "E2E 右键菜单桥接无法定位标签页时的错误消息"
+  },
+  "e2eDriverUnknownError": {
+    "message": "未知的 E2E 驱动错误",
+    "description": "E2E driver 未返回明确错误时的通用错误消息"
+  },
+  "e2eDriverUnsupportedRequest": {
+    "message": "不支持的 E2E 驱动请求",
+    "description": "E2E driver 收到不支持请求类型时的错误消息"
+  },
   "copylotSettings": {
     "message": "Copylot 设置",
     "description": "Copylot设置页面的标题"

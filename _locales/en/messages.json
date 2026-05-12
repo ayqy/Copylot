@@ -1696,6 +1696,22 @@
     "message": "Unknown message type",
     "description": "Error message for unrecognized message types"
   },
+  "e2eBridgeUnavailable": {
+    "message": "E2E bridge is only available in e2e build",
+    "description": "Error message when E2E bridge is accessed outside the e2e build"
+  },
+  "e2eContextMenuTabResolveFailed": {
+    "message": "Failed to resolve tab for context menu bridge",
+    "description": "Error message when the E2E context menu bridge cannot resolve a target tab"
+  },
+  "e2eDriverUnknownError": {
+    "message": "Unknown E2E driver error",
+    "description": "Fallback error message when the E2E driver response does not include a specific error"
+  },
+  "e2eDriverUnsupportedRequest": {
+    "message": "Unsupported E2E driver request",
+    "description": "Error message when the E2E driver receives an unsupported request type"
+  },
   "copylotSettings": {
     "message": "Copylot Settings",
     "description": "Title for Copylot settings page"

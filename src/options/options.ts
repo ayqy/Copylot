@@ -118,10 +118,31 @@ function generateUUID(): string {
 }
 
 type MessageSubstitutions = Parameters<typeof chrome.i18n.getMessage>[1];
+const isE2EBuild = process.env.BUILD_TARGET === 'e2e';
 
 // Helper function to get localized messages
 function getMessage(key: string, substitutions?: MessageSubstitutions): string {
   return chrome.i18n.getMessage(key, substitutions);
+}
+
+async function reportE2ECopiedText(text: string): Promise<void> {
+  if (!isE2EBuild) {
+    return;
+  }
+
+  try {
+    await chrome.runtime.sendMessage({
+      type: 'e2e:report-copied-text',
+      text
+    });
+  } catch (error) {
+    console.warn('Failed to report options copied text for E2E:', error);
+  }
+}
+
+async function writeTextToClipboard(text: string): Promise<void> {
+  await navigator.clipboard.writeText(text);
+  await reportE2ECopiedText(text);
 }
 
 // DOM元素接口
@@ -1412,16 +1433,23 @@ function fallbackCopyText(text: string): boolean {
   }
 }
 
+async function fallbackCopyTextForE2E(text: string, copied: boolean): Promise<boolean> {
+  if (copied) {
+    await reportE2ECopiedText(text);
+  }
+  return copied;
+}
+
 async function copyTelemetryEventsToClipboard(): Promise<void> {
   const events = sortTelemetryEventsForDisplay(await readTelemetryEventsForDisplay());
   const text = formatTelemetryEventsAsJson(events);
 
   try {
-    await navigator.clipboard.writeText(text);
+    await writeTextToClipboard(text);
     showNotification(getMessage('telemetryEventsCopySuccess'), 'success');
   } catch (error) {
     console.warn('Failed to copy telemetry events:', error);
-    const ok = fallbackCopyText(text);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
     if (ok) {
       showNotification(getMessage('telemetryEventsCopySuccess'), 'success');
       return;
@@ -1558,11 +1586,11 @@ async function copyProFunnelSummaryToClipboard(): Promise<void> {
   }
 
   try {
-    await navigator.clipboard.writeText(text);
+    await writeTextToClipboard(text);
     showNotification(getMessage('proFunnelCopySuccess'), 'success');
   } catch (error) {
     console.warn('Failed to copy pro funnel summary:', error);
-    const ok = fallbackCopyText(text);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
     if (ok) {
       showNotification(getMessage('proFunnelCopySuccess'), 'success');
       return;
@@ -1612,11 +1640,11 @@ async function copyProFunnelEvidencePackToClipboard(): Promise<void> {
   }
 
   try {
-    await navigator.clipboard.writeText(text);
+    await writeTextToClipboard(text);
     showNotification(getMessage('proFunnelEvidencePackCopySuccess'), 'success');
   } catch (error) {
     console.warn('Failed to copy pro funnel evidence pack:', error);
-    const ok = fallbackCopyText(text);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
     if (ok) {
       showNotification(getMessage('proFunnelEvidencePackCopySuccess'), 'success');
       return;
@@ -1684,11 +1712,11 @@ async function copyProIntentWeeklyDigestToClipboard(): Promise<void> {
   }
 
   try {
-    await navigator.clipboard.writeText(text);
+    await writeTextToClipboard(text);
     showNotification(getMessage('proIntentWeeklyDigestCopySuccess'), 'success');
   } catch (error) {
     console.warn('Failed to copy pro intent weekly digest markdown:', error);
-    const ok = fallbackCopyText(text);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
     if (ok) {
       showNotification(getMessage('proIntentWeeklyDigestCopySuccess'), 'success');
       return;
@@ -1764,11 +1792,11 @@ async function copyProIntentByCampaignWeeklyReportToClipboard(): Promise<void> {
   }
 
   try {
-    await navigator.clipboard.writeText(text);
+    await writeTextToClipboard(text);
     showNotification(getMessage('proIntentByCampaignWeeklyReportCopySuccess'), 'success');
   } catch (error) {
     console.warn('Failed to copy pro intent by campaign weekly report markdown:', error);
-    const ok = fallbackCopyText(text);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
     if (ok) {
       showNotification(getMessage('proIntentByCampaignWeeklyReportCopySuccess'), 'success');
       return;
@@ -1848,11 +1876,11 @@ async function copyProAcquisitionEfficiencyByCampaignWeeklyReportToClipboard(): 
   }
 
   try {
-    await navigator.clipboard.writeText(text);
+    await writeTextToClipboard(text);
     showNotification(getMessage('proAcqEffByCampaignWeeklyReportCopySuccess'), 'success');
   } catch (error) {
     console.warn('Failed to copy pro acquisition efficiency by campaign weekly report markdown:', error);
-    const ok = fallbackCopyText(text);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
     if (ok) {
       showNotification(getMessage('proAcqEffByCampaignWeeklyReportCopySuccess'), 'success');
       return;
@@ -1929,11 +1957,11 @@ async function copyProAcquisitionEfficiencyByCampaignEvidencePackToClipboard(): 
   }
 
   try {
-    await navigator.clipboard.writeText(text);
+    await writeTextToClipboard(text);
     showNotification(getMessage('proAcqEffByCampaignEvidencePackCopySuccess'), 'success');
   } catch (error) {
     console.warn('Failed to copy pro acquisition efficiency by campaign evidence pack:', error);
-    const ok = fallbackCopyText(text);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
     if (ok) {
       showNotification(getMessage('proAcqEffByCampaignEvidencePackCopySuccess'), 'success');
       return;
@@ -2494,11 +2522,11 @@ async function copyWomSummaryToClipboard(): Promise<void> {
   }
 
   try {
-    await navigator.clipboard.writeText(text);
+    await writeTextToClipboard(text);
     showNotification(getMessage('womSummaryCopySuccess'), 'success');
   } catch (error) {
     console.warn('Failed to copy wom summary:', error);
-    const ok = fallbackCopyText(text);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
     if (ok) {
       showNotification(getMessage('womSummaryCopySuccess'), 'success');
       return;
@@ -2548,11 +2576,11 @@ async function copyWomEvidencePackToClipboard(): Promise<void> {
   }
 
   try {
-    await navigator.clipboard.writeText(text);
+    await writeTextToClipboard(text);
     showNotification(getMessage('womSummaryEvidencePackCopySuccess'), 'success');
   } catch (error) {
     console.warn('Failed to copy wom evidence pack:', error);
-    const ok = fallbackCopyText(text);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
     if (ok) {
       showNotification(getMessage('womSummaryEvidencePackCopySuccess'), 'success');
       return;
@@ -2598,11 +2626,11 @@ async function copyGrowthFunnelSummaryToClipboard(): Promise<void> {
   }
 
   try {
-    await navigator.clipboard.writeText(text);
+    await writeTextToClipboard(text);
     showNotification(getMessage('growthFunnelCopySuccess'), 'success');
   } catch (error) {
     console.warn('Failed to copy growth funnel summary:', error);
-    const ok = fallbackCopyText(text);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
     if (ok) {
       showNotification(getMessage('growthFunnelCopySuccess'), 'success');
       return;
@@ -2637,11 +2665,11 @@ async function copyGrowthStatsToClipboard(): Promise<void> {
   const text = formatGrowthStatsAsJson(stats);
 
   try {
-    await navigator.clipboard.writeText(text);
+    await writeTextToClipboard(text);
     showNotification(getMessage('growthStatsCopySuccess'), 'success');
   } catch (error) {
     console.warn('Failed to copy growth stats:', error);
-    const ok = fallbackCopyText(text);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
     if (ok) {
       showNotification(getMessage('growthStatsCopySuccess'), 'success');
       return;
@@ -3216,7 +3244,7 @@ function setupEventListeners() {
     props.has_contact = Boolean(elements.proWaitlistSurveyContact?.value?.trim());
 
     try {
-      await navigator.clipboard.writeText(body);
+      await writeTextToClipboard(body);
       void recordTelemetryEvent('pro_waitlist_survey_copied', props);
       clearOnceSource();
       button.textContent = getMessage('copied') || originalText;
@@ -3230,7 +3258,7 @@ function setupEventListeners() {
       return true;
     } catch (error) {
       console.warn('Failed to copy waitlist survey via navigator.clipboard:', error);
-      const ok = fallbackCopyText(body);
+      const ok = await fallbackCopyTextForE2E(body, fallbackCopyText(body));
       if (ok) {
         void recordTelemetryEvent('pro_waitlist_survey_copied', props);
         clearOnceSource();
@@ -3333,7 +3361,7 @@ function setupEventListeners() {
 
     const url = buildWaitlistDistributionUrl(state.campaign);
     try {
-      await navigator.clipboard.writeText(url);
+      await writeTextToClipboard(url);
       void recordTelemetryEvent('pro_distribution_asset_copied', {
         source: 'options',
         campaign: state.campaign,
@@ -3345,7 +3373,7 @@ function setupEventListeners() {
       }, 1200);
     } catch (error) {
       console.warn('Failed to copy waitlist url via navigator.clipboard:', error);
-      const ok = fallbackCopyText(url);
+      const ok = await fallbackCopyTextForE2E(url, fallbackCopyText(url));
       if (ok) {
         void recordTelemetryEvent('pro_distribution_asset_copied', {
           source: 'options',
@@ -3374,7 +3402,7 @@ function setupEventListeners() {
 
     const text = buildWaitlistRecruitCopy(state.campaign);
     try {
-      await navigator.clipboard.writeText(text);
+      await writeTextToClipboard(text);
       void recordTelemetryEvent('pro_distribution_asset_copied', {
         source: 'options',
         campaign: state.campaign,
@@ -3386,7 +3414,7 @@ function setupEventListeners() {
       }, 1200);
     } catch (error) {
       console.warn('Failed to copy recruit copy via navigator.clipboard:', error);
-      const ok = fallbackCopyText(text);
+      const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
       if (ok) {
         void recordTelemetryEvent('pro_distribution_asset_copied', {
           source: 'options',
@@ -3416,7 +3444,7 @@ function setupEventListeners() {
 
     const url = buildProStoreUrlForDistributionToolkit(state.campaign);
     try {
-      await navigator.clipboard.writeText(url);
+      await writeTextToClipboard(url);
       void recordTelemetryEvent('pro_distribution_asset_copied', {
         source: 'options',
         campaign: state.campaign,
@@ -3428,7 +3456,7 @@ function setupEventListeners() {
       }, 1200);
     } catch (error) {
       console.warn('Failed to copy store url via navigator.clipboard:', error);
-      const ok = fallbackCopyText(url);
+      const ok = await fallbackCopyTextForE2E(url, fallbackCopyText(url));
       if (ok) {
         void recordTelemetryEvent('pro_distribution_asset_copied', {
           source: 'options',
@@ -3457,7 +3485,7 @@ function setupEventListeners() {
 
     const text = buildProDistributionPackForDistributionToolkit(state.campaign);
     try {
-      await navigator.clipboard.writeText(text);
+      await writeTextToClipboard(text);
       void recordTelemetryEvent('pro_distribution_asset_copied', {
         source: 'options',
         campaign: state.campaign,
@@ -3469,7 +3497,7 @@ function setupEventListeners() {
       }, 1200);
     } catch (error) {
       console.warn('Failed to copy distribution pack via navigator.clipboard:', error);
-      const ok = fallbackCopyText(text);
+      const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
       if (ok) {
         void recordTelemetryEvent('pro_distribution_asset_copied', {
           source: 'options',
@@ -3504,7 +3532,7 @@ function setupEventListeners() {
         getMessage,
         campaign
       });
-      await navigator.clipboard.writeText(body);
+      await writeTextToClipboard(body);
       void recordTelemetryEvent('pro_waitlist_copied', props);
       elements.proWaitlistCopyButton.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
@@ -3543,7 +3571,7 @@ function setupEventListeners() {
     const originalText = elements.womShareCopyButton.textContent || '';
 
     try {
-      await navigator.clipboard.writeText(shareText);
+      await writeTextToClipboard(shareText);
       void recordTelemetryEvent('wom_share_copied', { source: 'options' });
       elements.womShareCopyButton.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
@@ -3551,7 +3579,7 @@ function setupEventListeners() {
       }, 1200);
     } catch (error) {
       console.error('Failed to copy share text:', error);
-      const ok = fallbackCopyText(shareText);
+      const ok = await fallbackCopyTextForE2E(shareText, fallbackCopyText(shareText));
       if (ok) {
         void recordTelemetryEvent('wom_share_copied', { source: 'options' });
         elements.womShareCopyButton.textContent = getMessage('copied') || originalText;
