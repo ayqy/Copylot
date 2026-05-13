@@ -38,14 +38,14 @@
     {
       "file": "docs/ChromeWebStore-Description-ZH.md",
       "line": 33,
-      "term": "付费",
+      "term": "订阅",
       "rule": "desc_allowed_negation_disclaimer",
       "result": "allowed"
     },
     {
       "file": "docs/ChromeWebStore-Description-ZH.md",
       "line": 33,
-      "term": "订阅",
+      "term": "付费",
       "rule": "desc_allowed_negation_disclaimer",
       "result": "allowed"
     }

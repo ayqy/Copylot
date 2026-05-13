@@ -317,19 +317,19 @@
     "description": "Options Pro Tab：渠道输入项占位"
   },
   "proIntentCampaignHint": {
-    "message": "如果你是从某篇文章或活动页进入的，可以填一个简短标记，方便后续区分来源。",
+    "message": "如果是由朋友推荐或通过某篇文章来到这里，欢迎告诉我们（建议使用字母或数字组合）。",
     "description": "Options Pro Tab：渠道输入项提示（隐私与约束）"
   },
   "proIntentCampaignInvalid": {
-    "message": "来源标记格式不正确，已清空。请只使用 1-32 位字母、数字、.、_ 或 -。",
+    "message": "为了正常记录，标记只支持数字、字母和部分符号（._-），请调整后重试。",
     "description": "Options Pro Tab：渠道输入项非法提示"
   },
   "proWaitlistDistributionToolkitTitle": {
-    "message": "分享链接与文案",
+    "message": "推荐给需要的朋友",
     "description": "Options Pro Tab：对外分发工具包标题"
   },
   "proWaitlistDistributionToolkitHint": {
-    "message": "如果你想把候补链接分享给他人，这里可以一键复制可直接使用的链接和文案。",
+    "message": "觉得不错？一键复制下方链接或文案，把 Copylot 推荐给你的朋友吧！",
     "description": "Options Pro Tab：对外分发工具包说明"
   },
   "proWaitlistUrlCopyButton": {
@@ -370,7 +370,7 @@
     }
   },
   "proWaitlistDistributionCampaignRequired": {
-    "message": "请先填写有效的来源标记。",
+    "message": "为了让我们知道是你的推荐，分享前请先在上方填写一下来源标记哦。",
     "description": "Options Pro Tab：分发工具包 - campaign 为空/非法时提示"
   },
   "proWaitlistRecruitCopyTemplate": {
@@ -386,15 +386,15 @@
     }
   },
   "proPrivacyHint": {
-    "message": "候补页不会预填网页内容；只会带上基础环境信息，方便你确认来源。",
+    "message": "候补登记是完全安全的：我们不会预填任何网页内容，只会带上基础环境信息帮助我们了解你的环境。",
     "description": "Options Pro Tab 隐私提示"
   },
   "proWaitlistSurveyTitle": {
-    "message": "告诉我们你的使用场景",
+    "message": "期待你的建议（可选）",
     "description": "Options Pro Tab：付费意向问卷标题"
   },
   "proWaitlistSurveyHint": {
-    "message": "如果你愿意，可以补充你的使用场景和期待能力，帮助我们优先打磨更有价值的体验。",
+    "message": "如果你愿意，可以简单聊聊你的使用场景，这会帮助我们把后续功能做得更顺手。",
     "description": "Options Pro Tab：付费意向问卷提示"
   },
   "proWaitlistSurveyUseCaseLabel": {
@@ -753,7 +753,6 @@
     "message": "启用追加模式",
     "description": "用于启用追加模式的开关标签"
   },
-
   "error": {
     "message": "错误！",
     "description": "错误确认文本"

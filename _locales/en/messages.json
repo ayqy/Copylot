@@ -317,19 +317,19 @@
     "description": "Options Pro tab: campaign input placeholder"
   },
   "proIntentCampaignHint": {
-    "message": "If you came from a specific post or campaign, you can add a short label here so it is easier to tell sources apart later.",
+    "message": "If a friend recommended you or you found us through an article, feel free to let us know (letters, numbers, or dashes).",
     "description": "Options Pro tab: campaign input hint (privacy + constraints)"
   },
   "proIntentCampaignInvalid": {
-    "message": "That source tag was not valid, so it was cleared. Use 1-32 letters, numbers, dots, underscores, or hyphens only.",
+    "message": "To keep things tidy, the tag only supports letters, numbers, and basic symbols (._-). Please tweak it and try again.",
     "description": "Options Pro tab: invalid campaign notice"
   },
   "proWaitlistDistributionToolkitTitle": {
-    "message": "Share links and copy",
+    "message": "Recommend to friends",
     "description": "Options Pro tab: external distribution toolkit title"
   },
   "proWaitlistDistributionToolkitHint": {
-    "message": "If you want to share the waitlist with someone else, you can copy ready-to-use links and text here.",
+    "message": "Love Copylot? Copy the links or text below to share it with friends who might find it useful!",
     "description": "Options Pro tab: external distribution toolkit hint"
   },
   "proWaitlistUrlCopyButton": {
@@ -370,7 +370,7 @@
     }
   },
   "proWaitlistDistributionCampaignRequired": {
-    "message": "Please enter a valid source tag first.",
+    "message": "To help us know it's from you, please fill in the source tag above before sharing.",
     "description": "Options Pro tab: distribution toolkit - campaign required hint"
   },
   "proWaitlistRecruitCopyTemplate": {
@@ -386,15 +386,15 @@
     }
   },
   "proPrivacyHint": {
-    "message": "The waitlist page will not prefill webpage content. It only carries basic environment details so you can confirm the source.",
+    "message": "Joining the waitlist is completely safe: we won't pre-fill any webpage content, only basic environment info to help us understand your setup.",
     "description": "Options Pro tab privacy hint"
   },
   "proWaitlistSurveyTitle": {
-    "message": "Tell us about your use case",
+    "message": "We'd love your feedback (Optional)",
     "description": "Options Pro tab: waitlist survey title"
   },
   "proWaitlistSurveyHint": {
-    "message": "If you want, you can share your use case and the capabilities you care about most so we can prioritize the right improvements.",
+    "message": "If you'd like, briefly share how you use Copylot. It really helps us build features that fit your workflow.",
     "description": "Options Pro tab: waitlist survey hint"
   },
   "proWaitlistSurveyUseCaseLabel": {
@@ -753,7 +753,6 @@
     "message": "Enable Append Mode",
     "description": "Label for the switch to enable the append mode"
   },
-
   "error": {
     "message": "Error!",
     "description": "Error confirmation text"
