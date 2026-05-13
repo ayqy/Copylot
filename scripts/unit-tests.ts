@@ -2603,7 +2603,6 @@ async function run() {
     'options.html should include pro-waitlist-recruit-copy'
   );
   assert.ok(optionsHtml.includes('id="pro-scope-learn-more"'), 'options.html should include pro-scope-learn-more');
-  assert.ok(optionsHtml.includes('id="anonymous-usage-data-switch"'), 'options.html should include anonymous usage data switch');
   
   
   

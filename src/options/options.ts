@@ -2877,35 +2877,6 @@ function setupEventListeners() {
     void resetGrowthStatsAndRefresh();
   });
 
-  // 匿名使用数据开关
-  elements.anonymousUsageDataSwitch.addEventListener('change', async () => {
-    const enabled = elements.anonymousUsageDataSwitch.checked;
-    try {
-      await saveSettings({ isAnonymousUsageDataEnabled: enabled });
-      currentSettings = { ...currentSettings, isAnonymousUsageDataEnabled: enabled };
-
-      // 关闭后必须立刻停止记录并清空本地日志（不发送、不缓存、不补发）
-      if (!enabled) {
-        await clearTelemetryEvents();
-      }
-
-      // Settings 变化后，面板必须立刻刷新，避免 UI 残留旧数据造成误解
-      await refreshTelemetryEventsPanel();
-      await refreshProFunnelPanel();
-      await refreshWomSummaryPanel();
-      updateProIntentEvents7dCsvExportButtonState(enabled);
-      updateProWaitlistSurveyIntentDistribution7dExportButtonState(enabled);
-      updateProIntentByCampaign7dCsvExportButtonState(enabled);
-      updateProDistributionByCampaign7dCsvExportButtonState(enabled);
-      updateProAcquisitionEfficiencyByCampaign7dCsvExportButtonState(enabled);
-
-      showNotification(getMessage('saveSuccessMessage'), 'success');
-    } catch (error) {
-      console.error('Error saving anonymous usage data setting:', error);
-      showNotification(getMessage('savingFailed'), 'error');
-    }
-  });
-  
   // 导入导出模态框事件
   elements.importExportModal.addEventListener('click', (e) => {
     if (e.target === elements.importExportModal) {
