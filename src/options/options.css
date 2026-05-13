@@ -1101,7 +1101,7 @@ body {
 
 .pro-survey-checkbox {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
   font-size: 13px;
   color: var(--text-secondary);
@@ -1109,7 +1109,7 @@ body {
 }
 
 .pro-survey-checkbox input {
-  margin-top: 3px;
+  margin: 0;
 }
 
 .pro-survey-actions {

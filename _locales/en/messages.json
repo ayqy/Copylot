@@ -1044,11 +1044,11 @@
     "description": "Options privacy tab title"
   },
   "privacyTitle": {
-    "message": "Privacy & Observability",
+    "message": "Data & Privacy",
     "description": "Options privacy tab main title"
   },
   "privacyDescription": {
-    "message": "Off by default; only records anonymous events locally. No network, no disruptions.",
+    "message": "We believe your data is yours. Here is a list of all locally saved data. You can view, copy, or clear it at any time.",
     "description": "Options privacy tab description"
   },
   "anonymousUsageDataSectionTitle": {
@@ -1064,7 +1064,7 @@
     "description": "Anonymous usage data hint"
   },
   "telemetryEventsPanelTitle": {
-    "message": "Local anonymous event log",
+    "message": "Anonymous Event Logs",
     "description": "Telemetry events panel title in Options privacy tab"
   },
   "telemetryEventsCountLabel": {
@@ -1072,7 +1072,7 @@
     "description": "Telemetry events count label"
   },
   "telemetryEventsPanelHint": {
-    "message": "Local-only view/export (name/ts/allowlisted props). When disabled, no events are recorded and turning off clears the log.",
+    "message": "Basic interaction events recorded locally. We promise: logs never contain any webpage content, selected text, URLs, or titles.",
     "description": "Telemetry events panel hint"
   },
   "telemetryEventsRefresh": {
@@ -1140,7 +1140,7 @@
     "description": "Pro intent run evidence pack download failure notification"
   },
   "proIntentRunEvidencePackDownloadTelemetryOffNotice": {
-    "message": "Anonymous usage data is OFF: exported a disabled evidence pack (no details)",
+    "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "Notification when downloading Pro intent run evidence pack while anonymous usage data is disabled"
   },
   "proWaitlistSurveyIntentDistribution7dExport": {
@@ -1156,7 +1156,7 @@
     "description": "Pro waitlist survey intent distribution JSON export failure notification"
   },
   "proWaitlistSurveyIntentDistribution7dExportTelemetryOff": {
-    "message": "Anonymous usage data is OFF: no distribution exported",
+    "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "Notification when exporting survey intent distribution while anonymous usage data is disabled"
   },
   "proIntentEvents7dCsvExport": {
@@ -1172,7 +1172,7 @@
     "description": "Pro intent events CSV export failure notification"
   },
   "proIntentEvents7dCsvExportTelemetryOff": {
-    "message": "Anonymous usage data is OFF: no event details exported",
+    "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "Notification when exporting Pro intent CSV while anonymous usage data is disabled"
   },
   "proIntentByCampaign7dCsvExport": {
@@ -1188,7 +1188,7 @@
     "description": "Pro intent by campaign aggregated CSV export failure notice"
   },
   "proIntentByCampaign7dCsvExportTelemetryOff": {
-    "message": "Anonymous usage data is OFF: no campaign aggregation exported",
+    "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "Notification when exporting Pro intent by campaign CSV while anonymous usage data is disabled"
   },
   "proIntentByCampaign7dCsvEmptyBucket": {
@@ -1208,7 +1208,7 @@
     "description": "Distribution copies by campaign aggregated CSV export failure notice"
   },
   "proDistributionByCampaign7dCsvExportTelemetryOff": {
-    "message": "Anonymous usage data is OFF: no distribution aggregation exported",
+    "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "Notification when exporting distribution by campaign CSV while anonymous usage data is disabled"
   },
   "proDistributionByCampaign7dCsvEmptyBucket": {
@@ -1228,7 +1228,7 @@
     "description": "Merged acquisition efficiency by campaign CSV export failure notice"
   },
   "proAcqEffByCampaign7dCsvExportTelemetryOff": {
-    "message": "Anonymous usage data is OFF: no acquisition efficiency export",
+    "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "Notification when exporting acquisition efficiency by campaign CSV while anonymous usage data is disabled"
   },
   "proAcqEffByCampaign7dCsvEmptyBucket": {
@@ -1244,7 +1244,7 @@
     "description": "Weekly digest markdown title ($1=days)"
   },
   "proIntentWeeklyDigestMdTelemetryOffNotice": {
-    "message": "Anonymous usage data is OFF (no events). This digest only includes environment info and does not read or infer any history.",
+    "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "Weekly digest notice when anonymous usage data is disabled"
   },
   "proIntentWeeklyDigestMdSectionWindow": {
@@ -1324,7 +1324,7 @@
     "description": "Campaign weekly report markdown title ($1=days)"
   },
   "proIntentByCampWeeklyMdTelemetryOffNotice": {
-    "message": "Anonymous usage data is OFF (no events). This report only includes environment info and does not read or infer any history.",
+    "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "Campaign weekly report notice when anonymous usage data is disabled"
   },
   "proIntentByCampaignWeeklyReportMdSectionEnv": {
@@ -1376,7 +1376,7 @@
     "description": "Acquisition efficiency weekly report markdown title ($1=days)"
   },
   "proAcqEffByCampaignWeeklyReportMdTelemetryOffNotice": {
-    "message": "Anonymous usage data is OFF (no events). This report only includes environment info and does not read or infer any history.",
+    "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "Acquisition efficiency weekly report notice when anonymous usage data is disabled"
   },
   "proAcqEffByCampaignWeeklyReportMdSectionEnv": {
@@ -1436,7 +1436,7 @@
     "description": "Acquisition efficiency evidence pack download failure notification"
   },
   "proAcqEffByCampaignEvidencePackTelemetryOffNotice": {
-    "message": "Anonymous usage data is OFF. This evidence pack only includes environment info and empty placeholders for audit, and does not read or infer any events.",
+    "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "Acquisition efficiency evidence pack notice when anonymous usage data is disabled (for JSON audit)"
   },
   "proWeeklyChannelOpsEvidencePackDownload": {
@@ -1452,7 +1452,7 @@
     "description": "Weekly channel ops evidence pack download failure notification"
   },
   "proWeeklyChannelOpsEvidencePackTelemetryOffNotice": {
-    "message": "Anonymous usage data is OFF. This weekly channel ops evidence pack only includes environment info and empty placeholders for audit, and does not read or infer any events.",
+    "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "Weekly channel ops evidence pack notice when anonymous usage data is disabled (for JSON audit)"
   },
   "proWeeklyChannelOpsEvidencePackVerifyMarkdown": {
@@ -1464,11 +1464,11 @@
     "description": "Pro funnel summary refresh failure notification"
   },
   "womSummaryPanelTitle": {
-    "message": "WOM summary",
+    "message": "Recommendation & Rating Stats",
     "description": "WOM summary panel title in Options privacy tab"
   },
   "womSummaryPanelHint": {
-    "message": "Local-only summary of `wom_*` / `rating_prompt_*` events in `copilot_telemetry_events` (counts/last timestamps/conversion rates by source). No URLs, titles, page content, or copied text.",
+    "message": "Locally tracks events related to rating or sharing. It never contains webpage content or any private information.",
     "description": "WOM summary panel hint"
   },
   "womSummaryDisabledNotice": {
@@ -1508,11 +1508,11 @@
     "description": "WOM summary refresh failure notification"
   },
   "growthFunnelPanelTitle": {
-    "message": "Local funnel summary",
+    "message": "Basic Usage Stats",
     "description": "Growth funnel summary panel title in Options privacy tab"
   },
   "growthFunnelPanelHint": {
-    "message": "Local-only derived view/export (timestamps/counts/booleans/durations only). No page content, URLs, titles, or copied text.",
+    "message": "Locally tracks the usage counts of core features. It never contains webpage content, URLs, or any text you've copied.",
     "description": "Growth funnel summary panel hint"
   },
   "growthFunnelRefresh": {
@@ -1536,11 +1536,11 @@
     "description": "Growth funnel summary refresh failure notification"
   },
   "growthStatsPanelTitle": {
-    "message": "Local growth stats",
+    "message": "Advanced Usage Stats",
     "description": "Growth stats panel title in Options privacy tab"
   },
   "growthStatsPanelHint": {
-    "message": "Local-only view/export (timestamps/counts/enums only). No page content, URLs, titles, or copied text.",
+    "message": "Locally tracks some interaction data (like option changes). It never contains webpage content, URLs, or any text you've copied.",
     "description": "Growth stats panel hint"
   },
   "growthStatsRefresh": {
