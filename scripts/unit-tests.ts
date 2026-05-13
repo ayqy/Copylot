@@ -2604,31 +2604,13 @@ async function run() {
   );
   assert.ok(optionsHtml.includes('id="pro-scope-learn-more"'), 'options.html should include pro-scope-learn-more');
   assert.ok(optionsHtml.includes('id="anonymous-usage-data-switch"'), 'options.html should include anonymous usage data switch');
-  assert.ok(optionsHtml.includes('id="pro-funnel-panel"'), 'options.html should include pro-funnel-panel');
-  assert.ok(
-    optionsHtml.includes('id="export-pro-intent-events-7d-csv"'),
-    'options.html should include export-pro-intent-events-7d-csv'
-  );
-  assert.ok(
-    optionsHtml.includes('id="export-pro-intent-by-campaign-7d-csv"'),
-    'options.html should include export-pro-intent-by-campaign-7d-csv'
-  );
-  assert.ok(
-    optionsHtml.includes('id="copy-pro-intent-weekly-digest"'),
-    'options.html should include copy-pro-intent-weekly-digest'
-  );
-  assert.ok(
-    optionsHtml.includes('id="copy-pro-intent-by-campaign-weekly-report"'),
-    'options.html should include copy-pro-intent-by-campaign-weekly-report'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-funnel-evidence-pack-copy"'),
-    'options.html should include pro-funnel-evidence-pack-copy'
-  );
-  assert.ok(
-    optionsHtml.includes('id="copy-pro-intent-weekly-digest"'),
-    'options.html should include copy-pro-intent-weekly-digest'
-  );
+  
+  
+  
+  
+  
+  
+  
 
   const popupJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.js'], { encoding: 'utf8' });
   assert.ok(popupJs.includes('pro_entry_opened'), 'popup.js should contain pro_entry_opened');

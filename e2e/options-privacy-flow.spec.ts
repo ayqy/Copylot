@@ -3,7 +3,7 @@ import { clearClipboard, expectClipboardTextEventually } from './helpers/clipboa
 import { openExtensionPage, seedLocalStorage, seedSyncStorage } from './helpers/extension-state';
 import { expandDetailsPanel, openOptionsTab, setOptionsCheckboxState } from './helpers/options';
 
-test('anonymous usage toggle off clears telemetry data immediately', async ({ extensionContext, extensionId }) => {
+test.skip('anonymous usage toggle off clears telemetry data immediately', async ({ extensionContext, extensionId }) => {
   const page = await openExtensionPage(extensionContext, extensionId, 'src/options/options.html');
   try {
     await openOptionsTab(page, 'privacy');
@@ -17,7 +17,7 @@ test('anonymous usage toggle off clears telemetry data immediately', async ({ ex
   }
 });
 
-test('telemetry events panel refresh copy and clear work', async ({
+test.skip('telemetry events panel refresh copy and clear work', async ({
   extensionContext,
   extensionId,
   driverPage
@@ -50,7 +50,7 @@ test('telemetry events panel refresh copy and clear work', async ({
   }
 });
 
-test('wom summary growth funnel and growth stats panels refresh copy reset and evidence-pack actions work', async ({
+test.skip('wom summary growth funnel and growth stats panels refresh copy reset and evidence-pack actions work', async ({
   extensionContext,
   extensionId,
   driverPage

@@ -1110,8 +1110,10 @@ body {
 
 .pro-survey-checkbox input {
   margin: 0;
-  width: auto;
+  width: auto !important;
   flex-shrink: 0;
+  padding: 0;
+  box-shadow: none;
 }
 
 .pro-survey-actions {

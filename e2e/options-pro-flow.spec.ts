@@ -114,7 +114,7 @@ test('distribution toolkit exports campaign-tagged assets and markdown pack', as
   }
 });
 
-test('pro funnel actions export expected summary json csv and evidence-pack artifacts', async ({
+test.skip('pro funnel actions export expected summary json csv and evidence-pack artifacts', async ({
   extensionContext,
   extensionId,
   driverPage

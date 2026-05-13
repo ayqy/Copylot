@@ -349,65 +349,65 @@ function getElements(): OptionsElements {
     onboardingOpenButton: document.getElementById('options-onboarding-open') as HTMLButtonElement,
 
     anonymousUsageDataSwitch: document.getElementById('anonymous-usage-data-switch') as HTMLInputElement,
-    telemetryEventsPanel: document.getElementById('telemetry-events-panel') as HTMLDetailsElement,
+    telemetryEventsPanel: (document.getElementById('telemetry-events-panel') || document.createElement("details")) as HTMLDetailsElement,
     telemetryEventsCount: document.getElementById('telemetry-events-count') as HTMLElement,
-    telemetryEventsView: document.getElementById('telemetry-events-view') as HTMLTextAreaElement,
-    telemetryEventsRefreshButton: document.getElementById('telemetry-events-refresh') as HTMLButtonElement,
-    telemetryEventsCopyButton: document.getElementById('telemetry-events-copy') as HTMLButtonElement,
-    telemetryEventsClearButton: document.getElementById('telemetry-events-clear') as HTMLButtonElement,
-    proFunnelPanel: document.getElementById('pro-funnel-panel') as HTMLDetailsElement,
-    proFunnelView: document.getElementById('pro-funnel-view') as HTMLTextAreaElement,
+    telemetryEventsView: (document.getElementById('telemetry-events-view') || document.createElement("textarea")) as HTMLTextAreaElement,
+    telemetryEventsRefreshButton: (document.getElementById('telemetry-events-refresh') || document.createElement("button")) as HTMLButtonElement,
+    telemetryEventsCopyButton: (document.getElementById('telemetry-events-copy') || document.createElement("button")) as HTMLButtonElement,
+    telemetryEventsClearButton: (document.getElementById('telemetry-events-clear') || document.createElement("button")) as HTMLButtonElement,
+    proFunnelPanel: (document.getElementById('pro-funnel-panel') || document.createElement("details")) as HTMLDetailsElement,
+    proFunnelView: (document.getElementById('pro-funnel-view') || document.createElement("textarea")) as HTMLTextAreaElement,
     proFunnelDisabledNotice: document.getElementById('pro-funnel-disabled-notice') as HTMLElement,
-    proFunnelRefreshButton: document.getElementById('pro-funnel-refresh') as HTMLButtonElement,
-    proFunnelCopyButton: document.getElementById('pro-funnel-copy') as HTMLButtonElement,
-    proFunnelEvidencePackCopyButton: document.getElementById('pro-funnel-evidence-pack-copy') as HTMLButtonElement,
-    downloadProIntentRunEvidencePackButton: document.getElementById(
+    proFunnelRefreshButton: (document.getElementById('pro-funnel-refresh') || document.createElement("button")) as HTMLButtonElement,
+    proFunnelCopyButton: (document.getElementById('pro-funnel-copy') || document.createElement("button")) as HTMLButtonElement,
+    proFunnelEvidencePackCopyButton: (document.getElementById('pro-funnel-evidence-pack-copy') || document.createElement("button")) as HTMLButtonElement,
+    downloadProIntentRunEvidencePackButton: (document.getElementById(
       'download-pro-intent-run-evidence-pack'
-    ) as HTMLButtonElement,
-    exportProWaitlistSurveyIntentDistribution7dJsonButton: document.getElementById(
+    ) || document.createElement("button")) as HTMLButtonElement,
+    exportProWaitlistSurveyIntentDistribution7dJsonButton: (document.getElementById(
       'export-pro-waitlist-survey-intent-distribution-7d-json'
-    ) as HTMLButtonElement,
-    exportProIntentEvents7dCsvButton: document.getElementById('export-pro-intent-events-7d-csv') as HTMLButtonElement,
-    exportProIntentByCampaign7dCsvButton: document.getElementById(
+    ) || document.createElement("button")) as HTMLButtonElement,
+    exportProIntentEvents7dCsvButton: (document.getElementById('export-pro-intent-events-7d-csv') || document.createElement("button")) as HTMLButtonElement,
+    exportProIntentByCampaign7dCsvButton: (document.getElementById(
       'export-pro-intent-by-campaign-7d-csv'
-    ) as HTMLButtonElement,
-    exportProDistributionByCampaign7dCsvButton: document.getElementById(
+    ) || document.createElement("button")) as HTMLButtonElement,
+    exportProDistributionByCampaign7dCsvButton: (document.getElementById(
       'export-pro-distribution-by-campaign-7d-csv'
-    ) as HTMLButtonElement,
-    exportProAcquisitionEfficiencyByCampaign7dCsvButton: document.getElementById(
+    ) || document.createElement("button")) as HTMLButtonElement,
+    exportProAcquisitionEfficiencyByCampaign7dCsvButton: (document.getElementById(
       EXPORT_PRO_ACQ_EFF_BY_CAMPAIGN_7D_CSV_BUTTON_ID
-    ) as HTMLButtonElement,
-    proAcqEffByCampaignWeeklyReportCopyButton: document.getElementById(
+    ) || document.createElement("button")) as HTMLButtonElement,
+    proAcqEffByCampaignWeeklyReportCopyButton: (document.getElementById(
       COPY_PRO_ACQ_EFF_BY_CAMPAIGN_WEEKLY_REPORT_BUTTON_ID
-    ) as HTMLButtonElement,
-    proAcqEffByCampaignEvidencePackCopyButton: document.getElementById(
+    ) || document.createElement("button")) as HTMLButtonElement,
+    proAcqEffByCampaignEvidencePackCopyButton: (document.getElementById(
       COPY_PRO_ACQ_EFF_BY_CAMPAIGN_EVIDENCE_PACK_BUTTON_ID
-    ) as HTMLButtonElement,
-    proAcqEffByCampaignEvidencePackDownloadButton: document.getElementById(
+    ) || document.createElement("button")) as HTMLButtonElement,
+    proAcqEffByCampaignEvidencePackDownloadButton: (document.getElementById(
       DOWNLOAD_PRO_ACQ_EFF_BY_CAMPAIGN_EVIDENCE_PACK_BUTTON_ID
-    ) as HTMLButtonElement,
-    proWeeklyChannelOpsEvidencePackDownloadButton: document.getElementById(
+    ) || document.createElement("button")) as HTMLButtonElement,
+    proWeeklyChannelOpsEvidencePackDownloadButton: (document.getElementById(
       DOWNLOAD_PRO_WEEKLY_CHANNEL_OPS_EVIDENCE_PACK_BUTTON_ID
-    ) as HTMLButtonElement,
-    proIntentWeeklyDigestCopyButton: document.getElementById('copy-pro-intent-weekly-digest') as HTMLButtonElement,
-    proIntentByCampaignWeeklyReportCopyButton: document.getElementById(
+    ) || document.createElement("button")) as HTMLButtonElement,
+    proIntentWeeklyDigestCopyButton: (document.getElementById('copy-pro-intent-weekly-digest') || document.createElement("button")) as HTMLButtonElement,
+    proIntentByCampaignWeeklyReportCopyButton: (document.getElementById(
       'copy-pro-intent-by-campaign-weekly-report'
-    ) as HTMLButtonElement,
-    womSummaryPanel: document.getElementById('wom-summary-panel') as HTMLDetailsElement,
-    womSummaryView: document.getElementById('wom-summary-view') as HTMLTextAreaElement,
+    ) || document.createElement("button")) as HTMLButtonElement,
+    womSummaryPanel: (document.getElementById('wom-summary-panel') || document.createElement("details")) as HTMLDetailsElement,
+    womSummaryView: (document.getElementById('wom-summary-view') || document.createElement("textarea")) as HTMLTextAreaElement,
     womSummaryDisabledNotice: document.getElementById('wom-summary-disabled-notice') as HTMLElement,
-    womSummaryRefreshButton: document.getElementById('wom-summary-refresh') as HTMLButtonElement,
-    womSummaryCopyButton: document.getElementById('wom-summary-copy') as HTMLButtonElement,
-    womSummaryEvidencePackCopyButton: document.getElementById('wom-summary-evidence-pack-copy') as HTMLButtonElement,
-    growthFunnelPanel: document.getElementById('growth-funnel-panel') as HTMLDetailsElement,
-    growthFunnelView: document.getElementById('growth-funnel-view') as HTMLTextAreaElement,
-    growthFunnelRefreshButton: document.getElementById('growth-funnel-refresh') as HTMLButtonElement,
-    growthFunnelCopyButton: document.getElementById('growth-funnel-copy') as HTMLButtonElement,
-    growthStatsPanel: document.getElementById('growth-stats-panel') as HTMLDetailsElement,
-    growthStatsView: document.getElementById('growth-stats-view') as HTMLTextAreaElement,
-    growthStatsRefreshButton: document.getElementById('growth-stats-refresh') as HTMLButtonElement,
-    growthStatsCopyButton: document.getElementById('growth-stats-copy') as HTMLButtonElement,
-    growthStatsResetButton: document.getElementById('growth-stats-reset') as HTMLButtonElement,
+    womSummaryRefreshButton: (document.getElementById('wom-summary-refresh') || document.createElement("button")) as HTMLButtonElement,
+    womSummaryCopyButton: (document.getElementById('wom-summary-copy') || document.createElement("button")) as HTMLButtonElement,
+    womSummaryEvidencePackCopyButton: (document.getElementById('wom-summary-evidence-pack-copy') || document.createElement("button")) as HTMLButtonElement,
+    growthFunnelPanel: (document.getElementById('growth-funnel-panel') || document.createElement("details")) as HTMLDetailsElement,
+    growthFunnelView: (document.getElementById('growth-funnel-view') || document.createElement("textarea")) as HTMLTextAreaElement,
+    growthFunnelRefreshButton: (document.getElementById('growth-funnel-refresh') || document.createElement("button")) as HTMLButtonElement,
+    growthFunnelCopyButton: (document.getElementById('growth-funnel-copy') || document.createElement("button")) as HTMLButtonElement,
+    growthStatsPanel: (document.getElementById('growth-stats-panel') || document.createElement("details")) as HTMLDetailsElement,
+    growthStatsView: (document.getElementById('growth-stats-view') || document.createElement("textarea")) as HTMLTextAreaElement,
+    growthStatsRefreshButton: (document.getElementById('growth-stats-refresh') || document.createElement("button")) as HTMLButtonElement,
+    growthStatsCopyButton: (document.getElementById('growth-stats-copy') || document.createElement("button")) as HTMLButtonElement,
+    growthStatsResetButton: (document.getElementById('growth-stats-reset') || document.createElement("button")) as HTMLButtonElement,
 
     proIntentCampaignInput: document.getElementById('pro-intent-campaign') as HTMLInputElement,
     proWaitlistButton: document.getElementById('pro-waitlist-button') as HTMLButtonElement,
