@@ -1108,11 +1108,11 @@
     "description": "隐私页 Pro 意向漏斗摘要面板标题"
   },
   "proFunnelPanelHint": {
-    "message": "仅本地汇总 `copilot_telemetry_events` 中的 `pro_*` 事件（按来源分组计数/最近时间/转化率）；不包含 URL/标题/网页内容/复制内容。",
+    "message": "这里仅在本地统计你对 Pro 功能的探索情况（例如点击次数）。它完全不会包含网页内容或任何隐私信息。",
     "description": "Pro 意向漏斗摘要面板提示文案"
   },
   "proFunnelDisabledNotice": {
-    "message": "未开启，不记录/不导出",
+    "message": "当前已关闭匿名数据记录，因此没有数据可导出。",
     "description": "匿名使用数据关闭时，Pro 漏斗面板提示文案"
   },
   "proFunnelRefresh": {
@@ -1472,7 +1472,7 @@
     "description": "WOM 摘要面板提示文案"
   },
   "womSummaryDisabledNotice": {
-    "message": "未开启，不记录/不导出",
+    "message": "当前已关闭匿名数据记录，因此没有数据可导出。",
     "description": "匿名使用数据关闭时 WOM 摘要面板提示"
   },
   "womSummaryRefresh": {

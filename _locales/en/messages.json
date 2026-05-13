@@ -1108,11 +1108,11 @@
     "description": "Pro funnel summary panel title in Options privacy tab"
   },
   "proFunnelPanelHint": {
-    "message": "Local-only summary of `pro_*` events in `copilot_telemetry_events` (counts/last timestamps/conversion rates by source). No URLs, titles, page content, or copied text.",
+    "message": "Locally tracks how you explore Pro features (e.g. click counts). It never contains webpage content or any private information.",
     "description": "Pro funnel summary panel hint"
   },
   "proFunnelDisabledNotice": {
-    "message": "Disabled: not recording / not exporting.",
+    "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "Pro funnel panel notice when anonymous usage data is disabled"
   },
   "proFunnelRefresh": {
@@ -1472,7 +1472,7 @@
     "description": "WOM summary panel hint"
   },
   "womSummaryDisabledNotice": {
-    "message": "Disabled: not recording / not exporting.",
+    "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "WOM summary panel notice when anonymous usage data is disabled"
   },
   "womSummaryRefresh": {
