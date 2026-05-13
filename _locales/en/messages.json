@@ -1076,15 +1076,15 @@
     "description": "Telemetry events panel hint"
   },
   "telemetryEventsRefresh": {
-    "message": "Refresh",
+    "message": "Refresh Data",
     "description": "Telemetry events refresh button label"
   },
   "telemetryEventsCopy": {
-    "message": "Copy",
+    "message": "Copy Data",
     "description": "Telemetry events copy button label"
   },
   "telemetryEventsClear": {
-    "message": "Clear",
+    "message": "Clear Data",
     "description": "Telemetry events clear button label"
   },
   "telemetryEventsCopySuccess": {
@@ -1116,19 +1116,19 @@
     "description": "Pro funnel panel notice when anonymous usage data is disabled"
   },
   "proFunnelRefresh": {
-    "message": "Refresh",
+    "message": "Refresh Data",
     "description": "Pro funnel summary refresh button label"
   },
   "proFunnelCopy": {
-    "message": "Copy summary",
+    "message": "Copy Summary",
     "description": "Pro funnel summary copy button label"
   },
   "proFunnelEvidencePackCopy": {
-    "message": "Copy evidence pack",
+    "message": "Copy Full Report",
     "description": "Pro funnel evidence pack copy button label"
   },
   "proIntentRunEvidencePackDownload": {
-    "message": "Download Pro intent run evidence pack (JSON)",
+    "message": "Download Full Stats (JSON)",
     "description": "One-click download Pro intent run evidence pack JSON in Options privacy tab"
   },
   "proIntentRunEvidencePackDownloadSuccess": {
@@ -1144,7 +1144,7 @@
     "description": "Notification when downloading Pro intent run evidence pack while anonymous usage data is disabled"
   },
   "proWaitlistSurveyIntentDistribution7dExport": {
-    "message": "Export last 7 days survey intent distribution (JSON)",
+    "message": "Export Last 7d Survey Stats (JSON)",
     "description": "Export last 7 days Pro waitlist survey intent distribution as JSON button label in Options privacy tab"
   },
   "proWaitlistSurveyIntentDistribution7dExportSuccess": {
@@ -1160,7 +1160,7 @@
     "description": "Notification when exporting survey intent distribution while anonymous usage data is disabled"
   },
   "proIntentEvents7dCsvExport": {
-    "message": "Export last 7 days Pro intent events (CSV)",
+    "message": "Export Last 7d Visit Details (CSV)",
     "description": "Export last 7 days Pro intent events as CSV button label in Options privacy tab"
   },
   "proIntentEvents7dCsvExportSuccess": {
@@ -1176,7 +1176,7 @@
     "description": "Notification when exporting Pro intent CSV while anonymous usage data is disabled"
   },
   "proIntentByCampaign7dCsvExport": {
-    "message": "Export last 7 days Pro intent by campaign (CSV)",
+    "message": "Export Last 7d Source Summary (CSV)",
     "description": "Privacy page export Pro intent by campaign aggregated CSV button"
   },
   "proIntentByCampaign7dCsvExportSuccess": {
@@ -1196,7 +1196,7 @@
     "description": "Empty campaign bucket label in Pro intent by campaign aggregated CSV"
   },
   "proDistributionByCampaign7dCsvExport": {
-    "message": "Export last 7 days distribution copies by campaign (CSV)",
+    "message": "Export Last 7d Share Actions (CSV)",
     "description": "Privacy page export distribution copies by campaign aggregated CSV button"
   },
   "proDistributionByCampaign7dCsvExportSuccess": {
@@ -1216,7 +1216,7 @@
     "description": "Empty campaign bucket label in distribution by campaign aggregated CSV"
   },
   "proAcqEffByCampaign7dCsvExport": {
-    "message": "Export last 7 days acquisition efficiency by campaign (CSV)",
+    "message": "Export Last 7d Growth Efficiency (CSV)",
     "description": "Privacy page export merged acquisition efficiency by campaign CSV button"
   },
   "proAcqEffByCampaign7dCsvExportSuccess": {
@@ -1412,11 +1412,11 @@
     "description": "Acquisition efficiency weekly report privacy statement body"
   },
   "proAcqEffByCampaignEvidencePackCopy": {
-    "message": "Copy acquisition efficiency evidence pack (JSON: CSV + Markdown + Env)",
+    "message": "Copy Growth Report Pack (JSON)",
     "description": "Copy acquisition efficiency evidence pack (JSON: CSV + Markdown + Env) button label in Options privacy tab"
   },
   "proAcqEffByCampaignEvidencePackDownload": {
-    "message": "Download acquisition efficiency evidence pack (JSON: CSV + Markdown + Env)",
+    "message": "Download Growth Report Pack (JSON)",
     "description": "Download acquisition efficiency evidence pack (JSON: CSV + Markdown + Env) button label in Options privacy tab"
   },
   "proAcqEffByCampaignEvidencePackCopySuccess": {
@@ -1440,7 +1440,7 @@
     "description": "Acquisition efficiency evidence pack notice when anonymous usage data is disabled (for JSON audit)"
   },
   "proWeeklyChannelOpsEvidencePackDownload": {
-    "message": "Download weekly channel ops evidence pack (JSON)",
+    "message": "Download Weekly Channel Report (JSON)",
     "description": "Download weekly channel ops evidence pack (JSON) button label in Options privacy tab"
   },
   "proWeeklyChannelOpsEvidencePackDownloadSuccess": {
@@ -1476,15 +1476,15 @@
     "description": "WOM summary panel notice when anonymous usage data is disabled"
   },
   "womSummaryRefresh": {
-    "message": "Refresh",
+    "message": "Refresh Data",
     "description": "WOM summary refresh button label"
   },
   "womSummaryCopy": {
-    "message": "Copy summary",
+    "message": "Copy Summary",
     "description": "WOM summary copy button label"
   },
   "womSummaryEvidencePackCopy": {
-    "message": "Copy evidence pack",
+    "message": "Copy Full Report",
     "description": "WOM evidence pack copy button label"
   },
   "womSummaryCopySuccess": {
@@ -1516,11 +1516,11 @@
     "description": "Growth funnel summary panel hint"
   },
   "growthFunnelRefresh": {
-    "message": "Refresh",
+    "message": "Refresh Data",
     "description": "Growth funnel summary refresh button label"
   },
   "growthFunnelCopy": {
-    "message": "Copy",
+    "message": "Copy Data",
     "description": "Growth funnel summary copy button label"
   },
   "growthFunnelCopySuccess": {
@@ -1544,15 +1544,15 @@
     "description": "Growth stats panel hint"
   },
   "growthStatsRefresh": {
-    "message": "Refresh",
+    "message": "Refresh Data",
     "description": "Growth stats refresh button label"
   },
   "growthStatsCopy": {
-    "message": "Copy",
+    "message": "Copy Data",
     "description": "Growth stats copy button label"
   },
   "growthStatsReset": {
-    "message": "Reset",
+    "message": "Reset Data",
     "description": "Growth stats reset button label"
   },
   "growthStatsCopySuccess": {

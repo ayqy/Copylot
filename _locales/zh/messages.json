@@ -1076,15 +1076,15 @@
     "description": "匿名事件日志面板提示文案"
   },
   "telemetryEventsRefresh": {
-    "message": "刷新",
+    "message": "刷新数据",
     "description": "匿名事件日志刷新按钮"
   },
   "telemetryEventsCopy": {
-    "message": "复制",
+    "message": "复制数据",
     "description": "匿名事件日志复制按钮"
   },
   "telemetryEventsClear": {
-    "message": "清空",
+    "message": "清空数据",
     "description": "匿名事件日志清空按钮"
   },
   "telemetryEventsCopySuccess": {
@@ -1116,19 +1116,19 @@
     "description": "匿名使用数据关闭时，Pro 漏斗面板提示文案"
   },
   "proFunnelRefresh": {
-    "message": "刷新",
+    "message": "刷新数据",
     "description": "Pro 意向漏斗摘要刷新按钮"
   },
   "proFunnelCopy": {
-    "message": "复制摘要",
+    "message": "复制统计数据",
     "description": "Pro 意向漏斗摘要复制按钮"
   },
   "proFunnelEvidencePackCopy": {
-    "message": "复制证据包",
+    "message": "复制完整报告包",
     "description": "Pro 漏斗证据包复制按钮"
   },
   "proIntentRunEvidencePackDownload": {
-    "message": "下载 Pro 意向跑数证据包（JSON）",
+    "message": "导出全部统计数据 (JSON)",
     "description": "隐私页一键下载 Pro 意向跑数证据包 JSON 按钮"
   },
   "proIntentRunEvidencePackDownloadSuccess": {
@@ -1144,7 +1144,7 @@
     "description": "匿名开关 OFF 时下载 Pro 意向跑数证据包提示"
   },
   "proWaitlistSurveyIntentDistribution7dExport": {
-    "message": "导出问卷意向分布（过去 7 天，JSON）",
+    "message": "导出最近 7 天问卷意向分布 (JSON)",
     "description": "隐私页导出过去 7 天问卷意向分布 JSON 按钮"
   },
   "proWaitlistSurveyIntentDistribution7dExportSuccess": {
@@ -1160,7 +1160,7 @@
     "description": "匿名开关 OFF 时导出问卷意向分布提示"
   },
   "proIntentEvents7dCsvExport": {
-    "message": "导出过去 7 天 Pro 意向明细（CSV）",
+    "message": "导出最近 7 天访问明细 (CSV)",
     "description": "隐私页导出过去 7 天 Pro 意向明细 CSV 按钮"
   },
   "proIntentEvents7dCsvExportSuccess": {
@@ -1176,7 +1176,7 @@
     "description": "匿名开关 OFF 时导出按钮提示"
   },
   "proIntentByCampaign7dCsvExport": {
-    "message": "导出过去 7 天 Pro 意向按 campaign 聚合（CSV）",
+    "message": "导出最近 7 天渠道来源汇总 (CSV)",
     "description": "隐私页导出过去 7 天 Pro 意向按 campaign 聚合 CSV 按钮"
   },
   "proIntentByCampaign7dCsvExportSuccess": {
@@ -1196,7 +1196,7 @@
     "description": "按 campaign 聚合 CSV 的空 campaign 桶展示文案"
   },
   "proDistributionByCampaign7dCsvExport": {
-    "message": "导出过去 7 天 分发动作按 campaign 聚合（CSV）",
+    "message": "导出最近 7 天分享操作统计 (CSV)",
     "description": "隐私页导出过去 7 天 分发动作按 campaign 聚合 CSV 按钮"
   },
   "proDistributionByCampaign7dCsvExportSuccess": {
@@ -1216,7 +1216,7 @@
     "description": "分发动作按 campaign 聚合 CSV 的空 campaign 桶展示文案"
   },
   "proAcqEffByCampaign7dCsvExport": {
-    "message": "导出过去 7 天 Pro 获客效率按 campaign 合并（CSV）",
+    "message": "导出最近 7 天增长效率汇总 (CSV)",
     "description": "隐私页导出过去 7 天 Pro 获客效率（leads + distCopies + leads_per_dist_copy）按 campaign 合并 CSV 按钮"
   },
   "proAcqEffByCampaign7dCsvExportSuccess": {
@@ -1412,11 +1412,11 @@
     "description": "获客效率周报摘要隐私声明正文"
   },
   "proAcqEffByCampaignEvidencePackCopy": {
-    "message": "复制获客效率证据包（JSON，含 CSV + Markdown + Env）",
+    "message": "复制增长分析报告包 (JSON)",
     "description": "隐私页复制获客效率证据包（JSON，含 CSV + Markdown + Env）按钮"
   },
   "proAcqEffByCampaignEvidencePackDownload": {
-    "message": "下载获客效率证据包（JSON，含 CSV + Markdown + Env）",
+    "message": "下载增长分析报告包 (JSON)",
     "description": "隐私页下载获客效率证据包（JSON，含 CSV + Markdown + Env）按钮"
   },
   "proAcqEffByCampaignEvidencePackCopySuccess": {
@@ -1440,7 +1440,7 @@
     "description": "匿名开关 OFF 时获客效率证据包提示文案（用于 JSON 审计）"
   },
   "proWeeklyChannelOpsEvidencePackDownload": {
-    "message": "下载周度渠道复盘证据包（JSON）",
+    "message": "下载本周渠道分析报告包 (JSON)",
     "description": "隐私页下载周度渠道复盘证据包（JSON）按钮"
   },
   "proWeeklyChannelOpsEvidencePackDownloadSuccess": {
@@ -1476,15 +1476,15 @@
     "description": "匿名使用数据关闭时 WOM 摘要面板提示"
   },
   "womSummaryRefresh": {
-    "message": "刷新",
+    "message": "刷新数据",
     "description": "WOM 摘要刷新按钮"
   },
   "womSummaryCopy": {
-    "message": "复制摘要",
+    "message": "复制统计数据",
     "description": "WOM 摘要复制按钮"
   },
   "womSummaryEvidencePackCopy": {
-    "message": "复制证据包",
+    "message": "复制完整报告包",
     "description": "WOM 证据包复制按钮"
   },
   "womSummaryCopySuccess": {
@@ -1516,11 +1516,11 @@
     "description": "本地漏斗摘要面板提示文案"
   },
   "growthFunnelRefresh": {
-    "message": "刷新",
+    "message": "刷新数据",
     "description": "本地漏斗摘要刷新按钮"
   },
   "growthFunnelCopy": {
-    "message": "复制",
+    "message": "复制数据",
     "description": "本地漏斗摘要复制按钮"
   },
   "growthFunnelCopySuccess": {
@@ -1544,15 +1544,15 @@
     "description": "本地增长统计面板提示文案"
   },
   "growthStatsRefresh": {
-    "message": "刷新",
+    "message": "刷新数据",
     "description": "本地增长统计刷新按钮"
   },
   "growthStatsCopy": {
-    "message": "复制",
+    "message": "复制数据",
     "description": "本地增长统计复制按钮"
   },
   "growthStatsReset": {
-    "message": "重置",
+    "message": "重置数据",
     "description": "本地增长统计重置按钮"
   },
   "growthStatsCopySuccess": {
