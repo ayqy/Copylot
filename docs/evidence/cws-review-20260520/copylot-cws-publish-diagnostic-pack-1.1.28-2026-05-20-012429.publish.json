@@ -1,0 +1,102 @@
+{
+  "packVersion": "v1-62",
+  "exportedAt": "2026-05-20T01:24:29.349Z",
+  "dryRun": false,
+  "extensionVersion": "1.1.28",
+  "zip": {
+    "fileName": "plugin-1.1.28.zip",
+    "filePath": "plugin-1.1.28.zip",
+    "bytes": 118461,
+    "sha256": "c3de9c174842a9f45d3e792047bc9bdc659c05377d4532077aa804b3930949da"
+  },
+  "proxyDiagnostic": {
+    "diagnosticVersion": "v1-47",
+    "proxy": {
+      "enabled": true,
+      "envKey": "https_proxy",
+      "urlMasked": "http://127.0.0.1:1087",
+      "noProxy": {
+        "envKey": "NO_PROXY",
+        "value": "localhost,127.0.0.1,::1"
+      },
+      "precedence": [
+        "CWS_PROXY",
+        "HTTPS_PROXY",
+        "https_proxy",
+        "HTTP_PROXY",
+        "http_proxy",
+        "ALL_PROXY",
+        "all_proxy"
+      ],
+      "schemeRequired": true
+    },
+    "runtime": {
+      "node": "v23.6.1"
+    },
+    "script": {
+      "entry": "scripts/chrome-webstore.ts",
+      "gitCommit": "0cefaba",
+      "packageVersion": "1.1.0",
+      "extensionVersion": "1.1.28"
+    },
+    "fetch": {
+      "globalFetch": true,
+      "dispatcher": "undici.EnvHttpProxyAgent (setGlobalDispatcher)"
+    }
+  },
+  "preflightReport": {
+    "reportVersion": "v1-47",
+    "generatedAt": "2026-05-20T01:28:52.726Z",
+    "timeoutMs": 8000,
+    "checks": [
+      {
+        "id": "googleapis",
+        "url": "https://www.googleapis.com/discovery/v1/apis",
+        "hostname": "www.googleapis.com",
+        "method": "GET",
+        "ok": true,
+        "status": 200,
+        "failureType": null,
+        "errorCode": null,
+        "errorMessage": null,
+        "elapsedMs": 888
+      },
+      {
+        "id": "chromewebstore-googleapis-host",
+        "url": "https://chromewebstore.googleapis.com/",
+        "hostname": "chromewebstore.googleapis.com",
+        "method": "GET",
+        "ok": true,
+        "status": 404,
+        "failureType": null,
+        "errorCode": null,
+        "errorMessage": null,
+        "elapsedMs": 808
+      }
+    ],
+    "summary": {
+      "total": 2,
+      "pass": 2,
+      "fail": 0
+    }
+  },
+  "preflightFixHints": [],
+  "proxyReadiness": {
+    "status": "ready",
+    "fixCommand": null,
+    "blocking": false
+  },
+  "credentials": {
+    "extensionId": true,
+    "clientId": true,
+    "clientSecret": true,
+    "refreshToken": true
+  },
+  "publishAttempt": {
+    "uploaded": true,
+    "published": true,
+    "channel": "default",
+    "errorCode": null,
+    "errorMessage": null
+  }
+}
