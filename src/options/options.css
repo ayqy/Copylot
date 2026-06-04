@@ -365,6 +365,108 @@ body {
   }
 }
 
+.shortcut-settings-panel {
+  margin-bottom: 24px;
+  padding: 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(16, 185, 129, 0.08));
+  border: 1px solid rgba(79, 70, 229, 0.12);
+  box-shadow: var(--shadow-sm);
+}
+
+.shortcut-settings-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.shortcut-settings-panel-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.shortcut-settings-panel-hint,
+.shortcut-settings-panel-footnote,
+.shortcut-settings-panel-feedback {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.shortcut-settings-panel-button {
+  flex-shrink: 0;
+}
+
+.shortcut-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.shortcut-command-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.shortcut-command-card-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.shortcut-command-card-copy strong {
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.shortcut-command-card-copy small {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.shortcut-command-card-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.shortcut-command-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.12);
+  color: var(--primary-color);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.shortcut-command-pill-muted {
+  background: var(--background-color);
+  color: var(--text-secondary);
+}
+
+@media (max-width: 640px) {
+  .shortcut-settings-panel-head {
+    flex-direction: column;
+  }
+
+  .shortcut-settings-panel-button {
+    width: 100%;
+  }
+}
+
 /* Usage Instructions */
 .usage-instructions {
   margin-bottom: 24px;
@@ -519,6 +621,18 @@ body {
   font-size: 12px;
   font-weight: 500;
   margin-bottom: 12px;
+}
+
+.prompt-shortcut-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.12);
+  color: var(--primary-color);
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .prompt-card-content {

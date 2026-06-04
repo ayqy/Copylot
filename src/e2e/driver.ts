@@ -11,12 +11,12 @@ type DriverRequest =
   | { type: 'report-opened-url'; url: string }
   | { type: 'get-opened-urls' }
   | { type: 'open-popup'; tabId?: number }
+  | { type: 'trigger-command'; command: string; tabId?: number }
   | {
       type: 'invoke-context-menu';
       tabId?: number;
       info: {
         menuItemId: string;
-        parentMenuItemId?: string;
         selectionText?: string;
         pageUrl?: string;
       };
@@ -65,6 +65,8 @@ async function runDriverRequest(request: DriverRequest): Promise<DriverResponse>
       return callBackground({ type: 'e2e:get-opened-urls' });
     case 'open-popup':
       return callBackground({ type: 'e2e:open-popup', tabId: request.tabId });
+    case 'trigger-command':
+      return callBackground({ type: 'e2e:trigger-command', command: request.command, tabId: request.tabId });
     case 'invoke-context-menu':
       return callBackground({
         type: 'e2e:invoke-context-menu',

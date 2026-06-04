@@ -23,16 +23,15 @@ test('popup setting toggles persist interaction mode format table format extras 
     await page.goto(`${fixtureOrigin}/article.html`);
     const popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
     await completePopupOnboardingIfVisible(popup);
+    await popup.locator('#toggle-more-settings').click();
+    await expect(popup.locator('#more-settings-panel')).toBeVisible();
 
     await popup.locator('label[for="interaction-dblclick"], .radio-option:has(#interaction-dblclick)').first().click();
     await popup.locator('label[for="format-plaintext"], .radio-option:has(#format-plaintext)').first().click();
     await popup.locator('label[for="table-format-csv"], .radio-option:has(#table-format-csv)').first().click();
     await popup.locator('label[for="attach-title"], .checkbox-option:has(#attach-title)').first().click();
     await popup.locator('label[for="attach-url"], .checkbox-option:has(#attach-url)').first().click();
-    await popup
-      .locator('label[for="enable-clipboard-accumulator-switch"], .switch-control:has(#enable-clipboard-accumulator-switch) .slider')
-      .first()
-      .click();
+    await popup.locator('#enable-clipboard-accumulator-switch + .slider').click();
 
     await expect
       .poll(async () => {

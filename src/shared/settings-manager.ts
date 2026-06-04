@@ -2,6 +2,7 @@
 // Leave empty to use the browser's default language
 export const FORCE_UI_LANGUAGE = '';
 
+import { normalizeQuickPromptAssignments, type QuickPromptSlot } from './prompt-shortcuts.ts';
 // Import getMessage function for i18n support
 import { getMessage } from './ui-injector.ts';
 
@@ -20,6 +21,7 @@ export interface Prompt {
   title: string;
   template: string;
   category?: string;
+  quickAccessSlot?: QuickPromptSlot;
   usageCount?: number;
   createdAt?: number;
   lastUsedAt?: number;
@@ -90,6 +92,7 @@ export const DEFAULT_BUILT_IN_PROMPTS: Prompt[] = [
     title: getMessage('builtInSummaryTitle') || '总结文章',
     template: getMessage('builtInSummaryTemplate'),
     category: 'summary',
+    quickAccessSlot: 1,
     usageCount: 0,
     createdAt: Date.now(),
     builtIn: true,
@@ -304,6 +307,9 @@ export async function getSettings(): Promise<Settings> {
         mergedSettings.language = currentLanguage;
       }
 
+      let promptsChangedByMigration = false;
+      let chatServicesChangedByMigration = false;
+
       // 迁移逻辑：为现有用户添加内置prompt（如果不存在的话）
       const existingPromptIds = new Set(mergedSettings.userPrompts.map(p => p.id));
       
@@ -311,6 +317,7 @@ export async function getSettings(): Promise<Settings> {
       DEFAULT_BUILT_IN_PROMPTS.forEach(builtInPrompt => {
         if (!existingPromptIds.has(builtInPrompt.id)) {
           mergedSettings.userPrompts.push({ ...builtInPrompt });
+          promptsChangedByMigration = true;
         }
       });
 
@@ -326,10 +333,17 @@ export async function getSettings(): Promise<Settings> {
             existingPrompt.template = defaultPrompt.template;
             existingPrompt.title = defaultPrompt.title;
             existingPrompt.templateVersion = defaultPrompt.templateVersion;
+            if (defaultPrompt.quickAccessSlot !== undefined) {
+              existingPrompt.quickAccessSlot = defaultPrompt.quickAccessSlot;
+            }
             // 保留：usageCount, lastUsedAt, targetChatId, autoOpenChat 等用户相关设置
+            promptsChangedByMigration = true;
           }
         }
       });
+
+      const normalizedPrompts = normalizeQuickPromptAssignments(mergedSettings.userPrompts, isPromptActive);
+      mergedSettings.userPrompts = normalizedPrompts.prompts;
 
       // 迁移逻辑：为现有用户添加新的内置聊天服务和更新现有服务
       const existingChatServiceIds = new Set(mergedSettings.chatServices.map(s => s.id));
@@ -338,16 +352,32 @@ export async function getSettings(): Promise<Settings> {
       DEFAULT_CHAT_SERVICES.forEach(defaultService => {
         if (!existingChatServiceIds.has(defaultService.id)) {
           mergedSettings.chatServices.push({ ...defaultService });
+          chatServicesChangedByMigration = true;
         } else {
           // 更新现有服务的URL和其他属性（如description）
           const existingService = mergedSettings.chatServices.find(s => s.id === defaultService.id);
           if (existingService && existingService.builtIn) {
             // 保留用户的enabled状态，但更新其他内置服务属性
             const userEnabled = existingService.enabled;
+            const before = JSON.stringify(existingService);
             Object.assign(existingService, { ...defaultService, enabled: userEnabled });
+            if (JSON.stringify(existingService) !== before) {
+              chatServicesChangedByMigration = true;
+            }
           }
         }
       });
+
+      const shouldPersistMigrations =
+        promptsChangedByMigration ||
+        chatServicesChangedByMigration ||
+        normalizedPrompts.changed ||
+        mergedSettings.popupOnboardingVersion !== storedSettings.popupOnboardingVersion ||
+        mergedSettings.language !== storedSettings.language;
+
+      if (shouldPersistMigrations) {
+        await saveSettings(mergedSettings);
+      }
 
       return mergedSettings;
     }
@@ -403,6 +433,8 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
       if (!Array.isArray(mergedSettings.userPrompts)) {
         mergedSettings.userPrompts = [...DEFAULT_BUILT_IN_PROMPTS];
       }
+
+      mergedSettings.userPrompts = normalizeQuickPromptAssignments(mergedSettings.userPrompts, isPromptActive).prompts;
 
       if (!Array.isArray(mergedSettings.editorExclusionClassNames)) {
         mergedSettings.editorExclusionClassNames = [...DEFAULT_EDITOR_EXCLUSION_CLASSES];

@@ -42,6 +42,36 @@
     "service_worker": "src/background.js",
     "type": "module"
   },
+  "commands": {
+    "quick-convert": {
+      "suggested_key": {
+        "default": "Alt+C",
+        "mac": "Alt+C"
+      },
+      "description": "__MSG_commandQuickConvertDescription__"
+    },
+    "quick-prompt-slot-1": {
+      "suggested_key": {
+        "default": "Alt+1",
+        "mac": "Alt+1"
+      },
+      "description": "__MSG_commandQuickPrompt1Description__"
+    },
+    "quick-prompt-slot-2": {
+      "suggested_key": {
+        "default": "Alt+2",
+        "mac": "Alt+2"
+      },
+      "description": "__MSG_commandQuickPrompt2Description__"
+    },
+    "quick-prompt-slot-3": {
+      "suggested_key": {
+        "default": "Alt+3",
+        "mac": "Alt+3"
+      },
+      "description": "__MSG_commandQuickPrompt3Description__"
+    }
+  },
   "options_page": "src/options/options.html",
   "devtools_page": "src/devtools/devtools.html",
   "web_accessible_resources": [

@@ -81,7 +81,6 @@ test('prompt with target chat auto-opens configured chat service', async ({
 
       await invokeContextMenu(driverPage, {
         menuItemId: promptId!,
-        parentMenuItemId: 'magic-copy-with-prompt',
         selectionText: (await article.locator('#article-paragraph').textContent()) || '',
         pageUrl: article.url()
       });
@@ -156,7 +155,6 @@ test('disabled target chat falls back to clipboard-only execution', async ({
 
     await invokeContextMenu(driverPage, {
       menuItemId: 'disabled-chat-prompt',
-      parentMenuItemId: 'magic-copy-with-prompt',
       selectionText: (await article.locator('#article-paragraph').textContent()) || '',
       pageUrl: article.url()
     });

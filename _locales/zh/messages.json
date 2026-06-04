@@ -526,7 +526,7 @@
     "description": "用于启用/禁用此功能的总开关标签"
   },
   "enableFeature": {
-    "message": "启用功能",
+    "message": "启用智能复制",
     "description": "功能开关的标签"
   },
   "interactionMode": {
@@ -546,11 +546,11 @@
     "description": "悬停触发开关的标签"
   },
   "convertButton": {
-    "message": "AI转换"
+    "message": "复制给AI"
   },
   "convertPage": {
-    "message": "转换为AI友好格式",
-    "description": "将页面内容转换为AI友好格式的上下文菜单项"
+    "message": "复制给AI",
+    "description": "将页面内容复制给 AI 的上下文菜单项"
   },
   "magicCopyWithPrompt": {
     "message": "智能复制+自定义提示",
@@ -617,12 +617,156 @@
     "description": "引导第 2 步说明"
   },
   "popupOnboardingStep3Title": {
-    "message": "第 3 步：管理 Prompts",
+    "message": "第 3 步：快捷 Prompt",
     "description": "引导第 3 步标题"
   },
   "popupOnboardingStep3Desc1": {
-    "message": "通过“管理 Prompts”添加或编辑模板；需要更细设置时，再进入 Options 页。",
+    "message": "为常用 Prompt 绑定快捷位后，你可以直接用按钮或快捷键触发，无需再层层展开菜单。",
     "description": "引导第 3 步说明"
+  },
+  "popupQuickActionsTitle": {
+    "message": "快捷操作",
+    "description": "Popup 顶部快捷操作区标题"
+  },
+  "popupQuickActionsHint": {
+    "message": "高频动作放在最上层，右键入口保留，快捷键是最短路径。",
+    "description": "Popup 快捷操作区副标题"
+  },
+  "popupEnableFeatureHint": {
+    "message": "关闭后，悬浮按钮和常规复制入口都会暂停。",
+    "description": "Popup 总开关说明"
+  },
+  "expandMoreSettings": {
+    "message": "----展开更多设置 v----",
+    "description": "Popup 展开更多设置按钮"
+  },
+  "collapseMoreSettings": {
+    "message": "----收起更多设置 ^----",
+    "description": "Popup 收起更多设置按钮"
+  },
+  "shortcutNotSet": {
+    "message": "未设置",
+    "description": "快捷键未设置时的占位文本"
+  },
+  "quickPromptSlot1": {
+    "message": "快捷 Prompt 1",
+    "description": "快捷 Prompt 1 标签"
+  },
+  "quickPromptSlot2": {
+    "message": "快捷 Prompt 2",
+    "description": "快捷 Prompt 2 标签"
+  },
+  "quickPromptSlot3": {
+    "message": "快捷 Prompt 3",
+    "description": "快捷 Prompt 3 标签"
+  },
+  "quickPromptSetupSlot1": {
+    "message": "在 Options 中为一个 Prompt 绑定快捷位 1",
+    "description": "快捷 Prompt 1 未配置时的提示"
+  },
+  "quickPromptSetupSlot2": {
+    "message": "在 Options 中为一个 Prompt 绑定快捷位 2",
+    "description": "快捷 Prompt 2 未配置时的提示"
+  },
+  "quickPromptSetupSlot3": {
+    "message": "在 Options 中为一个 Prompt 绑定快捷位 3",
+    "description": "快捷 Prompt 3 未配置时的提示"
+  },
+  "quickConvertCommandHint": {
+    "message": "Alt+C / Option+C",
+    "description": "复制给AI的默认快捷键提示"
+  },
+  "quickPromptSlot1CommandHint": {
+    "message": "Alt+1 / Option+1",
+    "description": "快捷 Prompt 1 的默认快捷键提示"
+  },
+  "quickPromptSlot2CommandHint": {
+    "message": "Alt+2 / Option+2",
+    "description": "快捷 Prompt 2 的默认快捷键提示"
+  },
+  "quickPromptSlot3CommandHint": {
+    "message": "Alt+3 / Option+3",
+    "description": "快捷 Prompt 3 的默认快捷键提示"
+  },
+  "quickActionSelectionFirst": {
+    "message": "有选区时优先处理选区，否则处理整页",
+    "description": "快捷动作说明文案"
+  },
+  "shortcutSettingsTitle": {
+    "message": "快捷键设置",
+    "description": "快捷键设置区块标题"
+  },
+  "shortcutSettingsHint": {
+    "message": "系统级快捷键由 Chrome 管理。这里显示当前绑定，并提供一键前往官方设置页。",
+    "description": "快捷键设置区块说明"
+  },
+  "shortcutCurrent": {
+    "message": "当前",
+    "description": "当前快捷键标签"
+  },
+  "shortcutRecommended": {
+    "message": "推荐",
+    "description": "推荐快捷键标签"
+  },
+  "shortcutCustomize": {
+    "message": "可自定义",
+    "description": "提示快捷键可自定义"
+  },
+  "openShortcutSettings": {
+    "message": "打开快捷键设置",
+    "description": "打开 Chrome 扩展快捷键设置页按钮"
+  },
+  "shortcutSettingsChromeHint": {
+    "message": "如有冲突，请在 Chrome 的扩展快捷键页面修改。",
+    "description": "Chrome 快捷键设置提示"
+  },
+  "shortcutSettingsManualOpenHint": {
+    "message": "如果页面未自动打开，请手动访问 chrome://extensions/shortcuts",
+    "description": "打开快捷键设置失败后的提示"
+  },
+  "shortcutPromptUnassigned": {
+    "message": "未绑定 Prompt",
+    "description": "快捷 Prompt 未绑定具体 Prompt 时的占位文本"
+  },
+  "shortcutManagePromptBinding": {
+    "message": "去绑定 Prompt",
+    "description": "引导用户管理 Prompt 绑定"
+  },
+  "promptQuickAccessSlot": {
+    "message": "快捷 Prompt",
+    "description": "Prompt 编辑器中快捷槽位字段标签"
+  },
+  "promptQuickAccessNone": {
+    "message": "不绑定",
+    "description": "Prompt 快捷槽位不绑定选项"
+  },
+  "promptQuickAccess1": {
+    "message": "快捷 Prompt 1",
+    "description": "Prompt 快捷槽位 1 选项"
+  },
+  "promptQuickAccess2": {
+    "message": "快捷 Prompt 2",
+    "description": "Prompt 快捷槽位 2 选项"
+  },
+  "promptQuickAccess3": {
+    "message": "快捷 Prompt 3",
+    "description": "Prompt 快捷槽位 3 选项"
+  },
+  "commandQuickConvertDescription": {
+    "message": "快速执行“复制给AI”",
+    "description": "Chrome commands 中 quick-convert 的描述"
+  },
+  "commandQuickPrompt1Description": {
+    "message": "快速执行快捷 Prompt 1",
+    "description": "Chrome commands 中 quick-prompt-slot-1 的描述"
+  },
+  "commandQuickPrompt2Description": {
+    "message": "快速执行快捷 Prompt 2",
+    "description": "Chrome commands 中 quick-prompt-slot-2 的描述"
+  },
+  "commandQuickPrompt3Description": {
+    "message": "快速执行快捷 Prompt 3",
+    "description": "Chrome commands 中 quick-prompt-slot-3 的描述"
   },
   "popupOnboardingOpenOptions": {
     "message": "打开管理 Prompts",

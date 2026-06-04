@@ -80,8 +80,8 @@
    EN: Keep `Enable Magic Copy: ON`, set `Mode` to `Single-Click` (or `Double-Click`), and choose:
    - For AI / Markdown editors → `Format: MD`
    - For plain text pasting → `Format: Plain Text`
-7. ZH：在示例页面点击“包含代码块的段落/内容块”（块级），或使用右键菜单的页级入口 `Convert to AI-Friendly Format`（中文界面为 `转换为AI友好格式`）复制整页主要内容。  
-   EN: Click a block that contains code (block-level), or use the page-level entry via the context menu `Convert to AI-Friendly Format` to copy the main page content.
+7. ZH：在示例页面点击“包含代码块的段落/内容块”（块级），或使用右键菜单的页级入口 `Copy to AI`（中文界面为 `复制给AI`）复制整页主要内容。  
+   EN: Click a block that contains code (block-level), or use the page-level entry via the context menu `Copy to AI` to copy the main page content.
 8. ZH：粘贴到 Chat / Markdown 编辑器，对照教程中“Path A vs Path B 的范围差异”说明：
    - Path A：只复制单个代码块，更适合“可直接运行的干净代码”
    - Path B：会包含周边上下文（标题/列表/段落 + 代码块），更适合“把完整上下文交给 AI”
@@ -143,8 +143,8 @@ int main(void) {
    - ZH：Copylot 仅保守移除“首/末端整行”的按钮文案；如果该文案出现在中间行、或与代码同一行混排，Copylot 不会做行内替换（避免误删）。可先粘贴到编辑器手工删除，或改用站点自带复制按钮。
    - EN: Copylot only removes whole-label lines at the very start/end. If the label appears in the middle or is mixed into a code line, Copylot won’t do in-line replacement to avoid deleting real code. Paste into an editor and delete manually, or use the site’s own copy button.
 4. 站点使用 Shadow DOM / 在线编辑器导致不可触发 / Shadow DOM or editors block triggering
-   - ZH：对编辑器（如 Notion/在线 IDE）Copylot 会主动避让；可在非编辑区域触发，或用页级路径（右键菜单 `Convert to AI-Friendly Format`，中文界面为 `转换为AI友好格式`）获取主要内容；若页面大量内容在 Shadow DOM 内，提取结果可能为空或不完整。
-   - EN: Copylot avoids rich editors (e.g. Notion/online IDEs). Trigger on non-editor areas, or use the page-level path (context menu `Convert to AI-Friendly Format`). If the page heavily uses Shadow DOM, extraction may be empty or incomplete.
+   - ZH：对编辑器（如 Notion/在线 IDE）Copylot 会主动避让；可在非编辑区域触发，或用页级路径（右键菜单 `Copy to AI`，中文界面为 `复制给AI`）获取主要内容；若页面大量内容在 Shadow DOM 内，提取结果可能为空或不完整。
+   - EN: Copylot avoids rich editors (e.g. Notion/online IDEs). Trigger on non-editor areas, or use the page-level path (context menu `Copy to AI`). If the page heavily uses Shadow DOM, extraction may be empty or incomplete.
 5. 复制到 Chat 后格式乱 / 代码末尾多了标题/URL / Formatting issues or extra title/URL appended
    - ZH：确认 Popup 的 `Extra`（`Page title` / `Source URL`）已关闭；如果你希望在 Chat 中保持 code fence，使用 `Format: MD` 再复制一次；如果你希望“可直接运行”，使用 `Format: Plain Text`。
    - EN: Ensure `Extra` (`Page title` / `Source URL`) is OFF. If you want code fences in chat, use `Format: MD`. If you want runnable code, use `Format: Plain Text`.

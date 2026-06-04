@@ -138,10 +138,31 @@ async function runPopupAssertions(): Promise<void> {
 
   try {
     const convertButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#convert-button');
+    assert.match(convertButton.textContent || '', /复制给AI|Copy to AI/);
     clickElement(convertButton);
     await page.waitForIdle();
     assert.equal(chromeMock.logs.queriedTabs.length, 1);
     assert.equal(chromeMock.logs.sentTabMessages.length, 1);
+
+    const convertShortcut = getRequiredElement<HTMLElement>(page.dom.window.document, '#convert-shortcut');
+    assert.match(convertShortcut.textContent || '', /Alt\+C/);
+
+    const shortcutSettingsButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#open-shortcut-settings-button'
+    );
+    clickElement(shortcutSettingsButton);
+    await page.waitForIdle();
+    assert.equal(chromeMock.logs.createdTabs.at(-1)?.url, 'chrome://extensions/shortcuts');
+
+    const moreSettingsToggle = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#toggle-more-settings');
+    assert.match(moreSettingsToggle.textContent || '', /展开更多设置|Expand more settings/);
+    clickElement(moreSettingsToggle);
+    await page.waitForIdle();
+    assert.equal(getRequiredElement<HTMLElement>(page.dom.window.document, '#more-settings-panel').hidden, false);
+
+    const quickPromptSlot1Title = getRequiredElement<HTMLElement>(page.dom.window.document, '#quick-prompt-slot-1-title');
+    assert.equal(quickPromptSlot1Title.textContent, 'Summary');
 
     const addPromptButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#add-prompt-button');
     clickElement(addPromptButton);
@@ -216,6 +237,20 @@ async function runOptionsAssertions(): Promise<void> {
   });
 
   try {
+    const shortcutCurrentConvert = getRequiredElement<HTMLElement>(
+      page.dom.window.document,
+      '#options-shortcut-current-convert'
+    );
+    assert.match(shortcutCurrentConvert.textContent || '', /Alt\+C/);
+
+    const optionsShortcutButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#options-open-shortcut-settings'
+    );
+    clickElement(optionsShortcutButton);
+    await page.waitForIdle();
+    assert.equal(chromeMock.logs.createdTabs.at(-1)?.url, 'chrome://extensions/shortcuts');
+
     const campaignInput = getRequiredElement<HTMLInputElement>(page.dom.window.document, '#pro-intent-campaign');
     assert.equal(campaignInput.closest('.form-group')?.hasAttribute('hidden'), true);
     campaignInput.value = 'twitter';

@@ -62,7 +62,6 @@ test('context menu handler processes selection prompt via production background 
 
     await invokeContextMenu(driverPage, {
       menuItemId: 'builtin-summary-article',
-      parentMenuItemId: 'magic-copy-with-prompt',
       selectionText: await page.locator('#article-paragraph').textContent() || '',
       pageUrl: page.url()
     });

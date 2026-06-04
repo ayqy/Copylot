@@ -526,7 +526,7 @@
     "description": "Label for the master switch to enable/disable the feature"
   },
   "enableFeature": {
-    "message": "Enable Feature",
+    "message": "Enable Smart Copy",
     "description": "Label for the feature switch"
   },
   "interactionMode": {
@@ -546,11 +546,11 @@
     "description": "Label for the hover trigger switch"
   },
   "convertButton": {
-    "message": "AI Convert"
+    "message": "Copy to AI"
   },
   "convertPage": {
-    "message": "Convert to AI-Friendly Format",
-    "description": "Context menu item to convert page content"
+    "message": "Copy to AI",
+    "description": "Context menu item to copy page content for AI"
   },
   "magicCopyWithPrompt": {
     "message": "Magic Copy with Prompt",
@@ -617,12 +617,156 @@
     "description": "Onboarding step 2 description"
   },
   "popupOnboardingStep3Title": {
-    "message": "Step 3: Manage Prompts",
+    "message": "Step 3: Quick Prompts",
     "description": "Onboarding step 3 title"
   },
   "popupOnboardingStep3Desc1": {
-    "message": "Use \"Manage Prompts\" to add or edit templates, and open Options later only when you need more detailed settings.",
+    "message": "Bind your most-used prompts to quick slots so buttons and shortcuts can trigger them without drilling into menus.",
     "description": "Onboarding step 3 description"
+  },
+  "popupQuickActionsTitle": {
+    "message": "Quick Actions",
+    "description": "Popup quick actions heading"
+  },
+  "popupQuickActionsHint": {
+    "message": "Keep frequent actions at the top. Context menu stays, shortcuts are the shortest path.",
+    "description": "Popup quick actions subtitle"
+  },
+  "popupEnableFeatureHint": {
+    "message": "Turn this off to pause floating-button copy and standard copy entry points.",
+    "description": "Popup master switch helper text"
+  },
+  "expandMoreSettings": {
+    "message": "----Expand more settings v----",
+    "description": "Popup expand more settings button"
+  },
+  "collapseMoreSettings": {
+    "message": "----Collapse more settings ^----",
+    "description": "Popup collapse more settings button"
+  },
+  "shortcutNotSet": {
+    "message": "Not set",
+    "description": "Placeholder when a shortcut is not set"
+  },
+  "quickPromptSlot1": {
+    "message": "Quick Prompt 1",
+    "description": "Quick prompt slot 1 label"
+  },
+  "quickPromptSlot2": {
+    "message": "Quick Prompt 2",
+    "description": "Quick prompt slot 2 label"
+  },
+  "quickPromptSlot3": {
+    "message": "Quick Prompt 3",
+    "description": "Quick prompt slot 3 label"
+  },
+  "quickPromptSetupSlot1": {
+    "message": "Bind a prompt to quick slot 1 in Options",
+    "description": "Placeholder for quick prompt 1 when not configured"
+  },
+  "quickPromptSetupSlot2": {
+    "message": "Bind a prompt to quick slot 2 in Options",
+    "description": "Placeholder for quick prompt 2 when not configured"
+  },
+  "quickPromptSetupSlot3": {
+    "message": "Bind a prompt to quick slot 3 in Options",
+    "description": "Placeholder for quick prompt 3 when not configured"
+  },
+  "quickConvertCommandHint": {
+    "message": "Alt+C / Option+C",
+    "description": "Default shortcut hint for Copy to AI"
+  },
+  "quickPromptSlot1CommandHint": {
+    "message": "Alt+1 / Option+1",
+    "description": "Default shortcut hint for Quick Prompt 1"
+  },
+  "quickPromptSlot2CommandHint": {
+    "message": "Alt+2 / Option+2",
+    "description": "Default shortcut hint for Quick Prompt 2"
+  },
+  "quickPromptSlot3CommandHint": {
+    "message": "Alt+3 / Option+3",
+    "description": "Default shortcut hint for Quick Prompt 3"
+  },
+  "quickActionSelectionFirst": {
+    "message": "Selection first. Falls back to the full page when nothing is selected.",
+    "description": "Quick action helper text"
+  },
+  "shortcutSettingsTitle": {
+    "message": "Shortcut Settings",
+    "description": "Shortcut settings section title"
+  },
+  "shortcutSettingsHint": {
+    "message": "System-level shortcuts are managed by Chrome. This panel shows current bindings and opens the official settings page.",
+    "description": "Shortcut settings section hint"
+  },
+  "shortcutCurrent": {
+    "message": "Current",
+    "description": "Current shortcut label"
+  },
+  "shortcutRecommended": {
+    "message": "Recommended",
+    "description": "Recommended shortcut label"
+  },
+  "shortcutCustomize": {
+    "message": "Customizable",
+    "description": "Shortcut can be customized"
+  },
+  "openShortcutSettings": {
+    "message": "Open Shortcut Settings",
+    "description": "Button to open Chrome extension shortcut settings"
+  },
+  "shortcutSettingsChromeHint": {
+    "message": "If a shortcut conflicts, change it from Chrome's extension shortcut page.",
+    "description": "Hint about editing shortcuts in Chrome"
+  },
+  "shortcutSettingsManualOpenHint": {
+    "message": "If the page did not open, visit chrome://extensions/shortcuts manually",
+    "description": "Manual fallback hint for shortcut settings page"
+  },
+  "shortcutPromptUnassigned": {
+    "message": "No Prompt Bound",
+    "description": "Placeholder when a quick prompt slot has no prompt bound"
+  },
+  "shortcutManagePromptBinding": {
+    "message": "Bind Prompt",
+    "description": "Call to action to manage prompt binding"
+  },
+  "promptQuickAccessSlot": {
+    "message": "Quick Prompt",
+    "description": "Prompt editor label for quick access slot"
+  },
+  "promptQuickAccessNone": {
+    "message": "No binding",
+    "description": "Prompt quick access none option"
+  },
+  "promptQuickAccess1": {
+    "message": "Quick Prompt 1",
+    "description": "Prompt quick access slot 1 option"
+  },
+  "promptQuickAccess2": {
+    "message": "Quick Prompt 2",
+    "description": "Prompt quick access slot 2 option"
+  },
+  "promptQuickAccess3": {
+    "message": "Quick Prompt 3",
+    "description": "Prompt quick access slot 3 option"
+  },
+  "commandQuickConvertDescription": {
+    "message": "Quickly run Copy to AI",
+    "description": "Description for the quick-convert command"
+  },
+  "commandQuickPrompt1Description": {
+    "message": "Quickly run Quick Prompt 1",
+    "description": "Description for the quick-prompt-slot-1 command"
+  },
+  "commandQuickPrompt2Description": {
+    "message": "Quickly run Quick Prompt 2",
+    "description": "Description for the quick-prompt-slot-2 command"
+  },
+  "commandQuickPrompt3Description": {
+    "message": "Quickly run Quick Prompt 3",
+    "description": "Description for the quick-prompt-slot-3 command"
   },
   "popupOnboardingOpenOptions": {
     "message": "Open Prompt Manager",

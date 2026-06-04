@@ -1,11 +1,14 @@
 // @ts-ignore: CSS import for build process
 import './popup.css';
+import { getActivePrompts, getSettings, saveSettings, type Settings, FORCE_UI_LANGUAGE } from '../shared/settings-manager';
 import {
-  getSettings,
-  saveSettings,
-  type Settings,
-  FORCE_UI_LANGUAGE
-} from '../shared/settings-manager';
+  getQuickCommandDefaultShortcut,
+  QUICK_CONVERT_COMMAND,
+  QUICK_PROMPT_SLOT_VALUES,
+  getQuickPromptSlotCommandName,
+  getQuickPromptBySlot,
+  type QuickPromptSlot
+} from '../shared/prompt-shortcuts';
 import {
   buildChromeWebStoreDetailUrl,
   buildChromeWebStoreReviewsUrl,
@@ -24,10 +27,10 @@ import {
 import { recordTelemetryEvent, sanitizeTelemetryEvents, TELEMETRY_EVENTS_KEY } from '../shared/telemetry';
 import { buildProWaitlistUrl } from '../shared/external-links';
 
-// DOM Elements
 interface PopupElements {
   versionDisplay: HTMLElement;
   devBadge: HTMLElement;
+  popupContent: HTMLElement;
   enableMagicCopySwitch: HTMLInputElement;
   enableHoverMagicCopySwitch: HTMLInputElement;
   enableClipboardAccumulatorSwitch: HTMLInputElement;
@@ -35,32 +38,33 @@ interface PopupElements {
   interactionDblClick: HTMLInputElement;
   formatMarkdown: HTMLInputElement;
   formatPlaintext: HTMLInputElement;
-  tableFormatMarkdown: HTMLInputElement; // Added for table format
-  tableFormatCsv: HTMLInputElement; // Added for table format
+  tableFormatMarkdown: HTMLInputElement;
+  tableFormatCsv: HTMLInputElement;
   attachTitle: HTMLInputElement;
   attachURL: HTMLInputElement;
   convertButton: HTMLButtonElement;
+  openShortcutSettingsButton: HTMLButtonElement;
+  shortcutCurrentConvert: HTMLElement;
+  shortcutRecommendedConvert: HTMLElement;
+  shortcutCurrentSlot1: HTMLElement;
+  shortcutCurrentSlot2: HTMLElement;
+  shortcutCurrentSlot3: HTMLElement;
+  shortcutRecommendedSlot1: HTMLElement;
+  shortcutRecommendedSlot2: HTMLElement;
+  shortcutRecommendedSlot3: HTMLElement;
+  shortcutSlot1PromptName: HTMLElement;
+  shortcutSlot2PromptName: HTMLElement;
+  shortcutSlot3PromptName: HTMLElement;
+  shortcutSettingsFeedback: HTMLElement;
   addPromptButton: HTMLButtonElement;
-  promptModal: HTMLElement;
-  promptForm: HTMLFormElement;
-  modalTitle: HTMLElement;
-  promptId: HTMLInputElement;
-  promptTitle: HTMLInputElement;
-  promptTemplate: HTMLTextAreaElement;
-  savePromptButton: HTMLButtonElement;
-  cancelPromptButton: HTMLButtonElement;
-  closeModalButton: HTMLElement;
-  popupContent: HTMLElement;
+  toggleMoreSettingsButton: HTMLButtonElement;
+  moreSettingsPanel: HTMLElement;
   feedbackLink: HTMLAnchorElement;
   shareLink: HTMLAnchorElement;
   copyShareButton: HTMLButtonElement;
   rateLink: HTMLAnchorElement;
-
-  // Pro entry
   upgradeProEntry: HTMLButtonElement;
   popupProWaitlistButton: HTMLButtonElement;
-
-  // Popup onboarding
   onboardingReopenButton: HTMLButtonElement;
   onboardingModal: HTMLElement;
   onboardingProgress: HTMLElement;
@@ -72,14 +76,39 @@ interface PopupElements {
   onboardingStep3: HTMLElement;
 }
 
+interface QuickActionElements {
+  button: HTMLButtonElement;
+  title: HTMLElement;
+  desc: HTMLElement;
+  shortcut: HTMLElement;
+}
+
 let elements: PopupElements;
 let currentSettings: Settings;
+let currentCommandShortcuts = new Map<string, string>();
 
 const POPUP_ONBOARDING_TOTAL_STEPS = 3;
 let onboardingCurrentStep = 1;
 let isOnboardingOpen = false;
 let onboardingSource: 'auto' | 'manual' = 'manual';
 const isE2EBuild = process.env.BUILD_TARGET === 'e2e';
+
+function getQuickActionElements(slot: QuickPromptSlot): QuickActionElements {
+  return {
+    button: document.getElementById(`quick-prompt-slot-${slot}-button`) as HTMLButtonElement,
+    title: document.getElementById(`quick-prompt-slot-${slot}-title`) as HTMLElement,
+    desc: document.getElementById(`quick-prompt-slot-${slot}-desc`) as HTMLElement,
+    shortcut: document.getElementById(`quick-prompt-slot-${slot}-shortcut`) as HTMLElement
+  };
+}
+
+function isMacPlatform(): boolean {
+  return /mac/i.test(navigator.platform || '') || /mac/i.test(navigator.userAgent || '');
+}
+
+function getShortcutPlatform() {
+  return isMacPlatform() ? 'mac' : 'default';
+}
 
 async function reportE2ECopiedText(text: string): Promise<void> {
   if (!isE2EBuild) {
@@ -141,48 +170,56 @@ async function resolveActiveTab(): Promise<chrome.tabs.Tab | null> {
   return tabs[0] || null;
 }
 
-/**
- * Get all required DOM elements
- */
+function createI18nGetMessage(): I18nGetMessage {
+  type MessageSubstitutions = Parameters<typeof chrome.i18n.getMessage>[1];
+  return (key: string, substitutions?: string | string[]) => {
+    return chrome.i18n.getMessage(key, substitutions as MessageSubstitutions);
+  };
+}
+
+function getMessage(key: string, substitutions?: string | string[]): string {
+  return chrome.i18n.getMessage(key, substitutions as Parameters<typeof chrome.i18n.getMessage>[1]) || key;
+}
+
 function getElements(): PopupElements {
   return {
     versionDisplay: document.getElementById('version-display') as HTMLElement,
     devBadge: document.getElementById('dev-badge') as HTMLElement,
+    popupContent: document.getElementById('popup-content') as HTMLElement,
     enableMagicCopySwitch: document.getElementById('enable-magic-copy-switch') as HTMLInputElement,
-    enableHoverMagicCopySwitch: document.getElementById(
-      'enable-hover-magic-copy-switch'
-    ) as HTMLInputElement,
-    enableClipboardAccumulatorSwitch: document.getElementById(
-      'enable-clipboard-accumulator-switch'
-    ) as HTMLInputElement,
+    enableHoverMagicCopySwitch: document.getElementById('enable-hover-magic-copy-switch') as HTMLInputElement,
+    enableClipboardAccumulatorSwitch: document.getElementById('enable-clipboard-accumulator-switch') as HTMLInputElement,
     interactionClick: document.getElementById('interaction-click') as HTMLInputElement,
     interactionDblClick: document.getElementById('interaction-dblclick') as HTMLInputElement,
     formatMarkdown: document.getElementById('format-markdown') as HTMLInputElement,
     formatPlaintext: document.getElementById('format-plaintext') as HTMLInputElement,
-    tableFormatMarkdown: document.getElementById('table-format-markdown') as HTMLInputElement, // Added
-    tableFormatCsv: document.getElementById('table-format-csv') as HTMLInputElement, // Added
+    tableFormatMarkdown: document.getElementById('table-format-markdown') as HTMLInputElement,
+    tableFormatCsv: document.getElementById('table-format-csv') as HTMLInputElement,
     attachTitle: document.getElementById('attach-title') as HTMLInputElement,
     attachURL: document.getElementById('attach-url') as HTMLInputElement,
     convertButton: document.getElementById('convert-button') as HTMLButtonElement,
+    openShortcutSettingsButton: document.getElementById('open-shortcut-settings-button') as HTMLButtonElement,
+    shortcutCurrentConvert: document.getElementById('shortcut-current-convert') as HTMLElement,
+    shortcutRecommendedConvert: document.getElementById('shortcut-recommended-convert') as HTMLElement,
+    shortcutCurrentSlot1: document.getElementById('shortcut-current-slot-1') as HTMLElement,
+    shortcutCurrentSlot2: document.getElementById('shortcut-current-slot-2') as HTMLElement,
+    shortcutCurrentSlot3: document.getElementById('shortcut-current-slot-3') as HTMLElement,
+    shortcutRecommendedSlot1: document.getElementById('shortcut-recommended-slot-1') as HTMLElement,
+    shortcutRecommendedSlot2: document.getElementById('shortcut-recommended-slot-2') as HTMLElement,
+    shortcutRecommendedSlot3: document.getElementById('shortcut-recommended-slot-3') as HTMLElement,
+    shortcutSlot1PromptName: document.getElementById('shortcut-slot-1-prompt-name') as HTMLElement,
+    shortcutSlot2PromptName: document.getElementById('shortcut-slot-2-prompt-name') as HTMLElement,
+    shortcutSlot3PromptName: document.getElementById('shortcut-slot-3-prompt-name') as HTMLElement,
+    shortcutSettingsFeedback: document.getElementById('shortcut-settings-feedback') as HTMLElement,
     addPromptButton: document.getElementById('add-prompt-button') as HTMLButtonElement,
-    promptModal: document.getElementById('prompt-modal') as HTMLElement,
-    promptForm: document.getElementById('prompt-form') as HTMLFormElement,
-    modalTitle: document.getElementById('modal-title') as HTMLElement,
-    promptId: document.getElementById('prompt-id') as HTMLInputElement,
-    promptTitle: document.getElementById('prompt-title') as HTMLInputElement,
-    promptTemplate: document.getElementById('prompt-template') as HTMLTextAreaElement,
-    savePromptButton: document.getElementById('save-prompt-button') as HTMLButtonElement,
-    cancelPromptButton: document.getElementById('cancel-prompt-button') as HTMLButtonElement,
-    closeModalButton: document.querySelector('.close-button') as HTMLElement,
-    popupContent: document.getElementById('popup-content') as HTMLElement,
+    toggleMoreSettingsButton: document.getElementById('toggle-more-settings') as HTMLButtonElement,
+    moreSettingsPanel: document.getElementById('more-settings-panel') as HTMLElement,
     feedbackLink: document.getElementById('feedback-link') as HTMLAnchorElement,
     shareLink: document.getElementById('share-link') as HTMLAnchorElement,
     copyShareButton: document.getElementById('copy-share-button') as HTMLButtonElement,
     rateLink: document.getElementById('rate-link') as HTMLAnchorElement,
-
     upgradeProEntry: document.getElementById('upgrade-pro-entry') as HTMLButtonElement,
     popupProWaitlistButton: document.getElementById('popup-pro-waitlist') as HTMLButtonElement,
-
     onboardingReopenButton: document.getElementById('popup-onboarding-reopen') as HTMLButtonElement,
     onboardingModal: document.getElementById('popup-onboarding-modal') as HTMLElement,
     onboardingProgress: document.getElementById('popup-onboarding-progress') as HTMLElement,
@@ -195,99 +232,27 @@ function getElements(): PopupElements {
   };
 }
 
-function createI18nGetMessage(): I18nGetMessage {
-  type MessageSubstitutions = Parameters<typeof chrome.i18n.getMessage>[1];
-  return (key: string, substitutions?: string | string[]) => {
-    return chrome.i18n.getMessage(key, substitutions as MessageSubstitutions);
-  };
-}
-
-/**
- * Localize the UI based on current locale
- */
 function localizeUI() {
   if (FORCE_UI_LANGUAGE) {
     document.documentElement.lang = FORCE_UI_LANGUAGE;
   }
 
-  // Find all elements with data-i18n attribute
   const i18nElements = document.querySelectorAll('[data-i18n]');
-
   i18nElements.forEach((element) => {
     const key = element.getAttribute('data-i18n');
-    if (key) {
-      const message = chrome.i18n.getMessage(key);
-      if (message) {
-        if (element.tagName === 'INPUT' && element.getAttribute('type') === 'button') {
-          (element as HTMLInputElement).value = message;
-        } else {
-          element.textContent = message;
-        }
-      }
+    if (!key) {
+      return;
+    }
+
+    const message = chrome.i18n.getMessage(key);
+    if (message) {
+      element.textContent = message;
     }
   });
 
-  // Set page title
   document.title = chrome.i18n.getMessage('copylotSettings') || 'Copylot Settings';
 }
 
-/**
- * Load current settings and update UI
- */
-async function loadSettings() {
-  try {
-    currentSettings = await getSettings();
-    updateUIFromSettings(currentSettings);
-    console.debug('Settings loaded:', currentSettings);
-  } catch (error) {
-    console.error('Error loading settings:', error);
-  }
-}
-
-/**
- * Update UI elements based on settings
- */
-function updateUIFromSettings(settings: Settings) {
-  // Enable/Disable Magic Copy
-  elements.enableMagicCopySwitch.checked = settings.isMagicCopyEnabled;
-  elements.enableHoverMagicCopySwitch.checked = settings.isHoverMagicCopyEnabled;
-  elements.enableClipboardAccumulatorSwitch.checked = settings.isClipboardAccumulatorEnabled;
-
-  // Interaction mode
-  if (settings.interactionMode === 'click') {
-    elements.interactionClick.checked = true;
-  } else {
-    elements.interactionDblClick.checked = true;
-  }
-
-  // Output format
-  if (settings.outputFormat === 'markdown') {
-    elements.formatMarkdown.checked = true;
-  } else {
-    elements.formatPlaintext.checked = true;
-  }
-
-  // Table output format
-  if (settings.tableOutputFormat === 'markdown') {
-    elements.tableFormatMarkdown.checked = true;
-  } else {
-    elements.tableFormatCsv.checked = true;
-  }
-
-  // Additional info
-  elements.attachTitle.checked = settings.attachTitle;
-  elements.attachURL.checked = settings.attachURL;
-
-  // language field removed from UI; keep default stored value
-}
-
-function syncOnboardingEntryVisibility(settings: Settings) {
-  elements.onboardingReopenButton.hidden = !shouldAutoShowOnboarding(settings);
-}
-
-/**
- * Get settings from UI
- */
 function getSettingsFromUI(): Partial<Settings> {
   return {
     isMagicCopyEnabled: elements.enableMagicCopySwitch.checked,
@@ -295,25 +260,17 @@ function getSettingsFromUI(): Partial<Settings> {
     isClipboardAccumulatorEnabled: elements.enableClipboardAccumulatorSwitch.checked,
     interactionMode: elements.interactionClick.checked ? 'click' : 'dblclick',
     outputFormat: elements.formatMarkdown.checked ? 'markdown' : 'plaintext',
-    tableOutputFormat: elements.tableFormatMarkdown.checked ? 'markdown' : 'csv', // Added
+    tableOutputFormat: elements.tableFormatMarkdown.checked ? 'markdown' : 'csv',
     attachTitle: elements.attachTitle.checked,
     attachURL: elements.attachURL.checked
-    // language field removed from UI; keep default stored value
   };
 }
 
-/**
- * Save settings from UI
- */
 async function saveCurrentSettings() {
   try {
     const newSettings = getSettingsFromUI();
     await saveSettings(newSettings);
-
-    // Update current settings
     currentSettings = { ...currentSettings, ...newSettings };
-
-    console.debug('Settings saved:', newSettings);
   } catch (error) {
     console.error('Error saving settings:', error);
   }
@@ -323,16 +280,29 @@ function shouldAutoShowOnboarding(settings: Settings): boolean {
   return settings.popupOnboardingCompletedVersion < settings.popupOnboardingVersion;
 }
 
+function syncOnboardingEntryVisibility(settings: Settings) {
+  elements.onboardingReopenButton.hidden = !shouldAutoShowOnboarding(settings);
+}
+
+function setMoreSettingsExpanded(expanded: boolean) {
+  elements.toggleMoreSettingsButton.setAttribute('aria-expanded', String(expanded));
+  elements.moreSettingsPanel.hidden = !expanded;
+  elements.toggleMoreSettingsButton.textContent = expanded
+    ? getMessage('collapseMoreSettings')
+    : getMessage('expandMoreSettings');
+}
+
 function setOnboardingStep(step: number) {
   onboardingCurrentStep = Math.min(Math.max(step, 1), POPUP_ONBOARDING_TOTAL_STEPS);
-
   elements.onboardingStep1.hidden = onboardingCurrentStep !== 1;
   elements.onboardingStep2.hidden = onboardingCurrentStep !== 2;
   elements.onboardingStep3.hidden = onboardingCurrentStep !== 3;
-
   elements.onboardingProgress.textContent = `${onboardingCurrentStep}/${POPUP_ONBOARDING_TOTAL_STEPS}`;
-
   elements.onboardingPrevButton.disabled = onboardingCurrentStep === 1;
+  elements.onboardingNextButton.textContent =
+    onboardingCurrentStep >= POPUP_ONBOARDING_TOTAL_STEPS
+      ? getMessage('popupOnboardingFinish')
+      : getMessage('popupOnboardingNext');
 }
 
 function openOnboardingModal(source: 'auto' | 'manual') {
@@ -357,26 +327,239 @@ async function completeOnboarding(action: 'finish' | 'skip') {
       popupOnboardingCompletedVersion: completedVersion,
       popupOnboardingCompletedAt: completedAt
     });
-
     currentSettings = {
       ...currentSettings,
       popupOnboardingCompletedVersion: completedVersion,
       popupOnboardingCompletedAt: completedAt
     };
-
     syncOnboardingEntryVisibility(currentSettings);
-    closeOnboardingModal();
   } catch (error) {
     console.error('Error completing onboarding:', error);
+  } finally {
     closeOnboardingModal();
   }
 }
 
-/**
- * Setup event listeners for form elements
- */
+async function loadCommandShortcuts() {
+  currentCommandShortcuts = new Map<string, string>();
+
+  if (!chrome.commands?.getAll) {
+    return;
+  }
+
+  try {
+    const commands = await chrome.commands.getAll();
+    commands.forEach((command) => {
+      if (command.name) {
+        currentCommandShortcuts.set(command.name, command.shortcut || '');
+      }
+    });
+  } catch (error) {
+    console.warn('Failed to load command shortcuts:', error);
+  }
+}
+
+function getCommandShortcutLabel(command: string, fallback: string): string {
+  const resolved = currentCommandShortcuts.get(command)?.trim();
+  return resolved || fallback || getMessage('shortcutNotSet');
+}
+
+function getFallbackPromptShortcut(slot: QuickPromptSlot): string {
+  return getQuickCommandDefaultShortcut(getQuickPromptSlotCommandName(slot), getShortcutPlatform());
+}
+
+function getFallbackConvertShortcut(): string {
+  return getQuickCommandDefaultShortcut(QUICK_CONVERT_COMMAND, getShortcutPlatform());
+}
+
+function setShortcutSettingsFeedback(messageKey: string | null) {
+  if (!messageKey) {
+    elements.shortcutSettingsFeedback.hidden = true;
+    elements.shortcutSettingsFeedback.textContent = '';
+    return;
+  }
+
+  elements.shortcutSettingsFeedback.hidden = false;
+  elements.shortcutSettingsFeedback.textContent = getMessage(messageKey);
+}
+
+async function openShortcutSettingsPage() {
+  try {
+    await reportE2EOpenedUrl('chrome://extensions/shortcuts');
+    await chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
+    setShortcutSettingsFeedback(null);
+  } catch (error) {
+    console.warn('Failed to open shortcut settings page:', error);
+    setShortcutSettingsFeedback('shortcutSettingsManualOpenHint');
+  }
+}
+
+function updateShortcutSettingsPanel(settings: Settings) {
+  const activePrompts = getActivePrompts(settings.userPrompts);
+  const platform = getShortcutPlatform();
+
+  elements.shortcutCurrentConvert.textContent = getCommandShortcutLabel(
+    QUICK_CONVERT_COMMAND,
+    getQuickCommandDefaultShortcut(QUICK_CONVERT_COMMAND, platform)
+  );
+  elements.shortcutRecommendedConvert.textContent = getQuickCommandDefaultShortcut(QUICK_CONVERT_COMMAND, platform);
+
+  const slotCurrentMap: Record<QuickPromptSlot, HTMLElement> = {
+    1: elements.shortcutCurrentSlot1,
+    2: elements.shortcutCurrentSlot2,
+    3: elements.shortcutCurrentSlot3
+  };
+  const slotRecommendedMap: Record<QuickPromptSlot, HTMLElement> = {
+    1: elements.shortcutRecommendedSlot1,
+    2: elements.shortcutRecommendedSlot2,
+    3: elements.shortcutRecommendedSlot3
+  };
+  const slotPromptNameMap: Record<QuickPromptSlot, HTMLElement> = {
+    1: elements.shortcutSlot1PromptName,
+    2: elements.shortcutSlot2PromptName,
+    3: elements.shortcutSlot3PromptName
+  };
+
+  QUICK_PROMPT_SLOT_VALUES.forEach((slot) => {
+    const prompt = getQuickPromptBySlot(activePrompts, slot);
+    const command = getQuickPromptSlotCommandName(slot);
+    slotCurrentMap[slot].textContent = getCommandShortcutLabel(
+      command,
+      getQuickCommandDefaultShortcut(command, platform)
+    );
+    slotRecommendedMap[slot].textContent = getQuickCommandDefaultShortcut(command, platform);
+    slotPromptNameMap[slot].textContent = prompt?.title || getMessage('shortcutPromptUnassigned');
+  });
+}
+
+async function runQuickAction(command: string) {
+  try {
+    const tab = await resolveActiveTab();
+    if (!tab?.id) {
+      return;
+    }
+
+    if (command === QUICK_CONVERT_COMMAND) {
+      chrome.tabs.sendMessage(tab.id, {
+        type: 'CONVERT_PAGE_WITH_SELECTION'
+      });
+    } else {
+      await chrome.runtime.sendMessage({
+        type: 'run-quick-action',
+        command,
+        tabId: tab.id
+      });
+    }
+
+    window.close();
+  } catch (error) {
+    console.error('Failed to run quick action from popup:', error);
+  }
+}
+
+function renderQuickPromptButtons(settings: Settings) {
+  const activePrompts = getActivePrompts(settings.userPrompts);
+  QUICK_PROMPT_SLOT_VALUES.forEach((slot) => {
+    const prompt = getQuickPromptBySlot(activePrompts, slot);
+    const quickAction = getQuickActionElements(slot);
+    const commandName = getQuickPromptSlotCommandName(slot);
+    quickAction.shortcut.textContent = getCommandShortcutLabel(commandName, getFallbackPromptShortcut(slot));
+
+    if (prompt) {
+      quickAction.button.disabled = false;
+      quickAction.button.dataset.promptId = prompt.id;
+      quickAction.title.textContent = prompt.title;
+      quickAction.desc.textContent = getMessage('quickActionSelectionFirst');
+    } else {
+      quickAction.button.disabled = false;
+      quickAction.button.dataset.promptId = '';
+      quickAction.title.textContent = getMessage(`quickPromptSlot${slot}`);
+      quickAction.desc.textContent = getMessage(`quickPromptSetupSlot${slot}`);
+    }
+  });
+}
+
+function updateUIFromSettings(settings: Settings) {
+  elements.enableMagicCopySwitch.checked = settings.isMagicCopyEnabled;
+  elements.enableHoverMagicCopySwitch.checked = settings.isHoverMagicCopyEnabled;
+  elements.enableClipboardAccumulatorSwitch.checked = settings.isClipboardAccumulatorEnabled;
+  elements.interactionClick.checked = settings.interactionMode === 'click';
+  elements.interactionDblClick.checked = settings.interactionMode !== 'click';
+  elements.formatMarkdown.checked = settings.outputFormat === 'markdown';
+  elements.formatPlaintext.checked = settings.outputFormat !== 'markdown';
+  elements.tableFormatMarkdown.checked = settings.tableOutputFormat === 'markdown';
+  elements.tableFormatCsv.checked = settings.tableOutputFormat !== 'markdown';
+  elements.attachTitle.checked = settings.attachTitle;
+  elements.attachURL.checked = settings.attachURL;
+  elements.convertButton.querySelector('.shortcut-hint')!.textContent = getCommandShortcutLabel(
+    QUICK_CONVERT_COMMAND,
+    getFallbackConvertShortcut()
+  );
+  renderQuickPromptButtons(settings);
+  updateShortcutSettingsPanel(settings);
+}
+
+async function loadSettingsAndCommands() {
+  try {
+    const [settings] = await Promise.all([getSettings(), loadCommandShortcuts()]);
+    currentSettings = settings;
+    updateUIFromSettings(currentSettings);
+  } catch (error) {
+    console.error('Error loading popup settings:', error);
+  }
+}
+
+function setupQuickActionListeners() {
+  elements.convertButton.addEventListener('click', () => {
+    void runQuickAction(QUICK_CONVERT_COMMAND);
+  });
+
+  QUICK_PROMPT_SLOT_VALUES.forEach((slot) => {
+    const quickAction = getQuickActionElements(slot);
+    quickAction.button.addEventListener('click', () => {
+      const prompt = getQuickPromptBySlot(getActivePrompts(currentSettings.userPrompts), slot);
+      if (!prompt) {
+        chrome.runtime.openOptionsPage();
+        window.close();
+        return;
+      }
+      void runQuickAction(getQuickPromptSlotCommandName(slot));
+    });
+  });
+}
+
+function setupSettingsListeners() {
+  elements.interactionClick.addEventListener('change', saveCurrentSettings);
+  elements.interactionDblClick.addEventListener('change', saveCurrentSettings);
+  elements.formatMarkdown.addEventListener('change', saveCurrentSettings);
+  elements.formatPlaintext.addEventListener('change', saveCurrentSettings);
+  elements.tableFormatMarkdown.addEventListener('change', saveCurrentSettings);
+  elements.tableFormatCsv.addEventListener('change', saveCurrentSettings);
+  elements.attachTitle.addEventListener('change', saveCurrentSettings);
+  elements.attachURL.addEventListener('change', saveCurrentSettings);
+  elements.enableMagicCopySwitch.addEventListener('change', saveCurrentSettings);
+  elements.enableHoverMagicCopySwitch.addEventListener('change', saveCurrentSettings);
+  elements.enableClipboardAccumulatorSwitch.addEventListener('change', saveCurrentSettings);
+  elements.toggleMoreSettingsButton.addEventListener('click', () => {
+    const expanded = elements.toggleMoreSettingsButton.getAttribute('aria-expanded') === 'true';
+    setMoreSettingsExpanded(!expanded);
+  });
+}
+
 function setupEventListeners() {
-  const getMessage = createI18nGetMessage();
+  const i18nGetMessage = createI18nGetMessage();
+
+  setupQuickActionListeners();
+  setupSettingsListeners();
+
+  elements.addPromptButton.addEventListener('click', () => {
+    chrome.runtime.openOptionsPage();
+    window.close();
+  });
+
+  elements.openShortcutSettingsButton.addEventListener('click', () => {
+    void openShortcutSettingsPage();
+  });
 
   elements.upgradeProEntry.addEventListener('click', async () => {
     const props: Record<string, string> = { source: 'popup' };
@@ -404,46 +587,6 @@ function setupEventListeners() {
     });
     await reportE2EOpenedUrl(waitlistUrl);
     chrome.tabs.create({ url: waitlistUrl });
-    window.close();
-  });
-
-  // Interaction mode radio buttons
-  elements.interactionClick.addEventListener('change', saveCurrentSettings);
-  elements.interactionDblClick.addEventListener('change', saveCurrentSettings);
-
-  // Output format radio buttons
-  elements.formatMarkdown.addEventListener('change', saveCurrentSettings);
-  elements.formatPlaintext.addEventListener('change', saveCurrentSettings);
-
-  // Table output format radio buttons
-  elements.tableFormatMarkdown.addEventListener('change', saveCurrentSettings);
-  elements.tableFormatCsv.addEventListener('change', saveCurrentSettings);
-
-  // Additional info checkboxes
-  elements.attachTitle.addEventListener('change', saveCurrentSettings);
-  elements.attachURL.addEventListener('change', saveCurrentSettings);
-
-  // Enable/Disable Magic Copy switch
-  elements.enableMagicCopySwitch.addEventListener('change', saveCurrentSettings);
-  elements.enableHoverMagicCopySwitch.addEventListener('change', saveCurrentSettings);
-  elements.enableClipboardAccumulatorSwitch.addEventListener('change', saveCurrentSettings);
-
-  // Conversion button
-  elements.convertButton.addEventListener('click', () => {
-    void (async () => {
-      const tab = await resolveActiveTab();
-      if (tab?.id) {
-        chrome.tabs.sendMessage(tab.id, {
-          type: 'CONVERT_PAGE_WITH_SELECTION'
-        });
-        window.close();
-      }
-    })();
-  });
-
-  // Prompt manager event listeners - now opens options page
-  elements.addPromptButton.addEventListener('click', () => {
-    chrome.runtime.openOptionsPage();
     window.close();
   });
 
@@ -492,7 +635,7 @@ function setupEventListeners() {
         growthStatsSnapshot,
         growthFunnelSummarySnapshot,
         telemetryEventsSnapshot,
-        getMessage
+        getMessage: i18nGetMessage
       });
       await reportE2EOpenedUrl(feedbackUrl);
       chrome.tabs.create({ url: feedbackUrl });
@@ -524,7 +667,7 @@ function setupEventListeners() {
 
   elements.copyShareButton.addEventListener('click', async () => {
     const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id, buildWomUtmParams('popup'));
-    const shareText = buildShareCopyText(getMessage, storeUrl);
+    const shareText = buildShareCopyText(i18nGetMessage, storeUrl);
     const originalText = elements.copyShareButton.textContent || '';
 
     try {
@@ -539,28 +682,19 @@ function setupEventListeners() {
       elements.copyShareButton.textContent = originalText;
     }
   });
-  // Remove old modal handlers as we're redirecting to options page
-  // elements.promptForm.addEventListener('submit', handleSavePrompt);
-  // elements.cancelPromptButton.addEventListener('click', closeModal);
-  // elements.closeModalButton.addEventListener('click', closeModal);
-  // window.addEventListener('click', (event) => {
-  //   if (event.target == elements.promptModal) {
-  //     closeModal();
-  //   }
-  // });
 
-  // Onboarding entry
   elements.onboardingReopenButton.addEventListener('click', () => {
     openOnboardingModal('manual');
   });
 
-  // Onboarding modal controls
   elements.onboardingSkipButton.addEventListener('click', () => {
-    completeOnboarding('skip');
+    void completeOnboarding('skip');
   });
+
   elements.onboardingPrevButton.addEventListener('click', () => {
     setOnboardingStep(onboardingCurrentStep - 1);
   });
+
   elements.onboardingNextButton.addEventListener('click', () => {
     if (onboardingCurrentStep >= POPUP_ONBOARDING_TOTAL_STEPS) {
       void completeOnboarding('finish');
@@ -569,107 +703,54 @@ function setupEventListeners() {
     setOnboardingStep(onboardingCurrentStep + 1);
   });
 
-  // Click outside modal-content closes onboarding (acts like skip)
   elements.onboardingModal.addEventListener('click', (event) => {
     if (event.target === elements.onboardingModal) {
-      completeOnboarding('skip');
+      void completeOnboarding('skip');
     }
   });
 
-  // Escape closes onboarding (acts like skip)
   document.addEventListener('keydown', (event) => {
-    if (!isOnboardingOpen) return;
+    if (!isOnboardingOpen) {
+      return;
+    }
     if (event.key === 'Escape') {
-      completeOnboarding('skip');
+      void completeOnboarding('skip');
     }
   });
 }
 
-/**
- * Handle form submission (prevent default)
- */
 function setupFormHandler() {
   const form = document.getElementById('settings-form') as HTMLFormElement;
-  if (form) {
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-    });
-  }
-}
-
-/**
- * Setup keyboard navigation
- */
-function setupKeyboardNavigation() {
-  // Allow Enter/Space to toggle radio and checkbox options
-  document.addEventListener('keydown', (event) => {
-    const target = event.target as HTMLElement;
-
-    if (
-      ((event.key === 'Enter' || event.key === ' ') && target.classList.contains('radio-option')) ||
-      target.classList.contains('checkbox-option')
-    ) {
-      const input = target.querySelector('input') as HTMLInputElement;
-      if (input) {
-        input.click();
-        event.preventDefault();
-      }
-    }
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
   });
 }
 
-/**
- * Add accessibility attributes
- */
-function setupAccessibility() {
-  // Add ARIA labels and roles where needed
-  const radioOptions = document.querySelectorAll('.radio-option');
-  radioOptions.forEach((option, index) => {
-    option.setAttribute('role', 'radio');
-    option.setAttribute('tabindex', index === 0 ? '0' : '-1');
-  });
-
-  const checkboxOptions = document.querySelectorAll('.checkbox-option');
-  checkboxOptions.forEach((option) => {
-    option.setAttribute('role', 'checkbox');
-    option.setAttribute('tabindex', '0');
-  });
-}
-
-/**
- * Initialize the popup
- */
 async function initialize() {
   try {
-    console.debug('Initializing popup...');
-
-    // Get DOM elements
     elements = getElements();
     void recordTelemetryEvent('popup_opened');
     void markFirstPopupOpened().catch((error) => {
       console.warn('Failed to mark first popup opened:', error);
     });
 
-    // @ts-ignore: 环境变量在构建时注入
-    const isDevBuild =
-      process.env.NODE_ENV !== 'production' || process.env.BUILD_TARGET !== 'production';
+    // @ts-ignore: injected at build time
+    const isDevBuild = process.env.NODE_ENV !== 'production' || process.env.BUILD_TARGET !== 'production';
     if (isDevBuild) {
       elements.devBadge.hidden = false;
     }
 
-    // Set version number
     const manifest = chrome.runtime.getManifest();
     if (manifest.version) {
       elements.versionDisplay.textContent = `V${manifest.version}`;
     }
 
-    // 彩蛋功能：三次点击版本号打开测试运行器（仅开发环境）
-    // @ts-ignore: 环境变量在构建时注入
+    // @ts-ignore: injected at build time
     if (process.env.NODE_ENV !== 'production' || process.env.BUILD_TARGET !== 'production') {
       let clickCount = 0;
       let clickTimer: number | null = null;
       elements.versionDisplay.addEventListener('click', () => {
-        clickCount++;
+        clickCount += 1;
         if (clickTimer) {
           clearTimeout(clickTimer);
         }
@@ -679,44 +760,32 @@ async function initialize() {
 
         if (clickCount === 3) {
           clickCount = 0;
-          clearTimeout(clickTimer);
+          clearTimeout(clickTimer!);
           chrome.tabs.create({ url: chrome.runtime.getURL('test/index.html') });
         }
       });
     }
 
-    // Localize UI
     localizeUI();
-
-    // Load and display current settings
-    await loadSettings();
+    setMoreSettingsExpanded(false);
+    await loadSettingsAndCommands();
     syncOnboardingEntryVisibility(currentSettings);
-
-    // Setup event handlers
     setupEventListeners();
     setupFormHandler();
-    setupKeyboardNavigation();
-    setupAccessibility();
 
     const shouldForceShowOnboarding = window.location.hash === '#onboarding';
-
-    // Deeplink: force show onboarding (manual re-open), ignoring completed state.
     if (shouldForceShowOnboarding) {
       openOnboardingModal('manual');
     } else if (shouldAutoShowOnboarding(currentSettings)) {
-      // Auto show onboarding for new users (zero-disturb: only when not completed)
       openOnboardingModal('auto');
     }
-
-    console.debug('Popup initialized successfully');
   } catch (error) {
     console.error('Error initializing popup:', error);
   }
 }
 
-// Initialize when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initialize);
 } else {
-  initialize();
+  void initialize();
 }

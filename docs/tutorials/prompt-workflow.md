@@ -6,8 +6,8 @@
 - EN: Prompt workflow: in 3 minutes, copy “instruction + web content” and paste to AI
 
 ### 1.2 TL;DR / TL;DR
-- ZH：准备一个含 `{content}` 的 Prompt 模板；在网页上用「悬浮按钮 Prompt 菜单」（块级）或右键 `智能复制+自定义提示（Magic Copy with Prompt）`（选区优先：Selection > Page）选择 Prompt。Copylot 会把 **Prompt + 提取到的内容** 合并复制到剪贴板；如果在 Options 中为该 Prompt（或默认设置）开启了 `复制后自动打开` 且目标 Chat 服务为启用状态，会在复制后打开对应 Chat 的新标签页（不会自动粘贴）。
-- EN: Create a prompt template with `{content}`; on any page, use the “floating button prompt menu” (block-level) or the context menu `Magic Copy with Prompt` (selection-first: Selection > Page). Copylot copies **prompt + extracted content** into your clipboard. If `Auto open after copy` is enabled (per-prompt or default) and the target chat service is enabled, Copylot opens the chat in a new tab after copying (it does NOT auto-paste).
+- ZH：准备一个含 `{content}` 的 Prompt 模板；把最常用的 1-3 个 Prompt 绑定到快捷位。之后你可以通过「Popup 顶部快捷按钮」、「快捷键」，或右键 `Copylot > 某个 Prompt` / 悬浮按钮 Prompt 菜单来触发。Copylot 会把 **Prompt + 提取到的内容** 合并复制到剪贴板；如果在 Options 中为该 Prompt（或默认设置）开启了 `复制后自动打开` 且目标 Chat 服务为启用状态，会在复制后打开对应 Chat 的新标签页（不会自动粘贴）。
+- EN: Create a prompt template with `{content}` and bind your most-used 1-3 prompts to quick slots. Then you can trigger them from popup quick buttons, keyboard shortcuts, or `Copylot > Prompt` in the context menu / the floating prompt menu. Copylot copies **prompt + extracted content** into your clipboard. If `Auto open after copy` is enabled (per-prompt or default) and the target chat service is enabled, Copylot opens the chat in a new tab after copying (it does NOT auto-paste).
 
 ## 2) 适用人群与场景 / Audience & Scenario
 - ZH：适合经常把网页段落交给 AI 做固定操作（总结/翻译/改写/提取要点/生成行动项）的人：你只需要“选中范围 + 选一个 Prompt”，然后粘贴给 AI。
@@ -80,13 +80,15 @@
    EN: Create a new prompt (or edit an existing one). Example templates (pick one):
    - Example 1 (summary): `Summarize the following content in 3 sentences:\n\n{content}`
    - Example 2 (translate): `Translate the following content into English:\n\n{content}`
+4. ZH：如果这是高频 Prompt，把它绑定到 `快捷 Prompt 1 / 2 / 3` 之一。
+   EN: If this is a frequent prompt, bind it to `Quick Prompt 1 / 2 / 3`.
 
 ### 4.3 路径 A：悬浮按钮 Prompt 菜单（块级复制）/ Path A: Floating button prompt menu (block-level)
-4. ZH：回到示例页面，在你想处理的段落/内容块上 **单击**（或按你设置的 `Mode` 双击）。页面会出现 Copylot 高亮与一个“悬浮按钮”。
+5. ZH：回到示例页面，在你想处理的段落/内容块上 **单击**（或按你设置的 `Mode` 双击）。页面会出现 Copylot 高亮与一个“悬浮按钮”。
    EN: Back on the sample page, **single-click** (or double-click based on your `Mode`) on the paragraph/block you want. You’ll see Copylot highlight and a floating button.
-5. ZH：把鼠标移动到悬浮按钮上，悬浮按钮会展开 Prompt 列表；点击其中一个 Prompt。
+6. ZH：把鼠标移动到悬浮按钮上，悬浮按钮会展开 Prompt 列表；点击其中一个 Prompt。
    EN: Hover on the floating button to expand the prompt list; click one prompt.
-6. ZH：复制完成：剪贴板里会得到“Prompt + 内容”的合并文本。把它粘贴到：
+7. ZH：复制完成：剪贴板里会得到“Prompt + 内容”的合并文本。把它粘贴到：
    - 纯文本编辑器（例如记事本/VS Code）：应看到完整文本与换行
    - 任意 Chat 输入框：应可直接发送（不会自动发送）
    EN: Done: your clipboard now contains “prompt + content”. Paste into:
@@ -94,14 +96,30 @@
    - Any chat input box: paste-ready (Copylot never auto-sends)
 
 ### 4.4 路径 B：右键菜单 Prompt（选区优先：Selection > Page）/ Path B: Context menu prompt (selection-first: Selection > Page)
-7. ZH：（验证“选区优先”）在页面中先**划词选中**一段文字 → 右键 → 选择 `智能复制+自定义提示（Magic Copy with Prompt）` → 选择某个 Prompt。
-   EN: (Verify selection-first) **Select** a piece of text → right-click → `Magic Copy with Prompt` → pick a prompt.
-8. ZH：复制完成：剪贴板里应只包含该**选区内容**（并按 Prompt 规则拼装），不应出现整页内容。
+8. ZH：（验证“选区优先”）在页面中先**划词选中**一段文字 → 右键 → `Copylot` → 选择某个 Prompt。
+   EN: (Verify selection-first) **Select** a piece of text → right-click → `Copylot` → pick a prompt.
+9. ZH：复制完成：剪贴板里应只包含该**选区内容**（并按 Prompt 规则拼装），不应出现整页内容。
    EN: Done: clipboard should contain **only the selection** (merged with the prompt), not the whole page.
-9. ZH：（验证“无选区=整页”）点击页面空白处取消选区 → 右键 → 选择同一 Prompt。
-   EN: (Verify no-selection = page) Click blank area to clear selection → right-click → pick the same prompt.
-10. ZH：复制完成：该路径会对**当前页面主要内容（整页）**做提取与格式化，再与 Prompt 合并复制到剪贴板（与 `PROCESS_PAGE_WITH_PROMPT` 行为一致）。
+10. ZH：（验证“无选区=整页”）点击页面空白处取消选区 → 右键 → `Copylot` → 选择同一 Prompt。
+    EN: (Verify no-selection = page) Click blank area to clear selection → right-click → `Copylot` → pick the same prompt.
+11. ZH：复制完成：该路径会对**当前页面主要内容（整页）**做提取与格式化，再与 Prompt 合并复制到剪贴板（与 `PROCESS_PAGE_WITH_PROMPT` 行为一致）。
     EN: Done: this path extracts/formats the **main content of the current page**, merges it with the prompt, and copies to clipboard (same behavior as `PROCESS_PAGE_WITH_PROMPT`).
+
+### 4.5 路径 C：快捷键 / Popup 顶部按钮（最短路径）/ Path C: Keyboard shortcut / Popup quick buttons (shortest path)
+12. ZH：为高频 Prompt 绑定了快捷位后，可直接使用：
+    - `Alt + 1 / 2 / 3`（macOS 为 `Option + 1 / 2 / 3`）
+    - 或打开 Popup，点击顶部的 `快捷 Prompt 1 / 2 / 3`
+    EN: After binding a quick slot, you can trigger it directly with:
+    - `Alt + 1 / 2 / 3` (macOS: `Option + 1 / 2 / 3`)
+    - or from the popup top area via `Quick Prompt 1 / 2 / 3`
+13. ZH：`复制给AI` 的最短路径则是：
+    - `Alt + C`（macOS 为 `Option + C`）
+    - 或 Popup 顶部的 `复制给AI`
+    - 如需改键，可在 Popup / Options 中点击“打开快捷键设置”，进入 `chrome://extensions/shortcuts`
+    EN: The shortest path for `Copy to AI` is:
+    - `Alt + C` (macOS: `Option + C`)
+    - or the popup top button `Copy to AI`
+    - if needed, use `Open Shortcut Settings` in Popup / Options to jump to `chrome://extensions/shortcuts`
 
 ## 5) 期望结果 / Expected Results
 ### 5.1 Format = Plain Text（示例片段）/ Format = Plain Text (example snippet)
@@ -140,9 +158,9 @@
 5. 站点使用 Shadow DOM / 编辑器导致无法触发 / Shadow DOM or editors block triggering
    - ZH：对编辑器（如 Notion/在线文档）Copylot 会主动避让；可改用路径 B（不选区时会处理整页），或在非编辑区域触发；如果页面大量内容在 Shadow DOM 内，提取结果可能为空或不完整。
    - EN: Copylot avoids rich editors (e.g., Notion/online docs). Use Path B (clear selection to process the whole page), or trigger on non-editor areas. If the page heavily uses Shadow DOM, extraction may be empty or incomplete.
-6. 右键菜单找不到 `Magic Copy with Prompt` / Missing `Magic Copy with Prompt` in context menu
-   - ZH：确认扩展未被禁用；并确认 Options 中至少有 1 个 Prompt；保存 Prompt 后会触发菜单更新（必要时刷新页面/重启浏览器）。
-   - EN: Ensure the extension is enabled and at least 1 prompt exists in Options; saving prompts triggers a menu refresh (reload / restart if needed).
+6. 右键菜单里没有看到 Prompt / Missing prompts in context menu
+   - ZH：确认扩展未被禁用；并确认 Options 中至少有 1 个 Prompt。Chrome 通常会显示为 `Copylot > Prompt`，这是浏览器对扩展菜单的正常折叠；保存 Prompt 后会触发菜单更新（必要时刷新页面/重启浏览器）。
+   - EN: Ensure the extension is enabled and at least 1 prompt exists in Options. Chrome usually renders them as `Copylot > Prompt`, which is the browser’s normal extension-menu grouping. Saving prompts triggers a menu refresh (reload / restart if needed).
 
 ## 7) 对外发布素材（可直接复用）/ Public-ready Assets
 ### 7.1 标题候选（EN/ZH 各 >=3）/ Title options (>=3 each)

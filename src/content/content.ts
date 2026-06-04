@@ -14,6 +14,7 @@ declare function getMessage(key: string): string;
 declare function recordTelemetryEvent(name: string, props?: Record<string, unknown>): Promise<void>;
 
 /* INLINE:block-identifier */
+/* INLINE:prompt-shortcuts */
 /* INLINE:settings-manager */
 /* INLINE:telemetry */
 /* INLINE:ui-injector */
@@ -362,6 +363,78 @@ async function reportSuccessfulCopy(options: ReportSuccessfulCopyOptions = {}): 
     await chrome.runtime.sendMessage(payload);
   } catch (error) {
     console.warn('Failed to report successful copy:', error);
+  }
+}
+
+function extractSelectionOrPageContent(explicitSelectionText?: string): string {
+  if (!userSettings) {
+    return '';
+  }
+
+  const normalizedSelection = typeof explicitSelectionText === 'string' ? explicitSelectionText.trim() : '';
+  if (normalizedSelection) {
+    return normalizedSelection;
+  }
+
+  const selectionRoot = getSelectionRootElementForProcessing();
+  if (selectionRoot) {
+    console.debug('AI Copilot: Processing selection root element for prompt action');
+    // @ts-ignore: processContent is available from inlined content-processor.ts
+    return processContent(selectionRoot, userSettings);
+  }
+
+  const selection = window.getSelection();
+  const selectedText = selection ? selection.toString().trim() : '';
+  if (selectedText) {
+    console.debug('AI Copilot: Falling back to plain-text selection for prompt action');
+    return selectedText;
+  }
+
+  console.debug('AI Copilot: No selection found, falling back to entire page for prompt action');
+  // @ts-ignore: processContent is available from inlined content-processor.ts
+  return processContent(document.body, userSettings);
+}
+
+async function processPromptActionMessage(message: {
+  promptTemplate: string;
+  chatServiceUrl?: string;
+  chatServiceName?: string;
+  selectionText?: string;
+}): Promise<{ success: boolean; error?: string }> {
+  if (!userSettings) {
+    await loadSettingsAndApply();
+  }
+
+  if (!userSettings) {
+    return { success: false, error: getMessage('settingsNotLoaded') };
+  }
+
+  const content = extractSelectionOrPageContent(message.selectionText);
+  if (!content.trim()) {
+    return { success: false, error: getMessage('noContentToCopy') };
+  }
+
+  // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
+  const finalText = combinePromptWithContent(message.promptTemplate, content);
+
+  try {
+    await copyToClipboard(finalText);
+    await recordE2ECopiedText(finalText);
+    void recordTelemetryEvent('copy_success');
+    void recordTelemetryEvent('prompt_used');
+    await reportSuccessfulCopy({ isPromptUsed: true });
+
+    if (message.chatServiceUrl && message.chatServiceName) {
+      showChatRedirectNotification(message.chatServiceName);
+      setTimeout(() => {
+        window.open(message.chatServiceUrl!, '_blank');
+      }, 1500);
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error copying prompt action to clipboard:', error);
+    return { success: false, error: getMessage('failedCopyClipboard') };
   }
 }
 
@@ -1159,141 +1232,43 @@ async function initializeContentScript(): Promise<void> {
       }
 
       if (message.type === 'PROCESS_SELECTION_WITH_PROMPT') {
-        if (!userSettings) {
-          await loadSettingsAndApply();
-        }
-        if (userSettings) {
-          const selectionRoot = getSelectionRootElementForProcessing();
-          if (selectionRoot) {
-            console.debug('AI Copilot: Processing selection root element with prompt');
-            // @ts-ignore: processContent is available from inlined content-processor.ts
-            const content = processContent(selectionRoot, userSettings);
-            // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
-            const finalText = combinePromptWithContent(message.promptTemplate, content);
-
-            try {
-              await copyToClipboard(finalText);
-              await recordE2ECopiedText(finalText);
-              void recordTelemetryEvent('copy_success');
-              void recordTelemetryEvent('prompt_used');
-              await reportSuccessfulCopy({ isPromptUsed: true });
-
-              if (message.chatServiceUrl && message.chatServiceName) {
-                showChatRedirectNotification(message.chatServiceName);
-                setTimeout(() => {
-                  window.open(message.chatServiceUrl, '_blank');
-                }, 1500);
-              }
-
-              sendResponse({ success: true });
-            } catch (error) {
-              console.error('Error copying to clipboard:', error);
-              sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
-            }
-          } else {
-            console.debug('AI Copilot: No DOM selection found, using text selection');
-            // 回退到原有逻辑，使用纯文本
-            const selection = window.getSelection();
-            const selectedText = selection ? selection.toString() : '';
-            if (selectedText) {
-              // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
-              const finalText = combinePromptWithContent(message.promptTemplate, selectedText);
-              try {
-                await copyToClipboard(finalText);
-                await recordE2ECopiedText(finalText);
-                void recordTelemetryEvent('copy_success');
-                void recordTelemetryEvent('prompt_used');
-                await reportSuccessfulCopy({ isPromptUsed: true });
-
-                if (message.chatServiceUrl && message.chatServiceName) {
-                  showChatRedirectNotification(message.chatServiceName);
-                  setTimeout(() => {
-                    window.open(message.chatServiceUrl, '_blank');
-                  }, 1500);
-                }
-
-                sendResponse({ success: true });
-              } catch (error) {
-                sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
-              }
-            } else {
-              sendResponse({ success: false, error: getMessage('noContentSelected') });
-            }
-          }
-        } else {
-          sendResponse({ success: false, error: getMessage('settingsNotLoaded') });
-        }
+        const result = await processPromptActionMessage({
+          promptTemplate: message.promptTemplate,
+          chatServiceUrl: message.chatServiceUrl,
+          chatServiceName: message.chatServiceName
+        });
+        sendResponse(result);
         return true; // Indicates async response
       }
 
       if (message.type === 'PROCESS_PAGE_WITH_PROMPT') {
-        if (!userSettings) {
-          await loadSettingsAndApply();
-        }
-        if (userSettings) {
-          console.debug('AI Copilot: Processing entire page content with prompt');
-          // @ts-ignore: processContent is available from inlined content-processor.ts
-          const content = processContent(document.body, userSettings);
-          if (content.trim()) {
-            // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
-            const finalText = combinePromptWithContent(message.promptTemplate, content);
-            try {
-              await copyToClipboard(finalText);
-              await recordE2ECopiedText(finalText);
-              void recordTelemetryEvent('copy_success');
-              void recordTelemetryEvent('prompt_used');
-              await reportSuccessfulCopy({ isPromptUsed: true });
-              sendResponse({ success: true });
-            } catch (error) {
-              console.error('Error copying to clipboard:', error);
-              sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
-            }
-          } else {
-            sendResponse({ success: false, error: getMessage('noContentToCopy') });
-          }
-        } else {
-          sendResponse({ success: false, error: getMessage('settingsNotLoaded') });
-        }
+        const result = await processPromptActionMessage({
+          promptTemplate: message.promptTemplate,
+          selectionText: ''
+        });
+        sendResponse(result);
         return true; // Indicates async response
       }
 
       if (message.type === 'PROCESS_PAGE_WITH_PROMPT_AND_CHAT') {
-        if (!userSettings) {
-          await loadSettingsAndApply();
-        }
-        if (userSettings) {
-          console.debug('AI Copilot: Processing page content with prompt and opening chat');
-          // @ts-ignore: processContent is available from inlined content-processor.ts
-          const content = processContent(document.body, userSettings);
-          if (content.trim()) {
-            // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
-            const finalText = combinePromptWithContent(message.promptTemplate, content);
-            try {
-              await copyToClipboard(finalText);
-              await recordE2ECopiedText(finalText);
-              void recordTelemetryEvent('copy_success');
-              void recordTelemetryEvent('prompt_used');
-              await reportSuccessfulCopy({ isPromptUsed: true });
-              
-              // 显示视觉反馈
-              showChatRedirectNotification(message.chatServiceName);
-              
-              // 延迟打开chat服务，让用户看到反馈
-              setTimeout(() => {
-                window.open(message.chatServiceUrl, '_blank');
-              }, 1500);
-              
-              sendResponse({ success: true });
-            } catch (error) {
-              console.error('Error copying to clipboard:', error);
-              sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
-            }
-          } else {
-            sendResponse({ success: false, error: getMessage('noContentToCopy') });
-          }
-        } else {
-          sendResponse({ success: false, error: getMessage('settingsNotLoaded') });
-        }
+        const result = await processPromptActionMessage({
+          promptTemplate: message.promptTemplate,
+          chatServiceUrl: message.chatServiceUrl,
+          chatServiceName: message.chatServiceName,
+          selectionText: ''
+        });
+        sendResponse(result);
+        return true; // Indicates async response
+      }
+
+      if (message.type === 'PROCESS_SELECTION_OR_PAGE_WITH_PROMPT') {
+        const result = await processPromptActionMessage({
+          promptTemplate: message.promptTemplate,
+          chatServiceUrl: message.chatServiceUrl,
+          chatServiceName: message.chatServiceName,
+          selectionText: message.selectionText
+        });
+        sendResponse(result);
         return true; // Indicates async response
       }
 

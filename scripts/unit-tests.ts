@@ -101,6 +101,12 @@ import { parsePromptSortMode, sortPrompts } from '../src/shared/prompt-sort.ts';
 import { buildPromptContextMenuItems } from '../src/shared/context-menu-model.ts';
 import { getActivePrompts, isPromptActive } from '../src/shared/settings-manager.ts';
 import {
+  assignQuickPromptSlot,
+  getQuickPromptBySlot,
+  getQuickPromptSlotFromCommand,
+  normalizeQuickPromptAssignments
+} from '../src/shared/prompt-shortcuts.ts';
+import {
   CWS_PROXY_FIX_COMMANDS,
   CwsProxyConfigError,
   createUndiciProxyDispatcher,
@@ -2683,24 +2689,35 @@ async function run() {
   assert.deepEqual(getActivePrompts(promptVisibilitySamples).map((prompt) => prompt.id), ['builtin-visible', 'custom-visible']);
   assert.deepEqual(
     buildPromptContextMenuItems({
-      prompts: getActivePrompts(promptVisibilitySamples),
-      parentId: 'parent-menu'
+      prompts: getActivePrompts(promptVisibilitySamples)
     }),
     [
       {
         id: 'builtin-visible',
         title: 'Visible',
-        parentId: 'parent-menu',
         contexts: ['page', 'selection']
       },
       {
         id: 'custom-visible',
         title: 'Custom',
-        parentId: 'parent-menu',
         contexts: ['page', 'selection']
       }
     ]
   );
+
+  const quickPromptSamples = [
+    { id: 'p1', title: 'Prompt 1', template: '{content}', quickAccessSlot: 1 as const },
+    { id: 'p2', title: 'Prompt 2', template: '{content}', quickAccessSlot: 1 as const },
+    { id: 'p3', title: 'Prompt 3', template: '{content}' }
+  ];
+  const normalizedQuickPrompts = normalizeQuickPromptAssignments(quickPromptSamples, () => true);
+  assert.equal(normalizedQuickPrompts.changed, true);
+  assert.equal(getQuickPromptBySlot(normalizedQuickPrompts.prompts, 1)?.id, 'p1');
+  assert.equal(normalizedQuickPrompts.prompts.find((prompt) => prompt.id === 'p2')?.quickAccessSlot, undefined);
+  assert.equal(assignQuickPromptSlot(normalizedQuickPrompts.prompts, 'p3', 2).find((prompt) => prompt.id === 'p3')?.quickAccessSlot, 2);
+  assert.equal(getQuickPromptSlotFromCommand('quick-prompt-slot-1'), 1);
+  assert.equal(getQuickPromptSlotFromCommand('quick-prompt-slot-3'), 3);
+  assert.equal(getQuickPromptSlotFromCommand('unknown-command'), null);
 
   // code-block-cleaner.ts (pure function)
   assert.equal(cleanCodeBlockText('const Copy = 1;\nconsole.log(Copy);'), 'const Copy = 1;\nconsole.log(Copy);');

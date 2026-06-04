@@ -139,6 +139,14 @@ export async function openPopupViaAction(driverPage: Page): Promise<void> {
   await runDriverCommand(driverPage, { type: 'open-popup' });
 }
 
+export async function triggerCommand(
+  driverPage: Page,
+  command: string,
+  tabId?: number
+): Promise<void> {
+  await runDriverCommand(driverPage, { type: 'trigger-command', command, tabId });
+}
+
 export async function getBadgeText(driverPage: Page): Promise<string> {
   const response = await runDriverCommand<{ text?: string }>(driverPage, { type: 'get-badge-text' });
   return response.text || '';
@@ -154,7 +162,6 @@ export async function invokeContextMenu(
   params: {
     tabId?: number;
     menuItemId: string;
-    parentMenuItemId?: string;
     selectionText?: string;
     pageUrl?: string;
   }
@@ -164,7 +171,6 @@ export async function invokeContextMenu(
     tabId: params.tabId,
     info: {
       menuItemId: params.menuItemId,
-      parentMenuItemId: params.parentMenuItemId,
       selectionText: params.selectionText,
       pageUrl: params.pageUrl
     }

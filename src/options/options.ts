@@ -107,6 +107,15 @@ import {
   consumeProWaitlistSurveySourceOnce,
   parseProWaitlistSurveySourceOnceFromUrl
 } from '../shared/pro-waitlist-survey-source-once';
+import {
+  assignQuickPromptSlot,
+  getQuickCommandDefaultShortcut,
+  getQuickPromptSlotCommandName,
+  isQuickPromptSlot,
+  QUICK_CONVERT_COMMAND,
+  type QuickCommandName,
+  type QuickPromptSlot
+} from '../shared/prompt-shortcuts';
 
 // Simple UUID generator
 function generateUUID(): string {
@@ -125,6 +134,46 @@ function getMessage(key: string, substitutions?: MessageSubstitutions): string {
   return chrome.i18n.getMessage(key, substitutions);
 }
 
+function getPromptSlotCommandName(slot: QuickPromptSlot): QuickCommandName {
+  return getQuickPromptSlotCommandName(slot);
+}
+
+function isMacPlatform(): boolean {
+  return /mac/i.test(navigator.platform || '') || /mac/i.test(navigator.userAgent || '');
+}
+
+function getShortcutPlatform() {
+  return isMacPlatform() ? 'mac' : 'default';
+}
+
+function getConvertShortcutLabel(): string {
+  const resolved = currentCommandShortcuts.get(QUICK_CONVERT_COMMAND);
+  return resolved || getQuickCommandDefaultShortcut(QUICK_CONVERT_COMMAND, getShortcutPlatform());
+}
+
+function formatPromptSlotShortcut(slot: QuickPromptSlot | undefined): string | null {
+  if (!slot) {
+    return null;
+  }
+
+  const resolved = currentCommandShortcuts.get(getPromptSlotCommandName(slot));
+  return resolved || getQuickCommandDefaultShortcut(getPromptSlotCommandName(slot), getShortcutPlatform());
+}
+
+async function loadCommandShortcuts() {
+  if (!chrome.commands?.getAll) {
+    currentCommandShortcuts = new Map();
+    return;
+  }
+
+  const commands = await chrome.commands.getAll();
+  currentCommandShortcuts = new Map<string, string>(
+    commands
+      .filter((command) => typeof command.name === 'string' && command.name.length > 0)
+      .map((command) => [command.name as string, command.shortcut || ''])
+  );
+}
+
 async function reportE2ECopiedText(text: string): Promise<void> {
   if (!isE2EBuild) {
     return;
@@ -137,6 +186,21 @@ async function reportE2ECopiedText(text: string): Promise<void> {
     });
   } catch (error) {
     console.warn('Failed to report options copied text for E2E:', error);
+  }
+}
+
+async function reportE2EOpenedUrl(url: string): Promise<void> {
+  if (!isE2EBuild) {
+    return;
+  }
+
+  try {
+    await chrome.runtime.sendMessage({
+      type: 'e2e:report-opened-url',
+      url
+    });
+  } catch (error) {
+    console.warn('Failed to report options opened url for E2E:', error);
   }
 }
 
@@ -168,6 +232,7 @@ interface OptionsElements {
   promptTemplate: HTMLTextAreaElement;
   promptTargetChat: HTMLSelectElement;
   promptAutoOpenChat: HTMLInputElement;
+  promptQuickAccessSlot: HTMLSelectElement;
   insertContentPlaceholder: HTMLButtonElement;
   previewPrompt: HTMLButtonElement;
   cancelBtn: HTMLButtonElement;
@@ -193,6 +258,19 @@ interface OptionsElements {
   // Options onboarding entry
   onboardingPanel: HTMLElement;
   onboardingOpenButton: HTMLButtonElement;
+  openShortcutSettingsButton: HTMLButtonElement;
+  shortcutCurrentConvert: HTMLElement;
+  shortcutRecommendedConvert: HTMLElement;
+  shortcutCurrentSlot1: HTMLElement;
+  shortcutCurrentSlot2: HTMLElement;
+  shortcutCurrentSlot3: HTMLElement;
+  shortcutRecommendedSlot1: HTMLElement;
+  shortcutRecommendedSlot2: HTMLElement;
+  shortcutRecommendedSlot3: HTMLElement;
+  shortcutSlot1PromptName: HTMLElement;
+  shortcutSlot2PromptName: HTMLElement;
+  shortcutSlot3PromptName: HTMLElement;
+  shortcutSettingsFeedback: HTMLElement;
 
   // Privacy / Observability
   anonymousUsageDataSwitch: HTMLInputElement;
@@ -288,6 +366,7 @@ let promptSortMode: PromptSortMode = 'default';
 let selectedPrompts: Set<string> = new Set();
 let editingPromptId: string | null = null;
 let editingChatServiceId: string | null = null;
+let currentCommandShortcuts = new Map<string, string>();
 
 const PROMPT_SORT_MODE_STORAGE_KEY = 'copylot_prompt_sort_mode';
 const PRO_WAITLIST_SURVEY_SOURCE_ONCE_STORAGE_KEY = 'copylot_pro_waitlist_survey_source_once';
@@ -327,6 +406,7 @@ function getElements(): OptionsElements {
     promptTemplate: document.getElementById('prompt-template') as HTMLTextAreaElement,
     promptTargetChat: document.getElementById('prompt-target-chat') as HTMLSelectElement,
     promptAutoOpenChat: document.getElementById('prompt-auto-open-chat') as HTMLInputElement,
+    promptQuickAccessSlot: document.getElementById('prompt-quick-access-slot') as HTMLSelectElement,
     insertContentPlaceholder: document.getElementById('insert-content-placeholder') as HTMLButtonElement,
     previewPrompt: document.getElementById('preview-prompt') as HTMLButtonElement,
     cancelBtn: document.getElementById('cancel-btn') as HTMLButtonElement,
@@ -347,6 +427,19 @@ function getElements(): OptionsElements {
 
     onboardingPanel: document.getElementById('options-onboarding-panel') as HTMLElement,
     onboardingOpenButton: document.getElementById('options-onboarding-open') as HTMLButtonElement,
+    openShortcutSettingsButton: document.getElementById('options-open-shortcut-settings') as HTMLButtonElement,
+    shortcutCurrentConvert: document.getElementById('options-shortcut-current-convert') as HTMLElement,
+    shortcutRecommendedConvert: document.getElementById('options-shortcut-recommended-convert') as HTMLElement,
+    shortcutCurrentSlot1: document.getElementById('options-shortcut-current-slot-1') as HTMLElement,
+    shortcutCurrentSlot2: document.getElementById('options-shortcut-current-slot-2') as HTMLElement,
+    shortcutCurrentSlot3: document.getElementById('options-shortcut-current-slot-3') as HTMLElement,
+    shortcutRecommendedSlot1: document.getElementById('options-shortcut-recommended-slot-1') as HTMLElement,
+    shortcutRecommendedSlot2: document.getElementById('options-shortcut-recommended-slot-2') as HTMLElement,
+    shortcutRecommendedSlot3: document.getElementById('options-shortcut-recommended-slot-3') as HTMLElement,
+    shortcutSlot1PromptName: document.getElementById('options-shortcut-slot-1-prompt-name') as HTMLElement,
+    shortcutSlot2PromptName: document.getElementById('options-shortcut-slot-2-prompt-name') as HTMLElement,
+    shortcutSlot3PromptName: document.getElementById('options-shortcut-slot-3-prompt-name') as HTMLElement,
+    shortcutSettingsFeedback: document.getElementById('options-shortcut-settings-feedback') as HTMLElement,
 
     anonymousUsageDataSwitch: document.getElementById('anonymous-usage-data-switch') as HTMLInputElement,
     telemetryEventsPanel: (document.getElementById('telemetry-events-panel') || document.createElement("details")) as HTMLDetailsElement,
@@ -505,12 +598,70 @@ function syncOptionsOnboardingPanelVisibility(settings: Settings): void {
     settings.popupOnboardingCompletedVersion >= settings.popupOnboardingVersion;
 }
 
+function setShortcutSettingsFeedback(messageKey: string | null): void {
+  if (!elements?.shortcutSettingsFeedback) return;
+
+  if (!messageKey) {
+    elements.shortcutSettingsFeedback.hidden = true;
+    elements.shortcutSettingsFeedback.textContent = '';
+    return;
+  }
+
+  elements.shortcutSettingsFeedback.hidden = false;
+  elements.shortcutSettingsFeedback.textContent = getMessage(messageKey);
+}
+
+async function openShortcutSettingsPage(): Promise<void> {
+  try {
+    await reportE2EOpenedUrl('chrome://extensions/shortcuts');
+    await chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
+    setShortcutSettingsFeedback(null);
+  } catch (error) {
+    console.warn('Failed to open shortcut settings page:', error);
+    setShortcutSettingsFeedback('shortcutSettingsManualOpenHint');
+  }
+}
+
+function renderShortcutSettingsPanel(): void {
+  const activePrompts = getActivePrompts(allPrompts);
+  const platform = getShortcutPlatform();
+
+  elements.shortcutCurrentConvert.textContent = getConvertShortcutLabel();
+  elements.shortcutRecommendedConvert.textContent = getQuickCommandDefaultShortcut(QUICK_CONVERT_COMMAND, platform);
+
+  const currentMap: Record<QuickPromptSlot, HTMLElement> = {
+    1: elements.shortcutCurrentSlot1,
+    2: elements.shortcutCurrentSlot2,
+    3: elements.shortcutCurrentSlot3
+  };
+  const recommendedMap: Record<QuickPromptSlot, HTMLElement> = {
+    1: elements.shortcutRecommendedSlot1,
+    2: elements.shortcutRecommendedSlot2,
+    3: elements.shortcutRecommendedSlot3
+  };
+  const promptNameMap: Record<QuickPromptSlot, HTMLElement> = {
+    1: elements.shortcutSlot1PromptName,
+    2: elements.shortcutSlot2PromptName,
+    3: elements.shortcutSlot3PromptName
+  };
+
+  for (const slot of [1, 2, 3] as QuickPromptSlot[]) {
+    const command = getQuickPromptSlotCommandName(slot);
+    const prompt = activePrompts.find((item) => item.quickAccessSlot === slot);
+    currentMap[slot].textContent =
+      currentCommandShortcuts.get(command) || getQuickCommandDefaultShortcut(command, platform);
+    recommendedMap[slot].textContent = getQuickCommandDefaultShortcut(command, platform);
+    promptNameMap[slot].textContent = prompt?.title || getMessage('shortcutPromptUnassigned');
+  }
+}
+
 /**
  * 加载设置
  */
 async function loadSettings() {
   try {
     currentSettings = await getSettings();
+    await loadCommandShortcuts();
     allPrompts = [...currentSettings.userPrompts];
     if (elements?.anonymousUsageDataSwitch) {
       elements.anonymousUsageDataSwitch.checked = Boolean(currentSettings.isAnonymousUsageDataEnabled);
@@ -526,6 +677,7 @@ async function loadSettings() {
     updateProAcquisitionEfficiencyByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
     syncOptionsOnboardingPanelVisibility(currentSettings);
     filterAndRenderPrompts();
+    renderShortcutSettingsPanel();
     updateSyncStatus();
     console.debug('Settings loaded:', currentSettings);
   } catch (error) {
@@ -670,6 +822,12 @@ function createPromptCard(prompt: Prompt): HTMLElement {
   
   const category = getCategoryFromPrompt(prompt);
   const categoryText = getCategoryDisplayName(category);
+  const shortcutLabel =
+    isQuickPromptSlot(prompt.quickAccessSlot) ? formatPromptSlotShortcut(prompt.quickAccessSlot) : null;
+  const quickSlotText =
+    isQuickPromptSlot(prompt.quickAccessSlot) && shortcutLabel
+      ? `${getMessage(`quickPromptSlot${prompt.quickAccessSlot}`)} · ${shortcutLabel}`
+      : null;
   const lastUsedText =
     typeof prompt.lastUsedAt === 'number' && Number.isFinite(prompt.lastUsedAt) && prompt.lastUsedAt > 0
       ? formatTimeAgo(prompt.lastUsedAt)
@@ -708,7 +866,7 @@ function createPromptCard(prompt: Prompt): HTMLElement {
       </div>
     </div>
     
-    <div class="prompt-card-category">${categoryText}</div>
+    <div class="prompt-card-category">${categoryText}${quickSlotText ? ` <span class="prompt-shortcut-badge">${escapeHtml(quickSlotText)}</span>` : ''}</div>
     
     <div class="prompt-card-content">
       ${escapeHtml(prompt.template)}
@@ -963,12 +1121,16 @@ function openPromptEditor(prompt?: Prompt) {
     elements.promptTemplate.value = prompt.template;
     elements.promptTargetChat.value = prompt.targetChatId || '';
     elements.promptAutoOpenChat.checked = prompt.autoOpenChat !== undefined ? prompt.autoOpenChat : currentSettings.defaultAutoOpenChat;
+    elements.promptQuickAccessSlot.value = isQuickPromptSlot(prompt.quickAccessSlot)
+      ? String(prompt.quickAccessSlot)
+      : '';
   } else {
     elements.modalTitle.textContent = getMessage('newPromptTitle');
     elements.promptForm.reset();
     elements.promptId.value = '';
     elements.promptTargetChat.value = '';
     elements.promptAutoOpenChat.checked = currentSettings.defaultAutoOpenChat;
+    elements.promptQuickAccessSlot.value = '';
   }
   
   elements.promptEditorModal.style.display = 'flex';
@@ -1095,6 +1257,7 @@ async function savePrompts() {
     await saveSettings({ userPrompts: allPrompts });
     currentSettings.userPrompts = [...allPrompts];
     filterAndRenderPrompts();
+    renderShortcutSettingsPanel();
     
     // 同步成功
     elements.syncStatusText.textContent = getMessage('syncStatusConnected');
@@ -1136,9 +1299,13 @@ async function savePromptForm(event: Event) {
   
   const targetChatId = elements.promptTargetChat.value || undefined;
   const autoOpenChat = elements.promptAutoOpenChat.checked;
+  const quickAccessSlotValue = elements.promptQuickAccessSlot.value.trim();
+  const quickAccessSlot = isQuickPromptSlot(Number.parseInt(quickAccessSlotValue, 10))
+    ? (Number.parseInt(quickAccessSlotValue, 10) as QuickPromptSlot)
+    : null;
   
   if (editingPromptId) {
-    // 编辑现有prompt
+    allPrompts = assignQuickPromptSlot(allPrompts, editingPromptId, quickAccessSlot);
     const prompt = allPrompts.find(p => p.id === editingPromptId);
     if (prompt) {
       prompt.title = title;
@@ -1148,14 +1315,17 @@ async function savePromptForm(event: Event) {
       prompt.autoOpenChat = autoOpenChat;
     }
   } else {
+    const newPromptId = generateUUID();
+    allPrompts = assignQuickPromptSlot(allPrompts, newPromptId, quickAccessSlot);
     // 新建prompt
     const newPrompt: Prompt = {
-      id: generateUUID(),
+      id: newPromptId,
       title,
       template,
       category,
       targetChatId,
       autoOpenChat,
+      quickAccessSlot: quickAccessSlot ?? undefined,
       usageCount: 0,
       createdAt: Date.now()
     };
@@ -1320,6 +1490,13 @@ function isPromptLike(value: unknown): value is Prompt {
   if (record.lastUsedAt !== undefined && typeof record.lastUsedAt !== 'number') return false;
   if (record.targetChatId !== undefined && typeof record.targetChatId !== 'string') return false;
   if (record.autoOpenChat !== undefined && typeof record.autoOpenChat !== 'boolean') return false;
+  if (
+    record.quickAccessSlot !== undefined &&
+    record.quickAccessSlot !== null &&
+    !isQuickPromptSlot(record.quickAccessSlot)
+  ) {
+    return false;
+  }
   if (record.builtIn !== undefined && typeof record.builtIn !== 'boolean') return false;
   if (record.deleted !== undefined && typeof record.deleted !== 'boolean') return false;
   if (record.templateVersion !== undefined && typeof record.templateVersion !== 'number') return false;
@@ -2781,6 +2958,9 @@ function setupEventListeners() {
   // Options onboarding entry
   elements.onboardingOpenButton.addEventListener('click', () => {
     openPopupOnboardingInNewTab();
+  });
+  elements.openShortcutSettingsButton.addEventListener('click', () => {
+    void openShortcutSettingsPage();
   });
 
   // 同步状态按钮

@@ -76,6 +76,100 @@
           </div>
         </section>
 
+        <section class="shortcut-settings-panel">
+          <div class="shortcut-settings-panel-head">
+            <div>
+              <h3 class="shortcut-settings-panel-title" data-i18n="shortcutSettingsTitle">快捷键设置</h3>
+              <p class="shortcut-settings-panel-hint" data-i18n="shortcutSettingsHint">
+                系统级快捷键由 Chrome 管理。这里显示当前绑定，并提供一键前往官方设置页。
+              </p>
+            </div>
+            <button
+              id="options-open-shortcut-settings"
+              class="secondary-btn shortcut-settings-panel-button"
+              type="button"
+              data-i18n="openShortcutSettings"
+            >
+              打开快捷键设置
+            </button>
+          </div>
+
+          <div class="shortcut-settings-grid">
+            <article class="shortcut-command-card">
+              <div class="shortcut-command-card-copy">
+                <strong data-i18n="convertButton">复制给AI</strong>
+                <small data-i18n="shortcutCustomize">可自定义</small>
+              </div>
+              <div class="shortcut-command-card-values">
+                <span class="shortcut-command-pill">
+                  <span data-i18n="shortcutCurrent">当前</span>
+                  <strong id="options-shortcut-current-convert">Alt+C</strong>
+                </span>
+                <span class="shortcut-command-pill shortcut-command-pill-muted">
+                  <span data-i18n="shortcutRecommended">推荐</span>
+                  <strong id="options-shortcut-recommended-convert">Alt+C</strong>
+                </span>
+              </div>
+            </article>
+
+            <article class="shortcut-command-card">
+              <div class="shortcut-command-card-copy">
+                <strong data-i18n="quickPromptSlot1">快捷 Prompt 1</strong>
+                <small id="options-shortcut-slot-1-prompt-name">Prompt</small>
+              </div>
+              <div class="shortcut-command-card-values">
+                <span class="shortcut-command-pill">
+                  <span data-i18n="shortcutCurrent">当前</span>
+                  <strong id="options-shortcut-current-slot-1">Alt+1</strong>
+                </span>
+                <span class="shortcut-command-pill shortcut-command-pill-muted">
+                  <span data-i18n="shortcutRecommended">推荐</span>
+                  <strong id="options-shortcut-recommended-slot-1">Alt+1</strong>
+                </span>
+              </div>
+            </article>
+
+            <article class="shortcut-command-card">
+              <div class="shortcut-command-card-copy">
+                <strong data-i18n="quickPromptSlot2">快捷 Prompt 2</strong>
+                <small id="options-shortcut-slot-2-prompt-name">Prompt</small>
+              </div>
+              <div class="shortcut-command-card-values">
+                <span class="shortcut-command-pill">
+                  <span data-i18n="shortcutCurrent">当前</span>
+                  <strong id="options-shortcut-current-slot-2">Alt+2</strong>
+                </span>
+                <span class="shortcut-command-pill shortcut-command-pill-muted">
+                  <span data-i18n="shortcutRecommended">推荐</span>
+                  <strong id="options-shortcut-recommended-slot-2">Alt+2</strong>
+                </span>
+              </div>
+            </article>
+
+            <article class="shortcut-command-card">
+              <div class="shortcut-command-card-copy">
+                <strong data-i18n="quickPromptSlot3">快捷 Prompt 3</strong>
+                <small id="options-shortcut-slot-3-prompt-name">Prompt</small>
+              </div>
+              <div class="shortcut-command-card-values">
+                <span class="shortcut-command-pill">
+                  <span data-i18n="shortcutCurrent">当前</span>
+                  <strong id="options-shortcut-current-slot-3">Alt+3</strong>
+                </span>
+                <span class="shortcut-command-pill shortcut-command-pill-muted">
+                  <span data-i18n="shortcutRecommended">推荐</span>
+                  <strong id="options-shortcut-recommended-slot-3">Alt+3</strong>
+                </span>
+              </div>
+            </article>
+          </div>
+
+          <p id="options-shortcut-settings-feedback" class="shortcut-settings-panel-feedback" hidden></p>
+          <p class="shortcut-settings-panel-footnote" data-i18n="shortcutSettingsChromeHint">
+            如有冲突，请在 Chrome 的扩展快捷键页面修改。
+          </p>
+        </section>
+
         <!-- Toolbar -->
         <div class="toolbar">
           <div class="search-section">
@@ -567,6 +661,16 @@
                 </label>
               </label>
             </div>
+          </div>
+
+          <div class="form-group form-group-horizontal">
+            <label for="prompt-quick-access-slot" data-i18n="promptQuickAccessSlot">快捷 Prompt</label>
+            <select id="prompt-quick-access-slot">
+              <option value="" data-i18n="promptQuickAccessNone">不绑定</option>
+              <option value="1" data-i18n="promptQuickAccess1">快捷 Prompt 1</option>
+              <option value="2" data-i18n="promptQuickAccess2">快捷 Prompt 2</option>
+              <option value="3" data-i18n="promptQuickAccess3">快捷 Prompt 3</option>
+            </select>
           </div>
 
           <div class="form-group">

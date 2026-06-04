@@ -15,6 +15,7 @@ export interface ChromeMockOptions {
   activeTabId?: number;
   syncData?: Record<string, unknown>;
   localData?: Record<string, unknown>;
+  commands?: Array<{ name?: string; shortcut?: string }>;
 }
 
 export interface ChromeMockLogs {
@@ -112,6 +113,27 @@ export interface ChromeMockController {
   dispatchRuntimeMessage(message: unknown): Promise<unknown[]>;
 }
 
+const DEFAULT_I18N_MESSAGES: Record<string, string> = {
+  convertButton: 'Copy to AI',
+  quickActionSelectionFirst: 'Selection first. Falls back to the full page when nothing is selected.',
+  expandMoreSettings: '----Expand more settings v----',
+  collapseMoreSettings: '----Collapse more settings ^----',
+  shortcutSettingsTitle: 'Shortcut Settings',
+  openShortcutSettings: 'Open Shortcut Settings',
+  shortcutCurrent: 'Current',
+  shortcutRecommended: 'Recommended',
+  shortcutCustomize: 'Customizable',
+  quickPromptSlot1: 'Quick Prompt 1',
+  quickPromptSlot2: 'Quick Prompt 2',
+  quickPromptSlot3: 'Quick Prompt 3',
+  quickPromptSetupSlot1: 'Bind a prompt to quick slot 1 in Options',
+  quickPromptSetupSlot2: 'Bind a prompt to quick slot 2 in Options',
+  quickPromptSetupSlot3: 'Bind a prompt to quick slot 3 in Options',
+  shortcutPromptUnassigned: 'No Prompt Bound',
+  managePrompts: 'Manage Prompts',
+  copied: 'Copied!'
+};
+
 export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockController {
   const logs: ChromeMockLogs = {
     createdTabs: [],
@@ -172,8 +194,31 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
         return undefined;
       }
     },
+    commands: {
+      async getAll() {
+        return (
+          options.commands ?? [
+            { name: 'quick-convert', shortcut: 'Alt+C' },
+            { name: 'quick-prompt-slot-1', shortcut: 'Alt+1' },
+            { name: 'quick-prompt-slot-2', shortcut: 'Alt+2' },
+            { name: 'quick-prompt-slot-3', shortcut: 'Alt+3' }
+          ]
+        ) as chrome.commands.Command[];
+      },
+      onCommand: {
+        addListener() {
+          return undefined;
+        },
+        removeListener() {
+          return undefined;
+        }
+      }
+    },
     i18n: {
       getMessage(key: string, substitutions?: string | string[]) {
+        if (DEFAULT_I18N_MESSAGES[key]) {
+          return DEFAULT_I18N_MESSAGES[key];
+        }
         if (Array.isArray(substitutions) && substitutions.length > 0) {
           return `${key}:${substitutions.join('|')}`;
         }

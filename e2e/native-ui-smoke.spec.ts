@@ -101,7 +101,8 @@ test('@native-ui native context menu opens real submenu and executes prompt flow
           builtIn: false,
           deleted: false,
           templateVersion: 1,
-          autoOpenChat: false
+          autoOpenChat: false,
+          quickAccessSlot: 1
         }
       ],
       isClipboardAccumulatorEnabled: false,

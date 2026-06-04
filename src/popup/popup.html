@@ -9,40 +9,26 @@
   <body>
     <div id="popup-content">
       <div class="popup-container">
-        <!-- Header -->
         <div class="header">
           <div class="logo">
-            <svg width="24" height="24" viewBox="0 0 32 32">
-              <!-- 定义阴影滤镜 -->
+            <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true">
               <defs>
                 <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
                   <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0, 0, 0, 0.15)" />
                 </filter>
               </defs>
-
-              <!-- 透明边距区域 (2px) -->
-              <!-- 紫色背景矩形，带圆角和阴影 -->
-              <rect
-                x="2"
-                y="2"
-                width="28"
-                height="28"
-                rx="8"
-                ry="8"
-                fill="#4F46E5"
-                filter="url(#shadow)"
-              />
-
-              <!-- 白色复制图标，居中在背景矩形内 -->
+              <rect x="2" y="2" width="28" height="28" rx="8" ry="8" fill="#0f766e" filter="url(#shadow)" />
               <g transform="translate(16, 16)" fill="none" stroke="white" stroke-width="1.5">
-                <!-- 调整图标大小，增大尺寸 -->
                 <g transform="scale(0.8) translate(-12, -12)">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                   <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                 </g>
               </g>
             </svg>
-            <span data-i18n="appName">Copylot</span>
+            <div class="logo-copy">
+              <span data-i18n="appName">Copylot</span>
+              <small data-i18n="popupQuickActionsTitle">快捷操作</small>
+            </div>
           </div>
           <div class="header-right">
             <span id="dev-badge" class="dev-badge" hidden>DEV</span>
@@ -50,261 +36,303 @@
           </div>
         </div>
 
-        <!-- Settings Form -->
+        <div class="hero">
+          <p class="hero-title" data-i18n="popupQuickActionsTitle">快捷操作</p>
+          <p class="hero-subtitle" data-i18n="popupQuickActionsHint">
+            高频动作放在最上层，右键入口保留，快捷键是最短路径。
+          </p>
+        </div>
+
+        <div class="quick-actions" id="quick-actions">
+          <button type="button" id="convert-button" class="quick-action quick-action-primary">
+            <span class="quick-action-copy">
+              <strong data-i18n="convertButton">复制给AI</strong>
+              <small data-i18n="quickActionSelectionFirst">有选区时优先处理选区，否则处理整页</small>
+            </span>
+            <span id="convert-shortcut" class="shortcut-hint">Alt+C</span>
+          </button>
+
+          <button type="button" id="quick-prompt-slot-1-button" class="quick-action">
+            <span class="quick-action-copy">
+              <strong id="quick-prompt-slot-1-title" data-i18n="quickPromptSlot1">快捷 Prompt 1</strong>
+              <small id="quick-prompt-slot-1-desc" data-i18n="quickPromptSetupSlot1">在 Options 中为一个 Prompt 绑定快捷位 1</small>
+            </span>
+            <span id="quick-prompt-slot-1-shortcut" class="shortcut-hint">Alt+1</span>
+          </button>
+
+          <button type="button" id="quick-prompt-slot-2-button" class="quick-action">
+            <span class="quick-action-copy">
+              <strong id="quick-prompt-slot-2-title" data-i18n="quickPromptSlot2">快捷 Prompt 2</strong>
+              <small id="quick-prompt-slot-2-desc" data-i18n="quickPromptSetupSlot2">在 Options 中为一个 Prompt 绑定快捷位 2</small>
+            </span>
+            <span id="quick-prompt-slot-2-shortcut" class="shortcut-hint">Alt+2</span>
+          </button>
+
+          <button type="button" id="quick-prompt-slot-3-button" class="quick-action">
+            <span class="quick-action-copy">
+              <strong id="quick-prompt-slot-3-title" data-i18n="quickPromptSlot3">快捷 Prompt 3</strong>
+              <small id="quick-prompt-slot-3-desc" data-i18n="quickPromptSetupSlot3">在 Options 中为一个 Prompt 绑定快捷位 3</small>
+            </span>
+            <span id="quick-prompt-slot-3-shortcut" class="shortcut-hint">Alt+3</span>
+          </button>
+        </div>
+
+        <section class="shortcut-settings-card" aria-labelledby="shortcut-settings-title">
+          <div class="shortcut-settings-head">
+            <div>
+              <h3 id="shortcut-settings-title" class="shortcut-settings-title" data-i18n="shortcutSettingsTitle">快捷键设置</h3>
+              <p class="shortcut-settings-hint" data-i18n="shortcutSettingsHint">
+                系统级快捷键由 Chrome 管理。这里显示当前绑定，并提供一键前往官方设置页。
+              </p>
+            </div>
+            <button type="button" id="open-shortcut-settings-button" class="button-secondary shortcut-settings-button" data-i18n="openShortcutSettings">
+              打开快捷键设置
+            </button>
+          </div>
+
+          <div class="shortcut-list">
+            <div class="shortcut-row">
+              <div class="shortcut-row-copy">
+                <strong data-i18n="convertButton">复制给AI</strong>
+                <small data-i18n="shortcutCustomize">可自定义</small>
+              </div>
+              <div class="shortcut-row-values">
+                <span class="shortcut-pill">
+                  <span data-i18n="shortcutCurrent">当前</span>
+                  <strong id="shortcut-current-convert">Alt+C</strong>
+                </span>
+                <span class="shortcut-pill shortcut-pill-muted">
+                  <span data-i18n="shortcutRecommended">推荐</span>
+                  <strong id="shortcut-recommended-convert">Alt+C</strong>
+                </span>
+              </div>
+            </div>
+
+            <div class="shortcut-row">
+              <div class="shortcut-row-copy">
+                <strong data-i18n="quickPromptSlot1">快捷 Prompt 1</strong>
+                <small id="shortcut-slot-1-prompt-name">Prompt</small>
+              </div>
+              <div class="shortcut-row-values">
+                <span class="shortcut-pill">
+                  <span data-i18n="shortcutCurrent">当前</span>
+                  <strong id="shortcut-current-slot-1">Alt+1</strong>
+                </span>
+                <span class="shortcut-pill shortcut-pill-muted">
+                  <span data-i18n="shortcutRecommended">推荐</span>
+                  <strong id="shortcut-recommended-slot-1">Alt+1</strong>
+                </span>
+              </div>
+            </div>
+
+            <div class="shortcut-row">
+              <div class="shortcut-row-copy">
+                <strong data-i18n="quickPromptSlot2">快捷 Prompt 2</strong>
+                <small id="shortcut-slot-2-prompt-name">Prompt</small>
+              </div>
+              <div class="shortcut-row-values">
+                <span class="shortcut-pill">
+                  <span data-i18n="shortcutCurrent">当前</span>
+                  <strong id="shortcut-current-slot-2">Alt+2</strong>
+                </span>
+                <span class="shortcut-pill shortcut-pill-muted">
+                  <span data-i18n="shortcutRecommended">推荐</span>
+                  <strong id="shortcut-recommended-slot-2">Alt+2</strong>
+                </span>
+              </div>
+            </div>
+
+            <div class="shortcut-row">
+              <div class="shortcut-row-copy">
+                <strong data-i18n="quickPromptSlot3">快捷 Prompt 3</strong>
+                <small id="shortcut-slot-3-prompt-name">Prompt</small>
+              </div>
+              <div class="shortcut-row-values">
+                <span class="shortcut-pill">
+                  <span data-i18n="shortcutCurrent">当前</span>
+                  <strong id="shortcut-current-slot-3">Alt+3</strong>
+                </span>
+                <span class="shortcut-pill shortcut-pill-muted">
+                  <span data-i18n="shortcutRecommended">推荐</span>
+                  <strong id="shortcut-recommended-slot-3">Alt+3</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <p id="shortcut-settings-feedback" class="shortcut-settings-feedback" hidden></p>
+          <p class="shortcut-settings-footnote" data-i18n="shortcutSettingsChromeHint">
+            如有冲突，请在 Chrome 的扩展快捷键页面修改。
+          </p>
+        </section>
+
+        <div class="management-actions">
+          <button id="add-prompt-button" class="button-secondary" type="button" data-i18n="managePrompts">
+            管理Prompts
+          </button>
+          <button id="popup-onboarding-reopen" class="button-tertiary" type="button" data-i18n="popupOnboardingReopen" hidden>
+            新手引导
+          </button>
+        </div>
+
         <form id="settings-form">
-          <!-- Enable/Disable Magic Copy Section -->
-          <div class="section">
-            <label class="section-title" data-i18n="enableMagicCopy">Enable Magic Copy:</label>
-            <div class="switch-control">
-              <span class="switch-label" data-i18n="enableFeature">Enable Feature</span>
+          <div class="section always-open">
+            <div class="switch-card">
+              <div class="switch-copy">
+                <span class="switch-title" data-i18n="enableFeature">启用智能复制</span>
+                <small data-i18n="popupEnableFeatureHint">关闭后，悬浮按钮和常规复制入口都会暂停。</small>
+              </div>
               <label class="switch">
                 <input type="checkbox" id="enable-magic-copy-switch" />
                 <span class="slider round"></span>
               </label>
             </div>
-            <div class="switch-control">
-              <span class="switch-label" data-i18n="enableHoverTrigger">Enable Hover Trigger</span>
-              <label class="switch">
-                <input type="checkbox" id="enable-hover-magic-copy-switch" />
-                <span class="slider round"></span>
-              </label>
-            </div>
-            <div class="switch-control">
-              <span class="switch-label" data-i18n="enableClipboardAccumulator"
-                >Enable Append Mode</span
-              >
-              <label class="switch">
-                <input type="checkbox" id="enable-clipboard-accumulator-switch" />
-                <span class="slider round"></span>
-              </label>
-            </div>
           </div>
 
-          <!-- Interaction Mode Section -->
-          <div class="inline-section">
-            <label class="inline-title" data-i18n="interactionMode">Mode:</label>
-            <div class="inline-options">
-              <div class="radio-group">
-                <label class="radio-option">
-                  <input type="radio" name="interactionMode" value="click" id="interaction-click" />
-                  <span class="radio-custom"></span>
-                  <span data-i18n="singleClick">Single-Click</span>
+          <button type="button" id="toggle-more-settings" class="settings-toggle" aria-expanded="false">
+            ----展开更多设置 v----
+          </button>
+
+          <div id="more-settings-panel" class="more-settings-panel" hidden>
+            <div class="section">
+              <div class="switch-card compact">
+                <div class="switch-copy">
+                  <span class="switch-title" data-i18n="enableHoverTrigger">启用悬停触发</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="enable-hover-magic-copy-switch" />
+                  <span class="slider round"></span>
                 </label>
-                <label class="radio-option">
-                  <input
-                    type="radio"
-                    name="interactionMode"
-                    value="dblclick"
-                    id="interaction-dblclick"
-                  />
-                  <span class="radio-custom"></span>
-                  <span data-i18n="doubleClick">Double-Click</span>
+              </div>
+
+              <div class="switch-card compact">
+                <div class="switch-copy">
+                  <span class="switch-title" data-i18n="enableClipboardAccumulator">启用追加模式</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="enable-clipboard-accumulator-switch" />
+                  <span class="slider round"></span>
                 </label>
               </div>
             </div>
-          </div>
 
-          <!-- Output Format Section -->
-          <div class="inline-section">
-            <label class="inline-title" data-i18n="outputFormat">Format:</label>
-            <div class="inline-options">
-              <div class="radio-group">
-                <label class="radio-option">
-                  <input type="radio" name="outputFormat" value="markdown" id="format-markdown" />
-                  <span class="radio-custom"></span>
-                  <span data-i18n="markdown">MD</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="outputFormat" value="plaintext" id="format-plaintext" />
-                  <span class="radio-custom"></span>
-                  <span data-i18n="plaintext">Plain Text</span>
-                </label>
+            <div class="inline-section">
+              <label class="inline-title" data-i18n="interactionMode">交互：</label>
+              <div class="inline-options">
+                <div class="radio-group">
+                  <label class="radio-option">
+                    <input type="radio" name="interactionMode" value="click" id="interaction-click" />
+                    <span class="radio-custom"></span>
+                    <span data-i18n="singleClick">单击</span>
+                  </label>
+                  <label class="radio-option">
+                    <input type="radio" name="interactionMode" value="dblclick" id="interaction-dblclick" />
+                    <span class="radio-custom"></span>
+                    <span data-i18n="doubleClick">双击</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="inline-section">
+              <label class="inline-title" data-i18n="outputFormat">格式：</label>
+              <div class="inline-options">
+                <div class="radio-group">
+                  <label class="radio-option">
+                    <input type="radio" name="outputFormat" value="markdown" id="format-markdown" />
+                    <span class="radio-custom"></span>
+                    <span data-i18n="markdown">MD</span>
+                  </label>
+                  <label class="radio-option">
+                    <input type="radio" name="outputFormat" value="plaintext" id="format-plaintext" />
+                    <span class="radio-custom"></span>
+                    <span data-i18n="plaintext">纯文本</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="inline-section">
+              <label class="inline-title" data-i18n="tableOutputFormat">表格：</label>
+              <div class="inline-options">
+                <div class="radio-group">
+                  <label class="radio-option">
+                    <input type="radio" name="tableOutputFormat" value="markdown" id="table-format-markdown" />
+                    <span class="radio-custom"></span>
+                    <span data-i18n="markdown">MD</span>
+                  </label>
+                  <label class="radio-option">
+                    <input type="radio" name="tableOutputFormat" value="csv" id="table-format-csv" />
+                    <span class="radio-custom"></span>
+                    <span data-i18n="csv">CSV</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="inline-section">
+              <label class="inline-title" data-i18n="additionalInfo">附加：</label>
+              <div class="inline-options">
+                <div class="checkbox-group">
+                  <label class="checkbox-option">
+                    <input type="checkbox" id="attach-title" />
+                    <span class="checkbox-custom"></span>
+                    <span data-i18n="attachTitle">页面标题</span>
+                  </label>
+                  <label class="checkbox-option">
+                    <input type="checkbox" id="attach-url" />
+                    <span class="checkbox-custom"></span>
+                    <span data-i18n="attachURL">来源URL</span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
-
-          <!-- Table Output Format Section -->
-          <div class="inline-section">
-            <label class="inline-title" data-i18n="tableOutputFormat">Table:</label>
-            <div class="inline-options">
-              <div class="radio-group">
-                <label class="radio-option">
-                  <input
-                    type="radio"
-                    name="tableOutputFormat"
-                    value="markdown"
-                    id="table-format-markdown"
-                  />
-                  <span class="radio-custom"></span>
-                  <span data-i18n="markdown">MD</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="tableOutputFormat" value="csv" id="table-format-csv" />
-                  <span class="radio-custom"></span>
-                  <span data-i18n="csv">CSV</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <!-- Additional Info Section -->
-          <div class="inline-section">
-            <label class="inline-title" data-i18n="additionalInfo">Extra:</label>
-            <div class="inline-options">
-              <div class="checkbox-group">
-                <label class="checkbox-option">
-                  <input type="checkbox" id="attach-title" />
-                  <span class="checkbox-custom"></span>
-                  <span data-i18n="attachTitle">Page title</span>
-                </label>
-                <label class="checkbox-option">
-                  <input type="checkbox" id="attach-url" />
-                  <span class="checkbox-custom"></span>
-                  <span data-i18n="attachURL">Source URL</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <!-- Language Section -->
-          <!-- section removed -->
         </form>
 
-        <!-- Button Group Section -->
-        <div class="button-group">
-          <button id="convert-button" class="convert-button" data-i18n="convertButton">
-            AI Convert
-          </button>
-          <button id="add-prompt-button" class="button-secondary" data-i18n="managePrompts">
-            管理Prompts
-          </button>
-        </div>
-
         <div class="popup-footer-actions">
-          <button
-            type="button"
-            id="upgrade-pro-entry"
-            class="popup-footer-button"
-            data-i18n="upgradePro"
-          >
+          <button type="button" id="upgrade-pro-entry" class="popup-footer-button" data-i18n="upgradePro">
             升级 Pro
           </button>
-          <button
-            type="button"
-            id="popup-pro-waitlist"
-            class="popup-footer-button"
-            data-i18n="joinProWaitlist"
-          >
+          <button type="button" id="popup-pro-waitlist" class="popup-footer-button" data-i18n="joinProWaitlist">
             加入候补名单
           </button>
-          <button
-            type="button"
-            id="popup-onboarding-reopen"
-            class="popup-footer-button popup-footer-button-subtle"
-            data-i18n="popupOnboardingReopen"
-            hidden
-          >
-            新手引导
-          </button>
         </div>
 
-        <!-- Prompt Modal -->
-        <div id="prompt-modal" class="modal" style="display: none">
-          <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h3 id="modal-title" data-i18n="promptEditor">Prompt Editor</h3>
-            <form id="prompt-form">
-              <input type="hidden" id="prompt-id" />
-              <div class="form-group">
-                <label for="prompt-title" data-i18n="promptTitle">Title</label>
-                <input type="text" id="prompt-title" required />
-              </div>
-              <div class="form-group">
-                <label for="prompt-template" data-i18n="promptTemplate">Template</label>
-                <textarea id="prompt-template" rows="5" required></textarea>
-                <p class="template-hint" data-i18n="promptTemplateHint">
-                  Use {content} as a placeholder for the copied text.
-                </p>
-              </div>
-              <div class="form-actions">
-                <button type="submit" id="save-prompt-button" class="button" data-i18n="save">
-                  Save
-                </button>
-                <button
-                  type="button"
-                  id="cancel-prompt-button"
-                  class="button secondary"
-                  data-i18n="cancel"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <!-- Footer -->
         <div class="footer">
           <div class="footer-item">
             <a href="#" id="feedback-link" class="footer-link">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path
-                  d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
-                ></path>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
               </svg>
-              <span data-i18n="feedback">Feedback & Suggestions</span>
+              <span data-i18n="feedback">反馈与建议</span>
             </a>
           </div>
 
           <div class="footer-item footer-item-share">
             <a href="#" id="share-link" class="footer-link">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"></path>
                 <polyline points="16 6 12 2 8 6"></polyline>
                 <line x1="12" y1="2" x2="12" y2="15"></line>
               </svg>
-              <span data-i18n="shareWithFriends">Share with friends</span>
+              <span data-i18n="shareWithFriends">分享给朋友</span>
             </a>
             <button type="button" id="copy-share-button" class="footer-button" data-i18n="copyShareText">
-              Copy share text
+              复制文案
             </button>
           </div>
 
           <div class="footer-item">
             <a href="#" id="rate-link" class="footer-link">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linejoin="round"
-              >
-                <polygon
-                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                ></polygon>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
               </svg>
-              <span data-i18n="rateUs">Rate us</span>
+              <span data-i18n="rateUs">去评价</span>
             </a>
           </div>
         </div>
 
-        <!-- Popup Onboarding Modal -->
         <div id="popup-onboarding-modal" class="modal onboarding-modal" style="display: none">
           <div class="modal-content onboarding-modal-content">
             <div class="onboarding-header">
@@ -314,64 +342,33 @@
 
             <div class="onboarding-body">
               <div id="popup-onboarding-step-1" class="onboarding-step" data-step="1">
-                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep1Title">
-                  第 1 步：开始复制
-                </h3>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep1Desc1">
-                  选择你习惯的触发方式：单击 / 双击 / 悬停。
-                </p>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep1Desc2">
-                  先用默认设置也可以，后续随时都能调整。
-                </p>
+                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep1Title">第 1 步：开始复制</h3>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep1Desc1">选择你习惯的触发方式：单击 / 双击 / 悬停。</p>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep1Desc2">先用默认设置也可以，后续随时都能调整。</p>
               </div>
 
               <div id="popup-onboarding-step-2" class="onboarding-step" data-step="2" hidden>
-                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep2Title">
-                  第 2 步：追加模式
-                </h3>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep2Desc1">
-                  按住 Shift 进行“追加复制”，可在粘贴时合并为一段。
-                </p>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep2Desc2">
-                  你可以在 Popup 里打开 “Append Mode” 开关来启用。
-                </p>
+                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep2Title">第 2 步：追加模式</h3>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep2Desc1">按住 Shift 进行“追加复制”，可在粘贴时合并为一段。</p>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep2Desc2">你可以在 Popup 里打开“追加模式”开关来启用。</p>
               </div>
 
               <div id="popup-onboarding-step-3" class="onboarding-step" data-step="3" hidden>
-                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep3Title">
-                  第 3 步：管理 Prompts
-                </h3>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep3Desc1">
-                  通过“管理 Prompts”添加或编辑模板；需要更细设置时，再进入 Options 页。
-                </p>
+                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep3Title">第 3 步：快捷 Prompt</h3>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep3Desc1">为常用 Prompt 绑定快捷位后，你可以直接用按钮或快捷键触发，无需再层层展开菜单。</p>
               </div>
             </div>
 
             <div class="onboarding-footer">
-              <button
-                type="button"
-                id="popup-onboarding-skip"
-                class="onboarding-skip-button"
-                data-i18n="popupOnboardingSkip"
-              >
+              <button type="button" id="popup-onboarding-skip" class="onboarding-skip-button" data-i18n="popupOnboardingSkip">
                 跳过
               </button>
 
               <div class="onboarding-nav">
-                <button
-                  type="button"
-                  id="popup-onboarding-prev"
-                  class="button secondary"
-                  data-i18n="popupOnboardingPrev"
-                >
+                <button type="button" id="popup-onboarding-prev" class="button secondary" data-i18n="popupOnboardingPrev">
                   上一步
                 </button>
-                <button
-                  type="button"
-                  id="popup-onboarding-next"
-                  class="button"
-                  data-i18n="popupOnboardingNext"
-                >
+                <button type="button" id="popup-onboarding-next" class="button" data-i18n="popupOnboardingNext">
                   下一步
                 </button>
               </div>

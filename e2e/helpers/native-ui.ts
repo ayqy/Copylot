@@ -209,65 +209,28 @@ export async function invokePromptFromNativeContextMenu(options: {
     await mouse('move', parentMatch.x, parentMatch.y);
     await delay(1000);
 
-    let submenuScreenshot = await captureScreen(tempDir, 'context-submenu');
-    let submenuMatch = pickScreenMatch(
-      await ocrMatches(submenuScreenshot, [
-        '智能复制+自定义提示',
-        'Magic Copy with Prompt',
-        '智能复制',
-        'Magic Copy'
-      ]),
-      {
-        minX: parentMatch.x + 80,
-        minY: parentMatch.y - 120,
-        maxY: parentMatch.y + 120
-      }
-    );
-    if (!submenuMatch) {
-      await pressKey('right');
-      await delay(500);
-      submenuScreenshot = await captureScreen(tempDir, 'context-submenu-after-right');
-      submenuMatch = pickScreenMatch(
-        await ocrMatches(submenuScreenshot, [
-          '智能复制+自定义提示',
-          'Magic Copy with Prompt',
-          '智能复制',
-          'Magic Copy'
-        ]),
-        {
-          minX: parentMatch.x + 80,
-          minY: parentMatch.y - 120,
-          maxY: parentMatch.y + 120
-        }
-      );
-    }
-
-    if (!submenuMatch) {
-      throw new Error('no OCR match found for native context menu prompt parent item');
-    }
-
-    await mouse('move', submenuMatch.x, submenuMatch.y);
-    await delay(1000);
+    await pressKey('right');
+    await delay(500);
 
     let promptScreenshot = await captureScreen(tempDir, 'context-prompt-submenu');
     let promptMatch = pickScreenMatch(
       await ocrMatches(promptScreenshot, [promptTitle, 'QA Native Summary', 'QA Native', 'Native Summary']),
       {
-        minX: submenuMatch.x + 80,
-        minY: submenuMatch.y - 140,
-        maxY: submenuMatch.y + 140
+        minX: parentMatch.x + 80,
+        minY: parentMatch.y - 180,
+        maxY: parentMatch.y + 180
       }
     );
     if (!promptMatch) {
-      await pressKey('right');
+      await mouse('move', parentMatch.x + 120, parentMatch.y + 40);
       await delay(500);
       promptScreenshot = await captureScreen(tempDir, 'context-prompt-submenu-after-right');
       promptMatch = pickScreenMatch(
         await ocrMatches(promptScreenshot, [promptTitle, 'QA Native Summary', 'QA Native', 'Native Summary']),
         {
-          minX: submenuMatch.x + 80,
-          minY: submenuMatch.y - 140,
-          maxY: submenuMatch.y + 140
+          minX: parentMatch.x + 80,
+          minY: parentMatch.y - 180,
+          maxY: parentMatch.y + 180
         }
       );
     }
@@ -319,16 +282,13 @@ export async function invokeConvertPageFromNativeContextMenu(options: {
     const submenuScreenshot = await captureScreen(tempDir, 'context-submenu-after-right');
     const convertMatch = pickScreenMatch(
       await ocrMatches(submenuScreenshot, [
-        '转换为AI友好格式',
-        '转换为Al友好格式',
-        '转换为A1友好格式',
-        'AI友好格式',
-        'Al友好格式',
-        'A1友好格式',
-        'Convert to AI-Friendly Format',
-        'Convert to Al-Friendly Format',
-        'Convert to A1-Friendly Format',
-        'AI-Friendly Format'
+        '复制给AI',
+        '复制给Al',
+        '复制给A1',
+        '给AI',
+        'Copy to AI',
+        'Copy to Al',
+        'Copy to A1'
       ]),
       {
         minX: parentMatch.x + 80,
@@ -384,7 +344,7 @@ export async function clickPopupConvertButton(options: {
     userDataDir: options.userDataDir,
     projectOutputDir: options.projectOutputDir,
     name: 'popup-convert',
-    queries: ['AI转换', 'Al转换', 'AI Convert']
+    queries: ['复制给AI', '复制给Al', 'Copy to AI']
   });
 }
 
@@ -396,6 +356,15 @@ export async function clickPopupManagePromptsButton(options: {
     userDataDir: options.userDataDir,
     projectOutputDir: options.projectOutputDir,
     name: 'popup-manage-prompts',
-    queries: ['管理Prompts', 'Manage Prompts', '管理Prompt', 'Manage Prompt']
+    queries: [
+      '管理Prompts',
+      '管理 Prompt',
+      '管理prompt',
+      '管理 Prompts',
+      'Manage Prompts',
+      'Manage Prompt',
+      'Prompts',
+      'Prompt'
+    ]
   });
 }

@@ -207,7 +207,7 @@ function isPlaceholderContent(text: string): boolean {
 function isInFallbackContext(text: string): boolean {
   // These are strings that appear as fallbacks in existing chrome.i18n.getMessage calls
   const fallbackStrings = [
-    'Convert Page to AI-Friendly Format',
+    'Copy to AI',
     'Magic Copy with Prompt', 
     'Content script not available.',
     'No active tab found.',

@@ -20,8 +20,8 @@
 - 规则 `desc_allowed_negation_disclaimer`：否定语境免责声明：明确声明商店页不提供任何付费/订阅承诺（允许出现 payment/subscription/付费/订阅，但必须可解释归因）。
   - `docs/ChromeWebStore-Description-EN.md:33` term=`payment`
   - `docs/ChromeWebStore-Description-EN.md:33` term=`subscription`
-  - `docs/ChromeWebStore-Description-ZH.md:33` term=`订阅`
   - `docs/ChromeWebStore-Description-ZH.md:33` term=`付费`
+  - `docs/ChromeWebStore-Description-ZH.md:33` term=`订阅`
 
 ## 修复建议
 - 无（当前为 PASS）。

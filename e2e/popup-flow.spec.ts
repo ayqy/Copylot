@@ -27,6 +27,10 @@ test('popup opens via extension action and can convert current page selection', 
     await completePopupOnboardingIfVisible(popup);
 
     await expect(popup.locator('#convert-button')).toBeVisible();
+    await expect(popup.locator('#convert-button')).toContainText(/复制给AI|Copy to AI/);
+    await expect(popup.locator('#convert-shortcut')).toContainText(/Alt\+C|Option\+C|⌥C/);
+    await expect(popup.locator('#open-shortcut-settings-button')).toBeVisible();
+    await expect(popup.locator('#toggle-more-settings')).toHaveText(/展开更多设置|Expand more settings/);
     await popup.locator('#convert-button').click();
     await expect
       .poll(async () => {
@@ -75,9 +79,21 @@ test('popup entry points can open options and passive pro targets', async ({
     await page.bringToFront();
     const popupAgain = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
     await completePopupOnboardingIfVisible(popupAgain);
+    await popupAgain.locator('#open-shortcut-settings-button').click();
+    await expect
+      .poll(async () => {
+        const urls = await getStorageSnapshot(driverPage);
+        const opened = urls.local.copilot_e2e_opened_urls as string[] | undefined;
+        return opened?.includes('chrome://extensions/shortcuts') ?? false;
+      })
+      .toBe(true);
+
+    await page.bringToFront();
+    const popupAfterShortcutSettings = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
+    await completePopupOnboardingIfVisible(popupAfterShortcutSettings);
     const [proPage] = await Promise.all([
       extensionContext.waitForEvent('page'),
-      popupAgain.locator('#upgrade-pro-entry').click()
+      popupAfterShortcutSettings.locator('#upgrade-pro-entry').click()
     ]);
     await proPage.waitForLoadState('domcontentloaded');
     await expect(proPage.locator('#pro-tab')).toHaveCount(1);

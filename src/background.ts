@@ -1,6 +1,11 @@
 import { getActivePrompts, getSettings, saveSettings, type Prompt, type ChatService } from './shared/settings-manager';
 import { buildPromptContextMenuItems } from './shared/context-menu-model';
 import {
+  QUICK_CONVERT_COMMAND,
+  getQuickPromptBySlot,
+  getQuickPromptSlotFromCommand
+} from './shared/prompt-shortcuts';
+import {
   ensureGrowthStatsInitialized,
   getGrowthStats,
   incrementSuccessfulCopyCount,
@@ -9,7 +14,6 @@ import {
   type RatingPromptAction
 } from './shared/growth-stats';
 
-const PARENT_MENU_ID = 'magic-copy-with-prompt';
 const isE2EBuild = process.env.BUILD_TARGET === 'e2e';
 const E2E_LAST_COPIED_TEXT_KEY = 'copilot_e2e_last_copied_text';
 const E2E_OPENED_URLS_KEY = 'copilot_e2e_opened_urls';
@@ -80,12 +84,12 @@ async function updateContextMenu() {
     // Create the main "Convert Page" item
     chrome.contextMenus.create({
       id: 'convert-page-to-ai-friendly-format',
-      title: chrome.i18n.getMessage('convertPage') || 'Convert Page to AI-Friendly Format',
+      title: chrome.i18n.getMessage('convertPage') || 'Copy to AI',
       contexts: ['page']
     });
     e2eContextMenuSnapshot.push({
       id: 'convert-page-to-ai-friendly-format',
-      title: chrome.i18n.getMessage('convertPage') || 'Convert Page to AI-Friendly Format',
+      title: chrome.i18n.getMessage('convertPage') || 'Copy to AI',
       contexts: ['page']
     });
 
@@ -93,28 +97,20 @@ async function updateContextMenu() {
     const activePrompts = getActivePrompts(userPrompts);
 
     if (activePrompts.length > 0) {
-      chrome.contextMenus.create({
-        id: PARENT_MENU_ID,
-        title: chrome.i18n.getMessage('magicCopyWithPrompt') || 'Magic Copy with Prompt',
-        contexts: ['page', 'selection']
-      });
-      e2eContextMenuSnapshot.push({
-        id: PARENT_MENU_ID,
-        title: chrome.i18n.getMessage('magicCopyWithPrompt') || 'Magic Copy with Prompt',
-        contexts: ['page', 'selection']
-      });
-
       buildPromptContextMenuItems({
-        prompts: activePrompts,
-        parentId: PARENT_MENU_ID
+        prompts: activePrompts
       }).forEach((item) => {
         try {
-          chrome.contextMenus.create({
+          const createProperties: chrome.contextMenus.CreateProperties = {
             id: item.id,
             title: item.title,
-            parentId: item.parentId,
             contexts: item.contexts
-          });
+          };
+          if (item.parentId) {
+            createProperties.parentId = item.parentId;
+          }
+
+          chrome.contextMenus.create(createProperties);
           e2eContextMenuSnapshot.push({
             id: item.id,
             title: item.title,
@@ -139,16 +135,9 @@ async function handleConvertPageContextMenu(tabId: number) {
   });
 }
 
-async function handlePromptContextMenuClick(
-  info: chrome.contextMenus.OnClickData,
-  tab: chrome.tabs.Tab
-) {
-  if (!tab.id) {
-    return;
-  }
-
+async function runPromptAction(tabId: number, promptId: string, selectionText?: string) {
   const settings = await getSettings();
-  const prompt = getActivePrompts(settings.userPrompts).find((item: Prompt) => item.id === info.menuItemId);
+  const prompt = getActivePrompts(settings.userPrompts).find((item: Prompt) => item.id === promptId);
   if (!prompt) {
     return;
   }
@@ -166,48 +155,24 @@ async function handlePromptContextMenuClick(
   const shouldOpenChat = prompt.autoOpenChat !== undefined ? prompt.autoOpenChat : settings.defaultAutoOpenChat;
   const targetChatId = prompt.targetChatId || settings.defaultChatServiceId;
 
-  const selectionText = typeof info.selectionText === 'string' ? info.selectionText.trim() : '';
-  const hasSelection = selectionText.length > 0;
-
-  if (hasSelection) {
-    if (shouldOpenChat && targetChatId) {
-      const chatService = settings.chatServices.find((service: ChatService) => service.id === targetChatId && service.enabled);
-      if (chatService) {
-        return chrome.tabs.sendMessage(tab.id, {
-          type: 'PROCESS_SELECTION_WITH_PROMPT',
-          promptTemplate: prompt.template,
-          chatServiceUrl: chatService.url,
-          chatServiceName: chatService.name
-        });
-      }
-    }
-
-    return chrome.tabs.sendMessage(tab.id, {
-      type: 'PROCESS_SELECTION_WITH_PROMPT',
-      promptTemplate: prompt.template
-    });
-  }
-
+  const normalizedSelection = typeof selectionText === 'string' ? selectionText.trim() : '';
   if (shouldOpenChat && targetChatId) {
     const chatService = settings.chatServices.find((service: ChatService) => service.id === targetChatId && service.enabled);
     if (chatService) {
-      return chrome.tabs.sendMessage(tab.id, {
-        type: 'PROCESS_PAGE_WITH_PROMPT_AND_CHAT',
+      return chrome.tabs.sendMessage(tabId, {
+        type: 'PROCESS_SELECTION_OR_PAGE_WITH_PROMPT',
         promptTemplate: prompt.template,
         chatServiceUrl: chatService.url,
-        chatServiceName: chatService.name
+        chatServiceName: chatService.name,
+        selectionText: normalizedSelection
       });
     }
-
-    return chrome.tabs.sendMessage(tab.id, {
-      type: 'PROCESS_PAGE_WITH_PROMPT',
-      promptTemplate: prompt.template
-    });
   }
 
-  return chrome.tabs.sendMessage(tab.id, {
-    type: 'PROCESS_PAGE_WITH_PROMPT',
-    promptTemplate: prompt.template
+  return chrome.tabs.sendMessage(tabId, {
+    type: 'PROCESS_SELECTION_OR_PAGE_WITH_PROMPT',
+    promptTemplate: prompt.template,
+    selectionText: normalizedSelection
   });
 }
 
@@ -221,8 +186,10 @@ async function handleContextMenuClick(info: chrome.contextMenus.OnClickData, tab
     return;
   }
 
-  if (info.parentMenuItemId === PARENT_MENU_ID) {
-    await handlePromptContextMenuClick(info, tab);
+  const settings = await getSettings();
+  const promptExists = getActivePrompts(settings.userPrompts).some((prompt) => prompt.id === info.menuItemId);
+  if (promptExists) {
+    await runPromptAction(tab.id, String(info.menuItemId), typeof info.selectionText === 'string' ? info.selectionText : undefined);
   }
 }
 
@@ -285,6 +252,45 @@ async function invokeContextMenuFromBridge(message: { tabId?: number; info: Part
 
   await handleContextMenuClick(clickInfo, tab);
 }
+
+async function executeQuickActionCommand(command: string, explicitTabId?: number) {
+  let tab: chrome.tabs.Tab | null = null;
+
+  if (typeof explicitTabId === 'number') {
+    tab = await chrome.tabs.get(explicitTabId);
+  } else {
+    const activeTabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+    tab = activeTabs[0] || null;
+  }
+
+  if (!tab?.id) {
+    throw new Error(chrome.i18n.getMessage('noActiveTabFound') || 'No active tab found.');
+  }
+
+  if (command === QUICK_CONVERT_COMMAND) {
+    await handleConvertPageContextMenu(tab.id);
+    return;
+  }
+
+  const slot = getQuickPromptSlotFromCommand(command);
+  if (!slot) {
+    throw new Error(chrome.i18n.getMessage('unknownMessageType') || 'Unknown message type');
+  }
+
+  const settings = await getSettings();
+  const prompt = getQuickPromptBySlot(getActivePrompts(settings.userPrompts), slot);
+  if (!prompt) {
+    throw new Error(chrome.i18n.getMessage('promptNotFound') || 'Prompt not found');
+  }
+
+  await runPromptAction(tab.id, prompt.id);
+}
+
+chrome.commands?.onCommand.addListener((command) => {
+  void executeQuickActionCommand(command).catch((error) => {
+    console.error('Failed to execute command:', command, error);
+  });
+});
 
 // Extension lifecycle events
 chrome.runtime.onInstalled.addListener(async (details) => {
@@ -443,6 +449,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case 'update-context-menu':
       updateContextMenu();
       sendResponse({ success: true });
+      break;
+
+    case 'run-quick-action':
+      (async () => {
+        try {
+          await executeQuickActionCommand(
+            typeof message.command === 'string' ? message.command : '',
+            typeof message.tabId === 'number' ? message.tabId : undefined
+          );
+          sendResponse({ success: true });
+        } catch (error) {
+          console.error('Failed to run quick action:', error);
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
       break;
 
     case 'update-prompt-usage':
@@ -647,6 +668,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
           const text = await chrome.action.getBadgeText({});
           sendResponse({ success: true, text });
+        } catch (error) {
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      break;
+
+    case 'e2e:trigger-command':
+      (async () => {
+        try {
+          if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
+          await executeQuickActionCommand(
+            typeof message.command === 'string' ? message.command : '',
+            typeof message.tabId === 'number' ? message.tabId : undefined
+          );
+          sendResponse({ success: true });
         } catch (error) {
           sendResponse({ success: false, error: (error as Error).message });
         }
