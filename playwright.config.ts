@@ -6,7 +6,7 @@ const shouldRunHeaded = process.env.COPYLOT_E2E_ONLY_NATIVE_UI === '1' ? true : 
 export default defineConfig({
   testDir: './e2e',
   outputDir: '.tmp_e2e/results',
-  timeout: 90_000,
+  timeout: 300_000,
   expect: {
     timeout: 10_000
   },

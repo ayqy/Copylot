@@ -17,7 +17,7 @@
                   <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0, 0, 0, 0.15)" />
                 </filter>
               </defs>
-              <rect x="2" y="2" width="28" height="28" rx="8" ry="8" fill="#0f766e" filter="url(#shadow)" />
+              <rect x="2" y="2" width="28" height="28" rx="8" ry="8" fill="#4f46e5" filter="url(#shadow)" />
               <g transform="translate(16, 16)" fill="none" stroke="white" stroke-width="1.5">
                 <g transform="scale(0.8) translate(-12, -12)">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -27,20 +27,12 @@
             </svg>
             <div class="logo-copy">
               <span data-i18n="appName">Copylot</span>
-              <small data-i18n="popupQuickActionsTitle">快捷操作</small>
             </div>
           </div>
           <div class="header-right">
             <span id="dev-badge" class="dev-badge" hidden>DEV</span>
             <div class="version" id="version-display"></div>
           </div>
-        </div>
-
-        <div class="hero">
-          <p class="hero-title" data-i18n="popupQuickActionsTitle">快捷操作</p>
-          <p class="hero-subtitle" data-i18n="popupQuickActionsHint">
-            高频动作放在最上层，右键入口保留，快捷键是最短路径。
-          </p>
         </div>
 
         <div class="quick-actions" id="quick-actions">
@@ -52,7 +44,7 @@
             <span id="convert-shortcut" class="shortcut-hint">Alt+C</span>
           </button>
 
-          <button type="button" id="quick-prompt-slot-1-button" class="quick-action">
+          <button type="button" id="quick-prompt-slot-1-button" class="quick-action" hidden>
             <span class="quick-action-copy">
               <strong id="quick-prompt-slot-1-title" data-i18n="quickPromptSlot1">快捷 Prompt 1</strong>
               <small id="quick-prompt-slot-1-desc" data-i18n="quickPromptSetupSlot1">在 Options 中为一个 Prompt 绑定快捷位 1</small>
@@ -60,7 +52,7 @@
             <span id="quick-prompt-slot-1-shortcut" class="shortcut-hint">Alt+1</span>
           </button>
 
-          <button type="button" id="quick-prompt-slot-2-button" class="quick-action">
+          <button type="button" id="quick-prompt-slot-2-button" class="quick-action" hidden>
             <span class="quick-action-copy">
               <strong id="quick-prompt-slot-2-title" data-i18n="quickPromptSlot2">快捷 Prompt 2</strong>
               <small id="quick-prompt-slot-2-desc" data-i18n="quickPromptSetupSlot2">在 Options 中为一个 Prompt 绑定快捷位 2</small>
@@ -68,7 +60,7 @@
             <span id="quick-prompt-slot-2-shortcut" class="shortcut-hint">Alt+2</span>
           </button>
 
-          <button type="button" id="quick-prompt-slot-3-button" class="quick-action">
+          <button type="button" id="quick-prompt-slot-3-button" class="quick-action" hidden>
             <span class="quick-action-copy">
               <strong id="quick-prompt-slot-3-title" data-i18n="quickPromptSlot3">快捷 Prompt 3</strong>
               <small id="quick-prompt-slot-3-desc" data-i18n="quickPromptSetupSlot3">在 Options 中为一个 Prompt 绑定快捷位 3</small>
@@ -86,84 +78,11 @@
               </p>
             </div>
             <button type="button" id="open-shortcut-settings-button" class="button-secondary shortcut-settings-button" data-i18n="openShortcutSettings">
-              打开快捷键设置
+              去设置
             </button>
           </div>
 
-          <div class="shortcut-list">
-            <div class="shortcut-row">
-              <div class="shortcut-row-copy">
-                <strong data-i18n="convertButton">复制给AI</strong>
-                <small data-i18n="shortcutCustomize">可自定义</small>
-              </div>
-              <div class="shortcut-row-values">
-                <span class="shortcut-pill">
-                  <span data-i18n="shortcutCurrent">当前</span>
-                  <strong id="shortcut-current-convert">Alt+C</strong>
-                </span>
-                <span class="shortcut-pill shortcut-pill-muted">
-                  <span data-i18n="shortcutRecommended">推荐</span>
-                  <strong id="shortcut-recommended-convert">Alt+C</strong>
-                </span>
-              </div>
-            </div>
-
-            <div class="shortcut-row">
-              <div class="shortcut-row-copy">
-                <strong data-i18n="quickPromptSlot1">快捷 Prompt 1</strong>
-                <small id="shortcut-slot-1-prompt-name">Prompt</small>
-              </div>
-              <div class="shortcut-row-values">
-                <span class="shortcut-pill">
-                  <span data-i18n="shortcutCurrent">当前</span>
-                  <strong id="shortcut-current-slot-1">Alt+1</strong>
-                </span>
-                <span class="shortcut-pill shortcut-pill-muted">
-                  <span data-i18n="shortcutRecommended">推荐</span>
-                  <strong id="shortcut-recommended-slot-1">Alt+1</strong>
-                </span>
-              </div>
-            </div>
-
-            <div class="shortcut-row">
-              <div class="shortcut-row-copy">
-                <strong data-i18n="quickPromptSlot2">快捷 Prompt 2</strong>
-                <small id="shortcut-slot-2-prompt-name">Prompt</small>
-              </div>
-              <div class="shortcut-row-values">
-                <span class="shortcut-pill">
-                  <span data-i18n="shortcutCurrent">当前</span>
-                  <strong id="shortcut-current-slot-2">Alt+2</strong>
-                </span>
-                <span class="shortcut-pill shortcut-pill-muted">
-                  <span data-i18n="shortcutRecommended">推荐</span>
-                  <strong id="shortcut-recommended-slot-2">Alt+2</strong>
-                </span>
-              </div>
-            </div>
-
-            <div class="shortcut-row">
-              <div class="shortcut-row-copy">
-                <strong data-i18n="quickPromptSlot3">快捷 Prompt 3</strong>
-                <small id="shortcut-slot-3-prompt-name">Prompt</small>
-              </div>
-              <div class="shortcut-row-values">
-                <span class="shortcut-pill">
-                  <span data-i18n="shortcutCurrent">当前</span>
-                  <strong id="shortcut-current-slot-3">Alt+3</strong>
-                </span>
-                <span class="shortcut-pill shortcut-pill-muted">
-                  <span data-i18n="shortcutRecommended">推荐</span>
-                  <strong id="shortcut-recommended-slot-3">Alt+3</strong>
-                </span>
-              </div>
-            </div>
-          </div>
-
           <p id="shortcut-settings-feedback" class="shortcut-settings-feedback" hidden></p>
-          <p class="shortcut-settings-footnote" data-i18n="shortcutSettingsChromeHint">
-            如有冲突，请在 Chrome 的扩展快捷键页面修改。
-          </p>
         </section>
 
         <div class="management-actions">
@@ -190,7 +109,14 @@
           </div>
 
           <button type="button" id="toggle-more-settings" class="settings-toggle" aria-expanded="false">
-            ----展开更多设置 v----
+            <span class="settings-toggle-line" aria-hidden="true"></span>
+            <span id="toggle-more-settings-label" class="settings-toggle-label" data-i18n="expandMoreSettings">展开更多设置</span>
+            <span class="settings-toggle-icon" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <span class="settings-toggle-line" aria-hidden="true"></span>
           </button>
 
           <div id="more-settings-panel" class="more-settings-panel" hidden>

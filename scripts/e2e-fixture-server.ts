@@ -4,7 +4,6 @@ import path from 'node:path';
 import type { Socket } from 'node:net';
 
 const HOST = '127.0.0.1';
-const PORT = 4173;
 
 const MIME_TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -25,9 +24,10 @@ export async function startFixtureServer(): Promise<{
   close(): Promise<void>;
 }> {
   const sockets = new Set<Socket>();
+  let listeningPort = 0;
   const server = http.createServer(async (req, res) => {
     try {
-      const requestUrl = new URL(req.url || '/', `http://${HOST}:${PORT}`);
+      const requestUrl = new URL(req.url || '/', `http://${HOST}:${listeningPort}`);
       const filePath = resolveFixturePath(requestUrl.pathname);
       const ext = path.extname(filePath).toLowerCase();
       const body = await readFile(filePath);
@@ -53,14 +53,22 @@ export async function startFixtureServer(): Promise<{
 
   await new Promise<void>((resolve, reject) => {
     server.once('error', reject);
-    server.listen(PORT, HOST, () => {
+    server.listen(0, HOST, () => {
       server.off('error', reject);
       resolve();
     });
   });
 
+  const address = server.address();
+  if (!address || typeof address === 'string') {
+    throw new Error('failed to resolve fixture server address');
+  }
+
+  const port = address.port;
+  listeningPort = port;
+
   return {
-    origin: `http://${HOST}:${PORT}`,
+    origin: `http://${HOST}:${port}`,
     async close() {
       for (const socket of sockets) {
         socket.destroy();

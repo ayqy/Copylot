@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import * as fsSync from 'node:fs';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -59,9 +60,12 @@ const REQUIRED_INPUT_PATHS = Object.freeze({
 
 const REQUIRED_UTM_MEDIA = Object.freeze(['popup', 'options', 'distribution_toolkit'] as const);
 const REQUIRED_CAMPAIGN_SAMPLES = Object.freeze([null, 'twitter'] as const);
+const CURRENT_EXTENSION_VERSION = JSON.parse(
+  fsSync.readFileSync(path.resolve(process.cwd(), 'manifest.json'), 'utf-8')
+).version as string;
 
 const SAMPLE_WAITLIST_ENV = Object.freeze({
-  extensionVersion: '1.1.28',
+  extensionVersion: CURRENT_EXTENSION_VERSION,
   extensionId: 'ehfglnbhoefcdedpkcdnainiifpflbic',
   navigatorLanguage: 'en-US',
   uiLanguage: 'en'

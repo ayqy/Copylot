@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { test as base } from '@playwright/test';
 import { launchExtension, openDriverPage, resetExtensionState } from './helpers/extension-state';
 import { startFixtureServer } from '../scripts/e2e-fixture-server';
@@ -12,11 +13,12 @@ export const test = base.extend<{
 }>({
   extensionContext: async ({}, use, testInfo) => {
     const isNativeUiProject = testInfo.project.name === 'native-ui';
+    const userDataDir = isNativeUiProject
+      ? path.resolve(process.cwd(), '.tmp_e2e/native-ui-user-data')
+      : path.resolve(process.cwd(), '.tmp_e2e/chromium-user-data', randomUUID());
     const loaded = await launchExtension({
       headed: isNativeUiProject || process.env.COPYLOT_E2E_HEADED === '1',
-      userDataDir: isNativeUiProject
-        ? path.resolve(process.cwd(), '.tmp_e2e/native-ui-user-data')
-        : path.resolve(process.cwd(), '.tmp_e2e/chromium-user-data')
+      userDataDir
     });
     try {
       await use(loaded.context);

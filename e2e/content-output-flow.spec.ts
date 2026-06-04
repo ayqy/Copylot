@@ -35,6 +35,7 @@ test('markdown output includes title url and preserves inline links', async ({
 
   const page = await extensionContext.newPage();
   try {
+    const articleUrl = `${fixtureOrigin}/article.html`;
     await page.goto(`${fixtureOrigin}/article.html`);
     await page.locator('#article-paragraph').selectText();
     await page.locator('#article-paragraph').click();
@@ -43,7 +44,7 @@ test('markdown output includes title url and preserves inline links', async ({
     const text = await expectClipboardTextEventually((value) => {
       return (
         value.includes('Fixture Article') &&
-        value.includes('http://127.0.0.1:4173/article.html') &&
+        value.includes(articleUrl) &&
         value.includes('[research notes](https://example.com/research)')
       );
     }, driverPage);
@@ -83,6 +84,7 @@ test('plaintext output strips markdown formatting and omits extras', async ({
 
   const page = await extensionContext.newPage();
   try {
+    const articleUrl = `${fixtureOrigin}/article.html`;
     await page.goto(`${fixtureOrigin}/article.html`);
     await page.locator('#article-paragraph').selectText();
     await page.locator('#article-paragraph').click();
@@ -93,7 +95,7 @@ test('plaintext output strips markdown formatting and omits extras', async ({
     }, driverPage);
 
     expect(text).not.toContain('Fixture Article');
-    expect(text).not.toContain('http://127.0.0.1:4173/article.html');
+    expect(text).not.toContain(articleUrl);
     expect(text).not.toContain('[research notes]');
   } finally {
     await page.close();

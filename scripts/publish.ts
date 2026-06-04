@@ -7,6 +7,12 @@ import path from 'path';
 import { execSync } from 'child_process'; // 用于执行 git 命令等
 import readline from 'readline'; // 用于用户交互
 
+type ReleaseType = 'patch' | 'minor' | 'major';
+
+function hasFlag(argv: string[], flag: string): boolean {
+  return argv.includes(flag);
+}
+
 // ANSI Color Codes
 const colors = {
   reset: '\x1b[0m',
@@ -27,6 +33,57 @@ const log = {
   success: (msg: string) => console.log(`${colors.green}[SUCCESS] ${msg}${colors.reset}`)
 };
 
+function parseReleaseType(argv: string[]): ReleaseType {
+  const prefix = '--release-type=';
+  const direct = argv.find((arg) => arg.startsWith(prefix));
+  if (direct) {
+    const value = direct.slice(prefix.length);
+    if (value === 'patch' || value === 'minor' || value === 'major') {
+      return value;
+    }
+    throw new Error(`不支持的 release type: ${value}`);
+  }
+
+  const index = argv.indexOf('--release-type');
+  if (index >= 0) {
+    const value = argv[index + 1];
+    if (value === 'patch' || value === 'minor' || value === 'major') {
+      return value;
+    }
+    throw new Error(`不支持的 release type: ${String(value)}`);
+  }
+
+  return 'patch';
+}
+
+function parseSemver(version: string): { major: number; minor: number; patch: number } {
+  const match = version.match(/^(\d+)\.(\d+)\.(\d+)$/);
+  if (!match) {
+    throw new Error(`版本号不是合法 semver: ${version}`);
+  }
+
+  return {
+    major: Number.parseInt(match[1], 10),
+    minor: Number.parseInt(match[2], 10),
+    patch: Number.parseInt(match[3], 10)
+  };
+}
+
+function bumpSemverVersion(currentVersion: string, releaseType: ReleaseType): string {
+  const parsed = parseSemver(currentVersion);
+
+  switch (releaseType) {
+    case 'major':
+      return `${parsed.major + 1}.0.0`;
+    case 'minor':
+      return `${parsed.major}.${parsed.minor + 1}.0`;
+    case 'patch':
+      return `${parsed.major}.${parsed.minor}.${parsed.patch + 1}`;
+    default:
+      return currentVersion;
+  }
+}
+
 // Helper function to ask user a question
 function askQuestion(query: string): Promise<string> {
   // Ensure question also uses default color, but input is not colored.
@@ -41,6 +98,20 @@ function askQuestion(query: string): Promise<string> {
       resolve(ans.trim());
     })
   );
+}
+
+async function confirmOrExit(query: string, autoConfirm: boolean): Promise<void> {
+  if (autoConfirm) {
+    const normalizedQuery = Object.values(colors).reduce((text, colorCode) => text.split(colorCode).join(''), query);
+    log.info(`自动确认: ${normalizedQuery.trim()}`);
+    return;
+  }
+
+  const confirmation = await askQuestion(query);
+  if (confirmation.toLowerCase() !== 'y' && confirmation.toLowerCase() !== 'yes') {
+    log.warn('操作已取消。');
+    process.exit(0);
+  }
 }
 
 async function getRepoUrlPath(): Promise<string> {
@@ -89,6 +160,14 @@ async function getRepoUrlPath(): Promise<string> {
 
 async function main() {
   log.info('开始发布流程...');
+  let releaseType: ReleaseType;
+  const autoConfirm = hasFlag(process.argv.slice(2), '--yes') || process.env.CI === '1';
+  try {
+    releaseType = parseReleaseType(process.argv.slice(2));
+  } catch (error) {
+    log.error((error as Error).message);
+    process.exit(1);
+  }
 
   // --- Preflight: 发布前置校验（失败直接退出，避免污染 git commit/tag） ---
   try {
@@ -126,24 +205,21 @@ async function main() {
   }
 
   // --- 步骤 5: 生成新版本号 ---
-  const versionParts = currentVersion.split('.');
-  const lastPart = parseInt(versionParts[versionParts.length - 1], 10);
-  if (isNaN(lastPart)) {
-    log.error(`版本号 ${currentVersion} 的最后一部分不是一个有效的数字。`);
+  let newVersion = '';
+  try {
+    newVersion = bumpSemverVersion(currentVersion, releaseType);
+  } catch (error) {
+    log.error((error as Error).message);
     process.exit(1);
   }
-  versionParts[versionParts.length - 1] = (lastPart + 1).toString();
-  const newVersion = versionParts.join('.');
-  log.info(`建议新版本号: ${newVersion}`);
+  log.info(`发布类型: ${releaseType}`);
+  log.info(`目标版本号: ${newVersion}`);
 
   // --- 步骤 6: 用户确认新版本号 ---
-  const confirmation = await askQuestion(
-    `${colors.yellow}您确定要将版本号从 ${currentVersion} 更新到 ${newVersion} 吗? (y/N): ${colors.reset}`
+  await confirmOrExit(
+    `${colors.yellow}您确定要将版本号从 ${currentVersion} 更新到 ${newVersion} 吗? (y/N): ${colors.reset}`,
+    autoConfirm
   );
-  if (confirmation.toLowerCase() !== 'y' && confirmation.toLowerCase() !== 'yes') {
-    log.warn('操作已取消。');
-    process.exit(0);
-  }
 
   // --- 步骤 7: 更新 Manifest 文件 ---
   manifestContent.version = newVersion;
@@ -268,13 +344,10 @@ async function main() {
 
   if (ghAvailable) {
     // 推送标签到远程仓库（GitHub Release 需要远程标签）
-    const pushTagConfirmation = await askQuestion(
-      `${colors.yellow}需要先推送标签 ${tagName} 到远程仓库才能创建 GitHub Release。是否继续? (y/N): ${colors.reset}`
+    await confirmOrExit(
+      `${colors.yellow}需要先推送标签 ${tagName} 到远程仓库才能创建 GitHub Release。是否继续? (y/N): ${colors.reset}`,
+      autoConfirm
     );
-    if (pushTagConfirmation.toLowerCase() !== 'y' && pushTagConfirmation.toLowerCase() !== 'yes') {
-      log.warn('操作已取消。');
-      process.exit(0);
-    }
 
     try {
       log.info(`正在推送标签 ${tagName} 到远程仓库...`);
@@ -303,43 +376,23 @@ async function main() {
 
       log.info(`请手动访问 https://github.com/${repoUrlPath}/releases/new`);
       log.info(`创建一个新的 Release，标签为 ${tagName}，并将 ${zipFilePath} 文件上传。`);
-      const trotzdemFortfahren = await askQuestion(
-        `${colors.yellow}gh release 创建失败。是否仍要继续推送到 git? (y/N): ${colors.reset}`
+      await confirmOrExit(
+        `${colors.yellow}gh release 创建失败。是否仍要继续推送到 git? (y/N): ${colors.reset}`,
+        autoConfirm
       );
-      if (trotzdemFortfahren.toLowerCase() !== 'y' && trotzdemFortfahren.toLowerCase() !== 'yes') {
-        log.warn('操作已取消。');
-        process.exit(0);
-      }
     }
   } else {
     const repoUrlPath = await getRepoUrlPath();
     log.info(`请手动访问 https://github.com/${repoUrlPath}/releases/new`);
     log.info(`创建一个新的 Release，标签为 ${tagName}，并将 ${zipFilePath} 文件上传。`);
-    const manualReleaseConfirmation = await askQuestion(
-      `${colors.cyan}请在浏览器中完成上述手动 Release 创建和文件上传操作。完成后，请按 'y' 继续: ${colors.reset}`
+    await confirmOrExit(
+      `${colors.cyan}请在浏览器中完成上述手动 Release 创建和文件上传操作。完成后，请按 'y' 继续: ${colors.reset}`,
+      autoConfirm
     );
-    if (
-      manualReleaseConfirmation.toLowerCase() !== 'y' &&
-      manualReleaseConfirmation.toLowerCase() !== 'yes'
-    ) {
-      log.warn('操作已取消。');
-      process.exit(0);
-    }
   }
 
   // --- 步骤 13: 用户确认是否 push ---
-  const pushConfirmation = await askQuestion(
-    `${colors.yellow}即将推送 commit 到远程仓库。是否继续? (y/N): ${colors.reset}`
-  );
-  if (pushConfirmation.toLowerCase() !== 'y' && pushConfirmation.toLowerCase() !== 'yes') {
-    log.warn('操作已取消。Commit 已在本地创建但未推送。');
-    log.info(`提示：您之后可以手动运行 'git push'。`);
-    log.info('如果您想回滚本次本地 commit/tag（保守建议，避免 --hard）：');
-    log.info(`git tag -d ${tagName}`);
-    log.info('git reset --soft HEAD~1');
-    log.info('（如需丢弃工作区变更，可在确认后自行决定是否执行：git reset --hard）');
-    process.exit(0);
-  }
+  await confirmOrExit(`${colors.yellow}即将推送 commit 到远程仓库。是否继续? (y/N): ${colors.reset}`, autoConfirm);
 
   // --- 步骤 14: Git push commit ---
   try {
@@ -348,10 +401,7 @@ async function main() {
     log.success('Commit 已成功推送到远程仓库。');
 
     // --- 步骤 15: 可选发布到 Chrome Web Store ---
-    const cwsConfirm = await askQuestion(
-      `${colors.yellow}是否现在上传并发布到 Chrome Web Store? (y/N): ${colors.reset}`
-    );
-    if (cwsConfirm.toLowerCase() === 'y' || cwsConfirm.toLowerCase() === 'yes') {
+    if (autoConfirm) {
       try {
         execSync('npm run publish:cws', { stdio: 'inherit' });
         log.success('Chrome Web Store 发布流程完成。');
@@ -360,7 +410,20 @@ async function main() {
         console.error(cwsError);
       }
     } else {
-      log.info('已跳过 Chrome Web Store 发布。您可稍后手动运行 "npm run publish:cws"。');
+      const cwsConfirm = await askQuestion(
+        `${colors.yellow}是否现在上传并发布到 Chrome Web Store? (y/N): ${colors.reset}`
+      );
+      if (cwsConfirm.toLowerCase() === 'y' || cwsConfirm.toLowerCase() === 'yes') {
+        try {
+          execSync('npm run publish:cws', { stdio: 'inherit' });
+          log.success('Chrome Web Store 发布流程完成。');
+        } catch (cwsError) {
+          log.error('Chrome Web Store 发布流程失败。');
+          console.error(cwsError);
+        }
+      } else {
+        log.info('已跳过 Chrome Web Store 发布。您可稍后手动运行 "npm run publish:cws"。');
+      }
     }
   } catch (error) {
     log.error('git push 执行失败。');

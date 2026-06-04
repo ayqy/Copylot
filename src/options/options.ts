@@ -147,8 +147,16 @@ function getShortcutPlatform() {
 }
 
 function getConvertShortcutLabel(): string {
-  const resolved = currentCommandShortcuts.get(QUICK_CONVERT_COMMAND);
-  return resolved || getQuickCommandDefaultShortcut(QUICK_CONVERT_COMMAND, getShortcutPlatform());
+  const resolved = currentCommandShortcuts.get(QUICK_CONVERT_COMMAND)?.trim();
+  if (resolved) {
+    return resolved;
+  }
+
+  if (!currentCommandShortcuts.has(QUICK_CONVERT_COMMAND)) {
+    return getQuickCommandDefaultShortcut(QUICK_CONVERT_COMMAND, getShortcutPlatform());
+  }
+
+  return getMessage('shortcutNotSet');
 }
 
 function formatPromptSlotShortcut(slot: QuickPromptSlot | undefined): string | null {
@@ -156,8 +164,17 @@ function formatPromptSlotShortcut(slot: QuickPromptSlot | undefined): string | n
     return null;
   }
 
-  const resolved = currentCommandShortcuts.get(getPromptSlotCommandName(slot));
-  return resolved || getQuickCommandDefaultShortcut(getPromptSlotCommandName(slot), getShortcutPlatform());
+  const commandName = getPromptSlotCommandName(slot);
+  const resolved = currentCommandShortcuts.get(commandName)?.trim();
+  if (resolved) {
+    return resolved;
+  }
+
+  if (!currentCommandShortcuts.has(commandName)) {
+    return getQuickCommandDefaultShortcut(commandName, getShortcutPlatform());
+  }
+
+  return getMessage('shortcutNotSet');
 }
 
 async function loadCommandShortcuts() {
@@ -260,13 +277,9 @@ interface OptionsElements {
   onboardingOpenButton: HTMLButtonElement;
   openShortcutSettingsButton: HTMLButtonElement;
   shortcutCurrentConvert: HTMLElement;
-  shortcutRecommendedConvert: HTMLElement;
   shortcutCurrentSlot1: HTMLElement;
   shortcutCurrentSlot2: HTMLElement;
   shortcutCurrentSlot3: HTMLElement;
-  shortcutRecommendedSlot1: HTMLElement;
-  shortcutRecommendedSlot2: HTMLElement;
-  shortcutRecommendedSlot3: HTMLElement;
   shortcutSlot1PromptName: HTMLElement;
   shortcutSlot2PromptName: HTMLElement;
   shortcutSlot3PromptName: HTMLElement;
@@ -429,13 +442,9 @@ function getElements(): OptionsElements {
     onboardingOpenButton: document.getElementById('options-onboarding-open') as HTMLButtonElement,
     openShortcutSettingsButton: document.getElementById('options-open-shortcut-settings') as HTMLButtonElement,
     shortcutCurrentConvert: document.getElementById('options-shortcut-current-convert') as HTMLElement,
-    shortcutRecommendedConvert: document.getElementById('options-shortcut-recommended-convert') as HTMLElement,
     shortcutCurrentSlot1: document.getElementById('options-shortcut-current-slot-1') as HTMLElement,
     shortcutCurrentSlot2: document.getElementById('options-shortcut-current-slot-2') as HTMLElement,
     shortcutCurrentSlot3: document.getElementById('options-shortcut-current-slot-3') as HTMLElement,
-    shortcutRecommendedSlot1: document.getElementById('options-shortcut-recommended-slot-1') as HTMLElement,
-    shortcutRecommendedSlot2: document.getElementById('options-shortcut-recommended-slot-2') as HTMLElement,
-    shortcutRecommendedSlot3: document.getElementById('options-shortcut-recommended-slot-3') as HTMLElement,
     shortcutSlot1PromptName: document.getElementById('options-shortcut-slot-1-prompt-name') as HTMLElement,
     shortcutSlot2PromptName: document.getElementById('options-shortcut-slot-2-prompt-name') as HTMLElement,
     shortcutSlot3PromptName: document.getElementById('options-shortcut-slot-3-prompt-name') as HTMLElement,
@@ -622,22 +631,31 @@ async function openShortcutSettingsPage(): Promise<void> {
   }
 }
 
+function setupShortcutCommandCardInteractions(): void {
+  document.querySelectorAll<HTMLElement>('[data-shortcut-command-card]').forEach((card) => {
+    card.addEventListener('click', () => {
+      void openShortcutSettingsPage();
+    });
+    card.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') {
+        return;
+      }
+      event.preventDefault();
+      void openShortcutSettingsPage();
+    });
+  });
+}
+
 function renderShortcutSettingsPanel(): void {
   const activePrompts = getActivePrompts(allPrompts);
   const platform = getShortcutPlatform();
 
   elements.shortcutCurrentConvert.textContent = getConvertShortcutLabel();
-  elements.shortcutRecommendedConvert.textContent = getQuickCommandDefaultShortcut(QUICK_CONVERT_COMMAND, platform);
 
   const currentMap: Record<QuickPromptSlot, HTMLElement> = {
     1: elements.shortcutCurrentSlot1,
     2: elements.shortcutCurrentSlot2,
     3: elements.shortcutCurrentSlot3
-  };
-  const recommendedMap: Record<QuickPromptSlot, HTMLElement> = {
-    1: elements.shortcutRecommendedSlot1,
-    2: elements.shortcutRecommendedSlot2,
-    3: elements.shortcutRecommendedSlot3
   };
   const promptNameMap: Record<QuickPromptSlot, HTMLElement> = {
     1: elements.shortcutSlot1PromptName,
@@ -648,9 +666,10 @@ function renderShortcutSettingsPanel(): void {
   for (const slot of [1, 2, 3] as QuickPromptSlot[]) {
     const command = getQuickPromptSlotCommandName(slot);
     const prompt = activePrompts.find((item) => item.quickAccessSlot === slot);
-    currentMap[slot].textContent =
-      currentCommandShortcuts.get(command) || getQuickCommandDefaultShortcut(command, platform);
-    recommendedMap[slot].textContent = getQuickCommandDefaultShortcut(command, platform);
+    const currentShortcut = currentCommandShortcuts.get(command)?.trim();
+    currentMap[slot].textContent = currentShortcut || (!currentCommandShortcuts.has(command)
+      ? getQuickCommandDefaultShortcut(command, platform)
+      : getMessage('shortcutNotSet'));
     promptNameMap[slot].textContent = prompt?.title || getMessage('shortcutPromptUnassigned');
   }
 }
@@ -2962,6 +2981,7 @@ function setupEventListeners() {
   elements.openShortcutSettingsButton.addEventListener('click', () => {
     void openShortcutSettingsPage();
   });
+  setupShortcutCommandCardInteractions();
 
   // 同步状态按钮
   elements.syncStatusBtn.addEventListener('click', manualSync);

@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 type StorageNamespace = 'sync' | 'local' | 'managed' | 'session';
 
 type StorageChanges = Record<string, { oldValue?: unknown; newValue?: unknown }>;
@@ -116,13 +119,14 @@ export interface ChromeMockController {
 const DEFAULT_I18N_MESSAGES: Record<string, string> = {
   convertButton: 'Copy to AI',
   quickActionSelectionFirst: 'Selection first. Falls back to the full page when nothing is selected.',
-  expandMoreSettings: '----Expand more settings v----',
-  collapseMoreSettings: '----Collapse more settings ^----',
+  expandMoreSettings: 'Expand more settings',
+  collapseMoreSettings: 'Collapse more settings',
   shortcutSettingsTitle: 'Shortcut Settings',
-  openShortcutSettings: 'Open Shortcut Settings',
+  openShortcutSettings: 'Go to settings',
   shortcutCurrent: 'Current',
   shortcutRecommended: 'Recommended',
   shortcutCustomize: 'Customizable',
+  shortcutNotSet: 'Not set',
   quickPromptSlot1: 'Quick Prompt 1',
   quickPromptSlot2: 'Quick Prompt 2',
   quickPromptSlot3: 'Quick Prompt 3',
@@ -165,7 +169,8 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
   const local = new StorageAreaMock('local', options.localData ?? {}, emitStorageChanges);
 
   const extensionId = options.extensionId ?? 'ehfglnbhoefcdedpkcdnainiifpflbic';
-  const manifestVersion = options.manifestVersion ?? '1.1.28';
+  const manifestVersion =
+    options.manifestVersion ?? JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'manifest.json'), 'utf-8')).version;
   const activeTabId = options.activeTabId ?? 101;
   const activeTab: chrome.tabs.Tab = {
     id: activeTabId,

@@ -637,11 +637,11 @@
     "description": "Popup 总开关说明"
   },
   "expandMoreSettings": {
-    "message": "----展开更多设置 v----",
+    "message": "展开更多设置",
     "description": "Popup 展开更多设置按钮"
   },
   "collapseMoreSettings": {
-    "message": "----收起更多设置 ^----",
+    "message": "收起更多设置",
     "description": "Popup 收起更多设置按钮"
   },
   "shortcutNotSet": {
@@ -713,7 +713,7 @@
     "description": "提示快捷键可自定义"
   },
   "openShortcutSettings": {
-    "message": "打开快捷键设置",
+    "message": "去设置",
     "description": "打开 Chrome 扩展快捷键设置页按钮"
   },
   "shortcutSettingsChromeHint": {

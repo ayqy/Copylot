@@ -23,8 +23,13 @@ test('popup setting toggles persist interaction mode format table format extras 
     await page.goto(`${fixtureOrigin}/article.html`);
     const popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
     await completePopupOnboardingIfVisible(popup);
+    await expect(popup.locator('#more-settings-panel')).toBeHidden();
+    await expect(popup.locator('#toggle-more-settings-label')).toContainText(/展开更多设置|Expand more settings/);
+    await expect(popup.locator('#open-shortcut-settings-button')).toContainText(/去设置|Go to settings/);
     await popup.locator('#toggle-more-settings').click();
     await expect(popup.locator('#more-settings-panel')).toBeVisible();
+    await expect(popup.locator('#toggle-more-settings')).toHaveAttribute('aria-expanded', 'true');
+    await expect(popup.locator('#toggle-more-settings-label')).toContainText(/收起更多设置|Collapse more settings/);
 
     await popup.locator('label[for="interaction-dblclick"], .radio-option:has(#interaction-dblclick)').first().click();
     await popup.locator('label[for="format-plaintext"], .radio-option:has(#format-plaintext)').first().click();
@@ -53,6 +58,10 @@ test('popup setting toggles persist interaction mode format table format extras 
         attachURL: true,
         isClipboardAccumulatorEnabled: true
       });
+
+    await popup.locator('#toggle-more-settings').click();
+    await expect(popup.locator('#more-settings-panel')).toBeHidden();
+    await expect(popup.locator('#toggle-more-settings')).toHaveAttribute('aria-expanded', 'false');
   } finally {
     await page.close();
   }

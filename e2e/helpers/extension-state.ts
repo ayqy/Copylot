@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { mkdirSync, rmSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import { chromium, expect, type BrowserContext, type Page } from '@playwright/test';
 
 export interface LoadedExtension {
@@ -26,7 +27,8 @@ export async function launchExtension(options?: {
   headed?: boolean;
   userDataDir?: string;
 }): Promise<LoadedExtension> {
-  const userDataDir = options?.userDataDir || path.resolve(process.cwd(), '.tmp_e2e/chromium-user-data');
+  const userDataDir =
+    options?.userDataDir || path.resolve(process.cwd(), '.tmp_e2e/chromium-user-data', randomUUID());
   const headed = options?.headed ?? (process.env.COPYLOT_E2E_HEADED === '1');
 
   rmSync(userDataDir, { recursive: true, force: true });

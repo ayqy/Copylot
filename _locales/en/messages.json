@@ -637,11 +637,11 @@
     "description": "Popup master switch helper text"
   },
   "expandMoreSettings": {
-    "message": "----Expand more settings v----",
+    "message": "Expand more settings",
     "description": "Popup expand more settings button"
   },
   "collapseMoreSettings": {
-    "message": "----Collapse more settings ^----",
+    "message": "Collapse more settings",
     "description": "Popup collapse more settings button"
   },
   "shortcutNotSet": {
@@ -713,7 +713,7 @@
     "description": "Shortcut can be customized"
   },
   "openShortcutSettings": {
-    "message": "Open Shortcut Settings",
+    "message": "Go to settings",
     "description": "Button to open Chrome extension shortcut settings"
   },
   "shortcutSettingsChromeHint": {

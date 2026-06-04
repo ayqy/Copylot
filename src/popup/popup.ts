@@ -44,20 +44,10 @@ interface PopupElements {
   attachURL: HTMLInputElement;
   convertButton: HTMLButtonElement;
   openShortcutSettingsButton: HTMLButtonElement;
-  shortcutCurrentConvert: HTMLElement;
-  shortcutRecommendedConvert: HTMLElement;
-  shortcutCurrentSlot1: HTMLElement;
-  shortcutCurrentSlot2: HTMLElement;
-  shortcutCurrentSlot3: HTMLElement;
-  shortcutRecommendedSlot1: HTMLElement;
-  shortcutRecommendedSlot2: HTMLElement;
-  shortcutRecommendedSlot3: HTMLElement;
-  shortcutSlot1PromptName: HTMLElement;
-  shortcutSlot2PromptName: HTMLElement;
-  shortcutSlot3PromptName: HTMLElement;
   shortcutSettingsFeedback: HTMLElement;
   addPromptButton: HTMLButtonElement;
   toggleMoreSettingsButton: HTMLButtonElement;
+  toggleMoreSettingsLabel: HTMLElement;
   moreSettingsPanel: HTMLElement;
   feedbackLink: HTMLAnchorElement;
   shareLink: HTMLAnchorElement;
@@ -199,20 +189,10 @@ function getElements(): PopupElements {
     attachURL: document.getElementById('attach-url') as HTMLInputElement,
     convertButton: document.getElementById('convert-button') as HTMLButtonElement,
     openShortcutSettingsButton: document.getElementById('open-shortcut-settings-button') as HTMLButtonElement,
-    shortcutCurrentConvert: document.getElementById('shortcut-current-convert') as HTMLElement,
-    shortcutRecommendedConvert: document.getElementById('shortcut-recommended-convert') as HTMLElement,
-    shortcutCurrentSlot1: document.getElementById('shortcut-current-slot-1') as HTMLElement,
-    shortcutCurrentSlot2: document.getElementById('shortcut-current-slot-2') as HTMLElement,
-    shortcutCurrentSlot3: document.getElementById('shortcut-current-slot-3') as HTMLElement,
-    shortcutRecommendedSlot1: document.getElementById('shortcut-recommended-slot-1') as HTMLElement,
-    shortcutRecommendedSlot2: document.getElementById('shortcut-recommended-slot-2') as HTMLElement,
-    shortcutRecommendedSlot3: document.getElementById('shortcut-recommended-slot-3') as HTMLElement,
-    shortcutSlot1PromptName: document.getElementById('shortcut-slot-1-prompt-name') as HTMLElement,
-    shortcutSlot2PromptName: document.getElementById('shortcut-slot-2-prompt-name') as HTMLElement,
-    shortcutSlot3PromptName: document.getElementById('shortcut-slot-3-prompt-name') as HTMLElement,
     shortcutSettingsFeedback: document.getElementById('shortcut-settings-feedback') as HTMLElement,
     addPromptButton: document.getElementById('add-prompt-button') as HTMLButtonElement,
     toggleMoreSettingsButton: document.getElementById('toggle-more-settings') as HTMLButtonElement,
+    toggleMoreSettingsLabel: document.getElementById('toggle-more-settings-label') as HTMLElement,
     moreSettingsPanel: document.getElementById('more-settings-panel') as HTMLElement,
     feedbackLink: document.getElementById('feedback-link') as HTMLAnchorElement,
     shareLink: document.getElementById('share-link') as HTMLAnchorElement,
@@ -287,7 +267,8 @@ function syncOnboardingEntryVisibility(settings: Settings) {
 function setMoreSettingsExpanded(expanded: boolean) {
   elements.toggleMoreSettingsButton.setAttribute('aria-expanded', String(expanded));
   elements.moreSettingsPanel.hidden = !expanded;
-  elements.toggleMoreSettingsButton.textContent = expanded
+  elements.toggleMoreSettingsButton.classList.toggle('is-expanded', expanded);
+  elements.toggleMoreSettingsLabel.textContent = expanded
     ? getMessage('collapseMoreSettings')
     : getMessage('expandMoreSettings');
 }
@@ -361,7 +342,19 @@ async function loadCommandShortcuts() {
 
 function getCommandShortcutLabel(command: string, fallback: string): string {
   const resolved = currentCommandShortcuts.get(command)?.trim();
-  return resolved || fallback || getMessage('shortcutNotSet');
+  if (resolved) {
+    return resolved;
+  }
+
+  if (!currentCommandShortcuts.has(command)) {
+    return fallback || getMessage('shortcutNotSet');
+  }
+
+  return getMessage('shortcutNotSet');
+}
+
+function getAssignedCommandShortcut(command: string): string {
+  return currentCommandShortcuts.get(command)?.trim() || '';
 }
 
 function getFallbackPromptShortcut(slot: QuickPromptSlot): string {
@@ -385,51 +378,14 @@ function setShortcutSettingsFeedback(messageKey: string | null) {
 
 async function openShortcutSettingsPage() {
   try {
-    await reportE2EOpenedUrl('chrome://extensions/shortcuts');
-    await chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
+    const optionsUrl = `${chrome.runtime.getURL('src/options/options.html')}#prompts`;
+    await reportE2EOpenedUrl(optionsUrl);
+    chrome.runtime.openOptionsPage();
     setShortcutSettingsFeedback(null);
   } catch (error) {
-    console.warn('Failed to open shortcut settings page:', error);
+    console.warn('Failed to open options page from popup shortcut entry:', error);
     setShortcutSettingsFeedback('shortcutSettingsManualOpenHint');
   }
-}
-
-function updateShortcutSettingsPanel(settings: Settings) {
-  const activePrompts = getActivePrompts(settings.userPrompts);
-  const platform = getShortcutPlatform();
-
-  elements.shortcutCurrentConvert.textContent = getCommandShortcutLabel(
-    QUICK_CONVERT_COMMAND,
-    getQuickCommandDefaultShortcut(QUICK_CONVERT_COMMAND, platform)
-  );
-  elements.shortcutRecommendedConvert.textContent = getQuickCommandDefaultShortcut(QUICK_CONVERT_COMMAND, platform);
-
-  const slotCurrentMap: Record<QuickPromptSlot, HTMLElement> = {
-    1: elements.shortcutCurrentSlot1,
-    2: elements.shortcutCurrentSlot2,
-    3: elements.shortcutCurrentSlot3
-  };
-  const slotRecommendedMap: Record<QuickPromptSlot, HTMLElement> = {
-    1: elements.shortcutRecommendedSlot1,
-    2: elements.shortcutRecommendedSlot2,
-    3: elements.shortcutRecommendedSlot3
-  };
-  const slotPromptNameMap: Record<QuickPromptSlot, HTMLElement> = {
-    1: elements.shortcutSlot1PromptName,
-    2: elements.shortcutSlot2PromptName,
-    3: elements.shortcutSlot3PromptName
-  };
-
-  QUICK_PROMPT_SLOT_VALUES.forEach((slot) => {
-    const prompt = getQuickPromptBySlot(activePrompts, slot);
-    const command = getQuickPromptSlotCommandName(slot);
-    slotCurrentMap[slot].textContent = getCommandShortcutLabel(
-      command,
-      getQuickCommandDefaultShortcut(command, platform)
-    );
-    slotRecommendedMap[slot].textContent = getQuickCommandDefaultShortcut(command, platform);
-    slotPromptNameMap[slot].textContent = prompt?.title || getMessage('shortcutPromptUnassigned');
-  });
 }
 
 async function runQuickAction(command: string) {
@@ -458,23 +414,28 @@ async function runQuickAction(command: string) {
 }
 
 function renderQuickPromptButtons(settings: Settings) {
-  const activePrompts = getActivePrompts(settings.userPrompts);
+  const activePrompts = getActivePrompts(settings.userPrompts).filter((prompt) => !prompt.builtIn);
   QUICK_PROMPT_SLOT_VALUES.forEach((slot) => {
     const prompt = getQuickPromptBySlot(activePrompts, slot);
     const quickAction = getQuickActionElements(slot);
     const commandName = getQuickPromptSlotCommandName(slot);
-    quickAction.shortcut.textContent = getCommandShortcutLabel(commandName, getFallbackPromptShortcut(slot));
+    const assignedShortcut = getAssignedCommandShortcut(commandName);
+    const canUseFallbackShortcut = !currentCommandShortcuts.has(commandName);
 
-    if (prompt) {
+    if (prompt && (assignedShortcut || canUseFallbackShortcut)) {
       quickAction.button.disabled = false;
+      quickAction.button.hidden = false;
       quickAction.button.dataset.promptId = prompt.id;
       quickAction.title.textContent = prompt.title;
       quickAction.desc.textContent = getMessage('quickActionSelectionFirst');
+      quickAction.shortcut.textContent = getCommandShortcutLabel(commandName, getFallbackPromptShortcut(slot));
     } else {
+      quickAction.button.hidden = true;
       quickAction.button.disabled = false;
       quickAction.button.dataset.promptId = '';
-      quickAction.title.textContent = getMessage(`quickPromptSlot${slot}`);
-      quickAction.desc.textContent = getMessage(`quickPromptSetupSlot${slot}`);
+      quickAction.title.textContent = '';
+      quickAction.desc.textContent = '';
+      quickAction.shortcut.textContent = '';
     }
   });
 }
@@ -496,7 +457,6 @@ function updateUIFromSettings(settings: Settings) {
     getFallbackConvertShortcut()
   );
   renderQuickPromptButtons(settings);
-  updateShortcutSettingsPanel(settings);
 }
 
 async function loadSettingsAndCommands() {
@@ -517,7 +477,10 @@ function setupQuickActionListeners() {
   QUICK_PROMPT_SLOT_VALUES.forEach((slot) => {
     const quickAction = getQuickActionElements(slot);
     quickAction.button.addEventListener('click', () => {
-      const prompt = getQuickPromptBySlot(getActivePrompts(currentSettings.userPrompts), slot);
+      const prompt = getQuickPromptBySlot(
+        getActivePrompts(currentSettings.userPrompts).filter((item) => !item.builtIn),
+        slot
+      );
       if (!prompt) {
         chrome.runtime.openOptionsPage();
         window.close();

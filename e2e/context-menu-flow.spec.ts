@@ -1,6 +1,56 @@
 import { test, expect } from './fixtures';
 import { clearClipboard } from './helpers/clipboard';
-import { getActiveTabId, getStorageSnapshot, invokeContextMenu, seedSyncStorage } from './helpers/extension-state';
+import {
+  getActiveTabId,
+  getContextMenuItems,
+  getStorageSnapshot,
+  invokeContextMenu,
+  seedSyncStorage
+} from './helpers/extension-state';
+
+test('context menu model flattens prompt actions without a third level', async ({ driverPage }) => {
+  await seedSyncStorage(driverPage, {
+    copilot_settings: {
+      userPrompts: [
+        {
+          id: 'prompt-slot-1',
+          title: 'Prompt Slot 1',
+          template: 'Prompt 1\n\n{content}',
+          usageCount: 0,
+          createdAt: 1,
+          builtIn: false,
+          deleted: false,
+          templateVersion: 1,
+          quickAccessSlot: 1
+        },
+        {
+          id: 'prompt-slot-2',
+          title: 'Prompt Slot 2',
+          template: 'Prompt 2\n\n{content}',
+          usageCount: 0,
+          createdAt: 2,
+          builtIn: false,
+          deleted: false,
+          templateVersion: 1,
+          quickAccessSlot: 2
+        }
+      ]
+    }
+  });
+
+  const items = await getContextMenuItems(driverPage);
+  const convertItem = items.find((item) => item.id === 'convert-page-to-ai-friendly-format');
+  if (convertItem) {
+    expect(convertItem.parentId).toBeUndefined();
+    expect(convertItem.contexts).toEqual(['page']);
+  }
+
+  const promptItems = items.filter((item) => item.id !== 'convert-page-to-ai-friendly-format');
+  expect(promptItems.length).toBeGreaterThanOrEqual(2);
+  expect(promptItems.map((item) => item.title)).toEqual(expect.arrayContaining(['Prompt Slot 1', 'Prompt Slot 2']));
+  expect(promptItems.every((item) => !item.parentId)).toBe(true);
+  expect(items.some((item) => /智能复制\+自定义提示|Magic Copy with Prompt/i.test(item.title))).toBe(false);
+});
 
 test('context menu handler processes selection prompt via production background flow', async ({
   extensionContext,

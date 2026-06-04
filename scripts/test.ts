@@ -418,10 +418,10 @@ async function run(): Promise<void> {
   }
 
   await runStep(startStep('ui-integration-tests', 'script'), () =>
-    runCommand('node', ['--no-warnings=ExperimentalWarning', '--loader=ts-node/esm', 'scripts/ui-integration-tests.ts'])
+    runCommand('node', ['--no-warnings=ExperimentalWarning', 'scripts/ui-integration-tests.ts'])
   );
   await runStep(startStep('content-interaction-tests', 'script'), () =>
-    runCommand('node', ['--no-warnings=ExperimentalWarning', '--loader=ts-node/esm', 'scripts/content-interaction-tests.ts'])
+    runCommand('node', ['--no-warnings=ExperimentalWarning', 'scripts/content-interaction-tests.ts'])
   );
 
   const htmlToMarkdownStep = startStep('html-to-markdown-tests', 'script');

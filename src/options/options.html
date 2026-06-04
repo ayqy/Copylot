@@ -90,29 +90,24 @@
               type="button"
               data-i18n="openShortcutSettings"
             >
-              打开快捷键设置
+              去设置
             </button>
           </div>
 
           <div class="shortcut-settings-grid">
-            <article class="shortcut-command-card">
+            <article class="shortcut-command-card" data-shortcut-command-card="convert" role="button" tabindex="0">
               <div class="shortcut-command-card-copy">
                 <strong data-i18n="convertButton">复制给AI</strong>
-                <small data-i18n="shortcutCustomize">可自定义</small>
               </div>
               <div class="shortcut-command-card-values">
                 <span class="shortcut-command-pill">
                   <span data-i18n="shortcutCurrent">当前</span>
                   <strong id="options-shortcut-current-convert">Alt+C</strong>
                 </span>
-                <span class="shortcut-command-pill shortcut-command-pill-muted">
-                  <span data-i18n="shortcutRecommended">推荐</span>
-                  <strong id="options-shortcut-recommended-convert">Alt+C</strong>
-                </span>
               </div>
             </article>
 
-            <article class="shortcut-command-card">
+            <article class="shortcut-command-card" data-shortcut-command-card="slot-1" role="button" tabindex="0">
               <div class="shortcut-command-card-copy">
                 <strong data-i18n="quickPromptSlot1">快捷 Prompt 1</strong>
                 <small id="options-shortcut-slot-1-prompt-name">Prompt</small>
@@ -122,14 +117,10 @@
                   <span data-i18n="shortcutCurrent">当前</span>
                   <strong id="options-shortcut-current-slot-1">Alt+1</strong>
                 </span>
-                <span class="shortcut-command-pill shortcut-command-pill-muted">
-                  <span data-i18n="shortcutRecommended">推荐</span>
-                  <strong id="options-shortcut-recommended-slot-1">Alt+1</strong>
-                </span>
               </div>
             </article>
 
-            <article class="shortcut-command-card">
+            <article class="shortcut-command-card" data-shortcut-command-card="slot-2" role="button" tabindex="0">
               <div class="shortcut-command-card-copy">
                 <strong data-i18n="quickPromptSlot2">快捷 Prompt 2</strong>
                 <small id="options-shortcut-slot-2-prompt-name">Prompt</small>
@@ -139,14 +130,10 @@
                   <span data-i18n="shortcutCurrent">当前</span>
                   <strong id="options-shortcut-current-slot-2">Alt+2</strong>
                 </span>
-                <span class="shortcut-command-pill shortcut-command-pill-muted">
-                  <span data-i18n="shortcutRecommended">推荐</span>
-                  <strong id="options-shortcut-recommended-slot-2">Alt+2</strong>
-                </span>
               </div>
             </article>
 
-            <article class="shortcut-command-card">
+            <article class="shortcut-command-card" data-shortcut-command-card="slot-3" role="button" tabindex="0">
               <div class="shortcut-command-card-copy">
                 <strong data-i18n="quickPromptSlot3">快捷 Prompt 3</strong>
                 <small id="options-shortcut-slot-3-prompt-name">Prompt</small>
@@ -156,18 +143,11 @@
                   <span data-i18n="shortcutCurrent">当前</span>
                   <strong id="options-shortcut-current-slot-3">Alt+3</strong>
                 </span>
-                <span class="shortcut-command-pill shortcut-command-pill-muted">
-                  <span data-i18n="shortcutRecommended">推荐</span>
-                  <strong id="options-shortcut-recommended-slot-3">Alt+3</strong>
-                </span>
               </div>
             </article>
           </div>
 
           <p id="options-shortcut-settings-feedback" class="shortcut-settings-panel-feedback" hidden></p>
-          <p class="shortcut-settings-panel-footnote" data-i18n="shortcutSettingsChromeHint">
-            如有冲突，请在 Chrome 的扩展快捷键页面修改。
-          </p>
         </section>
 
         <!-- Toolbar -->

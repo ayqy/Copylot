@@ -76,6 +76,17 @@ function createDefaultSettings(): Settings {
         builtIn: true,
         deleted: false,
         templateVersion: 1
+      },
+      {
+        id: 'custom-quick-slot-2',
+        title: 'Custom Quick Slot 2',
+        template: 'Custom slot 2:\n\n{content}',
+        usageCount: 0,
+        createdAt: 2,
+        quickAccessSlot: 2,
+        builtIn: false,
+        deleted: false,
+        templateVersion: 1
       }
     ],
     isClipboardAccumulatorEnabled: false,
@@ -151,23 +162,29 @@ async function runPopupAssertions(): Promise<void> {
       page.dom.window.document,
       '#open-shortcut-settings-button'
     );
+    assert.match(shortcutSettingsButton.textContent || '', /去设置|Go to settings/);
     clickElement(shortcutSettingsButton);
     await page.waitForIdle();
-    assert.equal(chromeMock.logs.createdTabs.at(-1)?.url, 'chrome://extensions/shortcuts');
+    assert.equal(chromeMock.logs.openedOptionsPageCount, 1);
 
     const moreSettingsToggle = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#toggle-more-settings');
+    assert.equal(moreSettingsToggle.getAttribute('aria-expanded'), 'false');
     assert.match(moreSettingsToggle.textContent || '', /展开更多设置|Expand more settings/);
     clickElement(moreSettingsToggle);
     await page.waitForIdle();
     assert.equal(getRequiredElement<HTMLElement>(page.dom.window.document, '#more-settings-panel').hidden, false);
+    assert.equal(moreSettingsToggle.getAttribute('aria-expanded'), 'true');
 
-    const quickPromptSlot1Title = getRequiredElement<HTMLElement>(page.dom.window.document, '#quick-prompt-slot-1-title');
-    assert.equal(quickPromptSlot1Title.textContent, 'Summary');
+    assert.equal(getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-1-button').hidden, true);
+    assert.equal(getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-2-button').hidden, false);
+    assert.equal(getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-3-button').hidden, true);
+    const quickPromptSlot2Title = getRequiredElement<HTMLElement>(page.dom.window.document, '#quick-prompt-slot-2-title');
+    assert.equal(quickPromptSlot2Title.textContent, 'Custom Quick Slot 2');
 
     const addPromptButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#add-prompt-button');
     clickElement(addPromptButton);
     await page.waitForIdle();
-    assert.equal(chromeMock.logs.openedOptionsPageCount, 1);
+    assert.equal(chromeMock.logs.openedOptionsPageCount, 2);
 
     const feedbackLink = getRequiredElement<HTMLAnchorElement>(page.dom.window.document, '#feedback-link');
     clickElement(feedbackLink);
@@ -247,7 +264,17 @@ async function runOptionsAssertions(): Promise<void> {
       page.dom.window.document,
       '#options-open-shortcut-settings'
     );
+    assert.match(optionsShortcutButton.textContent || '', /去设置|Go to settings/);
     clickElement(optionsShortcutButton);
+    await page.waitForIdle();
+    assert.equal(chromeMock.logs.createdTabs.at(-1)?.url, 'chrome://extensions/shortcuts');
+    assert.equal(
+      getRequiredElement<HTMLElement>(page.dom.window.document, '#options-shortcut-slot-1-prompt-name').textContent,
+      'Summary'
+    );
+    clickElement(
+      getRequiredElement<HTMLElement>(page.dom.window.document, '[data-shortcut-command-card="slot-1"]')
+    );
     await page.waitForIdle();
     assert.equal(chromeMock.logs.createdTabs.at(-1)?.url, 'chrome://extensions/shortcuts');
 
