@@ -83,11 +83,17 @@ func performPress(pid: pid_t, query: String, mode: String) {
     for item in queries {
       switch mode {
       case "description":
-        if desc == item {
+        if desc == item || desc.contains(item) || item.contains(desc) {
           return true
         }
       case "text":
         if title == item || desc == item || value == item {
+          return true
+        }
+        if title.contains(item) || desc.contains(item) || value.contains(item) {
+          return true
+        }
+        if item.contains(title) || item.contains(desc) || item.contains(value) {
           return true
         }
       default:

@@ -617,7 +617,7 @@
     "description": "Onboarding step 2 description"
   },
   "popupOnboardingStep3Title": {
-    "message": "Step 3: Quick Prompts",
+    "message": "Step 3: Shortcuts",
     "description": "Onboarding step 3 title"
   },
   "popupOnboardingStep3Desc1": {
@@ -649,16 +649,16 @@
     "description": "Placeholder when a shortcut is not set"
   },
   "quickPromptSlot1": {
-    "message": "Quick Prompt 1",
-    "description": "Quick prompt slot 1 label"
+    "message": "Shortcut 1",
+    "description": "Shortcut 1 label"
   },
   "quickPromptSlot2": {
-    "message": "Quick Prompt 2",
-    "description": "Quick prompt slot 2 label"
+    "message": "Shortcut 2",
+    "description": "Shortcut 2 label"
   },
   "quickPromptSlot3": {
-    "message": "Quick Prompt 3",
-    "description": "Quick prompt slot 3 label"
+    "message": "Shortcut 3",
+    "description": "Shortcut 3 label"
   },
   "quickPromptSetupSlot1": {
     "message": "Bind a prompt to quick slot 1 in Options",
@@ -733,39 +733,39 @@
     "description": "Call to action to manage prompt binding"
   },
   "promptQuickAccessSlot": {
-    "message": "Quick Prompt",
-    "description": "Prompt editor label for quick access slot"
+    "message": "Shortcut",
+    "description": "Prompt editor label for shortcut slot"
   },
   "promptQuickAccessNone": {
     "message": "No binding",
     "description": "Prompt quick access none option"
   },
   "promptQuickAccess1": {
-    "message": "Quick Prompt 1",
-    "description": "Prompt quick access slot 1 option"
+    "message": "Shortcut 1",
+    "description": "Prompt shortcut 1 option"
   },
   "promptQuickAccess2": {
-    "message": "Quick Prompt 2",
-    "description": "Prompt quick access slot 2 option"
+    "message": "Shortcut 2",
+    "description": "Prompt shortcut 2 option"
   },
   "promptQuickAccess3": {
-    "message": "Quick Prompt 3",
-    "description": "Prompt quick access slot 3 option"
+    "message": "Shortcut 3",
+    "description": "Prompt shortcut 3 option"
   },
   "commandQuickConvertDescription": {
     "message": "Quickly run Copy to AI",
     "description": "Description for the quick-convert command"
   },
   "commandQuickPrompt1Description": {
-    "message": "Quickly run Quick Prompt 1",
+    "message": "Quickly run Shortcut 1",
     "description": "Description for the quick-prompt-slot-1 command"
   },
   "commandQuickPrompt2Description": {
-    "message": "Quickly run Quick Prompt 2",
+    "message": "Quickly run Shortcut 2",
     "description": "Description for the quick-prompt-slot-2 command"
   },
   "commandQuickPrompt3Description": {
-    "message": "Quickly run Quick Prompt 3",
+    "message": "Quickly run Shortcut 3",
     "description": "Description for the quick-prompt-slot-3 command"
   },
   "popupOnboardingOpenOptions": {

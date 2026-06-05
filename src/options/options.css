@@ -367,7 +367,7 @@ body {
 
 .shortcut-settings-panel {
   margin-bottom: 24px;
-  padding: 16px 18px;
+  padding: 14px 16px;
   border-radius: 16px;
   background: linear-gradient(135deg, rgba(79, 70, 229, 0.06), rgba(124, 58, 237, 0.04));
   border: 1px solid rgba(79, 70, 229, 0.12);
@@ -377,18 +377,17 @@ body {
 .shortcut-settings-panel-head {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
+  align-items: center;
+  gap: 12px;
 }
 
 .shortcut-settings-panel-title {
   margin: 0;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--text-primary);
 }
 
-.shortcut-settings-panel-hint,
 .shortcut-settings-panel-footnote,
 .shortcut-settings-panel-feedback {
   margin: 6px 0 0;
@@ -401,21 +400,24 @@ body {
   flex-shrink: 0;
   white-space: nowrap;
   min-width: 76px;
+  padding: 8px 14px;
+  font-size: 13px;
 }
 
 .shortcut-settings-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-  margin-top: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .shortcut-command-card {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  min-height: 48px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  min-height: 72px;
   padding: 10px 12px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.88);
@@ -435,44 +437,59 @@ body {
 .shortcut-command-card-copy {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  align-items: flex-start;
+  gap: 4px;
   min-width: 0;
+  width: 100%;
 }
 
 .shortcut-command-card-copy strong {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-primary);
+  white-space: nowrap;
 }
 
 .shortcut-command-card-copy small {
   font-size: 11px;
   color: var(--text-secondary);
+  line-height: 1.35;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .shortcut-command-card-values {
   display: flex;
   align-items: center;
   flex: 0 0 auto;
+  width: 100%;
 }
 
 .shortcut-command-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 10px;
+  padding: 4px 9px;
   border-radius: 999px;
   background: rgba(79, 70, 229, 0.12);
   color: var(--primary-color);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
+  width: 100%;
+  justify-content: space-between;
+}
+
+@media (max-width: 1024px) {
+  .shortcut-settings-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 640px) {
   .shortcut-settings-panel-head {
     flex-direction: column;
+    align-items: stretch;
   }
 
   .shortcut-settings-panel-button {
@@ -480,12 +497,15 @@ body {
   }
 
   .shortcut-command-card {
-    align-items: flex-start;
+    min-height: 64px;
   }
 
   .shortcut-command-card-values {
-    width: 100%;
     justify-content: flex-start;
+  }
+
+  .shortcut-settings-grid {
+    grid-template-columns: 1fr;
   }
 }
 

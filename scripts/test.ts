@@ -333,9 +333,10 @@ async function run(): Promise<void> {
   const skipBuild = process.env.COPYLOT_TEST_SKIP_BUILD === '1';
   const onlyNativeUi = process.env.COPYLOT_TEST_ONLY_NATIVE_UI === '1';
   const nativeUiSupported = process.platform === 'darwin';
+  const nativeUiOptIn = process.env.COPYLOT_TEST_NATIVE_UI === '1';
   const skipNativeUi = onlyNativeUi
     ? false
-    : process.env.COPYLOT_TEST_NATIVE_UI_SKIP === '1' || !nativeUiSupported;
+    : process.env.COPYLOT_TEST_NATIVE_UI_SKIP === '1' || !nativeUiSupported || !nativeUiOptIn;
 
   await runStep(startStep('lint', 'quality'), () => runCommand('npm', ['run', 'lint']));
   await runStep(startStep('type-check', 'quality'), () => runCommand('npm', ['run', 'type-check']));
@@ -465,7 +466,11 @@ async function run(): Promise<void> {
     skipStep(
       'playwright:native-ui',
       'playwright',
-      nativeUiSupported ? 'COPYLOT_TEST_NATIVE_UI_SKIP=1' : 'native-ui 仅在 macOS 运行'
+      !nativeUiSupported
+        ? 'native-ui 仅在 macOS 运行'
+        : !nativeUiOptIn
+          ? 'COPYLOT_TEST_NATIVE_UI=1 才执行原生 UI 自动化'
+          : 'COPYLOT_TEST_NATIVE_UI_SKIP=1'
     );
   }
 

@@ -32,6 +32,48 @@ test('popup opens via extension action and can convert current page selection', 
     await expect(popup.locator('#open-shortcut-settings-button')).toBeVisible();
     await expect(popup.locator('#open-shortcut-settings-button')).toContainText(/去设置|Go to settings/);
     await expect(popup.locator('#toggle-more-settings-label')).toHaveText(/展开更多设置|Expand more settings/);
+    await expect(popup.locator('#convert-button small')).toHaveCount(0);
+
+    const order = await popup.locator('.popup-container > *').evaluateAll((nodes) =>
+      nodes.map((node) => (node as HTMLElement).id || (node as HTMLElement).className)
+    );
+    expect(order.indexOf('settings-form')).toBeGreaterThan(-1);
+    expect(order.indexOf('quick-actions')).toBeGreaterThan(-1);
+    expect(order.indexOf('settings-form')).toBeLessThan(order.indexOf('quick-actions'));
+
+    const hasVerticalScroll = await popup.locator('body').evaluate(() => {
+      return document.documentElement.scrollHeight > window.innerHeight || document.body.scrollHeight > window.innerHeight;
+    });
+    expect(hasVerticalScroll).toBe(false);
+
+    const shortcutButtonStyles = await popup.locator('#open-shortcut-settings-button').evaluate((element) => {
+      const styles = window.getComputedStyle(element);
+      return {
+        minHeight: styles.minHeight,
+        height: styles.height,
+        fontSize: styles.fontSize,
+        borderRadius: styles.borderRadius
+      };
+    });
+    expect(shortcutButtonStyles.minHeight).toBe('28px');
+    expect(shortcutButtonStyles.height).toBe('28px');
+    expect(shortcutButtonStyles.fontSize).toBe('12px');
+    expect(shortcutButtonStyles.borderRadius).toBe('999px');
+
+    const copyShareButtonStyles = await popup.locator('#copy-share-button').evaluate((element) => {
+      const styles = window.getComputedStyle(element);
+      return {
+        minHeight: styles.minHeight,
+        height: styles.height,
+        fontSize: styles.fontSize,
+        borderRadius: styles.borderRadius
+      };
+    });
+    expect(copyShareButtonStyles.minHeight).toBe('28px');
+    expect(copyShareButtonStyles.height).toBe('28px');
+    expect(copyShareButtonStyles.fontSize).toBe('12px');
+    expect(copyShareButtonStyles.borderRadius).toBe('999px');
+
     await popup.locator('#convert-button').click();
     await expect
       .poll(async () => {

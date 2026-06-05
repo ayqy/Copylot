@@ -182,6 +182,20 @@ export async function openPopupFromNativeToolbar(options: {
   await delay(1200);
 }
 
+async function tryPressPopupButtonByAccessibility(options: {
+  userDataDir: string;
+  queries: string[];
+}): Promise<boolean> {
+  const pid = await focusBrowser(options.userDataDir);
+  try {
+    await runSwift(['press-by-text', String(pid), options.queries.join('|')]);
+    await delay(900);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function invokePromptFromNativeContextMenu(options: {
   page: Page;
   selectionLocator: Locator;
@@ -319,6 +333,15 @@ async function clickPopupButtonByQueries(options: {
   name: string;
   queries: string[];
 }): Promise<void> {
+  const pressedByAccessibility = await tryPressPopupButtonByAccessibility({
+    userDataDir: options.userDataDir,
+    queries: options.queries
+  });
+
+  if (pressedByAccessibility) {
+    return;
+  }
+
   const { userDataDir, projectOutputDir, name, queries } = options;
   await mkdir(projectOutputDir, { recursive: true });
   const tempDir = await mkdtemp(path.join(path.resolve(projectOutputDir), `native-ui-${name}-`));

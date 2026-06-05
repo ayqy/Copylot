@@ -69,7 +69,6 @@ interface PopupElements {
 interface QuickActionElements {
   button: HTMLButtonElement;
   title: HTMLElement;
-  desc: HTMLElement;
   shortcut: HTMLElement;
 }
 
@@ -87,7 +86,6 @@ function getQuickActionElements(slot: QuickPromptSlot): QuickActionElements {
   return {
     button: document.getElementById(`quick-prompt-slot-${slot}-button`) as HTMLButtonElement,
     title: document.getElementById(`quick-prompt-slot-${slot}-title`) as HTMLElement,
-    desc: document.getElementById(`quick-prompt-slot-${slot}-desc`) as HTMLElement,
     shortcut: document.getElementById(`quick-prompt-slot-${slot}-shortcut`) as HTMLElement
   };
 }
@@ -427,14 +425,12 @@ function renderQuickPromptButtons(settings: Settings) {
       quickAction.button.hidden = false;
       quickAction.button.dataset.promptId = prompt.id;
       quickAction.title.textContent = prompt.title;
-      quickAction.desc.textContent = getMessage('quickActionSelectionFirst');
       quickAction.shortcut.textContent = getCommandShortcutLabel(commandName, getFallbackPromptShortcut(slot));
     } else {
       quickAction.button.hidden = true;
       quickAction.button.disabled = false;
       quickAction.button.dataset.promptId = '';
       quickAction.title.textContent = '';
-      quickAction.desc.textContent = '';
       quickAction.shortcut.textContent = '';
     }
   });

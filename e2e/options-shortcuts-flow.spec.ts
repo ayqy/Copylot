@@ -16,11 +16,20 @@ test('options shortcut settings panel shows current bindings and opens Chrome sh
 
   const page = await openExtensionPage(extensionContext, extensionId, 'src/options/options.html');
   try {
+    const shortcutColumns = await page.locator('.shortcut-settings-grid').evaluate((element) => {
+      return window.getComputedStyle(element).gridTemplateColumns.split(' ').filter(Boolean).length;
+    });
+    expect(shortcutColumns).toBe(4);
+
+    await expect(page.locator('[data-shortcut-command-card="slot-1"] .shortcut-command-card-copy strong')).toHaveText(/快捷键 1|Shortcut 1/);
+    await expect(page.locator('[data-shortcut-command-card="slot-2"] .shortcut-command-card-copy strong')).toHaveText(/快捷键 2|Shortcut 2/);
+    await expect(page.locator('[data-shortcut-command-card="slot-3"] .shortcut-command-card-copy strong')).toHaveText(/快捷键 3|Shortcut 3/);
     await expect(page.locator('#options-shortcut-current-convert')).toContainText(/Alt\+C|Option\+C|⌥C/);
     await expect(page.locator('#options-shortcut-current-slot-1')).toContainText(/Alt\+1|Option\+1|⌥1/);
     await expect(page.locator('#options-shortcut-current-slot-2')).toContainText(/Alt\+2|Option\+2|⌥2/);
     await expect(page.locator('#options-shortcut-current-slot-3')).toContainText(/Alt\+3|Option\+3|⌥3/);
     await expect(page.locator('#options-open-shortcut-settings')).toContainText(/去设置|Go to settings/);
+    await expect(page.locator('.shortcut-settings-panel-hint')).toHaveCount(0);
 
     await page.locator('#options-open-shortcut-settings').click();
     await expect

@@ -617,7 +617,7 @@
     "description": "引导第 2 步说明"
   },
   "popupOnboardingStep3Title": {
-    "message": "第 3 步：快捷 Prompt",
+    "message": "第 3 步：快捷键",
     "description": "引导第 3 步标题"
   },
   "popupOnboardingStep3Desc1": {
@@ -649,16 +649,16 @@
     "description": "快捷键未设置时的占位文本"
   },
   "quickPromptSlot1": {
-    "message": "快捷 Prompt 1",
-    "description": "快捷 Prompt 1 标签"
+    "message": "快捷键 1",
+    "description": "快捷键 1 标签"
   },
   "quickPromptSlot2": {
-    "message": "快捷 Prompt 2",
-    "description": "快捷 Prompt 2 标签"
+    "message": "快捷键 2",
+    "description": "快捷键 2 标签"
   },
   "quickPromptSlot3": {
-    "message": "快捷 Prompt 3",
-    "description": "快捷 Prompt 3 标签"
+    "message": "快捷键 3",
+    "description": "快捷键 3 标签"
   },
   "quickPromptSetupSlot1": {
     "message": "在 Options 中为一个 Prompt 绑定快捷位 1",
@@ -733,39 +733,39 @@
     "description": "引导用户管理 Prompt 绑定"
   },
   "promptQuickAccessSlot": {
-    "message": "快捷 Prompt",
-    "description": "Prompt 编辑器中快捷槽位字段标签"
+    "message": "快捷键",
+    "description": "Prompt 编辑器中快捷键字段标签"
   },
   "promptQuickAccessNone": {
     "message": "不绑定",
     "description": "Prompt 快捷槽位不绑定选项"
   },
   "promptQuickAccess1": {
-    "message": "快捷 Prompt 1",
-    "description": "Prompt 快捷槽位 1 选项"
+    "message": "快捷键 1",
+    "description": "Prompt 快捷键 1 选项"
   },
   "promptQuickAccess2": {
-    "message": "快捷 Prompt 2",
-    "description": "Prompt 快捷槽位 2 选项"
+    "message": "快捷键 2",
+    "description": "Prompt 快捷键 2 选项"
   },
   "promptQuickAccess3": {
-    "message": "快捷 Prompt 3",
-    "description": "Prompt 快捷槽位 3 选项"
+    "message": "快捷键 3",
+    "description": "Prompt 快捷键 3 选项"
   },
   "commandQuickConvertDescription": {
     "message": "快速执行“复制给AI”",
     "description": "Chrome commands 中 quick-convert 的描述"
   },
   "commandQuickPrompt1Description": {
-    "message": "快速执行快捷 Prompt 1",
+    "message": "快速执行快捷键 1",
     "description": "Chrome commands 中 quick-prompt-slot-1 的描述"
   },
   "commandQuickPrompt2Description": {
-    "message": "快速执行快捷 Prompt 2",
+    "message": "快速执行快捷键 2",
     "description": "Chrome commands 中 quick-prompt-slot-2 的描述"
   },
   "commandQuickPrompt3Description": {
-    "message": "快速执行快捷 Prompt 3",
+    "message": "快速执行快捷键 3",
     "description": "Chrome commands 中 quick-prompt-slot-3 的描述"
   },
   "popupOnboardingOpenOptions": {
