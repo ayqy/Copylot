@@ -6,9 +6,9 @@
 
 ## 输出文件清单（可复核）
 - `docs/evidence/v1-75/official-links.json`
-  - sha256: `70b9c2ca0d6f57ab0fd29e474f74d2ece381590db76ef9bafe5fecd89fe1f220`
+  - sha256: `87ac003b771f2e71280098fc230b8c6b5ad03873a6f14dc60787bc86ddfb15bd`
 - `docs/evidence/v1-75/pro-distribution-pack.sample.md`
-  - sha256: `493b43fcd4b3a61029df755aa5acdfd16301faa3c4dee241236c5bde02f4e568`
+  - sha256: `3999d6564f76cbf498b456b020590d4aca33f2903db8916e26fde71aaf1e62f3`
 - `docs/evidence/v1-75/share-copy.sample.txt`
   - sha256: `a32cd5385fc51a3c080697a03cfd1cac06ba4b546b862855c7e3176e5e644b2d`
 
