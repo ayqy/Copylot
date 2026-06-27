@@ -18,7 +18,8 @@ import {
 import {
   buildChromeWebStoreUrl,
   buildOfficialSiteUrl,
-  buildProWaitlistUrl
+  buildProWaitlistUrl,
+  OFFICIAL_SITE_ROOT_URL
 } from '../src/shared/external-links.ts';
 import {
   RATING_PROMPT_MIN_INSTALL_AGE_MS,
@@ -117,8 +118,10 @@ import {
 } from './cws-proxy.ts';
 import {
   buildCwsPreflightFixHints,
+  CWS_EXPECTED_HOMEPAGE_URL,
   classifyCwsPreflightError,
   evaluateCwsProxyReadiness,
+  getDefaultCwsPreflightTargets,
   runCwsPreflight
 } from './cws-preflight.ts';
 import {
@@ -588,7 +591,7 @@ async function run() {
   // external-links.ts (pure functions)
   const officialSiteUrl = buildOfficialSiteUrl({ medium: 'popup' });
   const officialSiteParsed = new URL(officialSiteUrl);
-  assert.equal(officialSiteParsed.origin, 'https://copy.useai.online');
+  assert.equal(officialSiteParsed.origin, new URL(OFFICIAL_SITE_ROOT_URL).origin);
   assert.equal(officialSiteParsed.pathname, '/');
   assert.equal(officialSiteParsed.hash, '');
   assert.equal(officialSiteParsed.searchParams.get('utm_source'), 'copylot-ext');
@@ -613,7 +616,7 @@ async function run() {
     }
   });
   const proWaitlistParsed = new URL(proWaitlistUrl);
-  assert.equal(proWaitlistParsed.origin, 'https://copy.useai.online');
+  assert.equal(proWaitlistParsed.origin, new URL(OFFICIAL_SITE_ROOT_URL).origin);
   assert.equal(proWaitlistParsed.hash, '#pro');
   assert.equal(proWaitlistParsed.searchParams.get('utm_source'), 'copylot-ext');
   assert.equal(proWaitlistParsed.searchParams.get('utm_medium'), 'popup');
@@ -2547,7 +2550,11 @@ async function run() {
 
   // v1-42 zip 安装回归（离线可审计）：校验最新 plugin-*.zip 中关键入口与隐私导出面板存在
   const rootDir = process.cwd();
-  const rootManifest = JSON.parse(await fs.readFile(path.join(rootDir, 'manifest.json'), 'utf8')) as { version?: string };
+  const rootManifest = JSON.parse(await fs.readFile(path.join(rootDir, 'manifest.json'), 'utf8')) as {
+    version?: string;
+    homepage_url?: string;
+  };
+  assert.equal(rootManifest.homepage_url, OFFICIAL_SITE_ROOT_URL, 'repo manifest homepage_url should match official site');
 
   const rootEntries = await fs.readdir(rootDir);
   const pluginZips = rootEntries.filter((name) => /^plugin-\d+\.\d+\.\d+\.zip$/.test(name));
@@ -2573,8 +2580,9 @@ async function run() {
 
   const zipManifest = JSON.parse(
     execFileSync('unzip', ['-p', latestPluginZip, 'manifest.json'], { encoding: 'utf8' })
-  ) as { version?: string };
+  ) as { version?: string; homepage_url?: string };
   assert.equal(zipManifest.version, rootManifest.version, 'plugin zip manifest version should match repo manifest.json');
+  assert.equal(zipManifest.homepage_url, OFFICIAL_SITE_ROOT_URL, 'plugin zip homepage_url should match repo manifest.json');
 
   const popupHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.html'], { encoding: 'utf8' });
   assert.ok(popupHtml.includes('id="upgrade-pro-entry"'), 'popup.html should include upgrade-pro-entry');
@@ -2808,6 +2816,15 @@ async function run() {
     (err as unknown as { name: string }).name = 'AbortError';
     const classified = classifyCwsPreflightError(err);
     assert.equal(classified.failureType, 'timeout');
+  }
+
+  {
+    const targets = getDefaultCwsPreflightTargets();
+    assert.deepEqual(
+      targets.map((target) => target.id),
+      ['googleapis', 'chromewebstore-googleapis-host', 'copylot-homepage']
+    );
+    assert.equal(targets[2]?.url, CWS_EXPECTED_HOMEPAGE_URL);
   }
 
   {

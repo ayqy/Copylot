@@ -1,5 +1,7 @@
 import { CWS_PROXY_FIX_COMMANDS, buildProxyNotStartedFixCommand, type CwsProxyDiagnostic } from './cws-proxy.ts';
 
+export const CWS_EXPECTED_HOMEPAGE_URL = 'https://copy.useai.online/';
+
 export type CwsPreflightFailureType =
   | 'dns'
   | 'timeout'
@@ -63,6 +65,11 @@ export function getDefaultCwsPreflightTargets(): CwsPreflightTarget[] {
     {
       id: 'chromewebstore-googleapis-host',
       url: 'https://chromewebstore.googleapis.com/',
+      method: 'GET'
+    },
+    {
+      id: 'copylot-homepage',
+      url: CWS_EXPECTED_HOMEPAGE_URL,
       method: 'GET'
     }
   ];

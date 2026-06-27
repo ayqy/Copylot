@@ -31,6 +31,7 @@ import {
 } from './cws-proxy.ts';
 import {
   buildCwsPreflightFixHints,
+  CWS_EXPECTED_HOMEPAGE_URL,
   evaluateCwsProxyReadiness,
   formatCwsPreflightReportBlock,
   formatCwsPublishDiagnosticPackBlock,
@@ -115,6 +116,29 @@ function extractErrorCauseMessage(error: Error): string | null {
     if (typeof anyCause.message === 'string' && anyCause.message.trim().length > 0) return anyCause.message.trim();
   }
   return null;
+}
+
+function extractChromeWebStoreApiErrorMessage(error: Error): string | null {
+  const anyError = error as unknown as Record<string, unknown>;
+  const response = anyError.response;
+  if (!response || typeof response !== 'object') return null;
+
+  const responseRecord = response as Record<string, unknown>;
+  const responseError = responseRecord.error;
+  if (!responseError || typeof responseError !== 'object') return null;
+
+  const errorRecord = responseError as Record<string, unknown>;
+  if (typeof errorRecord.message === 'string' && errorRecord.message.trim().length > 0) {
+    return errorRecord.message.trim();
+  }
+
+  return null;
+}
+
+function isHomepageUrlPublishConditionFailure(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+  const apiMessage = extractChromeWebStoreApiErrorMessage(error);
+  return typeof apiMessage === 'string' && /homepage url is not reachable/i.test(apiMessage);
 }
 
 function printActionableNetworkHints(error: Error) {
@@ -365,6 +389,7 @@ async function main() {
       }
       logInfo(`当前版本: ${version}`);
       logInfo(`已生成发布 zip: ${zipFilePath}`);
+      logInfo(`已锁定 Homepage URL：${CWS_EXPECTED_HOMEPAGE_URL}`);
     } catch (err) {
       displayError(err, '发布前置门禁');
       exitCode = 1;
@@ -535,6 +560,12 @@ async function main() {
       publishAttempt = { ...publishAttempt, published: true, errorCode: null, errorMessage: null };
     } catch (err) {
       displayError(err, '上传或发布');
+      if (isHomepageUrlPublishConditionFailure(err)) {
+        logError(`Chrome Web Store Homepage URL 校验失败；发布脚本要求使用固定官网地址：${CWS_EXPECTED_HOMEPAGE_URL}`);
+        console.error(
+          `[CWS] 请在 Developer Dashboard 的 Homepage URL 中确认精确填写为：${CWS_EXPECTED_HOMEPAGE_URL}`
+        );
+      }
       const errorCode = err instanceof Error ? extractErrorCode(err) : null;
       const errorMessage = err instanceof Error ? extractErrorCauseMessage(err) ?? err.message : null;
       publishAttempt = {

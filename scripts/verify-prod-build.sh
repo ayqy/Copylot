@@ -41,6 +41,19 @@ if grep -qi "test" "${MANIFEST_JSON}"; then
   fail "dist/manifest.json 包含 test 字样引用（可能引入测试资源/入口）"
 fi
 
+info "检查：dist/manifest.json homepage_url 固定为 https://copy.useai.online/"
+node -e '
+  const fs = require("fs");
+  const manifestPath = process.argv[1];
+  const expectedHomepageUrl = "https://copy.useai.online/";
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+
+  if (manifest.homepage_url !== expectedHomepageUrl) {
+    console.error(`[verify-prod-build] homepage_url 不匹配: expected=${expectedHomepageUrl}, actual=${String(manifest.homepage_url)}`);
+    process.exit(1);
+  }
+' "${MANIFEST_JSON}"
+
 info "检查：dist/src/popup/popup.js 不包含开发彩蛋/调试入口（clickCount|easter|test/index.html）"
 if grep -Eq "clickCount|easter|test/index\\.html" "${POPUP_JS}"; then
   fail "dist/src/popup/popup.js 命中禁用关键字（clickCount|easter|test/index.html）"
