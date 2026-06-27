@@ -1,7 +1,7 @@
 {
   "name": "copylot-extension",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.1",
   "description": "A browser extension to copy web page content as AI-friendly format",
   "type": "module",
   "scripts": {

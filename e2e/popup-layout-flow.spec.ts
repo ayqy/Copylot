@@ -1,6 +1,36 @@
+import type { Locator } from '@playwright/test';
 import { test, expect } from './fixtures';
 import { seedSyncStorage } from './helpers/extension-state';
 import { completePopupOnboardingIfVisible, openPopupForActiveTab } from './helpers/popup';
+
+async function expectBoxSize(
+  locator: Locator,
+  expected: { width: number; height: number }
+): Promise<void> {
+  const box = await locator.boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.width).toBeCloseTo(expected.width, 1);
+  expect(box!.height).toBeCloseTo(expected.height, 1);
+}
+
+async function expectPseudoElementSize(
+  locator: Locator,
+  pseudo: string,
+  expected: { width: number; height: number }
+): Promise<void> {
+  const size = await locator.evaluate(
+    (element, value) => {
+      const styles = window.getComputedStyle(element, value.pseudo);
+      return {
+        width: Number.parseFloat(styles.width),
+        height: Number.parseFloat(styles.height)
+      };
+    },
+    { pseudo }
+  );
+  expect(size.width).toBeCloseTo(expected.width, 1);
+  expect(size.height).toBeCloseTo(expected.height, 1);
+}
 
 test('real popup layout keeps settings before quick actions and fits without vertical scroll', async ({
   extensionContext,
@@ -107,5 +137,40 @@ test('popup and options keep readable contrast in light and dark color schemes',
       await popupPage.close();
     }
     await options.close();
+  }
+});
+
+test('popup switches keep fixed track geometry in flex layouts', async ({
+  extensionContext,
+  extensionId,
+  driverPage,
+  fixtureOrigin
+}) => {
+  const page = await extensionContext.newPage();
+  try {
+    await page.goto(`${fixtureOrigin}/article.html`);
+    await page.bringToFront();
+
+    const popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
+    await completePopupOnboardingIfVisible(popup);
+
+    await popup.locator('#toggle-more-settings').click();
+    await expect(popup.locator('#more-settings-panel')).toBeVisible();
+
+    const selectors = [
+      '#enable-magic-copy-switch',
+      '#enable-hover-magic-copy-switch',
+      '#enable-clipboard-accumulator-switch'
+    ];
+
+    for (const selector of selectors) {
+      const switchLabel = popup.locator(selector).locator('xpath=ancestor::label[contains(@class, "switch")]');
+      const slider = popup.locator(`${selector} + .slider`);
+      await expectBoxSize(switchLabel, { width: 42, height: 24 });
+      await expectBoxSize(slider, { width: 42, height: 24 });
+      await expectPseudoElementSize(slider, '::before', { width: 18, height: 18 });
+    }
+  } finally {
+    await page.close();
   }
 });

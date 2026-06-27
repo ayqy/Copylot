@@ -1,3 +1,4 @@
+import type { Locator } from '@playwright/test';
 import { test, expect } from './fixtures';
 import { clearClipboard, expectClipboardTextEventually } from './helpers/clipboard';
 import {
@@ -12,6 +13,32 @@ import {
   setOptionsCheckboxState
 } from './helpers/options';
 import { invokeContextMenu } from './helpers/extension-state';
+
+async function expectBoxSize(locator: Locator, expected: { width: number; height: number }): Promise<void> {
+  const box = await locator.boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.width).toBeCloseTo(expected.width, 1);
+  expect(box!.height).toBeCloseTo(expected.height, 1);
+}
+
+async function expectPseudoElementSize(
+  locator: Locator,
+  pseudo: string,
+  expected: { width: number; height: number }
+): Promise<void> {
+  const size = await locator.evaluate(
+    (element, value) => {
+      const styles = window.getComputedStyle(element, value.pseudo);
+      return {
+        width: Number.parseFloat(styles.width),
+        height: Number.parseFloat(styles.height)
+      };
+    },
+    { pseudo }
+  );
+  expect(size.width).toBeCloseTo(expected.width, 1);
+  expect(size.height).toBeCloseTo(expected.height, 1);
+}
 
 test('options can add edit delete custom chat service and set default', async ({
   extensionContext,
@@ -168,5 +195,42 @@ test('disabled target chat falls back to clipboard-only execution', async ({
     expect((snapshot.local.copilot_growth_stats as { successfulCopyCount?: number })?.successfulCopyCount).toBe(1);
   } finally {
     await article.close();
+  }
+});
+
+test('chat services switches and action buttons keep fixed geometry in flex layouts', async ({
+  extensionContext,
+  extensionId
+}) => {
+  const page = await openExtensionPage(extensionContext, extensionId, 'src/options/options.html');
+  try {
+    await openOptionsTab(page, 'chat-services');
+    await addCustomChatServiceViaModal(page, {
+      name: 'Geometry Chat Service',
+      url: 'https://example.com/geometry-chat'
+    });
+
+    const defaultSwitchLabel = page
+      .locator('#default-auto-open-chat')
+      .locator('xpath=parent::label');
+    const defaultSlider = page.locator('#default-auto-open-chat + .slider');
+    await expectBoxSize(defaultSwitchLabel, { width: 48, height: 24 });
+    await expectBoxSize(defaultSlider, { width: 48, height: 24 });
+    await expectPseudoElementSize(defaultSlider, '::before', { width: 18, height: 18 });
+
+    const serviceCard = page.locator('.chat-service-card').filter({ hasText: 'Geometry Chat Service' });
+    const serviceSwitchLabel = serviceCard
+      .locator('.service-enabled-toggle')
+      .locator('xpath=parent::label');
+    const serviceSlider = serviceCard.locator('.service-enabled-toggle + .slider');
+    await expectBoxSize(serviceSwitchLabel, { width: 48, height: 24 });
+    await expectBoxSize(serviceSlider, { width: 48, height: 24 });
+    await expectPseudoElementSize(serviceSlider, '::before', { width: 18, height: 18 });
+
+    await expectBoxSize(serviceCard.locator('.open-service-btn'), { width: 32, height: 32 });
+    await expectBoxSize(serviceCard.locator('.edit-service-btn'), { width: 32, height: 32 });
+    await expectBoxSize(serviceCard.locator('.delete-service-btn'), { width: 32, height: 32 });
+  } finally {
+    await page.close();
   }
 });
