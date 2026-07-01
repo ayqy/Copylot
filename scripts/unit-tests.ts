@@ -61,6 +61,10 @@ import {
   buildProIntentEventsCsv,
   formatProIntentEvents7dCsvFilename
 } from '../src/shared/pro-intent-events-csv.ts';
+import {
+  buildProIntentV1_100Summary,
+  formatProIntentV1_100Csv
+} from '../src/shared/pro-intent-funnel-v1-100.ts';
 import { buildProIntentRunEvidencePack, formatProIntentRunEvidencePackAsJson } from '../src/shared/pro-intent-run-evidence-pack.ts';
 import { buildProWaitlistSurveyIntentDistribution } from '../src/shared/pro-waitlist-survey-intent-distribution.ts';
 import {
@@ -602,9 +606,18 @@ async function run() {
   const officialSiteCampaignParsed = new URL(officialSiteUrlWithCampaign);
   assert.equal(officialSiteCampaignParsed.searchParams.get('utm_campaign'), 'twitter');
 
+  const officialSiteUrlWithContent = buildOfficialSiteUrl({
+    medium: 'options',
+    campaign: 'twitter',
+    content: 'options_waitlist_cta'
+  });
+  const officialSiteContentParsed = new URL(officialSiteUrlWithContent);
+  assert.equal(officialSiteContentParsed.searchParams.get('utm_content'), 'options_waitlist_cta');
+
   const proWaitlistUrl = buildProWaitlistUrl({
     medium: 'popup',
     campaign: 'twitter',
+    content: 'popup_waitlist_cta',
     env: {
       extensionVersion: '1.1.0',
       extensionId,
@@ -621,6 +634,7 @@ async function run() {
   assert.equal(proWaitlistParsed.searchParams.get('utm_source'), 'copylot-ext');
   assert.equal(proWaitlistParsed.searchParams.get('utm_medium'), 'popup');
   assert.equal(proWaitlistParsed.searchParams.get('utm_campaign'), 'twitter');
+  assert.equal(proWaitlistParsed.searchParams.get('utm_content'), 'popup_waitlist_cta');
   assert.equal(proWaitlistParsed.searchParams.get('ext_version'), '1.1.0');
   assert.equal(proWaitlistParsed.searchParams.get('ext_id'), extensionId);
   assert.equal(proWaitlistParsed.searchParams.get('nav_lang'), 'en-US');
@@ -685,57 +699,142 @@ async function run() {
     sanitizeTelemetryEvent({
       name: 'pro_entry_opened',
       ts: now,
-      props: { source: 'popup', extra: 'x' }
+      props: { source: 'popup', medium: 'popup', content: 'popup_upgrade_cta', extra: 'x' }
     }),
-    { name: 'pro_entry_opened', ts: now, props: { source: 'popup' } }
+    {
+      name: 'pro_entry_opened',
+      ts: now,
+      props: { source: 'popup', medium: 'popup', content: 'popup_upgrade_cta' }
+    }
   );
   assert.deepEqual(
     sanitizeTelemetryEvent({
       name: 'pro_entry_opened',
       ts: now,
-      props: { source: 'options', campaign: 'twitter', extra: 'x' }
+      props: {
+        source: 'options',
+        medium: 'options',
+        content: 'options_waitlist_cta',
+        campaign: 'twitter',
+        extra: 'x'
+      }
     }),
-    { name: 'pro_entry_opened', ts: now, props: { source: 'options', campaign: 'twitter' } }
+    {
+      name: 'pro_entry_opened',
+      ts: now,
+      props: {
+        source: 'options',
+        medium: 'options',
+        content: 'options_waitlist_cta',
+        campaign: 'twitter'
+      }
+    }
   );
   assert.deepEqual(
     sanitizeTelemetryEvent({
       name: 'pro_entry_opened',
       ts: now,
-      props: { source: 'options', campaign: 'http://x.com' }
+      props: { source: 'options', medium: 'options', content: 'options_waitlist_cta', campaign: 'http://x.com' }
     }),
-    { name: 'pro_entry_opened', ts: now, props: { source: 'options' } }
+    {
+      name: 'pro_entry_opened',
+      ts: now,
+      props: { source: 'options', medium: 'options', content: 'options_waitlist_cta' }
+    }
   );
   assert.deepEqual(
     sanitizeTelemetryEvent({
       name: 'pro_entry_opened',
       ts: now,
-      props: { source: 'unknown', campaign: 'twitter' }
+      props: { source: 'unknown', medium: 'popup', content: 'popup_upgrade_cta', campaign: 'twitter' }
     }),
-    { name: 'pro_entry_opened', ts: now }
+    {
+      name: 'pro_entry_opened',
+      ts: now,
+      props: { medium: 'popup', content: 'popup_upgrade_cta' }
+    }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_intent_form_start',
+      ts: now,
+      props: {
+        source: 'popup',
+        medium: 'popup',
+        content: 'popup_survey_cta',
+        campaign: 'launch',
+        extra: 'x'
+      }
+    }),
+    {
+      name: 'pro_intent_form_start',
+      ts: now,
+      props: {
+        source: 'popup',
+        medium: 'popup',
+        content: 'popup_survey_cta',
+        campaign: 'launch'
+      }
+    }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_intent_form_submit',
+      ts: now,
+      props: {
+        source: 'options',
+        medium: 'options',
+        content: 'options_survey_copy_open',
+        campaign: 'launch',
+        extra: 'x'
+      }
+    }),
+    {
+      name: 'pro_intent_form_submit',
+      ts: now,
+      props: {
+        source: 'options',
+        medium: 'options',
+        content: 'options_survey_copy_open',
+        campaign: 'launch'
+      }
+    }
   );
   assert.deepEqual(
     sanitizeTelemetryEvent({
       name: 'pro_waitlist_opened',
       ts: now,
-      props: { source: 'options', extra: 'x' }
+      props: { source: 'options', medium: 'options', content: 'options_waitlist_cta', extra: 'x' }
     }),
-    { name: 'pro_waitlist_opened', ts: now, props: { source: 'options' } }
+    {
+      name: 'pro_waitlist_opened',
+      ts: now,
+      props: { source: 'options', medium: 'options', content: 'options_waitlist_cta' }
+    }
   );
   assert.deepEqual(
     sanitizeTelemetryEvent({
       name: 'pro_waitlist_copied',
       ts: now,
-      props: { source: 'options' }
+      props: { source: 'options', medium: 'options', content: 'options_waitlist_cta' }
     }),
-    { name: 'pro_waitlist_copied', ts: now, props: { source: 'options' } }
+    {
+      name: 'pro_waitlist_copied',
+      ts: now,
+      props: { source: 'options', medium: 'options', content: 'options_waitlist_cta' }
+    }
   );
   assert.deepEqual(
     sanitizeTelemetryEvent({
       name: 'pro_waitlist_copied',
       ts: now,
-      props: { source: 'popup' }
+      props: { source: 'popup', medium: 'popup', content: 'popup_waitlist_cta' }
     }),
-    { name: 'pro_waitlist_copied', ts: now, props: { source: 'popup' } }
+    {
+      name: 'pro_waitlist_copied',
+      ts: now,
+      props: { source: 'popup', medium: 'popup', content: 'popup_waitlist_cta' }
+    }
   );
   assert.deepEqual(
     sanitizeTelemetryEvent({
@@ -1257,15 +1356,19 @@ async function run() {
       { name: 'pro_prompt_action', ts: 6, props: { source: 'popup', action: 'join' } },
       { name: 'pro_entry_opened', ts: 10, props: { source: 'popup' } },
       { name: 'pro_entry_opened', ts: 20, props: { source: 'popup' } },
+      { name: 'pro_intent_form_start', ts: 25, props: { source: 'popup' } },
+      { name: 'pro_intent_form_submit', ts: 26, props: { source: 'popup' } },
       { name: 'pro_waitlist_opened', ts: 30, props: { source: 'popup' } },
       { name: 'pro_waitlist_survey_copied', ts: 35, props: { source: 'popup' } },
       { name: 'pro_waitlist_copied', ts: 40, props: { source: 'popup' } },
       { name: 'pro_prompt_shown', ts: 45, props: { source: 'options' } },
       { name: 'pro_prompt_action', ts: 46, props: { source: 'options', action: 'later' } },
+      { name: 'pro_intent_form_start', ts: 48, props: { source: 'options' } },
       { name: 'pro_waitlist_opened', ts: 50, props: { source: 'options' } },
       { name: 'pro_waitlist_survey_copied', ts: 55, props: { source: 'options' } },
       { name: 'pro_waitlist_copied', ts: 60, props: { source: 'options' } },
       { name: 'pro_entry_opened', ts: 70, props: { source: 'options' } },
+      { name: 'pro_intent_form_submit', ts: 71, props: { source: 'options' } },
       { name: 'popup_opened', ts: 80 },
       { name: 'pro_entry_opened', ts: 90, props: { source: 'unknown' } },
       { name: 'pro_waitlist_opened', ts: -1, props: { source: 'popup' } }
@@ -1277,6 +1380,8 @@ async function run() {
     pro_prompt_shown: 1,
     pro_prompt_action: 1,
     pro_entry_opened: 2,
+    pro_intent_form_start: 1,
+    pro_intent_form_submit: 1,
     pro_waitlist_opened: 1,
     pro_waitlist_copied: 1,
     pro_waitlist_survey_copied: 1
@@ -1285,6 +1390,8 @@ async function run() {
     pro_prompt_shown: 5,
     pro_prompt_action: 6,
     pro_entry_opened: 20,
+    pro_intent_form_start: 25,
+    pro_intent_form_submit: 26,
     pro_waitlist_opened: 30,
     pro_waitlist_copied: 40,
     pro_waitlist_survey_copied: 35
@@ -1293,6 +1400,8 @@ async function run() {
     pro_prompt_shown: 1,
     pro_prompt_action: 1,
     pro_entry_opened: 1,
+    pro_intent_form_start: 1,
+    pro_intent_form_submit: 1,
     pro_waitlist_opened: 1,
     pro_waitlist_copied: 1,
     pro_waitlist_survey_copied: 1
@@ -1301,16 +1410,27 @@ async function run() {
     pro_prompt_shown: 2,
     pro_prompt_action: 2,
     pro_entry_opened: 3,
+    pro_intent_form_start: 2,
+    pro_intent_form_submit: 2,
     pro_waitlist_opened: 2,
     pro_waitlist_copied: 2,
     pro_waitlist_survey_copied: 2
   });
+  assert.equal(proSummary.bySource.popup.rates.form_started_per_entry_opened, 0.5);
+  assert.equal(proSummary.bySource.popup.rates.form_submitted_per_entry_opened, 0.5);
+  assert.equal(proSummary.bySource.popup.rates.survey_copied_per_prompt_shown, 1);
   assert.equal(proSummary.bySource.popup.rates.waitlist_opened_per_entry_opened, 0.5);
   assert.equal(proSummary.bySource.popup.rates.waitlist_copied_per_waitlist_opened, 1);
   assert.equal(proSummary.bySource.popup.rates.entry_opened_per_prompt_shown, 2);
   assert.equal(proSummary.bySource.popup.rates.waitlist_opened_per_prompt_shown, 1);
+  assert.equal(proSummary.bySource.options.rates.form_started_per_entry_opened, 1);
+  assert.equal(proSummary.bySource.options.rates.form_submitted_per_entry_opened, 1);
+  assert.equal(proSummary.bySource.options.rates.survey_copied_per_prompt_shown, 1);
   assert.equal(proSummary.bySource.options.rates.waitlist_opened_per_entry_opened, 1);
   assert.equal(proSummary.bySource.options.rates.waitlist_copied_per_waitlist_opened, 1);
+  assert.equal(proSummary.overall.rates.form_started_per_entry_opened, 0.6667);
+  assert.equal(proSummary.overall.rates.form_submitted_per_entry_opened, 0.6667);
+  assert.equal(proSummary.overall.rates.survey_copied_per_prompt_shown, 1);
   assert.equal(proSummary.overall.rates.waitlist_opened_per_entry_opened, 0.6667);
   assert.equal(proSummary.overall.rates.waitlist_copied_per_waitlist_opened, 1);
   assert.equal(proSummary.overall.rates.entry_opened_per_prompt_shown, 1.5);
@@ -1633,11 +1753,117 @@ async function run() {
   assert.equal(proIntentRunPackOn.proWaitlistSurveyIntentDistribution.survey_intent, 1);
   assert.ok(proIntentRunPackOn.proIntentEvents7dCsv.startsWith(PRO_INTENT_EVENTS_CSV_COLUMNS.join(',')));
   assert.ok(proIntentRunPackOn.proIntentWeeklyDigestMarkdown.includes('pro_waitlist_survey_copied'));
+  assert.equal(proIntentRunPackOn.proFunnelSummary.overall.rates.form_started_per_entry_opened, 0);
+  assert.equal(proIntentRunPackOn.proFunnelSummary.overall.rates.form_submitted_per_entry_opened, 0);
 
   const proIntentRunPackOnJson = formatProIntentRunEvidencePackAsJson(proIntentRunPackOn);
   assert.ok(!proIntentRunPackOnJson.includes('evil.example.com'));
   assert.ok(!proIntentRunPackOnJson.includes('secret-title'));
   assert.ok(!proIntentRunPackOnJson.includes('pii@example.com'));
+
+  const v1_100SummaryDisabled = buildProIntentV1_100Summary({
+    enabled: false,
+    telemetryEvents: [{ name: 'pro_entry_opened', ts: now, props: { source: 'popup', medium: 'popup', content: 'popup_upgrade_cta' } }],
+    now,
+    lookbackDays: 30
+  });
+  assert.equal(v1_100SummaryDisabled.enabled, false);
+  assert.equal(v1_100SummaryDisabled.disabledReason, 'anonymous_usage_data_disabled');
+  assert.equal(v1_100SummaryDisabled.rows.length, 0);
+
+  const v1_100Summary = buildProIntentV1_100Summary({
+    enabled: true,
+    telemetryEvents: [
+      {
+        name: 'pro_entry_opened',
+        ts: now - 1_000,
+        props: { source: 'popup', medium: 'popup', content: 'popup_survey_cta', campaign: 'launch' }
+      },
+      {
+        name: 'pro_intent_form_start',
+        ts: now - 900,
+        props: { source: 'popup', medium: 'popup', content: 'popup_survey_cta', campaign: 'launch' }
+      },
+      {
+        name: 'pro_intent_form_submit',
+        ts: now - 800,
+        props: { source: 'popup', medium: 'popup', content: 'popup_survey_cta', campaign: 'launch' }
+      },
+      {
+        name: 'pro_entry_opened',
+        ts: now - 700,
+        props: { source: 'options', medium: 'options', content: 'options_waitlist_cta', campaign: 'launch' }
+      },
+      {
+        name: 'pro_intent_form_start',
+        ts: now - 600,
+        props: { source: 'options', medium: 'options', content: 'options_waitlist_cta', campaign: 'launch' }
+      },
+      {
+        name: 'pro_entry_opened',
+        ts: now - 500,
+        props: { source: 'options', medium: 'options', content: 'options_survey_copy_open' }
+      },
+      {
+        name: 'pro_intent_form_submit',
+        ts: now - 400,
+        props: { source: 'options', medium: 'options', content: 'options_survey_copy_open' }
+      },
+      {
+        name: 'pro_intent_form_submit',
+        ts: now - (31 * 24 * 60 * 60 * 1000),
+        props: { source: 'popup', medium: 'popup', content: 'popup_survey_cta', campaign: 'launch' }
+      }
+    ],
+    now,
+    lookbackDays: 30
+  });
+  assert.equal(v1_100Summary.enabled, true);
+  assert.equal(v1_100Summary.rows.length, 3);
+  assert.deepEqual(v1_100Summary.rows.find((row) => row.content === 'popup_survey_cta'), {
+    source: 'popup',
+    medium: 'popup',
+    content: 'popup_survey_cta',
+    campaign: 'launch',
+    upgradeEntryClicks: 1,
+    formStarts: 1,
+    formSubmits: 1,
+    formStartRate: 1,
+    intentSubmitRate: 1
+  });
+  assert.deepEqual(v1_100Summary.rows.find((row) => row.content === 'options_survey_copy_open'), {
+    source: 'options',
+    medium: 'options',
+    content: 'options_survey_copy_open',
+    campaign: 'N/A',
+    upgradeEntryClicks: 1,
+    formStarts: 0,
+    formSubmits: 1,
+    formStartRate: 0,
+    intentSubmitRate: 1
+  });
+  assert.deepEqual(v1_100Summary.rows.find((row) => row.content === 'options_waitlist_cta'), {
+    source: 'options',
+    medium: 'options',
+    content: 'options_waitlist_cta',
+    campaign: 'launch',
+    upgradeEntryClicks: 1,
+    formStarts: 1,
+    formSubmits: 0,
+    formStartRate: 1,
+    intentSubmitRate: 0
+  });
+  assert.deepEqual(v1_100Summary.totals, {
+    upgradeEntryClicks: 3,
+    formStarts: 2,
+    formSubmits: 2,
+    formStartRate: 0.6667,
+    intentSubmitRate: 0.6667
+  });
+  assert.equal(
+    formatProIntentV1_100Csv(v1_100Summary).split('\n')[0],
+    'source,medium,content,campaign,upgradeEntryClicks,formStarts,formSubmits,formStartRate,intentSubmitRate'
+  );
 
   // pro-intent-by-campaign-csv.ts (pure functions + 7d window -> by campaign aggregation -> CSV)
   const proIntentByCampaignWindowA = buildProIntentEventsCsv({

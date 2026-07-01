@@ -397,6 +397,22 @@
     "message": "如果你愿意，可以简单聊聊你的使用场景，这会帮助我们把后续功能做得更顺手。",
     "description": "Options Pro Tab：付费意向问卷提示"
   },
+  "proWaitlistSurveySampleNoticeTitle": {
+    "message": "未开启匿名使用数据",
+    "description": "Options Pro Tab：问卷样本不计入提示标题"
+  },
+  "proWaitlistSurveySampleNoticeBody": {
+    "message": "本次填写/复制不会计入 survey_intent 统计，但你仍可继续填写。",
+    "description": "Options Pro Tab：问卷样本不计入提示正文"
+  },
+  "proWaitlistSurveyEnableSampleButton": {
+    "message": "开启并计入样本",
+    "description": "Options Pro Tab：一键开启匿名使用数据并计入样本按钮"
+  },
+  "proWaitlistSurveyEnableSampleSuccess": {
+    "message": "已开启匿名使用数据，后续问卷复制会计入 survey_intent。",
+    "description": "Options Pro Tab：开启匿名使用数据成功提示"
+  },
   "proWaitlistSurveyUseCaseLabel": {
     "message": "使用场景",
     "description": "Options Pro Tab：问卷字段标签（使用场景）"
@@ -1286,6 +1302,30 @@
   "proIntentRunEvidencePackDownloadTelemetryOffNotice": {
     "message": "当前已关闭匿名数据记录，因此没有数据可导出。",
     "description": "匿名开关 OFF 时下载 Pro 意向跑数证据包提示"
+  },
+  "proIntentV1100SummaryDownload": {
+    "message": "下载 v1-100 摘要（JSON）",
+    "description": "隐私页下载 v1-100 意向摘要 json 按钮"
+  },
+  "proIntentV1100FunnelDownload": {
+    "message": "下载 v1-100 漏斗（CSV）",
+    "description": "隐私页下载 v1-100 漏斗 csv 按钮"
+  },
+  "proIntentV1100SummaryExportSuccess": {
+    "message": "已导出 v1-100 摘要",
+    "description": "导出 v1-100 意向摘要 json 成功提示"
+  },
+  "proIntentV1100SummaryExportFailed": {
+    "message": "导出 v1-100 摘要失败",
+    "description": "导出 v1-100 意向摘要 json 失败提示"
+  },
+  "proIntentV1100FunnelExportSuccess": {
+    "message": "已导出 v1-100 漏斗 CSV",
+    "description": "导出 v1-100 漏斗 csv 成功提示"
+  },
+  "proIntentV1100FunnelExportFailed": {
+    "message": "导出 v1-100 漏斗 CSV 失败",
+    "description": "导出 v1-100 漏斗 csv 失败提示"
   },
   "proWaitlistSurveyIntentDistribution7dExport": {
     "message": "导出最近 7 天问卷意向分布 (JSON)",

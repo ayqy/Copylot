@@ -104,6 +104,17 @@ v1-96 顺延执行补充（Top1 -> Top2）：
 - 提供可登录 CWS Developer Dashboard 且具备 Store listing 编辑权限的账号/权限（用于 v1-71 的 EN/ZH descriptions + keywords 粘贴同步与截图取证）。
 - （无）敏感词/夸大口径口径阻塞已解除：以 v1-76 门禁与证据为准；若未来需调整红线词表/规则，直接修改 `docs/publish/cws-listing-redlines-policy.md` 并确保 `bash scripts/test.sh` PASS。
 
+v1-100 顺延执行补充（Top1 -> Top2）：
+- 已完成替代动作：
+  - 三入口 CTA attribution 已统一到 `source/medium/content/campaign`
+  - Popup 问卷最短路径已记录 `pro_intent_form_start / pro_intent_form_submit`
+  - 已落盘 `docs/evidence/v1-100/` 证据包
+- 仍需人类输入以回切 Top1：
+  - 提供 CWS Dashboard 编辑/发布权限
+  - 在目标 shell 完成 `source ~/.bash_profile && pxy`
+- 风险说明：
+  - 官网 / 商店来源在 runtime telemetry 中不会新增第三类 source；若未来要做跨域真实链路采样，需要新的非当前 MVP 设计
+
 ## 2)（非本阶段 MVP）收款/订阅相关输入
 所需输入清单：
 - Stripe/收款账号

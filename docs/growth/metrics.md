@@ -75,6 +75,23 @@
 - proIntentSignals：`9`
 - compare_baseline：`v1-98-xhs-backfill`（delta：`clicks +12`，`installs +3`，`proIntentSignals +2`）
 
+## run_id: v1-100-pro-intent
+
+| run_id | source_class | runtime_source | content | campaign | upgradeEntryClicks | formStarts | formSubmits | formStartRate | intentSubmitRate | evidence |
+| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
+| v1-100-pro-intent | official_site | popup | popup_upgrade_cta | official_site_launch | 1 | 1 | 1 | 1.0000 | 1.0000 | docs/evidence/v1-100/intent-sample-audit-v1-100.json |
+| v1-100-pro-intent | chrome_web_store | popup | popup_waitlist_cta | chrome_web_store_launch | 1 | 0 | 0 | 0.0000 | 0.0000 | docs/evidence/v1-100/intent-sample-audit-v1-100.json |
+| v1-100-pro-intent | extension_in_app | popup | popup_survey_cta | extension_popup_launch | 1 | 1 | 1 | 1.0000 | 1.0000 | docs/evidence/v1-100/intent-sample-audit-v1-100.json |
+| v1-100-pro-intent | extension_in_app | options | options_waitlist_cta | options_followup_launch | 1 | 1 | 0 | 1.0000 | 0.0000 | docs/evidence/v1-100/intent-funnel-summary-v1-100.json |
+
+汇总（v1-100 漏斗）：
+- upgradeEntryClicks：`4`
+- formStarts：`3`
+- formSubmits：`2`
+- formStartRate：`0.75`
+- intentSubmitRate：`0.5`
+- 口径说明：官网/商店来源通过 UTM + CTA content 桥接到 `popup` runtime source，不虚构第三类本地 source。
+
 ## run_id: 20260325-122257-growth
 
 | run_id | channel | planned_publish_time | status | post_url | landing_link | impressions | clicks | installs | activated_users | feedback_count | notes |

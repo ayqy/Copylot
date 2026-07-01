@@ -13,6 +13,7 @@ export type ExternalUtmMedium = 'popup' | 'options' | 'distribution_toolkit' | '
 export interface BuildExternalLinkParams {
   medium: ExternalUtmMedium | (string & {});
   campaign?: unknown;
+  content?: unknown;
 }
 
 export interface ProWaitlistEnvironmentInfo {
@@ -74,11 +75,13 @@ export function sanitizeProWaitlistEnv(env: unknown): SanitizedProWaitlistEnv {
 function buildUtmSearchParams(params: BuildExternalLinkParams): URLSearchParams {
   const medium = sanitizeMedium(params.medium);
   const campaign = sanitizeCampaign(params.campaign);
+  const content = sanitizeCampaign(params.content);
 
   const search = new URLSearchParams();
   search.set('utm_source', EXTERNAL_LINKS_UTM_SOURCE);
   search.set('utm_medium', medium);
   if (campaign) search.set('utm_campaign', campaign);
+  if (content) search.set('utm_content', content);
   return search;
 }
 

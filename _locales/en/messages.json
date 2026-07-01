@@ -397,6 +397,22 @@
     "message": "If you'd like, briefly share how you use Copylot. It really helps us build features that fit your workflow.",
     "description": "Options Pro tab: waitlist survey hint"
   },
+  "proWaitlistSurveySampleNoticeTitle": {
+    "message": "Anonymous usage data is off",
+    "description": "Options Pro tab: notice title when survey copies won't count"
+  },
+  "proWaitlistSurveySampleNoticeBody": {
+    "message": "This copy will not count toward survey_intent until anonymous usage data is enabled.",
+    "description": "Options Pro tab: notice body when survey copies won't count"
+  },
+  "proWaitlistSurveyEnableSampleButton": {
+    "message": "Enable and count this sample",
+    "description": "Options Pro tab: button to enable anonymous usage data for survey counting"
+  },
+  "proWaitlistSurveyEnableSampleSuccess": {
+    "message": "Anonymous usage data enabled. Future survey copies will be counted.",
+    "description": "Options Pro tab: success toast after enabling anonymous usage data"
+  },
   "proWaitlistSurveyUseCaseLabel": {
     "message": "Use case",
     "description": "Options Pro tab: survey field label (use case)"
@@ -1286,6 +1302,30 @@
   "proIntentRunEvidencePackDownloadTelemetryOffNotice": {
     "message": "Anonymous data recording is disabled, so there's nothing to export.",
     "description": "Notification when downloading Pro intent run evidence pack while anonymous usage data is disabled"
+  },
+  "proIntentV1100SummaryDownload": {
+    "message": "Download v1-100 Summary (JSON)",
+    "description": "Button label for downloading v1-100 intent summary json in Options privacy tab"
+  },
+  "proIntentV1100FunnelDownload": {
+    "message": "Download v1-100 Funnel (CSV)",
+    "description": "Button label for downloading v1-100 funnel csv in Options privacy tab"
+  },
+  "proIntentV1100SummaryExportSuccess": {
+    "message": "v1-100 summary exported",
+    "description": "Toast after exporting v1-100 intent summary json"
+  },
+  "proIntentV1100SummaryExportFailed": {
+    "message": "Failed to export v1-100 summary",
+    "description": "Toast after failing to export v1-100 intent summary json"
+  },
+  "proIntentV1100FunnelExportSuccess": {
+    "message": "v1-100 funnel CSV exported",
+    "description": "Toast after exporting v1-100 funnel csv"
+  },
+  "proIntentV1100FunnelExportFailed": {
+    "message": "Failed to export v1-100 funnel CSV",
+    "description": "Toast after failing to export v1-100 funnel csv"
   },
   "proWaitlistSurveyIntentDistribution7dExport": {
     "message": "Export Last 7d Survey Stats (JSON)",

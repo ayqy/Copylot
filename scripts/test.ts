@@ -378,6 +378,19 @@ async function run(): Promise<void> {
       'Pro intent run evidence pack outputs should be deterministic'
     )
   );
+  await runStep(startStep('build-pro-intent-v1-100-evidence', 'quality'), () =>
+    assertDeterministic(
+      './node_modules/.bin/ts-node',
+      ['scripts/build-pro-intent-v1-100-evidence.ts'],
+      [
+        'docs/evidence/v1-100/index.md',
+        'docs/evidence/v1-100/intent-funnel-v1-100.csv',
+        'docs/evidence/v1-100/intent-funnel-summary-v1-100.json',
+        'docs/evidence/v1-100/intent-sample-audit-v1-100.json'
+      ],
+      'Pro intent v1-100 evidence outputs should be deterministic'
+    )
+  );
   await runStep(startStep('build-pro-intent-decision-pack', 'quality'), () =>
     assertDeterministic(
       './node_modules/.bin/ts-node',

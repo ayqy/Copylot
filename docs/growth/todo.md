@@ -26,6 +26,12 @@
 - [ ] 按 v1-99 对比模板持续维护 `conversion-funnel-compare-v1-98-v1-99.json` 的后续迭代版本。
 - [ ] 持续同步 `conversion-evidence-index`、`docs/growth/metrics.md`、执行记录三方一致性。
 
+## v1-100 后续待办（回切 Top1 前）
+
+- [ ] 解除 `CWS 权限 + source ~/.bash_profile && pxy 未就绪` 阻塞并回切 v1-70/v1-71。
+- [ ] 持续复用 `scripts/build-pro-intent-v1-100-evidence.ts`，保持 `docs/evidence/v1-100/` 可重建、可审计。
+- [ ] 若继续扩展“官网/商店 -> 扩展内”真实链路，仍需保持 runtime telemetry 只记录 `popup|options`，避免虚构 source 口径。
+
 ## 20260325-113320-growth 待办（本轮新增）
 
 - [ ] 提供外网可达环境并复跑三目标预检：`https://copy.useai.online/`、`https://chromewebstore.google.com/`、`https://1.1.1.1`。

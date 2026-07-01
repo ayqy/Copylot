@@ -50,13 +50,19 @@ test('popup share feedback rate and passive pro entries open real targets withou
     await page.bringToFront();
     const popupForWaitlist = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
     await completePopupOnboardingIfVisible(popupForWaitlist);
-    const [waitlistPage] = await Promise.all([
-      extensionContext.waitForEvent('page'),
-      popupForWaitlist.locator('#popup-pro-waitlist').click()
-    ]);
-    await waitlistPage.waitForLoadState('domcontentloaded');
-    expect(waitlistPage.url()).toContain('copy.useai.online');
-    await waitlistPage.close();
+    await popupForWaitlist.locator('#popup-pro-waitlist').click();
+    await expect
+      .poll(async () => {
+        const urls = await getOpenedUrls(driverPage);
+        return urls.at(-1) || '';
+      })
+      .toContain('copy.useai.online');
+    await expect
+      .poll(async () => {
+        const urls = await getOpenedUrls(driverPage);
+        return urls.at(-1) || '';
+      })
+      .toContain('utm_content=popup_waitlist_cta');
 
     await page.bringToFront();
     const popupForShare = await openPopupForActiveTab(extensionContext, extensionId, driverPage);

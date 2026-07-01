@@ -1,0 +1,5 @@
+source,medium,content,campaign,upgradeEntryClicks,formStarts,formSubmits,formStartRate,intentSubmitRate
+popup,popup,popup_survey_cta,extension_popup_launch,1,1,1,1,1
+popup,popup,popup_upgrade_cta,official_site_launch,1,1,1,1,1
+options,options,options_waitlist_cta,options_followup_launch,1,1,0,1,0
+popup,popup,popup_waitlist_cta,chrome_web_store_launch,1,0,0,0,0

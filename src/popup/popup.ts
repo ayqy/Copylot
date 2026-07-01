@@ -26,6 +26,7 @@ import {
 } from '../shared/growth-stats';
 import { recordTelemetryEvent, sanitizeTelemetryEvents, TELEMETRY_EVENTS_KEY } from '../shared/telemetry';
 import { buildProWaitlistUrl } from '../shared/external-links';
+import { buildProIntentAttribution } from '../shared/pro-intent-attribution';
 
 interface PopupElements {
   versionDisplay: HTMLElement;
@@ -54,6 +55,7 @@ interface PopupElements {
   copyShareButton: HTMLButtonElement;
   rateLink: HTMLAnchorElement;
   upgradeProEntry: HTMLButtonElement;
+  popupProSurveyButton: HTMLButtonElement;
   popupProWaitlistButton: HTMLButtonElement;
   onboardingReopenButton: HTMLButtonElement;
   onboardingModal: HTMLElement;
@@ -197,6 +199,7 @@ function getElements(): PopupElements {
     copyShareButton: document.getElementById('copy-share-button') as HTMLButtonElement,
     rateLink: document.getElementById('rate-link') as HTMLAnchorElement,
     upgradeProEntry: document.getElementById('upgrade-pro-entry') as HTMLButtonElement,
+    popupProSurveyButton: document.getElementById('popup-pro-survey') as HTMLButtonElement,
     popupProWaitlistButton: document.getElementById('popup-pro-waitlist') as HTMLButtonElement,
     onboardingReopenButton: document.getElementById('popup-onboarding-reopen') as HTMLButtonElement,
     onboardingModal: document.getElementById('popup-onboarding-modal') as HTMLElement,
@@ -521,8 +524,17 @@ function setupEventListeners() {
   });
 
   elements.upgradeProEntry.addEventListener('click', async () => {
-    const props: Record<string, string> = { source: 'popup' };
-    if (currentSettings?.proIntentCampaign) props.campaign = currentSettings.proIntentCampaign;
+    const attrs = buildProIntentAttribution({
+      source: 'popup',
+      content: 'popup_upgrade_cta',
+      campaign: currentSettings?.proIntentCampaign
+    });
+    const props = {
+      source: attrs.source,
+      medium: attrs.medium,
+      content: attrs.content,
+      ...(attrs.campaign ? { campaign: attrs.campaign } : {})
+    };
     await recordTelemetryEvent('pro_entry_opened', props);
     const url = `${chrome.runtime.getURL('src/options/options.html')}#pro`;
     await reportE2EOpenedUrl(url);
@@ -530,13 +542,44 @@ function setupEventListeners() {
     window.close();
   });
 
+  elements.popupProSurveyButton.addEventListener('click', async () => {
+    const attrs = buildProIntentAttribution({
+      source: 'popup',
+      content: 'popup_survey_cta',
+      campaign: currentSettings?.proIntentCampaign
+    });
+    const props = {
+      source: attrs.source,
+      medium: attrs.medium,
+      content: attrs.content,
+      ...(attrs.campaign ? { campaign: attrs.campaign } : {})
+    };
+    await recordTelemetryEvent('pro_entry_opened', props);
+    await recordTelemetryEvent('pro_intent_form_start', props);
+    const url = `${chrome.runtime.getURL('src/options/options.html')}?pro_survey_source=popup#pro-waitlist-survey`;
+    await reportE2EOpenedUrl(url);
+    chrome.tabs.create({ url });
+    window.close();
+  });
+
   elements.popupProWaitlistButton.addEventListener('click', async () => {
-    const props: Record<string, string> = { source: 'popup' };
-    if (currentSettings?.proIntentCampaign) props.campaign = currentSettings.proIntentCampaign;
+    const attrs = buildProIntentAttribution({
+      source: 'popup',
+      content: 'popup_waitlist_cta',
+      campaign: currentSettings?.proIntentCampaign
+    });
+    const props = {
+      source: attrs.source,
+      medium: attrs.medium,
+      content: attrs.content,
+      ...(attrs.campaign ? { campaign: attrs.campaign } : {})
+    };
+    await recordTelemetryEvent('pro_entry_opened', props);
     await recordTelemetryEvent('pro_waitlist_opened', props);
     const waitlistUrl = buildProWaitlistUrl({
       medium: 'popup',
       campaign: currentSettings?.proIntentCampaign,
+      content: 'popup_waitlist_cta',
       env: {
         extensionVersion: chrome.runtime.getManifest().version || '',
         extensionId: chrome.runtime.id,

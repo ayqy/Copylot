@@ -214,6 +214,7 @@ export const DEFAULT_SETTINGS: Settings = {
   // Default hover disabled for first-time initialization per requirement
   isHoverMagicCopyEnabled: false,
   isAnonymousUsageDataEnabled: true,
+  proIntentCampaign: '',
   outputFormat: 'markdown',
   tableOutputFormat: 'markdown', // Default table format
   attachTitle: false,

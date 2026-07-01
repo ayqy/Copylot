@@ -1,0 +1,62 @@
+{
+  "enabled": true,
+  "window": {
+    "from": 1771826400000,
+    "to": 1774418400000,
+    "lookbackDays": 30,
+    "maxEvents": 100
+  },
+  "rows": [
+    {
+      "source": "popup",
+      "medium": "popup",
+      "content": "popup_survey_cta",
+      "campaign": "extension_popup_launch",
+      "upgradeEntryClicks": 1,
+      "formStarts": 1,
+      "formSubmits": 1,
+      "formStartRate": 1,
+      "intentSubmitRate": 1
+    },
+    {
+      "source": "popup",
+      "medium": "popup",
+      "content": "popup_upgrade_cta",
+      "campaign": "official_site_launch",
+      "upgradeEntryClicks": 1,
+      "formStarts": 1,
+      "formSubmits": 1,
+      "formStartRate": 1,
+      "intentSubmitRate": 1
+    },
+    {
+      "source": "options",
+      "medium": "options",
+      "content": "options_waitlist_cta",
+      "campaign": "options_followup_launch",
+      "upgradeEntryClicks": 1,
+      "formStarts": 1,
+      "formSubmits": 0,
+      "formStartRate": 1,
+      "intentSubmitRate": 0
+    },
+    {
+      "source": "popup",
+      "medium": "popup",
+      "content": "popup_waitlist_cta",
+      "campaign": "chrome_web_store_launch",
+      "upgradeEntryClicks": 1,
+      "formStarts": 0,
+      "formSubmits": 0,
+      "formStartRate": 0,
+      "intentSubmitRate": 0
+    }
+  ],
+  "totals": {
+    "upgradeEntryClicks": 4,
+    "formStarts": 3,
+    "formSubmits": 2,
+    "formStartRate": 0.75,
+    "intentSubmitRate": 0.5
+  }
+}

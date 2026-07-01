@@ -104,9 +104,14 @@ import {
 } from '../shared/wom-summary';
 import { parsePromptSortMode, sortPrompts, type PromptSortMode } from '../shared/prompt-sort';
 import {
-  consumeProWaitlistSurveySourceOnce,
   parseProWaitlistSurveySourceOnceFromUrl
 } from '../shared/pro-waitlist-survey-source-once';
+import { buildProIntentAttribution, type ProIntentContent, type ProIntentSource } from '../shared/pro-intent-attribution';
+import {
+  buildProIntentV1_100Summary,
+  formatProIntentV1_100Csv,
+  type ProIntentV1_100Summary
+} from '../shared/pro-intent-funnel-v1-100';
 import {
   assignQuickPromptSlot,
   getQuickCommandDefaultShortcut,
@@ -212,9 +217,13 @@ async function reportE2EOpenedUrl(url: string): Promise<void> {
   }
 
   try {
-    await chrome.runtime.sendMessage({
-      type: 'e2e:report-opened-url',
-      url
+    const result = await chrome.storage.local.get(E2E_OPENED_URLS_KEY);
+    const existing = Array.isArray(result[E2E_OPENED_URLS_KEY])
+      ? (result[E2E_OPENED_URLS_KEY] as unknown[]).filter((item): item is string => typeof item === 'string')
+      : [];
+    existing.push(url);
+    await chrome.storage.local.set({
+      [E2E_OPENED_URLS_KEY]: existing.slice(-20)
     });
   } catch (error) {
     console.warn('Failed to report options opened url for E2E:', error);
@@ -342,12 +351,16 @@ interface OptionsElements {
   proWaitlistSurveyCapabilityPromptPack: HTMLInputElement;
   proWaitlistSurveyCapabilityNoteExport: HTMLInputElement;
   proWaitlistSurveyCapabilitiesOther: HTMLInputElement;
+  proWaitlistSurveySampleNotice: HTMLElement;
+  proWaitlistSurveyEnableSampleButton: HTMLButtonElement;
   proWaitlistSurveyPayWilling: HTMLSelectElement;
   proWaitlistSurveyPayMonthly: HTMLSelectElement;
   proWaitlistSurveyPayAnnual: HTMLSelectElement;
   proWaitlistSurveyContact: HTMLInputElement;
   proWaitlistSurveyCopyButton: HTMLButtonElement;
   proWaitlistSurveyCopyOpenButton: HTMLButtonElement;
+  downloadProIntentV1_100SummaryJsonButton: HTMLButtonElement;
+  downloadProIntentV1_100SummaryCsvButton: HTMLButtonElement;
 
   // WOM actions (Pro Tab)
   womShareOpenButton: HTMLButtonElement;
@@ -383,6 +396,7 @@ let currentCommandShortcuts = new Map<string, string>();
 
 const PROMPT_SORT_MODE_STORAGE_KEY = 'copylot_prompt_sort_mode';
 const PRO_WAITLIST_SURVEY_SOURCE_ONCE_STORAGE_KEY = 'copylot_pro_waitlist_survey_source_once';
+const E2E_OPENED_URLS_KEY = 'copilot_e2e_opened_urls';
 const EXPORT_PRO_ACQ_EFF_BY_CAMPAIGN_7D_CSV_BUTTON_ID =
   'export-pro-acquisition-' + 'efficiency-by-campaign-' + '7d-csv';
 const COPY_PRO_ACQ_EFF_BY_CAMPAIGN_WEEKLY_REPORT_BUTTON_ID =
@@ -393,6 +407,10 @@ const DOWNLOAD_PRO_ACQ_EFF_BY_CAMPAIGN_EVIDENCE_PACK_BUTTON_ID =
   'download-pro-acquisition-efficiency-' + 'by-campaign-evidence-pack';
 const DOWNLOAD_PRO_WEEKLY_CHANNEL_OPS_EVIDENCE_PACK_BUTTON_ID =
   'download-pro-weekly-channel-' + 'ops-evidence-pack';
+const DOWNLOAD_PRO_INTENT_V1_100_SUMMARY_JSON_BUTTON_ID = 'download-pro-intent-v1-100-summary-json';
+const DOWNLOAD_PRO_INTENT_V1_100_SUMMARY_CSV_BUTTON_ID = 'download-pro-intent-v1-100-summary-csv';
+const PRO_INTENT_V1_100_SUMMARY_JSON_FILENAME = 'intent-funnel-summary-v1-100.json';
+const PRO_INTENT_V1_100_SUMMARY_CSV_FILENAME = 'intent-funnel-v1-100.csv';
 
 /**
  * 获取所有DOM元素
@@ -537,6 +555,10 @@ function getElements(): OptionsElements {
     proWaitlistSurveyCapabilitiesOther: document.getElementById(
       'pro-waitlist-survey-capabilities-other'
     ) as HTMLInputElement,
+    proWaitlistSurveySampleNotice: document.getElementById('pro-waitlist-survey-sample-notice') as HTMLElement,
+    proWaitlistSurveyEnableSampleButton: document.getElementById(
+      'pro-waitlist-survey-enable-sample'
+    ) as HTMLButtonElement,
     proWaitlistSurveyPayWilling: document.getElementById('pro-waitlist-survey-pay-willing') as HTMLSelectElement,
     proWaitlistSurveyPayMonthly: document.getElementById('pro-waitlist-survey-pay-monthly') as HTMLSelectElement,
     proWaitlistSurveyPayAnnual: document.getElementById('pro-waitlist-survey-pay-annual') as HTMLSelectElement,
@@ -545,6 +567,12 @@ function getElements(): OptionsElements {
     proWaitlistSurveyCopyOpenButton: document.getElementById(
       'pro-waitlist-survey-copy-open'
     ) as HTMLButtonElement,
+    downloadProIntentV1_100SummaryJsonButton: (document.getElementById(
+      DOWNLOAD_PRO_INTENT_V1_100_SUMMARY_JSON_BUTTON_ID
+    ) || document.createElement('button')) as HTMLButtonElement,
+    downloadProIntentV1_100SummaryCsvButton: (document.getElementById(
+      DOWNLOAD_PRO_INTENT_V1_100_SUMMARY_CSV_BUTTON_ID
+    ) || document.createElement('button')) as HTMLButtonElement,
 
     womShareOpenButton: document.getElementById('wom-share-open') as HTMLButtonElement,
     womShareCopyButton: document.getElementById('wom-share-copy') as HTMLButtonElement,
@@ -740,6 +768,33 @@ async function manualSync() {
     elements.syncStatusBtn.style.color = 'var(--error-color)';
     const errorMessage = (error as Error).message;
     showNotification(getMessage('syncFailure', [errorMessage]), 'error');
+  }
+}
+
+async function setAnonymousUsageDataEnabled(enabled: boolean): Promise<void> {
+  try {
+    await saveSettings({ isAnonymousUsageDataEnabled: enabled });
+    currentSettings = { ...currentSettings, isAnonymousUsageDataEnabled: enabled };
+    if (elements?.anonymousUsageDataSwitch) {
+      elements.anonymousUsageDataSwitch.checked = enabled;
+    }
+    updateProIntentEvents7dCsvExportButtonState(enabled);
+    updateProWaitlistSurveyIntentDistribution7dExportButtonState(enabled);
+    updateProIntentByCampaign7dCsvExportButtonState(enabled);
+    updateProDistributionByCampaign7dCsvExportButtonState(enabled);
+    updateProAcquisitionEfficiencyByCampaign7dCsvExportButtonState(enabled);
+    syncProWaitlistSurveySampleNotice();
+    await Promise.allSettled([
+      refreshTelemetryEventsPanel(),
+      refreshProFunnelPanel(),
+      refreshWomSummaryPanel()
+    ]);
+  } catch (error) {
+    console.error('Failed to update anonymous usage data toggle:', error);
+    if (elements?.anonymousUsageDataSwitch) {
+      elements.anonymousUsageDataSwitch.checked = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+    }
+    showNotification(getMessage('savingFailed'), 'error');
   }
 }
 
@@ -1708,6 +1763,12 @@ function updateProAcquisitionEfficiencyByCampaign7dCsvExportButtonState(enabled:
   elements.exportProAcquisitionEfficiencyByCampaign7dCsvButton.disabled = !enabled;
 }
 
+function getProIntentCampaign(): string | undefined {
+  const value = elements?.proIntentCampaignInput ? elements.proIntentCampaignInput.value : (currentSettings?.proIntentCampaign || '');
+  const sanitized = sanitizeCampaign(value);
+  return sanitized || undefined;
+}
+
 function updateProWaitlistDistributionToolkitState(): void {
   if (
     !elements?.proIntentCampaignInput ||
@@ -2374,6 +2435,92 @@ function downloadCsvFile(filename: string, csv: string): void {
   downloadTextFile(filename, csv, 'text/csv');
 }
 
+function toProIntentTelemetryProps(attrs: {
+  source: ProIntentSource;
+  medium: ProIntentSource;
+  content: ProIntentContent;
+  campaign?: string;
+}): Record<string, TelemetryPropPrimitive> {
+  const record: Record<string, TelemetryPropPrimitive> = {
+    source: attrs.source,
+    medium: attrs.medium,
+    content: attrs.content
+  };
+  if (attrs.campaign) record.campaign = attrs.campaign;
+  return record;
+}
+
+function buildOptionsProIntentAttribution(
+  content: ProIntentContent,
+  source: ProIntentSource = 'options'
+): Record<string, TelemetryPropPrimitive> {
+  const attrs = buildProIntentAttribution({
+    source,
+    content,
+    campaign: getProIntentCampaign()
+  });
+  return toProIntentTelemetryProps(attrs);
+}
+
+function syncProWaitlistSurveySampleNotice(): void {
+  const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+  if (elements?.proWaitlistSurveySampleNotice) {
+    elements.proWaitlistSurveySampleNotice.hidden = enabled;
+  }
+}
+
+async function enableAnonymousUsageDataForSurveySample(): Promise<void> {
+  try {
+    await setAnonymousUsageDataEnabled(true);
+    showNotification(getMessage('proWaitlistSurveyEnableSampleSuccess') || 'Enabled', 'success');
+  } catch (error) {
+    console.warn('Failed to enable anonymous usage data for survey sample:', error);
+    showNotification(getMessage('savingFailed'), 'error');
+  }
+}
+
+async function buildProIntentV1_100SummaryForDownload(): Promise<ProIntentV1_100Summary> {
+  const now = Date.now();
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    return buildProIntentV1_100Summary({
+      enabled: Boolean(currentSettings?.isAnonymousUsageDataEnabled),
+      telemetryEvents: [],
+      now,
+      lookbackDays: 30
+    });
+  }
+
+  const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+  return buildProIntentV1_100Summary({
+    enabled: Boolean(currentSettings?.isAnonymousUsageDataEnabled),
+    telemetryEvents: result[TELEMETRY_EVENTS_KEY],
+    now,
+    lookbackDays: 30
+  });
+}
+
+async function downloadProIntentV1_100SummaryJson(): Promise<void> {
+  try {
+    const summary = await buildProIntentV1_100SummaryForDownload();
+    downloadTextFile(PRO_INTENT_V1_100_SUMMARY_JSON_FILENAME, `${JSON.stringify(summary, null, 2)}\n`, 'application/json');
+    showNotification(getMessage('proIntentV1100SummaryExportSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to download v1-100 summary json:', error);
+    showNotification(getMessage('proIntentV1100SummaryExportFailed'), 'error');
+  }
+}
+
+async function downloadProIntentV1_100SummaryCsv(): Promise<void> {
+  try {
+    const summary = await buildProIntentV1_100SummaryForDownload();
+    downloadCsvFile(PRO_INTENT_V1_100_SUMMARY_CSV_FILENAME, formatProIntentV1_100Csv(summary));
+    showNotification(getMessage('proIntentV1100FunnelExportSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to download v1-100 summary csv:', error);
+    showNotification(getMessage('proIntentV1100FunnelExportFailed'), 'error');
+  }
+}
+
 async function exportProIntentEvents7dCsv(): Promise<void> {
   const exportedAt = Date.now();
   let extensionVersion = '';
@@ -2922,6 +3069,65 @@ function openPopupOnboardingInNewTab() {
  * 设置事件监听器
  */
 function setupEventListeners() {
+  function readPendingProWaitlistSurveySourceOnce(): 'popup' | null {
+    try {
+      const value = sessionStorage.getItem(PRO_WAITLIST_SURVEY_SOURCE_ONCE_STORAGE_KEY);
+      return value === 'popup' ? 'popup' : null;
+    } catch (error) {
+      console.warn('Failed to read pending pro waitlist survey source once:', error);
+      return null;
+    }
+  }
+
+  function buildWaitlistUrlFromAttribution(attrs: {
+    medium: ProIntentSource;
+    content: ProIntentContent;
+    campaign?: string;
+  }): string {
+    return buildProWaitlistUrl({
+      medium: attrs.medium,
+      campaign: attrs.campaign,
+      content: attrs.content,
+      env: {
+        extensionVersion: chrome.runtime.getManifest().version || '',
+        extensionId: chrome.runtime.id,
+        navigatorLanguage: navigator.language || '',
+        uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
+      }
+    });
+  }
+
+  function buildSurveyActionAttribution(action: 'copy' | 'copy_open') {
+    const pendingSource = readPendingProWaitlistSurveySourceOnce();
+    const attrs = buildProIntentAttribution({
+      source: pendingSource === 'popup' ? 'popup' : 'options',
+      content:
+        pendingSource === 'popup'
+          ? 'popup_survey_cta'
+          : action === 'copy_open'
+            ? 'options_survey_copy_open'
+            : 'options_survey_cta',
+      campaign: getProIntentCampaign()
+    });
+    return {
+      attrs,
+      props: toProIntentTelemetryProps(attrs)
+    };
+  }
+
+  let hasRecordedProIntentFormStart = readPendingProWaitlistSurveySourceOnce() === 'popup';
+
+  async function ensureProIntentFormStartRecorded(content: ProIntentContent): Promise<void> {
+    if (hasRecordedProIntentFormStart) return;
+    hasRecordedProIntentFormStart = true;
+    const pendingSource = readPendingProWaitlistSurveySourceOnce();
+    const props =
+      pendingSource === 'popup'
+        ? buildOptionsProIntentAttribution('popup_survey_cta', 'popup')
+        : buildOptionsProIntentAttribution(content);
+    await recordTelemetryEvent('pro_intent_form_start', props);
+  }
+
   // 监听 storage 变化以实时更新使用次数
   chrome.storage.onChanged.addListener((changes, namespace) => {
     if (changes.copilot_settings && namespace === 'sync') {
@@ -2993,6 +3199,9 @@ function setupEventListeners() {
   elements.telemetryEventsRefreshButton.addEventListener('click', () => {
     void refreshTelemetryEventsPanel();
   });
+  elements.anonymousUsageDataSwitch.addEventListener('change', () => {
+    void setAnonymousUsageDataEnabled(elements.anonymousUsageDataSwitch.checked);
+  });
   elements.telemetryEventsCopyButton.addEventListener('click', () => {
     void copyTelemetryEventsToClipboard();
   });
@@ -3009,6 +3218,12 @@ function setupEventListeners() {
   });
   elements.proFunnelEvidencePackCopyButton.addEventListener('click', () => {
     void copyProFunnelEvidencePackToClipboard();
+  });
+  elements.downloadProIntentV1_100SummaryJsonButton.addEventListener('click', () => {
+    void downloadProIntentV1_100SummaryJson();
+  });
+  elements.downloadProIntentV1_100SummaryCsvButton.addEventListener('click', () => {
+    void downloadProIntentV1_100SummaryCsv();
   });
   elements.downloadProIntentRunEvidencePackButton.addEventListener('click', () => {
     void downloadProIntentRunEvidencePackJson();
@@ -3129,10 +3344,7 @@ function setupEventListeners() {
     }
 
     if (tabName === 'pro') {
-      const campaign = getProIntentCampaign();
-      const props: Record<string, string> = { source: 'options' };
-      if (campaign) props.campaign = campaign;
-      void recordTelemetryEvent('pro_entry_opened', props);
+      void recordTelemetryEvent('pro_entry_opened', buildOptionsProIntentAttribution('options_waitlist_cta'));
     }
   }
 
@@ -3200,16 +3412,15 @@ function setupEventListeners() {
     window.setTimeout(() => {
       document.getElementById('pro-waitlist-survey')?.scrollIntoView({ block: 'start' });
     }, 0);
-  }
-
-  function getProIntentCampaign(): string | undefined {
-    const value = elements.proIntentCampaignInput ? elements.proIntentCampaignInput.value : (currentSettings?.proIntentCampaign || '');
-    const sanitized = sanitizeCampaign(value);
-    return sanitized || undefined;
+    void ensureProIntentFormStartRecorded('options_survey_cta');
   }
 
   elements.proIntentCampaignInput.addEventListener('input', () => {
     updateProWaitlistDistributionToolkitState();
+  });
+
+  elements.proWaitlistSurveyEnableSampleButton.addEventListener('click', () => {
+    void enableAnonymousUsageDataForSurveySample();
   });
 
   elements.proIntentCampaignInput.addEventListener('change', async () => {
@@ -3256,17 +3467,12 @@ function setupEventListeners() {
   });
 
   function buildWaitlistUrl(): string {
-    const campaign = getProIntentCampaign();
-    return buildProWaitlistUrl({
-      medium: 'options',
-      campaign,
-      env: {
-        extensionVersion: chrome.runtime.getManifest().version || '',
-        extensionId: chrome.runtime.id,
-        navigatorLanguage: navigator.language || '',
-        uiLanguage: chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : ''
-      }
+    const attrs = buildProIntentAttribution({
+      source: 'options',
+      content: 'options_waitlist_cta',
+      campaign: getProIntentCampaign()
     });
+    return buildWaitlistUrlFromAttribution(attrs);
   }
 
   function buildWaitlistDistributionUrl(campaign: string): string {
@@ -3365,7 +3571,6 @@ function setupEventListeners() {
   async function copyWaitlistSurveyToClipboard(button: HTMLButtonElement): Promise<boolean> {
     const originalText = button.textContent || '';
     const body = buildWaitlistSurveyBody();
-    const campaign = getProIntentCampaign();
 
     let storedOnceSource: string | null = null;
     try {
@@ -3374,7 +3579,6 @@ function setupEventListeners() {
       console.warn('Failed to read pro waitlist survey source once:', error);
     }
 
-    const consumed = consumeProWaitlistSurveySourceOnce(storedOnceSource);
     const shouldClearOnceSource = storedOnceSource !== null;
 
     const clearOnceSource = () => {
@@ -3386,8 +3590,9 @@ function setupEventListeners() {
       }
     };
 
-    const props: Record<string, TelemetryPropPrimitive> = { source: consumed.source };
-    if (campaign) props.campaign = campaign;
+    const { props } = buildSurveyActionAttribution(
+      button === elements.proWaitlistSurveyCopyOpenButton ? 'copy_open' : 'copy'
+    );
 
     const payWillingRaw = elements.proWaitlistSurveyPayWilling?.value || '';
     props.pay_willing =
@@ -3423,7 +3628,8 @@ function setupEventListeners() {
 
     try {
       await writeTextToClipboard(body);
-      void recordTelemetryEvent('pro_waitlist_survey_copied', props);
+      await recordTelemetryEvent('pro_intent_form_submit', props);
+      await recordTelemetryEvent('pro_waitlist_survey_copied', props);
       clearOnceSource();
       button.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
@@ -3438,7 +3644,8 @@ function setupEventListeners() {
       console.warn('Failed to copy waitlist survey via navigator.clipboard:', error);
       const ok = await fallbackCopyTextForE2E(body, fallbackCopyText(body));
       if (ok) {
-        void recordTelemetryEvent('pro_waitlist_survey_copied', props);
+        await recordTelemetryEvent('pro_intent_form_submit', props);
+        await recordTelemetryEvent('pro_waitlist_survey_copied', props);
         clearOnceSource();
         button.textContent = getMessage('copied') || originalText;
         window.setTimeout(() => {
@@ -3505,26 +3712,27 @@ function setupEventListeners() {
     });
   }
 
-  elements.proWaitlistButton.addEventListener('click', () => {
-    const campaign = getProIntentCampaign();
-    const props: Record<string, string> = { source: 'options' };
-    if (campaign) props.campaign = campaign;
-    void recordTelemetryEvent('pro_waitlist_opened', props);
+  elements.proWaitlistButton.addEventListener('click', async () => {
+    const props = buildOptionsProIntentAttribution('options_waitlist_cta');
+    await recordTelemetryEvent('pro_waitlist_opened', props);
     const url = buildWaitlistUrl();
+    await reportE2EOpenedUrl(url);
     chrome.tabs.create({ url });
   });
 
   elements.proWaitlistSurveyCopyButton.addEventListener('click', () => {
+    void ensureProIntentFormStartRecorded('options_survey_cta');
     void copyWaitlistSurveyToClipboard(elements.proWaitlistSurveyCopyButton);
   });
 
   elements.proWaitlistSurveyCopyOpenButton.addEventListener('click', async () => {
-    await copyWaitlistSurveyToClipboard(elements.proWaitlistSurveyCopyOpenButton);
-    const campaign = getProIntentCampaign();
-    const props: Record<string, string> = { source: 'options' };
-    if (campaign) props.campaign = campaign;
-    void recordTelemetryEvent('pro_waitlist_opened', props);
-    const url = buildWaitlistUrl();
+    void ensureProIntentFormStartRecorded('options_survey_copy_open');
+    const { attrs, props } = buildSurveyActionAttribution('copy_open');
+    const copied = await copyWaitlistSurveyToClipboard(elements.proWaitlistSurveyCopyOpenButton);
+    if (!copied) return;
+    await recordTelemetryEvent('pro_waitlist_opened', props);
+    const url = buildWaitlistUrlFromAttribution(attrs);
+    await reportE2EOpenedUrl(url);
     chrome.tabs.create({ url });
   });
 
@@ -3697,8 +3905,7 @@ function setupEventListeners() {
   elements.proWaitlistCopyButton.addEventListener('click', async () => {
     const originalText = elements.proWaitlistCopyButton.textContent || '';
     const campaign = getProIntentCampaign();
-    const props: Record<string, string> = { source: 'options' };
-    if (campaign) props.campaign = campaign;
+    const props = buildOptionsProIntentAttribution('options_waitlist_cta');
     try {
       const body = buildProWaitlistCopyText({
         env: {
@@ -3722,6 +3929,8 @@ function setupEventListeners() {
       elements.proWaitlistCopyButton.textContent = originalText;
     }
   });
+
+  syncProWaitlistSurveySampleNotice();
 
   elements.womShareOpenButton.addEventListener('click', () => {
     void recordTelemetryEvent('wom_share_opened', { source: 'options' });

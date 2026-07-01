@@ -12,6 +12,8 @@ export const PRO_FUNNEL_EVENT_NAMES = [
   'pro_prompt_shown',
   'pro_prompt_action',
   'pro_entry_opened',
+  'pro_intent_form_start',
+  'pro_intent_form_submit',
   'pro_waitlist_opened',
   'pro_waitlist_copied',
   'pro_waitlist_survey_copied'
@@ -24,6 +26,9 @@ export interface ProFunnelSourceStats {
   lastTs: Record<ProFunnelEventName, number | null>;
   rates: {
     entry_opened_per_prompt_shown: number | null;
+    form_started_per_entry_opened: number | null;
+    form_submitted_per_entry_opened: number | null;
+    survey_copied_per_prompt_shown: number | null;
     waitlist_opened_per_prompt_shown: number | null;
     waitlist_opened_per_entry_opened: number | null;
     waitlist_copied_per_waitlist_opened: number | null;
@@ -73,6 +78,8 @@ function createEmptySourceStats(): ProFunnelSourceStats {
       pro_prompt_shown: 0,
       pro_prompt_action: 0,
       pro_entry_opened: 0,
+      pro_intent_form_start: 0,
+      pro_intent_form_submit: 0,
       pro_waitlist_opened: 0,
       pro_waitlist_copied: 0,
       pro_waitlist_survey_copied: 0
@@ -81,12 +88,17 @@ function createEmptySourceStats(): ProFunnelSourceStats {
       pro_prompt_shown: null,
       pro_prompt_action: null,
       pro_entry_opened: null,
+      pro_intent_form_start: null,
+      pro_intent_form_submit: null,
       pro_waitlist_opened: null,
       pro_waitlist_copied: null,
       pro_waitlist_survey_copied: null
     },
     rates: {
       entry_opened_per_prompt_shown: null,
+      form_started_per_entry_opened: null,
+      form_submitted_per_entry_opened: null,
+      survey_copied_per_prompt_shown: null,
       waitlist_opened_per_prompt_shown: null,
       waitlist_opened_per_entry_opened: null,
       waitlist_copied_per_waitlist_opened: null
@@ -162,6 +174,18 @@ export function buildProFunnelSummary(params: BuildProFunnelSummaryParams): ProF
       stats.counts.pro_entry_opened,
       stats.counts.pro_prompt_shown
     );
+    stats.rates.form_started_per_entry_opened = safeRate(
+      stats.counts.pro_intent_form_start,
+      stats.counts.pro_entry_opened
+    );
+    stats.rates.form_submitted_per_entry_opened = safeRate(
+      stats.counts.pro_intent_form_submit,
+      stats.counts.pro_entry_opened
+    );
+    stats.rates.survey_copied_per_prompt_shown = safeRate(
+      stats.counts.pro_waitlist_survey_copied,
+      stats.counts.pro_prompt_shown
+    );
     stats.rates.waitlist_opened_per_prompt_shown = safeRate(
       stats.counts.pro_waitlist_opened,
       stats.counts.pro_prompt_shown
@@ -190,6 +214,18 @@ export function buildProFunnelSummary(params: BuildProFunnelSummaryParams): ProF
 
   overall.rates.entry_opened_per_prompt_shown = safeRate(
     overall.counts.pro_entry_opened,
+    overall.counts.pro_prompt_shown
+  );
+  overall.rates.form_started_per_entry_opened = safeRate(
+    overall.counts.pro_intent_form_start,
+    overall.counts.pro_entry_opened
+  );
+  overall.rates.form_submitted_per_entry_opened = safeRate(
+    overall.counts.pro_intent_form_submit,
+    overall.counts.pro_entry_opened
+  );
+  overall.rates.survey_copied_per_prompt_shown = safeRate(
+    overall.counts.pro_waitlist_survey_copied,
     overall.counts.pro_prompt_shown
   );
   overall.rates.waitlist_opened_per_prompt_shown = safeRate(

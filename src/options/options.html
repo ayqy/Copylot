@@ -50,6 +50,7 @@
           <div class="tabs-nav">
             <button class="tab-btn active" data-tab="prompts" data-i18n="promptsTab">Prompt管理</button>
             <button class="tab-btn" data-tab="chat-services" data-i18n="chatServicesTab">Chat服务</button>
+            <button class="tab-btn" data-tab="privacy" data-i18n="privacyTab">隐私</button>
             <button class="tab-btn" data-tab="pro" data-i18n="proTab">Pro</button>
           </div>
         </div>
@@ -307,6 +308,315 @@
           </div>
         </div>
 
+        <!-- Privacy Tab -->
+        <div id="privacy-tab" class="tab-content">
+          <div class="chat-services-header">
+            <h2 data-i18n="privacyTitle">数据与隐私</h2>
+            <p data-i18n="privacyDescription">
+              我们坚信你的数据只属于你。这里列出了所有本地保存的数据，你可以随时查看、复制或清空。
+            </p>
+          </div>
+
+          <div class="chat-services-section">
+            <div class="section-header">
+              <h3 data-i18n="anonymousUsageDataSectionTitle">匿名使用数据</h3>
+            </div>
+            <div class="setting-item">
+              <div class="setting-controls">
+                <label class="switch-label">
+                  <span data-i18n="anonymousUsageDataLabel">匿名使用数据</span>
+                  <label class="switch">
+                    <input type="checkbox" id="anonymous-usage-data-switch" />
+                    <span class="slider round"></span>
+                  </label>
+                </label>
+              </div>
+            </div>
+            <p class="pro-privacy-hint" data-i18n="anonymousUsageDataHint">
+              关闭时会立即停止记录并清空本地日志。
+            </p>
+          </div>
+
+          <div class="chat-services-section">
+            <details id="telemetry-events-panel" class="telemetry-events-panel" open>
+              <summary class="telemetry-events-summary">
+                <span data-i18n="telemetryEventsPanelTitle">匿名事件日志</span>
+                <span class="telemetry-events-summary-meta">
+                  <span data-i18n="telemetryEventsCountLabel">事件数</span>
+                  <span id="telemetry-events-count" class="telemetry-events-count">0</span>
+                </span>
+              </summary>
+              <div class="telemetry-events-content">
+                <p class="pro-privacy-hint" data-i18n="telemetryEventsPanelHint">
+                  本地记录的基础交互事件。我们承诺：日志中绝不包含任何网页内容、选中的文字、页面链接或标题。
+                </p>
+                <div class="telemetry-events-actions">
+                  <button id="telemetry-events-refresh" class="secondary-btn" type="button" data-i18n="telemetryEventsRefresh">
+                    刷新数据
+                  </button>
+                  <button id="telemetry-events-copy" class="secondary-btn" type="button" data-i18n="telemetryEventsCopy">
+                    复制数据
+                  </button>
+                  <button id="telemetry-events-clear" class="secondary-btn danger-btn" type="button" data-i18n="telemetryEventsClear">
+                    清空数据
+                  </button>
+                </div>
+                <textarea
+                  id="telemetry-events-view"
+                  class="telemetry-events-view"
+                  rows="12"
+                  readonly
+                  spellcheck="false"
+                ></textarea>
+              </div>
+            </details>
+          </div>
+
+          <div class="chat-services-section">
+            <details id="pro-funnel-panel" class="telemetry-events-panel">
+              <summary class="telemetry-events-summary">
+                <span data-i18n="proFunnelPanelTitle">Pro 意向漏斗摘要</span>
+              </summary>
+              <div class="telemetry-events-content">
+                <p class="pro-privacy-hint" data-i18n="proFunnelPanelHint">
+                  这里仅在本地统计你对 Pro 功能的探索情况（例如点击次数）。它完全不会包含网页内容或任何隐私信息。
+                </p>
+                <p id="pro-funnel-disabled-notice" class="pro-privacy-hint" data-i18n="proFunnelDisabledNotice" hidden>
+                  当前已关闭匿名数据记录，因此没有数据可导出。
+                </p>
+                <div class="telemetry-events-actions">
+                  <button id="pro-funnel-refresh" class="secondary-btn" type="button" data-i18n="proFunnelRefresh">
+                    刷新数据
+                  </button>
+                  <button id="pro-funnel-copy" class="secondary-btn" type="button" data-i18n="proFunnelCopy">
+                    复制统计数据
+                  </button>
+                  <button id="pro-funnel-evidence-pack-copy" class="secondary-btn" type="button" data-i18n="proFunnelEvidencePackCopy">
+                    复制完整报告包
+                  </button>
+                  <button
+                    id="download-pro-intent-run-evidence-pack"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proIntentRunEvidencePackDownload"
+                  >
+                    导出全部统计数据 (JSON)
+                  </button>
+                  <button
+                    id="download-pro-intent-v1-100-summary-json"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proIntentV1100SummaryDownload"
+                  >
+                    下载 v1-100 摘要（JSON）
+                  </button>
+                  <button
+                    id="download-pro-intent-v1-100-summary-csv"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proIntentV1100FunnelDownload"
+                  >
+                    下载 v1-100 漏斗（CSV）
+                  </button>
+                  <button
+                    id="export-pro-waitlist-survey-intent-distribution-7d-json"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proWaitlistSurveyIntentDistribution7dExport"
+                  >
+                    导出最近 7 天问卷意向分布 (JSON)
+                  </button>
+                  <button
+                    id="export-pro-intent-events-7d-csv"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proIntentEvents7dCsvExport"
+                  >
+                    导出最近 7 天访问明细 (CSV)
+                  </button>
+                  <button
+                    id="export-pro-intent-by-campaign-7d-csv"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proIntentByCampaign7dCsvExport"
+                  >
+                    导出最近 7 天渠道来源汇总 (CSV)
+                  </button>
+                  <button
+                    id="export-pro-distribution-by-campaign-7d-csv"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proDistributionByCampaign7dCsvExport"
+                  >
+                    导出最近 7 天分享操作统计 (CSV)
+                  </button>
+                  <button
+                    id="export-pro-acquisition-efficiency-by-campaign-7d-csv"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proAcqEffByCampaign7dCsvExport"
+                  >
+                    导出最近 7 天增长效率汇总 (CSV)
+                  </button>
+                  <button
+                    id="copy-pro-intent-weekly-digest"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proIntentWeeklyDigestCopy"
+                  >
+                    复制本周 Pro 意向证据摘要
+                  </button>
+                  <button
+                    id="copy-pro-intent-by-campaign-weekly-report"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proIntentByCampaignWeeklyReportCopy"
+                  >
+                    复制按 campaign 的本周复盘摘要（Markdown）
+                  </button>
+                  <button
+                    id="copy-pro-acquisition-efficiency-by-campaign-weekly-report"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proAcqEffByCampaignWeeklyReportCopy"
+                  >
+                    复制本周获客效率复盘摘要（Markdown，按 campaign）
+                  </button>
+                  <button
+                    id="copy-pro-acquisition-efficiency-by-campaign-evidence-pack"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proAcqEffByCampaignEvidencePackCopy"
+                  >
+                    复制增长分析报告包 (JSON)
+                  </button>
+                  <button
+                    id="download-pro-acquisition-efficiency-by-campaign-evidence-pack"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proAcqEffByCampaignEvidencePackDownload"
+                  >
+                    下载增长分析报告包 (JSON)
+                  </button>
+                  <button
+                    id="download-pro-weekly-channel-ops-evidence-pack"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proWeeklyChannelOpsEvidencePackDownload"
+                  >
+                    下载本周渠道分析报告包 (JSON)
+                  </button>
+                </div>
+                <textarea
+                  id="pro-funnel-view"
+                  class="telemetry-events-view"
+                  rows="14"
+                  readonly
+                  spellcheck="false"
+                ></textarea>
+              </div>
+            </details>
+          </div>
+
+          <div class="chat-services-section">
+            <details id="wom-summary-panel" class="telemetry-events-panel">
+              <summary class="telemetry-events-summary">
+                <span data-i18n="womSummaryPanelTitle">推荐与好评统计</span>
+              </summary>
+              <div class="telemetry-events-content">
+                <p class="pro-privacy-hint" data-i18n="womSummaryPanelHint">
+                  这里仅在本地统计与评价或分享相关的数据。它完全不会包含网页内容或任何隐私信息。
+                </p>
+                <p id="wom-summary-disabled-notice" class="pro-privacy-hint" data-i18n="womSummaryDisabledNotice" hidden>
+                  当前已关闭匿名数据记录，因此没有数据可导出。
+                </p>
+                <div class="telemetry-events-actions">
+                  <button id="wom-summary-refresh" class="secondary-btn" type="button" data-i18n="womSummaryRefresh">
+                    刷新数据
+                  </button>
+                  <button id="wom-summary-copy" class="secondary-btn" type="button" data-i18n="womSummaryCopy">
+                    复制统计数据
+                  </button>
+                  <button
+                    id="wom-summary-evidence-pack-copy"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="womSummaryEvidencePackCopy"
+                  >
+                    复制完整报告包
+                  </button>
+                </div>
+                <textarea
+                  id="wom-summary-view"
+                  class="telemetry-events-view"
+                  rows="10"
+                  readonly
+                  spellcheck="false"
+                ></textarea>
+              </div>
+            </details>
+          </div>
+
+          <div class="chat-services-section">
+            <details id="growth-funnel-panel" class="telemetry-events-panel">
+              <summary class="telemetry-events-summary">
+                <span data-i18n="growthFunnelPanelTitle">基础使用统计</span>
+              </summary>
+              <div class="telemetry-events-content">
+                <p class="pro-privacy-hint" data-i18n="growthFunnelPanelHint">
+                  这里仅在本地统计核心功能的使用次数。它完全不会包含网页内容、链接或你复制的任何文字。
+                </p>
+                <div class="telemetry-events-actions">
+                  <button id="growth-funnel-refresh" class="secondary-btn" type="button" data-i18n="growthFunnelRefresh">
+                    刷新数据
+                  </button>
+                  <button id="growth-funnel-copy" class="secondary-btn" type="button" data-i18n="growthFunnelCopy">
+                    复制数据
+                  </button>
+                </div>
+                <textarea
+                  id="growth-funnel-view"
+                  class="telemetry-events-view"
+                  rows="10"
+                  readonly
+                  spellcheck="false"
+                ></textarea>
+              </div>
+            </details>
+          </div>
+
+          <div class="chat-services-section">
+            <details id="growth-stats-panel" class="telemetry-events-panel">
+              <summary class="telemetry-events-summary">
+                <span data-i18n="growthStatsPanelTitle">高级使用统计</span>
+              </summary>
+              <div class="telemetry-events-content">
+                <p class="pro-privacy-hint" data-i18n="growthStatsPanelHint">
+                  同样仅在本地统计部分交互数据（如选项修改）。它完全不会包含网页内容、链接或你复制的任何文字。
+                </p>
+                <div class="telemetry-events-actions">
+                  <button id="growth-stats-refresh" class="secondary-btn" type="button" data-i18n="growthStatsRefresh">
+                    刷新数据
+                  </button>
+                  <button id="growth-stats-copy" class="secondary-btn" type="button" data-i18n="growthStatsCopy">
+                    复制数据
+                  </button>
+                  <button id="growth-stats-reset" class="secondary-btn danger-btn" type="button" data-i18n="growthStatsReset">
+                    重置数据
+                  </button>
+                </div>
+                <textarea
+                  id="growth-stats-view"
+                  class="telemetry-events-view"
+                  rows="10"
+                  readonly
+                  spellcheck="false"
+                ></textarea>
+              </div>
+            </details>
+          </div>
+        </div>
+
         <!-- Pro Tab -->
         <div id="pro-tab" class="tab-content">
           <div class="pro-header">
@@ -356,6 +666,21 @@
                 <p class="pro-survey-hint" data-i18n="proWaitlistSurveyHint">
                   如果你愿意，可以补充你的使用场景和期待能力，帮助我们优先打磨更有价值的体验。
                 </p>
+
+                <div id="pro-waitlist-survey-sample-notice" class="pro-privacy-hint" hidden>
+                  <strong data-i18n="proWaitlistSurveySampleNoticeTitle">未开启匿名使用数据</strong>
+                  <span data-i18n="proWaitlistSurveySampleNoticeBody">
+                    本次填写/复制不会计入 survey_intent 统计，但你仍可继续填写。
+                  </span>
+                  <button
+                    id="pro-waitlist-survey-enable-sample"
+                    type="button"
+                    class="secondary-btn compact-inline-button"
+                    data-i18n="proWaitlistSurveyEnableSampleButton"
+                  >
+                    开启并计入样本
+                  </button>
+                </div>
 
                 <div class="pro-survey-grid">
                   <div class="form-group pro-survey-span-2">

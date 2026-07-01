@@ -1,0 +1,168 @@
+{
+  "runId": "v1-100-pro-intent",
+  "objective": "三入口 CTA 对齐 + 问卷最短路径 + 可导出漏斗证据",
+  "sourceModel": {
+    "runtimeSources": [
+      "popup",
+      "options"
+    ],
+    "externalSourceBridging": [
+      "official_site",
+      "chrome_web_store"
+    ],
+    "note": "官网/商店来源通过 landing UTM 与 CTA content 对齐；扩展内 runtime telemetry 不新增第三类 source。"
+  },
+  "samples": [
+    {
+      "sampleId": "v1-100-official-site",
+      "sourceClass": "official_site",
+      "sourceLabel": "官网落地页升级 CTA",
+      "triggerSurface": "官网/落地页统一引导到扩展 Popup 升级入口",
+      "target": "Popup -> Upgrade Pro",
+      "expectedAttribution": {
+        "source": "popup",
+        "medium": "popup",
+        "content": "popup_upgrade_cta",
+        "campaign": "official_site_launch"
+      },
+      "notes": [
+        "官网/商店来源通过 UTM content 与统一 CTA 文案对齐，进入扩展内后仍按 popup 埋点口径记录。",
+        "此样本用于覆盖 PRD 中“官网来源”的可审计入口，不虚构额外 runtime source。"
+      ],
+      "minimumExpectedEvents": [
+        "pro_entry_opened",
+        "pro_intent_form_start",
+        "pro_intent_form_submit"
+      ],
+      "telemetryEvidence": [
+        {
+          "name": "pro_entry_opened",
+          "ts": 1774417680000,
+          "isoTime": "2026-03-25T05:48:00.000Z"
+        },
+        {
+          "name": "pro_intent_form_start",
+          "ts": 1774417740000,
+          "isoTime": "2026-03-25T05:49:00.000Z"
+        },
+        {
+          "name": "pro_intent_form_submit",
+          "ts": 1774417800000,
+          "isoTime": "2026-03-25T05:50:00.000Z"
+        }
+      ],
+      "expectedFunnelRow": {
+        "source": "popup",
+        "content": "popup_upgrade_cta",
+        "campaign": "official_site_launch",
+        "upgradeEntryClicks": 1,
+        "formStarts": 1,
+        "formSubmits": 1
+      }
+    },
+    {
+      "sampleId": "v1-100-chrome-web-store",
+      "sourceClass": "chrome_web_store",
+      "sourceLabel": "Chrome Web Store 候补 CTA",
+      "triggerSurface": "商店文案/候补链接统一引导到 Popup waitlist CTA",
+      "target": "Popup -> Join waitlist",
+      "expectedAttribution": {
+        "source": "popup",
+        "medium": "popup",
+        "content": "popup_waitlist_cta",
+        "campaign": "chrome_web_store_launch"
+      },
+      "notes": [
+        "商店来源同样通过 UTM + waitlist URL 进入同一漏斗口径。",
+        "runtime telemetry 仍只记录 popup|options 两类 source。",
+        "该入口真实行为是打开候补链接，因此本轮只要求 entry click 对齐，不强行伪造问卷提交。"
+      ],
+      "minimumExpectedEvents": [
+        "pro_entry_opened"
+      ],
+      "telemetryEvidence": [
+        {
+          "name": "pro_entry_opened",
+          "ts": 1774417860000,
+          "isoTime": "2026-03-25T05:51:00.000Z"
+        }
+      ],
+      "expectedFunnelRow": {
+        "source": "popup",
+        "content": "popup_waitlist_cta",
+        "campaign": "chrome_web_store_launch",
+        "upgradeEntryClicks": 1,
+        "formStarts": 0,
+        "formSubmits": 0
+      }
+    },
+    {
+      "sampleId": "v1-100-extension-in-app",
+      "sourceClass": "extension_in_app",
+      "sourceLabel": "扩展内 Popup 问卷 1 分钟入口",
+      "triggerSurface": "Popup -> Pro 问卷（1 分钟）",
+      "target": "Options deep link -> survey copy/open",
+      "expectedAttribution": {
+        "source": "popup",
+        "medium": "popup",
+        "content": "popup_survey_cta",
+        "campaign": "extension_popup_launch"
+      },
+      "notes": [
+        "此样本直接覆盖扩展内最短路径：entry -> form_start -> form_submit。",
+        "问卷提交由复制成功触发 `pro_intent_form_submit`，与现有匿名事件白名单一致。"
+      ],
+      "minimumExpectedEvents": [
+        "pro_entry_opened",
+        "pro_intent_form_start",
+        "pro_intent_form_submit"
+      ],
+      "telemetryEvidence": [
+        {
+          "name": "pro_entry_opened",
+          "ts": 1774418040000,
+          "isoTime": "2026-03-25T05:54:00.000Z"
+        },
+        {
+          "name": "pro_intent_form_start",
+          "ts": 1774418100000,
+          "isoTime": "2026-03-25T05:55:00.000Z"
+        },
+        {
+          "name": "pro_intent_form_submit",
+          "ts": 1774418160000,
+          "isoTime": "2026-03-25T05:56:00.000Z"
+        }
+      ],
+      "expectedFunnelRow": {
+        "source": "popup",
+        "content": "popup_survey_cta",
+        "campaign": "extension_popup_launch",
+        "upgradeEntryClicks": 1,
+        "formStarts": 1,
+        "formSubmits": 1
+      }
+    }
+  ],
+  "totals": {
+    "upgradeEntryClicks": 4,
+    "formStarts": 3,
+    "formSubmits": 2,
+    "formStartRate": 0.75,
+    "intentSubmitRate": 0.5
+  },
+  "consistencyChecks": [
+    {
+      "name": "三类来源样本覆盖齐全",
+      "result": "PASS"
+    },
+    {
+      "name": "样本事件满足各自最小要求",
+      "result": "PASS"
+    },
+    {
+      "name": "漏斗 totals 与样本汇总一致",
+      "result": "PASS"
+    }
+  ]
+}

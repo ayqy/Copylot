@@ -14,6 +14,8 @@ export type TelemetryEventName =
   | 'pro_prompt_shown'
   | 'pro_prompt_action'
   | 'pro_entry_opened'
+  | 'pro_intent_form_start'
+  | 'pro_intent_form_submit'
   | 'pro_waitlist_opened'
   | 'pro_waitlist_copied'
   | 'pro_waitlist_survey_copied'
@@ -41,11 +43,15 @@ const TELEMETRY_EVENT_PROP_ALLOWLIST: Record<TelemetryEventName, readonly string
   prompt_used: [],
   pro_prompt_shown: ['source'],
   pro_prompt_action: ['source', 'action'],
-  pro_entry_opened: ['source', 'campaign'],
-  pro_waitlist_opened: ['source', 'campaign'],
-  pro_waitlist_copied: ['source', 'campaign'],
+  pro_entry_opened: ['source', 'medium', 'content', 'campaign'],
+  pro_intent_form_start: ['source', 'medium', 'content', 'campaign'],
+  pro_intent_form_submit: ['source', 'medium', 'content', 'campaign'],
+  pro_waitlist_opened: ['source', 'medium', 'content', 'campaign'],
+  pro_waitlist_copied: ['source', 'medium', 'content', 'campaign'],
   pro_waitlist_survey_copied: [
     'source',
+    'medium',
+    'content',
     'campaign',
     'pay_willing',
     'pay_monthly',
@@ -88,6 +94,25 @@ type WomSource = 'popup' | 'options';
 
 function isWomSource(value: unknown): value is WomSource {
   return value === 'popup' || value === 'options';
+}
+
+type ProIntentContent =
+  | 'popup_upgrade_cta'
+  | 'popup_waitlist_cta'
+  | 'popup_survey_cta'
+  | 'options_waitlist_cta'
+  | 'options_survey_cta'
+  | 'options_survey_copy_open';
+
+function isProIntentContent(value: unknown): value is ProIntentContent {
+  return (
+    value === 'popup_upgrade_cta' ||
+    value === 'popup_waitlist_cta' ||
+    value === 'popup_survey_cta' ||
+    value === 'options_waitlist_cta' ||
+    value === 'options_survey_cta' ||
+    value === 'options_survey_copy_open'
+  );
 }
 
 type RatingPromptSource = 'rating_prompt';
@@ -192,6 +217,16 @@ function sanitizeProps(
       sanitized[key] = campaign;
       continue;
     }
+    if (key === 'medium') {
+      if (!isWomSource(value)) continue;
+      sanitized[key] = value;
+      continue;
+    }
+    if (key === 'content') {
+      if (!isProIntentContent(value)) continue;
+      sanitized[key] = value;
+      continue;
+    }
     if (key === 'source') {
       if (eventName === 'rating_prompt_shown' || eventName === 'rating_prompt_action') {
         if (!isRatingPromptSource(value)) continue;
@@ -212,7 +247,12 @@ function sanitizeProps(
         sanitized[key] = value;
         continue;
       }
-      if (eventName === 'pro_entry_opened' || eventName === 'pro_waitlist_opened') {
+      if (
+        eventName === 'pro_entry_opened' ||
+        eventName === 'pro_intent_form_start' ||
+        eventName === 'pro_intent_form_submit' ||
+        eventName === 'pro_waitlist_opened'
+      ) {
         if (!isWomSource(value)) continue;
         sanitized[key] = value;
         continue;
@@ -299,6 +339,8 @@ function sanitizeProps(
   // Pro 意向事件：props 必须至少包含合法 source；否则丢弃 campaign，避免产生“无法归因”的孤立字段。
   if (
     (eventName === 'pro_entry_opened' ||
+      eventName === 'pro_intent_form_start' ||
+      eventName === 'pro_intent_form_submit' ||
       eventName === 'pro_waitlist_opened' ||
       eventName === 'pro_waitlist_copied' ||
       eventName === 'pro_waitlist_survey_copied' ||
