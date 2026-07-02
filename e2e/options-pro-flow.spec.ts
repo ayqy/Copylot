@@ -153,6 +153,59 @@ test('pro waitlist survey copy-open opens waitlist url and records source-attrib
   }
 });
 
+test('prefilled survey state is preserved into copied telemetry payload', async ({
+  extensionContext,
+  extensionId,
+  driverPage
+}) => {
+  await clearClipboard(driverPage);
+  await seedSyncStorage(driverPage, {
+    copilot_settings: {
+      isAnonymousUsageDataEnabled: true
+    }
+  });
+
+  const encodedPrefill = encodeURIComponent(
+    JSON.stringify({
+      u: 'Need cleaner article copy',
+      c: 'advanced_cleaning,batch_collection'
+    })
+  );
+  const page = await openExtensionPage(
+    extensionContext,
+    extensionId,
+    `src/options/options.html?pro_survey_source=popup&pro_survey_prefill=${encodedPrefill}#pro-waitlist-survey`
+  );
+  try {
+    await openOptionsTab(page, 'pro');
+    await expect(page.locator('#pro-waitlist-survey-use-case')).toHaveValue('Need cleaner article copy');
+    await expect(page.locator('#pro-waitlist-survey-capability-advanced-cleaning')).toBeChecked();
+    await expect(page.locator('#pro-waitlist-survey-capability-batch-collection')).toBeChecked();
+    await page.locator('#pro-waitlist-survey-copy').click();
+    await expect
+      .poll(async () => {
+        const snapshot = await getStorageSnapshot(driverPage);
+        return (
+          (snapshot.local.copilot_telemetry_events as Array<{ name?: string; props?: Record<string, unknown> }> | undefined)
+            ?.filter((event) => event.name === 'pro_waitlist_survey_copied') || []
+        );
+      })
+      .toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            props: expect.objectContaining({
+              source: 'popup',
+              prefill_used: true,
+              prefill_capability_count: 2
+            })
+          })
+        ])
+      );
+  } finally {
+    await page.close();
+  }
+});
+
 test('distribution toolkit requires valid campaign before copy actions', async ({
   extensionContext,
   extensionId,

@@ -108,6 +108,12 @@ import {
 } from '../shared/pro-waitlist-survey-source-once';
 import { buildProIntentAttribution, type ProIntentContent, type ProIntentSource } from '../shared/pro-intent-attribution';
 import {
+  DEFAULT_PRO_WAITLIST_SURVEY_PREFILL_STATE,
+  parseProWaitlistSurveyPrefillFromUrl,
+  type ProWaitlistSurveyCapabilityKey,
+  type ProWaitlistSurveyPrefillState
+} from '../shared/pro-waitlist-survey-prefill';
+import {
   buildProIntentV1_100Summary,
   formatProIntentV1_100Csv,
   type ProIntentV1_100Summary
@@ -411,6 +417,7 @@ const DOWNLOAD_PRO_INTENT_V1_100_SUMMARY_JSON_BUTTON_ID = 'download-pro-intent-v
 const DOWNLOAD_PRO_INTENT_V1_100_SUMMARY_CSV_BUTTON_ID = 'download-pro-intent-v1-100-summary-csv';
 const PRO_INTENT_V1_100_SUMMARY_JSON_FILENAME = 'intent-funnel-summary-v1-100.json';
 const PRO_INTENT_V1_100_SUMMARY_CSV_FILENAME = 'intent-funnel-v1-100.csv';
+let pendingSurveyPrefillState: ProWaitlistSurveyPrefillState = { ...DEFAULT_PRO_WAITLIST_SURVEY_PREFILL_STATE };
 
 /**
  * 获取所有DOM元素
@@ -3117,6 +3124,28 @@ function setupEventListeners() {
 
   let hasRecordedProIntentFormStart = readPendingProWaitlistSurveySourceOnce() === 'popup';
 
+  function applyPendingSurveyPrefillToForm() {
+    const prefill = pendingSurveyPrefillState;
+    if (!prefill.useCase && prefill.capabilities.length === 0) {
+      return;
+    }
+
+    if (!elements.proWaitlistSurveyUseCase.value && prefill.useCase) {
+      elements.proWaitlistSurveyUseCase.value = prefill.useCase;
+    }
+
+    const capabilityMap: Record<ProWaitlistSurveyCapabilityKey, HTMLInputElement> = {
+      advanced_cleaning: elements.proWaitlistSurveyCapabilityAdvancedCleaning,
+      batch_collection: elements.proWaitlistSurveyCapabilityBatchCollection,
+      prompt_pack: elements.proWaitlistSurveyCapabilityPromptPack,
+      note_export: elements.proWaitlistSurveyCapabilityNoteExport
+    };
+
+    prefill.capabilities.forEach((capability) => {
+      capabilityMap[capability].checked = true;
+    });
+  }
+
   async function ensureProIntentFormStartRecorded(content: ProIntentContent): Promise<void> {
     if (hasRecordedProIntentFormStart) return;
     hasRecordedProIntentFormStart = true;
@@ -3344,6 +3373,7 @@ function setupEventListeners() {
     }
 
     if (tabName === 'pro') {
+      applyPendingSurveyPrefillToForm();
       void recordTelemetryEvent('pro_entry_opened', buildOptionsProIntentAttribution('options_waitlist_cta'));
     }
   }
@@ -3404,11 +3434,22 @@ function setupEventListeners() {
     console.warn('Failed to parse pro waitlist survey source from url:', error);
   }
 
+  try {
+    const parsedPrefill = parseProWaitlistSurveyPrefillFromUrl(window.location.href);
+    pendingSurveyPrefillState = parsedPrefill.prefill;
+    if (parsedPrefill.hadPrefillParam) {
+      history.replaceState(null, '', parsedPrefill.cleanedUrl);
+    }
+  } catch (error) {
+    console.warn('Failed to parse pro waitlist survey prefill from url:', error);
+  }
+
   // Hash定位：src/options/options.html#pro / #pro-waitlist-survey -> 默认激活 Pro Tab
   if (window.location.hash === '#pro' || window.location.hash === '#pro-waitlist-survey') {
     setActiveMainTab('pro');
   }
   if (window.location.hash === '#pro-waitlist-survey') {
+    applyPendingSurveyPrefillToForm();
     window.setTimeout(() => {
       document.getElementById('pro-waitlist-survey')?.scrollIntoView({ block: 'start' });
     }, 0);
@@ -3625,6 +3666,8 @@ function setupEventListeners() {
 
     props.has_other_capability = Boolean(elements.proWaitlistSurveyCapabilitiesOther?.value?.trim());
     props.has_contact = Boolean(elements.proWaitlistSurveyContact?.value?.trim());
+    props.prefill_used = Boolean(pendingSurveyPrefillState.useCase || pendingSurveyPrefillState.capabilities.length > 0);
+    props.prefill_capability_count = pendingSurveyPrefillState.capabilities.length;
 
     try {
       await writeTextToClipboard(body);

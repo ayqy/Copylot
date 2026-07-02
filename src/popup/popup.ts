@@ -27,6 +27,11 @@ import {
 import { recordTelemetryEvent, sanitizeTelemetryEvents, TELEMETRY_EVENTS_KEY } from '../shared/telemetry';
 import { buildProWaitlistUrl } from '../shared/external-links';
 import { buildProIntentAttribution } from '../shared/pro-intent-attribution';
+import {
+  encodeProWaitlistSurveyPrefill,
+  PRO_WAITLIST_SURVEY_PREFILL_QUERY_PARAM,
+  type ProWaitlistSurveyCapabilityKey
+} from '../shared/pro-waitlist-survey-prefill';
 
 interface PopupElements {
   versionDisplay: HTMLElement;
@@ -57,6 +62,10 @@ interface PopupElements {
   upgradeProEntry: HTMLButtonElement;
   popupProSurveyButton: HTMLButtonElement;
   popupProWaitlistButton: HTMLButtonElement;
+  popupProIntentCleaningButton: HTMLButtonElement;
+  popupProIntentBatchButton: HTMLButtonElement;
+  popupProIntentPromptPackButton: HTMLButtonElement;
+  popupProIntentNoteExportButton: HTMLButtonElement;
   onboardingReopenButton: HTMLButtonElement;
   onboardingModal: HTMLElement;
   onboardingProgress: HTMLElement;
@@ -201,6 +210,10 @@ function getElements(): PopupElements {
     upgradeProEntry: document.getElementById('upgrade-pro-entry') as HTMLButtonElement,
     popupProSurveyButton: document.getElementById('popup-pro-survey') as HTMLButtonElement,
     popupProWaitlistButton: document.getElementById('popup-pro-waitlist') as HTMLButtonElement,
+    popupProIntentCleaningButton: document.getElementById('popup-pro-intent-cleaning') as HTMLButtonElement,
+    popupProIntentBatchButton: document.getElementById('popup-pro-intent-batch') as HTMLButtonElement,
+    popupProIntentPromptPackButton: document.getElementById('popup-pro-intent-prompt-pack') as HTMLButtonElement,
+    popupProIntentNoteExportButton: document.getElementById('popup-pro-intent-note-export') as HTMLButtonElement,
     onboardingReopenButton: document.getElementById('popup-onboarding-reopen') as HTMLButtonElement,
     onboardingModal: document.getElementById('popup-onboarding-modal') as HTMLElement,
     onboardingProgress: document.getElementById('popup-onboarding-progress') as HTMLElement,
@@ -511,6 +524,49 @@ function setupSettingsListeners() {
 function setupEventListeners() {
   const i18nGetMessage = createI18nGetMessage();
 
+  function buildPopupPrefilledSurveyUrl(input: {
+    useCase: string;
+    capability: ProWaitlistSurveyCapabilityKey;
+  }): string {
+    const url = new URL(`${chrome.runtime.getURL('src/options/options.html')}#pro-waitlist-survey`);
+    url.searchParams.set('pro_survey_source', 'popup');
+    const encoded = encodeProWaitlistSurveyPrefill({
+      useCase: input.useCase,
+      capabilities: [input.capability]
+    });
+    if (encoded) {
+      url.searchParams.set(PRO_WAITLIST_SURVEY_PREFILL_QUERY_PARAM, encoded);
+    }
+    return url.toString();
+  }
+
+  async function openPopupPrefilledSurvey(input: {
+    useCase: string;
+    capability: ProWaitlistSurveyCapabilityKey;
+    telemetryContent: 'popup_survey_cta';
+  }) {
+    const attrs = buildProIntentAttribution({
+      source: 'popup',
+      content: input.telemetryContent,
+      campaign: currentSettings?.proIntentCampaign
+    });
+    const props = {
+      source: attrs.source,
+      medium: attrs.medium,
+      content: attrs.content,
+      ...(attrs.campaign ? { campaign: attrs.campaign } : {})
+    };
+    await recordTelemetryEvent('pro_entry_opened', props);
+    await recordTelemetryEvent('pro_intent_form_start', props);
+    const url = buildPopupPrefilledSurveyUrl({
+      useCase: input.useCase,
+      capability: input.capability
+    });
+    await reportE2EOpenedUrl(url);
+    chrome.tabs.create({ url });
+    window.close();
+  }
+
   setupQuickActionListeners();
   setupSettingsListeners();
 
@@ -560,6 +616,38 @@ function setupEventListeners() {
     await reportE2EOpenedUrl(url);
     chrome.tabs.create({ url });
     window.close();
+  });
+
+  elements.popupProIntentCleaningButton.addEventListener('click', () => {
+    void openPopupPrefilledSurvey({
+      useCase: getMessage('popupProIntentCleaningUseCase'),
+      capability: 'advanced_cleaning',
+      telemetryContent: 'popup_survey_cta'
+    });
+  });
+
+  elements.popupProIntentBatchButton.addEventListener('click', () => {
+    void openPopupPrefilledSurvey({
+      useCase: getMessage('popupProIntentBatchUseCase'),
+      capability: 'batch_collection',
+      telemetryContent: 'popup_survey_cta'
+    });
+  });
+
+  elements.popupProIntentPromptPackButton.addEventListener('click', () => {
+    void openPopupPrefilledSurvey({
+      useCase: getMessage('popupProIntentPromptPackUseCase'),
+      capability: 'prompt_pack',
+      telemetryContent: 'popup_survey_cta'
+    });
+  });
+
+  elements.popupProIntentNoteExportButton.addEventListener('click', () => {
+    void openPopupPrefilledSurvey({
+      useCase: getMessage('popupProIntentNoteExportUseCase'),
+      capability: 'note_export',
+      telemetryContent: 'popup_survey_cta'
+    });
   });
 
   elements.popupProWaitlistButton.addEventListener('click', async () => {

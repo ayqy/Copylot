@@ -11,12 +11,12 @@
 ## 当前进度
 - 当前进度一句话结论：S0 `13/15`，S4 `5/8`，S5 `3/3`；Top1 阻塞持续，但本轮已恢复 `Copylot` 的 GSC / GA4 真实数据链路，并完成一轮真实增长闭环。
 - 关键阶段进度：S0 `13/15`；S4 `5/8`；S5 `3/3`
-- 本轮交付主题：恢复 `Copylot` 增长数据基线并执行真实工厂增长，证据见 `docs/reports/v1-106-report.md` 与 `docs/evidence/growth/20260702-100354-growth/`。
+- 本轮交付主题：恢复 `Copylot` 增长数据基线，并补齐 Popup -> Pro 问卷的高意向直达链路，证据见 `docs/reports/v1-106-report.md` 与 `docs/evidence/growth/20260702-100354-growth/`。
 
 ## 下一步Top3（收入优先）
 1. 修复 `https://copy.useai.online/pricing` 的可访问性，并把修复结果重新提交 GSC。
 2. 基于工厂动作板扩出首批 `facts / use_case / guide_detail` 内容承载页，接住现有极薄搜索曝光。
-3. 继续维护 `v1-100` 的意向漏斗证据与 `conversion-evidence-index`，把搜索流量和 Pro 意向承接到同一复盘口径。
+3. 继续维护 `v1-100` 的意向漏斗证据，并跟踪 Popup 预填直达样本占比，判断哪类 Pro 诉求最值得优先实现。
 
 ## 阻塞
 - Top1 阻塞主描述：`CWS 权限 + source ~/.bash_profile && pxy 未就绪`。

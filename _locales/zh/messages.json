@@ -216,6 +216,62 @@
     "message": "Pro 问卷（1 分钟）",
     "description": "Popup Pro 意向问卷入口"
   },
+  "popupProIntentTitle": {
+    "message": "你最想先解决什么",
+    "description": "Popup Pro 意向直达卡片标题"
+  },
+  "popupProIntentHint": {
+    "message": "先选一个最强诉求，我们会带着它直达问卷，减少空白填写。",
+    "description": "Popup Pro 意向直达卡片提示"
+  },
+  "popupProIntentCleaningTitle": {
+    "message": "更干净的正文",
+    "description": "Popup 高级清洗意向标题"
+  },
+  "popupProIntentCleaningDesc": {
+    "message": "阅读模式、广告/评论区过滤、复制后更少手动清理。",
+    "description": "Popup 高级清洗意向描述"
+  },
+  "popupProIntentBatchTitle": {
+    "message": "批量收集整理",
+    "description": "Popup 批量采集意向标题"
+  },
+  "popupProIntentBatchDesc": {
+    "message": "跨页面采集、命名归档、导出回顾一条链完成。",
+    "description": "Popup 批量采集意向描述"
+  },
+  "popupProIntentPromptPackTitle": {
+    "message": "高级 Prompt 工作流",
+    "description": "Popup Prompt Pack 意向标题"
+  },
+  "popupProIntentPromptPackDesc": {
+    "message": "更强的模板组合、稳定复用和团队协作方向。",
+    "description": "Popup Prompt Pack 意向描述"
+  },
+  "popupProIntentNoteExportTitle": {
+    "message": "笔记工具导出",
+    "description": "Popup 笔记导出意向标题"
+  },
+  "popupProIntentNoteExportDesc": {
+    "message": "更适配 Obsidian、Notion 和研究笔记的结构化导出模板。",
+    "description": "Popup 笔记导出意向描述"
+  },
+  "popupProIntentCleaningUseCase": {
+    "message": "我想复制长文时更干净，减少手动删除广告和杂项内容。",
+    "description": "高级清洗预填使用场景"
+  },
+  "popupProIntentBatchUseCase": {
+    "message": "我想更快地跨多个页面收集并整理资料片段。",
+    "description": "批量采集预填使用场景"
+  },
+  "popupProIntentPromptPackUseCase": {
+    "message": "我想为重复性的 AI 任务建立更强的 Prompt 工作流。",
+    "description": "Prompt Pack 预填使用场景"
+  },
+  "popupProIntentNoteExportUseCase": {
+    "message": "我想得到更适合 Obsidian、Notion 或研究笔记的导出模板。",
+    "description": "笔记导出预填使用场景"
+  },
   "proPromptTitle": {
     "message": "Pro 候补（可选）",
     "description": "Popup 内低打扰 Pro 候补提示标题"

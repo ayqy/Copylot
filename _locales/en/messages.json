@@ -216,6 +216,62 @@
     "message": "Pro survey (1 min)",
     "description": "Popup entry for the Pro waitlist survey"
   },
+  "popupProIntentTitle": {
+    "message": "What do you want fixed first?",
+    "description": "Popup mini-card title for Pro intent routing"
+  },
+  "popupProIntentHint": {
+    "message": "Pick your strongest need first. We'll carry it into the survey so you don't start from a blank form.",
+    "description": "Popup mini-card hint for Pro intent routing"
+  },
+  "popupProIntentCleaningTitle": {
+    "message": "Cleaner article copy",
+    "description": "Popup intent option title for advanced cleaning"
+  },
+  "popupProIntentCleaningDesc": {
+    "message": "Reader mode, ad/comment filtering, and less manual cleanup after copying.",
+    "description": "Popup intent option description for advanced cleaning"
+  },
+  "popupProIntentBatchTitle": {
+    "message": "Batch collect and organize",
+    "description": "Popup intent option title for batch collection"
+  },
+  "popupProIntentBatchDesc": {
+    "message": "Collect across pages, label clips, and export in one tighter workflow.",
+    "description": "Popup intent option description for batch collection"
+  },
+  "popupProIntentPromptPackTitle": {
+    "message": "Advanced Prompt workflow",
+    "description": "Popup intent option title for prompt pack"
+  },
+  "popupProIntentPromptPackDesc": {
+    "message": "Higher-signal prompt packs, repeatable workflows, and team-friendly reuse.",
+    "description": "Popup intent option description for prompt pack"
+  },
+  "popupProIntentNoteExportTitle": {
+    "message": "Note-tool export",
+    "description": "Popup intent option title for note export"
+  },
+  "popupProIntentNoteExportDesc": {
+    "message": "Better structured export templates for Obsidian, Notion, and research notes.",
+    "description": "Popup intent option description for note export"
+  },
+  "popupProIntentCleaningUseCase": {
+    "message": "I want cleaner long-form article copy with less manual cleanup.",
+    "description": "Prefilled survey use case for advanced cleaning"
+  },
+  "popupProIntentBatchUseCase": {
+    "message": "I want to collect and organize clips across multiple pages faster.",
+    "description": "Prefilled survey use case for batch collection"
+  },
+  "popupProIntentPromptPackUseCase": {
+    "message": "I want stronger reusable Prompt workflows for repeated AI tasks.",
+    "description": "Prefilled survey use case for prompt pack"
+  },
+  "popupProIntentNoteExportUseCase": {
+    "message": "I want cleaner export templates for Obsidian, Notion, or research notes.",
+    "description": "Prefilled survey use case for note export"
+  },
   "proPromptTitle": {
     "message": "Pro waitlist (optional)",
     "description": "Title of the low-disturb Pro waitlist prompt in popup"

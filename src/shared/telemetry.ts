@@ -53,6 +53,8 @@ const TELEMETRY_EVENT_PROP_ALLOWLIST: Record<TelemetryEventName, readonly string
     'medium',
     'content',
     'campaign',
+    'prefill_used',
+    'prefill_capability_count',
     'pay_willing',
     'pay_monthly',
     'pay_annual',
@@ -303,6 +305,16 @@ function sanitizeProps(
     }
 
     if (eventName === 'pro_waitlist_survey_copied') {
+      if (key === 'prefill_used') {
+        if (typeof value !== 'boolean') continue;
+        sanitized[key] = value;
+        continue;
+      }
+      if (key === 'prefill_capability_count') {
+        if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value > 4) continue;
+        sanitized[key] = value;
+        continue;
+      }
       if (key === 'pay_willing') {
         if (!isProWaitlistSurveyPayWilling(value)) continue;
         sanitized[key] = value;
