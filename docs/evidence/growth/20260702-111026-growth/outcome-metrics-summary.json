@@ -1,0 +1,545 @@
+{
+  "site_metrics": {
+    "organic_impressions": 0.0,
+    "organic_clicks": 1.0,
+    "organic_ctr": 0.0,
+    "avg_position": 0.0,
+    "indexed_pages": 0.0,
+    "organic_sessions": 0.0,
+    "micro_conversions": 0.0,
+    "primary_conversions": 0.0,
+    "organic_primary_cvr": 0.0,
+    "leads_discovered": 20.0,
+    "public_emails": 0.0,
+    "email_candidates_fresh": 0.0,
+    "email_bounced_known": 0.0,
+    "email_attempts": 0.0,
+    "email_done": 0.0,
+    "contact_forms_detected": 0.0,
+    "form_attempts": 0.0,
+    "site_targets": 20.0,
+    "site_accessible": 0.0,
+    "site_submit_attempts": 20.0,
+    "site_submit_skipped": 20.0,
+    "search_attempts": 3.0,
+    "search_done": 1.0,
+    "integration_attempts": 0.0,
+    "integration_done": 0.0
+  },
+  "page_metrics": [],
+  "funnel_metrics": [],
+  "execution_metrics": {
+    "leads_discovered": 20,
+    "public_emails": 0,
+    "email_candidates_fresh": 0,
+    "email_bounced_known": 0,
+    "email_attempts": 0,
+    "email_done": 0,
+    "contact_forms_detected": 0,
+    "form_attempts": 0,
+    "site_targets": 20,
+    "site_accessible": 0,
+    "site_submit_attempts": 20,
+    "site_submit_skipped": 20,
+    "search_attempts": 3,
+    "search_done": 1,
+    "integration_attempts": 0,
+    "integration_done": 0
+  },
+  "data_status": "ready",
+  "outcome_status": "improving",
+  "site_delta": {
+    "organic_impressions": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "organic_clicks": {
+      "current": 1.0,
+      "baseline": 0.0,
+      "absolute": 1.0,
+      "percent": 1.0,
+      "per_day_current": 0.0714,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0714,
+      "per_day_percent": 1.0
+    },
+    "organic_ctr": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "avg_position": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "indexed_pages": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "organic_sessions": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "micro_conversions": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "primary_conversions": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "organic_primary_cvr": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "leads_discovered": {
+      "current": 20.0,
+      "baseline": 0.0,
+      "absolute": 20.0,
+      "percent": 1.0,
+      "per_day_current": 1.4286,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 1.4286,
+      "per_day_percent": 1.0
+    },
+    "public_emails": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "email_candidates_fresh": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "email_bounced_known": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "email_attempts": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "email_done": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "contact_forms_detected": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "form_attempts": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "site_targets": {
+      "current": 20.0,
+      "baseline": 0.0,
+      "absolute": 20.0,
+      "percent": 1.0,
+      "per_day_current": 1.4286,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 1.4286,
+      "per_day_percent": 1.0
+    },
+    "site_accessible": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "site_submit_attempts": {
+      "current": 20.0,
+      "baseline": 0.0,
+      "absolute": 20.0,
+      "percent": 1.0,
+      "per_day_current": 1.4286,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 1.4286,
+      "per_day_percent": 1.0
+    },
+    "site_submit_skipped": {
+      "current": 20.0,
+      "baseline": 0.0,
+      "absolute": 20.0,
+      "percent": 1.0,
+      "per_day_current": 1.4286,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 1.4286,
+      "per_day_percent": 1.0
+    },
+    "search_attempts": {
+      "current": 3.0,
+      "baseline": 0.0,
+      "absolute": 3.0,
+      "percent": 1.0,
+      "per_day_current": 0.2143,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.2143,
+      "per_day_percent": 1.0
+    },
+    "search_done": {
+      "current": 1.0,
+      "baseline": 0.0,
+      "absolute": 1.0,
+      "percent": 1.0,
+      "per_day_current": 0.0714,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0714,
+      "per_day_percent": 1.0
+    },
+    "integration_attempts": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "integration_done": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    }
+  },
+  "blockers": [
+    "realtime_unverified",
+    "page_metric_coverage_low",
+    "page_metrics_insufficient"
+  ],
+  "realtime_verified": false,
+  "runtime_activation": {
+    "enabled": false,
+    "measurement_id": "G-VCWBZXTFVS",
+    "env_updates": [],
+    "commands": [],
+    "status": "skipped",
+    "blockers": []
+  },
+  "deployment_verification": {
+    "measurement_id": "G-VCWBZXTFVS",
+    "verify_mode": "gtag",
+    "checks": [],
+    "status": "skipped"
+  },
+  "startup_proxy_bootstrap": {
+    "required": true,
+    "mode": "jump_host",
+    "proxy_ready": true,
+    "source": "jump_host",
+    "applied_env": {
+      "http_proxy": "http://127.0.0.1:17887",
+      "https_proxy": "http://127.0.0.1:17887",
+      "HTTP_PROXY": "http://127.0.0.1:17887",
+      "HTTPS_PROXY": "http://127.0.0.1:17887"
+    },
+    "fallback_chain": [
+      "shared_env",
+      "pxy"
+    ],
+    "jump_host": {
+      "mode": "jump_host",
+      "ready": true,
+      "local_proxy_url": "http://127.0.0.1:17887",
+      "local_port": 17887,
+      "local_forward_pid": 58658,
+      "remote_port": 18787,
+      "remote_dir": "/root/.24h-studio/google-jump-proxy",
+      "remote_server": {
+        "reused": true,
+        "pid": 3039053,
+        "listen_host": "127.0.0.1",
+        "port": 18787,
+        "service": "google_connect_proxy",
+        "started_at": 1782866036
+      },
+      "jump_host": {
+        "alias": "tengxunyun",
+        "host": "43.155.131.93",
+        "user": "root",
+        "ssh_port": 22
+      },
+      "health": {
+        "status": 200,
+        "url": "https://www.googleapis.com/discovery/v1/apis"
+      },
+      "updated_at": 1782961820
+    },
+    "notes": "已通过跳板机 SSH 隧道引导 Google 代理"
+  },
+  "program_results": [],
+  "gate_status": {
+    "configured_programs": [
+      "seo",
+      "distribution",
+      "community",
+      "launch"
+    ],
+    "configured_channels": [
+      "search_indexing",
+      "site_submit",
+      "contact_form",
+      "email_public",
+      "x",
+      "linkedin",
+      "reddit",
+      "hn",
+      "producthunt",
+      "indiehackers",
+      "xhs",
+      "apphookup",
+      "bilibili",
+      "zhihu",
+      "douyin"
+    ],
+    "programs": [
+      "seo"
+    ],
+    "channels": [
+      "search_indexing",
+      "site_submit"
+    ],
+    "effective_programs": [
+      "seo"
+    ],
+    "effective_channels": [
+      "search_indexing",
+      "site_submit"
+    ],
+    "skipped_programs": [],
+    "skipped_channels": [],
+    "proxy_gate": {
+      "required": false,
+      "mode": "jump_host",
+      "proxy_ready": true,
+      "source": "none",
+      "applied_env": {},
+      "fallback_chain": [
+        "shared_env",
+        "pxy"
+      ],
+      "jump_host": null,
+      "notes": ""
+    },
+    "reddit_gate": {
+      "required": false,
+      "login_ready": false,
+      "browser_opened": false,
+      "notes": "本轮未激活 Reddit 相关动作"
+    },
+    "gate_passed": true,
+    "blocked_tasks": []
+  },
+  "stage_plan": {
+    "summary": "data=ready search_done=1 site_submit_done=0 organic_impressions=0 organic_sessions=0 active_programs=seo outcome=improving",
+    "site_archetype": "hybrid_site",
+    "configured_programs": [
+      "seo",
+      "distribution",
+      "community",
+      "launch"
+    ],
+    "configured_channels": [
+      "search_indexing",
+      "site_submit",
+      "contact_form",
+      "email_public",
+      "x",
+      "linkedin",
+      "reddit",
+      "hn",
+      "producthunt",
+      "indiehackers",
+      "xhs",
+      "apphookup",
+      "bilibili",
+      "zhihu",
+      "douyin"
+    ],
+    "active_programs": [
+      "seo"
+    ],
+    "active_channels": [
+      "search_indexing",
+      "site_submit"
+    ],
+    "stages": [
+      {
+        "name": "crawlability_foundation",
+        "status": "active",
+        "reason": "搜索提交或目录提交尚未形成稳定基线",
+        "programs": [
+          "seo"
+        ],
+        "channels": [
+          "search_indexing",
+          "site_submit"
+        ]
+      },
+      {
+        "name": "measurement_foundation",
+        "status": "active",
+        "reason": "GA4 / 实时验证未完全就绪",
+        "programs": [
+          "seo"
+        ],
+        "channels": []
+      },
+      {
+        "name": "search_bootstrap",
+        "status": "active",
+        "reason": "自然搜索曝光仍处于冷启动阶段",
+        "programs": [
+          "seo"
+        ],
+        "channels": [
+          "search_indexing",
+          "site_submit"
+        ]
+      },
+      {
+        "name": "search_scaling",
+        "status": "queued",
+        "reason": "需要先完成基础收录和最小曝光验证",
+        "programs": [
+          "seo"
+        ],
+        "channels": [
+          "search_indexing",
+          "site_submit"
+        ]
+      },
+      {
+        "name": "offpage_support_activation",
+        "status": "queued",
+        "reason": "外链渠道保持 support role，未达条件或未启用前不进入主循环",
+        "programs": [],
+        "channels": []
+      },
+      {
+        "name": "distribution_activation",
+        "status": "queued",
+        "reason": "分发程序需要先有可回流的数据与基础搜索承接页",
+        "programs": [],
+        "channels": []
+      },
+      {
+        "name": "community_launch_activation",
+        "status": "queued",
+        "reason": "先保证搜索承接、内容积累和数据回流，再进入社区/榜单动作",
+        "programs": [],
+        "channels": []
+      },
+      {
+        "name": "continuous_optimization",
+        "status": "active",
+        "reason": "已有可用数据，可持续迭代",
+        "programs": [
+          "seo"
+        ],
+        "channels": [
+          "search_indexing",
+          "site_submit"
+        ]
+      }
+    ]
+  }
+}

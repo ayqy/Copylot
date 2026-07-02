@@ -1,0 +1,45 @@
+{
+  "required": true,
+  "mode": "jump_host",
+  "proxy_ready": true,
+  "source": "jump_host",
+  "applied_env": {
+    "http_proxy": "http://127.0.0.1:17887",
+    "https_proxy": "http://127.0.0.1:17887",
+    "HTTP_PROXY": "http://127.0.0.1:17887",
+    "HTTPS_PROXY": "http://127.0.0.1:17887"
+  },
+  "fallback_chain": [
+    "shared_env",
+    "pxy"
+  ],
+  "jump_host": {
+    "mode": "jump_host",
+    "ready": true,
+    "local_proxy_url": "http://127.0.0.1:17887",
+    "local_port": 17887,
+    "local_forward_pid": 58658,
+    "remote_port": 18787,
+    "remote_dir": "/root/.24h-studio/google-jump-proxy",
+    "remote_server": {
+      "reused": true,
+      "pid": 3039053,
+      "listen_host": "127.0.0.1",
+      "port": 18787,
+      "service": "google_connect_proxy",
+      "started_at": 1782866036
+    },
+    "jump_host": {
+      "alias": "tengxunyun",
+      "host": "43.155.131.93",
+      "user": "root",
+      "ssh_port": 22
+    },
+    "health": {
+      "status": 200,
+      "url": "https://www.googleapis.com/discovery/v1/apis"
+    },
+    "updated_at": 1782961820
+  },
+  "notes": "已通过跳板机 SSH 隧道引导 Google 代理"
+}

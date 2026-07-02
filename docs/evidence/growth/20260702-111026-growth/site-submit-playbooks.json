@@ -1,0 +1,592 @@
+{
+  "run_id": "20260702-111026-growth",
+  "playbook_count": 20,
+  "playbooks": [
+    {
+      "target_id": "launchingnext",
+      "target_name": "LaunchingNext",
+      "homepage": "https://launchingnext.com/",
+      "submit_url": "https://www.launchingnext.com/submit/",
+      "submit_kind": "public_submit_form",
+      "automation_status": "ready_for_http_post",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": true,
+      "submission_transport": "http_form",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [
+        "product_name",
+        "website_url",
+        "headline",
+        "description",
+        "tags",
+        "founder_name",
+        "contact_email"
+      ],
+      "submit_field_map": {
+        "startupname": "product_name",
+        "startupurl": "website_url",
+        "description": "headline",
+        "fulldescription": "description",
+        "tags": "tags_csv",
+        "user": "founder_name",
+        "email": "contact_email"
+      },
+      "submit_fixed_values": {
+        "funding": "2",
+        "marketing_budget": "$0",
+        "math": "5",
+        "formSubmit": "Submit Startup"
+      },
+      "success_indicators": [
+        "/thanks/?i="
+      ],
+      "evidence": [
+        "url_error:https://www.launchingnext.com/submit/",
+        "unreachable",
+        "browser_submit_success:https://www.launchingnext.com/thanks/?i=",
+        "http_post_302:https://www.launchingnext.com/submit/"
+      ],
+      "notes": "已实测公开表单可提交，POST 到 /submit/ 后会 302 跳转到 thanks 页面。"
+    },
+    {
+      "target_id": "tinystartups",
+      "target_name": "tinystartups",
+      "homepage": "https://tinystartups.com/",
+      "submit_url": "https://tinystartups.com/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "url_error:https://tinystartups.com/",
+        "unreachable"
+      ],
+      "notes": "工具站提交入口候选。 url_error:https://tinystartups.com/"
+    },
+    {
+      "target_id": "uneed",
+      "target_name": "Uneed",
+      "homepage": "https://uneed.best/",
+      "submit_url": "https://www.uneed.best/submit",
+      "submit_kind": "missing_page",
+      "automation_status": "invalid_target",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "url_error:https://uneed.best/submit",
+        "unreachable",
+        "browser_404:https://www.uneed.best/submit"
+      ],
+      "notes": "官方 submit URL 当前返回 404，暂不作为有效收录渠道。"
+    },
+    {
+      "target_id": "twelvetools",
+      "target_name": "TwelveTools",
+      "homepage": "https://twelvetools.com/",
+      "submit_url": "https://twelvetools.com/",
+      "submit_kind": "parked_domain",
+      "automation_status": "invalid_target",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "url_error:https://twelvetools.com/",
+        "unreachable"
+      ],
+      "notes": "域名处于待售状态，不适合作为冷启动收录渠道。"
+    },
+    {
+      "target_id": "turbo0",
+      "target_name": "Turbo0",
+      "homepage": "https://turbo0.com/",
+      "submit_url": "https://turbo0.com/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "工具站提交入口候选。"
+    },
+    {
+      "target_id": "trylaunch",
+      "target_name": "TryLaunch",
+      "homepage": "https://trylaunchai.com/",
+      "submit_url": "https://trylaunchai.com/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "工具站提交入口候选。"
+    },
+    {
+      "target_id": "toolfame",
+      "target_name": "ToolFame",
+      "homepage": "https://toolfame.com/",
+      "submit_url": "https://toolfame.com/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "工具站提交入口候选。"
+    },
+    {
+      "target_id": "tinylaunch",
+      "target_name": "TinyLaunch",
+      "homepage": "https://tinylaunch.com/",
+      "submit_url": "https://tinylaunch.com/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "工具站提交入口候选。"
+    },
+    {
+      "target_id": "theresanaiforthat",
+      "target_name": "Theresanaiforthat",
+      "homepage": "https://theresanaiforthat.com/",
+      "submit_url": "https://theresanaiforthat.com/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "工具站提交入口候选。"
+    },
+    {
+      "target_id": "thegrommet",
+      "target_name": "The Grommet",
+      "homepage": "https://thegrommet.com/",
+      "submit_url": "https://thegrommet.com/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "工具站提交入口候选。"
+    },
+    {
+      "target_id": "startupsubmit",
+      "target_name": "StartupSubmit",
+      "homepage": "https://startupsubmit.app/",
+      "submit_url": "https://startupsubmit.app/",
+      "submit_kind": "service_landing",
+      "automation_status": "not_a_public_submission_form",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "这是付费代投服务页，非产品自助提交表单。"
+    },
+    {
+      "target_id": "startupranked",
+      "target_name": "StartupRanked",
+      "homepage": "https://startupranked.com/",
+      "submit_url": "https://startupranked.com/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "工具站提交入口候选。"
+    },
+    {
+      "target_id": "slocco",
+      "target_name": "Slocco",
+      "homepage": "https://slocco.com/",
+      "submit_url": "https://slocco.com/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "工具站提交入口候选。"
+    },
+    {
+      "target_id": "showmebestai",
+      "target_name": "ShowMeBestAI",
+      "homepage": "https://showmebest.ai/",
+      "submit_url": "https://showmebest.ai/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "工具站提交入口候选。"
+    },
+    {
+      "target_id": "shipsquad",
+      "target_name": "Shipsquad",
+      "homepage": "https://shipsquad.space/",
+      "submit_url": "https://shipsquad.space/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "工具站提交入口候选。"
+    },
+    {
+      "target_id": "shipyardhq",
+      "target_name": "ShipYard HQ",
+      "homepage": "https://shipyardhq.dev/",
+      "submit_url": "https://shipyardhq.dev/member/products/add",
+      "submit_kind": "login_gate",
+      "automation_status": "blocked_login_captcha",
+      "requires_login": true,
+      "has_captcha": true,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "产品提交页会跳转登录，并伴随反机器人保护。"
+    },
+    {
+      "target_id": "saashub",
+      "target_name": "SaaSHub",
+      "homepage": "https://saashub.com/",
+      "submit_url": "https://saashub.com/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "工具站提交入口候选。"
+    },
+    {
+      "target_id": "saasfame",
+      "target_name": "SaaSFame",
+      "homepage": "https://saasfame.com/",
+      "submit_url": "https://saasfame.com/submit",
+      "submit_kind": "login_gate",
+      "automation_status": "blocked_login_captcha",
+      "requires_login": true,
+      "has_captcha": true,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "Submit 页存在，但要求账户登录后提交。"
+    },
+    {
+      "target_id": "peerpush",
+      "target_name": "Peerpush",
+      "homepage": "https://peerpush.net/",
+      "submit_url": "https://peerpush.net/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "工具站提交入口候选。"
+    },
+    {
+      "target_id": "neeed",
+      "target_name": "Neeed directory",
+      "homepage": "https://neeed.directory/",
+      "submit_url": "https://neeed.directory/",
+      "submit_kind": "unknown",
+      "automation_status": "unverified",
+      "requires_login": false,
+      "has_captcha": false,
+      "supports_browser_automation": false,
+      "submission_transport": "unsupported",
+      "product_fit": [
+        "startup",
+        "saas",
+        "ai-tool",
+        "travel-tool",
+        "payment-tool"
+      ],
+      "field_hints": [],
+      "submit_field_map": {},
+      "submit_fixed_values": {},
+      "success_indicators": [],
+      "evidence": [
+        "probe_deferred",
+        "unverified"
+      ],
+      "notes": "工具站提交入口候选。"
+    }
+  ]
+}

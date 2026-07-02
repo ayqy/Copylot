@@ -1,0 +1,114 @@
+{
+  "summary": "data=ready search_done=1 site_submit_done=0 organic_impressions=0 organic_sessions=0 active_programs=seo outcome=improving",
+  "site_archetype": "hybrid_site",
+  "configured_programs": [
+    "seo",
+    "distribution",
+    "community",
+    "launch"
+  ],
+  "configured_channels": [
+    "search_indexing",
+    "site_submit",
+    "contact_form",
+    "email_public",
+    "x",
+    "linkedin",
+    "reddit",
+    "hn",
+    "producthunt",
+    "indiehackers",
+    "xhs",
+    "apphookup",
+    "bilibili",
+    "zhihu",
+    "douyin"
+  ],
+  "active_programs": [
+    "seo"
+  ],
+  "active_channels": [
+    "search_indexing",
+    "site_submit"
+  ],
+  "stages": [
+    {
+      "name": "crawlability_foundation",
+      "status": "active",
+      "reason": "搜索提交或目录提交尚未形成稳定基线",
+      "programs": [
+        "seo"
+      ],
+      "channels": [
+        "search_indexing",
+        "site_submit"
+      ]
+    },
+    {
+      "name": "measurement_foundation",
+      "status": "active",
+      "reason": "GA4 / 实时验证未完全就绪",
+      "programs": [
+        "seo"
+      ],
+      "channels": []
+    },
+    {
+      "name": "search_bootstrap",
+      "status": "active",
+      "reason": "自然搜索曝光仍处于冷启动阶段",
+      "programs": [
+        "seo"
+      ],
+      "channels": [
+        "search_indexing",
+        "site_submit"
+      ]
+    },
+    {
+      "name": "search_scaling",
+      "status": "queued",
+      "reason": "需要先完成基础收录和最小曝光验证",
+      "programs": [
+        "seo"
+      ],
+      "channels": [
+        "search_indexing",
+        "site_submit"
+      ]
+    },
+    {
+      "name": "offpage_support_activation",
+      "status": "queued",
+      "reason": "外链渠道保持 support role，未达条件或未启用前不进入主循环",
+      "programs": [],
+      "channels": []
+    },
+    {
+      "name": "distribution_activation",
+      "status": "queued",
+      "reason": "分发程序需要先有可回流的数据与基础搜索承接页",
+      "programs": [],
+      "channels": []
+    },
+    {
+      "name": "community_launch_activation",
+      "status": "queued",
+      "reason": "先保证搜索承接、内容积累和数据回流，再进入社区/榜单动作",
+      "programs": [],
+      "channels": []
+    },
+    {
+      "name": "continuous_optimization",
+      "status": "active",
+      "reason": "已有可用数据，可持续迭代",
+      "programs": [
+        "seo"
+      ],
+      "channels": [
+        "search_indexing",
+        "site_submit"
+      ]
+    }
+  ]
+}

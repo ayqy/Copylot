@@ -1,0 +1,13 @@
+{
+  "required": false,
+  "mode": "jump_host",
+  "proxy_ready": true,
+  "source": "none",
+  "applied_env": {},
+  "fallback_chain": [
+    "shared_env",
+    "pxy"
+  ],
+  "jump_host": null,
+  "notes": ""
+}

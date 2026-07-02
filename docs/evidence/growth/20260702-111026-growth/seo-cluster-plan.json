@@ -1,0 +1,158 @@
+[
+  {
+    "topic": "ai",
+    "query_count": 1,
+    "top_queries": [
+      "how to ai"
+    ],
+    "primary_page_type": "guide_detail",
+    "missing_count": 1,
+    "source_types": [
+      "market_research"
+    ]
+  },
+  {
+    "topic": "browser extension",
+    "query_count": 1,
+    "top_queries": [
+      "how to browser extension"
+    ],
+    "primary_page_type": "guide_detail",
+    "missing_count": 1,
+    "source_types": [
+      "seed_variant"
+    ]
+  },
+  {
+    "topic": "chrome extension",
+    "query_count": 1,
+    "top_queries": [
+      "how to chrome-extension"
+    ],
+    "primary_page_type": "guide_detail",
+    "missing_count": 1,
+    "source_types": [
+      "market_research"
+    ]
+  },
+  {
+    "topic": "content extraction",
+    "query_count": 1,
+    "top_queries": [
+      "how to content extraction"
+    ],
+    "primary_page_type": "guide_detail",
+    "missing_count": 1,
+    "source_types": [
+      "seed_variant"
+    ]
+  },
+  {
+    "topic": "copilot",
+    "query_count": 1,
+    "top_queries": [
+      "how to copilot"
+    ],
+    "primary_page_type": "guide_detail",
+    "missing_count": 1,
+    "source_types": [
+      "market_research"
+    ]
+  },
+  {
+    "topic": "global",
+    "query_count": 1,
+    "top_queries": [
+      "what should first-time foreign tourists know about setup in global"
+    ],
+    "primary_page_type": "use_case",
+    "missing_count": 1,
+    "source_types": [
+      "hot_matrix"
+    ]
+  },
+  {
+    "topic": "markdown",
+    "query_count": 1,
+    "top_queries": [
+      "how to markdown"
+    ],
+    "primary_page_type": "guide_detail",
+    "missing_count": 1,
+    "source_types": [
+      "market_research"
+    ]
+  },
+  {
+    "topic": "web scraping",
+    "query_count": 1,
+    "top_queries": [
+      "how to web-scraping"
+    ],
+    "primary_page_type": "guide_detail",
+    "missing_count": 1,
+    "source_types": [
+      "market_research"
+    ]
+  },
+  {
+    "topic": "auth",
+    "query_count": 1,
+    "top_queries": [
+      "how to auth"
+    ],
+    "primary_page_type": "guide_detail",
+    "missing_count": 0,
+    "source_types": [
+      "seed_variant"
+    ]
+  },
+  {
+    "topic": "cancel",
+    "query_count": 1,
+    "top_queries": [
+      "how to cancel"
+    ],
+    "primary_page_type": "guide_detail",
+    "missing_count": 0,
+    "source_types": [
+      "seed_variant"
+    ]
+  },
+  {
+    "topic": "copy",
+    "query_count": 1,
+    "top_queries": [
+      "how to copy"
+    ],
+    "primary_page_type": "guide_detail",
+    "missing_count": 0,
+    "source_types": [
+      "market_research"
+    ]
+  },
+  {
+    "topic": "payment",
+    "query_count": 1,
+    "top_queries": [
+      "how to payment"
+    ],
+    "primary_page_type": "guide_detail",
+    "missing_count": 0,
+    "source_types": [
+      "seed_variant"
+    ]
+  },
+  {
+    "topic": "pricing",
+    "query_count": 1,
+    "top_queries": [
+      "how to pricing"
+    ],
+    "primary_page_type": "guide_detail",
+    "missing_count": 0,
+    "source_types": [
+      "seed_variant"
+    ]
+  }
+]

@@ -1,0 +1,107 @@
+{
+  "project_id": "Copylot",
+  "current_window": {
+    "label": "current",
+    "start_date": "2026-06-18",
+    "end_date": "2026-07-01",
+    "days": 14
+  },
+  "baseline_window": {
+    "label": "baseline",
+    "start_date": "2026-06-04",
+    "end_date": "2026-06-17",
+    "days": 14
+  },
+  "source_status": [
+    {
+      "source": "gsc",
+      "status": "ready",
+      "freshness_days": 0,
+      "notes": "metrics_history_cache"
+    },
+    {
+      "source": "gsc_queries",
+      "status": "missing",
+      "freshness_days": null,
+      "notes": "metrics_history_cache_no_query_rows"
+    },
+    {
+      "source": "ga4",
+      "status": "ready",
+      "freshness_days": 0,
+      "notes": "metrics_history_cache"
+    },
+    {
+      "source": "ga4_realtime",
+      "status": "missing",
+      "freshness_days": null,
+      "notes": "metrics_history_cache"
+    },
+    {
+      "source": "execution",
+      "status": "ready",
+      "freshness_days": 0,
+      "notes": ""
+    }
+  ],
+  "site_metrics": {
+    "organic_impressions": 0.0,
+    "organic_clicks": 1.0,
+    "organic_ctr": 0.0,
+    "avg_position": 0.0,
+    "indexed_pages": 0.0,
+    "organic_sessions": 0.0,
+    "micro_conversions": 0.0,
+    "primary_conversions": 0.0,
+    "organic_primary_cvr": 0.0,
+    "leads_discovered": 20.0,
+    "public_emails": 0.0,
+    "email_candidates_fresh": 0.0,
+    "email_bounced_known": 0.0,
+    "email_attempts": 0.0,
+    "email_done": 0.0,
+    "contact_forms_detected": 0.0,
+    "form_attempts": 0.0,
+    "site_targets": 20.0,
+    "site_accessible": 0.0,
+    "site_submit_attempts": 20.0,
+    "site_submit_skipped": 20.0,
+    "search_attempts": 3.0,
+    "search_done": 1.0,
+    "integration_attempts": 0.0,
+    "integration_done": 0.0
+  },
+  "page_metrics": [],
+  "funnel_metrics": [],
+  "channel_metrics": [
+    {
+      "channel": "email_public",
+      "metrics": {
+        "attempts": 0.0,
+        "done": 0.0
+      }
+    },
+    {
+      "channel": "contact_form",
+      "metrics": {
+        "attempts": 0.0,
+        "done": 0.0
+      }
+    },
+    {
+      "channel": "site_submit",
+      "metrics": {
+        "attempts": 20.0,
+        "done": 0.0
+      }
+    },
+    {
+      "channel": "search_indexing",
+      "metrics": {
+        "attempts": 0.0,
+        "done": 0.0
+      }
+    }
+  ],
+  "search_query_metrics": []
+}
