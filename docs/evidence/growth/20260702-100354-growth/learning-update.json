@@ -1,0 +1,12 @@
+{
+  "project_id": "Copylot",
+  "summary": "template=default archetype=hybrid_site actions=7 data=ready outcome=flat",
+  "wins": [],
+  "losses": [],
+  "flat_signals": [
+    "organic 指标整体持平：clicks=0.0% sessions=0.0% conversions=0.0%"
+  ],
+  "next_hypotheses": [
+    "继续围绕长尾词 cluster、内容草稿与配图资产做扩张，并观察下一窗口 impressions、sessions 与 CTA 变化。"
+  ]
+}

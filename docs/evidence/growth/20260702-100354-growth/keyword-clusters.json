@@ -1,0 +1,67 @@
+[
+  {
+    "topic": "ai",
+    "query_count": 1,
+    "missing_count": 1
+  },
+  {
+    "topic": "browser extension",
+    "query_count": 1,
+    "missing_count": 1
+  },
+  {
+    "topic": "chrome extension",
+    "query_count": 1,
+    "missing_count": 1
+  },
+  {
+    "topic": "content extraction",
+    "query_count": 1,
+    "missing_count": 1
+  },
+  {
+    "topic": "copilot",
+    "query_count": 1,
+    "missing_count": 1
+  },
+  {
+    "topic": "global",
+    "query_count": 1,
+    "missing_count": 1
+  },
+  {
+    "topic": "markdown",
+    "query_count": 1,
+    "missing_count": 1
+  },
+  {
+    "topic": "web scraping",
+    "query_count": 1,
+    "missing_count": 1
+  },
+  {
+    "topic": "auth",
+    "query_count": 1,
+    "missing_count": 0
+  },
+  {
+    "topic": "cancel",
+    "query_count": 1,
+    "missing_count": 0
+  },
+  {
+    "topic": "copy",
+    "query_count": 1,
+    "missing_count": 0
+  },
+  {
+    "topic": "payment",
+    "query_count": 1,
+    "missing_count": 0
+  },
+  {
+    "topic": "pricing",
+    "query_count": 1,
+    "missing_count": 0
+  }
+]

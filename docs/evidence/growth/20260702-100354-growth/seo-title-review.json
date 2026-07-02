@@ -1,0 +1,16 @@
+{
+  "approved": true,
+  "iterations": 2,
+  "selected_count": 13,
+  "issues": [],
+  "theme_variant_mix": [
+    {
+      "theme_variant": "problem_solution",
+      "count": 12
+    },
+    {
+      "theme_variant": "setup",
+      "count": 1
+    }
+  ]
+}

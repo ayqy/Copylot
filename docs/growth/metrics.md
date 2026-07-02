@@ -1,4 +1,4 @@
-# Growth Metrics（滚动记录）
+# Growth Metrics（工厂复用记录）
 
 ## run_id: 20260325-111835-growth
 
@@ -163,3 +163,9 @@
 | run_id | leads | public_emails | email_attempts | email_done | form_candidates | integrations_done | status |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 | 20260428-010125-growth | 14 | 11 | 1 | 1 | 4 | 0 | success |
+
+## run_id: 20260702-100354-growth
+
+| run_id | data_status | outcome_status | organic_impressions | organic_clicks | organic_ctr | avg_position | organic_sessions | micro_conversions | primary_conversions | organic_primary_cvr | search_done | site_submit_done | distribution_briefs | reddit_gate | status |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| 20260702-100354-growth | partial | unknown | 0.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 1 | 0 | 0 | 0 | success |

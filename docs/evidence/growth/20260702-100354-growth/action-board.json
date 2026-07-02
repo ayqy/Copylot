@@ -1,0 +1,88 @@
+{
+  "items": [
+    {
+      "family": "technical_seo",
+      "priority": "P0",
+      "score": 20.8,
+      "page_url": "https://copy.useai.online/pricing",
+      "normalized_url": "https://copy.useai.online/pricing",
+      "page_type": "other",
+      "language": null,
+      "issue_type": "non_200_page",
+      "evidence": "status_code=None",
+      "suggested_action": "恢复页面 200 可访问并重新提交 sitemap / GSC"
+    },
+    {
+      "family": "content_expansion",
+      "priority": "P1",
+      "score": 22.8,
+      "page_url": "https://copy.useai.online/",
+      "normalized_url": "https://copy.useai.online",
+      "page_type": "use_case",
+      "language": null,
+      "issue_type": "keyword_gap_missing_surface",
+      "evidence": "query=what should first-time foreign tourists know about setup in global intent=setup_or_checklist status=missing",
+      "suggested_action": "围绕长尾词 what should first-time foreign tourists know about setup in global 新增或强化 use_case 图文内容页，补齐配图、FAQ、内链和 CTA"
+    },
+    {
+      "family": "content_expansion",
+      "priority": "P1",
+      "score": 21.8,
+      "page_url": "https://copy.useai.online/",
+      "normalized_url": "https://copy.useai.online",
+      "page_type": "facts",
+      "language": null,
+      "issue_type": "missing_content_surface",
+      "evidence": "surface=facts reason=site_surface_missing",
+      "suggested_action": "新增 facts 类型内容面并串联到主导航/内链体系"
+    },
+    {
+      "family": "content_expansion",
+      "priority": "P1",
+      "score": 20.8,
+      "page_url": "https://copy.useai.online/auth",
+      "normalized_url": "https://copy.useai.online/auth",
+      "page_type": "other",
+      "language": null,
+      "issue_type": "keyword_gap_weak_surface",
+      "evidence": "query=how to copy intent=how_to status=weak",
+      "suggested_action": "围绕长尾词 how to copy 新增或强化 guide_detail 图文内容页，补齐配图、FAQ、内链和 CTA"
+    },
+    {
+      "family": "content_expansion",
+      "priority": "P1",
+      "score": 20.8,
+      "page_url": "https://copy.useai.online/payment/cancel",
+      "normalized_url": "https://copy.useai.online/payment/cancel",
+      "page_type": "other",
+      "language": null,
+      "issue_type": "keyword_gap_weak_surface",
+      "evidence": "query=how to payment intent=how_to status=weak",
+      "suggested_action": "围绕长尾词 how to payment 新增或强化 guide_detail 图文内容页，补齐配图、FAQ、内链和 CTA"
+    },
+    {
+      "family": "content_expansion",
+      "priority": "P1",
+      "score": 20.8,
+      "page_url": "https://copy.useai.online/pricing",
+      "normalized_url": "https://copy.useai.online/pricing",
+      "page_type": "other",
+      "language": null,
+      "issue_type": "keyword_gap_weak_surface",
+      "evidence": "query=how to pricing intent=how_to status=weak",
+      "suggested_action": "围绕长尾词 how to pricing 新增或强化 guide_detail 图文内容页，补齐配图、FAQ、内链和 CTA"
+    },
+    {
+      "family": "offpage_outreach",
+      "priority": "P1",
+      "score": 2.9,
+      "page_url": "https://copy.useai.online/",
+      "normalized_url": "https://copy.useai.online",
+      "page_type": "other",
+      "language": null,
+      "issue_type": "high_potential_distribution_gap",
+      "evidence": "organic_impressions=1 organic_sessions=0",
+      "suggested_action": "围绕已有搜索需求页面生成 UTM 分发链接、社区话题与外链投放动作"
+    }
+  ]
+}

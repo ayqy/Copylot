@@ -1,0 +1,465 @@
+{
+  "project_root": "/Users/pocket/Documents/project/Copylot",
+  "project_id": "Copylot",
+  "site_url": "https://copy.useai.online/",
+  "generated_at": "2026-07-02T10:05:09.752258+08:00",
+  "report_mode": "live",
+  "current_window": {
+    "label": "current",
+    "start_date": "2026-06-18",
+    "end_date": "2026-07-01",
+    "days": 14
+  },
+  "baseline_window": {
+    "label": "baseline",
+    "start_date": "2026-06-04",
+    "end_date": "2026-06-17",
+    "days": 14
+  },
+  "quality": {
+    "status": "missing",
+    "gsc_connected": false,
+    "analytics_connected": false,
+    "realtime_connected": true,
+    "realtime_verified": false,
+    "event_coverage_rate": 1.0,
+    "page_metric_coverage_rate": 0.0,
+    "data_freshness_days": 0,
+    "blockers": [
+      "gsc_unavailable",
+      "analytics_unavailable",
+      "analytics_scope_missing",
+      "ga4_provisioning_scope_missing",
+      "realtime_unverified",
+      "page_metric_coverage_low"
+    ]
+  },
+  "source_status": [
+    {
+      "source": "gsc",
+      "status": "missing",
+      "freshness_days": null,
+      "notes": "缺少可用 Google access token"
+    },
+    {
+      "source": "gsc_queries",
+      "status": "missing",
+      "freshness_days": null,
+      "notes": "缺少可用 Google access token"
+    },
+    {
+      "source": "ga4",
+      "status": "missing",
+      "freshness_days": null,
+      "notes": "缺少有效 ga4_property_id"
+    },
+    {
+      "source": "ga4_realtime",
+      "status": "missing",
+      "freshness_days": null,
+      "notes": "缺少有效 ga4_property_id"
+    },
+    {
+      "source": "execution",
+      "status": "ready",
+      "freshness_days": 0,
+      "notes": ""
+    }
+  ],
+  "primary_metric_rows": [
+    {
+      "label": "Google Search 展现",
+      "current": "-",
+      "baseline": "-",
+      "absolute": "-",
+      "percent": "无数据",
+      "per_day": "无数据"
+    },
+    {
+      "label": "Google Search 点击",
+      "current": "-",
+      "baseline": "-",
+      "absolute": "-",
+      "percent": "无数据",
+      "per_day": "无数据"
+    },
+    {
+      "label": "Google Search CTR",
+      "current": "-",
+      "baseline": "-",
+      "absolute": "-",
+      "percent": "无数据",
+      "per_day": "无数据"
+    },
+    {
+      "label": "Google Search 平均排名",
+      "current": "-",
+      "baseline": "-",
+      "absolute": "-",
+      "percent": "无数据",
+      "per_day": "无数据"
+    },
+    {
+      "label": "GA4 自然搜索会话",
+      "current": "-",
+      "baseline": "-",
+      "absolute": "-",
+      "percent": "无数据",
+      "per_day": "无数据"
+    },
+    {
+      "label": "GA4 主要转化",
+      "current": "-",
+      "baseline": "-",
+      "absolute": "-",
+      "percent": "无数据",
+      "per_day": "无数据"
+    },
+    {
+      "label": "GA4 微转化",
+      "current": "-",
+      "baseline": "-",
+      "absolute": "-",
+      "percent": "无数据",
+      "per_day": "无数据"
+    },
+    {
+      "label": "GA4 自然搜索主转化率",
+      "current": "-",
+      "baseline": "-",
+      "absolute": "-",
+      "percent": "无数据",
+      "per_day": "无数据"
+    }
+  ],
+  "secondary_metric_rows": [
+    {
+      "label": "已采到的索引页",
+      "current": "0",
+      "baseline": "0",
+      "absolute": "+0.00",
+      "percent": "+0.00%",
+      "per_day": "+0.00%"
+    },
+    {
+      "label": "搜索引擎提交尝试",
+      "current": "-",
+      "baseline": "-",
+      "absolute": "-",
+      "percent": "无数据",
+      "per_day": "无数据"
+    },
+    {
+      "label": "搜索引擎提交完成",
+      "current": "-",
+      "baseline": "-",
+      "absolute": "-",
+      "percent": "无数据",
+      "per_day": "无数据"
+    },
+    {
+      "label": "站点目录提交尝试",
+      "current": "-",
+      "baseline": "-",
+      "absolute": "-",
+      "percent": "无数据",
+      "per_day": "无数据"
+    },
+    {
+      "label": "站点目录提交完成",
+      "current": "-",
+      "baseline": "-",
+      "absolute": "-",
+      "percent": "无数据",
+      "per_day": "无数据"
+    }
+  ],
+  "primary_change_summary": [
+    "Google Search 展现：当前窗口未拉到可用数据。",
+    "Google Search 点击：当前窗口未拉到可用数据。",
+    "Google Search CTR：当前窗口未拉到可用数据。",
+    "Google Search 平均排名：当前窗口未拉到可用数据。",
+    "GA4 自然搜索会话：当前窗口未拉到可用数据。",
+    "GA4 主要转化：当前窗口未拉到可用数据。"
+  ],
+  "top_queries": [],
+  "rising_queries": [],
+  "top_pages": [],
+  "growth_activity": {
+    "current": {
+      "growth_runs": 0,
+      "drafts": 0,
+      "published": 0,
+      "translations": 0,
+      "published_urls": 0,
+      "indexing_urls": 0,
+      "indexnow_done_urls": 0,
+      "gsc_sitemap_done": 0,
+      "bing_sitemap_done": 0,
+      "search_indexing_attempts": 0,
+      "search_indexing_done": 0,
+      "site_submit_attempts": 0,
+      "site_submit_done": 0
+    },
+    "baseline": {
+      "growth_runs": 0,
+      "drafts": 0,
+      "published": 0,
+      "translations": 0,
+      "published_urls": 0,
+      "indexing_urls": 0,
+      "indexnow_done_urls": 0,
+      "gsc_sitemap_done": 0,
+      "bing_sitemap_done": 0,
+      "search_indexing_attempts": 0,
+      "search_indexing_done": 0,
+      "site_submit_attempts": 0,
+      "site_submit_done": 0
+    }
+  },
+  "proxy_bootstrap": {
+    "required": true,
+    "mode": "jump_host",
+    "proxy_ready": true,
+    "source": "jump_host",
+    "applied_env": {
+      "http_proxy": "http://127.0.0.1:17887",
+      "https_proxy": "http://127.0.0.1:17887",
+      "HTTP_PROXY": "http://127.0.0.1:17887",
+      "HTTPS_PROXY": "http://127.0.0.1:17887"
+    },
+    "fallback_chain": [
+      "shared_env",
+      "pxy"
+    ],
+    "jump_host": {
+      "mode": "jump_host",
+      "ready": true,
+      "local_proxy_url": "http://127.0.0.1:17887",
+      "local_port": 17887,
+      "local_forward_pid": 58658,
+      "remote_port": 18787,
+      "remote_dir": "/root/.24h-studio/google-jump-proxy",
+      "remote_server": {
+        "reused": true,
+        "pid": 3039053,
+        "listen_host": "127.0.0.1",
+        "port": 18787,
+        "service": "google_connect_proxy",
+        "started_at": 1782866036
+      },
+      "jump_host": {
+        "alias": "tengxunyun",
+        "host": "43.155.131.93",
+        "user": "root",
+        "ssh_port": 22
+      },
+      "health": {
+        "status": 200,
+        "url": "https://www.googleapis.com/discovery/v1/apis"
+      },
+      "updated_at": 1782957781
+    },
+    "notes": "已通过跳板机 SSH 隧道引导 Google 代理"
+  },
+  "snapshot": {
+    "project_id": "Copylot",
+    "current_window": {
+      "label": "current",
+      "start_date": "2026-06-18",
+      "end_date": "2026-07-01",
+      "days": 14
+    },
+    "baseline_window": {
+      "label": "baseline",
+      "start_date": "2026-06-04",
+      "end_date": "2026-06-17",
+      "days": 14
+    },
+    "source_status": [
+      {
+        "source": "gsc",
+        "status": "missing",
+        "freshness_days": null,
+        "notes": "缺少可用 Google access token"
+      },
+      {
+        "source": "gsc_queries",
+        "status": "missing",
+        "freshness_days": null,
+        "notes": "缺少可用 Google access token"
+      },
+      {
+        "source": "ga4",
+        "status": "missing",
+        "freshness_days": null,
+        "notes": "缺少有效 ga4_property_id"
+      },
+      {
+        "source": "ga4_realtime",
+        "status": "missing",
+        "freshness_days": null,
+        "notes": "缺少有效 ga4_property_id"
+      },
+      {
+        "source": "execution",
+        "status": "ready",
+        "freshness_days": 0,
+        "notes": ""
+      }
+    ],
+    "site_metrics": {
+      "indexed_pages": 0.0
+    },
+    "page_metrics": [],
+    "funnel_metrics": [],
+    "channel_metrics": [
+      {
+        "channel": "email_public",
+        "metrics": {
+          "attempts": 0.0,
+          "done": 0.0
+        }
+      },
+      {
+        "channel": "contact_form",
+        "metrics": {
+          "attempts": 0.0,
+          "done": 0.0
+        }
+      },
+      {
+        "channel": "site_submit",
+        "metrics": {
+          "attempts": 0.0,
+          "done": 0.0
+        }
+      },
+      {
+        "channel": "search_indexing",
+        "metrics": {
+          "attempts": 0.0,
+          "done": 0.0
+        }
+      }
+    ],
+    "search_query_metrics": []
+  },
+  "delta": {
+    "site_delta": {
+      "indexed_pages": {
+        "current": 0.0,
+        "baseline": 0.0,
+        "absolute": 0.0,
+        "percent": 0.0,
+        "per_day_current": 0.0,
+        "per_day_baseline": 0.0,
+        "per_day_absolute": 0.0,
+        "per_day_percent": 0.0
+      }
+    },
+    "page_delta": {},
+    "funnel_delta": {},
+    "channel_delta": {
+      "email_public": {
+        "attempts": {
+          "current": 0.0,
+          "baseline": 0.0,
+          "absolute": 0.0,
+          "percent": 0.0,
+          "per_day_current": 0.0,
+          "per_day_baseline": 0.0,
+          "per_day_absolute": 0.0,
+          "per_day_percent": 0.0
+        },
+        "done": {
+          "current": 0.0,
+          "baseline": 0.0,
+          "absolute": 0.0,
+          "percent": 0.0,
+          "per_day_current": 0.0,
+          "per_day_baseline": 0.0,
+          "per_day_absolute": 0.0,
+          "per_day_percent": 0.0
+        }
+      },
+      "contact_form": {
+        "attempts": {
+          "current": 0.0,
+          "baseline": 0.0,
+          "absolute": 0.0,
+          "percent": 0.0,
+          "per_day_current": 0.0,
+          "per_day_baseline": 0.0,
+          "per_day_absolute": 0.0,
+          "per_day_percent": 0.0
+        },
+        "done": {
+          "current": 0.0,
+          "baseline": 0.0,
+          "absolute": 0.0,
+          "percent": 0.0,
+          "per_day_current": 0.0,
+          "per_day_baseline": 0.0,
+          "per_day_absolute": 0.0,
+          "per_day_percent": 0.0
+        }
+      },
+      "site_submit": {
+        "attempts": {
+          "current": 0.0,
+          "baseline": 0.0,
+          "absolute": 0.0,
+          "percent": 0.0,
+          "per_day_current": 0.0,
+          "per_day_baseline": 0.0,
+          "per_day_absolute": 0.0,
+          "per_day_percent": 0.0
+        },
+        "done": {
+          "current": 0.0,
+          "baseline": 0.0,
+          "absolute": 0.0,
+          "percent": 0.0,
+          "per_day_current": 0.0,
+          "per_day_baseline": 0.0,
+          "per_day_absolute": 0.0,
+          "per_day_percent": 0.0
+        }
+      },
+      "search_indexing": {
+        "attempts": {
+          "current": 0.0,
+          "baseline": 0.0,
+          "absolute": 0.0,
+          "percent": 0.0,
+          "per_day_current": 0.0,
+          "per_day_baseline": 0.0,
+          "per_day_absolute": 0.0,
+          "per_day_percent": 0.0
+        },
+        "done": {
+          "current": 0.0,
+          "baseline": 0.0,
+          "absolute": 0.0,
+          "percent": 0.0,
+          "per_day_current": 0.0,
+          "per_day_baseline": 0.0,
+          "per_day_absolute": 0.0,
+          "per_day_percent": 0.0
+        }
+      }
+    },
+    "query_delta": {}
+  },
+  "oauth_context": {
+    "access_token_available": true,
+    "scope": "",
+    "scope_tokens": [],
+    "has_webmasters_scope": false,
+    "has_analytics_readonly_scope": false,
+    "has_analytics_edit_scope": false,
+    "network_blocked": true,
+    "error": "google_api_network_blocked"
+  }
+}

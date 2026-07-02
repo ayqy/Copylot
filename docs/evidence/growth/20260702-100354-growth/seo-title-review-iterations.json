@@ -1,0 +1,174 @@
+[
+  {
+    "attempt": 1,
+    "approved": false,
+    "issues": [
+      "title_similarity_high:How to copilot: the practical steps before you rely on it::How to browser extension: the practical steps before you rely on it"
+    ],
+    "titles": [
+      {
+        "sequence": 1,
+        "signal": "global",
+        "theme_variant": "setup",
+        "title": "What should first-time foreign tourists know about setup in global"
+      },
+      {
+        "sequence": 2,
+        "signal": "chrome extension",
+        "theme_variant": "problem_solution",
+        "title": "How to chrome-extension"
+      },
+      {
+        "sequence": 3,
+        "signal": "ai",
+        "theme_variant": "problem_solution",
+        "title": "How to ai: what actually matters"
+      },
+      {
+        "sequence": 4,
+        "signal": "copilot",
+        "theme_variant": "problem_solution",
+        "title": "How to copilot: the practical steps before you rely on it"
+      },
+      {
+        "sequence": 5,
+        "signal": "markdown",
+        "theme_variant": "problem_solution",
+        "title": "How to markdown: setup, limits, and safer fallback options"
+      },
+      {
+        "sequence": 6,
+        "signal": "web scraping",
+        "theme_variant": "problem_solution",
+        "title": "How to web-scraping"
+      },
+      {
+        "sequence": 7,
+        "signal": "content extraction",
+        "theme_variant": "problem_solution",
+        "title": "How to content extraction"
+      },
+      {
+        "sequence": 8,
+        "signal": "browser extension",
+        "theme_variant": "problem_solution",
+        "title": "How to browser extension: the practical steps before you rely on it"
+      },
+      {
+        "sequence": 9,
+        "signal": "copy",
+        "theme_variant": "problem_solution",
+        "title": "How to copy"
+      },
+      {
+        "sequence": 10,
+        "signal": "auth",
+        "theme_variant": "problem_solution",
+        "title": "How to auth"
+      },
+      {
+        "sequence": 11,
+        "signal": "payment",
+        "theme_variant": "problem_solution",
+        "title": "How to payment"
+      },
+      {
+        "sequence": 12,
+        "signal": "cancel",
+        "theme_variant": "problem_solution",
+        "title": "How to cancel"
+      },
+      {
+        "sequence": 13,
+        "signal": "pricing",
+        "theme_variant": "problem_solution",
+        "title": "How to pricing"
+      }
+    ]
+  },
+  {
+    "attempt": 2,
+    "approved": true,
+    "issues": [],
+    "titles": [
+      {
+        "sequence": 1,
+        "signal": "global",
+        "theme_variant": "setup",
+        "title": "What should first-time foreign tourists know about setup in global: what actually matters"
+      },
+      {
+        "sequence": 2,
+        "signal": "chrome extension",
+        "theme_variant": "problem_solution",
+        "title": "How to chrome-extension: what actually matters"
+      },
+      {
+        "sequence": 3,
+        "signal": "ai",
+        "theme_variant": "problem_solution",
+        "title": "How to ai: the practical steps before you rely on it"
+      },
+      {
+        "sequence": 4,
+        "signal": "copilot",
+        "theme_variant": "problem_solution",
+        "title": "How to copilot: setup, limits, and safer fallback options"
+      },
+      {
+        "sequence": 5,
+        "signal": "markdown",
+        "theme_variant": "problem_solution",
+        "title": "How to markdown"
+      },
+      {
+        "sequence": 6,
+        "signal": "web scraping",
+        "theme_variant": "problem_solution",
+        "title": "How to web-scraping"
+      },
+      {
+        "sequence": 7,
+        "signal": "content extraction",
+        "theme_variant": "problem_solution",
+        "title": "How to content extraction"
+      },
+      {
+        "sequence": 8,
+        "signal": "browser extension",
+        "theme_variant": "problem_solution",
+        "title": "How to browser extension"
+      },
+      {
+        "sequence": 9,
+        "signal": "copy",
+        "theme_variant": "problem_solution",
+        "title": "How to copy"
+      },
+      {
+        "sequence": 10,
+        "signal": "auth",
+        "theme_variant": "problem_solution",
+        "title": "How to auth"
+      },
+      {
+        "sequence": 11,
+        "signal": "payment",
+        "theme_variant": "problem_solution",
+        "title": "How to payment"
+      },
+      {
+        "sequence": 12,
+        "signal": "cancel",
+        "theme_variant": "problem_solution",
+        "title": "How to cancel"
+      },
+      {
+        "sequence": 13,
+        "signal": "pricing",
+        "theme_variant": "problem_solution",
+        "title": "How to pricing"
+      }
+    ]
+  }
+]

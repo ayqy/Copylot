@@ -2,21 +2,21 @@
 
 ## 当前阶段
 - Stage：S0 上架与商店端取证闭环（收入优先）
-- 阶段选择说明：产品已发布到商店且已并行推广获客；主路径仍是 S0 的商店端真实取证闭环。由于 Top1 依赖权限与代理就绪，当前按顺延规则执行可直接推动转化与付费意向证据沉淀的收入增量。
+- 阶段选择说明：产品已发布到商店且已并行推广获客；主路径仍是 S0 的商店端真实取证闭环。`Copylot` 的 GSC / GA4 真实链路已在本轮恢复，后续收入与功能判断应优先依据真实搜索数据和站内承载缺口，而不是继续停留在“代理未通”的旧假设。
 - 当前版本：`manifest.json` = `1.1.28`
 - 当前状态：插件已发布到 Chrome Web Store；官网已上线；并行增长循环已启动
   - 官网：`https://copy.useai.online/`
   - 商店：`https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic`
 
 ## 当前进度
-- 当前进度一句话结论：S0 `13/15`，S4 `5/8`，S5 `3/3`；Top1 阻塞持续，本轮已完成 `v1-100` 的收入最小增量交付并形成离线可审计证据。
+- 当前进度一句话结论：S0 `13/15`，S4 `5/8`，S5 `3/3`；Top1 阻塞持续，但本轮已恢复 `Copylot` 的 GSC / GA4 真实数据链路，并完成一轮真实增长闭环。
 - 关键阶段进度：S0 `13/15`；S4 `5/8`；S5 `3/3`
-- 本轮交付主题：Top1 因账号权限/代理阻塞不可执行，顺延完成 Top3 第 2 项（`v1-100`：Pro 意向转化最小增量）。
+- 本轮交付主题：恢复 `Copylot` 增长数据基线并执行真实工厂增长，证据见 `docs/reports/v1-106-report.md` 与 `docs/evidence/growth/20260702-100354-growth/`。
 
 ## 下一步Top3（收入优先）
-1. （S0 主路径，当前阻塞）解除 CWS Developer Dashboard 编辑/发布权限，并在目标 shell 完成 `source ~/.bash_profile && pxy` 代理就绪。
-2. （本轮已完成，继续复用）维护 `v1-100` 的漏斗证据与样本口径，保持导出/脚本/文档一致。
-3. （并行收入证据）持续回填 `conversion-evidence-index`，并保持 `metrics`、执行记录、证据索引三方一致。
+1. 修复 `https://copy.useai.online/pricing` 的可访问性，并把修复结果重新提交 GSC。
+2. 基于工厂动作板扩出首批 `facts / use_case / guide_detail` 内容承载页，接住现有极薄搜索曝光。
+3. 继续维护 `v1-100` 的意向漏斗证据与 `conversion-evidence-index`，把搜索流量和 Pro 意向承接到同一复盘口径。
 
 ## 阻塞
 - Top1 阻塞主描述：`CWS 权限 + source ~/.bash_profile && pxy 未就绪`。

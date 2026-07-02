@@ -1,0 +1,28 @@
+{
+  "execution_status": "done",
+  "data_status": "ready",
+  "outcome_status": "flat",
+  "summary": "data=ready outcome=flat clicks=0.0% sessions=0.0% conversions=0.0%",
+  "wins": [],
+  "losses": [],
+  "flat_signals": [
+    "organic 指标整体持平：clicks=0.0% sessions=0.0% conversions=0.0%"
+  ],
+  "blockers": [
+    "realtime_unverified"
+  ],
+  "opportunities": {
+    "technical_seo": [],
+    "content_refresh": [],
+    "conversion_optimization": [],
+    "offpage_outreach": [
+      {
+        "page_url": "https://copy.useai.online/",
+        "normalized_url": "https://copy.useai.online/",
+        "page_type": "other",
+        "surface": "page",
+        "reason": "organic_impressions=1 organic_sessions=0"
+      }
+    ]
+  }
+}

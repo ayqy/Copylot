@@ -1,0 +1,536 @@
+[
+  {
+    "query": "what should first-time foreign tourists know about setup in global",
+    "topic": "global",
+    "signal": "global",
+    "locale": "en",
+    "intent": "setup_or_checklist",
+    "problem_stage": "awareness",
+    "surface_type": "use_case",
+    "status": "missing",
+    "mapped_url": null,
+    "priority_score": 100,
+    "business_fit": "high",
+    "content_fit": "high",
+    "distribution_fit": "medium",
+    "recommended_programs": [
+      "seo"
+    ],
+    "source_type": "hot_matrix",
+    "must_cover": [
+      "问题定义",
+      "步骤或决策建议",
+      "边界与误区",
+      "下一步 CTA"
+    ],
+    "theme_variant": "",
+    "editorial_angle": "",
+    "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "reason": "通过 global x setup x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+    "_source_index": 0,
+    "signature": "global | setup | should first time",
+    "cluster": "global",
+    "diversity": {
+      "signal": "global",
+      "signature": "global | setup | should first time",
+      "cluster": "global",
+      "historical_signal_count": 0,
+      "historical_signature_count": 0,
+      "historical_cluster_count": 0
+    }
+  },
+  {
+    "query": "how to chrome-extension",
+    "topic": "chrome extension",
+    "signal": "chrome extension",
+    "locale": "en",
+    "intent": "how_to",
+    "problem_stage": "awareness",
+    "surface_type": "guide_detail",
+    "status": "missing",
+    "mapped_url": null,
+    "priority_score": 100,
+    "business_fit": "high",
+    "content_fit": "high",
+    "distribution_fit": "medium",
+    "recommended_programs": [
+      "seo"
+    ],
+    "source_type": "market_research",
+    "must_cover": [
+      "问题定义",
+      "步骤",
+      "常见错误",
+      "CTA"
+    ],
+    "theme_variant": "",
+    "editorial_angle": "",
+    "conversion_hook": "",
+    "cta_offer": "",
+    "content_track": {},
+    "reason": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+    "_source_index": 60,
+    "signature": "chrome extension | chrome extension",
+    "cluster": "chrome extension",
+    "diversity": {
+      "signal": "chrome extension",
+      "signature": "chrome extension | chrome extension",
+      "cluster": "chrome extension",
+      "historical_signal_count": 0,
+      "historical_signature_count": 0,
+      "historical_cluster_count": 0
+    }
+  },
+  {
+    "query": "how to ai",
+    "topic": "ai",
+    "signal": "ai",
+    "locale": "en",
+    "intent": "how_to",
+    "problem_stage": "awareness",
+    "surface_type": "guide_detail",
+    "status": "missing",
+    "mapped_url": null,
+    "priority_score": 100,
+    "business_fit": "high",
+    "content_fit": "high",
+    "distribution_fit": "medium",
+    "recommended_programs": [
+      "seo"
+    ],
+    "source_type": "market_research",
+    "must_cover": [
+      "问题定义",
+      "步骤",
+      "常见错误",
+      "CTA"
+    ],
+    "theme_variant": "",
+    "editorial_angle": "",
+    "conversion_hook": "",
+    "cta_offer": "",
+    "content_track": {},
+    "reason": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+    "_source_index": 62,
+    "signature": "ai | ai",
+    "cluster": "ai",
+    "diversity": {
+      "signal": "ai",
+      "signature": "ai | ai",
+      "cluster": "ai",
+      "historical_signal_count": 0,
+      "historical_signature_count": 0,
+      "historical_cluster_count": 0
+    }
+  },
+  {
+    "query": "how to copilot",
+    "topic": "copilot",
+    "signal": "copilot",
+    "locale": "en",
+    "intent": "how_to",
+    "problem_stage": "awareness",
+    "surface_type": "guide_detail",
+    "status": "missing",
+    "mapped_url": null,
+    "priority_score": 100,
+    "business_fit": "high",
+    "content_fit": "high",
+    "distribution_fit": "medium",
+    "recommended_programs": [
+      "seo"
+    ],
+    "source_type": "market_research",
+    "must_cover": [
+      "问题定义",
+      "步骤",
+      "常见错误",
+      "CTA"
+    ],
+    "theme_variant": "",
+    "editorial_angle": "",
+    "conversion_hook": "",
+    "cta_offer": "",
+    "content_track": {},
+    "reason": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+    "_source_index": 64,
+    "signature": "copilot | copilot",
+    "cluster": "copilot",
+    "diversity": {
+      "signal": "copilot",
+      "signature": "copilot | copilot",
+      "cluster": "copilot",
+      "historical_signal_count": 0,
+      "historical_signature_count": 0,
+      "historical_cluster_count": 0
+    }
+  },
+  {
+    "query": "how to markdown",
+    "topic": "markdown",
+    "signal": "markdown",
+    "locale": "en",
+    "intent": "how_to",
+    "problem_stage": "awareness",
+    "surface_type": "guide_detail",
+    "status": "missing",
+    "mapped_url": null,
+    "priority_score": 100,
+    "business_fit": "high",
+    "content_fit": "high",
+    "distribution_fit": "medium",
+    "recommended_programs": [
+      "seo"
+    ],
+    "source_type": "market_research",
+    "must_cover": [
+      "问题定义",
+      "步骤",
+      "常见错误",
+      "CTA"
+    ],
+    "theme_variant": "",
+    "editorial_angle": "",
+    "conversion_hook": "",
+    "cta_offer": "",
+    "content_track": {},
+    "reason": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+    "_source_index": 68,
+    "signature": "markdown | markdown",
+    "cluster": "markdown",
+    "diversity": {
+      "signal": "markdown",
+      "signature": "markdown | markdown",
+      "cluster": "markdown",
+      "historical_signal_count": 0,
+      "historical_signature_count": 0,
+      "historical_cluster_count": 0
+    }
+  },
+  {
+    "query": "how to web-scraping",
+    "topic": "web scraping",
+    "signal": "web scraping",
+    "locale": "en",
+    "intent": "how_to",
+    "problem_stage": "awareness",
+    "surface_type": "guide_detail",
+    "status": "missing",
+    "mapped_url": null,
+    "priority_score": 100,
+    "business_fit": "high",
+    "content_fit": "high",
+    "distribution_fit": "medium",
+    "recommended_programs": [
+      "seo"
+    ],
+    "source_type": "market_research",
+    "must_cover": [
+      "问题定义",
+      "步骤",
+      "常见错误",
+      "CTA"
+    ],
+    "theme_variant": "",
+    "editorial_angle": "",
+    "conversion_hook": "",
+    "cta_offer": "",
+    "content_track": {},
+    "reason": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+    "_source_index": 70,
+    "signature": "web scraping | web scraping",
+    "cluster": "web scraping",
+    "diversity": {
+      "signal": "web scraping",
+      "signature": "web scraping | web scraping",
+      "cluster": "web scraping",
+      "historical_signal_count": 0,
+      "historical_signature_count": 0,
+      "historical_cluster_count": 0
+    }
+  },
+  {
+    "query": "how to content extraction",
+    "topic": "content extraction",
+    "signal": "content extraction",
+    "locale": "auto",
+    "intent": "how_to",
+    "problem_stage": "awareness",
+    "surface_type": "guide_detail",
+    "status": "missing",
+    "mapped_url": null,
+    "priority_score": 100,
+    "business_fit": "medium",
+    "content_fit": "high",
+    "distribution_fit": "low",
+    "recommended_programs": [
+      "seo"
+    ],
+    "source_type": "seed_variant",
+    "must_cover": [
+      "问题定义",
+      "操作步骤",
+      "误区"
+    ],
+    "conversion_hook": "",
+    "cta_offer": "",
+    "content_track": {},
+    "reason": "seed_topic=content-extraction",
+    "_source_index": 41,
+    "signature": "content extraction | content extraction",
+    "cluster": "content extraction",
+    "diversity": {
+      "signal": "content extraction",
+      "signature": "content extraction | content extraction",
+      "cluster": "content extraction",
+      "historical_signal_count": 0,
+      "historical_signature_count": 0,
+      "historical_cluster_count": 0
+    }
+  },
+  {
+    "query": "how to browser extension",
+    "topic": "browser extension",
+    "signal": "browser extension",
+    "locale": "auto",
+    "intent": "how_to",
+    "problem_stage": "awareness",
+    "surface_type": "guide_detail",
+    "status": "missing",
+    "mapped_url": null,
+    "priority_score": 100,
+    "business_fit": "medium",
+    "content_fit": "high",
+    "distribution_fit": "low",
+    "recommended_programs": [
+      "seo"
+    ],
+    "source_type": "seed_variant",
+    "must_cover": [
+      "问题定义",
+      "操作步骤",
+      "误区"
+    ],
+    "conversion_hook": "",
+    "cta_offer": "",
+    "content_track": {},
+    "reason": "seed_topic=browser-extension",
+    "_source_index": 45,
+    "signature": "browser extension | browser extension",
+    "cluster": "browser extension",
+    "diversity": {
+      "signal": "browser extension",
+      "signature": "browser extension | browser extension",
+      "cluster": "browser extension",
+      "historical_signal_count": 0,
+      "historical_signature_count": 0,
+      "historical_cluster_count": 0
+    }
+  },
+  {
+    "query": "how to copy",
+    "topic": "copy",
+    "signal": "copy",
+    "locale": "en",
+    "intent": "how_to",
+    "problem_stage": "awareness",
+    "surface_type": "guide_detail",
+    "status": "weak",
+    "mapped_url": "https://copy.useai.online/auth",
+    "priority_score": 100,
+    "business_fit": "high",
+    "content_fit": "high",
+    "distribution_fit": "medium",
+    "recommended_programs": [
+      "seo"
+    ],
+    "source_type": "market_research",
+    "must_cover": [
+      "问题定义",
+      "步骤",
+      "常见错误",
+      "CTA"
+    ],
+    "theme_variant": "",
+    "editorial_angle": "",
+    "conversion_hook": "",
+    "cta_offer": "",
+    "content_track": {},
+    "reason": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+    "_source_index": 66,
+    "signature": "copy | copy",
+    "cluster": "copy",
+    "diversity": {
+      "signal": "copy",
+      "signature": "copy | copy",
+      "cluster": "copy",
+      "historical_signal_count": 0,
+      "historical_signature_count": 0,
+      "historical_cluster_count": 0
+    }
+  },
+  {
+    "query": "how to auth",
+    "topic": "auth",
+    "signal": "auth",
+    "locale": "auto",
+    "intent": "how_to",
+    "problem_stage": "awareness",
+    "surface_type": "guide_detail",
+    "status": "weak",
+    "mapped_url": "https://copy.useai.online/auth",
+    "priority_score": 98,
+    "business_fit": "medium",
+    "content_fit": "high",
+    "distribution_fit": "low",
+    "recommended_programs": [
+      "seo"
+    ],
+    "source_type": "seed_variant",
+    "must_cover": [
+      "问题定义",
+      "操作步骤",
+      "误区"
+    ],
+    "conversion_hook": "",
+    "cta_offer": "",
+    "content_track": {},
+    "reason": "seed_topic=auth",
+    "_source_index": 0,
+    "signature": "auth | auth",
+    "cluster": "auth",
+    "diversity": {
+      "signal": "auth",
+      "signature": "auth | auth",
+      "cluster": "auth",
+      "historical_signal_count": 0,
+      "historical_signature_count": 0,
+      "historical_cluster_count": 0
+    }
+  },
+  {
+    "query": "how to payment",
+    "topic": "payment",
+    "signal": "payment",
+    "locale": "auto",
+    "intent": "how_to",
+    "problem_stage": "awareness",
+    "surface_type": "guide_detail",
+    "status": "weak",
+    "mapped_url": "https://copy.useai.online/payment/cancel",
+    "priority_score": 98,
+    "business_fit": "medium",
+    "content_fit": "high",
+    "distribution_fit": "low",
+    "recommended_programs": [
+      "seo"
+    ],
+    "source_type": "seed_variant",
+    "must_cover": [
+      "问题定义",
+      "操作步骤",
+      "误区"
+    ],
+    "conversion_hook": "",
+    "cta_offer": "",
+    "content_track": {},
+    "reason": "seed_topic=payment",
+    "_source_index": 4,
+    "signature": "payment | payment",
+    "cluster": "payment",
+    "diversity": {
+      "signal": "payment",
+      "signature": "payment | payment",
+      "cluster": "payment",
+      "historical_signal_count": 0,
+      "historical_signature_count": 0,
+      "historical_cluster_count": 0
+    }
+  },
+  {
+    "query": "how to cancel",
+    "topic": "cancel",
+    "signal": "cancel",
+    "locale": "auto",
+    "intent": "how_to",
+    "problem_stage": "awareness",
+    "surface_type": "guide_detail",
+    "status": "weak",
+    "mapped_url": "https://copy.useai.online/payment/cancel",
+    "priority_score": 98,
+    "business_fit": "medium",
+    "content_fit": "high",
+    "distribution_fit": "low",
+    "recommended_programs": [
+      "seo"
+    ],
+    "source_type": "seed_variant",
+    "must_cover": [
+      "问题定义",
+      "操作步骤",
+      "误区"
+    ],
+    "conversion_hook": "",
+    "cta_offer": "",
+    "content_track": {},
+    "reason": "seed_topic=cancel",
+    "_source_index": 9,
+    "signature": "cancel | cancel",
+    "cluster": "cancel",
+    "diversity": {
+      "signal": "cancel",
+      "signature": "cancel | cancel",
+      "cluster": "cancel",
+      "historical_signal_count": 0,
+      "historical_signature_count": 0,
+      "historical_cluster_count": 0
+    }
+  },
+  {
+    "query": "how to pricing",
+    "topic": "pricing",
+    "signal": "pricing",
+    "locale": "auto",
+    "intent": "how_to",
+    "problem_stage": "awareness",
+    "surface_type": "guide_detail",
+    "status": "weak",
+    "mapped_url": "https://copy.useai.online/pricing",
+    "priority_score": 98,
+    "business_fit": "medium",
+    "content_fit": "high",
+    "distribution_fit": "low",
+    "recommended_programs": [
+      "seo"
+    ],
+    "source_type": "seed_variant",
+    "must_cover": [
+      "问题定义",
+      "操作步骤",
+      "误区"
+    ],
+    "conversion_hook": "",
+    "cta_offer": "",
+    "content_track": {},
+    "reason": "seed_topic=pricing",
+    "_source_index": 13,
+    "signature": "pricing | pricing",
+    "cluster": "pricing",
+    "diversity": {
+      "signal": "pricing",
+      "signature": "pricing | pricing",
+      "cluster": "pricing",
+      "historical_signal_count": 0,
+      "historical_signature_count": 0,
+      "historical_cluster_count": 0
+    }
+  }
+]

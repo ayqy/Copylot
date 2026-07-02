@@ -1,0 +1,1010 @@
+[
+  {
+    "sequence": 1,
+    "keyword": "what should first-time foreign tourists know about setup in global",
+    "topic": "global",
+    "signal": "global",
+    "locale": "en",
+    "page_type": "use_case",
+    "target_url_slug": "what-should-first-time-foreign-tourists-know-about-setup-in-global",
+    "brief_title": "What should first-time foreign tourists know about setup in global: what actually matters",
+    "theme_variant": "setup",
+    "editorial_angle": "",
+    "must_cover_sections": [
+      "问题定义",
+      "步骤或决策建议",
+      "边界与误区",
+      "下一步 CTA"
+    ],
+    "faq_questions": [
+      "what should first-time foreign tourists know about setup in global 适合谁？",
+      "what should first-time foreign tourists know about setup in global 最容易踩的坑是什么？",
+      "what should first-time foreign tourists know about setup in global 失败时的备用方案是什么？"
+    ],
+    "cta_goal": "lead_generation",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    },
+    "internal_link_targets": [],
+    "image_brief": {
+      "hero_required": true,
+      "in_content_required": true,
+      "search_terms": [
+        "global workflow diagram",
+        "global architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "global practical workflow",
+        "global concept illustration",
+        "software architecture whiteboard"
+      ],
+      "source_term": "global workflow diagram",
+      "relevance_reason": "图片必须与“what should first-time foreign tourists know about setup in global”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "alt_guidance": "图片必须与“what should first-time foreign tourists know about setup in global”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "width": 1600,
+      "height": 900
+    },
+    "inline_image_target_per_draft": 2
+  },
+  {
+    "sequence": 2,
+    "keyword": "how to chrome-extension",
+    "topic": "chrome extension",
+    "signal": "chrome extension",
+    "locale": "en",
+    "page_type": "guide_detail",
+    "target_url_slug": "how-to-chrome-extension",
+    "brief_title": "How to chrome-extension: what actually matters",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "must_cover_sections": [
+      "问题定义",
+      "步骤",
+      "常见错误",
+      "CTA"
+    ],
+    "faq_questions": [
+      "how to chrome-extension 适合谁？",
+      "how to chrome-extension 最容易踩的坑是什么？",
+      "how to chrome-extension 失败时的备用方案是什么？"
+    ],
+    "cta_goal": "lead_generation",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    },
+    "internal_link_targets": [],
+    "image_brief": {
+      "hero_required": true,
+      "in_content_required": true,
+      "search_terms": [
+        "chrome extension workflow diagram",
+        "chrome extension architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "chrome extension practical workflow",
+        "chrome extension concept illustration",
+        "software architecture whiteboard"
+      ],
+      "source_term": "chrome extension workflow diagram",
+      "relevance_reason": "图片必须与“how to chrome-extension”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "alt_guidance": "图片必须与“how to chrome-extension”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "width": 1600,
+      "height": 900
+    },
+    "inline_image_target_per_draft": 2
+  },
+  {
+    "sequence": 3,
+    "keyword": "how to ai",
+    "topic": "ai",
+    "signal": "ai",
+    "locale": "en",
+    "page_type": "guide_detail",
+    "target_url_slug": "how-to-ai",
+    "brief_title": "How to ai: the practical steps before you rely on it",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "must_cover_sections": [
+      "问题定义",
+      "步骤",
+      "常见错误",
+      "CTA"
+    ],
+    "faq_questions": [
+      "how to ai 适合谁？",
+      "how to ai 最容易踩的坑是什么？",
+      "how to ai 失败时的备用方案是什么？"
+    ],
+    "cta_goal": "lead_generation",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    },
+    "internal_link_targets": [],
+    "image_brief": {
+      "hero_required": true,
+      "in_content_required": true,
+      "search_terms": [
+        "ai workflow diagram",
+        "ai architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "ai practical workflow",
+        "ai concept illustration",
+        "software architecture whiteboard"
+      ],
+      "source_term": "ai workflow diagram",
+      "relevance_reason": "图片必须与“how to ai”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "alt_guidance": "图片必须与“how to ai”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "width": 1600,
+      "height": 900
+    },
+    "inline_image_target_per_draft": 2
+  },
+  {
+    "sequence": 4,
+    "keyword": "how to copilot",
+    "topic": "copilot",
+    "signal": "copilot",
+    "locale": "en",
+    "page_type": "guide_detail",
+    "target_url_slug": "how-to-copilot",
+    "brief_title": "How to copilot: setup, limits, and safer fallback options",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "must_cover_sections": [
+      "问题定义",
+      "步骤",
+      "常见错误",
+      "CTA"
+    ],
+    "faq_questions": [
+      "how to copilot 适合谁？",
+      "how to copilot 最容易踩的坑是什么？",
+      "how to copilot 失败时的备用方案是什么？"
+    ],
+    "cta_goal": "lead_generation",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    },
+    "internal_link_targets": [],
+    "image_brief": {
+      "hero_required": true,
+      "in_content_required": true,
+      "search_terms": [
+        "copilot workflow diagram",
+        "copilot architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copilot practical workflow",
+        "copilot concept illustration",
+        "software architecture whiteboard"
+      ],
+      "source_term": "copilot workflow diagram",
+      "relevance_reason": "图片必须与“how to copilot”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "alt_guidance": "图片必须与“how to copilot”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "width": 1600,
+      "height": 900
+    },
+    "inline_image_target_per_draft": 2
+  },
+  {
+    "sequence": 5,
+    "keyword": "how to markdown",
+    "topic": "markdown",
+    "signal": "markdown",
+    "locale": "en",
+    "page_type": "guide_detail",
+    "target_url_slug": "how-to-markdown",
+    "brief_title": "How to markdown",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "must_cover_sections": [
+      "问题定义",
+      "步骤",
+      "常见错误",
+      "CTA"
+    ],
+    "faq_questions": [
+      "how to markdown 适合谁？",
+      "how to markdown 最容易踩的坑是什么？",
+      "how to markdown 失败时的备用方案是什么？"
+    ],
+    "cta_goal": "lead_generation",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    },
+    "internal_link_targets": [],
+    "image_brief": {
+      "hero_required": true,
+      "in_content_required": true,
+      "search_terms": [
+        "markdown workflow diagram",
+        "markdown architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "markdown practical workflow",
+        "markdown concept illustration",
+        "software architecture whiteboard"
+      ],
+      "source_term": "markdown workflow diagram",
+      "relevance_reason": "图片必须与“how to markdown”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "alt_guidance": "图片必须与“how to markdown”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "width": 1600,
+      "height": 900
+    },
+    "inline_image_target_per_draft": 2
+  },
+  {
+    "sequence": 6,
+    "keyword": "how to web-scraping",
+    "topic": "web scraping",
+    "signal": "web scraping",
+    "locale": "en",
+    "page_type": "guide_detail",
+    "target_url_slug": "how-to-web-scraping",
+    "brief_title": "How to web-scraping",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "must_cover_sections": [
+      "问题定义",
+      "步骤",
+      "常见错误",
+      "CTA"
+    ],
+    "faq_questions": [
+      "how to web-scraping 适合谁？",
+      "how to web-scraping 最容易踩的坑是什么？",
+      "how to web-scraping 失败时的备用方案是什么？"
+    ],
+    "cta_goal": "lead_generation",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    },
+    "internal_link_targets": [],
+    "image_brief": {
+      "hero_required": true,
+      "in_content_required": true,
+      "search_terms": [
+        "web scraping workflow diagram",
+        "web scraping architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "web scraping practical workflow",
+        "web scraping concept illustration",
+        "software architecture whiteboard"
+      ],
+      "source_term": "web scraping workflow diagram",
+      "relevance_reason": "图片必须与“how to web-scraping”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "alt_guidance": "图片必须与“how to web-scraping”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "width": 1600,
+      "height": 900
+    },
+    "inline_image_target_per_draft": 2
+  },
+  {
+    "sequence": 7,
+    "keyword": "how to content extraction",
+    "topic": "content extraction",
+    "signal": "content extraction",
+    "locale": "auto",
+    "page_type": "guide_detail",
+    "target_url_slug": "how-to-content-extraction",
+    "brief_title": "How to content extraction",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "must_cover_sections": [
+      "问题定义",
+      "操作步骤",
+      "误区"
+    ],
+    "faq_questions": [
+      "how to content extraction 适合谁？",
+      "how to content extraction 最容易踩的坑是什么？",
+      "how to content extraction 失败时的备用方案是什么？"
+    ],
+    "cta_goal": "lead_generation",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    },
+    "internal_link_targets": [],
+    "image_brief": {
+      "hero_required": true,
+      "in_content_required": true,
+      "search_terms": [
+        "content extraction workflow diagram",
+        "content extraction architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "content extraction practical workflow",
+        "content extraction concept illustration",
+        "software architecture whiteboard"
+      ],
+      "source_term": "content extraction workflow diagram",
+      "relevance_reason": "图片必须与“how to content extraction”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "alt_guidance": "图片必须与“how to content extraction”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "width": 1600,
+      "height": 900
+    },
+    "inline_image_target_per_draft": 2
+  },
+  {
+    "sequence": 8,
+    "keyword": "how to browser extension",
+    "topic": "browser extension",
+    "signal": "browser extension",
+    "locale": "auto",
+    "page_type": "guide_detail",
+    "target_url_slug": "how-to-browser-extension",
+    "brief_title": "How to browser extension",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "must_cover_sections": [
+      "问题定义",
+      "操作步骤",
+      "误区"
+    ],
+    "faq_questions": [
+      "how to browser extension 适合谁？",
+      "how to browser extension 最容易踩的坑是什么？",
+      "how to browser extension 失败时的备用方案是什么？"
+    ],
+    "cta_goal": "lead_generation",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    },
+    "internal_link_targets": [],
+    "image_brief": {
+      "hero_required": true,
+      "in_content_required": true,
+      "search_terms": [
+        "browser extension workflow diagram",
+        "browser extension architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "browser extension practical workflow",
+        "browser extension concept illustration",
+        "software architecture whiteboard"
+      ],
+      "source_term": "browser extension workflow diagram",
+      "relevance_reason": "图片必须与“how to browser extension”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "alt_guidance": "图片必须与“how to browser extension”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "width": 1600,
+      "height": 900
+    },
+    "inline_image_target_per_draft": 2
+  },
+  {
+    "sequence": 9,
+    "keyword": "how to copy",
+    "topic": "copy",
+    "signal": "copy",
+    "locale": "en",
+    "page_type": "guide_detail",
+    "target_url_slug": "how-to-copy",
+    "brief_title": "How to copy",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "must_cover_sections": [
+      "问题定义",
+      "步骤",
+      "常见错误",
+      "CTA"
+    ],
+    "faq_questions": [
+      "how to copy 适合谁？",
+      "how to copy 最容易踩的坑是什么？",
+      "how to copy 失败时的备用方案是什么？"
+    ],
+    "cta_goal": "lead_generation",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    },
+    "internal_link_targets": [],
+    "image_brief": {
+      "hero_required": true,
+      "in_content_required": true,
+      "search_terms": [
+        "copy workflow diagram",
+        "copy architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copy practical workflow",
+        "copy concept illustration",
+        "software architecture whiteboard"
+      ],
+      "source_term": "copy workflow diagram",
+      "relevance_reason": "图片必须与“how to copy”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "alt_guidance": "图片必须与“how to copy”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "width": 1600,
+      "height": 900
+    },
+    "inline_image_target_per_draft": 2
+  },
+  {
+    "sequence": 10,
+    "keyword": "how to auth",
+    "topic": "auth",
+    "signal": "auth",
+    "locale": "auto",
+    "page_type": "guide_detail",
+    "target_url_slug": "how-to-auth",
+    "brief_title": "How to auth",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "must_cover_sections": [
+      "问题定义",
+      "操作步骤",
+      "误区"
+    ],
+    "faq_questions": [
+      "how to auth 适合谁？",
+      "how to auth 最容易踩的坑是什么？",
+      "how to auth 失败时的备用方案是什么？"
+    ],
+    "cta_goal": "lead_generation",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    },
+    "internal_link_targets": [],
+    "image_brief": {
+      "hero_required": true,
+      "in_content_required": true,
+      "search_terms": [
+        "auth workflow diagram",
+        "auth architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "auth practical workflow",
+        "auth concept illustration",
+        "software architecture whiteboard"
+      ],
+      "source_term": "auth workflow diagram",
+      "relevance_reason": "图片必须与“how to auth”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "alt_guidance": "图片必须与“how to auth”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "width": 1600,
+      "height": 900
+    },
+    "inline_image_target_per_draft": 2
+  },
+  {
+    "sequence": 11,
+    "keyword": "how to payment",
+    "topic": "payment",
+    "signal": "payment",
+    "locale": "auto",
+    "page_type": "guide_detail",
+    "target_url_slug": "how-to-payment",
+    "brief_title": "How to payment",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "must_cover_sections": [
+      "问题定义",
+      "操作步骤",
+      "误区"
+    ],
+    "faq_questions": [
+      "how to payment 适合谁？",
+      "how to payment 最容易踩的坑是什么？",
+      "how to payment 失败时的备用方案是什么？"
+    ],
+    "cta_goal": "lead_generation",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    },
+    "internal_link_targets": [],
+    "image_brief": {
+      "hero_required": true,
+      "in_content_required": true,
+      "search_terms": [
+        "payment workflow diagram",
+        "payment architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "payment practical workflow",
+        "payment concept illustration",
+        "software architecture whiteboard"
+      ],
+      "source_term": "payment workflow diagram",
+      "relevance_reason": "图片必须与“how to payment”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "alt_guidance": "图片必须与“how to payment”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "width": 1600,
+      "height": 900
+    },
+    "inline_image_target_per_draft": 2
+  },
+  {
+    "sequence": 12,
+    "keyword": "how to cancel",
+    "topic": "cancel",
+    "signal": "cancel",
+    "locale": "auto",
+    "page_type": "guide_detail",
+    "target_url_slug": "how-to-cancel",
+    "brief_title": "How to cancel",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "must_cover_sections": [
+      "问题定义",
+      "操作步骤",
+      "误区"
+    ],
+    "faq_questions": [
+      "how to cancel 适合谁？",
+      "how to cancel 最容易踩的坑是什么？",
+      "how to cancel 失败时的备用方案是什么？"
+    ],
+    "cta_goal": "lead_generation",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    },
+    "internal_link_targets": [],
+    "image_brief": {
+      "hero_required": true,
+      "in_content_required": true,
+      "search_terms": [
+        "cancel workflow diagram",
+        "cancel architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "cancel practical workflow",
+        "cancel concept illustration",
+        "software architecture whiteboard"
+      ],
+      "source_term": "cancel workflow diagram",
+      "relevance_reason": "图片必须与“how to cancel”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "alt_guidance": "图片必须与“how to cancel”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "width": 1600,
+      "height": 900
+    },
+    "inline_image_target_per_draft": 2
+  },
+  {
+    "sequence": 13,
+    "keyword": "how to pricing",
+    "topic": "pricing",
+    "signal": "pricing",
+    "locale": "auto",
+    "page_type": "guide_detail",
+    "target_url_slug": "how-to-pricing",
+    "brief_title": "How to pricing",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "must_cover_sections": [
+      "问题定义",
+      "操作步骤",
+      "误区"
+    ],
+    "faq_questions": [
+      "how to pricing 适合谁？",
+      "how to pricing 最容易踩的坑是什么？",
+      "how to pricing 失败时的备用方案是什么？"
+    ],
+    "cta_goal": "lead_generation",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    },
+    "internal_link_targets": [],
+    "image_brief": {
+      "hero_required": true,
+      "in_content_required": true,
+      "search_terms": [
+        "pricing workflow diagram",
+        "pricing architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "pricing practical workflow",
+        "pricing concept illustration",
+        "software architecture whiteboard"
+      ],
+      "source_term": "pricing workflow diagram",
+      "relevance_reason": "图片必须与“how to pricing”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "alt_guidance": "图片必须与“how to pricing”的具体工程问题一致，优先表现操作、架构草图、界面或工作流，而不是抽象科技背景图。",
+      "width": 1600,
+      "height": 900
+    },
+    "inline_image_target_per_draft": 2
+  }
+]

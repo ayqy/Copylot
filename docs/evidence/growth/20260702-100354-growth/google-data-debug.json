@@ -1,0 +1,185 @@
+{
+  "oauth_context": {
+    "access_token_available": true,
+    "scope": "https://www.googleapis.com/auth/analytics.edit https://www.googleapis.com/auth/webmasters https://www.googleapis.com/auth/analytics",
+    "scope_tokens": [
+      "https://www.googleapis.com/auth/analytics.edit",
+      "https://www.googleapis.com/auth/webmasters",
+      "https://www.googleapis.com/auth/analytics"
+    ],
+    "has_webmasters_scope": true,
+    "has_analytics_readonly_scope": true,
+    "has_analytics_edit_scope": true,
+    "network_blocked": false,
+    "error": "",
+    "has_analytics_scope": true
+  },
+  "gsc": {
+    "current": {
+      "rows": [
+        {
+          "keys": [
+            "https://copy.useai.online/"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 1
+        }
+      ],
+      "responseAggregationType": "byPage"
+    },
+    "baseline": {
+      "responseAggregationType": "byPage"
+    }
+  },
+  "gsc_queries": {
+    "current": {
+      "responseAggregationType": "byPage"
+    },
+    "baseline": {
+      "responseAggregationType": "byPage"
+    }
+  },
+  "ga4_history": {
+    "site_current": {
+      "dimensionHeaders": [
+        {
+          "name": "sessionDefaultChannelGroup"
+        }
+      ],
+      "metricHeaders": [
+        {
+          "name": "sessions",
+          "type": "TYPE_INTEGER"
+        },
+        {
+          "name": "screenPageViews",
+          "type": "TYPE_INTEGER"
+        }
+      ],
+      "metadata": {
+        "currencyCode": "USD",
+        "timeZone": "Asia/Shanghai"
+      },
+      "kind": "analyticsData#runReport"
+    },
+    "site_baseline": {
+      "dimensionHeaders": [
+        {
+          "name": "sessionDefaultChannelGroup"
+        }
+      ],
+      "metricHeaders": [
+        {
+          "name": "sessions",
+          "type": "TYPE_INTEGER"
+        },
+        {
+          "name": "screenPageViews",
+          "type": "TYPE_INTEGER"
+        }
+      ],
+      "metadata": {
+        "currencyCode": "USD",
+        "timeZone": "Asia/Shanghai"
+      },
+      "kind": "analyticsData#runReport"
+    },
+    "pages_current": {
+      "dimensionHeaders": [
+        {
+          "name": "landingPagePlusQueryString"
+        },
+        {
+          "name": "sessionDefaultChannelGroup"
+        }
+      ],
+      "metricHeaders": [
+        {
+          "name": "sessions",
+          "type": "TYPE_INTEGER"
+        }
+      ],
+      "metadata": {
+        "currencyCode": "USD",
+        "timeZone": "Asia/Shanghai"
+      },
+      "kind": "analyticsData#runReport"
+    },
+    "pages_baseline": {
+      "dimensionHeaders": [
+        {
+          "name": "landingPagePlusQueryString"
+        },
+        {
+          "name": "sessionDefaultChannelGroup"
+        }
+      ],
+      "metricHeaders": [
+        {
+          "name": "sessions",
+          "type": "TYPE_INTEGER"
+        }
+      ],
+      "metadata": {
+        "currencyCode": "USD",
+        "timeZone": "Asia/Shanghai"
+      },
+      "kind": "analyticsData#runReport"
+    },
+    "events_current": {
+      "dimensionHeaders": [
+        {
+          "name": "eventName"
+        }
+      ],
+      "metricHeaders": [
+        {
+          "name": "eventCount",
+          "type": "TYPE_INTEGER"
+        }
+      ],
+      "metadata": {
+        "currencyCode": "USD",
+        "timeZone": "Asia/Shanghai"
+      },
+      "kind": "analyticsData#runReport"
+    },
+    "events_baseline": {
+      "dimensionHeaders": [
+        {
+          "name": "eventName"
+        }
+      ],
+      "metricHeaders": [
+        {
+          "name": "eventCount",
+          "type": "TYPE_INTEGER"
+        }
+      ],
+      "metadata": {
+        "currencyCode": "USD",
+        "timeZone": "Asia/Shanghai"
+      },
+      "kind": "analyticsData#runReport"
+    },
+    "site_baseline_metrics": {
+      "organic_sessions": 0.0
+    }
+  },
+  "ga4_realtime": {
+    "dimensionHeaders": [
+      {
+        "name": "eventName"
+      }
+    ],
+    "metricHeaders": [
+      {
+        "name": "eventCount",
+        "type": "TYPE_INTEGER"
+      }
+    ],
+    "kind": "analyticsData#runRealtimeReport"
+  }
+}

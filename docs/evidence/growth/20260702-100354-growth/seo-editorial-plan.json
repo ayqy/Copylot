@@ -1,0 +1,587 @@
+[
+  {
+    "sequence": 1,
+    "keyword": "what should first-time foreign tourists know about setup in global",
+    "topic": "global",
+    "signal": "global",
+    "locale": "en",
+    "page_type": "use_case",
+    "priority_score": 100,
+    "reason": "通过 global x setup x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+    "brief_title": "What should first-time foreign tourists know about setup in global: what actually matters",
+    "theme_variant": "setup",
+    "editorial_angle": "",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    }
+  },
+  {
+    "sequence": 2,
+    "keyword": "how to chrome-extension",
+    "topic": "chrome extension",
+    "signal": "chrome extension",
+    "locale": "en",
+    "page_type": "guide_detail",
+    "priority_score": 100,
+    "reason": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+    "brief_title": "How to chrome-extension: what actually matters",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    }
+  },
+  {
+    "sequence": 3,
+    "keyword": "how to ai",
+    "topic": "ai",
+    "signal": "ai",
+    "locale": "en",
+    "page_type": "guide_detail",
+    "priority_score": 100,
+    "reason": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+    "brief_title": "How to ai: the practical steps before you rely on it",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    }
+  },
+  {
+    "sequence": 4,
+    "keyword": "how to copilot",
+    "topic": "copilot",
+    "signal": "copilot",
+    "locale": "en",
+    "page_type": "guide_detail",
+    "priority_score": 100,
+    "reason": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+    "brief_title": "How to copilot: setup, limits, and safer fallback options",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    }
+  },
+  {
+    "sequence": 5,
+    "keyword": "how to markdown",
+    "topic": "markdown",
+    "signal": "markdown",
+    "locale": "en",
+    "page_type": "guide_detail",
+    "priority_score": 100,
+    "reason": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+    "brief_title": "How to markdown",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    }
+  },
+  {
+    "sequence": 6,
+    "keyword": "how to web-scraping",
+    "topic": "web scraping",
+    "signal": "web scraping",
+    "locale": "en",
+    "page_type": "guide_detail",
+    "priority_score": 100,
+    "reason": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+    "brief_title": "How to web-scraping",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    }
+  },
+  {
+    "sequence": 7,
+    "keyword": "how to content extraction",
+    "topic": "content extraction",
+    "signal": "content extraction",
+    "locale": "auto",
+    "page_type": "guide_detail",
+    "priority_score": 100,
+    "reason": "seed_topic=content-extraction",
+    "brief_title": "How to content extraction",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    }
+  },
+  {
+    "sequence": 8,
+    "keyword": "how to browser extension",
+    "topic": "browser extension",
+    "signal": "browser extension",
+    "locale": "auto",
+    "page_type": "guide_detail",
+    "priority_score": 100,
+    "reason": "seed_topic=browser-extension",
+    "brief_title": "How to browser extension",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    }
+  },
+  {
+    "sequence": 9,
+    "keyword": "how to copy",
+    "topic": "copy",
+    "signal": "copy",
+    "locale": "en",
+    "page_type": "guide_detail",
+    "priority_score": 100,
+    "reason": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+    "brief_title": "How to copy",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    }
+  },
+  {
+    "sequence": 10,
+    "keyword": "how to auth",
+    "topic": "auth",
+    "signal": "auth",
+    "locale": "auto",
+    "page_type": "guide_detail",
+    "priority_score": 98,
+    "reason": "seed_topic=auth",
+    "brief_title": "How to auth",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    }
+  },
+  {
+    "sequence": 11,
+    "keyword": "how to payment",
+    "topic": "payment",
+    "signal": "payment",
+    "locale": "auto",
+    "page_type": "guide_detail",
+    "priority_score": 98,
+    "reason": "seed_topic=payment",
+    "brief_title": "How to payment",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    }
+  },
+  {
+    "sequence": 12,
+    "keyword": "how to cancel",
+    "topic": "cancel",
+    "signal": "cancel",
+    "locale": "auto",
+    "page_type": "guide_detail",
+    "priority_score": 98,
+    "reason": "seed_topic=cancel",
+    "brief_title": "How to cancel",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    }
+  },
+  {
+    "sequence": 13,
+    "keyword": "how to pricing",
+    "topic": "pricing",
+    "signal": "pricing",
+    "locale": "auto",
+    "page_type": "guide_detail",
+    "priority_score": 98,
+    "reason": "seed_topic=pricing",
+    "brief_title": "How to pricing",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "conversion_hook": {
+      "name": "primary_conversion",
+      "hook": "把用户引导到 lead_generation 的下一步动作",
+      "offer": "进入 lead_generation 承接页",
+      "target_surface": "lead_generation"
+    },
+    "cta_offer": "进入 lead_generation 承接页",
+    "content_track": {
+      "id": "seo-core",
+      "label": "SEO Core",
+      "target_surface": "guide_detail",
+      "target_path": "/",
+      "selection_mode": "long_tail_first"
+    },
+    "publishing_plan": {
+      "cadence": "daily",
+      "daily_keyword_target": 30,
+      "daily_publish_target": 30,
+      "monthly_index_target": 1000,
+      "annual_index_target": 10000,
+      "submission_targets": [],
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "front_end_surface": "guide_detail",
+      "front_end_path": "/",
+      "publishing_loop": "create_publish_submit"
+    }
+  }
+]

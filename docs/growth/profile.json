@@ -1,0 +1,59 @@
+{
+  "project_id": "Copylot",
+  "site_url": "https://copy.useai.online/",
+  "sitemap_url": "https://copy.useai.online/sitemap.xml",
+  "robots_url": "https://copy.useai.online/robots.txt",
+  "measurement_timezone": "Asia/Shanghai",
+  "project_tags": [
+    "chrome-extension",
+    "ai",
+    "copilot",
+    "copy",
+    "markdown",
+    "web-scraping",
+    "content-extraction",
+    "browser-extension",
+    "developer-tools"
+  ],
+  "brand_terms": [
+    "Copylot"
+  ],
+  "primary_goal_type": "lead_generation",
+  "site_archetype": "hybrid_site",
+  "supported_languages": [],
+  "page_type_rules": {},
+  "event_map": {},
+  "metric_targets": {},
+  "content_surfaces": [],
+  "money_surfaces": [],
+  "submission_targets": [],
+  "planned_channels": [],
+  "target_markets": [],
+  "target_personas": [],
+  "core_problems": [],
+  "value_props": [],
+  "channel_preferences": [],
+  "distribution_platforms": [
+    "bilibili",
+    "xiaohongshu",
+    "zhihu"
+  ],
+  "community_targets": [
+    "reddit"
+  ],
+  "community_handles": {},
+  "keyword_seed_topics": [],
+  "keyword_locales": [],
+  "content_programs": [],
+  "content_templates": [
+    "facts",
+    "compare",
+    "guide_detail",
+    "faq",
+    "use_case"
+  ],
+  "gsc_site_url": "sc-domain:copy.useai.online",
+  "ga4_property_id": "543942561",
+  "ga4_measurement_id": "G-VCWBZXTFVS",
+  "analytics_provider": "ga4"
+}

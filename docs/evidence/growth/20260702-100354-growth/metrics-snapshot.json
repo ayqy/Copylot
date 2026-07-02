@@ -1,0 +1,107 @@
+{
+  "project_id": "Copylot",
+  "current_window": {
+    "label": "current",
+    "start_date": "2026-06-18",
+    "end_date": "2026-07-01",
+    "days": 14
+  },
+  "baseline_window": {
+    "label": "baseline",
+    "start_date": "2026-05-21",
+    "end_date": "2026-06-17",
+    "days": 28
+  },
+  "source_status": [
+    {
+      "source": "gsc",
+      "status": "ready",
+      "freshness_days": 1,
+      "notes": ""
+    },
+    {
+      "source": "gsc_queries",
+      "status": "missing",
+      "freshness_days": 1,
+      "notes": "GSC query 接口可用，但当前时间窗暂无 query 数据"
+    },
+    {
+      "source": "ga4",
+      "status": "ready",
+      "freshness_days": 1,
+      "notes": "GA4 历史接口可用，但当前时间窗暂无数据"
+    },
+    {
+      "source": "ga4_realtime",
+      "status": "missing",
+      "freshness_days": 0,
+      "notes": ""
+    },
+    {
+      "source": "execution",
+      "status": "ready",
+      "freshness_days": 0,
+      "notes": ""
+    }
+  ],
+  "site_metrics": {
+    "organic_clicks": 0.0,
+    "organic_impressions": 1.0,
+    "organic_ctr": 0.0,
+    "avg_position": 1.0,
+    "organic_sessions": 0.0,
+    "micro_conversions": 0.0,
+    "primary_conversions": 0.0,
+    "organic_primary_cvr": 0.0,
+    "realtime_event_count": 0.0,
+    "realtime_page_view_count": 0.0,
+    "realtime_mapped_events": 0.0,
+    "indexed_pages": 1.0
+  },
+  "page_metrics": [
+    {
+      "page_url": "https://copy.useai.online/",
+      "normalized_url": "https://copy.useai.online/",
+      "page_type": "other",
+      "surface": "page",
+      "metrics": {
+        "organic_clicks": 0.0,
+        "organic_impressions": 1.0,
+        "organic_ctr": 0.0,
+        "avg_position": 1.0
+      }
+    }
+  ],
+  "funnel_metrics": [],
+  "channel_metrics": [
+    {
+      "channel": "email_public",
+      "metrics": {
+        "attempts": 0.0,
+        "done": 0.0
+      }
+    },
+    {
+      "channel": "contact_form",
+      "metrics": {
+        "attempts": 0.0,
+        "done": 0.0
+      }
+    },
+    {
+      "channel": "site_submit",
+      "metrics": {
+        "attempts": 0.0,
+        "done": 0.0
+      }
+    },
+    {
+      "channel": "search_indexing",
+      "metrics": {
+        "attempts": 0.0,
+        "done": 0.0
+      }
+    }
+  ],
+  "search_query_metrics": []
+}

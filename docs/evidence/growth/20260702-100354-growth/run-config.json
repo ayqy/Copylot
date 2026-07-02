@@ -1,0 +1,72 @@
+{
+  "objective": "build_seo_growth_loop",
+  "run_template": "default",
+  "execution_window_days": 14,
+  "comparison_window_days": 28,
+  "seo_execution_stage": "full_publish",
+  "priority_weights": {
+    "technical_seo": 0.2,
+    "content_expansion": 0.25,
+    "content_refresh": 0.16,
+    "internal_link": 0.14,
+    "offpage_outreach": 0.03,
+    "search_submission": 0.08,
+    "conversion_optimization": 0.14
+  },
+  "surface_priority": [
+    "home",
+    "landing",
+    "article_detail",
+    "product_detail",
+    "guide_detail",
+    "contact"
+  ],
+  "allowed_action_families": [],
+  "blocked_action_families": [],
+  "language_scope": [
+    "auto"
+  ],
+  "programs": [
+    "seo",
+    "distribution",
+    "community",
+    "launch"
+  ],
+  "daily_keyword_target": 30,
+  "daily_publish_target": 30,
+  "monthly_index_target": 1000,
+  "annual_index_target": 10000,
+  "keyword_batch_size": 60,
+  "content_brief_limit": 30,
+  "community_post_limit": 2,
+  "community_reply_limit": 6,
+  "distribution_topic_limit_per_platform": 6,
+  "content_draft_limit": 30,
+  "content_generation_concurrency": 4,
+  "image_generation_concurrency": 8,
+  "image_asset_limit": 30,
+  "content_priority_mode": "long_tail_first",
+  "skip_blocked_channels": true,
+  "risk_policy": "default",
+  "keyword_history_window_days": 30,
+  "keyword_signature_quota": 2,
+  "topic_cluster_quota": 4,
+  "signal_quota": 1,
+  "signal_history_quota": 2,
+  "title_signature_quota": 2,
+  "title_prefix_quota": 2,
+  "title_similarity_threshold": 0.68,
+  "inline_image_target_per_draft": 2,
+  "title_review_enabled": true,
+  "translation_enabled": false,
+  "publish_enabled": false,
+  "translation_provider": "microsoft",
+  "translation_provider_fallbacks": [
+    "bing_free",
+    "google_free",
+    "mymemory"
+  ],
+  "image_generation_timeout_sec": 360,
+  "content_model_timeout_sec": 360,
+  "fact_model_timeout_sec": 120
+}

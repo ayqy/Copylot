@@ -1,0 +1,185 @@
+{
+  "accepted_count": 13,
+  "duplicate_count": 100,
+  "signature_quota": 2,
+  "cluster_quota": 4,
+  "signal_quota": 1,
+  "signal_history_quota": 2,
+  "historical_window_count": 0,
+  "top_signals": [
+    {
+      "signal": "ai",
+      "count": 1
+    },
+    {
+      "signal": "auth",
+      "count": 1
+    },
+    {
+      "signal": "browser extension",
+      "count": 1
+    },
+    {
+      "signal": "cancel",
+      "count": 1
+    },
+    {
+      "signal": "chrome extension",
+      "count": 1
+    },
+    {
+      "signal": "content extraction",
+      "count": 1
+    },
+    {
+      "signal": "copilot",
+      "count": 1
+    },
+    {
+      "signal": "copy",
+      "count": 1
+    },
+    {
+      "signal": "global",
+      "count": 1
+    },
+    {
+      "signal": "markdown",
+      "count": 1
+    },
+    {
+      "signal": "payment",
+      "count": 1
+    },
+    {
+      "signal": "pricing",
+      "count": 1
+    },
+    {
+      "signal": "web scraping",
+      "count": 1
+    }
+  ],
+  "top_signatures": [
+    {
+      "signature": "ai | ai",
+      "count": 1
+    },
+    {
+      "signature": "auth | auth",
+      "count": 1
+    },
+    {
+      "signature": "browser extension | browser extension",
+      "count": 1
+    },
+    {
+      "signature": "cancel | cancel",
+      "count": 1
+    },
+    {
+      "signature": "chrome extension | chrome extension",
+      "count": 1
+    },
+    {
+      "signature": "content extraction | content extraction",
+      "count": 1
+    },
+    {
+      "signature": "copilot | copilot",
+      "count": 1
+    },
+    {
+      "signature": "copy | copy",
+      "count": 1
+    },
+    {
+      "signature": "global | setup | should first time",
+      "count": 1
+    },
+    {
+      "signature": "markdown | markdown",
+      "count": 1
+    },
+    {
+      "signature": "payment | payment",
+      "count": 1
+    },
+    {
+      "signature": "pricing | pricing",
+      "count": 1
+    },
+    {
+      "signature": "web scraping | web scraping",
+      "count": 1
+    }
+  ],
+  "top_clusters": [
+    {
+      "cluster": "ai",
+      "count": 1
+    },
+    {
+      "cluster": "auth",
+      "count": 1
+    },
+    {
+      "cluster": "browser extension",
+      "count": 1
+    },
+    {
+      "cluster": "cancel",
+      "count": 1
+    },
+    {
+      "cluster": "chrome extension",
+      "count": 1
+    },
+    {
+      "cluster": "content extraction",
+      "count": 1
+    },
+    {
+      "cluster": "copilot",
+      "count": 1
+    },
+    {
+      "cluster": "copy",
+      "count": 1
+    },
+    {
+      "cluster": "global",
+      "count": 1
+    },
+    {
+      "cluster": "markdown",
+      "count": 1
+    },
+    {
+      "cluster": "payment",
+      "count": 1
+    },
+    {
+      "cluster": "pricing",
+      "count": 1
+    },
+    {
+      "cluster": "web scraping",
+      "count": 1
+    }
+  ],
+  "source_mix": [
+    {
+      "source_type": "market_research",
+      "count": 6
+    },
+    {
+      "source_type": "seed_variant",
+      "count": 6
+    },
+    {
+      "source_type": "hot_matrix",
+      "count": 1
+    }
+  ]
+}

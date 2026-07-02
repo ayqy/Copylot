@@ -2,7 +2,25 @@
 
 本文件用于集中记录“需要人类输入才能继续”的事项，并给出在无凭据/无权限情况下可继续推进的替代动作，避免研发卡死。
 
-## 0) 20260427-140500-growth 自动增长执行阻塞（v1-105）
+## 0) 20260702 `Copylot` Google 数据链路阻塞已解除
+
+已观测结果（2026-07-02，本机 + 跳板机代理链路）：
+- `Copylot` 已自动发现并写入 `gsc_site_url=sc-domain:copy.useai.online`
+- `Copylot` 已自动补齐 `ga4_property_id=543942561`
+- `Copylot` 已自动补齐 `ga4_measurement_id=G-VCWBZXTFVS`
+- `ops/seo_report.py --project /Users/pocket/Documents/project/Copylot --days 14` 已可拉到真实 GSC / GA4 历史数据
+- 当前剩余数据阻塞仅为：`realtime_unverified`
+
+证据目录：
+- `docs/evidence/growth/20260702-100230-seo-report/`
+- `docs/evidence/growth/20260702-100354-growth/`
+- `docs/reports/v1-106-report.md`
+
+影响：
+- 后续 `Copylot` 的增长与功能优先级判断，应以真实 GSC / GA4 数据为准。
+- 旧的“Copylot 无法接入 Google 数据，所以只能做离线证据包”的判断不再成立。
+
+## 1) 20260427-140500-growth 自动增长执行阻塞（v1-105）
 
 已观测结果（2026-04-27，本机自动执行）：
 - `x`：`fetch failed`
@@ -25,7 +43,7 @@
 - 若继续走浏览器发布链路，需先人工处理验证码 / Cloudflare / 风控页
 - 发布完成后回填真实帖子 URL 与 24h 指标，用于后续复盘
 
-## 1) Chrome Web Store 真实发布权限/凭据
+## 2) Chrome Web Store 真实发布权限/凭据
 所需输入清单（示例）：
 - CWS 开发者账号发布权限（团队成员/角色）
 - 发布 API 凭据（例如 `.env` 中 `client_id` / `client_secret` / `refresh_token` 等）
@@ -115,7 +133,7 @@ v1-100 顺延执行补充（Top1 -> Top2）：
 - 风险说明：
   - 官网 / 商店来源在 runtime telemetry 中不会新增第三类 source；若未来要做跨域真实链路采样，需要新的非当前 MVP 设计
 
-## 2)（非本阶段 MVP）收款/订阅相关输入
+## 3)（非本阶段 MVP）收款/订阅相关输入
 所需输入清单：
 - Stripe/收款账号
 - 定价策略（版本/价格/周期）
@@ -124,7 +142,7 @@ v1-100 顺延执行补充（Top1 -> Top2）：
 无凭据情况下可继续推进的替代动作：
 - 仅推进意向验证闭环（候补入口 + 可导出证据 + 用例/回归），不引入支付链路
 
-## 3) 官网 / CWS / 外部渠道网络不可达（DNS）导致增长自动化阻塞
+## 4) 官网 / CWS / 外部渠道网络不可达（DNS）导致增长自动化阻塞
 
 已观测阻塞（2026-03-23，本机环境）：
 - `curl -I -L https://copy.useai.online/` → `Could not resolve host: copy.useai.online`
@@ -168,7 +186,7 @@ v1-100 顺延执行补充（Top1 -> Top2）：
    - 按 `docs/growth/checklists/manual-posting-2026-03-23.md` 完成 D0 3 渠道首发
    - 将帖子 URL、曝光/点击/安装/反馈补齐到 `docs/growth/metrics-tracker-2026-03-23.md`
 
-## 4) 渠道发布所需账号/凭据清单（用于自动化或手动发布）
+## 5) 渠道发布所需账号/凭据清单（用于自动化或手动发布）
 
 > 原则：若要“自动化真实发布”，需要已登录会话（cookies）或账号密码 + 2FA；若仅手动发布，则只需要账号登录。
 
@@ -187,7 +205,7 @@ v1-100 顺延执行补充（Top1 -> Top2）：
 反馈与协作（建议）：
 - GitHub 账号（用于及时回复 Issues、关闭重复问题、打标签）
 
-## 5) 可复制发布内容（离线降级，已生成）
+## 6) 可复制发布内容（离线降级，已生成）
 
 完整内容包：
 - `docs/growth/publish-pack-2026-03-23.md`
@@ -205,7 +223,7 @@ Copylot turns web content into clean, AI-ready Markdown/plain text/CSV (privacy-
 Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=twitter
 ```
 
-## 6) Git 自动 commit+push 受限（当前环境）
+## 7) Git 自动 commit+push 受限（当前环境）
 
 已观测阻塞：
 - 在当前环境执行 `git commit`/`git restore` 等需要写入 `.git/` 的操作会失败：`fatal: Unable to create '.git/index.lock': Operation not permitted`
@@ -218,7 +236,7 @@ Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy
 - 继续在工作区完成实现、生成离线证据与文档（`docs/evidence/`、`docs/test-cases/`、`docs/reports/`），并确保 `bash scripts/test.sh` 全量 PASS
 - 由人类在本地对照文件变更列表进行 `git add/commit/push`（或直接用 IDE 的 Source Control 完成）
 
-## 7) v1-96 工厂增长回归阻塞（外网预检命中 `network_blocked`）
+## 8) v1-96 工厂增长回归阻塞（外网预检命中 `network_blocked`）
 
 已观测阻塞（2026-03-25，本机环境）：
 - `curl -I -L --max-time 15 https://copy.useai.online/` → `Could not resolve host: copy.useai.online`
@@ -472,6 +490,11 @@ Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy
 
 ## 20260428-010125-growth
 - 联系表单触达: 未发现可安全自动提交的公开表单
+- n8n webhook 适配: 缺少 GROWTH_N8N_WEBHOOK_URL
+- listmonk API 适配: 缺少 GROWTH_LISTMONK_URL
+- PostHog event 适配: 缺少 capture_url 或 api_key
+
+## 20260702-100354-growth
 - n8n webhook 适配: 缺少 GROWTH_N8N_WEBHOOK_URL
 - listmonk API 适配: 缺少 GROWTH_LISTMONK_URL
 - PostHog event 适配: 缺少 capture_url 或 api_key

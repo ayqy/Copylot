@@ -1,0 +1,26 @@
+{
+  "site_metrics": {
+    "organic_impressions": 0.0,
+    "organic_clicks": 1.0,
+    "organic_ctr": 0.0,
+    "avg_position": 0.0,
+    "organic_sessions": 0.0,
+    "micro_conversions": 0.0,
+    "primary_conversions": 0.0,
+    "organic_primary_cvr": 0.0
+  },
+  "page_metrics": [],
+  "funnel_metrics": [],
+  "execution_metrics": {
+    "email_public_attempts": 0.0,
+    "email_public_done": 0.0,
+    "contact_form_attempts": 0.0,
+    "contact_form_done": 0.0,
+    "site_submit_attempts": 20.0,
+    "site_submit_done": 0.0,
+    "search_indexing_attempts": 3.0,
+    "search_indexing_done": 1.0
+  },
+  "data_status": "partial",
+  "outcome_status": "unknown"
+}
