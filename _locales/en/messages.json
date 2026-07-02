@@ -453,6 +453,27 @@
     "message": "If you'd like, briefly share how you use Copylot. It really helps us build features that fit your workflow.",
     "description": "Options Pro tab: waitlist survey hint"
   },
+  "proWaitlistSurveyQuickStartTitle": {
+    "message": "Start with the problem you want solved first",
+    "description": "Options Pro tab: quick-start title above survey shortcuts"
+  },
+  "proWaitlistSurveyQuickStartHint": {
+    "message": "If you don't want to start from a blank form, pick the closest intent and we'll prefill it for you.",
+    "description": "Options Pro tab: quick-start hint above survey shortcuts"
+  },
+  "proWaitlistSurveyQuickStartStatusDefault": {
+    "message": "You can also ignore these shortcuts and fill out the form manually below.",
+    "description": "Options Pro tab: default quick-start status text"
+  },
+  "proWaitlistSurveyQuickStartStatusSelected": {
+    "message": "Selected: $INTENT$. The use case and capability have been prefilled below.",
+    "description": "Options Pro tab: status text after selecting a quick-start intent",
+    "placeholders": {
+      "INTENT": {
+        "content": "$1"
+      }
+    }
+  },
   "proWaitlistSurveySampleNoticeTitle": {
     "message": "Anonymous usage data is off",
     "description": "Options Pro tab: notice title when survey copies won't count"

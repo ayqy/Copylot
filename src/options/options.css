@@ -1233,6 +1233,83 @@ body {
   line-height: 1.6;
 }
 
+.pro-survey-quick-start {
+  margin: 0 0 14px 0;
+  padding: 12px;
+  border-radius: calc(var(--border-radius) + 2px);
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(255, 255, 255, 0.72) 100%);
+  border: 1px solid rgba(79, 70, 229, 0.16);
+}
+
+.pro-survey-quick-start-head {
+  margin-bottom: 10px;
+}
+
+.pro-survey-quick-start-title {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pro-survey-quick-start-hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.pro-survey-quick-start-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pro-survey-quick-intent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  text-align: left;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(79, 70, 229, 0.2);
+  border-radius: var(--border-radius);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.pro-survey-quick-intent strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pro-survey-quick-intent span {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.pro-survey-quick-intent:hover {
+  transform: translateY(-1px);
+  border-color: rgba(79, 70, 229, 0.38);
+  box-shadow: 0 10px 24px rgba(79, 70, 229, 0.08);
+}
+
+.pro-survey-quick-intent:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.pro-survey-quick-start-status {
+  margin: 10px 0 0 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
 .pro-survey-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1291,6 +1368,10 @@ body {
 }
 
 @media (max-width: 720px) {
+  .pro-survey-quick-start-grid {
+    grid-template-columns: 1fr;
+  }
+
   .pro-survey-grid {
     grid-template-columns: 1fr;
   }

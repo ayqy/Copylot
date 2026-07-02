@@ -453,6 +453,27 @@
     "message": "如果你愿意，可以简单聊聊你的使用场景，这会帮助我们把后续功能做得更顺手。",
     "description": "Options Pro Tab：付费意向问卷提示"
   },
+  "proWaitlistSurveyQuickStartTitle": {
+    "message": "先选一个你最想解决的问题",
+    "description": "Options Pro Tab：问卷快捷起步标题"
+  },
+  "proWaitlistSurveyQuickStartHint": {
+    "message": "如果你不想从空白问卷开始，先点一个最接近的诉求，我们会帮你预填。",
+    "description": "Options Pro Tab：问卷快捷起步说明"
+  },
+  "proWaitlistSurveyQuickStartStatusDefault": {
+    "message": "也可以忽略这些快捷入口，直接手填下方问卷。",
+    "description": "Options Pro Tab：问卷快捷起步默认状态"
+  },
+  "proWaitlistSurveyQuickStartStatusSelected": {
+    "message": "已选择：$INTENT$。下方的使用场景和能力选项已帮你预填。",
+    "description": "Options Pro Tab：选择快捷诉求后的状态提示",
+    "placeholders": {
+      "INTENT": {
+        "content": "$1"
+      }
+    }
+  },
   "proWaitlistSurveySampleNoticeTitle": {
     "message": "未开启匿名使用数据",
     "description": "Options Pro Tab：问卷样本不计入提示标题"

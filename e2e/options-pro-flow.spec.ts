@@ -63,6 +63,83 @@ test('pro waitlist survey shows sample notice when anonymous usage data is off a
   }
 });
 
+test('options pro quick intent can prefill survey and record dedicated funnel content', async ({
+  extensionContext,
+  extensionId,
+  driverPage
+}) => {
+  await seedSyncStorage(driverPage, {
+    copilot_settings: {
+      isAnonymousUsageDataEnabled: true
+    }
+  });
+
+  const page = await openExtensionPage(extensionContext, extensionId, 'src/options/options.html#pro-waitlist-survey');
+  try {
+    await openOptionsTab(page, 'pro');
+    await page.locator('#pro-waitlist-survey-quick-intent-batch').click();
+    await expect(page.locator('#pro-waitlist-survey-use-case')).not.toHaveValue('');
+    await expect(page.locator('#pro-waitlist-survey-capability-batch-collection')).toBeChecked();
+    await expect(page.locator('#pro-waitlist-survey-quick-intent-status')).toContainText(/batch|批量|selected|已选择/i);
+
+    await expect
+      .poll(async () => {
+        const snapshot = await getStorageSnapshot(driverPage);
+        return (
+          (snapshot.local.copilot_telemetry_events as Array<{ name?: string; props?: Record<string, unknown> }> | undefined)
+            ?.filter((event) => event.name === 'pro_entry_opened') || []
+        );
+      })
+      .toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            props: expect.objectContaining({ source: 'options', content: 'options_quick_intent_cta' })
+          })
+        ])
+      );
+
+    await expect
+      .poll(async () => {
+        const snapshot = await getStorageSnapshot(driverPage);
+        return (
+          (snapshot.local.copilot_telemetry_events as Array<{ name?: string; props?: Record<string, unknown> }> | undefined)
+            ?.filter((event) => event.name === 'pro_intent_form_start') || []
+        );
+      })
+      .toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            props: expect.objectContaining({ source: 'options', content: 'options_quick_intent_cta' })
+          })
+        ])
+      );
+
+    await page.locator('#pro-waitlist-survey-copy').click();
+    await expect
+      .poll(async () => {
+        const snapshot = await getStorageSnapshot(driverPage);
+        return (
+          (snapshot.local.copilot_telemetry_events as Array<{ name?: string; props?: Record<string, unknown> }> | undefined)
+            ?.filter((event) => event.name === 'pro_waitlist_survey_copied') || []
+        );
+      })
+      .toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            props: expect.objectContaining({
+              source: 'options',
+              content: 'options_survey_cta',
+              prefill_used: true,
+              prefill_capability_count: 1
+            })
+          })
+        ])
+      );
+  } finally {
+    await page.close();
+  }
+});
+
 test('pro waitlist survey copy-open opens waitlist url and records source-attributed survey event', async ({
   extensionContext,
   extensionId,
