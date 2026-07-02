@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "requests_path": "/Users/pocket/Documents/project/Copylot/docs/evidence/growth/20260702-105810-growth/seo-image-requests.json",
+  "ledger_path": "/Users/pocket/Documents/project/Copylot/docs/evidence/growth/20260702-105810-growth/seo-image-ledger.json",
+  "source_ledger_path": "/Users/pocket/Documents/project/Copylot/docs/evidence/growth/20260702-105810-growth/seo-image-source-ledger.json",
+  "output_dir": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images",
+  "concurrency": 8,
+  "generated_count": 38,
+  "failed_count": 0,
+  "blocked_path": null
+}

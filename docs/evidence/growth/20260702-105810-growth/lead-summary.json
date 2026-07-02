@@ -1,0 +1,437 @@
+{
+  "run_id": "20260702-105810-growth",
+  "project_tags": [
+    "chrome-extension",
+    "ai",
+    "copilot",
+    "copy",
+    "markdown",
+    "web-scraping",
+    "content-extraction",
+    "browser-extension",
+    "developer-tools"
+  ],
+  "lead_count": 20,
+  "leads": [
+    {
+      "target_id": "launchingnext",
+      "name": "LaunchingNext",
+      "kind": "directory",
+      "homepage": "https://launchingnext.com/",
+      "contact_page": "https://www.launchingnext.com/submit/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 185,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unreachable",
+      "access_notes": "url_error:https://www.launchingnext.com/submit/",
+      "requires_login": false,
+      "notes": "已验证为可公开提交的目录站表单。 url_error:https://www.launchingnext.com/submit/",
+      "submission_url": "https://www.launchingnext.com/submit/",
+      "contact_form": null
+    },
+    {
+      "target_id": "tinystartups",
+      "name": "tinystartups",
+      "kind": "directory",
+      "homepage": "https://tinystartups.com/",
+      "contact_page": "https://tinystartups.com/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unreachable",
+      "access_notes": "url_error:https://tinystartups.com/",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。 url_error:https://tinystartups.com/",
+      "submission_url": "https://tinystartups.com/",
+      "contact_form": null
+    },
+    {
+      "target_id": "uneed",
+      "name": "Uneed",
+      "kind": "directory",
+      "homepage": "https://uneed.best/",
+      "contact_page": "https://uneed.best/submit",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unreachable",
+      "access_notes": "url_error:https://uneed.best/submit",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。 url_error:https://uneed.best/submit",
+      "submission_url": "https://uneed.best/submit",
+      "contact_form": null
+    },
+    {
+      "target_id": "twelvetools",
+      "name": "TwelveTools",
+      "kind": "directory",
+      "homepage": "https://twelvetools.com/",
+      "contact_page": "https://twelvetools.com/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unreachable",
+      "access_notes": "url_error:https://twelvetools.com/",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。 url_error:https://twelvetools.com/",
+      "submission_url": "https://twelvetools.com/",
+      "contact_form": null
+    },
+    {
+      "target_id": "turbo0",
+      "name": "Turbo0",
+      "kind": "directory",
+      "homepage": "https://turbo0.com/",
+      "contact_page": "https://turbo0.com/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://turbo0.com/",
+      "contact_form": null
+    },
+    {
+      "target_id": "trylaunch",
+      "name": "TryLaunch",
+      "kind": "directory",
+      "homepage": "https://trylaunchai.com/",
+      "contact_page": "https://trylaunchai.com/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://trylaunchai.com/",
+      "contact_form": null
+    },
+    {
+      "target_id": "toolfame",
+      "name": "ToolFame",
+      "kind": "directory",
+      "homepage": "https://toolfame.com/",
+      "contact_page": "https://toolfame.com/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://toolfame.com/",
+      "contact_form": null
+    },
+    {
+      "target_id": "tinylaunch",
+      "name": "TinyLaunch",
+      "kind": "directory",
+      "homepage": "https://tinylaunch.com/",
+      "contact_page": "https://tinylaunch.com/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://tinylaunch.com/",
+      "contact_form": null
+    },
+    {
+      "target_id": "theresanaiforthat",
+      "name": "Theresanaiforthat",
+      "kind": "directory",
+      "homepage": "https://theresanaiforthat.com/",
+      "contact_page": "https://theresanaiforthat.com/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://theresanaiforthat.com/",
+      "contact_form": null
+    },
+    {
+      "target_id": "thegrommet",
+      "name": "The Grommet",
+      "kind": "directory",
+      "homepage": "https://thegrommet.com/",
+      "contact_page": "https://thegrommet.com/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://thegrommet.com/",
+      "contact_form": null
+    },
+    {
+      "target_id": "startupsubmit",
+      "name": "StartupSubmit",
+      "kind": "directory",
+      "homepage": "https://startupsubmit.app/",
+      "contact_page": "https://startupsubmit.app/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "已验证为付费代投服务页。",
+      "submission_url": "https://startupsubmit.app/",
+      "contact_form": null
+    },
+    {
+      "target_id": "startupranked",
+      "name": "StartupRanked",
+      "kind": "directory",
+      "homepage": "https://startupranked.com/",
+      "contact_page": "https://startupranked.com/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://startupranked.com/",
+      "contact_form": null
+    },
+    {
+      "target_id": "slocco",
+      "name": "Slocco",
+      "kind": "directory",
+      "homepage": "https://slocco.com/",
+      "contact_page": "https://slocco.com/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://slocco.com/",
+      "contact_form": null
+    },
+    {
+      "target_id": "showmebestai",
+      "name": "ShowMeBestAI",
+      "kind": "directory",
+      "homepage": "https://showmebest.ai/",
+      "contact_page": "https://showmebest.ai/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://showmebest.ai/",
+      "contact_form": null
+    },
+    {
+      "target_id": "shipsquad",
+      "name": "Shipsquad",
+      "kind": "directory",
+      "homepage": "https://shipsquad.space/",
+      "contact_page": "https://shipsquad.space/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://shipsquad.space/",
+      "contact_form": null
+    },
+    {
+      "target_id": "shipyardhq",
+      "name": "ShipYard HQ",
+      "kind": "directory",
+      "homepage": "https://shipyardhq.dev/",
+      "contact_page": "https://shipyardhq.dev/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://shipyardhq.dev/",
+      "contact_form": null
+    },
+    {
+      "target_id": "saashub",
+      "name": "SaaSHub",
+      "kind": "directory",
+      "homepage": "https://saashub.com/",
+      "contact_page": "https://saashub.com/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://saashub.com/",
+      "contact_form": null
+    },
+    {
+      "target_id": "saasfame",
+      "name": "SaaSFame",
+      "kind": "directory",
+      "homepage": "https://saasfame.com/",
+      "contact_page": "https://saasfame.com/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://saasfame.com/",
+      "contact_form": null
+    },
+    {
+      "target_id": "peerpush",
+      "name": "Peerpush",
+      "kind": "directory",
+      "homepage": "https://peerpush.net/",
+      "contact_page": "https://peerpush.net/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://peerpush.net/",
+      "contact_form": null
+    },
+    {
+      "target_id": "neeed",
+      "name": "Neeed directory",
+      "kind": "directory",
+      "homepage": "https://neeed.directory/",
+      "contact_page": "https://neeed.directory/",
+      "public_email": null,
+      "matched_tags": [
+        "ai"
+      ],
+      "score": 145,
+      "channels": [
+        "site_submit"
+      ],
+      "access_status": "unverified",
+      "access_notes": "probe_deferred",
+      "requires_login": false,
+      "notes": "工具站提交入口候选。",
+      "submission_url": "https://neeed.directory/",
+      "contact_form": null
+    }
+  ]
+}

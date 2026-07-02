@@ -498,3 +498,8 @@ Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy
 - n8n webhook 适配: 缺少 GROWTH_N8N_WEBHOOK_URL
 - listmonk API 适配: 缺少 GROWTH_LISTMONK_URL
 - PostHog event 适配: 缺少 capture_url 或 api_key
+
+## 20260702-105810-growth
+- n8n webhook 适配: 缺少 GROWTH_N8N_WEBHOOK_URL
+- listmonk API 适配: 缺少 GROWTH_LISTMONK_URL
+- PostHog event 适配: 缺少 capture_url 或 api_key

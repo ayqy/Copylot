@@ -1,0 +1,639 @@
+{
+  "run_id": "20260702-105810-growth",
+  "items": [
+    {
+      "keyword": "what should first-time foreign tourists know about setup in global",
+      "topic": "global",
+      "target_url_slug": "what-should-first-time-foreign-tourists-know-about-setup-in-global",
+      "role": "hero",
+      "search_terms": [
+        "global workflow diagram",
+        "global architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "global architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Workflow diagram showing global setup steps for first-time foreign tourists, including connectivity, banking, and document storage."
+    },
+    {
+      "keyword": "how to chrome-extension",
+      "topic": "chrome extension",
+      "target_url_slug": "how-to-chrome-extension",
+      "role": "hero",
+      "search_terms": [
+        "chrome extension workflow diagram",
+        "chrome extension architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "chrome extension architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Diagram showing the workflow of a Chrome extension: manifest.json, service worker, content script, and popup UI."
+    },
+    {
+      "keyword": "how to ai",
+      "topic": "ai",
+      "target_url_slug": "how-to-ai",
+      "role": "hero",
+      "search_terms": [
+        "ai workflow diagram",
+        "ai architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "ai architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Diagram showing a step-by-step AI workflow: define task, choose tool, craft prompt, validate, iterate."
+    },
+    {
+      "keyword": "how to copilot",
+      "topic": "copilot",
+      "target_url_slug": "how-to-copilot",
+      "role": "hero",
+      "search_terms": [
+        "copilot workflow diagram",
+        "copilot architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copilot architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Copilot workflow diagram showing step-by-step code suggestion flow"
+    },
+    {
+      "keyword": "how to markdown",
+      "topic": "markdown",
+      "target_url_slug": "how-to-markdown",
+      "role": "hero",
+      "search_terms": [
+        "markdown workflow diagram",
+        "markdown architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "markdown architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Markdown workflow diagram showing conversion from plain text to formatted output."
+    },
+    {
+      "keyword": "how to web-scraping",
+      "topic": "web scraping",
+      "target_url_slug": "how-to-web-scraping",
+      "role": "hero",
+      "search_terms": [
+        "web scraping workflow diagram",
+        "web scraping architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "web scraping architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Flowchart showing web scraping process from URL request to data storage"
+    },
+    {
+      "keyword": "how to content extraction",
+      "topic": "content extraction",
+      "target_url_slug": "how-to-content-extraction",
+      "role": "hero",
+      "search_terms": [
+        "content extraction workflow diagram",
+        "content extraction architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "content extraction architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Content extraction workflow diagram showing steps from source to structured data"
+    },
+    {
+      "keyword": "how to browser extension",
+      "topic": "browser extension",
+      "target_url_slug": "how-to-browser-extension",
+      "role": "hero",
+      "search_terms": [
+        "browser extension workflow diagram",
+        "browser extension architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "browser extension architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Diagram showing the workflow of a browser extension: manifest, background service worker, content script, and popup interaction"
+    },
+    {
+      "keyword": "how to copy",
+      "topic": "copy",
+      "target_url_slug": "how-to-copy",
+      "role": "hero",
+      "search_terms": [
+        "copy workflow diagram",
+        "copy architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copy architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Flowchart showing source to destination copy steps with verification."
+    },
+    {
+      "keyword": "how to auth",
+      "topic": "auth",
+      "target_url_slug": "how-to-auth",
+      "role": "hero",
+      "search_terms": [
+        "auth workflow diagram",
+        "auth architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "auth architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Authentication workflow diagram showing OAuth2 and JWT flow between client, server, and authorization server"
+    },
+    {
+      "keyword": "how to payment",
+      "topic": "payment",
+      "target_url_slug": "how-to-payment",
+      "role": "hero",
+      "search_terms": [
+        "payment workflow diagram",
+        "payment architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "payment architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Diagram showing the payment workflow from customer to bank, including payment gateway and processor steps."
+    },
+    {
+      "keyword": "how to cancel",
+      "topic": "cancel",
+      "target_url_slug": "how-to-cancel",
+      "role": "hero",
+      "search_terms": [
+        "cancel workflow diagram",
+        "cancel architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "cancel architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Step-by-step cancellation workflow diagram showing the process from policy review to confirmation."
+    },
+    {
+      "keyword": "how to pricing",
+      "topic": "pricing",
+      "target_url_slug": "how-to-pricing",
+      "role": "hero",
+      "search_terms": [
+        "pricing workflow diagram",
+        "pricing architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "pricing architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "定价工作流示意图，展示从成本计算到测试迭代的六个步骤"
+    },
+    {
+      "keyword": "what should first-time foreign tourists know about setup in global",
+      "topic": "global",
+      "target_url_slug": "what-should-first-time-foreign-tourists-know-about-setup-in-global",
+      "role": "in_content",
+      "search_terms": [
+        "actually matters setting first-time global workflow diagram global architecture sketch",
+        "global workflow diagram global architecture sketch AI agent workflow whiteboard actually matters",
+        "global workflow diagram global architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "global workflow diagram global architecture sketch AI agent workflow whiteboard actually matters",
+        "global workflow diagram global architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of a travel setup checklist with icons for SIM, card, and passport, representing practical steps for global travelers."
+    },
+    {
+      "keyword": "how to chrome-extension",
+      "topic": "chrome extension",
+      "target_url_slug": "how-to-chrome-extension",
+      "role": "in_content",
+      "search_terms": [
+        "chrome extension and build chrome extension workflow diagram chrome extension architecture sketch",
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard chrome extension",
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard chrome extension",
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of Chrome extension architecture illustrating background script, content script, and popup communication."
+    },
+    {
+      "keyword": "how to ai",
+      "topic": "ai",
+      "target_url_slug": "how-to-ai",
+      "role": "in_content",
+      "search_terms": [
+        "does mean who search ai workflow diagram ai architecture sketch",
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard does mean",
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard does mean",
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of AI architecture illustrating how inputs and outputs flow between a user, a language model, and validation steps."
+    },
+    {
+      "keyword": "how to copilot",
+      "topic": "copilot",
+      "target_url_slug": "how-to-copilot",
+      "role": "in_content",
+      "search_terms": [
+        "copilot and who should copilot workflow diagram copilot architecture sketch",
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard copilot and",
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard copilot and",
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of Copilot architecture and developer interaction"
+    },
+    {
+      "keyword": "how to markdown",
+      "topic": "markdown",
+      "target_url_slug": "how-to-markdown",
+      "role": "in_content",
+      "search_terms": [
+        "markdown and text plain markdown workflow diagram markdown architecture sketch",
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard markdown and",
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard markdown and",
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Developer coding workflow diagram illustrating how Markdown fits into documentation process."
+    },
+    {
+      "keyword": "how to web-scraping",
+      "topic": "web scraping",
+      "target_url_slug": "how-to-web-scraping",
+      "role": "in_content",
+      "search_terms": [
+        "web scraping means automatically web scraping workflow diagram web scraping architecture sketch",
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard web scraping",
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard web scraping",
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Simple architecture diagram of a web scraping script fetching data from a website"
+    },
+    {
+      "keyword": "how to content extraction",
+      "topic": "content extraction",
+      "target_url_slug": "how-to-content-extraction",
+      "role": "in_content",
+      "search_terms": [
+        "extraction and who needs content extraction workflow diagram content extraction architecture sketch",
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard extraction and",
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard extraction and",
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Content extraction architecture sketch with selectors and data pipeline"
+    },
+    {
+      "keyword": "how to browser extension",
+      "topic": "browser extension",
+      "target_url_slug": "how-to-browser-extension",
+      "role": "in_content",
+      "search_terms": [
+        "you need know building browser extension workflow diagram browser extension architecture sketch",
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard you need",
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard you need",
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of browser extension architecture with files: manifest.json, background.js, popup.html, content.js"
+    },
+    {
+      "keyword": "how to copy",
+      "topic": "copy",
+      "target_url_slug": "how-to-copy",
+      "role": "in_content",
+      "search_terms": [
+        "does copy mean development copy workflow diagram copy architecture sketch",
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard does copy",
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard does copy",
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Whiteboard sketch of copy workflow with cp, rsync, git clone options."
+    },
+    {
+      "keyword": "how to auth",
+      "topic": "auth",
+      "target_url_slug": "how-to-auth",
+      "role": "in_content",
+      "search_terms": [
+        "authentication auth authorization asks auth workflow diagram auth architecture sketch",
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard authentication auth",
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard authentication auth",
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of common authentication mistakes like plaintext passwords and missing HTTPS"
+    },
+    {
+      "keyword": "how to payment",
+      "topic": "payment",
+      "target_url_slug": "how-to-payment",
+      "role": "in_content",
+      "search_terms": [
+        "payment the search query payment workflow diagram payment architecture sketch",
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard payment the",
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard payment the",
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of payment system architecture with merchant, gateway, and bank components."
+    },
+    {
+      "keyword": "how to cancel",
+      "topic": "cancel",
+      "target_url_slug": "how-to-cancel",
+      "role": "in_content",
+      "search_terms": [
+        "you cancellation canceling subscription cancel workflow diagram cancel architecture sketch",
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard you cancellation",
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard you cancellation",
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of common cancellation pitfalls and alternative paths."
+    },
+    {
+      "keyword": "how to pricing",
+      "topic": "pricing",
+      "target_url_slug": "how-to-pricing",
+      "role": "in_content",
+      "search_terms": [
+        "问题定义 为什么定价那么难 很多开发者把定价等同于 定个数字 pricing workflow diagram pricing architecture sketch",
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard 问题定义 为什么定价那么难",
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard 问题定义 为什么定价那么难",
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "定价架构草图，展示不同定价模式（订阅、用量、一次性）的对比"
+    },
+    {
+      "keyword": "how to chrome-extension",
+      "topic": "chrome extension",
+      "target_url_slug": "how-to-chrome-extension",
+      "role": "in_content",
+      "search_terms": [
+        "step-by-step building extension and chrome extension workflow diagram chrome extension architecture sketch",
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard step-by-step building",
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard step-by-step building",
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of Chrome extension architecture illustrating background script, content script, and popup communication."
+    },
+    {
+      "keyword": "how to ai",
+      "topic": "ai",
+      "target_url_slug": "how-to-ai",
+      "role": "in_content",
+      "search_terms": [
+        "the process correctly for ai workflow diagram ai architecture sketch",
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard the process",
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard the process",
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of AI architecture illustrating how inputs and outputs flow between a user, a language model, and validation steps."
+    },
+    {
+      "keyword": "how to copilot",
+      "topic": "copilot",
+      "target_url_slug": "how-to-copilot",
+      "role": "in_content",
+      "search_terms": [
+        "set copilot practical and copilot workflow diagram copilot architecture sketch",
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard set copilot",
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard set copilot",
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of Copilot architecture and developer interaction"
+    },
+    {
+      "keyword": "how to markdown",
+      "topic": "markdown",
+      "target_url_slug": "how-to-markdown",
+      "role": "in_content",
+      "search_terms": [
+        "step-by-step markdown for headers markdown workflow diagram markdown architecture sketch",
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard step-by-step markdown",
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard step-by-step markdown",
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Developer coding workflow diagram illustrating how Markdown fits into documentation process."
+    },
+    {
+      "keyword": "how to web-scraping",
+      "topic": "web scraping",
+      "target_url_slug": "how-to-web-scraping",
+      "role": "in_content",
+      "search_terms": [
+        "problem definition people web web scraping workflow diagram web scraping architecture sketch",
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard problem definition",
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard problem definition",
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Simple architecture diagram of a web scraping script fetching data from a website"
+    },
+    {
+      "keyword": "how to content extraction",
+      "topic": "content extraction",
+      "target_url_slug": "how-to-content-extraction",
+      "role": "in_content",
+      "search_terms": [
+        "extraction step-by-step for the content extraction workflow diagram content extraction architecture sketch",
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard extraction step-by-step",
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard extraction step-by-step",
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Content extraction architecture sketch with selectors and data pipeline"
+    },
+    {
+      "keyword": "how to browser extension",
+      "topic": "browser extension",
+      "target_url_slug": "how-to-browser-extension",
+      "role": "in_content",
+      "search_terms": [
+        "define extension's purpose ask browser extension workflow diagram browser extension architecture sketch",
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard define extension's",
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard define extension's",
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of browser extension architecture with files: manifest.json, background.js, popup.html, content.js"
+    },
+    {
+      "keyword": "how to copy",
+      "topic": "copy",
+      "target_url_slug": "how-to-copy",
+      "role": "in_content",
+      "search_terms": [
+        "matters copying fundamental development copy workflow diagram copy architecture sketch",
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard matters copying",
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard matters copying",
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Whiteboard sketch of copy workflow with cp, rsync, git clone options."
+    },
+    {
+      "keyword": "how to auth",
+      "topic": "auth",
+      "target_url_slug": "how-to-auth",
+      "role": "in_content",
+      "search_terms": [
+        "auth step-by-step token jwt auth workflow diagram auth architecture sketch",
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard auth step-by-step",
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard auth step-by-step",
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of common authentication mistakes like plaintext passwords and missing HTTPS"
+    },
+    {
+      "keyword": "how to payment",
+      "topic": "payment",
+      "target_url_slug": "how-to-payment",
+      "role": "in_content",
+      "search_terms": [
+        "step-by-step payment setup and payment workflow diagram payment architecture sketch",
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard step-by-step payment",
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard step-by-step payment",
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of payment system architecture with merchant, gateway, and bank components."
+    },
+    {
+      "keyword": "how to cancel",
+      "topic": "cancel",
+      "target_url_slug": "how-to-cancel",
+      "role": "in_content",
+      "search_terms": [
+        "does cancel mean the cancel workflow diagram cancel architecture sketch",
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard does cancel",
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard does cancel",
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of common cancellation pitfalls and alternative paths."
+    },
+    {
+      "keyword": "how to pricing",
+      "topic": "pricing",
+      "target_url_slug": "how-to-pricing",
+      "role": "in_content",
+      "search_terms": [
+        "操作步骤 步完成定价 api 计算成本下限 pricing workflow diagram pricing architecture sketch",
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard 操作步骤 步完成定价",
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard 操作步骤 步完成定价",
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "定价架构草图，展示不同定价模式（订阅、用量、一次性）的对比"
+    }
+  ]
+}

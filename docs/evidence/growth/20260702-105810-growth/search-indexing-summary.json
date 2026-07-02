@@ -1,0 +1,86 @@
+{
+  "run_id": "20260702-105810-growth",
+  "attempt_count": 3,
+  "attempts": [
+    {
+      "channel": "search_indexing",
+      "target_name": "Bing Sitemap Ping",
+      "target_ref": "https://copy.useai.online/sitemap.xml",
+      "status": "skipped",
+      "notes": "bing sitemap ping skipped: bing_sitemap_ping_gone",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": 410
+    },
+    {
+      "channel": "search_indexing",
+      "target_name": "IndexNow",
+      "target_ref": "https://copy.useai.online",
+      "status": "skipped",
+      "notes": "缺少 GROWTH_INDEXNOW_KEY / GROWTH_INDEXNOW_KEY_LOCATION",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "search_indexing",
+      "target_name": "Google Search Console Sitemap Submit",
+      "target_ref": "https://copy.useai.online/sitemap.xml",
+      "status": "done",
+      "notes": "search console sitemap submit HTTP 204",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": 204
+    }
+  ],
+  "audit": {
+    "deployment_url": "https://copy.useai.online",
+    "target_urls": [
+      "https://copy.useai.online"
+    ],
+    "robots": {
+      "url": "https://copy.useai.online/robots.txt",
+      "status_code": 200,
+      "final_url": "https://copy.useai.online/robots.txt",
+      "sitemaps": [
+        "https://copy.useai.online/sitemap.xml"
+      ],
+      "allows_root": true
+    },
+    "sitemaps": [
+      {
+        "url": "https://copy.useai.online/sitemap.xml",
+        "status_code": 200,
+        "final_url": "https://copy.useai.online/sitemap.xml",
+        "root_tag": "sitemapindex",
+        "url_count": 1,
+        "contains_targets": {
+          "https://copy.useai.online": true
+        },
+        "children": [
+          {
+            "url": "https://copy.useai.online/sitemap-0.xml",
+            "status_code": 200,
+            "final_url": "https://copy.useai.online/sitemap-0.xml",
+            "url_count": 4,
+            "contains_targets": {
+              "https://copy.useai.online": true
+            }
+          }
+        ]
+      }
+    ],
+    "pages": [
+      {
+        "url": "https://copy.useai.online",
+        "error": "The read operation timed out"
+      }
+    ],
+    "blocking_findings": [
+      "page_unavailable:https://copy.useai.online:The read operation timed out"
+    ]
+  }
+}

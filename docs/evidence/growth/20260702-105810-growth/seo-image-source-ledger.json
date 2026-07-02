@@ -1,0 +1,757 @@
+{
+  "generated_at": "2026-07-02T02:59:53.085Z",
+  "concurrency": 8,
+  "count": 38,
+  "failed_count": 0,
+  "items": [
+    {
+      "keyword": "what should first-time foreign tourists know about setup in global",
+      "topic": "global",
+      "output_rel_path": "01-what-should-first-time-foreign-tourists-know-about-setup-in-global-hero.webp",
+      "search_terms": [
+        "global workflow diagram",
+        "global architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "global architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Workflow diagram showing global setup steps for first-time foreign tourists, including connectivity, banking, and document storage.",
+      "seed": 100,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/01-what-should-first-time-foreign-tourists-know-about-setup-in-global-hero.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "ce899e634822b6f8f7f853b3b515c94f"
+    },
+    {
+      "keyword": "how to chrome-extension",
+      "topic": "chrome extension",
+      "output_rel_path": "02-how-to-chrome-extension-hero.webp",
+      "search_terms": [
+        "chrome extension workflow diagram",
+        "chrome extension architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "chrome extension architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Diagram showing the workflow of a Chrome extension: manifest.json, service worker, content script, and popup UI.",
+      "seed": 200,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/02-how-to-chrome-extension-hero.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "d1b88d7ebf45c287d9ca250ee75fffe3"
+    },
+    {
+      "keyword": "how to ai",
+      "topic": "ai",
+      "output_rel_path": "03-how-to-ai-hero.webp",
+      "search_terms": [
+        "ai workflow diagram",
+        "ai architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "ai architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Diagram showing a step-by-step AI workflow: define task, choose tool, craft prompt, validate, iterate.",
+      "seed": 300,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/03-how-to-ai-hero.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "ee551920c3e68d931f84dc48f1fbddef"
+    },
+    {
+      "keyword": "how to copilot",
+      "topic": "copilot",
+      "output_rel_path": "04-how-to-copilot-hero.webp",
+      "search_terms": [
+        "copilot workflow diagram",
+        "copilot architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copilot architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Copilot workflow diagram showing step-by-step code suggestion flow",
+      "seed": 400,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/04-how-to-copilot-hero.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "b37125549fa0b801f3a06f7858a0a45d"
+    },
+    {
+      "keyword": "how to markdown",
+      "topic": "markdown",
+      "output_rel_path": "05-how-to-markdown-hero.webp",
+      "search_terms": [
+        "markdown workflow diagram",
+        "markdown architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "markdown architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Markdown workflow diagram showing conversion from plain text to formatted output.",
+      "seed": 500,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/05-how-to-markdown-hero.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "68bd54d595281f4974b60f880184f335"
+    },
+    {
+      "keyword": "how to web-scraping",
+      "topic": "web scraping",
+      "output_rel_path": "06-how-to-web-scraping-hero.webp",
+      "search_terms": [
+        "web scraping workflow diagram",
+        "web scraping architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "web scraping architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Flowchart showing web scraping process from URL request to data storage",
+      "seed": 600,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/06-how-to-web-scraping-hero.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "59f02dbf1660d37602136ad8a64f5eb3"
+    },
+    {
+      "keyword": "how to content extraction",
+      "topic": "content extraction",
+      "output_rel_path": "07-how-to-content-extraction-hero.webp",
+      "search_terms": [
+        "content extraction workflow diagram",
+        "content extraction architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "content extraction architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Content extraction workflow diagram showing steps from source to structured data",
+      "seed": 700,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/07-how-to-content-extraction-hero.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "29cd450867f619b4b354a8a61baccb9b"
+    },
+    {
+      "keyword": "how to browser extension",
+      "topic": "browser extension",
+      "output_rel_path": "08-how-to-browser-extension-hero.webp",
+      "search_terms": [
+        "browser extension workflow diagram",
+        "browser extension architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "browser extension architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Diagram showing the workflow of a browser extension: manifest, background service worker, content script, and popup interaction",
+      "seed": 800,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/08-how-to-browser-extension-hero.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "94226f8523323b31b63b72cf52119481"
+    },
+    {
+      "keyword": "how to copy",
+      "topic": "copy",
+      "output_rel_path": "09-how-to-copy-hero.webp",
+      "search_terms": [
+        "copy workflow diagram",
+        "copy architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copy architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Flowchart showing source to destination copy steps with verification.",
+      "seed": 900,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/09-how-to-copy-hero.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "a0b24965f027e4019ec95e2b388a27ad"
+    },
+    {
+      "keyword": "how to auth",
+      "topic": "auth",
+      "output_rel_path": "10-how-to-auth-hero.webp",
+      "search_terms": [
+        "auth workflow diagram",
+        "auth architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "auth architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Authentication workflow diagram showing OAuth2 and JWT flow between client, server, and authorization server",
+      "seed": 1000,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/10-how-to-auth-hero.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "cdbd1e1660d207f49a6d4531bb03d16b"
+    },
+    {
+      "keyword": "how to payment",
+      "topic": "payment",
+      "output_rel_path": "11-how-to-payment-hero.webp",
+      "search_terms": [
+        "payment workflow diagram",
+        "payment architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "payment architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Diagram showing the payment workflow from customer to bank, including payment gateway and processor steps.",
+      "seed": 1100,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/11-how-to-payment-hero.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "948cd21f3c9bc96e8ef09969bdcd422a"
+    },
+    {
+      "keyword": "how to cancel",
+      "topic": "cancel",
+      "output_rel_path": "12-how-to-cancel-hero.webp",
+      "search_terms": [
+        "cancel workflow diagram",
+        "cancel architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "cancel architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "Step-by-step cancellation workflow diagram showing the process from policy review to confirmation.",
+      "seed": 1200,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/12-how-to-cancel-hero.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "ea20de9dbd20712c5a49d13335cd8821"
+    },
+    {
+      "keyword": "how to pricing",
+      "topic": "pricing",
+      "output_rel_path": "13-how-to-pricing-hero.webp",
+      "search_terms": [
+        "pricing workflow diagram",
+        "pricing architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "pricing architecture sketch",
+        "AI agent workflow whiteboard",
+        "developer coding workflow diagram"
+      ],
+      "relevance_reason": "定价工作流示意图，展示从成本计算到测试迭代的六个步骤",
+      "seed": 1300,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/13-how-to-pricing-hero.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "fdef544b4699d6891eccab8b380aca43"
+    },
+    {
+      "keyword": "what should first-time foreign tourists know about setup in global",
+      "topic": "global",
+      "output_rel_path": "14-what-should-first-time-foreign-tourists-know-about-setup-in-global-in_content.webp",
+      "search_terms": [
+        "actually matters setting first-time global workflow diagram global architecture sketch",
+        "global workflow diagram global architecture sketch AI agent workflow whiteboard actually matters",
+        "global workflow diagram global architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "global workflow diagram global architecture sketch AI agent workflow whiteboard actually matters",
+        "global workflow diagram global architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of a travel setup checklist with icons for SIM, card, and passport, representing practical steps for global travelers.",
+      "seed": 1400,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/14-what-should-first-time-foreign-tourists-know-about-setup-in-global-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "a7dce0cbbabeef5a1b09b2b8c56ec568"
+    },
+    {
+      "keyword": "how to chrome-extension",
+      "topic": "chrome extension",
+      "output_rel_path": "15-how-to-chrome-extension-in_content.webp",
+      "search_terms": [
+        "chrome extension and build chrome extension workflow diagram chrome extension architecture sketch",
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard chrome extension",
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard chrome extension",
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of Chrome extension architecture illustrating background script, content script, and popup communication.",
+      "seed": 1500,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/15-how-to-chrome-extension-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "3f3f0f1b6be5b74411769e7fad598560"
+    },
+    {
+      "keyword": "how to ai",
+      "topic": "ai",
+      "output_rel_path": "16-how-to-ai-in_content.webp",
+      "search_terms": [
+        "does mean who search ai workflow diagram ai architecture sketch",
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard does mean",
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard does mean",
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of AI architecture illustrating how inputs and outputs flow between a user, a language model, and validation steps.",
+      "seed": 1600,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/16-how-to-ai-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "42c76cf980b7e2b8b80b81b56ca99650"
+    },
+    {
+      "keyword": "how to copilot",
+      "topic": "copilot",
+      "output_rel_path": "17-how-to-copilot-in_content.webp",
+      "search_terms": [
+        "copilot and who should copilot workflow diagram copilot architecture sketch",
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard copilot and",
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard copilot and",
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of Copilot architecture and developer interaction",
+      "seed": 1700,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/17-how-to-copilot-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "a297c784f17e9756180344958ebe4db7"
+    },
+    {
+      "keyword": "how to markdown",
+      "topic": "markdown",
+      "output_rel_path": "18-how-to-markdown-in_content.webp",
+      "search_terms": [
+        "markdown and text plain markdown workflow diagram markdown architecture sketch",
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard markdown and",
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard markdown and",
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Developer coding workflow diagram illustrating how Markdown fits into documentation process.",
+      "seed": 1800,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/18-how-to-markdown-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "e9edce6045a2c8715da945526881fdbd"
+    },
+    {
+      "keyword": "how to web-scraping",
+      "topic": "web scraping",
+      "output_rel_path": "19-how-to-web-scraping-in_content.webp",
+      "search_terms": [
+        "web scraping means automatically web scraping workflow diagram web scraping architecture sketch",
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard web scraping",
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard web scraping",
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Simple architecture diagram of a web scraping script fetching data from a website",
+      "seed": 1900,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/19-how-to-web-scraping-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "ca2b9852651ce4e92006704def2387df"
+    },
+    {
+      "keyword": "how to content extraction",
+      "topic": "content extraction",
+      "output_rel_path": "20-how-to-content-extraction-in_content.webp",
+      "search_terms": [
+        "extraction and who needs content extraction workflow diagram content extraction architecture sketch",
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard extraction and",
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard extraction and",
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Content extraction architecture sketch with selectors and data pipeline",
+      "seed": 2000,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/20-how-to-content-extraction-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "b5627cf3dc92dda136fb340650a24f92"
+    },
+    {
+      "keyword": "how to browser extension",
+      "topic": "browser extension",
+      "output_rel_path": "21-how-to-browser-extension-in_content.webp",
+      "search_terms": [
+        "you need know building browser extension workflow diagram browser extension architecture sketch",
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard you need",
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard you need",
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of browser extension architecture with files: manifest.json, background.js, popup.html, content.js",
+      "seed": 2100,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/21-how-to-browser-extension-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "025e76a6074e48eb215031302f843d30"
+    },
+    {
+      "keyword": "how to copy",
+      "topic": "copy",
+      "output_rel_path": "22-how-to-copy-in_content.webp",
+      "search_terms": [
+        "does copy mean development copy workflow diagram copy architecture sketch",
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard does copy",
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard does copy",
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Whiteboard sketch of copy workflow with cp, rsync, git clone options.",
+      "seed": 2200,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/22-how-to-copy-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "e304f0882f9e3922df681ee7c32f08ae"
+    },
+    {
+      "keyword": "how to auth",
+      "topic": "auth",
+      "output_rel_path": "23-how-to-auth-in_content.webp",
+      "search_terms": [
+        "authentication auth authorization asks auth workflow diagram auth architecture sketch",
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard authentication auth",
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard authentication auth",
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of common authentication mistakes like plaintext passwords and missing HTTPS",
+      "seed": 2300,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/23-how-to-auth-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "6f8ded0bf0d16376b0351c40cb4506d9"
+    },
+    {
+      "keyword": "how to payment",
+      "topic": "payment",
+      "output_rel_path": "24-how-to-payment-in_content.webp",
+      "search_terms": [
+        "payment the search query payment workflow diagram payment architecture sketch",
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard payment the",
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard payment the",
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of payment system architecture with merchant, gateway, and bank components.",
+      "seed": 2400,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/24-how-to-payment-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "ad70e0176ebcf7100bfda64f70b61560"
+    },
+    {
+      "keyword": "how to cancel",
+      "topic": "cancel",
+      "output_rel_path": "25-how-to-cancel-in_content.webp",
+      "search_terms": [
+        "you cancellation canceling subscription cancel workflow diagram cancel architecture sketch",
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard you cancellation",
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard you cancellation",
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of common cancellation pitfalls and alternative paths.",
+      "seed": 2500,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/25-how-to-cancel-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "81015304d0ea30228338eca162b60e93"
+    },
+    {
+      "keyword": "how to pricing",
+      "topic": "pricing",
+      "output_rel_path": "26-how-to-pricing-in_content.webp",
+      "search_terms": [
+        "问题定义 为什么定价那么难 很多开发者把定价等同于 定个数字 pricing workflow diagram pricing architecture sketch",
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard 问题定义 为什么定价那么难",
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard 问题定义 为什么定价那么难",
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "定价架构草图，展示不同定价模式（订阅、用量、一次性）的对比",
+      "seed": 2600,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/26-how-to-pricing-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "87ffabe8f4e090006b4a2d10b4b426aa"
+    },
+    {
+      "keyword": "how to chrome-extension",
+      "topic": "chrome extension",
+      "output_rel_path": "27-how-to-chrome-extension-in_content.webp",
+      "search_terms": [
+        "step-by-step building extension and chrome extension workflow diagram chrome extension architecture sketch",
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard step-by-step building",
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard step-by-step building",
+        "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of Chrome extension architecture illustrating background script, content script, and popup communication.",
+      "seed": 2700,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/27-how-to-chrome-extension-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "5626c08da827f0eda34f580e53580bae"
+    },
+    {
+      "keyword": "how to ai",
+      "topic": "ai",
+      "output_rel_path": "28-how-to-ai-in_content.webp",
+      "search_terms": [
+        "the process correctly for ai workflow diagram ai architecture sketch",
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard the process",
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard the process",
+        "ai workflow diagram ai architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of AI architecture illustrating how inputs and outputs flow between a user, a language model, and validation steps.",
+      "seed": 2800,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/28-how-to-ai-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "57b605c8cb5b46237ae589c9a1d3acf8"
+    },
+    {
+      "keyword": "how to copilot",
+      "topic": "copilot",
+      "output_rel_path": "29-how-to-copilot-in_content.webp",
+      "search_terms": [
+        "set copilot practical and copilot workflow diagram copilot architecture sketch",
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard set copilot",
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard set copilot",
+        "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of Copilot architecture and developer interaction",
+      "seed": 2900,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/29-how-to-copilot-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "6cdf98ba965897e3fdd388cd58b00408"
+    },
+    {
+      "keyword": "how to markdown",
+      "topic": "markdown",
+      "output_rel_path": "30-how-to-markdown-in_content.webp",
+      "search_terms": [
+        "step-by-step markdown for headers markdown workflow diagram markdown architecture sketch",
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard step-by-step markdown",
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard step-by-step markdown",
+        "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Developer coding workflow diagram illustrating how Markdown fits into documentation process.",
+      "seed": 3000,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/30-how-to-markdown-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "d2c102e0274b2489ff4074de25239c6e"
+    },
+    {
+      "keyword": "how to web-scraping",
+      "topic": "web scraping",
+      "output_rel_path": "31-how-to-web-scraping-in_content.webp",
+      "search_terms": [
+        "problem definition people web web scraping workflow diagram web scraping architecture sketch",
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard problem definition",
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard problem definition",
+        "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Simple architecture diagram of a web scraping script fetching data from a website",
+      "seed": 3100,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/31-how-to-web-scraping-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "50574ec768437c6d6d6728e00a9203c4"
+    },
+    {
+      "keyword": "how to content extraction",
+      "topic": "content extraction",
+      "output_rel_path": "32-how-to-content-extraction-in_content.webp",
+      "search_terms": [
+        "extraction step-by-step for the content extraction workflow diagram content extraction architecture sketch",
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard extraction step-by-step",
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard extraction step-by-step",
+        "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Content extraction architecture sketch with selectors and data pipeline",
+      "seed": 3200,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/32-how-to-content-extraction-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "3e7e8a8c686831a29a53709b8931db1c"
+    },
+    {
+      "keyword": "how to browser extension",
+      "topic": "browser extension",
+      "output_rel_path": "33-how-to-browser-extension-in_content.webp",
+      "search_terms": [
+        "define extension's purpose ask browser extension workflow diagram browser extension architecture sketch",
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard define extension's",
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard define extension's",
+        "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of browser extension architecture with files: manifest.json, background.js, popup.html, content.js",
+      "seed": 3300,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/33-how-to-browser-extension-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "e98b9bb89c6dd39d649aca9beb118efe"
+    },
+    {
+      "keyword": "how to copy",
+      "topic": "copy",
+      "output_rel_path": "34-how-to-copy-in_content.webp",
+      "search_terms": [
+        "matters copying fundamental development copy workflow diagram copy architecture sketch",
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard matters copying",
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard matters copying",
+        "copy workflow diagram copy architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Whiteboard sketch of copy workflow with cp, rsync, git clone options.",
+      "seed": 3400,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/34-how-to-copy-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "f4e1c725a62927f62bc205e13ad51fa4"
+    },
+    {
+      "keyword": "how to auth",
+      "topic": "auth",
+      "output_rel_path": "35-how-to-auth-in_content.webp",
+      "search_terms": [
+        "auth step-by-step token jwt auth workflow diagram auth architecture sketch",
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard auth step-by-step",
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard auth step-by-step",
+        "auth workflow diagram auth architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of common authentication mistakes like plaintext passwords and missing HTTPS",
+      "seed": 3500,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/35-how-to-auth-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "2b890dfd5670b018a4155c97c22876a1"
+    },
+    {
+      "keyword": "how to payment",
+      "topic": "payment",
+      "output_rel_path": "36-how-to-payment-in_content.webp",
+      "search_terms": [
+        "step-by-step payment setup and payment workflow diagram payment architecture sketch",
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard step-by-step payment",
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard step-by-step payment",
+        "payment workflow diagram payment architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Sketch of payment system architecture with merchant, gateway, and bank components.",
+      "seed": 3600,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/36-how-to-payment-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "a3805e0b698ca5ecd32dbc4f71af5f26"
+    },
+    {
+      "keyword": "how to cancel",
+      "topic": "cancel",
+      "output_rel_path": "37-how-to-cancel-in_content.webp",
+      "search_terms": [
+        "does cancel mean the cancel workflow diagram cancel architecture sketch",
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard does cancel",
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard does cancel",
+        "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "Illustration of common cancellation pitfalls and alternative paths.",
+      "seed": 3700,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/37-how-to-cancel-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "e435620746c4db82c21f52cade472fcc"
+    },
+    {
+      "keyword": "how to pricing",
+      "topic": "pricing",
+      "output_rel_path": "38-how-to-pricing-in_content.webp",
+      "search_terms": [
+        "操作步骤 步完成定价 api 计算成本下限 pricing workflow diagram pricing architecture sketch",
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard 操作步骤 步完成定价",
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "fallback_search_terms": [
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard 操作步骤 步完成定价",
+        "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+      ],
+      "relevance_reason": "定价架构草图，展示不同定价模式（订阅、用量、一次性）的对比",
+      "seed": 3800,
+      "output_path": "/Users/pocket/Documents/project/Copylot/docs/growth/assets/generated/20260702-105810-growth/images/38-how-to-pricing-in_content.webp",
+      "source_term": "illustrated_workflow",
+      "hash": "d0666055694b9868dd6f39dbeb212064"
+    }
+  ],
+  "failed_items": []
+}

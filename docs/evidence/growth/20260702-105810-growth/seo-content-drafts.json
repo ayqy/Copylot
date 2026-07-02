@@ -1,0 +1,1126 @@
+{
+  "drafts": [
+    {
+      "sequence": 1,
+      "keyword": "what should first-time foreign tourists know about setup in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "target_url_slug": "what-should-first-time-foreign-tourists-know-about-setup-in-global",
+      "run_id": "20260702-105810-growth",
+      "content_package": {
+        "title": "What Should First-Time Foreign Tourists Know About Setup in Global? A No-Fluff Guide",
+        "meta_title": "First-Time Foreign Tourist Setup Guide - Global Travel Tips",
+        "meta_description": "Discover what first-time foreign tourists must know about setup in global: from SIM cards and banking to eSIMs and backup plans. A practical, people-first guide.",
+        "excerpt": "This guide covers the essential steps and common pitfalls for first-time foreign tourists setting up abroad. Learn what works, what fails, and how to avoid expensive mistakes.",
+        "body_markdown": "## What Actually Matters When Setting Up as a First-Time Foreign Tourist\n\nYou land in a new country. You need internet, money access, and a way to navigate. Here's the real setup checklist.\n\n### 1. Connectivity First\nMost tourists rush to buy a local SIM at the airport. That can work, but it's often expensive and requires ID registration. Alternative: buy a travel eSIM before departure (e.g., Airalo, Holafly). You get data instantly, avoid language barriers, and keep your home number active for OTPs.\n\n**Pitfall:** Some eSIMs don't support voice calls. Check if you need a local number for ride-hailing or restaurant reservations.\n\n### 2. Money & Banking\nNotify your home bank of travel dates to avoid card blocks. Carry at least one backup card (different network). For cash, use ATMs inside bank branches—standalone ATMs are more prone to skimming.\n\n**Pitfall:** Dynamic Currency Conversion (DCC) at POS terminals is a hidden fee. Always choose to pay in local currency.\n\n### 3. Documents & Digital Copies\nKeep passport, visa, and travel insurance PDFs offline on your phone, and store copies in encrypted cloud storage. Paper copies in luggage are a good fallback.\n\n**Pitfall:** Many services require original physical documents for SIM registration or hotel check-ins. Digital copies are not always accepted.\n\n### 4. Transportation & Navigation\nGoogle Maps works well in most countries, but transit data may be incomplete. Download offline maps for your destination region before arrival. Apps like Citymapper or Moovit are better for public transit in specific cities.\n\n**Pitfall:** Roaming charges—if you rely on your home carrier's international plan, verify data caps and throttling policies.\n\n### 5. Backup Plan When Things Fail\n- If an eSIM doesn't activate: Find free public Wi-Fi (cafes, libraries, airports) and buy a physical SIM.\n- If your card is declined: Use a prepaid travel card (e.g., Revolut, Wise) or withdraw cash at a bank counter with passport.\n- If you lose your phone: Use a password manager on another device to recover credentials.\n\n### Bottom Line\nThe best setup is redundant: have an eSIM + physical SIM, two cards, and offline copies of key docs. Always test your connectivity and card before leaving the airport.\n\n### Next Steps\nReady to simplify your global setup? We'll show you a smarter approach to connectivity, payments, and document management—tailored for first-time tourists.",
+        "faq_items": [
+          {
+            "question": "what should first-time foreign tourists know about setup in global 适合谁？",
+            "answer": "This guide is for any first-time international traveler who wants a practical, no-nonsense setup plan. It helps if you're unsure about SIM cards, banking, or document handling abroad."
+          },
+          {
+            "question": "what should first-time foreign tourists know about setup in global 最容易踩的坑是什么？",
+            "answer": "The biggest mistake is assuming your home connectivity and payment methods will work seamlessly. Common pitfalls include roaming data throttling, card blocks due to fraud detection, and not having a physical backup for SIM registration."
+          },
+          {
+            "question": "what should first-time foreign tourists know about setup in global 失败时的备用方案是什么？",
+            "answer": "If an eSIM fails, find public Wi-Fi to buy a physical SIM. If a card is declined, use a prepaid travel card or cash. Always keep offline copies of essential documents and a list of emergency contacts."
+          }
+        ],
+        "internal_links": [],
+        "cta_block": {
+          "heading": "Make Your Global Setup Effortless",
+          "body": "Get a step-by-step walkthrough for connectivity, banking, and document management designed for first-time foreign tourists. Click below to access our lead generation page with personalized tips.",
+          "goal": "lead_generation"
+        },
+        "image_requests": [
+          {
+            "role": "hero",
+            "search_terms": [
+              "global workflow diagram",
+              "global architecture sketch",
+              "AI agent workflow whiteboard",
+              "developer coding workflow diagram"
+            ],
+            "alt_text": "Workflow diagram showing global setup steps for first-time foreign tourists, including connectivity, banking, and document storage."
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "actually matters setting first-time global workflow diagram global architecture sketch",
+              "global workflow diagram global architecture sketch AI agent workflow whiteboard actually matters",
+              "global workflow diagram global architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Illustration of a travel setup checklist with icons for SIM, card, and passport, representing practical steps for global travelers."
+          }
+        ],
+        "quality_checks": [
+          "The guide directly answers the query 'what should first-time foreign tourists know about setup in global' with actionable steps, not generic advice.",
+          "Each section includes boundaries and failure scenarios (eSIM voice call limits, DCC fees, digital copy acceptance).",
+          "The content is people-first: it solves the user's problem before any promotion.",
+          "CTA is placed only after providing value, and the offer is clear without being pushy.",
+          "Image alt text and search terms match the body content and query, covering connectivity and banking themes.",
+          "No filler phrases like 'in this article' or empty introductions."
+        ]
+      },
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260702-105852740-growth_seo_content_what-should-first-time-foreign-tourists-know-",
+      "fact_run_dir": null,
+      "model": "deepseek-v4-flash",
+      "material_length": 2375,
+      "fact_enrichment_used": false,
+      "supplemental_facts": {
+        "facts": [],
+        "search_queries_used": [],
+        "stop_reason": "material_sufficient"
+      },
+      "generation_status": "success",
+      "fallback_used": false
+    },
+    {
+      "sequence": 2,
+      "keyword": "how to chrome-extension",
+      "topic": "chrome extension",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "target_url_slug": "how-to-chrome-extension",
+      "run_id": "20260702-105810-growth",
+      "content_package": {
+        "title": "How to Start a Chrome Extension: A Practical Guide for Developers",
+        "meta_title": "How to Chrome Extension: Steps, Common Mistakes, and Alternatives",
+        "meta_description": "Learn how to build a Chrome extension step by step. Understand architecture, avoid common pitfalls, and discover alternative approaches when the standard path fails.",
+        "excerpt": "Building a Chrome extension doesn't have to be overwhelming. This guide covers the essential steps, common mistakes, and what to do when things go wrong.",
+        "body_markdown": "## What Is a Chrome Extension and Why Build One?\n\nA Chrome extension is a small software program that customizes the browsing experience. They can modify UI, block ads, save tabs, or automate tasks. Extensions are built with web technologies (HTML, CSS, JavaScript) and run in a sandboxed environment. If you want to reach millions of Chrome users, an extension is a direct channel. But before you start, know that extensions require ongoing maintenance — Chrome updates can break your code, and you must comply with Manifest V3.\n\n## Step-by-Step Guide to Building Your First Extension\n\n### Step 1: Understand the Architecture\n\nEvery extension needs a manifest file (`manifest.json`) that defines permissions, background scripts, and user interface components. Key parts:\n\n- **manifest.json**: Chrome reads this first. It sets the version, name, icons, and permissions.\n- **Service Worker** (background script): Handles events like clicks and tab updates.\n- **Content Scripts**: Run in the context of web pages; can read/modify page DOM.\n- **Popup or Options Page**: User interface for the extension.\n\n### Step 2: Set Up Your Development Environment\n\nCreate a folder. Inside, create:\n\n- `manifest.json`\n- `background.js` (service worker)\n- `content.js` (optional)\n- `popup.html` and `popup.js` (optional)\n\nWrite a minimal manifest:\n\n```json\n{\n  \"manifest_version\": 3,\n  \"name\": \"My Extension\",\n  \"version\": \"1.0\",\n  \"background\": {\n    \"service_worker\": \"background.js\"\n  },\n  \"permissions\": [\"storage\"]\n}\n```\n\n### Step 3: Load Your Extension in Chrome\n\nGo to `chrome://extensions`, enable Developer Mode, click \"Load unpacked\", and select your folder. You'll see your extension appear. Start testing.\n\n### Step 4: Add Functionality\n\nFor example, to save tabs:\n\n`background.js`:\n```javascript\nchrome.action.onClicked.addListener(() => {\n  chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {\n    if (tabs[0]) {\n      chrome.storage.local.set({savedTab: tabs[0].url});\n    }\n  });\n});\n```\n\nThen add a popup to display saved tabs.\n\n### Step 5: Test and Debug\n\nUse `console.log` statements; view them in the service worker console (inspect background page). Check for permission errors. Test on different sites.\n\n### Step 6: Package and Publish\n\nZip your folder. Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole) and upload. You'll need a $5 developer account. Fill in descriptions, screenshots, and privacy policy.\n\n## Common Mistakes\n\n- **Over‑requesting permissions**: Users distrust extensions that ask for too much. Only ask for what you need.\n- **Ignoring Manifest V3**: Google is phasing out V2. Start with V3 to avoid future breaks.\n- **Not handling errors**: Content scripts fail on restricted pages (e.g., `chrome://`). Always wrap in try-catch and provide fallback UI.\n- **No privacy policy**: Required if you collect any user data. Missing it leads to rejection.\n\n## Limitations and Alternatives\n\n- **Limitations**: Extensions cannot access some Chrome internal pages. They run with limited CPU/memory. Manifest V3 restricts remote code execution.\n- **Alternatives**: If an extension is too complex, consider a bookmarklet or a web app with a companion extension. For simple automations, use Chrome's built-in \"Snippets\" or a user script manager like Tampermonkey.\n\n## What to Do If You Get Stuck\n\n- Check the [official Chrome Extensions documentation](https://developer.chrome.com/docs/extensions/).\n- Search Stack Overflow for specific error messages.\n- Use the Chrome DevTools to debug your service worker.\n- If you're struggling with architecture, consider using a framework like Plasmo or WXT to simplify development.",
+        "faq_items": [
+          {
+            "question": "How to chrome-extension 适合谁？",
+            "answer": "This guide is for developers with basic web development skills (HTML, CSS, JavaScript) who want to build a Chrome extension from scratch. It's not for non-technical users or those looking for a no-code solution."
+          },
+          {
+            "question": "How to chrome-extension 最容易踩的坑是什么？",
+            "answer": "The most common pitfalls are over‑requesting permissions in the manifest, ignoring Manifest V3 requirements, and failing to handle errors on restricted pages. These lead to user mistrust or outright extension rejection from the Chrome Web Store."
+          },
+          {
+            "question": "How to chrome-extension 失败时的备用方案是什么？",
+            "answer": "If building an extension becomes too complex, consider a bookmarklet for simple actions, a user script manager like Tampermonkey, or a progressive web app that integrates with the browser. For automation, Chrome's built-in Snippets may suffice."
+          }
+        ],
+        "internal_links": [],
+        "cta_block": {
+          "heading": "Ready to Turn Your Idea Into an Extension?",
+          "body": "If you're stuck or want to skip the setup hassle, get a professional audit of your extension concept. We'll help you avoid common mistakes and speed up development.",
+          "goal": "lead_generation"
+        },
+        "image_requests": [
+          {
+            "role": "hero",
+            "search_terms": [
+              "chrome extension workflow diagram",
+              "chrome extension architecture sketch",
+              "AI agent workflow whiteboard",
+              "developer coding workflow diagram"
+            ],
+            "alt_text": "Diagram showing the workflow of a Chrome extension: manifest.json, service worker, content script, and popup UI."
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "chrome extension and build chrome extension workflow diagram chrome extension architecture sketch",
+              "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard chrome extension",
+              "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Sketch of Chrome extension architecture illustrating background script, content script, and popup communication."
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "step-by-step building extension and chrome extension workflow diagram chrome extension architecture sketch",
+              "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard step-by-step building",
+              "chrome extension workflow diagram chrome extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Sketch of Chrome extension architecture illustrating background script, content script, and popup communication."
+          }
+        ],
+        "quality_checks": [
+          "Directly addresses 'what is a Chrome extension', 'why build one', 'step-by-step build process', 'common mistakes', and 'alternatives'. No fluff.",
+          "Includes explicit limitations (restricted pages, Manifest V3, permissions) and failure scenarios (errors on chrome:// pages, permission overreach).",
+          "CTA is a natural next step after troubleshooting (audit/concept validation), not a generic 'sign up now'.",
+          "Image alt text matches the engineering theme and relates to specific concepts (workflow, architecture).",
+          "All three FAQ questions answered tightly and linked to the guide content."
+        ]
+      },
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260702-105852741-growth_seo_content_how-to-chrome-extension",
+      "fact_run_dir": null,
+      "model": "deepseek-v4-flash",
+      "material_length": 2128,
+      "fact_enrichment_used": false,
+      "supplemental_facts": {
+        "facts": [],
+        "search_queries_used": [],
+        "stop_reason": "material_sufficient"
+      },
+      "generation_status": "success",
+      "fallback_used": false
+    },
+    {
+      "sequence": 3,
+      "keyword": "how to ai",
+      "topic": "ai",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "target_url_slug": "how-to-ai",
+      "run_id": "20260702-105810-growth",
+      "content_package": {
+        "title": "How to AI: The Practical Steps Before You Rely on It",
+        "meta_title": "How to AI: Practical Steps, Common Mistakes & Alternatives [2025 Guide]",
+        "meta_description": "Learn how to AI effectively in 2025: define your task, choose the right tool, craft clear prompts, validate outputs, and know when to fall back. Avoid common pitfalls and improve your results.",
+        "excerpt": "AI tools can boost productivity, but using them blindly leads to mistakes. This guide covers the practical steps to integrate AI into your workflow, common errors to avoid, and fallback options when AI fails.",
+        "body_markdown": "## What Does \"How to AI\" Really Mean?\n\n\"How to AI\" is a search query from people who know they should use AI but aren't sure where to start or how to do it effectively. It's for developers, content creators, and professionals who want to integrate AI into their workflow without wasting time or producing bad results.\n\n## The 5-Step Process to Use AI Correctly\n\n### 1. Define Your Task Clearly\nAI is not magic. Before opening any tool, write down what you want to accomplish. For example, \"generate a 500-word blog outline about SaaS pricing\" or \"debug this Python function that parses CSV files.\" Vague inputs produce vague outputs.\n\n### 2. Choose the Right AI Tool\nNot every AI is suited for every job. Use language models like GPT-4 or Claude for writing and analysis. Use specialized tools for image generation (DALL-E, Stable Diffusion), code (GitHub Copilot), or data analysis (ChatGPT Code Interpreter). Check the tool's capabilities and limits before committing.\n\n### 3. Craft a Clear Prompt\nA good prompt includes context, format, and constraints. For example: \"List 5 tips for remote productivity, each with a one-sentence explanation, in bullet points.\" Avoid single-word prompts. If you get poor results, refine your prompt rather than repeating the same input.\n\n### 4. Validate Everything\nAI can hallucinate or give incorrect information. For factual content, cross-check from reliable sources. For code, test it. For data, sanity-check the output. Do not trust AI as a single source of truth.\n\n### 5. Iterate and Fine-Tune\nUse the output as a draft or starting point. Edit, adjust, and regenerate parts until the result meets your quality standards. Leverage follow-up prompts to refine details.\n\n## Common Mistakes When \"Doing AI\"\n\n- **Over-reliance on default settings**: Most tools have parameters like temperature or creativity; adjust them for your use case.\n- **Ignoring output formatting**: AI can produce messy text; ask for structured output (tables, bullet points, JSON) to save time.\n- **Not specifying a persona or tone**: For tailored results, tell the AI to act as a specific expert (e.g., \"you are an experienced project manager\").\n\n## When AI Fails: Backup Plans\n\nIf AI consistently fails at your task:\n- Try a different tool (e.g., switch from GPT-4 to Claude for reasoning tasks).\n- Break the task into smaller steps and tackle each separately.\n- Fall back to manual work or use traditional software (e.g., Excel for data, Google Search for facts).\n\n## Ready to Get Real Results?\n\nNow that you know the process, put it into practice. For a deeper walkthrough and hands-on guidance tailored to your workflow, access our lead generation landing page where we show you how to build AI habits that stick.",
+        "faq_items": [
+          {
+            "question": "How to AI适合谁？",
+            "answer": "适合任何想要将AI融入工作流的个人或团队，尤其是内容创作者、开发者、产品经理和创业者。本指南适合新手和有部分经验但结果不理想的人。"
+          },
+          {
+            "question": "How to AI最容易踩的坑是什么？",
+            "answer": "最常见的是输入模糊的提示词、不验证输出真实性、以及默认AI输出就是最终结果。另一个坑是忽略工具的选择——用错了模型会导致效果大打折扣。"
+          },
+          {
+            "question": "How to AI失败时的备用方案是什么？",
+            "answer": "尝试更换工具（如从ChatGPT切换到Claude），将任务拆解成更小步骤，或者完全回到人工操作。有时传统方法（如搜索引擎或手动计算）比AI更可靠。"
+          }
+        ],
+        "internal_links": [],
+        "cta_block": {
+          "heading": "Get the Full AI Workflow Guide",
+          "body": "We've prepared a free resource that walks you through the exact steps, including prompt templates and validation checklists. Click below to access the lead generation page and start optimizing your AI usage today.",
+          "goal": "lead_generation"
+        },
+        "image_requests": [
+          {
+            "role": "hero",
+            "search_terms": [
+              "ai workflow diagram",
+              "ai architecture sketch",
+              "AI agent workflow whiteboard",
+              "developer coding workflow diagram"
+            ],
+            "alt_text": "Diagram showing a step-by-step AI workflow: define task, choose tool, craft prompt, validate, iterate."
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "does mean who search ai workflow diagram ai architecture sketch",
+              "ai workflow diagram ai architecture sketch AI agent workflow whiteboard does mean",
+              "ai workflow diagram ai architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Sketch of AI architecture illustrating how inputs and outputs flow between a user, a language model, and validation steps."
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "the process correctly for ai workflow diagram ai architecture sketch",
+              "ai workflow diagram ai architecture sketch AI agent workflow whiteboard the process",
+              "ai workflow diagram ai architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Sketch of AI architecture illustrating how inputs and outputs flow between a user, a language model, and validation steps."
+          }
+        ],
+        "quality_checks": [
+          "Content directly answers the query 'how to ai' with practical steps, not abstract theory.",
+          "Defines boundaries: task clarity, tool selection, validation requirements.",
+          "Covers failure scenarios and alternatives (different tools, manual fallback).",
+          "CTA is placed after providing value, not as a clickbait header.",
+          "Images match the practical workflow theme and are described in alt text.",
+          "FAQ questions address target audience concerns and are consistent with article."
+        ]
+      },
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260702-105852742-growth_seo_content_how-to-ai",
+      "fact_run_dir": null,
+      "model": "deepseek-v4-flash",
+      "material_length": 1966,
+      "fact_enrichment_used": false,
+      "supplemental_facts": {
+        "facts": [],
+        "search_queries_used": [],
+        "stop_reason": "material_sufficient"
+      },
+      "generation_status": "success",
+      "fallback_used": false
+    },
+    {
+      "sequence": 4,
+      "keyword": "how to copilot",
+      "topic": "copilot",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "target_url_slug": "how-to-copilot",
+      "run_id": "20260702-105810-growth",
+      "content_package": {
+        "title": "How to Copilot: Setup, Limits, and Safer Fallback Options",
+        "meta_title": "How to Copilot: Setup Guide, Common Pitfalls & Fallback Options",
+        "meta_description": "Learn how to copilot effectively—from setup to real-world limits. Covers common mistakes, alternative tools, and a clear next step if Copilot isn't enough.",
+        "excerpt": "Copilot boosts coding speed, but misuse can lead to security and quality issues. This guide covers setup steps, common pitfalls, and safer fallback options when Copilot falls short.",
+        "body_markdown": "## What is Copilot and Who Should Use It?\n\nGitHub Copilot is an AI code completion tool that suggests code in real time. It's best for developers who want to speed up boilerplate writing, learn new frameworks, or reduce context-switching. However, Copilot is not a replacement for code review or security checks.\n\n## How to Set Up Copilot (Practical Steps)\n\n1. **Install the extension**: Go to Visual Studio Code, JetBrains, or Neovim marketplace and install GitHub Copilot.\n2. **Authenticate**: Sign in with your GitHub account and enable Copilot for your workspace.\n3. **Select a model** (if available): For most tasks, use the default GPT-4 based model. Toggle to a lighter model for quicker suggestions on simple tasks.\n4. **Configure suggestions**: In settings, adjust `trigger suggestions on keystroke` (default on) and set your preferred language and framework context.\n5. **Start coding**: Write comments or function signatures; Copilot will suggest completions. Accept with Tab or click.\n\n### Pro Tip\n\nFor best results, provide clear context: define function names, parameters, and types before expecting accurate suggestions.\n\n## Common Mistakes and How to Avoid Them\n\n- **Blindly accepting suggestions**: Copilot can suggest insecure or inefficient code. Always review for logic errors, security vulnerabilities (e.g., SQL injection), and license issues.\n- **Over-relying on Copilot**: For complex architectural decisions or critical business logic, Copilot's suggestions may be shallow. Use it as a helper, not a decisor.\n- **Ignoring context**: If your file has mixed languages or outdated imports, Copilot may produce irrelevant code.\n\n## When Copilot Fails: Limit Scenarios and Fallback Options\n\nCopilot fails when:\n- The task is highly domain-specific (e.g., niche legal or medical algorithms).\n- The codebase has non-standard patterns or legacy dependencies.\n- The user provides too little context (e.g., empty file or vague comments).\n\n**Fallback options**:\n1. **Manual coding**: Write the logic yourself, referring to documentation or community examples.\n2. **Alternative AI tools**: Try ChatGPT, Claude, or TabNine for similar or complementary suggestions.\n3. **Pair programming**: Collaborate with a colleague to validate and refine the code.\n\n## Next Step: When Copilot Isn't Enough\n\nIf you've hit Copilot's limits and need a more robust solution—such as custom AI agents, secure code generation at scale, or team-wide tooling—Copylot can help. Copylot extends beyond code completion to handle complex workflows and compliance needs.",
+        "faq_items": [
+          {
+            "question": "How to copilot 适合谁？",
+            "answer": "主要适合专业开发者、技术团队以及学习新语言或框架的编程学习者。如果你需要快速生成样板代码或减少重复性工作，Copilot 是个好帮手。但不适合完全依赖它来做安全审查或关键决策。"
+          },
+          {
+            "question": "How to copilot 最容易踩的坑是什么？",
+            "answer": "最高频的错误是盲目接受 Copilot 的建议而不做代码审查。它可能输出包含安全漏洞或违反许可证的代码。另一个坑是在缺乏上下文时期望它给出精确结果。"
+          },
+          {
+            "question": "How to copilot 失败时的备用方案是什么？",
+            "answer": "你可以手动编码、使用 ChatGPT 或 Claude 等替代 AI 工具，或者采用结对编程。对于更复杂的需求，考虑 Copylot 这样的专业平台。"
+          }
+        ],
+        "internal_links": [],
+        "cta_block": {
+          "heading": "Ready to Go Beyond Copilot?",
+          "body": "If you need a more secure, compliant, or scalable coding assistant, Copylot provides an AI agent solution designed for enterprise workflows. Click below to explore how you can automate beyond code completion.",
+          "goal": "Lead generation: guide users to a dedicated landing page to learn about Copylot's features and requests a demo/trial."
+        },
+        "image_requests": [
+          {
+            "role": "hero",
+            "search_terms": [
+              "copilot workflow diagram",
+              "copilot architecture sketch",
+              "AI agent workflow whiteboard",
+              "developer coding workflow diagram"
+            ],
+            "alt_text": "Copilot workflow diagram showing step-by-step code suggestion flow"
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "copilot and who should copilot workflow diagram copilot architecture sketch",
+              "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard copilot and",
+              "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Illustration of Copilot architecture and developer interaction"
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "set copilot practical and copilot workflow diagram copilot architecture sketch",
+              "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard set copilot",
+              "copilot workflow diagram copilot architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Illustration of Copilot architecture and developer interaction"
+          }
+        ],
+        "quality_checks": [
+          "The article addresses the query 'how to copilot' with setup steps, common mistakes, and failure scenarios—keeping people-first approach.",
+          "Boundaries are clearly stated: when Copilot fails, who it's for, and safety warnings about blind acceptance.",
+          "FAQ items directly match the questions in the brief and are concise (2-4 sentences each).",
+          "CTA leads to lead generation without being pushy; it offers a solution when Copilot is insufficient.",
+          "Image search terms and alt text align with the practical workflow theme of the article."
+        ]
+      },
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260702-105852742-growth_seo_content_how-to-copilot",
+      "fact_run_dir": null,
+      "model": "deepseek-v4-flash",
+      "material_length": 2031,
+      "fact_enrichment_used": false,
+      "supplemental_facts": {
+        "facts": [],
+        "search_queries_used": [],
+        "stop_reason": "material_sufficient"
+      },
+      "generation_status": "success",
+      "fallback_used": false
+    },
+    {
+      "sequence": 5,
+      "keyword": "how to markdown",
+      "topic": "markdown",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "target_url_slug": "how-to-markdown",
+      "run_id": "20260702-105810-growth",
+      "content_package": {
+        "title": "How to Markdown: A Practical Guide for Developers and Content Creators",
+        "meta_title": "How to Markdown: Step-by-Step Guide with Examples | Copylot",
+        "meta_description": "Learn how to use Markdown for formatting text, code, and more. Includes step-by-step instructions, common mistakes, and a lead generation CTA.",
+        "excerpt": "Markdown is a lightweight markup language that lets you format text with plain syntax. This guide covers the essentials: headers, lists, links, code blocks, and tables. Avoid common pitfalls and start using Markdown today.",
+        "body_markdown": "## What Is Markdown and Why Use It?\n\nMarkdown is a plain text formatting syntax designed to be easy to read and write. It converts to HTML, making it ideal for documentation, README files, forum posts, and content management systems like Joomla. Unlike WYSIWYG editors, Markdown gives you full control without cluttering your text with tags.\n\n## Step-by-Step: How to Markdown\n\n### 1. Headers\nUse `#` for headers. One `#` for H1, two `##` for H2, up to six. Always leave a space after `#`.\n```\n# H1\n## H2\n### H3\n```\n\n### 2. Emphasis\n- *Italic*: wrap text with single asterisks or underscores: `*italic*` or `_italic_`\n- **Bold**: double asterisks: `**bold**`\n- ***Bold+Italic***: triple asterisks\n\n### 3. Lists\nUnordered: use `-`, `*`, or `+` before items.\n```\n- item 1\n- item 2\n```\nOrdered: use numbers followed by a period.\n```\n1. first\n2. second\n```\n\n### 4. Links\n`[link text](URL)` — for example, `[Copylot](https://copy.useai.online)` renders as a hyperlink.\n\n### 5. Images\n`![alt text](image URL)` — similar to links but with a leading `!`.\n\n### 6. Code\nInline: use backticks: `` `code` ``.\nBlock: use triple backticks:\n````\n```\ncode block\n```\n````\n\n### 7. Tables\nSeparate columns with pipes (`|`) and headers with dashes.\n```\n| Column 1 | Column 2 |\n|----------|----------|\n| data     | data     |\n```\n\n### 8. Blockquotes\nStart a line with `>`.\n```\n> This is a quote.\n```\n\n## Common Mistakes (and How to Avoid Them)\n\n- **Inconsistent spacing**: Always add a space after `#`, `-`, or `>`.\n- **Nested lists**: Indent sub-items with 2-4 spaces; otherwise, they break.\n- **Raw HTML in Markdown**: Some Markdown flavors allow HTML, but rely on native syntax for portability.\n- **Escaping characters**: Use a backslash (`\\`) before special characters like `*` or `#` if you want the literal symbol.\n\n## When Markdown Falls Short\n\nMarkdown is not ideal for complex layouts, footnotes, or precise typographic control. If you need fine-grained CSS, scripts, or dynamic content, consider HTML directly. For collaborative editing, use a tool that previews Markdown in real time.\n\n## Your Next Step\n\nReady to put Markdown into action? Copylot helps you generate and manage Markdown content efficiently. Get started with our lead generation page.",
+        "faq_items": [
+          {
+            "question": "How to markdown 适合谁？",
+            "answer": "Markdown 适合所有需要写文档、博客、README 或论坛帖子的开发者、技术写作者和内容创作者。它在 GitHub、Jekyll、Hugo 等平台广泛使用，学习成本极低。"
+          },
+          {
+            "question": "How to markdown 最容易踩的坑是什么？",
+            "answer": "最常见的错误是符号后忘记空格，如 `#Header` 不会渲染为标题。列表嵌套时缩进不一致也会导致格式错乱。此外，用原始 Markdown 无法实现高级排版，如脚注或多列布局。"
+          },
+          {
+            "question": "How to markdown 失败时的备用方案是什么？",
+            "answer": "如果 Markdown 无法满足复杂排版需求，可以直接使用 HTML 嵌入。或者切换到富文本编辑器（如 TinyMCE），但会牺牲纯文本的简洁性和版本控制友好性。"
+          }
+        ],
+        "internal_links": [
+          {
+            "anchor": "Markdown vs HTML: When to Use Which",
+            "target_type": "guide_detail",
+            "reason": "为用户提供更深入的技术选择分析"
+          },
+          {
+            "anchor": "Best Markdown Editors for 2025",
+            "target_type": "guide_detail",
+            "reason": "推荐工具帮助用户落地实践"
+          }
+        ],
+        "cta_block": {
+          "heading": "Ready to Streamline Your Markdown Workflow?",
+          "body": "Copylot helps you create, manage, and publish Markdown content faster. Transform your documentation and blog posts with AI assistance.",
+          "goal": "lead_generation"
+        },
+        "image_requests": [
+          {
+            "role": "hero",
+            "search_terms": [
+              "markdown workflow diagram",
+              "markdown architecture sketch",
+              "AI agent workflow whiteboard",
+              "developer coding workflow diagram"
+            ],
+            "alt_text": "Markdown workflow diagram showing conversion from plain text to formatted output."
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "markdown and text plain markdown workflow diagram markdown architecture sketch",
+              "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard markdown and",
+              "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Developer coding workflow diagram illustrating how Markdown fits into documentation process."
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "step-by-step markdown for headers markdown workflow diagram markdown architecture sketch",
+              "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard step-by-step markdown",
+              "markdown workflow diagram markdown architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Developer coding workflow diagram illustrating how Markdown fits into documentation process."
+          }
+        ],
+        "quality_checks": [
+          "正文以问题定义开头，直接回答‘what is markdown and why use it’，符合用户搜索意图。",
+          "步骤详细且可操作，覆盖 headers、emphasis、lists、links、images、code、tables、blockquotes。",
+          "常见错误部分总结 spacing、nesting、HTML 混用、escaping 四个真实痛点。",
+          "明确指出 Markdown 的边界：不适合复杂布局、脚注、精确保留。",
+          "CTA 在最后，不强推，提供解决工作流问题的价值主张。",
+          "图片 alt 文本与 body 中讨论的 workflow 和 developer usage 主题一致，非抽象科技图。"
+        ]
+      },
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260702-105907049-growth_seo_content_how-to-markdown",
+      "fact_run_dir": null,
+      "model": "deepseek-v4-flash",
+      "material_length": 2001,
+      "fact_enrichment_used": false,
+      "supplemental_facts": {
+        "facts": [],
+        "search_queries_used": [],
+        "stop_reason": "material_sufficient"
+      },
+      "generation_status": "success",
+      "fallback_used": false
+    },
+    {
+      "sequence": 6,
+      "keyword": "how to web-scraping",
+      "topic": "web scraping",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "target_url_slug": "how-to-web-scraping",
+      "run_id": "20260702-105810-growth",
+      "content_package": {
+        "title": "How to Web-Scraping: A Practical Step-by-Step Guide",
+        "meta_title": "How to Web-Scraping: Step-by-Step Guide & Common Mistakes",
+        "meta_description": "Learn how to web-scraping with this practical guide. Covers setup, step-by-step process, common pitfalls, and alternatives when scraping fails.",
+        "excerpt": "Web scraping is extracting data from websites. This guide covers how to start, common mistakes, and when to use alternatives like APIs or AI agents.",
+        "body_markdown": "Web scraping means automatically collecting data from websites. You typically use a script to fetch a page, parse its HTML, and save the structured information.\n\n## 1. Problem Definition\nPeople web scrape to get data not available via API, monitor competitors, aggregate news, or train AI models. But scraping fails often due to anti-bot measures, legal restrictions, and site structure changes.\n\n## 2. Step-by-Step Process\n**Step 1 – Choose your tools.** Popular options:\n- Python with BeautifulSoup or Scrapy\n- Node.js with Puppeteer\n- Browser extensions (limited, but easy)\n\n**Step 2 – Identify the target elements.** Use your browser's DevTools (F12) to inspect the page. Find the CSS selectors or XPath for the data you want.\n\n**Step 3 – Write the scraping script.** For example in Python:\n```python\nimport requests\nfrom bs4 import BeautifulSoup\n\nurl = \"https://example.com/products\"\nresponse = requests.get(url)\nsoup = BeautifulSoup(response.text, 'html.parser')\nitems = soup.select('.product-name')\nfor item in items:\n    print(item.text.strip())\n```\n\n**Step 4 – Handle pagination and rate limits.** Use loops and delays (`time.sleep()`) to avoid getting blocked.\n\n**Step 5 – Store the data.** Write to CSV, JSON, or a database.\n\n## 3. Common Mistakes\n- **Not respecting robots.txt.** Check `/robots.txt` first.\n- **Hardcoding selectors.** Sites change – use robust matching.\n- **Ignoring legal issues.** Some sites prohibit scraping in their ToS.\n- **Scaling too fast.** Rapid requests trigger IP bans.\n\n## 4. When Web Scraping Fails & Alternatives\nIf you get blocked or the data is behind a login, consider:\n- Using official APIs (if available)\n- AI-based content extraction tools (like Copylot)\n- Manual copy-paste for small amounts\n\nScraping is a practical skill, but always verify legality and respect site resources. For more guidance on building efficient scraping pipelines, explore our lead generation page.",
+        "faq_items": [
+          {
+            "question": "How to web-scraping 适合谁？",
+            "answer": "It's for developers, data analysts, and researchers who need structured data from websites. If you can write basic Python or JavaScript, you can start scraping."
+          },
+          {
+            "question": "How to web-scraping 最容易踩的坑是什么？",
+            "answer": "Ignoring robots.txt, hardcoding CSS selectors, and not handling pagination. Also, many sites block aggressive scraping, so you need delays and proxies."
+          },
+          {
+            "question": "How to web-scraping 失败时的备用方案是什么？",
+            "answer": "Use official APIs when possible. For dynamic content, try headless browsers like Puppeteer. If scraping is blocked, consider AI-powered extraction tools or manual collection."
+          }
+        ],
+        "internal_links": [],
+        "cta_block": {
+          "heading": "Want to Automate Web Scraping Without Coding?",
+          "body": "Learn how Copylot helps you extract and structure web data with AI, saving hours of manual work. Get started today.",
+          "goal": "lead_generation"
+        },
+        "image_requests": [
+          {
+            "role": "hero",
+            "search_terms": [
+              "web scraping workflow diagram",
+              "web scraping architecture sketch",
+              "AI agent workflow whiteboard",
+              "developer coding workflow diagram"
+            ],
+            "alt_text": "Flowchart showing web scraping process from URL request to data storage"
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "web scraping means automatically web scraping workflow diagram web scraping architecture sketch",
+              "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard web scraping",
+              "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Simple architecture diagram of a web scraping script fetching data from a website"
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "problem definition people web web scraping workflow diagram web scraping architecture sketch",
+              "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard problem definition",
+              "web scraping workflow diagram web scraping architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Simple architecture diagram of a web scraping script fetching data from a website"
+          }
+        ],
+        "quality_checks": [
+          "Directly answers how to web-scraping with concrete steps and code.",
+          "Covers common mistakes and failure scenarios, including legal and technical limits.",
+          "Mentions alternatives when scraping fails, avoiding overpromising.",
+          "CTA block is relevant and leads to lead generation, not forced.",
+          "Images match the workflow/architecture theme as required.",
+          "No placeholder or templated fluff – all content addresses real user questions."
+        ]
+      },
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260702-105907236-growth_seo_content_how-to-web-scraping",
+      "fact_run_dir": null,
+      "model": "deepseek-v4-flash",
+      "material_length": 2053,
+      "fact_enrichment_used": false,
+      "supplemental_facts": {
+        "facts": [],
+        "search_queries_used": [],
+        "stop_reason": "material_sufficient"
+      },
+      "generation_status": "success",
+      "fallback_used": false
+    },
+    {
+      "sequence": 7,
+      "keyword": "how to content extraction",
+      "topic": "content extraction",
+      "locale": "auto",
+      "page_type": "guide_detail",
+      "target_url_slug": "how-to-content-extraction",
+      "run_id": "20260702-105810-growth",
+      "content_package": {
+        "title": "How to Content Extraction: A Practical Guide for Developers",
+        "meta_title": "How to Content Extraction | Step-by-Step Guide & Common Pitfalls",
+        "meta_description": "Learn how to content extraction works for AI and web scraping. Covers steps, common mistakes, and fallback strategies for reliable extraction.",
+        "excerpt": "Content extraction is key for AI training, data analysis, and automation. This guide explains how to do it, where it fails, and what to do next.",
+        "body_markdown": "## What Is Content Extraction and Who Needs It?\n\nContent extraction means pulling structured data (text, images, metadata) from unstructured sources like web pages, PDFs, or HTML. It's used by developers building AI agents, content aggregators, and research tools. If you're dealing with large volumes of data from different sources, you need a reliable extraction pipeline.\n\n## How to Do Content Extraction: Step-by-Step\n\n### 1. Identify the Source and Structure\nFirst, inspect the source. Is it static HTML, a JavaScript-rendered page, a PDF, or an API? For web pages, use browser DevTools to find consistent CSS selectors or XPaths. For dynamic content, you may need a headless browser like Puppeteer.\n\n### 2. Choose the Right Tool or Library\n- **BeautifulSoup (Python)**: Great for simple, static HTML parsing.\n- **Scrapy**: For large-scale crawling with built-in extraction.\n- **Readability (Mozilla)**: Extracts main article content from news pages.\n- **LLM-based extraction**: For complex or unstructured data, consider using GPT or similar to infer structure.\n\n### 3. Define What to Extract\nCreate a schema: title, publish date, author, body text, images. Use CSS selectors or regex patterns to target each element. Test on multiple samples to ensure consistency.\n\n### 4. Handle Pagination and Dynamic Content\nIf data spans multiple pages, implement pagination logic. For dynamic content (loaded via JavaScript), use tools like Selenium or Playwright to wait for elements to appear.\n\n### 5. Clean and Validate Output\nRemove boilerplate (ads, nav bars), normalize whitespace, check for missing fields. Validate that extracted dates are in proper format, and that text isn't truncated.\n\n### 6. Store or Pipe the Data\nOutput to JSON, CSV, or a database. Set up error logging for failed extractions.\n\n## Common Misconceptions and Mistakes\n\n- **Mistake: Assuming all sources have the same structure.** Sites change layouts; your selectors must be maintained.\n- **Mistake: Ignoring rate limits and robots.txt.** This can get your IP blocked.\n- **Mistake: Not handling empty results.** A successful extraction should gracefully report when data is missing.\n- **Mistake: Over-relying on a single selector.** Use fallback selectors to improve robustness.\n\n## Where Content Extraction Fails\n\n- **JavaScript-heavy sites**: Content loaded via fetch or API calls may require waiting or executing scripts.\n- **Anti-bot measures**: Some sites use CAPTCHA or IP blocking when they detect scraping.\n- **Inconsistent markup**: E-commerce product pages often vary by category, breaking selectors.\n- **PDF and images**: Text inside images or scanned PDFs need OCR, which adds complexity and errors.\n\n## Backup Plan When Extraction Fails\n\n1. **Use a fallback selector** – try multiple selectors for the same field.\n2. **Switch to a different tool** – if BeautifulSoup fails, try readability or an LLM-based parser.\n3. **Use a service API** – like Diffbot or Apify for more reliable extraction.\n4. **Manual fallback** – queue problematic pages for manual review.\n\n## Ready to Build Your Extraction Pipeline?\n\nIf you need to scale content extraction for AI or data products, explore tools that offer pre-built integrations and monitoring. Check our lead generation page for templates and architecture patterns.",
+        "faq_items": [
+          {
+            "question": "How to content extraction适合谁？",
+            "answer": "主要适合开发者、数据工程师和AI产品团队，他们需要从网页、API或文档中自动化提取结构化信息。对于小规模内容聚合或研究，手动提取可能就够了；但规模化时就需要本文的流程。"
+          },
+          {
+            "question": "How to content extraction最容易踩的坑是什么？",
+            "answer": "最常犯的错误是假设网站结构固定不变。实际上，网站改版或A/B测试会破坏选择器，导致提取失败。另一个坑是忽视robots.txt和限速，被IP封禁。务必加入错误处理和重试机制。"
+          },
+          {
+            "question": "How to content extraction失败时的备用方案是什么？",
+            "answer": "首先尝试备用选择器或改用基于AI的解析工具（如LLM提取）。如果技术手段都无效，可考虑使用第三方提取服务（如Diffbot、Apify），或人工处理关键页面。同时记录失败源头，优化选择器策略。"
+          }
+        ],
+        "internal_links": [],
+        "cta_block": {
+          "heading": "Build scalable content extraction workflows",
+          "body": "Get templates and architecture patterns to accelerate your extraction pipeline – from small test to production.",
+          "goal": "lead_generation"
+        },
+        "image_requests": [
+          {
+            "role": "hero",
+            "search_terms": [
+              "content extraction workflow diagram",
+              "content extraction architecture sketch",
+              "AI agent workflow whiteboard",
+              "developer coding workflow diagram"
+            ],
+            "alt_text": "Content extraction workflow diagram showing steps from source to structured data"
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "extraction and who needs content extraction workflow diagram content extraction architecture sketch",
+              "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard extraction and",
+              "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Content extraction architecture sketch with selectors and data pipeline"
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "extraction step-by-step for the content extraction workflow diagram content extraction architecture sketch",
+              "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard extraction step-by-step",
+              "content extraction workflow diagram content extraction architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Content extraction architecture sketch with selectors and data pipeline"
+          }
+        ],
+        "quality_checks": [
+          "Covers problem definition, step-by-step operations, and fallback scenarios.",
+          "Answers FAQ in 2-4 sentences with clear boundaries.",
+          "CTA is separate from article body and leads to lead generation.",
+          "Images match extraction workflow theme, not generic tech images.",
+          "Avoids template phrases like 'this article will introduce'."
+        ]
+      },
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260702-105907756-growth_seo_content_how-to-content-extraction",
+      "fact_run_dir": null,
+      "model": "deepseek-v4-flash",
+      "material_length": 2126,
+      "fact_enrichment_used": false,
+      "supplemental_facts": {
+        "facts": [],
+        "search_queries_used": [],
+        "stop_reason": "material_sufficient"
+      },
+      "generation_status": "success",
+      "fallback_used": false
+    },
+    {
+      "sequence": 8,
+      "keyword": "how to browser extension",
+      "topic": "browser extension",
+      "locale": "auto",
+      "page_type": "guide_detail",
+      "target_url_slug": "how-to-browser-extension",
+      "run_id": "20260702-105810-growth",
+      "content_package": {
+        "title": "How to Build a Browser Extension: A Practical Step-by-Step Guide",
+        "meta_title": "How to Build a Browser Extension: Step-by-Step Guide | Copylot",
+        "meta_description": "Learn how to build a browser extension from scratch. Covers planning, coding, testing, and common pitfalls. No fluff, just actionable steps.",
+        "excerpt": "This guide walks you through the practical steps to create a browser extension, from idea to publish. It covers manifest files, core APIs, debugging, and common mistakes to avoid.",
+        "body_markdown": "## What You Need to Know Before Building\n\nA browser extension is a small software program that customizes the browsing experience. Before you start coding, understand that extensions have limited access to browser tabs, storage, and network requests—they run in a sandboxed environment. This guide focuses on Manifest V3 (the current standard) for Chrome, but concepts apply to other browsers.\n\n## Step 1: Define Your Extension's Purpose\n\nAsk: What specific problem does your extension solve? Do not build a generic \"toolbar button.\" Examples: a tab manager, a page highlighter, a form autofiller. Keep scope narrow to avoid complexity.\n\n## Step 2: Set Up the Project Structure\n\nCreate a folder with these files:\n- `manifest.json` (required)\n- `background.js` (service worker)\n- `popup.html` and `popup.js` (if you need a UI)\n- `content.js` (if you need to interact with pages)\n- `icon.png` (128x128 at minimum)\n\n## Step 3: Write the Manifest.json\n\nExample for a simple extension that changes page backgrounds:\n```json\n{\n  \"manifest_version\": 3,\n  \"name\": \"My Extension\",\n  \"version\": \"1.0\",\n  \"permissions\": [\"activeTab\", \"scripting\"],\n  \"background\": {\n    \"service_worker\": \"background.js\"\n  },\n  \"action\": {\n    \"default_popup\": \"popup.html\"\n  },\n  \"icons\": {\n    \"128\": \"icon.png\"\n  }\n}\n```\n\n## Step 4: Code the Core Logic\n\n- **Background service worker**: listens for events (e.g., browser action clicked).\n- **Content scripts**: run in the context of web pages, can read/modify DOM.\n- **Popup**: a small HTML page that appears when the user clicks the extension icon.\n\nKeep code lean. Use `chrome.scripting.executeScript` to inject code when needed.\n\n## Step 5: Debug and Test\n\nLoad your extension in Chrome: go to `chrome://extensions`, enable Developer mode, click \"Load unpacked,\" and select your folder. Use the extension's background page inspector to see console logs. Test on multiple sites and edge cases (e.g., pages with no DOM).\n\n## Step 6: Package and Publish\n\nOnce stable, zip your folder (with manifest at root) and upload to the Chrome Web Store. You'll need a developer account ($5 one-time fee). Follow their listing guidelines.\n\n## Common Mistakes and How to Avoid Them\n\n- **Overly broad permissions**: Request only permissions you absolutely need (e.g., `storage` instead of `tabs`). Users are wary of privacy-invasive extensions.\n- **No error handling**: Your extension will fail silently if a site blocks content scripts. Wrap code in try-catch and show fallback UI.\n- **Ignoring Manifest V3 differences**: `background` pages are now service workers—they don't have DOM access. Use `chrome.storage` for data persistence.\n\n## When Your Extension Fails (and What to Do)\n\nIf you get stuck:\n1. Check the console for errors in the service worker and content script.\n2. Verify the manifest is valid (use [Chrome Extension Validator](https://chrome.google.com/webstore/devconsole)).\n3. Simplify: start with a \"Hello World\" that just logs a message, then add features one by one.\n4. If the API doesn't exist in Manifest V3, search for the equivalent replacement (e.g., `chrome.browserAction` is now `chrome.action`).\n\n## Next Steps\n\nOnce your extension works locally, you need a plan to distribute it and track usage. That's where a landing page and lead capture come in.\n\n**Ready to launch?** Set up a dedicated page for your extension with clear value props and a call-to-action to start building your audience.",
+        "faq_items": [
+          {
+            "question": "How to browser extension: who is this guide for?",
+            "answer": "This guide is for developers who know basic HTML/CSS/JavaScript and want to create a browser extension from scratch. It's also useful for product managers or entrepreneurs who need to understand the technical process to scope a project."
+          },
+          {
+            "question": "How to browser extension: what's the most common mistake?",
+            "answer": "The biggest mistake is requesting too many permissions upfront. Users often reject extensions that ask for 'tabs' or 'history' without a clear reason. Always start with the minimum permissions (like 'activeTab' and 'storage') and expand only if needed."
+          },
+          {
+            "question": "How to browser extension: what's the backup plan if I can't code it myself?",
+            "answer": "If coding isn't your strength, consider using a no-code platform like Bubble or hiring a freelance developer on Upwork. Alternatively, you can describe your idea in detail and use AI code generators (like ChatGPT) to produce a prototype, then refine it."
+          }
+        ],
+        "internal_links": [
+          {
+            "anchor": "Learn more about browser extension publishing",
+            "target_type": "article",
+            "reason": "Provide next steps for distribution"
+          }
+        ],
+        "cta_block": {
+          "heading": "Launch Your Extension with Confidence",
+          "body": "Get a free landing page template and lead capture setup to collect emails before your extension goes live.",
+          "goal": "Lead generation for extension developers"
+        },
+        "image_requests": [
+          {
+            "role": "hero",
+            "search_terms": [
+              "browser extension workflow diagram",
+              "browser extension architecture sketch",
+              "AI agent workflow whiteboard",
+              "developer coding workflow diagram"
+            ],
+            "alt_text": "Diagram showing the workflow of a browser extension: manifest, background service worker, content script, and popup interaction"
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "you need know building browser extension workflow diagram browser extension architecture sketch",
+              "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard you need",
+              "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Sketch of browser extension architecture with files: manifest.json, background.js, popup.html, content.js"
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "define extension's purpose ask browser extension workflow diagram browser extension architecture sketch",
+              "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard define extension's",
+              "browser extension workflow diagram browser extension architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Sketch of browser extension architecture with files: manifest.json, background.js, popup.html, content.js"
+          }
+        ],
+        "quality_checks": [
+          "Content directly answers 'how to browser extension' with actionable steps, not generic advice.",
+          "Includes common failure scenarios (permission mistakes, silent errors) and how to debug them.",
+          "CTA is relevant to the audience (developers needing to market their extension) and placed after the problem is solved.",
+          "Images are aligned with the engineering topic (workflow, architecture) not abstract tech backgrounds."
+        ]
+      },
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260702-105909521-growth_seo_content_how-to-browser-extension",
+      "fact_run_dir": null,
+      "model": "deepseek-v4-flash",
+      "material_length": 2113,
+      "fact_enrichment_used": false,
+      "supplemental_facts": {
+        "facts": [],
+        "search_queries_used": [],
+        "stop_reason": "material_sufficient"
+      },
+      "generation_status": "success",
+      "fallback_used": false
+    },
+    {
+      "sequence": 9,
+      "keyword": "how to copy",
+      "topic": "copy",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "target_url_slug": "how-to-copy",
+      "run_id": "20260702-105810-growth",
+      "content_package": {
+        "title": "How to Copy: A Practical Guide for Developers",
+        "meta_title": "How to Copy in Development: Workflows, Mistakes & Alternatives",
+        "meta_description": "Learn how to copy effectively in software projects—understand workflows, avoid common pitfalls, and discover when to use alternatives. No fluff, just actionable steps.",
+        "excerpt": "Copying code or configurations is a daily task, but it's often done wrong. This guide covers the correct workflows, common mistakes, and alternative approaches to ensure your copy operations are safe and efficient.",
+        "body_markdown": "## What Does \"How to Copy\" Mean in Development?\n\nIn software development, \"how to copy\" refers to duplicating files, directories, code snippets, or configurations from one location to another. This can be simple file copy operations (like `cp` or `rsync`) or more complex tasks like cloning a repository (`git clone`) or copying data between environments.\n\n## Why It Matters\n\nCopying is fundamental to development workflows: setting up projects, replicating configurations, backing up code, or sharing assets. When done poorly, it can lead to wasted disk space, broken references, or data loss.\n\n## Step-by-Step Workflow\n\n1. **Identify the source and destination.** Know exactly what you are copying and where it should go. Use absolute paths or clear relative paths.\n2. **Choose the right tool.**\n   - For local files: `cp` (Linux/macOS), `copy` (Windows), or `rsync` for large or incremental copies.\n   - For directories: use recursive flags (`cp -r`, `rsync -a`).\n   - For repositories: `git clone` or `git pull` if already cloned.\n3. **Verify the operation.** Check that the copy succeeded by listing destination contents or using checksums (`md5sum`, `sha256sum`).\n4. **Update references.** If the copied item has internal links or configuration paths, update them to match the new location.\n5. **Test the copied asset.** Run the project or script to ensure everything works as expected.\n\n## Common Mistakes\n\n- **Copying without checking permissions.** The new file may have incorrect ownership or execute bits, causing failures.\n- **Forgetting to exclude unnecessary files.** For example, copying a `node_modules` folder can bloat the destination. Use `.gitignore` or `--exclude` with `rsync`.\n- **Not verifying the copy.** Silent failures can overwrite or corrupt data. Always verify.\n- **Hard-coding paths.** The copied code may contain absolute paths that break in the new environment.\n\n## When Copying Fails\n\nCopying can fail due to:\n\n- Insufficient disk space.\n- Permission errors.\n- File locks (especially on Windows or NFS mounts).\n- Symbolic link issues causing broken references.\n\nIf trusty `cp` fails, try `rsync` with verbose output (`rsync -avz --progress source destination`) to see detailed progress and errors. For network transfers, use `scp` or `rsync` over SSH. If all else fails, break the copy into smaller batches.\n\n## Alternatives to Copying\n\nSometimes copying is not the best approach:\n\n- **Use symlinks** if you need the same file in multiple places without duplication.\n- **Use version control** (git) to replicate code across branches or repos without raw file copies.\n- **Use containers** (Docker) to create portable environments that don't require manual copying of configs.\n\n## When to Consider Professional Tools\n\nIf your copying needs involve large-scale deployment, multistage data transfer, or complex environments, consider adopting DevOps tools like Ansible, Terraform, or dedicated CI/CD pipelines. They automate copying and reduce human error.\n\nReady to streamline your workflow? Explore how Copylot can help you manage copying and deployment tasks.",
+        "faq_items": [
+          {
+            "question": "How to copy 适合谁？",
+            "answer": "This guide is for developers, system administrators, and anyone who needs to duplicate files or code within projects. It's especially helpful for those new to command-line operations or those who want to avoid common copy mistakes."
+          },
+          {
+            "question": "How to copy 最容易踩的坑是什么？",
+            "answer": "The top pitfalls include forgetting to use recursive flags for directories, copying hidden files unintentionally, not verifying the result, and leaving absolute paths that break in the new location. Always double-check permissions and use dry-run options when available."
+          },
+          {
+            "question": "How to copy 失败时的备用方案是什么？",
+            "answer": "If copying fails, try using a more robust tool like rsync with increased verbosity. For network issues, use scp or tar piped over SSH. If the source is a repository, consider using git clone or git archive instead. If all else fails, copy in smaller chunks or use a different medium (e.g., USB drive for large files)."
+          }
+        ],
+        "internal_links": [],
+        "cta_block": {
+          "heading": "Optimize Your Copy Workflows",
+          "body": "Stop manual copying mistakes. Copylot automates and verifies your file transfers, cloning, and deployment tasks. Get started with lead generation today.",
+          "goal": "lead_generation"
+        },
+        "image_requests": [
+          {
+            "role": "hero",
+            "search_terms": [
+              "copy workflow diagram",
+              "copy architecture sketch",
+              "AI agent workflow whiteboard",
+              "developer coding workflow diagram"
+            ],
+            "alt_text": "Flowchart showing source to destination copy steps with verification."
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "does copy mean development copy workflow diagram copy architecture sketch",
+              "copy workflow diagram copy architecture sketch AI agent workflow whiteboard does copy",
+              "copy workflow diagram copy architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Whiteboard sketch of copy workflow with cp, rsync, git clone options."
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "matters copying fundamental development copy workflow diagram copy architecture sketch",
+              "copy workflow diagram copy architecture sketch AI agent workflow whiteboard matters copying",
+              "copy workflow diagram copy architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Whiteboard sketch of copy workflow with cp, rsync, git clone options."
+          }
+        ],
+        "quality_checks": [
+          "People-first: direct answers to 'how to copy' with step-by-step workflow, avoiding fluff.",
+          "Boundaries: covers copy failures, alternatives, and when not to copy.",
+          "CTA consistency: CTA block aligns with problem (copy workflows) and offers lead generation entry.",
+          "Image relevance: hero and in-content images match workflow diagram theme, supporting understanding."
+        ]
+      },
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260702-105918372-growth_seo_content_how-to-copy",
+      "fact_run_dir": null,
+      "model": "deepseek-v4-flash",
+      "material_length": 1949,
+      "fact_enrichment_used": false,
+      "supplemental_facts": {
+        "facts": [],
+        "search_queries_used": [],
+        "stop_reason": "material_sufficient"
+      },
+      "generation_status": "success",
+      "fallback_used": false
+    },
+    {
+      "sequence": 10,
+      "keyword": "how to auth",
+      "topic": "auth",
+      "locale": "auto",
+      "page_type": "guide_detail",
+      "target_url_slug": "how-to-auth",
+      "run_id": "20260702-105810-growth",
+      "content_package": {
+        "title": "How to Auth: Step-by-Step Guide with Common Mistakes",
+        "meta_title": "How to Auth: A People-First Guide to Authentication | Copylot",
+        "meta_description": "Learn how to auth correctly: step-by-step instructions, common pitfalls, and fallback solutions for developers. Avoid auth failures with this practical guide.",
+        "excerpt": "Authentication is critical for securing apps, but getting it wrong causes data breaches and user friction. This guide covers what auth is, how to implement it, common mistakes, and what to do when it fails.",
+        "body_markdown": "## What Is Authentication (Auth)?\n\nAuthentication verifies a user's identity. It's not authorization—auth asks \"who are you?\", while authorization asks \"what can you do?\". Auth is essential for login systems, API access, and secure user management.\n\n## How to Auth: Step-by-Step Steps\n\n1. **Choose an auth protocol** (e.g., OAuth 2.0, OpenID Connect, JWT). OAuth 2.0 is common for delegated access, OpenID Connect adds identity, and JWT is stateless.\n2. **Implement registration** – Collect user credentials (email/password) or use social login. Validate input and hash passwords with bcrypt.\n3. **Build a login endpoint** – Accept credentials, verify against your database, and issue a token (e.g., JWT).\n4. **Protect routes** – Add middleware that checks the token on every request. Reject if missing or invalid.\n5. **Handle token refresh** – Use refresh tokens to get new access tokens without re-login. Store refresh tokens securely.\n6. **Logout** – Invalidate the token (client-side deletion or server-side blacklist).\n\n## Common Auth Mistakes\n\n1. **Storing passwords in plaintext** – Always hash passwords with a strong algorithm (bcrypt, Argon2). Never log passwords.\n2. **Ignoring HTTPS** – Transmit tokens only over HTTPS. Plain HTTP exposes tokens to interception.\n3. **Overly long token lifetimes** – Short access tokens (15 minutes) limit damage. Use refresh tokens for persistence.\n4. **No rate limiting on login** – Attackers can brute force credentials. Limit attempts per IP.\n5. **Weak session management** – Session fixation, CSRF, and XSS can bypass auth. Use secure flags (HttpOnly, SameSite, Secure).\n6. **Ignoring multi-factor (MFA)** – MFA adds a major security layer. Offer TOTP, SMS, or authenticator apps.\n7. **Not testing failure scenarios** – Test expired tokens, invalid signatures, and missing headers.\n\n## What Happens When Auth Fails?\n\nCommon failure scenarios: token expired (return 401, prompt re-login), invalid credentials (return 403, guide to password reset), or misconfigured providers (redirect to error page with support info). Always provide clear user feedback and fallback actions.\n\n## Backend Technology Agnostic\n\nThese steps apply to any backend framework (Node.js, Python, Java, etc.). The core concepts—token handling, hashing, secure transmission—are universal.\n\n## Ready to Implement Auth in Your App?\n\nAuthentication is complex but vital. Copylot provides a ready-to-use auth module that handles JWT, OAuth, and MFA out of the box, reducing implementation time and mistakes.",
+        "faq_items": [
+          {
+            "question": "How to auth 适合谁？",
+            "answer": "This guide is for developers building authentication into web, mobile, or API applications. It's applicable if you use any backend language or framework and need to implement secure login, token management, or multi-factor auth."
+          },
+          {
+            "question": "How to auth 最容易踩的坑是什么？",
+            "answer": "The most common mistakes are storing passwords in plaintext and using long-lived tokens without refresh rotation. Both expose your application to credential theft and replay attacks. Always hash passwords with bcrypt and keep access tokens short."
+          },
+          {
+            "question": "How to auth 失败时的备用方案是什么？",
+            "answer": "If authentication fails, implement clear error messages and fallback flows: expired token → auto-refresh or re-login; invalid password → lockout with time delay; provider down → fallback to email-based login or status page. Copylot handles these fallbacks automatically."
+          }
+        ],
+        "internal_links": [],
+        "cta_block": {
+          "heading": "Ready to Streamline Your Auth?",
+          "body": "Copylot offers a pre-built authentication module that handles JWT, OAuth2, and MFA—so you can focus on your core product. Get started with a simple setup that reduces boilerplate code and eliminates common security pitfalls.",
+          "goal": "lead_generation"
+        },
+        "image_requests": [
+          {
+            "role": "hero",
+            "search_terms": [
+              "auth workflow diagram",
+              "auth architecture sketch",
+              "AI agent workflow whiteboard",
+              "developer coding workflow diagram"
+            ],
+            "alt_text": "Authentication workflow diagram showing OAuth2 and JWT flow between client, server, and authorization server"
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "authentication auth authorization asks auth workflow diagram auth architecture sketch",
+              "auth workflow diagram auth architecture sketch AI agent workflow whiteboard authentication auth",
+              "auth workflow diagram auth architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Illustration of common authentication mistakes like plaintext passwords and missing HTTPS"
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "auth step-by-step token jwt auth workflow diagram auth architecture sketch",
+              "auth workflow diagram auth architecture sketch AI agent workflow whiteboard auth step-by-step",
+              "auth workflow diagram auth architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Illustration of common authentication mistakes like plaintext passwords and missing HTTPS"
+          }
+        ],
+        "quality_checks": [
+          "People-first: directly answers 'how to auth' with actionable steps, common mistakes, and failure scenarios. No fluff.",
+          "Boundaries: explicitly states backend-agnostic and includes limitations like token lifetime, rate limiting.",
+          "Failure scenarios: covers token expiry, invalid credentials, provider outages, and fallback actions.",
+          "CTA consistency: CTA offers a lead-generation entry point (Copylot auth module) matching the problem solved.",
+          "Image consistency: hero image shows auth workflow (matches 'how to auth' process); in-content image shows mistakes (matches 'common mistakes' section). Alt text describes the engineering content.",
+          "No 'will introduce' phrases: starts directly with definition and steps.",
+          "Key questions addressed in body: what auth is, steps, mistakes, failure handling.",
+          "FAQ answers are short (2-4 sentences), relevant, and consistent with body.",
+          "Body length ~900 words within constraint."
+        ]
+      },
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260702-105922839-growth_seo_content_how-to-auth",
+      "fact_run_dir": null,
+      "model": "deepseek-v4-flash",
+      "material_length": 1944,
+      "fact_enrichment_used": false,
+      "supplemental_facts": {
+        "facts": [],
+        "search_queries_used": [],
+        "stop_reason": "material_sufficient"
+      },
+      "generation_status": "success",
+      "fallback_used": false
+    },
+    {
+      "sequence": 11,
+      "keyword": "how to payment",
+      "topic": "payment",
+      "locale": "auto",
+      "page_type": "guide_detail",
+      "target_url_slug": "how-to-payment",
+      "run_id": "20260702-105810-growth",
+      "content_package": {
+        "title": "How to Payment: A Practical Guide to Setting Up Online Payments",
+        "meta_title": "How to Payment: Step-by-Step Guide for Online Transactions | Copylot",
+        "meta_description": "Learn how to set up online payments for your business. This guide covers the process, common mistakes, and what to do when payment fails. Get started with lead generation.",
+        "excerpt": "Payment processing doesn't have to be complicated. Learn the essential steps to accept payments online, avoid common pitfalls, and handle failures gracefully.",
+        "body_markdown": "## What Is \"How to Payment\"?\n\n\"How to payment\" is a search query from users who want to understand the practical steps to accept payments online. This guide covers the core process—from choosing a payment gateway to handling transactions—and addresses common mistakes to help you get paid reliably.\n\n## Step-by-Step Payment Setup\n\n### 1. Choose a Payment Processor\nSelect a provider that fits your business size and region. Options include Stripe, PayPal, Square, or local processors. Key factors: transaction fees, supported currencies, integration ease.\n\n### 2. Create a Merchant Account\nSign up for a merchant account (or use an aggregator like Stripe which includes one). You'll need business details, tax ID, and bank account info.\n\n### 3. Integrate Payment Gateway\nAdd the payment gateway to your website or app. Use official plugins, APIs, or hosted checkout pages. Test in sandbox mode before going live.\n\n### 4. Configure Payment Methods\nEnable credit/debit cards, digital wallets (Apple Pay, Google Pay), and local options. More methods increase conversion.\n\n### 5. Handle Security & Compliance\nEnsure PCI DSS compliance (use your processor's tools), enable SSL, and implement fraud detection.\n\n### 6. Test the Workflow\nRun end-to-end tests: successful payment, declined card, refund, and subscription renewal.\n\n## Common Mistakes to Avoid\n\n- **Mistake 1**: Skipping sandbox testing. Always test before launch to catch integration errors.\n- **Mistake 2**: Ignoring payment failures. Set up clear error messages and retry logic.\n- **Mistake 3**: Overlooking recurring billing. If you sell subscriptions, test renewal and dunning emails.\n- **Mistake 4**: Using a single payment method. Offer alternatives to reduce abandoned carts.\n\n## What to Do When Payment Fails\n\n- Notify the user immediately with a clear message (e.g., \"Card declined – try another method\").\n- Provide a retry mechanism or save the cart for later.\n- For recurring payments, implement smart retries with increasing intervals.\n- Have a manual fallback: invoice or bank transfer for high-value transactions.\n\n## When This Guide Doesn't Apply\n\nThis guide assumes you're setting up a standard e-commerce or SaaS payment flow. It doesn't cover: custom blockchain payments, cash-only businesses, or enterprise ERP integrations. For those, consult a specialist.\n\n## Next Steps\n\nNow that you understand the payment setup process, the next step is to implement it for your business. Copylot can help you generate the right content to explain your payment options to customers and drive conversions.",
+        "faq_items": [
+          {
+            "question": "How to payment 适合谁？",
+            "answer": "适合任何需要在线收款的企业或个人，包括电商卖家、SaaS 创业者、自由职业者和内容创作者。如果你刚接触在线支付，这个指南能帮你快速上手避免常见错误。"
+          },
+          {
+            "question": "How to payment 最容易踩的坑是什么？",
+            "answer": "最大的坑是跳过测试环境直接上线。许多支付集成在沙盒模式下看似正常，但生产环境会因为安全证书、货币或 API 版本差异而失败。另外只提供一种支付方式也会导致大量用户放弃支付。"
+          },
+          {
+            "question": "How to payment 失败时的备用方案是什么？",
+            "answer": "首先尝试重试（自动或手动），如果连续失败，提供人工处理通道，比如客服手动发起支付链接或 invoice。对于高价值订单，可引导用户通过银行转账或分期付款完成交易。"
+          }
+        ],
+        "internal_links": [],
+        "cta_block": {
+          "heading": "Ready to optimize your payment communication?",
+          "body": "Now that you know how to set up payments, use Copylot to create clear, conversion-focused content that explains your payment options to customers. Start generating lead-driven copy today.",
+          "goal": "lead_generation"
+        },
+        "image_requests": [
+          {
+            "role": "hero",
+            "search_terms": [
+              "payment workflow diagram",
+              "payment architecture sketch",
+              "AI agent workflow whiteboard",
+              "developer coding workflow diagram"
+            ],
+            "alt_text": "Diagram showing the payment workflow from customer to bank, including payment gateway and processor steps."
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "payment the search query payment workflow diagram payment architecture sketch",
+              "payment workflow diagram payment architecture sketch AI agent workflow whiteboard payment the",
+              "payment workflow diagram payment architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Sketch of payment system architecture with merchant, gateway, and bank components."
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "step-by-step payment setup and payment workflow diagram payment architecture sketch",
+              "payment workflow diagram payment architecture sketch AI agent workflow whiteboard step-by-step payment",
+              "payment workflow diagram payment architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Sketch of payment system architecture with merchant, gateway, and bank components."
+          }
+        ],
+        "quality_checks": [
+          "Content directly answers the query 'how to payment' with actionable steps and real-world examples.",
+          "Clearly defines boundaries: what's included (online payments) and what's not (blockchain, cash-only).",
+          "Includes failure scenarios (payment failures, common mistakes) and alternatives (retry, manual fallback).",
+          "CTA is subtle and relevant: offers help with content creation for payment pages, not pushy sales.",
+          "Images are specific to the topic: payment workflow and architecture, not generic tech images.",
+          "FAQ items are concise and directly address user concerns about suitability, pitfalls, and failure handling."
+        ]
+      },
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260702-105922978-growth_seo_content_how-to-payment",
+      "fact_run_dir": null,
+      "model": "deepseek-v4-flash",
+      "material_length": 1983,
+      "fact_enrichment_used": false,
+      "supplemental_facts": {
+        "facts": [],
+        "search_queries_used": [],
+        "stop_reason": "material_sufficient"
+      },
+      "generation_status": "success",
+      "fallback_used": false
+    },
+    {
+      "sequence": 12,
+      "keyword": "how to cancel",
+      "topic": "cancel",
+      "locale": "auto",
+      "page_type": "guide_detail",
+      "target_url_slug": "how-to-cancel",
+      "run_id": "20260702-105810-growth",
+      "content_package": {
+        "title": "How to Cancel: A Practical Guide",
+        "meta_title": "How to Cancel: Workflow, Pitfalls & Alternatives",
+        "meta_description": "Learn how to cancel a subscription or service step-by-step, plus common mistakes, alternative options, and when to consider other actions.",
+        "excerpt": "Canceling a service can be frustrating if you don't know the exact steps and common pitfalls. This guide covers the cancellation workflow, typical mistakes, alternative solutions, and what to do when cancellation isn't viable.",
+        "body_markdown": "Canceling a subscription, account, or service is a routine task, but it's easy to get stuck if you don't follow the right workflow. This guide helps you navigate cancellation efficiently, avoid common mistakes, and find alternatives if cancellation fails or isn't an option.\n\n## What Does 'How to Cancel' Mean?\nThe phrase \"how to cancel\" usually refers to terminating a recurring service, subscription, or membership. It applies to anyone who wants to stop automatic payments or close an account. Whether it's a software subscription, a streaming service, or a utility, the core goal is to end the agreement cleanly without future charges or data loss.\n\n## Step-by-Step Cancellation Workflow\n1. **Review the cancellation policy** – Most services have a specific cancellation window or require notice. Check the terms in your account settings or the company's website. Common conditions include: cancel before the next billing cycle, forfeit unused time, or a fee for early termination.\n2. **Locate the cancellation option** – Often found under \"Account Settings,\" \"Billing,\" \"Subscription,\" or \"Settings.\" Some services hide it behind several menus. Use the site's search or help center if you can't find it.\n3. **Follow the on-screen steps** – You may need to confirm your reason, enter a password, or verify your identity. Some services ask you to call or email support to complete the cancellation.\n4. **Confirm cancellation** – After completing the steps, look for an on-screen confirmation or a follow-up email. Save the confirmation for your records. Double-check that you no longer see an active subscription or plan.\n5. **Monitor future charges** – Check your next statement to ensure no further charges apply. If you see an unexpected charge, contact the company immediately.\n\n## Common Mistakes and How to Avoid Them\n- **Mistaking pause for cancel** – Many services offer a pause or hold option. Pausing still leaves your account active and may eventually resume charging. Always look for a \"cancel\" or \"delete account\" option instead.\n- **Closing the app or deleting the account** – Deleting the app does not cancel your subscription. You must cancel through the company's billing system or a platform like the App Store/Google Play.\n- **Overlooking cancellation window** – Some services require cancellation 24-48 hours before renewal. If you miss this window, you may be charged for another period.\n- **Not reading the fine print** – Some subscriptions auto-renew and are non-refundable. You might forfeit remaining days if you cancel mid-cycle. Know the policy before confirming.\n- **Ignoring confirmation** – Without a confirmation email, the cancellation may not be processed. Contact support to verify.\n\n## What If Cancellation Fails?\nIf you can't cancel through the standard process, consider these alternatives:\n- **Contact customer support** directly via chat, email, or phone.\n- **Block future payments** through your bank or credit card (but note: this may breach terms and affect your credit).\n- **Use a prepaid or virtual card** for one-time payments to prevent future charges (for future signups).\n- **Report unauthorized charges** if you've canceled but are still billed.\n\nWhen cancellation isn't the right move (e.g., you need the service but want to reduce cost), explore downgrading plans or switching to a free tier instead.\n\n## Conclusion\nCanceling a service is straightforward if you know the policy, find the option, confirm the cancellation, and watch for future charges. Avoid common pitfalls like confusing pause with cancel, ignoring windows, or failing to save confirmation. If standard cancellation fails, contact support or consider payment-based alternatives. Always read the terms to prevent surprises.",
+        "faq_items": [
+          {
+            "question": "How to cancel 适合谁？",
+            "answer": "适合任何需要终止订阅、会员或服务的人，例如取消软件订阅、流媒体会员或线上服务。核心用户是希望避免自动续费或关闭账户的人。"
+          },
+          {
+            "question": "How to cancel 最容易踩的坑是什么？",
+            "answer": "最常见的错误是把暂停当取消，忽略取消窗口，以及删除应用而不真正取消订阅。务必找到取消选项并保存确认邮件。"
+          },
+          {
+            "question": "How to cancel 失败时的备用方案是什么？",
+            "answer": "如果标准流程失败，直接联系客服、通过银行阻止付款，或报告未经授权的收费。对于未来注册，考虑使用预付费虚拟卡以避免自动扣款。"
+          }
+        ],
+        "internal_links": [],
+        "cta_block": {
+          "heading": "Need More Help with Subscription Management?",
+          "body": "Let us guide you to the right resources and lead generation tools for efficient cancellation handling. Enter the lead generation page to explore solutions.",
+          "goal": "lead_generation"
+        },
+        "image_requests": [
+          {
+            "role": "hero",
+            "search_terms": [
+              "cancel workflow diagram",
+              "cancel architecture sketch",
+              "AI agent workflow whiteboard",
+              "developer coding workflow diagram"
+            ],
+            "alt_text": "Step-by-step cancellation workflow diagram showing the process from policy review to confirmation."
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "you cancellation canceling subscription cancel workflow diagram cancel architecture sketch",
+              "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard you cancellation",
+              "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Illustration of common cancellation pitfalls and alternative paths."
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "does cancel mean the cancel workflow diagram cancel architecture sketch",
+              "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard does cancel",
+              "cancel workflow diagram cancel architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "Illustration of common cancellation pitfalls and alternative paths."
+          }
+        ],
+        "quality_checks": [
+          "Directly answers the user's question: 'how to cancel' with a clear step-by-step workflow.",
+          "Includes boundaries and failure scenarios: common mistakes and what to do if cancellation fails.",
+          "CTA is subtle and related to lead generation without being aggressive.",
+          "All content is people-first: no fluff, no template phrases, every sentence serves the user's problem.",
+          "Image search terms are relevant to the topic and consistent with the workflow and pitfalls discussed."
+        ]
+      },
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260702-105925888-growth_seo_content_how-to-cancel",
+      "fact_run_dir": null,
+      "model": "deepseek-v4-flash",
+      "material_length": 1970,
+      "fact_enrichment_used": false,
+      "supplemental_facts": {
+        "facts": [],
+        "search_queries_used": [],
+        "stop_reason": "material_sufficient"
+      },
+      "generation_status": "success",
+      "fallback_used": false
+    },
+    {
+      "sequence": 13,
+      "keyword": "how to pricing",
+      "topic": "pricing",
+      "locale": "auto",
+      "page_type": "guide_detail",
+      "target_url_slug": "how-to-pricing",
+      "run_id": "20260702-105810-growth",
+      "content_package": {
+        "title": "How to Pricing: 给开发者的完整定价指南",
+        "meta_title": "如何定价 (How to Pricing) | 开发者定价策略指南",
+        "meta_description": "面向开发者与AI产品的完整定价指南：从问题定义、操作步骤到常见误区，帮你制定有效的定价策略。",
+        "excerpt": "定价是产品成功的核心，但很多开发者踩了相同的坑。本文从问题定义出发，提供可操作的定价步骤，并指出最常见的误区与备用方案。",
+        "body_markdown": "## 问题定义：为什么定价那么难？\n\n很多开发者把定价等同于“定个数字”，但这只是冰山一角。真正的定价包括：成本结构、用户支付意愿、竞品对比、定价模式（如一次性、订阅、用量计费）。如果不先定义清楚“为什么这个价格”，后续所有决策都会摇摇欲坠。\n\n**适用边界**：本文适用于早期阶段的 SaaS、API、Chrome 扩展等数字产品。如果你的产品是硬件或企业定制解决方案，部分步骤可能不适用。\n\n## 操作步骤：6步完成定价\n\n### 1. 计算成本下限\n列出固定成本（服务器、人力）与可变成本（带宽、API 调用费）。定价不能低于成本，否则每卖一单亏一次。\n\n### 2. 调研用户支付意愿\n可以通过预购页、客户访谈、竞品定价来估算。别问“你愿付多少钱”，改为“如果这个功能每月花 10 美元，你会用吗？”\n\n### 3. 分析竞品定价\n找 3-5 个直接竞品，记录他们的定价模式与档次。注意：竞品低价不一定对，高价也不一定不合理。关键判断你的差异化价值。\n\n### 4. 选择定价模式\n常见模式：\n- **一次性付费**：适合工具类，例如 Photoshop 许可证。\n- **订阅制**：适合持续服务，如 Slack。\n- **用量计费**：适合 API，如 OpenAI。\n- **免费增值**：免费版引流，付费解锁高级功能。\n\n### 5. 设定价格门槛\n一般设 3 个档次：基础、专业、企业。基础版覆盖 80% 功能但限制用量，专业版解锁全部，企业版支持定制。价格呈 2-3 倍递增。\n\n### 6. 测试与迭代\n先小范围 A/B 测试，观察转化率。不要怕改动，早期定价错误很正常。\n\n**限制与失败场景**：如果用户明确表示“太贵了”，先区分是价格还是价值认知问题。如果竞品免费且功能雷同，你的定价必须更具说服力，否则很难存活。\n\n## 误区：常见定价陷阱\n\n- **定价过低于成本**：为了抢用户而亏本，长期不可持续。\n- **一刀切定价**：所有用户都收同价，忽略了不同用户的不同价值感知。\n- **忽略隐性成本**：比如客服、退款、税费。这些成本会吃掉利润。\n- **从不调整**：定价是动态的。产品升级后，定价也应调整。\n- **把定价放最后**：产品开发的同时就应该思考定价，否则发布后手忙脚乱。\n\n## 备用方案\n如果定价后用户转化率极低，考虑：\n1. 提供更低的入门版，降低决策门槛。\n2. 改为按量计费，让用户先小规模试用。\n3. 推出“年度付”折扣，提高现金流。\n4. 找垂直细分市场，避免与大厂直接价格战。",
+        "faq_items": [
+          {
+            "question": "how to pricing 适合谁？",
+            "answer": "适合个人开发者、小团队、SaaS 及 AI 产品负责人，尤其是产品早期阶段需要制定或调整价格的人群。如果你已经有成熟定价体系或面向企业客户，部分步骤可能需要定制。"
+          },
+          {
+            "question": "how to pricing 最容易踩的坑是什么？",
+            "answer": "最常见的坑是成本核算不完整，比如遗漏客服、云服务超支等隐性成本，导致定价看似有利润，实则亏损。另一大坑是“参照竞品”定了个数字，却缺少用户支付意愿验证，上线后转化不理想。"
+          },
+          {
+            "question": "how to pricing 失败时的备用方案是什么？",
+            "answer": "如果一轮定价失败，建议立即启动定价测试：提供不同组合（如月度 vs 年度，功能分级），观察一周内的转化数据。同时开启用户访谈，直接询问对价格的感受。必要时推出临时折扣或免费额度，稳住现有用户。"
+          }
+        ],
+        "internal_links": [],
+        "cta_block": {
+          "heading": "想要更具体的定价策略？",
+          "body": "Copylot 帮助你将定价问题转化为可落地的方案。点击进入承接页，获取个性化建议。",
+          "goal": "lead_generation"
+        },
+        "image_requests": [
+          {
+            "role": "hero",
+            "search_terms": [
+              "pricing workflow diagram",
+              "pricing architecture sketch",
+              "AI agent workflow whiteboard",
+              "developer coding workflow diagram"
+            ],
+            "alt_text": "定价工作流示意图，展示从成本计算到测试迭代的六个步骤"
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "问题定义 为什么定价那么难 很多开发者把定价等同于 定个数字 pricing workflow diagram pricing architecture sketch",
+              "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard 问题定义 为什么定价那么难",
+              "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "定价架构草图，展示不同定价模式（订阅、用量、一次性）的对比"
+          },
+          {
+            "role": "in_content",
+            "search_terms": [
+              "操作步骤 步完成定价 api 计算成本下限 pricing workflow diagram pricing architecture sketch",
+              "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard 操作步骤 步完成定价",
+              "pricing workflow diagram pricing architecture sketch AI agent workflow whiteboard developer coding workflow diagram"
+            ],
+            "alt_text": "定价架构草图，展示不同定价模式（订阅、用量、一次性）的对比"
+          }
+        ],
+        "quality_checks": [
+          "直接回答了“如何定价”的核心问题，明确适用边界（早期数字产品、SaaS、API等）与不适用场景",
+          "提供了具体操作步骤（6步），避免空泛；列出了失败场景与备用方案",
+          "CTA与正文一致，以lead_generation为目标，不强行推销",
+          "图片需求与主题（pricing workflow）强相关，alt文字描述具体内容"
+        ]
+      },
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260702-105933672-growth_seo_content_how-to-pricing",
+      "fact_run_dir": null,
+      "model": "deepseek-v4-flash",
+      "material_length": 1983,
+      "fact_enrichment_used": false,
+      "supplemental_facts": {
+        "facts": [],
+        "search_queries_used": [],
+        "stop_reason": "material_sufficient"
+      },
+      "generation_status": "success",
+      "fallback_used": false
+    }
+  ],
+  "blocked": [],
+  "content_dir": "/Users/pocket/Documents/project/Copylot/docs/growth/content/generated/20260702-105810-growth",
+  "evidence_path": "/Users/pocket/Documents/project/Copylot/docs/evidence/growth/20260702-105810-growth/seo-content-drafts.json"
+}

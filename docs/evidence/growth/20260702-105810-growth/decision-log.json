@@ -1,0 +1,22 @@
+{
+  "execution_status": "done",
+  "data_status": "ready",
+  "outcome_status": "improving",
+  "summary": "data=ready outcome=improving clicks=100.0% sessions=0.0% conversions=0.0%",
+  "wins": [
+    "organic 指标改善：clicks=100.0% sessions=0.0% conversions=0.0%"
+  ],
+  "losses": [],
+  "flat_signals": [],
+  "blockers": [
+    "realtime_unverified",
+    "page_metric_coverage_low",
+    "page_metrics_insufficient"
+  ],
+  "opportunities": {
+    "technical_seo": [],
+    "content_refresh": [],
+    "conversion_optimization": [],
+    "offpage_outreach": []
+  }
+}
