@@ -1,0 +1,125 @@
+{
+  "run_id": "20260702-111345-growth",
+  "recommended": [
+    {
+      "id": "n8n",
+      "name": "n8n",
+      "adapter": "n8n_webhook",
+      "homepage": "https://github.com/n8n-io/n8n",
+      "stars": 184520,
+      "category": "workflow_automation",
+      "capabilities": [
+        "webhook",
+        "automation",
+        "crm",
+        "email"
+      ],
+      "tags": [
+        "automation",
+        "marketing",
+        "ai",
+        "productivity",
+        "developer-tools"
+      ],
+      "notes": "高 star 的开源自动化编排平台，适合把工厂增长动作接到 webhook 工作流。"
+    },
+    {
+      "id": "posthog",
+      "name": "PostHog",
+      "adapter": "posthog_event",
+      "homepage": "https://github.com/PostHog/posthog",
+      "stars": 32642,
+      "category": "product_analytics",
+      "capabilities": [
+        "analytics",
+        "events",
+        "funnels",
+        "webhooks"
+      ],
+      "tags": [
+        "analytics",
+        "marketing",
+        "developer-tools",
+        "ai"
+      ],
+      "notes": "开发者向产品分析平台，可记录增长动作与项目漏斗。"
+    },
+    {
+      "id": "novu",
+      "name": "Novu",
+      "adapter": "planned",
+      "homepage": "https://github.com/novuhq/novu",
+      "stars": 38872,
+      "category": "notifications",
+      "capabilities": [
+        "notification",
+        "workflow",
+        "multi-channel"
+      ],
+      "tags": [
+        "marketing",
+        "notifications",
+        "developer-tools"
+      ],
+      "notes": "开源通知工作流，适合后续扩多渠道触达。"
+    },
+    {
+      "id": "growthbook",
+      "name": "GrowthBook",
+      "adapter": "planned",
+      "homepage": "https://github.com/growthbook/growthbook",
+      "stars": 7698,
+      "category": "experimentation",
+      "capabilities": [
+        "feature-flags",
+        "ab-testing",
+        "experiments"
+      ],
+      "tags": [
+        "analytics",
+        "experimentation",
+        "developer-tools"
+      ],
+      "notes": "开源实验平台，适合后续增长实验与落地页对照。"
+    },
+    {
+      "id": "twenty",
+      "name": "Twenty",
+      "adapter": "planned",
+      "homepage": "https://github.com/twentyhq/twenty",
+      "stars": 45242,
+      "category": "crm",
+      "capabilities": [
+        "crm",
+        "pipeline",
+        "contacts"
+      ],
+      "tags": [
+        "marketing",
+        "crm",
+        "sales"
+      ],
+      "notes": "开源 CRM，可作为后续 lead 管理后端。"
+    },
+    {
+      "id": "listmonk",
+      "name": "listmonk",
+      "adapter": "listmonk_api",
+      "homepage": "https://github.com/knadh/listmonk",
+      "stars": 19774,
+      "category": "email_marketing",
+      "capabilities": [
+        "newsletter",
+        "subscribers",
+        "transactional-api"
+      ],
+      "tags": [
+        "marketing",
+        "email",
+        "automation"
+      ],
+      "notes": "开源邮件列表与 newsletter 工具，适合沉淀项目级邮件触达。"
+    }
+  ],
+  "catalog_size": 8
+}

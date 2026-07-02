@@ -1,0 +1,4400 @@
+{
+  "verified_at": "2026-07-02",
+  "scope": {
+    "geography": [
+      "global"
+    ],
+    "target_user": [
+      {
+        "name": "目标用户",
+        "role": "需求搜索者",
+        "goal": "快速判断方案是否适合自己",
+        "pain": "信息分散、比较成本高、缺少可信的执行指引"
+      }
+    ],
+    "product_type": "hybrid_site",
+    "monetization_type": "lead_generation",
+    "comparison_set": [
+      "chrome-extension",
+      "ai",
+      "copilot",
+      "copy",
+      "markdown",
+      "web-scraping",
+      "content-extraction",
+      "browser-extension"
+    ],
+    "core_hypothesis": "冷启动阶段通过搜索承接、平台分发和社区答疑并行验证需求并拉来首批用户"
+  },
+  "one_sentence_conclusion": "建议做，因为截至 2026-07-02，当前最有效的增长主线是把动态热点诉求持续转成带转化钩子的长尾 SEO 图文页，并把外链、社区、榜单统一降级为 support role，阻塞时直接跳过。",
+  "high_confidence_judgments": [
+    "建议做，因为主增量不在多铺外链，而在持续把热点诉求转成可收录、可转化的长尾 SEO 资产。",
+    "冷启动阶段不应只押注单一 SEO，而应同时建设搜索承接、平台分发和受控社区验证三条路径，但 SEO 内容页必须是主链。",
+    "关键词优先级应该由 signal x category x persona x action x hook 的具体诉求驱动，而不是先写内容再找词。",
+    "平台内容与社区内容必须反向服务官网承接页，否则流量难以沉淀为长期资产。",
+    "需要登录态和代理的社区渠道必须在任务开头先做门禁检查，否则会把执行链拖到最后才失败。",
+    "Reddit 更适合作为问题验证与答疑互动渠道，而不是纯硬广分发渠道。"
+  ],
+  "core_conclusion": "增长工厂不应只输出 SEO backlog，还应输出热点选词方法、关键词优先级、内容创作节奏、平台选题和社区种子执行包，并让这些动作形成可回流的数据闭环。",
+  "research_questions": [
+    "最新热词应该由哪些实时来源驱动，如何避免把静态品牌词误判成机会词？",
+    "地区/热点主题 x 类目 x 人群 x 动作 的组合里，哪些具体诉求最接近转化动作？",
+    "top 30 长尾关键词的日产能如何稳定落到创作、发布、提交收录链路上？",
+    "目标用户的核心问题是否真实存在，并且会在线搜索解决方案？",
+    "现有竞品或替代方案是否已经覆盖主要需求？",
+    "用户在决策前最关心的是教程、对比、避坑还是案例证明？",
+    "哪些渠道最适合冷启动阶段验证需求与拉来首批用户？",
+    "hybrid_site 类型站点更适合优先做哪些内容面和分发动作？",
+    "增长动作的单位投入是否能沉淀为可复用资产，而不是一次性曝光？",
+    "平台、登录态、代理、社区规则等执行门槛会不会成为主要阻塞项？"
+  ],
+  "your_concerns": [
+    "外链、社区、榜单优先级过高会挤占 SEO 内容主链。",
+    "长尾词如果不接入实时热点，会退化成静态 seed 的机械扩词。",
+    "高频内容生产如果没有转化钩子和质量约束，会变成低效、低转化、甚至高风险的规模化内容。"
+  ],
+  "abstracted_research_questions": [
+    "如何让热点 signal 驱动长尾关键词，而不是让静态品牌词驱动内容队列？",
+    "如何把用户具体诉求稳定映射成页面、图片、CTA 和提交收录动作？",
+    "如何在不让阻塞渠道拖慢主链的前提下，维持全年内容产量和转化节奏？"
+  ],
+  "target_user_concerns": [
+    "他们担心搜索结果太泛，找不到自己这个场景的具体答案。",
+    "他们担心在真正行动前没有一个低风险的下一步验证动作。",
+    "他们担心 AI、旅行、支付这类信息更新很快，旧内容不可信。"
+  ],
+  "evidence": {
+    "official_direct_evidence": [
+      {
+        "claim": "当前项目画像、README、页面结构与增长渠道配置提供了初始研究边界。",
+        "source": "/Users/pocket/Documents/project/Copylot/README.md",
+        "verified_at": "2026-07-02",
+        "evidence_type": "direct_evidence"
+      },
+      {
+        "claim": "现有 growth profile 已定义站点 archetype、主要内容面、主要转化面与已计划渠道。",
+        "source": "docs/growth/profile.json",
+        "verified_at": "2026-07-02",
+        "evidence_type": "direct_evidence"
+      },
+      {
+        "claim": "Google Search Central 明确要求内容以 people-first 为先，规模化内容不能脱离真实用户价值。",
+        "source": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+        "verified_at": "2026-07-02",
+        "evidence_type": "direct_evidence"
+      },
+      {
+        "claim": "Google spam policies 明确把 scaled content abuse 视为核心风险，因此高频内容生产必须配合质量约束。",
+        "source": "https://developers.google.com/search/docs/essentials/spam-policies",
+        "verified_at": "2026-07-02",
+        "evidence_type": "direct_evidence"
+      },
+      {
+        "claim": "Search Console Performance report 和 Keyword Planner 仍是筛选真实 query 与扩展候选词的基础工具。",
+        "source": "https://support.google.com/webmasters/answer/10268906",
+        "verified_at": "2026-07-02",
+        "evidence_type": "direct_evidence"
+      }
+    ],
+    "calculation_or_inference": [
+      {
+        "claim": "冷启动阶段的增长优先级应围绕长期可沉淀资产排序：SEO 承接页 > 平台内容素材 > 社区答疑记录。",
+        "basis": "基于现有工厂支持能力与内容资产复用价值判断",
+        "verified_at": "2026-07-02",
+        "evidence_type": "inference"
+      },
+      {
+        "claim": "把每日 top 30 长尾词固定进产能参数，更符合月 1000 篇、一年 10000 篇的基础竞争量级要求。",
+        "basis": "基于用户给定目标产能与 current factory content pipeline 能力推算",
+        "verified_at": "2026-07-02",
+        "evidence_type": "inference"
+      },
+      {
+        "claim": "需要登录态和代理的社区渠道存在额外执行成本，应单独建门禁而不是混入通用 SEO 主流程。",
+        "basis": "基于 Reddit 等渠道的登录依赖与执行链阻塞风险推算",
+        "verified_at": "2026-07-02",
+        "evidence_type": "inference"
+      }
+    ],
+    "remaining_uncertainty": [
+      "目标项目的真实用户反馈和渠道点击回流数据仍需后续执行后验证。",
+      "不同平台的内容格式偏好和审核规则可能影响冷启动效率。",
+      "社区渠道的可持续互动质量取决于账号质量、登录稳定性与人工协同执行效果。"
+    ]
+  },
+  "economics": {
+    "judgment": "当前阶段更适合优先建设可复用的 SEO 内容资产，而不是追求高成本即时投放或重外链。",
+    "official_direct_evidence": "Google 官方仍把高质量正文、可抓取图片、Search Console query 和趋势信号视为内容增长基础；这些都能直接映射到当前工厂能力。",
+    "calculation": "若按每日 top 30 进入创作、发布、提交链路，一个月约 900 篇，接近月 1000 篇的基础竞争量级；其余缺口可用刷新补更与多语扩展补齐。"
+  },
+  "feasibility": {
+    "judgment": "SEO 增强可以直接叠加在现有稳定主链中；社区和榜单继续保留但必须降级；图片与远程部署继续允许超时后跳过。",
+    "platform_constraints": [
+      "Reddit 访问依赖代理，且执行依赖登录态。",
+      "B站、小红书、知乎若未接官方 API，第一阶段更适合生成选题与执行包，而非强行自动发帖。",
+      "现有 SEO 主链必须保持兼容，新增阶段只能增量接入。",
+      "规模化 AI 内容必须符合 Google helpful content 与 spam policies，否则数量越大，风险越高。"
+    ]
+  },
+  "recommendation": "recommend_with_constraints",
+  "seo_strategy": {
+    "priority_order": [
+      "technical_seo",
+      "content_expansion",
+      "content_refresh",
+      "internal_link",
+      "search_submission",
+      "conversion_optimization",
+      "offpage_outreach"
+    ],
+    "long_tail_methods": [
+      "先用 Search Console 真实 query 找到已有曝光但弱覆盖的问题词。",
+      "再用 Google Trends、Keyword Planner 和热点源确认最新 signal，再按 signal x category x persona x action x hook 组合长尾词。",
+      "优先选择 4-12 个词的具体问题查询，而不是纯品牌词、泛主题或语言代码。",
+      "优先级固定向 troubleshooting、how_to、comparison、checklist、city/use-case 倾斜。",
+      "让关键词选择绑定现有页面缺口、内容面缺口与转化路径缺口。"
+    ],
+    "content_patterns": [
+      "problem-first guide",
+      "comparison page",
+      "troubleshooting page",
+      "checklist page",
+      "faq page",
+      "city or use-case page",
+      "hot-topic explainer page"
+    ],
+    "image_rules": [
+      "为长尾内容页生成与主题强相关的大图和文内配图。",
+      "图片必须可抓取、具备描述性 alt，并与正文问题词同主题。",
+      "批量配图必须做尺寸、透明度、坏图和重复图校验。",
+      "图片是内容承接增强信号，不应替代正文中的关键信息。"
+    ],
+    "channel_policy": {
+      "primary_channels": [
+        "search_indexing",
+        "site_submit"
+      ],
+      "supporting_channels": [
+        "email_public",
+        "contact_form",
+        "reddit",
+        "x",
+        "linkedin",
+        "xhs",
+        "bilibili",
+        "zhihu",
+        "douyin",
+        "producthunt",
+        "apphookup"
+      ],
+      "deprioritized_channels": [
+        "email_public",
+        "contact_form",
+        "reddit",
+        "hn",
+        "indiehackers",
+        "producthunt",
+        "apphookup"
+      ],
+      "skip_if_blocked_channels": [
+        "reddit",
+        "hn",
+        "indiehackers",
+        "producthunt",
+        "apphookup",
+        "email_public",
+        "contact_form"
+      ]
+    }
+  },
+  "hot_keyword_framework": {
+    "primary_formula": "热词 = 地区 x 类目 x 人群 x 动作 x 转化钩子",
+    "signal_axis": "region",
+    "axis_rules": [
+      "功能站优先使用地区/城市作为 signal 轴；内容站优先使用最新热点主题或技术词作为 signal 轴。",
+      "类目负责把泛热点切成具体场景，例如早餐、支付验证、实现原理、最佳实践、对比。",
+      "人群负责把需求锚定到明确用户，例如外国游客、AI 开发者、独立开发者、团队负责人。",
+      "动作负责把词变成问题形态，例如 what is / how to / comparison / not working / best / checklist。",
+      "转化钩子负责把流量导向核心交易动作，每篇内容都要嵌入可执行 CTA。"
+    ],
+    "selection_process": [
+      "每次先看 Google Trends、Search Console 和行业一手来源，确认最新热点和相关查询。",
+      "按 signal x category x persona x action 组合候选词，再筛掉纯品牌词、泛主题词和无动作词。",
+      "优先保留 troubleshooting、how_to、comparison、checklist、city/use-case 这类具体问题词。",
+      "每日保留 top 30 候选词，进入创作、发布、提交收录的固定节奏。"
+    ],
+    "quality_guardrails": [
+      "遵守 Google people-first 和 spam policies，规模化不等于低质量。",
+      "正文必须先解决问题，再放转化钩子；不能只堆术语或只做目录页。",
+      "图片只做理解增强，不承担唯一信息载体；必须和 query、正文、CTA 同主题。"
+    ],
+    "hot_topic_sources": [
+      "Google Trends",
+      "Google Search Console",
+      "OpenAI official blog and docs",
+      "Anthropic Engineering",
+      "GitHub Blog AI & ML"
+    ]
+  },
+  "hot_keyword_matrix": [
+    {
+      "keyword": "what should first-time foreign tourists know about setup in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "first-time foreign tourists",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use setup in global for first-time foreign tourists",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "first-time foreign tourists",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can first-time foreign tourists pay for setup in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "first-time foreign tourists",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "setup in global for first-time foreign tourists not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "first-time foreign tourists",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should business travelers know about setup in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "business travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use setup in global for business travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "business travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can business travelers pay for setup in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "business travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "setup in global for business travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "business travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should solo travelers know about setup in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "solo travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use setup in global for solo travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "solo travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can solo travelers pay for setup in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "solo travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "setup in global for solo travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "solo travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should first-time foreign tourists know about comparison in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "first-time foreign tourists",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use comparison in global for first-time foreign tourists",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "first-time foreign tourists",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can first-time foreign tourists pay for comparison in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "first-time foreign tourists",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "comparison in global for first-time foreign tourists not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "first-time foreign tourists",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should business travelers know about comparison in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "business travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use comparison in global for business travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "business travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can business travelers pay for comparison in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "business travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "comparison in global for business travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "business travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should solo travelers know about comparison in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "solo travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use comparison in global for solo travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "solo travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can solo travelers pay for comparison in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "solo travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "comparison in global for solo travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "solo travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should first-time foreign tourists know about troubleshooting in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "problem_solution",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "first-time foreign tourists",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use troubleshooting in global for first-time foreign tourists",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "first-time foreign tourists",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can first-time foreign tourists pay for troubleshooting in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "first-time foreign tourists",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "troubleshooting in global for first-time foreign tourists not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "first-time foreign tourists",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should business travelers know about troubleshooting in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "problem_solution",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "business travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use troubleshooting in global for business travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "business travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can business travelers pay for troubleshooting in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "business travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "troubleshooting in global for business travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "business travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should solo travelers know about troubleshooting in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "problem_solution",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "solo travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use troubleshooting in global for solo travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "solo travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can solo travelers pay for troubleshooting in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "solo travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "troubleshooting in global for solo travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "solo travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should first-time foreign tourists know about checklist in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "first-time foreign tourists",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use checklist in global for first-time foreign tourists",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "first-time foreign tourists",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can first-time foreign tourists pay for checklist in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "first-time foreign tourists",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "checklist in global for first-time foreign tourists not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "first-time foreign tourists",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should business travelers know about checklist in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "business travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use checklist in global for business travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "business travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can business travelers pay for checklist in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "business travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "checklist in global for business travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "business travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should solo travelers know about checklist in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "solo travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use checklist in global for solo travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "solo travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can solo travelers pay for checklist in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "solo travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "checklist in global for solo travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "solo travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should first-time foreign tourists know about use case in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "problem_solution",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "first-time foreign tourists",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use use case in global for first-time foreign tourists",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "first-time foreign tourists",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can first-time foreign tourists pay for use case in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "first-time foreign tourists",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "use case in global for first-time foreign tourists not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "first-time foreign tourists",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should business travelers know about use case in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "problem_solution",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "business travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use use case in global for business travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "business travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can business travelers pay for use case in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "business travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "use case in global for business travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "business travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should solo travelers know about use case in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "problem_solution",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "solo travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use use case in global for solo travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "solo travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can solo travelers pay for use case in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "solo travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "use case in global for solo travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "solo travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    }
+  ],
+  "content_velocity": {
+    "daily_keyword_target": 30,
+    "daily_publish_target": 30,
+    "monthly_index_target": 1000,
+    "annual_index_target": 10000,
+    "publishing_loop": "daily_create_publish_submit"
+  },
+  "keyword_opportunities": [
+    {
+      "keyword": "what should first-time foreign tourists know about setup in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "first-time foreign tourists",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use setup in global for first-time foreign tourists",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "first-time foreign tourists",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can first-time foreign tourists pay for setup in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "first-time foreign tourists",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "setup in global for first-time foreign tourists not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "first-time foreign tourists",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should business travelers know about setup in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "business travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use setup in global for business travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "business travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can business travelers pay for setup in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "business travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "setup in global for business travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "business travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should solo travelers know about setup in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "solo travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use setup in global for solo travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "solo travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can solo travelers pay for setup in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "solo travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "setup in global for solo travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "setup",
+      "persona": "solo travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x setup x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should first-time foreign tourists know about comparison in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "first-time foreign tourists",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use comparison in global for first-time foreign tourists",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "first-time foreign tourists",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can first-time foreign tourists pay for comparison in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "first-time foreign tourists",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "comparison in global for first-time foreign tourists not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "first-time foreign tourists",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should business travelers know about comparison in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "business travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use comparison in global for business travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "business travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can business travelers pay for comparison in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "business travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "comparison in global for business travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "business travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should solo travelers know about comparison in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "solo travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use comparison in global for solo travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "solo travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can solo travelers pay for comparison in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "solo travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "comparison in global for solo travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "hot_matrix",
+      "intent": "comparison",
+      "priority": "high",
+      "signal": "global",
+      "category": "comparison",
+      "persona": "solo travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x comparison x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should first-time foreign tourists know about troubleshooting in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "problem_solution",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "first-time foreign tourists",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use troubleshooting in global for first-time foreign tourists",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "first-time foreign tourists",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can first-time foreign tourists pay for troubleshooting in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "first-time foreign tourists",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "troubleshooting in global for first-time foreign tourists not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "first-time foreign tourists",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should business travelers know about troubleshooting in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "problem_solution",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "business travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use troubleshooting in global for business travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "business travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can business travelers pay for troubleshooting in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "business travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "troubleshooting in global for business travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "business travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should solo travelers know about troubleshooting in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "problem_solution",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "solo travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use troubleshooting in global for solo travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "solo travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can solo travelers pay for troubleshooting in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "solo travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "troubleshooting in global for solo travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "troubleshooting",
+      "persona": "solo travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x troubleshooting x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should first-time foreign tourists know about checklist in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "first-time foreign tourists",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use checklist in global for first-time foreign tourists",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "first-time foreign tourists",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can first-time foreign tourists pay for checklist in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "first-time foreign tourists",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "checklist in global for first-time foreign tourists not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "first-time foreign tourists",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should business travelers know about checklist in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "business travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use checklist in global for business travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "business travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can business travelers pay for checklist in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "business travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "checklist in global for business travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "business travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should solo travelers know about checklist in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "solo travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use checklist in global for solo travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "solo travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can solo travelers pay for checklist in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "setup_or_checklist",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "solo travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "checklist in global for solo travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "checklist",
+      "persona": "solo travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x checklist x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should first-time foreign tourists know about use case in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "problem_solution",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "first-time foreign tourists",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use use case in global for first-time foreign tourists",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "first-time foreign tourists",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can first-time foreign tourists pay for use case in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "first-time foreign tourists",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "use case in global for first-time foreign tourists not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "first-time foreign tourists",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x first-time foreign tourists x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should business travelers know about use case in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "problem_solution",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "business travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use use case in global for business travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "business travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can business travelers pay for use case in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "business travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "use case in global for business travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "business travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x business travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "what should solo travelers know about use case in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "use_case",
+      "source_type": "hot_matrix",
+      "intent": "problem_solution",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "solo travelers",
+      "action": "what should {persona} know about {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to use use case in global for solo travelers",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "solo travelers",
+      "action": "how to use {category} in {signal} for {persona}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "can solo travelers pay for use case in global",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "how_to",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "solo travelers",
+      "action": "can {persona} pay for {category} in {signal}",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "use case in global for solo travelers not working",
+      "topic": "global",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "hot_matrix",
+      "intent": "troubleshooting",
+      "priority": "high",
+      "signal": "global",
+      "category": "use case",
+      "persona": "solo travelers",
+      "action": "{category} in {signal} for {persona} not working",
+      "theme_variant": "",
+      "editorial_angle": "",
+      "conversion_hook": "围绕真实问题把用户引导到 lead_generation 的下一步动作",
+      "cta_offer": "进入 lead_generation 承接页",
+      "content_track": {
+        "id": "seo-core",
+        "label": "SEO Core",
+        "target_surface": "guide_detail",
+        "target_path": "/",
+        "selection_mode": "long_tail_first"
+      },
+      "rationale": "通过 global x use case x solo travelers x 动作 的具体诉求词，优先覆盖可转化的长尾搜索需求。",
+      "must_cover": [
+        "问题定义",
+        "步骤或决策建议",
+        "边界与误区",
+        "下一步 CTA"
+      ]
+    },
+    {
+      "keyword": "how to chrome-extension",
+      "topic": "chrome-extension",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "fallback_seed",
+      "intent": "how_to",
+      "priority": "high",
+      "rationale": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+      "must_cover": [
+        "问题定义",
+        "步骤",
+        "常见错误",
+        "CTA"
+      ]
+    },
+    {
+      "keyword": "chrome-extension comparison",
+      "topic": "chrome-extension",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "fallback_seed",
+      "intent": "comparison",
+      "priority": "high",
+      "rationale": "作为 fallback 研究结果，优先覆盖高商业意图的对比页。",
+      "must_cover": [
+        "适用对象",
+        "对比维度",
+        "限制",
+        "CTA"
+      ]
+    },
+    {
+      "keyword": "how to ai",
+      "topic": "ai",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "fallback_seed",
+      "intent": "how_to",
+      "priority": "high",
+      "rationale": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+      "must_cover": [
+        "问题定义",
+        "步骤",
+        "常见错误",
+        "CTA"
+      ]
+    },
+    {
+      "keyword": "ai comparison",
+      "topic": "ai",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "fallback_seed",
+      "intent": "comparison",
+      "priority": "high",
+      "rationale": "作为 fallback 研究结果，优先覆盖高商业意图的对比页。",
+      "must_cover": [
+        "适用对象",
+        "对比维度",
+        "限制",
+        "CTA"
+      ]
+    },
+    {
+      "keyword": "how to copilot",
+      "topic": "copilot",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "fallback_seed",
+      "intent": "how_to",
+      "priority": "high",
+      "rationale": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+      "must_cover": [
+        "问题定义",
+        "步骤",
+        "常见错误",
+        "CTA"
+      ]
+    },
+    {
+      "keyword": "copilot comparison",
+      "topic": "copilot",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "fallback_seed",
+      "intent": "comparison",
+      "priority": "high",
+      "rationale": "作为 fallback 研究结果，优先覆盖高商业意图的对比页。",
+      "must_cover": [
+        "适用对象",
+        "对比维度",
+        "限制",
+        "CTA"
+      ]
+    },
+    {
+      "keyword": "how to copy",
+      "topic": "copy",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "fallback_seed",
+      "intent": "how_to",
+      "priority": "high",
+      "rationale": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+      "must_cover": [
+        "问题定义",
+        "步骤",
+        "常见错误",
+        "CTA"
+      ]
+    },
+    {
+      "keyword": "copy comparison",
+      "topic": "copy",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "fallback_seed",
+      "intent": "comparison",
+      "priority": "high",
+      "rationale": "作为 fallback 研究结果，优先覆盖高商业意图的对比页。",
+      "must_cover": [
+        "适用对象",
+        "对比维度",
+        "限制",
+        "CTA"
+      ]
+    },
+    {
+      "keyword": "how to markdown",
+      "topic": "markdown",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "fallback_seed",
+      "intent": "how_to",
+      "priority": "high",
+      "rationale": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+      "must_cover": [
+        "问题定义",
+        "步骤",
+        "常见错误",
+        "CTA"
+      ]
+    },
+    {
+      "keyword": "markdown comparison",
+      "topic": "markdown",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "fallback_seed",
+      "intent": "comparison",
+      "priority": "high",
+      "rationale": "作为 fallback 研究结果，优先覆盖高商业意图的对比页。",
+      "must_cover": [
+        "适用对象",
+        "对比维度",
+        "限制",
+        "CTA"
+      ]
+    },
+    {
+      "keyword": "how to web-scraping",
+      "topic": "web-scraping",
+      "locale": "en",
+      "page_type": "guide_detail",
+      "source_type": "fallback_seed",
+      "intent": "how_to",
+      "priority": "high",
+      "rationale": "作为 fallback 研究结果，优先围绕具体问题词建设教程型承接页。",
+      "must_cover": [
+        "问题定义",
+        "步骤",
+        "常见错误",
+        "CTA"
+      ]
+    },
+    {
+      "keyword": "web-scraping comparison",
+      "topic": "web-scraping",
+      "locale": "en",
+      "page_type": "compare",
+      "source_type": "fallback_seed",
+      "intent": "comparison",
+      "priority": "high",
+      "rationale": "作为 fallback 研究结果，优先覆盖高商业意图的对比页。",
+      "must_cover": [
+        "适用对象",
+        "对比维度",
+        "限制",
+        "CTA"
+      ]
+    }
+  ],
+  "distribution_priorities": [
+    {
+      "channel": "search_indexing",
+      "priority": "high",
+      "rationale": "fallback 结果：优先让渠道服务搜索承接、内容页沉淀与 CTA 回流。",
+      "content_angle": "围绕问题词、长尾词、FAQ、对比页、故障页和热点解读页做承接与分发。"
+    },
+    {
+      "channel": "site_submit",
+      "priority": "high",
+      "rationale": "fallback 结果：优先让渠道服务搜索承接、内容页沉淀与 CTA 回流。",
+      "content_angle": "围绕问题词、长尾词、FAQ、对比页、故障页和热点解读页做承接与分发。"
+    },
+    {
+      "channel": "email_public",
+      "priority": "medium",
+      "rationale": "fallback 结果：优先让渠道服务搜索承接、内容页沉淀与 CTA 回流。",
+      "content_angle": "围绕问题词、长尾词、FAQ、对比页、故障页和热点解读页做承接与分发。"
+    },
+    {
+      "channel": "contact_form",
+      "priority": "medium",
+      "rationale": "fallback 结果：优先让渠道服务搜索承接、内容页沉淀与 CTA 回流。",
+      "content_angle": "围绕问题词、长尾词、FAQ、对比页、故障页和热点解读页做承接与分发。"
+    }
+  ],
+  "community_priorities": [
+    {
+      "channel": "reddit",
+      "priority": "medium",
+      "rationale": "社区动作应服务问题验证和答疑，不应抢 SEO 主链优先级。",
+      "interaction_mode": "answer_first_then_link_if_helpful"
+    },
+    {
+      "channel": "hn",
+      "priority": "medium",
+      "rationale": "社区动作应服务问题验证和答疑，不应抢 SEO 主链优先级。",
+      "interaction_mode": "answer_first_then_link_if_helpful"
+    }
+  ],
+  "launch_priorities": [
+    {
+      "channel": "producthunt",
+      "priority": "low",
+      "rationale": "榜单动作属于 support role，应在搜索与内容承接稳定后再做。",
+      "asset_needed": "launch_gallery"
+    },
+    {
+      "channel": "apphookup",
+      "priority": "low",
+      "rationale": "榜单动作属于 support role，应在搜索与内容承接稳定后再做。",
+      "asset_needed": "launch_gallery"
+    }
+  ],
+  "channel_fit_report": [
+    {
+      "channel": "search_indexing",
+      "fit": "high",
+      "reason": "属于工厂基础获客动作，可直接纳入现有 SEO/外联执行链"
+    },
+    {
+      "channel": "site_submit",
+      "fit": "high",
+      "reason": "属于工厂基础获客动作，可直接纳入现有 SEO/外联执行链"
+    },
+    {
+      "channel": "contact_form",
+      "fit": "high",
+      "reason": "属于工厂基础获客动作，可直接纳入现有 SEO/外联执行链"
+    },
+    {
+      "channel": "email_public",
+      "fit": "high",
+      "reason": "属于工厂基础获客动作，可直接纳入现有 SEO/外联执行链"
+    },
+    {
+      "channel": "x",
+      "fit": "high",
+      "reason": "与当前项目画像匹配"
+    },
+    {
+      "channel": "linkedin",
+      "fit": "high",
+      "reason": "与当前项目画像匹配"
+    },
+    {
+      "channel": "reddit",
+      "fit": "high",
+      "reason": "适合问题验证、种子用户反馈、持续答疑与社区可信度建设"
+    },
+    {
+      "channel": "hn",
+      "fit": "high",
+      "reason": "适合英文产品、开发者与独立开发群体冷启动扩散"
+    },
+    {
+      "channel": "producthunt",
+      "fit": "high",
+      "reason": "适合英文产品、开发者与独立开发群体冷启动扩散"
+    },
+    {
+      "channel": "indiehackers",
+      "fit": "high",
+      "reason": "适合英文产品、开发者与独立开发群体冷启动扩散"
+    },
+    {
+      "channel": "xhs",
+      "fit": "high",
+      "reason": "与当前项目画像匹配"
+    },
+    {
+      "channel": "apphookup",
+      "fit": "high",
+      "reason": "与当前项目画像匹配"
+    },
+    {
+      "channel": "bilibili",
+      "fit": "high",
+      "reason": "适合冷启动阶段做问题教育、方案演示、经验总结与种草分发"
+    },
+    {
+      "channel": "zhihu",
+      "fit": "high",
+      "reason": "适合冷启动阶段做问题教育、方案演示、经验总结与种草分发"
+    },
+    {
+      "channel": "douyin",
+      "fit": "high",
+      "reason": "与当前项目画像匹配"
+    },
+    {
+      "channel": "xiaohongshu",
+      "fit": "high",
+      "reason": "适合冷启动阶段做问题教育、方案演示、经验总结与种草分发"
+    }
+  ],
+  "target_markets": [
+    "global"
+  ],
+  "target_personas": [
+    {
+      "name": "目标用户",
+      "role": "需求搜索者",
+      "goal": "快速判断方案是否适合自己",
+      "pain": "信息分散、比较成本高、缺少可信的执行指引"
+    }
+  ],
+  "core_problems": [
+    "用户在 chrome-extension, ai, copilot 场景下存在明确的信息搜索和方案选择需求",
+    "当前项目需要围绕 lead_generation 建立稳定获客与转化入口",
+    "冷启动阶段需要同时验证需求、渠道与内容承接效率"
+  ],
+  "value_props": [
+    "Copylot 提供一个可搜索、可理解、可验证的解决方案入口",
+    "通过官网内容、社区答疑与平台内容分发缩短用户从问题到行动的路径"
+  ],
+  "project_tags": [
+    "chrome-extension",
+    "ai",
+    "copilot",
+    "copy",
+    "markdown",
+    "web-scraping",
+    "content-extraction",
+    "browser-extension",
+    "developer-tools"
+  ],
+  "readme_excerpt": "# Copylot\n\n![](docs/imgs/Copylot-min.gif)\n\n一款浏览器插件，旨在帮助您轻松、智能地复制网页内容，并快速整理后交给 AI，极大地提升您与AI助手协作的效率。\n\n![](docs/imgs/Copylot.jpg)\n\n## 功能介绍\n\nCopylot 是一款旨在解决您在浏览网页、收集资料时“复制粘贴”痛点的浏览器插件。它不是简单的复制，而是智能地提取、清理和格式化网页内容，使其完美适配您与 AI 助手（如 ChatGPT、Kimi）的协作或本地笔记（如 Obsidian、Notion）的整理需求。\n\n我们的核心目标是：**尽量减少您从网页复制内容后的二次整理成本，让大多数常见场景可以直接使用。**\n\n---\n\n### ⭐ 核心功能亮点\n\n1.  **【智能识别与提取】—— 告别无关信息**\n    -   **场景：** 当您想复制一篇博客文章或新闻报道时，常常会不小心带上导航栏、广告、推荐阅读等多余内容。\n    -   **Copylot 解决方案：** 只需在文章主体上轻轻一点，Copylot 会优先按 `main/article` 等语义结构定位正文，在整页路径下再用内容密度做兜底，并保守剔除常见 `nav/aside/footer/related/share` 噪音，生成更适合 AI 使用的 Markdown 文本。对于结构复杂或正文边界不清晰的页面，仍可能需要手动选区以获得最佳结果。\n\n2.  **【追加复制模式 (Append Mode)】—— 跨页面信息整合利器**\n    -   **场景：** 您正在为一份报告或论文查阅资料，需要在多个不同的网页、甚至同一页面的不同段落中摘取信息。传统的“复制-切换窗口-粘贴”操作流繁琐且低效。\n    -   **Copylot 解决方案：**\n        -   在需要追加复制时，**按住 `Shift` 键再点击复制**。\n        -   Copylot 会将新复制的内容自动追加到剪贴板中，并用美观的分隔符 `---` 隔开。\n        -   插件图标上会显示一个角标，实时告诉您已经合并了多少条内容。\n        -   所有资料收集完毕后，一次性粘贴即可，所有内容井井有条。\n\n3.  **【网页表格一键转换 (CSV & Markdown)】—— 数据工作者的福音**\n    -   **场景：** 从网页上复制表格数据是一场灾难。格式混乱、对不齐，无法直接粘贴到 Excel、Google Sheets 或数据库中。\n    -   **Copylot 解决方案：**\n        -   当您点击网页上的任意表格时，Copylot 会将其完整识别。\n        -   您可以选择将表格一键转换为 **CSV** 格式，完美导入各类数据分析工具。\n        -   您也可以选择将其转换为 **Markdown** 格式，轻松粘贴到 Notion、GitHub 或其他支持 Markdown 的文档平台，保持清晰的表格结构。\n        -   对于**不规范表格**（例如没有 thead/首行不是 th、role=\"presentation\" 的表），Copylot 也会自动生成**占位表头**（使用“—”）并按 GFM 规范输出 Markdown 表格；若表格包含跨行/跨列，会自动展开为规则矩阵并填充单元格内容，尽可能还原视觉结果。\n        -   如果单元格内包含多行文本与特殊字符（如“|”），会自动进行转义（换行渲染为“<br>”），确保 Markdown 表格不会破坏。\n        -   嵌套表格先行内化为紧凑文本再参与生成。\n        -   教程链接：[网页表格一键转 CSV / Markdown（3 分钟上手）](docs/tutorials/table-to-csv-markdown.md)\n\n4.  **【代码块专业级清理】—— 开发者必备**\n    -   **场景：** 从技术博客或文档页复制代码时，常常会带上行号、被渲染进代码文本的“Copy/复制代码”按钮文案，或出现少量被转义的符号（例如 `\\\\#`），这些“杂质”会导致你需要二次整理。\n    -   **Copylot 解决方案：** 它能识别代码块（`<pre>`/`<code>`），并在复制时做**保守、可审计**的清理，尽量得到“可直接运行/可直接发给 AI”的干净代码：\n        -   **保守去噪：** 若“Copy/复制代码”等按钮文案被渲染进代码文本，仅移除**首/末端整行**的同类文案（避免误删真实代码）。\n        -   **行号处理（有边界）：** 仅在代码块 DOM 结构可识别为“行号/代码分列”时去除行号，不承诺覆盖所有站点。\n        -   **少量反转义：** 对少量 Markdown 转义字符做保守反转义（如 `\\\\#`、`\\\\[`、`\\\\]`）。\n        -   **保留缩进与空行：** 完整保留内部缩进/空行，仅裁剪首尾空行。\n        -   教程链接：[代码块专业级清理：保留缩进 / 去噪 / 避免误删（3 分钟上手）](docs/tutorials/code-block-cleaning.md)\n\n5.  **【私人 Prompt 管理器】—— 打造您的专属 AI 工作流**\n    -   **场景：** 您经常需要让 AI 对复制的内容执行相同的操作，例如“翻译成英文”、“总结这段话”、“为这段代码写注释”等，每次都要手动输入一遍指令，非常重复。\n    -   **Copylot 解决方案：**\n        -   内置强大的 **Prompt 管理器**，您可以将这些常用指令创建为模板（例如：“请将以下内容翻译成英文：\\n\\n{content}”）。`{content}` 是一个占位符，代表您复制的内容。\n        -   在网页上选中文字，通过右键菜单、悬浮按钮，或直接使用 **快捷键 / Popup 快捷按钮**，选择您预设好的 Prompt。\n        -   Copylot 会自动将 **“您的指令” + “您复制的内容”** 合并成一段完整的文本复制到剪贴板。您只需粘贴给 AI，即可获得结果。\n        -   可将 3 个最常用 Prompt 绑定为 **快捷 Prompt 1 / 2 / 3**，默认快捷键为：\n            - Windows / Linux：`Alt + 1 / 2 / 3`\n            - ma",
+  "sources": [
+    {
+      "title": "Google Search Central: Creating helpful, reliable, people-first content",
+      "url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "verified_at": "2026-07-02"
+    },
+    {
+      "title": "Google Search Central: Spam policies for Google web search",
+      "url": "https://developers.google.com/search/docs/essentials/spam-policies",
+      "verified_at": "2026-07-02"
+    },
+    {
+      "title": "Search Console Help: Performance report",
+      "url": "https://support.google.com/webmasters/answer/10268906",
+      "verified_at": "2026-07-02"
+    },
+    {
+      "title": "Google Ads Help: About Keyword Planner",
+      "url": "https://support.google.com/google-ads/answer/7337243",
+      "verified_at": "2026-07-02"
+    },
+    {
+      "title": "Google Search Central: Google Images best practices",
+      "url": "https://developers.google.com/search/docs/appearance/google-images",
+      "verified_at": "2026-07-02"
+    },
+    {
+      "title": "Google Search Central: Manage multilingual and localized versions of your site",
+      "url": "https://developers.google.com/search/docs/specialty/international/localized-versions",
+      "verified_at": "2026-07-02"
+    },
+    {
+      "title": "Google Trends",
+      "url": "https://trends.google.com/trends/",
+      "verified_at": "2026-07-02"
+    },
+    {
+      "title": "Anthropic Engineering: Building effective agents",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "verified_at": "2026-07-02"
+    },
+    {
+      "title": "Anthropic Engineering: Effective context engineering for AI agents",
+      "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "verified_at": "2026-07-02"
+    },
+    {
+      "title": "OpenAI Docs: Responses API",
+      "url": "https://platform.openai.com/docs/api-reference/responses",
+      "verified_at": "2026-07-02"
+    },
+    {
+      "title": "GitHub Blog: How GitHub Copilot is getting better at understanding your code",
+      "url": "https://github.blog/ai-and-ml/github-copilot/how-github-copilot-is-getting-better-at-understanding-your-code/",
+      "verified_at": "2026-07-02"
+    },
+    {
+      "title": "Local project README",
+      "url": "/Users/pocket/Documents/project/Copylot/README.md",
+      "verified_at": "2026-07-02"
+    }
+  ],
+  "research_meta": {
+    "mode": "cache",
+    "runner_status": "skipped_cached",
+    "run_dir": null,
+    "summary": "reused same-day market research cache",
+    "proxy_bootstrap": null
+  },
+  "cache_version": 6
+}

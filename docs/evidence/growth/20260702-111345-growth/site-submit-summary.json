@@ -1,0 +1,226 @@
+{
+  "run_id": "20260702-111345-growth",
+  "attempt_count": 20,
+  "attempts": [
+    {
+      "channel": "site_submit",
+      "target_name": "LaunchingNext",
+      "target_ref": "https://www.launchingnext.com/submit/",
+      "status": "skipped",
+      "notes": "url_error:https://www.launchingnext.com/submit/",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "tinystartups",
+      "target_ref": "https://tinystartups.com/",
+      "status": "skipped",
+      "notes": "url_error:https://tinystartups.com/",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "Uneed",
+      "target_ref": "https://uneed.best/submit",
+      "status": "skipped",
+      "notes": "url_error:https://uneed.best/submit",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "TwelveTools",
+      "target_ref": "https://twelvetools.com/",
+      "status": "skipped",
+      "notes": "url_error:https://twelvetools.com/",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "Turbo0",
+      "target_ref": "https://turbo0.com/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "TryLaunch",
+      "target_ref": "https://trylaunchai.com/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "ToolFame",
+      "target_ref": "https://toolfame.com/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "TinyLaunch",
+      "target_ref": "https://tinylaunch.com/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "Theresanaiforthat",
+      "target_ref": "https://theresanaiforthat.com/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "The Grommet",
+      "target_ref": "https://thegrommet.com/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "StartupSubmit",
+      "target_ref": "https://startupsubmit.app/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "StartupRanked",
+      "target_ref": "https://startupranked.com/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "Slocco",
+      "target_ref": "https://slocco.com/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "ShowMeBestAI",
+      "target_ref": "https://showmebest.ai/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "Shipsquad",
+      "target_ref": "https://shipsquad.space/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "ShipYard HQ",
+      "target_ref": "https://shipyardhq.dev/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "SaaSHub",
+      "target_ref": "https://saashub.com/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "SaaSFame",
+      "target_ref": "https://saasfame.com/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "Peerpush",
+      "target_ref": "https://peerpush.net/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    },
+    {
+      "channel": "site_submit",
+      "target_name": "Neeed directory",
+      "target_ref": "https://neeed.directory/",
+      "status": "skipped",
+      "notes": "probe_deferred",
+      "transport": "http",
+      "evidence_paths": [],
+      "accepted_at": null,
+      "response_code": null
+    }
+  ]
+}

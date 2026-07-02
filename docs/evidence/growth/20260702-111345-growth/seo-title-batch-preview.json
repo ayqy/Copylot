@@ -1,0 +1,171 @@
+[
+  {
+    "sequence": 1,
+    "signal": "global",
+    "keyword": "what should first-time foreign tourists know about setup in global",
+    "theme_variant": "setup",
+    "editorial_angle": "",
+    "title_candidates": [
+      "What should first-time foreign tourists know about setup in global",
+      "What should first-time foreign tourists know about setup in global: what actually matters",
+      "What should first-time foreign tourists know about setup in global: the practical steps before you rely on it",
+      "What should first-time foreign tourists know about setup in global: setup, limits, and safer fallback options"
+    ]
+  },
+  {
+    "sequence": 2,
+    "signal": "chrome extension",
+    "keyword": "how to chrome-extension",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "title_candidates": [
+      "How to chrome-extension",
+      "How to chrome-extension: what actually matters",
+      "How to chrome-extension: the practical steps before you rely on it",
+      "How to chrome-extension: setup, limits, and safer fallback options"
+    ]
+  },
+  {
+    "sequence": 3,
+    "signal": "ai",
+    "keyword": "how to ai",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "title_candidates": [
+      "How to ai",
+      "How to ai: what actually matters",
+      "How to ai: the practical steps before you rely on it",
+      "How to ai: setup, limits, and safer fallback options"
+    ]
+  },
+  {
+    "sequence": 4,
+    "signal": "copilot",
+    "keyword": "how to copilot",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "title_candidates": [
+      "How to copilot",
+      "How to copilot: what actually matters",
+      "How to copilot: the practical steps before you rely on it",
+      "How to copilot: setup, limits, and safer fallback options"
+    ]
+  },
+  {
+    "sequence": 5,
+    "signal": "markdown",
+    "keyword": "how to markdown",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "title_candidates": [
+      "How to markdown",
+      "How to markdown: what actually matters",
+      "How to markdown: the practical steps before you rely on it",
+      "How to markdown: setup, limits, and safer fallback options"
+    ]
+  },
+  {
+    "sequence": 6,
+    "signal": "web scraping",
+    "keyword": "how to web-scraping",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "title_candidates": [
+      "How to web-scraping",
+      "How to web-scraping: what actually matters",
+      "How to web-scraping: the practical steps before you rely on it",
+      "How to web-scraping: setup, limits, and safer fallback options"
+    ]
+  },
+  {
+    "sequence": 7,
+    "signal": "content extraction",
+    "keyword": "how to content extraction",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "title_candidates": [
+      "How to content extraction",
+      "How to content extraction: what actually matters",
+      "How to content extraction: the practical steps before you rely on it",
+      "How to content extraction: setup, limits, and safer fallback options"
+    ]
+  },
+  {
+    "sequence": 8,
+    "signal": "browser extension",
+    "keyword": "how to browser extension",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "title_candidates": [
+      "How to browser extension",
+      "How to browser extension: what actually matters",
+      "How to browser extension: the practical steps before you rely on it",
+      "How to browser extension: setup, limits, and safer fallback options"
+    ]
+  },
+  {
+    "sequence": 9,
+    "signal": "copy",
+    "keyword": "how to copy",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "title_candidates": [
+      "How to copy",
+      "How to copy: what actually matters",
+      "How to copy: the practical steps before you rely on it",
+      "How to copy: setup, limits, and safer fallback options"
+    ]
+  },
+  {
+    "sequence": 10,
+    "signal": "auth",
+    "keyword": "how to auth",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "title_candidates": [
+      "How to auth",
+      "How to auth: what actually matters",
+      "How to auth: the practical steps before you rely on it",
+      "How to auth: setup, limits, and safer fallback options"
+    ]
+  },
+  {
+    "sequence": 11,
+    "signal": "payment",
+    "keyword": "how to payment",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "title_candidates": [
+      "How to payment",
+      "How to payment: what actually matters",
+      "How to payment: the practical steps before you rely on it",
+      "How to payment: setup, limits, and safer fallback options"
+    ]
+  },
+  {
+    "sequence": 12,
+    "signal": "cancel",
+    "keyword": "how to cancel",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "title_candidates": [
+      "How to cancel",
+      "How to cancel: what actually matters",
+      "How to cancel: the practical steps before you rely on it",
+      "How to cancel: setup, limits, and safer fallback options"
+    ]
+  },
+  {
+    "sequence": 13,
+    "signal": "pricing",
+    "keyword": "how to pricing",
+    "theme_variant": "problem_solution",
+    "editorial_angle": "",
+    "title_candidates": [
+      "How to pricing",
+      "How to pricing: what actually matters",
+      "How to pricing: the practical steps before you rely on it",
+      "How to pricing: setup, limits, and safer fallback options"
+    ]
+  }
+]

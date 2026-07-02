@@ -1,0 +1,44 @@
+[
+  {
+    "surface": "facts",
+    "reason": "site_surface_missing",
+    "priority": "P1",
+    "suggested_action": "新增 facts 类型内容面并串联到主导航/内链体系"
+  },
+  {
+    "surface": "compare",
+    "reason": "site_surface_missing",
+    "priority": "P1",
+    "suggested_action": "新增 compare 类型内容面并串联到主导航/内链体系"
+  },
+  {
+    "surface": "guide_detail",
+    "reason": "site_surface_missing",
+    "priority": "P1",
+    "suggested_action": "新增 guide_detail 类型内容面并串联到主导航/内链体系"
+  },
+  {
+    "surface": "faq",
+    "reason": "site_surface_missing",
+    "priority": "P1",
+    "suggested_action": "新增 faq 类型内容面并串联到主导航/内链体系"
+  },
+  {
+    "surface": "use_case",
+    "reason": "site_surface_missing",
+    "priority": "P1",
+    "suggested_action": "新增 use_case 类型内容面并串联到主导航/内链体系"
+  },
+  {
+    "surface": "home",
+    "reason": "site_surface_missing",
+    "priority": "P1",
+    "suggested_action": "新增 home 类型内容面并串联到主导航/内链体系"
+  },
+  {
+    "surface": "guides_index",
+    "reason": "site_surface_missing",
+    "priority": "P1",
+    "suggested_action": "新增 guides_index 类型内容面并串联到主导航/内链体系"
+  }
+]

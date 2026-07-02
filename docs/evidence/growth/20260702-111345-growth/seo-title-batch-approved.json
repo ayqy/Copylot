@@ -1,0 +1,93 @@
+[
+  {
+    "sequence": 1,
+    "signal": "global",
+    "keyword": "what should first-time foreign tourists know about setup in global",
+    "theme_variant": "setup",
+    "title": "What should first-time foreign tourists know about setup in global: what actually matters"
+  },
+  {
+    "sequence": 2,
+    "signal": "chrome extension",
+    "keyword": "how to chrome-extension",
+    "theme_variant": "problem_solution",
+    "title": "How to chrome-extension: what actually matters"
+  },
+  {
+    "sequence": 3,
+    "signal": "ai",
+    "keyword": "how to ai",
+    "theme_variant": "problem_solution",
+    "title": "How to ai: the practical steps before you rely on it"
+  },
+  {
+    "sequence": 4,
+    "signal": "copilot",
+    "keyword": "how to copilot",
+    "theme_variant": "problem_solution",
+    "title": "How to copilot: setup, limits, and safer fallback options"
+  },
+  {
+    "sequence": 5,
+    "signal": "markdown",
+    "keyword": "how to markdown",
+    "theme_variant": "problem_solution",
+    "title": "How to markdown"
+  },
+  {
+    "sequence": 6,
+    "signal": "web scraping",
+    "keyword": "how to web-scraping",
+    "theme_variant": "problem_solution",
+    "title": "How to web-scraping"
+  },
+  {
+    "sequence": 7,
+    "signal": "content extraction",
+    "keyword": "how to content extraction",
+    "theme_variant": "problem_solution",
+    "title": "How to content extraction"
+  },
+  {
+    "sequence": 8,
+    "signal": "browser extension",
+    "keyword": "how to browser extension",
+    "theme_variant": "problem_solution",
+    "title": "How to browser extension"
+  },
+  {
+    "sequence": 9,
+    "signal": "copy",
+    "keyword": "how to copy",
+    "theme_variant": "problem_solution",
+    "title": "How to copy"
+  },
+  {
+    "sequence": 10,
+    "signal": "auth",
+    "keyword": "how to auth",
+    "theme_variant": "problem_solution",
+    "title": "How to auth"
+  },
+  {
+    "sequence": 11,
+    "signal": "payment",
+    "keyword": "how to payment",
+    "theme_variant": "problem_solution",
+    "title": "How to payment"
+  },
+  {
+    "sequence": 12,
+    "signal": "cancel",
+    "keyword": "how to cancel",
+    "theme_variant": "problem_solution",
+    "title": "How to cancel"
+  },
+  {
+    "sequence": 13,
+    "signal": "pricing",
+    "keyword": "how to pricing",
+    "theme_variant": "problem_solution",
+    "title": "How to pricing"
+  }
+]

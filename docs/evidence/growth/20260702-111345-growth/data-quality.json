@@ -1,0 +1,14 @@
+{
+  "status": "ready",
+  "gsc_connected": true,
+  "analytics_connected": true,
+  "realtime_connected": true,
+  "realtime_verified": false,
+  "event_coverage_rate": 1.0,
+  "page_metric_coverage_rate": 0.0,
+  "data_freshness_days": 0,
+  "blockers": [
+    "realtime_unverified",
+    "page_metric_coverage_low"
+  ]
+}

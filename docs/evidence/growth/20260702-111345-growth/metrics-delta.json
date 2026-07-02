@@ -1,0 +1,347 @@
+{
+  "site_delta": {
+    "organic_impressions": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "organic_clicks": {
+      "current": 1.0,
+      "baseline": 0.0,
+      "absolute": 1.0,
+      "percent": 1.0,
+      "per_day_current": 0.0714,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0714,
+      "per_day_percent": 1.0
+    },
+    "organic_ctr": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "avg_position": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "indexed_pages": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "organic_sessions": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "micro_conversions": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "primary_conversions": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "organic_primary_cvr": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "leads_discovered": {
+      "current": 20.0,
+      "baseline": 0.0,
+      "absolute": 20.0,
+      "percent": 1.0,
+      "per_day_current": 1.4286,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 1.4286,
+      "per_day_percent": 1.0
+    },
+    "public_emails": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "email_candidates_fresh": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "email_bounced_known": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "email_attempts": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "email_done": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "contact_forms_detected": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "form_attempts": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "site_targets": {
+      "current": 20.0,
+      "baseline": 0.0,
+      "absolute": 20.0,
+      "percent": 1.0,
+      "per_day_current": 1.4286,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 1.4286,
+      "per_day_percent": 1.0
+    },
+    "site_accessible": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "site_submit_attempts": {
+      "current": 20.0,
+      "baseline": 0.0,
+      "absolute": 20.0,
+      "percent": 1.0,
+      "per_day_current": 1.4286,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 1.4286,
+      "per_day_percent": 1.0
+    },
+    "site_submit_skipped": {
+      "current": 20.0,
+      "baseline": 0.0,
+      "absolute": 20.0,
+      "percent": 1.0,
+      "per_day_current": 1.4286,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 1.4286,
+      "per_day_percent": 1.0
+    },
+    "search_attempts": {
+      "current": 3.0,
+      "baseline": 0.0,
+      "absolute": 3.0,
+      "percent": 1.0,
+      "per_day_current": 0.2143,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.2143,
+      "per_day_percent": 1.0
+    },
+    "search_done": {
+      "current": 1.0,
+      "baseline": 0.0,
+      "absolute": 1.0,
+      "percent": 1.0,
+      "per_day_current": 0.0714,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0714,
+      "per_day_percent": 1.0
+    },
+    "integration_attempts": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    },
+    "integration_done": {
+      "current": 0.0,
+      "baseline": 0.0,
+      "absolute": 0.0,
+      "percent": 0.0,
+      "per_day_current": 0.0,
+      "per_day_baseline": 0.0,
+      "per_day_absolute": 0.0,
+      "per_day_percent": 0.0
+    }
+  },
+  "page_delta": {},
+  "funnel_delta": {},
+  "channel_delta": {
+    "email_public": {
+      "attempts": {
+        "current": 0.0,
+        "baseline": 0.0,
+        "absolute": 0.0,
+        "percent": 0.0,
+        "per_day_current": 0.0,
+        "per_day_baseline": 0.0,
+        "per_day_absolute": 0.0,
+        "per_day_percent": 0.0
+      },
+      "done": {
+        "current": 0.0,
+        "baseline": 0.0,
+        "absolute": 0.0,
+        "percent": 0.0,
+        "per_day_current": 0.0,
+        "per_day_baseline": 0.0,
+        "per_day_absolute": 0.0,
+        "per_day_percent": 0.0
+      }
+    },
+    "contact_form": {
+      "attempts": {
+        "current": 0.0,
+        "baseline": 0.0,
+        "absolute": 0.0,
+        "percent": 0.0,
+        "per_day_current": 0.0,
+        "per_day_baseline": 0.0,
+        "per_day_absolute": 0.0,
+        "per_day_percent": 0.0
+      },
+      "done": {
+        "current": 0.0,
+        "baseline": 0.0,
+        "absolute": 0.0,
+        "percent": 0.0,
+        "per_day_current": 0.0,
+        "per_day_baseline": 0.0,
+        "per_day_absolute": 0.0,
+        "per_day_percent": 0.0
+      }
+    },
+    "site_submit": {
+      "attempts": {
+        "current": 20.0,
+        "baseline": 0.0,
+        "absolute": 20.0,
+        "percent": 1.0,
+        "per_day_current": 1.4286,
+        "per_day_baseline": 0.0,
+        "per_day_absolute": 1.4286,
+        "per_day_percent": 1.0
+      },
+      "done": {
+        "current": 0.0,
+        "baseline": 0.0,
+        "absolute": 0.0,
+        "percent": 0.0,
+        "per_day_current": 0.0,
+        "per_day_baseline": 0.0,
+        "per_day_absolute": 0.0,
+        "per_day_percent": 0.0
+      }
+    },
+    "search_indexing": {
+      "attempts": {
+        "current": 0.0,
+        "baseline": 0.0,
+        "absolute": 0.0,
+        "percent": 0.0,
+        "per_day_current": 0.0,
+        "per_day_baseline": 0.0,
+        "per_day_absolute": 0.0,
+        "per_day_percent": 0.0
+      },
+      "done": {
+        "current": 0.0,
+        "baseline": 0.0,
+        "absolute": 0.0,
+        "percent": 0.0,
+        "per_day_current": 0.0,
+        "per_day_baseline": 0.0,
+        "per_day_absolute": 0.0,
+        "per_day_percent": 0.0
+      }
+    }
+  },
+  "query_delta": {}
+}

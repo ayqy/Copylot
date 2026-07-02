@@ -1,0 +1,44 @@
+[
+  {
+    "surface": "facts",
+    "exists": false,
+    "purpose": "承接搜索需求与转化路径",
+    "priority": "high"
+  },
+  {
+    "surface": "compare",
+    "exists": false,
+    "purpose": "承接搜索需求与转化路径",
+    "priority": "high"
+  },
+  {
+    "surface": "guide_detail",
+    "exists": false,
+    "purpose": "承接搜索需求与转化路径",
+    "priority": "high"
+  },
+  {
+    "surface": "faq",
+    "exists": false,
+    "purpose": "承接搜索需求与转化路径",
+    "priority": "high"
+  },
+  {
+    "surface": "use_case",
+    "exists": false,
+    "purpose": "承接搜索需求与转化路径",
+    "priority": "high"
+  },
+  {
+    "surface": "home",
+    "exists": false,
+    "purpose": "承接搜索需求与转化路径",
+    "priority": "high"
+  },
+  {
+    "surface": "guides_index",
+    "exists": false,
+    "purpose": "承接搜索需求与转化路径",
+    "priority": "high"
+  }
+]
