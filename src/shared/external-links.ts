@@ -1,6 +1,7 @@
 import { sanitizeCampaign } from './campaign.ts';
 
 export const OFFICIAL_SITE_ROOT_URL = 'https://copy.useai.online/';
+export const OFFICIAL_PRIVACY_POLICY_URL = 'https://copy.useai.online/privacy';
 
 // Canonical Chrome Web Store landing page (used for external promotion).
 export const CHROME_WEB_STORE_CANONICAL_URL =
@@ -87,6 +88,12 @@ function buildUtmSearchParams(params: BuildExternalLinkParams): URLSearchParams 
 
 export function buildOfficialSiteUrl(params: BuildExternalLinkParams): string {
   const url = new URL(OFFICIAL_SITE_ROOT_URL);
+  url.search = buildUtmSearchParams(params).toString();
+  return url.toString();
+}
+
+export function buildPrivacyPolicyUrl(params: BuildExternalLinkParams): string {
+  const url = new URL(OFFICIAL_PRIVACY_POLICY_URL);
   url.search = buildUtmSearchParams(params).toString();
   return url.toString();
 }

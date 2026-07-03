@@ -26,11 +26,12 @@ https://github.com/ayqy/copy/blob/main/docs/tutorials/table-to-csv-markdown.md
 https://github.com/ayqy/copy/blob/main/docs/tutorials/prompt-workflow.md
 https://github.com/ayqy/copy/blob/main/docs/tutorials/code-block-cleaning.md
 
-Copylot Pro（候补/规划中）
-- 说明：Copylot Pro 目前未上线、不可用（仅候补名单）。
-- 加入候补方式（扩展内可复现路径）：在扩展内打开 Options -> Pro Tab，点击“加入候补名单”（或“复制候补文案”）。
+Copylot Pro（仅公开路线说明）
+- 说明：Copylot Pro 目前未上线、也未开始售卖；当前公开入口只用于解释下一步可能验证的高级工作流。
+- 扩展内可复现路径：打开 Options -> Pro，使用“查看官网 Pro 路线”或分享工具。
+- 如果对方还没安装，优先发送 Chrome Web Store 安装链接；如果对方关心信任或数据处理，再补发隐私说明页。
 - Pro 范围/边界（稳定对外口径，可审计）：https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md
-- 提醒：商店页不提供任何付费/订阅承诺；候补仅用于意向验证与需求收集。
+- 提醒：商店页不提供任何付费/订阅承诺。
 
 隐私与权限
 - 默认本地处理：内容提取/清理/格式化在你的设备上完成

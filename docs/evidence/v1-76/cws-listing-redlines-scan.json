@@ -6,13 +6,13 @@
   "inputs": [
     {
       "path": "docs/ChromeWebStore-Description-EN.md",
-      "bytes": 3369,
-      "sha256": "9d77013eb3ec54391b9bd5d775116f4dd1489885a7dc786cfa19f4d7b0bcff3d"
+      "bytes": 3474,
+      "sha256": "bc6b5a4174b4a5d38bdcc35c86956665ff1d48b88f07279246f1e070777e77b1"
     },
     {
       "path": "docs/ChromeWebStore-Description-ZH.md",
-      "bytes": 3235,
-      "sha256": "22bba47de6a5b41fe87cba18a79af21b73bab1713f8d3f9ff4588a1215bc84ac"
+      "bytes": 3349,
+      "sha256": "5a35de22f3000421d2eee0bfb0aa439b5d3a6cfaddf28e1b660e5f8d5e855962"
     },
     {
       "path": "docs/aso/keywords.md",
@@ -23,28 +23,28 @@
   "hits": [
     {
       "file": "docs/ChromeWebStore-Description-EN.md",
-      "line": 33,
+      "line": 34,
       "term": "payment",
       "rule": "desc_allowed_negation_disclaimer",
       "result": "allowed"
     },
     {
       "file": "docs/ChromeWebStore-Description-EN.md",
-      "line": 33,
+      "line": 34,
       "term": "subscription",
       "rule": "desc_allowed_negation_disclaimer",
       "result": "allowed"
     },
     {
       "file": "docs/ChromeWebStore-Description-ZH.md",
-      "line": 33,
+      "line": 34,
       "term": "付费",
       "rule": "desc_allowed_negation_disclaimer",
       "result": "allowed"
     },
     {
       "file": "docs/ChromeWebStore-Description-ZH.md",
-      "line": 33,
+      "line": 34,
       "term": "订阅",
       "rule": "desc_allowed_negation_disclaimer",
       "result": "allowed"

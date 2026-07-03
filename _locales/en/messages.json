@@ -329,7 +329,7 @@
     "description": "Options Pro tab: external distribution toolkit title"
   },
   "proWaitlistDistributionToolkitHint": {
-    "message": "This stage is about growth, not form collection. Copy the official roadmap page, store install link, and share assets directly.",
+    "message": "This stage is about install-first growth, not form collection. Copy the store install link, privacy page, roadmap page, and share assets directly.",
     "description": "Options Pro tab: external distribution toolkit hint"
   },
   "proWaitlistUrlCopyButton": {
@@ -349,7 +349,7 @@
     "description": "Options Pro tab: distribution toolkit - copy distribution pack button"
   },
   "proDistributionPackTemplate": {
-    "message": "# Copylot Distribution Pack (Auditable)\\n\\n- campaign: $CAMPAIGN$\\n\\n## 1) Official site URL (UTM + campaign)\\n$OFFICIAL_SITE_URL$\\n\\n## 2) Chrome Web Store URL (UTM + campaign)\\n$STORE_URL$\\n\\n## 3) Pro roadmap URL (UTM + campaign)\\n$WAITLIST_URL$\\n\\n## 4) Share copy (ready to post)\\n\\n```text\\n$RECRUIT_COPY$\\n```\\n\\n---\\n\\nPrivacy: This pack contains no webpage content, copied content, current page URL, or title. Only a fixed template + campaign + official/store/roadmap links.\\n",
+    "message": "# Copylot Distribution Pack (Auditable)\\n\\n- campaign: $CAMPAIGN$\\n\\n## 1) Official site URL (UTM + campaign)\\n$OFFICIAL_SITE_URL$\\n\\n## 2) Chrome Web Store install URL (UTM + campaign)\\n$STORE_URL$\\n\\n## 3) Privacy page URL (UTM + campaign)\\n$PRIVACY_URL$\\n\\n## 4) Pro roadmap URL (UTM + campaign)\\n$WAITLIST_URL$\\n\\n## 5) Share copy (ready to post)\\n\\n```text\\n$RECRUIT_COPY$\\n```\\n\\n---\\n\\nPrivacy: This pack contains no webpage content, copied content, current page URL, or title. Only a fixed template + campaign + official/store/privacy/roadmap links.\\n",
     "description": "Options Pro tab: distribution toolkit - distribution pack markdown template",
     "placeholders": {
       "CAMPAIGN": {
@@ -361,11 +361,14 @@
       "STORE_URL": {
         "content": "$3"
       },
-      "WAITLIST_URL": {
+      "PRIVACY_URL": {
         "content": "$4"
       },
-      "RECRUIT_COPY": {
+      "WAITLIST_URL": {
         "content": "$5"
+      },
+      "RECRUIT_COPY": {
+        "content": "$6"
       }
     }
   },
@@ -374,7 +377,7 @@
     "description": "Options Pro tab: distribution toolkit - campaign required hint"
   },
   "proWaitlistRecruitCopyTemplate": {
-    "message": "Copylot's Pro roadmap is public.\\n\\nIf you need stronger page cleaning, batch organization, or export workflows, start with the roadmap page.\\n\\nRoadmap URL (campaign=$CAMPAIGN$):\\n$WAITLIST_URL$\\n",
+    "message": "Copylot is live on Chrome Web Store.\\n\\nStart with the install link for first-time users, keep the privacy page ready for trust questions, and use the Pro roadmap only when someone asks about upcoming advanced workflows.\\n\\nInstall link (campaign=$CAMPAIGN$):\\n$STORE_URL$\\n\\nPrivacy page:\\n$PRIVACY_URL$\\n\\nPro roadmap:\\n$WAITLIST_URL$\\n",
     "description": "Options Pro tab: distribution toolkit - recruit copy template",
     "placeholders": {
       "WAITLIST_URL": {
@@ -382,11 +385,17 @@
       },
       "CAMPAIGN": {
         "content": "$2"
+      },
+      "STORE_URL": {
+        "content": "$3"
+      },
+      "PRIVACY_URL": {
+        "content": "$4"
       }
     }
   },
   "proPrivacyHint": {
-    "message": "At this stage we do not collect waitlists, surveys, or contact details. We focus on installs, activation, reuse, and word of mouth first.",
+    "message": "At this stage we do not collect waitlists, surveys, or contact details from the Pro page. We focus on installs, first clean copy, reuse, and word of mouth first.",
     "description": "Options Pro tab privacy hint"
   },
   "proWaitlistSurveyTitle": {

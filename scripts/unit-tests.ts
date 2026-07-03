@@ -18,6 +18,7 @@ import {
 import {
   buildChromeWebStoreUrl,
   buildOfficialSiteUrl,
+  buildPrivacyPolicyUrl,
   buildProWaitlistUrl,
   OFFICIAL_SITE_ROOT_URL
 } from '../src/shared/external-links.ts';
@@ -172,10 +173,10 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
     return `v=${subs[0]} id=${subs[1]} nav=${subs[2]} ui=${subs[3]}${subs[4] || ''}`;
   }
   if (key === 'proWaitlistRecruitCopyTemplate') {
-    return `recruit url=${subs[0]} campaign=${subs[1]}`;
+    return `recruit roadmap=${subs[0]} campaign=${subs[1]} store=${subs[2]} privacy=${subs[3]}`;
   }
   if (key === 'proDistributionPackTemplate') {
-    return `- campaign: ${subs[0]}\n${subs[1]}\n${subs[2]}\n${subs[3]}\n${subs[4]}`;
+    return `- campaign: ${subs[0]}\n${subs[1]}\n${subs[2]}\n${subs[3]}\n${subs[4]}\n${subs[5]}`;
   }
   if (key === 'shareCopyTextTemplate') {
     return `share ${subs[0]}`;
@@ -654,6 +655,12 @@ async function run() {
   assert.equal(chromeWebStoreParsed.searchParams.get('utm_source'), 'copylot-ext');
   assert.equal(chromeWebStoreParsed.searchParams.get('utm_medium'), 'distribution_toolkit');
   assert.equal(chromeWebStoreParsed.searchParams.get('utm_campaign'), 'twitter');
+  const privacyUrl = buildPrivacyPolicyUrl({ medium: 'distribution_toolkit', campaign: 'twitter' });
+  const privacyParsed = new URL(privacyUrl);
+  assert.equal(privacyParsed.pathname, '/privacy');
+  assert.equal(privacyParsed.searchParams.get('utm_source'), 'copylot-ext');
+  assert.equal(privacyParsed.searchParams.get('utm_medium'), 'distribution_toolkit');
+  assert.equal(privacyParsed.searchParams.get('utm_campaign'), 'twitter');
 
   // pro-waitlist-distribution.ts (pure functions)
   assert.deepEqual(computeProWaitlistDistributionState(''), { enabled: false, campaign: null });
@@ -663,21 +670,27 @@ async function run() {
   const recruitCopyText = buildProWaitlistRecruitCopyText({
     getMessage,
     waitlistUrl: 'https://example.com/waitlist',
+    storeUrl: chromeWebStoreUrl,
+    privacyUrl,
     campaign: 'twitter'
   });
   assert.ok(recruitCopyText.includes('https://example.com/waitlist'));
   assert.ok(recruitCopyText.includes('twitter'));
+  assert.ok(recruitCopyText.includes(chromeWebStoreUrl));
+  assert.ok(recruitCopyText.includes(privacyUrl));
 
   const distributionPack = buildProDistributionPackMarkdown({
     getMessage,
     campaign: 'twitter',
     officialSiteUrl: 'https://example.com',
     storeUrl: chromeWebStoreUrl,
+    privacyUrl,
     waitlistUrl: 'https://example.com/waitlist',
     recruitCopy: recruitCopyText
   });
   assert.ok(distributionPack.includes('- campaign: twitter'));
   assert.ok(distributionPack.includes(chromeWebStoreUrl));
+  assert.ok(distributionPack.includes(privacyUrl));
   assert.ok(distributionPack.includes('https://example.com/waitlist'));
   assert.ok(distributionPack.includes(recruitCopyText));
 

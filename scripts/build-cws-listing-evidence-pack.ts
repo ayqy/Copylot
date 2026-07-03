@@ -236,12 +236,26 @@ export function parseCwsListingScreenshotPlanFromMarkdown(markdown: string): Cws
 
 function hasProWaitlistCtaEn(en: string): boolean {
   const t = en.toLowerCase();
-  return t.includes('waitlist') && t.includes('options') && t.includes('pro') && en.includes(PRO_SCOPE_STABLE_PATH);
+  return (
+    t.includes('options') &&
+    t.includes('pro') &&
+    en.includes(PRO_SCOPE_STABLE_PATH) &&
+    (t.includes('public roadmap') || t.includes('pro roadmap')) &&
+    t.includes('chrome web store') &&
+    t.includes('privacy')
+  );
 }
 
 function hasProWaitlistCtaZh(zh: string): boolean {
   const t = zh.toLowerCase();
-  return zh.includes('候补') && t.includes('options') && t.includes('pro') && zh.includes(PRO_SCOPE_STABLE_PATH);
+  return (
+    t.includes('options') &&
+    t.includes('pro') &&
+    zh.includes(PRO_SCOPE_STABLE_PATH) &&
+    (zh.includes('路线') || t.includes('roadmap')) &&
+    zh.includes('Chrome Web Store') &&
+    zh.includes('隐私')
+  );
 }
 
 function hasTutorialLinks(text: string): boolean {
@@ -332,8 +346,8 @@ function buildAssertionFailures(assertions: CwsListingEvidencePack['assertions']
   if (!assertions.hasProWaitlistCta) {
     failures.push({
       key: 'hasProWaitlistCta',
-      reason: `长描述未同时包含 waitlist 加入方式与稳定链接 ${PRO_SCOPE_STABLE_PATH}`,
-      fix: '修复：更新 docs/ChromeWebStore-Description-EN.md 与 docs/ChromeWebStore-Description-ZH.md 的 Pro waitlist 段落'
+      reason: `长描述未同时包含 Options -> Pro 的公开路线说明、安装/隐私承接与稳定链接 ${PRO_SCOPE_STABLE_PATH}`,
+      fix: '修复：更新 docs/ChromeWebStore-Description-EN.md 与 docs/ChromeWebStore-Description-ZH.md 的 Pro public roadmap 段落'
     });
   }
   if (!assertions.hasTutorialLinks) {

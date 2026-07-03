@@ -19,18 +19,22 @@ function safeGetMessage(getMessage: I18nGetMessage, key: string, substitutions?:
 export interface BuildProWaitlistRecruitCopyParams {
   getMessage: I18nGetMessage;
   waitlistUrl: string;
+  storeUrl: string;
+  privacyUrl: string;
   campaign: string;
 }
 
 export function buildProWaitlistRecruitCopyText(params: BuildProWaitlistRecruitCopyParams): string {
   const text = safeGetMessage(params.getMessage, 'proWaitlistRecruitCopyTemplate', [
     params.waitlistUrl,
-    params.campaign
+    params.campaign,
+    params.storeUrl,
+    params.privacyUrl
   ]);
 
   if (text) return text;
 
-  return `Copylot Pro roadmap:\n${params.waitlistUrl}\n\ncampaign: ${params.campaign}\n`;
+  return [params.storeUrl, params.privacyUrl, params.waitlistUrl, params.campaign].join('\n');
 }
 
 export interface BuildProDistributionPackMarkdownParams {
@@ -38,6 +42,7 @@ export interface BuildProDistributionPackMarkdownParams {
   campaign: string;
   officialSiteUrl: string;
   storeUrl: string;
+  privacyUrl: string;
   waitlistUrl: string;
   recruitCopy: string;
 }
@@ -52,6 +57,7 @@ export function buildProDistributionPackMarkdown(params: BuildProDistributionPac
     params.campaign,
     params.officialSiteUrl,
     params.storeUrl,
+    params.privacyUrl,
     params.waitlistUrl,
     params.recruitCopy.trimEnd()
   ]);
@@ -59,5 +65,11 @@ export function buildProDistributionPackMarkdown(params: BuildProDistributionPac
   if (text) return text;
 
   // Fallback (should not happen when i18n keys are present).
-  return `${params.officialSiteUrl}\n${params.storeUrl}\n${params.waitlistUrl}\n${params.recruitCopy.trimEnd()}\n`;
+  return (
+    `${params.officialSiteUrl}\n` +
+    `${params.storeUrl}\n` +
+    `${params.privacyUrl}\n` +
+    `${params.waitlistUrl}\n` +
+    `${params.recruitCopy.trimEnd()}\n`
+  );
 }

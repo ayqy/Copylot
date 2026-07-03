@@ -51,7 +51,10 @@ test('popup share feedback rate and passive pro entries open real targets withou
     const popupForShare = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
     await completePopupOnboardingIfVisible(popupForShare);
     await popupForShare.locator('#copy-share-button').click();
-    await expectClipboardTextEventually(/Copylot/, driverPage);
+    await expectClipboardTextEventually(
+      (text) => text.includes('Copylot') && !text.toLowerCase().includes('waitlist') && !text.toLowerCase().includes('survey'),
+      driverPage
+    );
 
     await popupForShare.locator('#share-link').click();
     await expect

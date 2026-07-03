@@ -316,7 +316,10 @@ async function runOptionsAssertions(): Promise<void> {
     );
     clickElement(proWaitlistRecruitCopyButton);
     await page.waitForIdle();
-    assert.ok((await page.clipboard.readText()).includes('twitter'));
+    const recruitCopy = await page.clipboard.readText();
+    assert.ok(recruitCopy.includes('twitter'));
+    assert.ok(recruitCopy.includes('/privacy'));
+    assert.ok(recruitCopy.includes('chromewebstore.google.com/detail/ai-copilot'));
 
     const proStoreUrlCopyButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
@@ -337,6 +340,7 @@ async function runOptionsAssertions(): Promise<void> {
     const distributionPack = await page.clipboard.readText();
     assert.ok(distributionPack.includes('https://copy.useai.online/'));
     assert.ok(distributionPack.includes('chromewebstore.google.com/detail/ai-copilot'));
+    assert.ok(distributionPack.includes('/privacy'));
 
     const womShareOpenButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#wom-share-open');
     clickElement(womShareOpenButton);
@@ -346,7 +350,10 @@ async function runOptionsAssertions(): Promise<void> {
     const womShareCopyButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#wom-share-copy');
     clickElement(womShareCopyButton);
     await page.waitForIdle();
-    assert.ok((await page.clipboard.readText()).includes('chromewebstore.google.com/detail/ai-copilot'));
+    const womShareCopy = await page.clipboard.readText();
+    assert.ok(womShareCopy.includes('chromewebstore.google.com/detail/ai-copilot'));
+    assert.equal(womShareCopy.toLowerCase().includes('waitlist'), false);
+    assert.equal(womShareCopy.toLowerCase().includes('survey'), false);
 
     const womRateOpenButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#wom-rate-open');
     clickElement(womRateOpenButton);

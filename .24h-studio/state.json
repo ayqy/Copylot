@@ -1,0 +1,245 @@
+{
+  "active_main_prd": "prds/v1.md",
+  "active_sub_prd": null,
+  "active_sub_idx": null,
+  "next_sub_prd_index": 111,
+  "pending_fix": null,
+  "last_dev_cycle": "2026-03-25T06:05:19.637742+00:00",
+  "last_growth_cycle": "2026-07-02T03:15:32.858122+00:00",
+  "last_quota_exhausted_at": "2026-07-03T15:00:31.136786+00:00",
+  "last_run_errors": [],
+  "codex_run_history": [
+    {
+      "at": "2026-03-23T19:56:51.010843+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-034230-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-23T20:12:45.368335+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-032658-growth_execute"
+    },
+    {
+      "at": "2026-03-23T20:17:43.459469+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-025337-growth_execute"
+    },
+    {
+      "at": "2026-03-23T20:27:54.246977+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-034230-growth_execute"
+    },
+    {
+      "at": "2026-03-23T20:48:07.239625+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-032658-growth_execute"
+    },
+    {
+      "at": "2026-03-23T21:03:16.596084+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-034230-growth_execute"
+    },
+    {
+      "at": "2026-03-23T21:13:26.168966+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-042754-growth_execute"
+    },
+    {
+      "at": "2026-03-23T21:22:38.695781+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-032658-growth_execute"
+    },
+    {
+      "at": "2026-03-23T21:37:56.819383+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-044807-growth_execute"
+    },
+    {
+      "at": "2026-03-23T21:48:07.684350+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-034230-growth_execute"
+    },
+    {
+      "at": "2026-03-23T21:55:01.110237+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-042754-growth_execute"
+    },
+    {
+      "at": "2026-03-25T00:48:13.188678+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-084252-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T01:02:05.264747+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-084813-dev_execute"
+    },
+    {
+      "at": "2026-03-25T02:20:20.182752+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-101350-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T02:34:48.639463+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-102454-growth_execute"
+    },
+    {
+      "at": "2026-03-25T03:00:26.733462+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-105422-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T03:12:36.275159+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-110026-dev_execute"
+    },
+    {
+      "at": "2026-03-25T03:24:42.737522+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-111734-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T03:36:27.997199+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-113153-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T03:58:48.736060+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-113628-dev_execute"
+    },
+    {
+      "at": "2026-03-25T04:03:59.055327+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-115953-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T04:18:37.171350+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-120359-dev_execute"
+    },
+    {
+      "at": "2026-03-25T04:24:17.063717+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-121933-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T04:42:22.923409+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-122417-dev_execute"
+    },
+    {
+      "at": "2026-03-25T04:44:07.248506+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-124322-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T04:49:58.923250+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-124407-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T04:57:02.829768+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-124958-dev_execute"
+    },
+    {
+      "at": "2026-03-25T06:04:11.861906+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-140354-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T06:04:29.291773+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-140411-dev_execute"
+    },
+    {
+      "at": "2026-03-25T06:05:42.900293+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-140524-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T06:59:46.941017+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-145928-growth_execute"
+    },
+    {
+      "at": "2026-03-25T07:06:06.567364+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-150548-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T08:00:14.599222+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-155956-growth_execute"
+    },
+    {
+      "at": "2026-03-25T08:06:29.131580+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-160612-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T09:00:41.748168+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-170024-growth_execute"
+    },
+    {
+      "at": "2026-03-25T09:06:52.998639+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-170634-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T10:01:10.890037+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-180052-growth_execute"
+    },
+    {
+      "at": "2026-03-25T10:07:15.799307+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-180658-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T11:01:39.760336+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-190120-growth_execute"
+    },
+    {
+      "at": "2026-03-25T11:07:40.137219+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-190721-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T12:02:07.713889+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-200151-growth_execute"
+    },
+    {
+      "at": "2026-03-25T12:08:03.571852+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-200745-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T13:02:36.027022+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-210217-growth_execute"
+    },
+    {
+      "at": "2026-03-25T13:08:28.500700+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-210809-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T14:03:06.820006+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-220247-growth_execute"
+    },
+    {
+      "at": "2026-03-25T14:08:53.700417+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-220834-sub_prd_plan"
+    },
+    {
+      "at": "2026-03-25T15:03:35.107267+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-230317-growth_execute"
+    },
+    {
+      "at": "2026-03-25T15:09:17.676989+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-230859-sub_prd_plan"
+    },
+    {
+      "at": "2026-07-03T14:57:54.446231+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260703-225256168-sub_prd_plan-2c74788b"
+    },
+    {
+      "at": "2026-07-03T15:00:07.776921+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260703-225754449-dev_execute-9731131c"
+    }
+  ],
+  "human_todos": [
+    {
+      "title": "n8n webhook 适配",
+      "impact": "阻塞",
+      "depends_on": "growth_engine",
+      "doc": "docs/growth/blocked.md",
+      "notes": "缺少 GROWTH_N8N_WEBHOOK_URL",
+      "created_at": "2026-07-02T03:15:27.562179+00:00"
+    },
+    {
+      "title": "listmonk API 适配",
+      "impact": "阻塞",
+      "depends_on": "growth_engine",
+      "doc": "docs/growth/blocked.md",
+      "notes": "缺少 GROWTH_LISTMONK_URL",
+      "created_at": "2026-07-02T03:15:27.562240+00:00"
+    },
+    {
+      "title": "PostHog event 适配",
+      "impact": "阻塞",
+      "depends_on": "growth_engine",
+      "doc": "docs/growth/blocked.md",
+      "notes": "缺少 capture_url 或 api_key",
+      "created_at": "2026-07-02T03:15:27.562256+00:00"
+    }
+  ],
+  "roadmap": {
+    "status_path": "docs/roadmap_status.md",
+    "last_seen_stage": "- Stage：S0 上架与商店端取证闭环（收入优先）",
+    "last_seen_top3": [],
+    "last_updated_at": "2026-03-25T06:05:19.638235+00:00"
+  }
+}

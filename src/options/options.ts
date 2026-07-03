@@ -32,8 +32,14 @@ import {
   buildFeedbackSettingsSnapshot,
   buildShareCopyText
 } from '../shared/word-of-mouth';
-import { buildChromeWebStoreUrl, buildOfficialSiteUrl, buildProWaitlistUrl } from '../shared/external-links';
 import {
+  buildChromeWebStoreUrl,
+  buildOfficialSiteUrl,
+  buildPrivacyPolicyUrl,
+  buildProWaitlistUrl
+} from '../shared/external-links';
+import {
+  buildProWaitlistRecruitCopyText,
   buildProDistributionPackMarkdown,
   computeProWaitlistDistributionState
 } from '../shared/pro-waitlist-distribution';
@@ -3251,9 +3257,21 @@ function setupEventListeners() {
     return buildProRouteUrl(campaign);
   }
 
+  function buildProPrivacyUrlForDistributionToolkit(campaign: string): string {
+    return buildPrivacyPolicyUrl({ medium: 'distribution_toolkit', campaign });
+  }
+
   function buildWaitlistRecruitCopy(campaign: string): string {
+    const waitlistUrl = buildWaitlistDistributionUrl(campaign);
     const storeUrl = buildProStoreUrlForDistributionToolkit(campaign);
-    return buildShareCopyText(getMessage, storeUrl);
+    const privacyUrl = buildProPrivacyUrlForDistributionToolkit(campaign);
+    return buildProWaitlistRecruitCopyText({
+      getMessage,
+      waitlistUrl,
+      storeUrl,
+      privacyUrl,
+      campaign
+    });
   }
 
   function buildProStoreUrlForDistributionToolkit(campaign: string): string {
@@ -3263,6 +3281,7 @@ function setupEventListeners() {
   function buildProDistributionPackForDistributionToolkit(campaign: string): string {
     const officialSiteUrl = buildOfficialSiteUrl({ medium: 'distribution_toolkit', campaign });
     const storeUrl = buildProStoreUrlForDistributionToolkit(campaign);
+    const privacyUrl = buildProPrivacyUrlForDistributionToolkit(campaign);
     const waitlistUrl = buildWaitlistDistributionUrl(campaign);
     const recruitCopy = buildWaitlistRecruitCopy(campaign);
     return buildProDistributionPackMarkdown({
@@ -3270,6 +3289,7 @@ function setupEventListeners() {
       campaign,
       officialSiteUrl,
       storeUrl,
+      privacyUrl,
       waitlistUrl,
       recruitCopy
     });

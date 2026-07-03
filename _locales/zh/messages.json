@@ -329,7 +329,7 @@
     "description": "Options Pro Tab：对外分发工具包标题"
   },
   "proWaitlistDistributionToolkitHint": {
-    "message": "当前阶段只做增长获客，不做表单收集。直接复制官网路线页、商店安装链接和分享资料即可。",
+    "message": "当前阶段只做安装优先的增长获客，不做表单收集。直接复制商店安装链接、隐私说明页、路线页和分享资料即可。",
     "description": "Options Pro Tab：对外分发工具包说明"
   },
   "proWaitlistUrlCopyButton": {
@@ -349,7 +349,7 @@
     "description": "Options Pro Tab：分发工具包 - 复制完整投放包按钮"
   },
   "proDistributionPackTemplate": {
-    "message": "# Copylot 渠道分发投放包（可审计版）\\n\\n- campaign: $CAMPAIGN$\\n\\n## 1) 官网首页链接（带 UTM + campaign）\\n$OFFICIAL_SITE_URL$\\n\\n## 2) 商店安装链接（带 UTM + campaign）\\n$STORE_URL$\\n\\n## 3) Pro 路线页链接（带 UTM + campaign）\\n$WAITLIST_URL$\\n\\n## 4) 分享文案（可直接发）\\n\\n```text\\n$RECRUIT_COPY$\\n```\\n\\n---\\n\\n隐私提示：本投放包不包含网页内容/复制内容/URL/标题；仅包含固定模板 + campaign + 官网/商店/Pro 路线页链接。\\n",
+    "message": "# Copylot 渠道分发投放包（可审计版）\\n\\n- campaign: $CAMPAIGN$\\n\\n## 1) 官网首页链接（带 UTM + campaign）\\n$OFFICIAL_SITE_URL$\\n\\n## 2) 商店安装链接（带 UTM + campaign）\\n$STORE_URL$\\n\\n## 3) 隐私说明页链接（带 UTM + campaign）\\n$PRIVACY_URL$\\n\\n## 4) Pro 路线页链接（带 UTM + campaign）\\n$WAITLIST_URL$\\n\\n## 5) 分享文案（可直接发）\\n\\n```text\\n$RECRUIT_COPY$\\n```\\n\\n---\\n\\n隐私提示：本投放包不包含网页内容/复制内容/URL/标题；仅包含固定模板 + campaign + 官网/商店/隐私页/Pro 路线页链接。\\n",
     "description": "Options Pro Tab：分发工具包 - 完整投放包 Markdown 模板",
     "placeholders": {
       "CAMPAIGN": {
@@ -361,11 +361,14 @@
       "STORE_URL": {
         "content": "$3"
       },
-      "WAITLIST_URL": {
+      "PRIVACY_URL": {
         "content": "$4"
       },
-      "RECRUIT_COPY": {
+      "WAITLIST_URL": {
         "content": "$5"
+      },
+      "RECRUIT_COPY": {
+        "content": "$6"
       }
     }
   },
@@ -374,7 +377,7 @@
     "description": "Options Pro Tab：分发工具包 - campaign 为空/非法时提示"
   },
   "proWaitlistRecruitCopyTemplate": {
-    "message": "Copylot Pro 路线已公开：\\n\\n如果你需要更强的网页清洗、批量整理或导出能力，可以先看官网路线说明。\\n\\n路线页（campaign=$CAMPAIGN$）：\\n$WAITLIST_URL$\\n",
+    "message": "Copylot 已可在 Chrome Web Store 安装。\\n\\n第一次接触的用户先发安装链接；遇到信任或数据处理问题时补发隐私说明页；只有当对方明确问到高级能力规划时，再补发 Pro 路线页。\\n\\n安装链接（campaign=$CAMPAIGN$）：\\n$STORE_URL$\\n\\n隐私说明页：\\n$PRIVACY_URL$\\n\\nPro 路线页：\\n$WAITLIST_URL$\\n",
     "description": "Options Pro Tab：分发工具包 - 招募文案模板（用于 Twitter/小红书/群聊/邮件等渠道）",
     "placeholders": {
       "WAITLIST_URL": {
@@ -382,11 +385,17 @@
       },
       "CAMPAIGN": {
         "content": "$2"
+      },
+      "STORE_URL": {
+        "content": "$3"
+      },
+      "PRIVACY_URL": {
+        "content": "$4"
       }
     }
   },
   "proPrivacyHint": {
-    "message": "当前阶段不收集候补、问卷或联系方式；先专注安装、激活、复用与口碑增长。",
+    "message": "当前阶段不在 Pro 页收集候补、问卷或联系方式；先专注安装、第一次干净复制、复用与口碑增长。",
     "description": "Options Pro Tab 隐私提示"
   },
   "proWaitlistSurveyTitle": {

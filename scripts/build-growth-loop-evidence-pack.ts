@@ -10,6 +10,7 @@ import {
   OFFICIAL_SITE_ROOT_URL,
   buildChromeWebStoreUrl,
   buildOfficialSiteUrl,
+  buildPrivacyPolicyUrl,
   buildProWaitlistUrl
 } from '../src/shared/external-links.ts';
 import { buildProDistributionPackMarkdown, buildProWaitlistRecruitCopyText } from '../src/shared/pro-waitlist-distribution.ts';
@@ -38,6 +39,7 @@ type OfficialLinksEvidence = Readonly<{
           medium: string;
           officialSiteUrl: string;
           chromeWebStoreUrl: string;
+          privacyPolicyUrl: string;
           proWaitlistUrl: string;
         }>
       >;
@@ -140,6 +142,7 @@ function buildOfficialLinksEvidence(): OfficialLinksEvidence {
       medium: string;
       officialSiteUrl: string;
       chromeWebStoreUrl: string;
+      privacyPolicyUrl: string;
       proWaitlistUrl: string;
     }>;
   }> = [];
@@ -149,14 +152,16 @@ function buildOfficialLinksEvidence(): OfficialLinksEvidence {
       medium: string;
       officialSiteUrl: string;
       chromeWebStoreUrl: string;
+      privacyPolicyUrl: string;
       proWaitlistUrl: string;
     }> = [];
 
     for (const medium of REQUIRED_UTM_MEDIA) {
       const officialSiteUrl = buildOfficialSiteUrl({ medium, campaign });
       const chromeWebStoreUrl = buildChromeWebStoreUrl({ medium, campaign });
+      const privacyPolicyUrl = buildPrivacyPolicyUrl({ medium, campaign });
       const proWaitlistUrl = buildProWaitlistUrl({ medium, campaign, env: SAMPLE_WAITLIST_ENV });
-      surfaces.push({ medium, officialSiteUrl, chromeWebStoreUrl, proWaitlistUrl });
+      surfaces.push({ medium, officialSiteUrl, chromeWebStoreUrl, privacyPolicyUrl, proWaitlistUrl });
     }
 
     samples.push({ campaign, surfaces });
@@ -187,6 +192,13 @@ function validateOfficialLinksEvidence(evidence: OfficialLinksEvidence): void {
       const storeParsed = new URL(surface.chromeWebStoreUrl);
       assert.equal(storeParsed.hostname, 'chromewebstore.google.com');
       assertUtmParams(surface.chromeWebStoreUrl, { medium: surface.medium, campaign: sample.campaign });
+
+      // privacy
+      const privacyParsed = new URL(surface.privacyPolicyUrl);
+      assert.equal(privacyParsed.origin, officialSiteRoot.origin);
+      assert.equal(privacyParsed.pathname, '/privacy');
+      assert.equal(privacyParsed.hash, '');
+      assertUtmParams(surface.privacyPolicyUrl, { medium: surface.medium, campaign: sample.campaign });
 
       // Pro roadmap
       const waitlistParsed = new URL(surface.proWaitlistUrl);
@@ -293,24 +305,39 @@ export async function buildGrowthLoopEvidencePack(): Promise<void> {
     const medium = 'distribution_toolkit';
     const officialSiteUrl = buildOfficialSiteUrl({ medium, campaign });
     const storeUrl = buildChromeWebStoreUrl({ medium, campaign });
+    const privacyUrl = buildPrivacyPolicyUrl({ medium, campaign });
     const waitlistUrl = buildProWaitlistUrl({ medium, campaign, env: SAMPLE_WAITLIST_ENV });
 
-    const recruitCopyEn = buildProWaitlistRecruitCopyText({ getMessage: getMessageEn, waitlistUrl, campaign });
+    const recruitCopyEn = buildProWaitlistRecruitCopyText({
+      getMessage: getMessageEn,
+      waitlistUrl,
+      storeUrl,
+      privacyUrl,
+      campaign
+    });
     const distributionPackEn = buildProDistributionPackMarkdown({
       getMessage: getMessageEn,
       campaign,
       officialSiteUrl,
       storeUrl,
+      privacyUrl,
       waitlistUrl,
       recruitCopy: recruitCopyEn
     });
 
-    const recruitCopyZh = buildProWaitlistRecruitCopyText({ getMessage: getMessageZh, waitlistUrl, campaign });
+    const recruitCopyZh = buildProWaitlistRecruitCopyText({
+      getMessage: getMessageZh,
+      waitlistUrl,
+      storeUrl,
+      privacyUrl,
+      campaign
+    });
     const distributionPackZh = buildProDistributionPackMarkdown({
       getMessage: getMessageZh,
       campaign,
       officialSiteUrl,
       storeUrl,
+      privacyUrl,
       waitlistUrl,
       recruitCopy: recruitCopyZh
     });

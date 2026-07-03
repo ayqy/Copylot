@@ -26,11 +26,12 @@ https://github.com/ayqy/copy/blob/main/docs/tutorials/table-to-csv-markdown.md
 https://github.com/ayqy/copy/blob/main/docs/tutorials/prompt-workflow.md
 https://github.com/ayqy/copy/blob/main/docs/tutorials/code-block-cleaning.md
 
-Copylot Pro (Planned / Waitlist)
-- Copylot Pro is not shipped yet and not available today (waitlist only).
-- How to join the waitlist (reproducible in-extension path): open the extension Options -> Pro tab, then click "Join waitlist" (or "Copy waitlist template").
+Copylot Pro (Public roadmap only)
+- Copylot Pro is not shipped or sold today; the public route only explains the advanced workflows we may validate next.
+- Reproducible in-extension path: open Options -> Pro, then use "View the Pro roadmap" or the sharing toolkit.
+- If someone needs the install path first, send the Chrome Web Store link; if they ask about trust or data handling, send the privacy page before the roadmap.
 - Pro scope & boundaries (stable public doc, auditable): https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md
-- Note: there is no payment/subscription promise on the store page; the waitlist is only for intent validation and feedback.
+- Note: there is no payment or subscription promise on the store page.
 
 PRIVACY & PERMISSIONS
 - Local by default: extraction/cleanup/formatting runs on your device

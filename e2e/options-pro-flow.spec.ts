@@ -36,7 +36,7 @@ test('pro tab only shows roadmap and sharing toolkit', async ({
   }
 });
 
-test('pro sharing toolkit copies roadmap, install assets, and opens official roadmap page', async ({
+test('pro sharing toolkit copies install, privacy, roadmap assets, and opens official roadmap page', async ({
   extensionContext,
   extensionId,
   driverPage
@@ -67,7 +67,10 @@ test('pro sharing toolkit copies roadmap, install assets, and opens official roa
 
     await page.locator('#pro-waitlist-recruit-copy').click();
     await expectClipboardTextEventually(
-      (text) => text.includes('Copylot') && text.includes('chromewebstore.google.com/detail/'),
+      (text) =>
+        text.includes('Copylot') &&
+        text.includes('chromewebstore.google.com/detail/') &&
+        text.includes('/privacy'),
       driverPage
     );
 
@@ -75,6 +78,7 @@ test('pro sharing toolkit copies roadmap, install assets, and opens official roa
     const distributionPack = await expectClipboardTextEventually(
       (text) =>
         text.includes('/pricing') &&
+        text.includes('/privacy') &&
         text.includes('chromewebstore.google.com/detail/') &&
         !text.includes('问卷') &&
         !text.toLowerCase().includes('survey'),
