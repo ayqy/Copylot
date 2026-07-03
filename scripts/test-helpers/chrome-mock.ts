@@ -12,6 +12,13 @@ type RuntimeMessageListener = (
   sendResponse: (response?: unknown) => void
 ) => void | boolean;
 
+type ChromeLocaleMessage = Readonly<{
+  message?: string;
+  placeholders?: Record<string, { content?: string }>;
+}>;
+
+type ChromeLocaleMessages = Readonly<Record<string, ChromeLocaleMessage>>;
+
 export interface ChromeMockOptions {
   extensionId?: string;
   manifestVersion?: string;
@@ -19,6 +26,7 @@ export interface ChromeMockOptions {
   syncData?: Record<string, unknown>;
   localData?: Record<string, unknown>;
   commands?: Array<{ name?: string; shortcut?: string }>;
+  uiLanguage?: string;
 }
 
 export interface ChromeMockLogs {
@@ -51,7 +59,9 @@ class StorageAreaMock {
     this.data = new Map(Object.entries(initialData));
   }
 
-  async get(keys?: string | string[] | Record<string, unknown> | null): Promise<Record<string, unknown>> {
+  async get(
+    keys?: string | string[] | Record<string, unknown> | null
+  ): Promise<Record<string, unknown>> {
     if (keys == null) {
       return Object.fromEntries(this.data.entries());
     }
@@ -118,7 +128,8 @@ export interface ChromeMockController {
 
 const DEFAULT_I18N_MESSAGES: Record<string, string> = {
   convertButton: 'Copy to AI',
-  quickActionSelectionFirst: 'Selection first. Falls back to the full page when nothing is selected.',
+  quickActionSelectionFirst:
+    'Selection first. Falls back to the full page when nothing is selected.',
   expandMoreSettings: 'Expand more settings',
   collapseMoreSettings: 'Collapse more settings',
   shortcutSettingsTitle: 'Shortcut Settings',
@@ -138,6 +149,36 @@ const DEFAULT_I18N_MESSAGES: Record<string, string> = {
   copied: 'Copied!'
 };
 
+function loadLocaleMessages(locale: string): ChromeLocaleMessages {
+  const filePath = path.resolve(process.cwd(), `_locales/${locale}/messages.json`);
+  return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as ChromeLocaleMessages;
+}
+
+function buildLocaleGetMessage(messages: ChromeLocaleMessages) {
+  return (key: string, substitutions?: string | string[]) => {
+    const entry = messages[key];
+    if (!entry?.message) {
+      return '';
+    }
+
+    const subs = Array.isArray(substitutions)
+      ? substitutions
+      : substitutions != null
+        ? [substitutions]
+        : [];
+    let text = String(entry.message);
+
+    for (const [name, value] of Object.entries(entry.placeholders ?? {})) {
+      const placeholder = String(value?.content ?? '');
+      const match = placeholder.match(/^\$(\d+)$/);
+      const replacement = match ? String(subs[Number(match[1]) - 1] ?? '') : '';
+      text = text.replaceAll(`$${name}$`, replacement);
+    }
+
+    return text.replace(/\$(\d+)/g, (_match, index) => String(subs[Number(index) - 1] ?? ''));
+  };
+}
+
 export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockController {
   const logs: ChromeMockLogs = {
     createdTabs: [],
@@ -145,13 +186,13 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
     sentTabMessages: [],
     runtimeMessages: [],
     openedOptionsPageCount: 0,
-  badgeText: [],
-  actionPopupOpenCount: 0,
-  updatedTabs: [],
-  updatedWindows: [],
-  devtoolsSidebarPages: [],
-  devtoolsSelectionChangedListenerCount: 0,
-  devtoolsEvalExpressions: []
+    badgeText: [],
+    actionPopupOpenCount: 0,
+    updatedTabs: [],
+    updatedWindows: [],
+    devtoolsSidebarPages: [],
+    devtoolsSelectionChangedListenerCount: 0,
+    devtoolsEvalExpressions: []
   };
 
   const storageListeners = new Set<StorageChangeListener>();
@@ -170,7 +211,11 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
 
   const extensionId = options.extensionId ?? 'ehfglnbhoefcdedpkcdnainiifpflbic';
   const manifestVersion =
-    options.manifestVersion ?? JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'manifest.json'), 'utf-8')).version;
+    options.manifestVersion ??
+    JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'manifest.json'), 'utf-8')).version;
+  const uiLanguage = options.uiLanguage ?? 'en';
+  const localeMessages = loadLocaleMessages(uiLanguage);
+  const localeGetMessage = buildLocaleGetMessage(localeMessages);
   const activeTabId = options.activeTabId ?? 101;
   const activeTab: chrome.tabs.Tab = {
     id: activeTabId,
@@ -201,14 +246,12 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
     },
     commands: {
       async getAll() {
-        return (
-          options.commands ?? [
-            { name: 'quick-convert', shortcut: 'Alt+C' },
-            { name: 'quick-prompt-slot-1', shortcut: 'Alt+1' },
-            { name: 'quick-prompt-slot-2', shortcut: 'Alt+2' },
-            { name: 'quick-prompt-slot-3', shortcut: 'Alt+3' }
-          ]
-        ) as chrome.commands.Command[];
+        return (options.commands ?? [
+          { name: 'quick-convert', shortcut: 'Alt+C' },
+          { name: 'quick-prompt-slot-1', shortcut: 'Alt+1' },
+          { name: 'quick-prompt-slot-2', shortcut: 'Alt+2' },
+          { name: 'quick-prompt-slot-3', shortcut: 'Alt+3' }
+        ]) as chrome.commands.Command[];
       },
       onCommand: {
         addListener() {
@@ -221,6 +264,10 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
     },
     i18n: {
       getMessage(key: string, substitutions?: string | string[]) {
+        const localizedMessage = localeGetMessage(key, substitutions);
+        if (localizedMessage) {
+          return localizedMessage;
+        }
         if (DEFAULT_I18N_MESSAGES[key]) {
           return DEFAULT_I18N_MESSAGES[key];
         }
@@ -233,13 +280,16 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
         return key;
       },
       getUILanguage() {
-        return 'en';
+        return uiLanguage;
       }
     },
     devtools: {
       panels: {
         elements: {
-          createSidebarPane(title: string, callback: (sidebar: { setPage(path: string): void }) => void) {
+          createSidebarPane(
+            title: string,
+            callback: (sidebar: { setPage(path: string): void }) => void
+          ) {
             void title;
             callback({
               setPage(path: string) {
@@ -320,7 +370,10 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
               responses.push(response);
             }
           );
-          if (maybeAsync && typeof ((maybeAsync as unknown) as PromiseLike<unknown>).then === 'function') {
+          if (
+            maybeAsync &&
+            typeof (maybeAsync as unknown as PromiseLike<unknown>).then === 'function'
+          ) {
             await maybeAsync;
           }
         }
@@ -375,7 +428,11 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
         logs.updatedTabs.push({ tabId, properties });
         return { ...activeTab, id: tabId, ...properties } as chrome.tabs.Tab;
       },
-      sendMessage(tabId: number, message: unknown, callback?: (response: { success: boolean }) => void) {
+      sendMessage(
+        tabId: number,
+        message: unknown,
+        callback?: (response: { success: boolean }) => void
+      ) {
         logs.sentTabMessages.push({ tabId, message });
         callback?.({ success: true });
         return Promise.resolve({ success: true });
@@ -397,7 +454,10 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
             responses.push(response);
           }
         );
-        if (maybeAsync && typeof ((maybeAsync as unknown) as PromiseLike<unknown>).then === 'function') {
+        if (
+          maybeAsync &&
+          typeof (maybeAsync as unknown as PromiseLike<unknown>).then === 'function'
+        ) {
           await maybeAsync;
         }
       }

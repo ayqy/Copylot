@@ -111,7 +111,7 @@ export function buildChromeWebStoreReviewsUrl(params: BuildExternalLinkParams): 
   return url.toString();
 }
 
-function appendProWaitlistEnvParams(search: URLSearchParams, env: unknown): void {
+function appendProRoadmapEnvParams(search: URLSearchParams, env: unknown): void {
   const sanitized = sanitizeProWaitlistEnv(env);
   if (sanitized.extensionVersion) search.set('ext_version', sanitized.extensionVersion);
   if (sanitized.extensionId) search.set('ext_id', sanitized.extensionId);
@@ -130,13 +130,17 @@ export interface BuildProWaitlistUrlParams extends BuildExternalLinkParams {
  * - 仅允许写入可审计环境字段：扩展版本/扩展ID/语言
  * - 不得写入网页 URL/标题/复制内容
  */
-export function buildProWaitlistUrl(params: BuildProWaitlistUrlParams): string {
+export function buildProRoadmapUrl(params: BuildProWaitlistUrlParams): string {
   const url = new URL(OFFICIAL_SITE_ROOT_URL);
   url.pathname = '/pricing';
 
   const search = buildUtmSearchParams(params);
-  appendProWaitlistEnvParams(search, params.env);
+  appendProRoadmapEnvParams(search, params.env);
   url.search = search.toString();
 
   return url.toString();
+}
+
+export function buildProWaitlistUrl(params: BuildProWaitlistUrlParams): string {
+  return buildProRoadmapUrl(params);
 }

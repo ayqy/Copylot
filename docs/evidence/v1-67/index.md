@@ -6,11 +6,11 @@
 - exportedAt：`2026-03-21T00:00:00.000Z`
 - extensionVersion：`1.2.3`
 - baseline pack：`docs/evidence/v1-66/cws-listing-evidence-pack-1.2.3-2026-03-21-000000.json`
-  - sha256：`ec71f32c823afc70442ef6bd201b428b2fa83ad3df203bcbfc9b182f78b14a7a`
+  - sha256：`899ec0820507a98320c839223ebea1b19b1bafc83747fd658eb2955b963ac1a3`
 - current pack：`docs/evidence/v1-67/cws-listing-evidence-pack-1.2.3-2026-03-21-000000.json`
-  - sha256：`ec71f32c823afc70442ef6bd201b428b2fa83ad3df203bcbfc9b182f78b14a7a`
+  - sha256：`899ec0820507a98320c839223ebea1b19b1bafc83747fd658eb2955b963ac1a3`
 - diff pack：`docs/evidence/v1-67/cws-listing-diff-evidence-pack-1.2.3-2026-03-21-000000.json`
-  - sha256：`3864444ca707e01f99eaf379591135147430198c4c155020af80f21fce736280`
+  - sha256：`f4c936dae639f06ab2dac2f414e3079933e35d5ae34b9ffb4e32364be99ec9b2`
 
 ## 关键变更摘要（baseline -> current）
 
@@ -18,8 +18,8 @@
 - keywords.enRemoved：(none)
 - keywords.zhAdded：(none)
 - keywords.zhRemoved：(none)
-- descriptions.enSha256：`bc6b5a4174b4a5d38bdcc35c86956665ff1d48b88f07279246f1e070777e77b1` -> `bc6b5a4174b4a5d38bdcc35c86956665ff1d48b88f07279246f1e070777e77b1`
-- descriptions.zhSha256：`5a35de22f3000421d2eee0bfb0aa439b5d3a6cfaddf28e1b660e5f8d5e855962` -> `5a35de22f3000421d2eee0bfb0aa439b5d3a6cfaddf28e1b660e5f8d5e855962`
+- descriptions.enSha256：`e939f6d58cf780d1e1fb48348a6ea6b68456e91a9c8057e06d16abbda32458c2` -> `e939f6d58cf780d1e1fb48348a6ea6b68456e91a9c8057e06d16abbda32458c2`
+- descriptions.zhSha256：`99fb6176346338dee75afb37321a94e010ecb5f765ec9b7ffd43ef22b958e545` -> `99fb6176346338dee75afb37321a94e010ecb5f765ec9b7ffd43ef22b958e545`
 - screenshotPlan.changedIds：(none)
 - assertions.changedKeys：(none)
 

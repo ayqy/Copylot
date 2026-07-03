@@ -11,8 +11,8 @@
 
 | path | bytes | sha256 |
 | --- | ---: | --- |
-| `docs/ChromeWebStore-Description-EN.md` | 3474 | `bc6b5a4174b4a5d38bdcc35c86956665ff1d48b88f07279246f1e070777e77b1` |
-| `docs/ChromeWebStore-Description-ZH.md` | 3349 | `5a35de22f3000421d2eee0bfb0aa439b5d3a6cfaddf28e1b660e5f8d5e855962` |
+| `docs/ChromeWebStore-Description-EN.md` | 3416 | `e939f6d58cf780d1e1fb48348a6ea6b68456e91a9c8057e06d16abbda32458c2` |
+| `docs/ChromeWebStore-Description-ZH.md` | 3159 | `99fb6176346338dee75afb37321a94e010ecb5f765ec9b7ffd43ef22b958e545` |
 | `docs/aso/keywords.md` | 2217 | `eb702760c5b5895d7388b193966aa5f1643ec0ec536c22d42315b5ec6b345ac8` |
 | `docs/aso/store-assets.md` | 10906 | `9f1509fc4b671ebf9a310faa07d4650cd48a859d4f3eb6019a0a249adf8210a8` |
 | `docs/aso/cws-release-notes-template.md` | 1351 | `4de9cf37ed4cad839640528d8106d5a13604e85dddea05988da1ae4b7c1ca5a3` |

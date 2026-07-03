@@ -148,14 +148,33 @@ async function runPopupAssertions(): Promise<void> {
   });
 
   try {
-    const convertButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#convert-button');
+    const firstCopyTitle = getRequiredElement<HTMLElement>(
+      page.dom.window.document,
+      '#first-copy-title'
+    );
+    assert.match(firstCopyTitle.textContent || '', /第一次干净复制|first clean copy/i);
+    const firstCopyStatus = getRequiredElement<HTMLElement>(
+      page.dom.window.document,
+      '#first-copy-status'
+    );
+    assert.match(firstCopyStatus.textContent || '', /已完成|completed/i);
+    assert.equal(firstCopyStatus.dataset.state, 'done');
+    assert.equal(page.dom.window.document.querySelectorAll('.first-copy-selling-point').length, 3);
+
+    const convertButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#convert-button'
+    );
     assert.match(convertButton.textContent || '', /复制给AI|Copy to AI/);
     clickElement(convertButton);
     await page.waitForIdle();
     assert.equal(chromeMock.logs.queriedTabs.length, 1);
     assert.equal(chromeMock.logs.sentTabMessages.length, 1);
 
-    const convertShortcut = getRequiredElement<HTMLElement>(page.dom.window.document, '#convert-shortcut');
+    const convertShortcut = getRequiredElement<HTMLElement>(
+      page.dom.window.document,
+      '#convert-shortcut'
+    );
     assert.match(convertShortcut.textContent || '', /Alt\+C/);
 
     const shortcutSettingsButton = getRequiredElement<HTMLButtonElement>(
@@ -167,31 +186,64 @@ async function runPopupAssertions(): Promise<void> {
     await page.waitForIdle();
     assert.equal(chromeMock.logs.openedOptionsPageCount, 1);
 
-    const moreSettingsToggle = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#toggle-more-settings');
+    const moreSettingsToggle = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#toggle-more-settings'
+    );
     assert.equal(moreSettingsToggle.getAttribute('aria-expanded'), 'false');
     assert.match(moreSettingsToggle.textContent || '', /展开更多设置|Expand more settings/);
     clickElement(moreSettingsToggle);
     await page.waitForIdle();
-    assert.equal(getRequiredElement<HTMLElement>(page.dom.window.document, '#more-settings-panel').hidden, false);
+    assert.equal(
+      getRequiredElement<HTMLElement>(page.dom.window.document, '#more-settings-panel').hidden,
+      false
+    );
     assert.equal(moreSettingsToggle.getAttribute('aria-expanded'), 'true');
 
-    assert.equal(getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-1-button').hidden, true);
-    assert.equal(getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-2-button').hidden, false);
-    assert.equal(getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-3-button').hidden, true);
-    const quickPromptSlot2Title = getRequiredElement<HTMLElement>(page.dom.window.document, '#quick-prompt-slot-2-title');
+    assert.equal(
+      getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-1-button')
+        .hidden,
+      true
+    );
+    assert.equal(
+      getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-2-button')
+        .hidden,
+      false
+    );
+    assert.equal(
+      getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-3-button')
+        .hidden,
+      true
+    );
+    const quickPromptSlot2Title = getRequiredElement<HTMLElement>(
+      page.dom.window.document,
+      '#quick-prompt-slot-2-title'
+    );
     assert.equal(quickPromptSlot2Title.textContent, 'Custom Quick Slot 2');
 
-    const addPromptButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#add-prompt-button');
+    const addPromptButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#add-prompt-button'
+    );
     clickElement(addPromptButton);
     await page.waitForIdle();
     assert.equal(chromeMock.logs.openedOptionsPageCount, 2);
 
-    const feedbackLink = getRequiredElement<HTMLAnchorElement>(page.dom.window.document, '#feedback-link');
+    const feedbackLink = getRequiredElement<HTMLAnchorElement>(
+      page.dom.window.document,
+      '#feedback-link'
+    );
     clickElement(feedbackLink);
     await page.waitForIdle();
-    assert.match(chromeMock.logs.createdTabs.at(-1)?.url ?? '', /^https:\/\/github\.com\/ayqy\/copy\/issues\/new\?/);
+    assert.match(
+      chromeMock.logs.createdTabs.at(-1)?.url ?? '',
+      /^https:\/\/github\.com\/ayqy\/copy\/issues\/new\?/
+    );
 
-    const shareLink = getRequiredElement<HTMLAnchorElement>(page.dom.window.document, '#share-link');
+    const shareLink = getRequiredElement<HTMLAnchorElement>(
+      page.dom.window.document,
+      '#share-link'
+    );
     clickElement(shareLink);
     await page.waitForIdle();
     const shareUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
@@ -210,16 +262,14 @@ async function runPopupAssertions(): Promise<void> {
     assert.equal(page.dom.window.document.querySelector('#popup-pro-waitlist-survey'), null);
     assert.equal(page.dom.window.document.querySelector('#popup-pro-waitlist-copy'), null);
 
-    const popupProWaitlistButton = getRequiredElement<HTMLButtonElement>(
+    const popupProEntryButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
-      '#popup-pro-waitlist'
+      '#upgrade-pro-entry'
     );
-    clickElement(popupProWaitlistButton);
+    clickElement(popupProEntryButton);
     await page.waitForIdle();
-    const waitlistUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
-    assert.ok(waitlistUrl.includes('https://copy.useai.online/'));
-    assert.ok(waitlistUrl.includes('#pro'));
-    assert.ok(waitlistUrl.includes('utm_medium=popup'));
+    const proRouteUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
+    assert.ok(proRouteUrl.includes('/src/options/options.html#pro'));
   } finally {
     page.restore();
   }
@@ -239,9 +289,21 @@ async function runOptionsAssertions(): Promise<void> {
         firstSuccessfulCopyAt: Date.now() - 8_000
       },
       [TELEMETRY_EVENTS_KEY]: [
-        { name: 'pro_entry_opened', ts: Date.now() - 5_000, props: { source: 'options', campaign: 'twitter' } },
-        { name: 'pro_waitlist_opened', ts: Date.now() - 4_000, props: { source: 'options', campaign: 'twitter' } },
-        { name: 'pro_waitlist_copied', ts: Date.now() - 3_000, props: { source: 'options', campaign: 'twitter' } }
+        {
+          name: 'pro_entry_opened',
+          ts: Date.now() - 5_000,
+          props: { source: 'options', campaign: 'twitter' }
+        },
+        {
+          name: 'pro_waitlist_opened',
+          ts: Date.now() - 4_000,
+          props: { source: 'options', campaign: 'twitter' }
+        },
+        {
+          name: 'pro_waitlist_copied',
+          ts: Date.now() - 3_000,
+          props: { source: 'options', campaign: 'twitter' }
+        }
       ]
     }
   });
@@ -269,23 +331,35 @@ async function runOptionsAssertions(): Promise<void> {
     await page.waitForIdle();
     assert.equal(chromeMock.logs.createdTabs.at(-1)?.url, 'chrome://extensions/shortcuts');
     assert.equal(
-      getRequiredElement<HTMLElement>(page.dom.window.document, '#options-shortcut-slot-1-prompt-name').textContent,
+      getRequiredElement<HTMLElement>(
+        page.dom.window.document,
+        '#options-shortcut-slot-1-prompt-name'
+      ).textContent,
       'Summary'
     );
     clickElement(
-      getRequiredElement<HTMLElement>(page.dom.window.document, '[data-shortcut-command-card="slot-1"]')
+      getRequiredElement<HTMLElement>(
+        page.dom.window.document,
+        '[data-shortcut-command-card="slot-1"]'
+      )
     );
     await page.waitForIdle();
     assert.equal(chromeMock.logs.createdTabs.at(-1)?.url, 'chrome://extensions/shortcuts');
 
-    const campaignInput = getRequiredElement<HTMLInputElement>(page.dom.window.document, '#pro-intent-campaign');
+    const campaignInput = getRequiredElement<HTMLInputElement>(
+      page.dom.window.document,
+      '#pro-intent-campaign'
+    );
     assert.equal(campaignInput.closest('.form-group')?.hasAttribute('hidden'), true);
     campaignInput.value = 'twitter';
     campaignInput.dispatchEvent(new window.Event('input', { bubbles: true }));
     campaignInput.dispatchEvent(new window.Event('change', { bubbles: true }));
     await page.waitForIdle();
 
-    const proWaitlistButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#pro-waitlist-button');
+    const proWaitlistButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-waitlist-button'
+    );
     clickElement(proWaitlistButton);
     await page.waitForIdle();
     const waitlistUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
@@ -293,7 +367,10 @@ async function runOptionsAssertions(): Promise<void> {
     assert.ok(waitlistUrl.includes('#pro'));
     assert.ok(waitlistUrl.includes('utm_medium=options'));
 
-    const proWaitlistCopyButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#pro-waitlist-copy');
+    const proWaitlistCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-waitlist-copy'
+    );
     assert.equal(proWaitlistCopyButton.hidden, true);
 
     const proWaitlistUrlCopyButton = getRequiredElement<HTMLButtonElement>(
@@ -301,7 +378,10 @@ async function runOptionsAssertions(): Promise<void> {
       '#pro-waitlist-url-copy'
     );
     assert.equal(
-      getRequiredElement<HTMLElement>(page.dom.window.document, '#pro-waitlist-distribution-toolkit').hidden,
+      getRequiredElement<HTMLElement>(
+        page.dom.window.document,
+        '#pro-waitlist-distribution-toolkit'
+      ).hidden,
       true
     );
     clickElement(proWaitlistUrlCopyButton);
@@ -342,12 +422,18 @@ async function runOptionsAssertions(): Promise<void> {
     assert.ok(distributionPack.includes('chromewebstore.google.com/detail/ai-copilot'));
     assert.ok(distributionPack.includes('/privacy'));
 
-    const womShareOpenButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#wom-share-open');
+    const womShareOpenButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#wom-share-open'
+    );
     clickElement(womShareOpenButton);
     await page.waitForIdle();
     assert.ok((chromeMock.logs.createdTabs.at(-1)?.url ?? '').includes('utm_medium=options'));
 
-    const womShareCopyButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#wom-share-copy');
+    const womShareCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#wom-share-copy'
+    );
     clickElement(womShareCopyButton);
     await page.waitForIdle();
     const womShareCopy = await page.clipboard.readText();
@@ -355,7 +441,10 @@ async function runOptionsAssertions(): Promise<void> {
     assert.equal(womShareCopy.toLowerCase().includes('waitlist'), false);
     assert.equal(womShareCopy.toLowerCase().includes('survey'), false);
 
-    const womRateOpenButton = getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#wom-rate-open');
+    const womRateOpenButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#wom-rate-open'
+    );
     clickElement(womRateOpenButton);
     await page.waitForIdle();
     const womRateUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
@@ -368,7 +457,10 @@ async function runOptionsAssertions(): Promise<void> {
     );
     clickElement(womFeedbackOpenButton);
     await page.waitForIdle();
-    assert.match(chromeMock.logs.createdTabs.at(-1)?.url ?? '', /^https:\/\/github\.com\/ayqy\/copy\/issues\/new\?/);
+    assert.match(
+      chromeMock.logs.createdTabs.at(-1)?.url ?? '',
+      /^https:\/\/github\.com\/ayqy\/copy\/issues\/new\?/
+    );
 
     const downloadEvidenceButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
@@ -411,12 +503,18 @@ async function runDevtoolsAssertions(): Promise<void> {
 
   try {
     await sidebarPage.waitForIdle();
-    const jsonContainer = getRequiredElement<HTMLTextAreaElement>(sidebarPage.dom.window.document, '#json-container');
+    const jsonContainer = getRequiredElement<HTMLTextAreaElement>(
+      sidebarPage.dom.window.document,
+      '#json-container'
+    );
     assert.ok(jsonContainer.value.includes('"tagName": "div"'));
     assert.ok(chromeMock.logs.devtoolsEvalExpressions.length >= 1);
     assert.equal(chromeMock.logs.devtoolsSelectionChangedListenerCount, 1);
 
-    const copyButton = getRequiredElement<HTMLButtonElement>(sidebarPage.dom.window.document, '#copy-button');
+    const copyButton = getRequiredElement<HTMLButtonElement>(
+      sidebarPage.dom.window.document,
+      '#copy-button'
+    );
     clickElement(copyButton);
     await sidebarPage.waitForIdle();
     assert.ok((await sidebarPage.clipboard.readText()).includes('"tagName": "div"'));

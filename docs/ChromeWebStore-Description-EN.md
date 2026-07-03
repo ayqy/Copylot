@@ -1,44 +1,60 @@
-Copy-pasting from the web is messy: ads, navigation, broken tables, and noisy code blocks.
+# Make Your First Clean Copy in 30 Seconds
 
-Copylot is a privacy-first web-to-text copier: copy blocks to clean Markdown or plain text, convert tables to CSV, and clean code blocks — ready for AI chats, docs, and notes.
-Privacy-first and on-device: extraction/cleanup runs locally, and we do not collect or upload what you copy.
+The hardest part of copying from the web is not clicking copy. It is cleaning the result afterward. Copylot narrows the install path to one job: start with a long article, table, or code block, then make your first clean copy in 30 seconds and paste it straight into AI or docs.
 
-QUICK START (30 seconds)
-1) Open the Copylot Popup (pin it first if you want), and pick an interaction mode (click / double-click / hover).
-2) On the webpage, trigger copy on a block, table, or code snippet.
-3) Paste into your AI chat or document — done.
+## Top 3 Selling Points
 
-CORE FEATURES (based on current implementation)
-- Smart block copy: click/double-click to extract the main content and copy clean Markdown or plain text
-- Table to Markdown / CSV: convert web tables into structured Markdown (GFM) or CSV for spreadsheets
-- Code block cleanup (conservative): keep indentation/blank lines; trim only leading/trailing blank lines; remove line numbers only when the DOM structure is recognizable; conservatively drop leading/trailing whole-line Copy-label text (no in-line replacement); hover-to-copy supported for code blocks
-- Append Mode: hold Shift while copying to merge multiple clips with separators
-- Prompt templates workflow: manage prompts and copy “instruction + content” in one step; optionally auto-open your chosen chat service after copy
-- Optional source info: append page title and source URL if you want attribution
+- Long articles: remove navigation, ads, and surrounding noise, then paste clean Markdown / plain text.
+- Tables: convert to Markdown / CSV so structure stays readable after paste.
+- Code blocks: keep indentation and blank lines while stripping line-number or copy-button noise when possible.
 
-USE CASES
-For knowledge work: collect snippets across multiple pages with Append Mode, then paste into Notion/Obsidian/Docs.
-For developers: copy runnable code from technical articles with less noise (like Copy-label lines or some line numbers) while keeping indentation intact.
-For data work: copy web tables as CSV for Excel/Google Sheets, or as Markdown tables for docs.
+## Quick Start (30 Seconds)
 
-LEARN MORE / TUTORIALS
-https://github.com/ayqy/copy/blob/main/docs/tutorials/table-to-csv-markdown.md
-https://github.com/ayqy/copy/blob/main/docs/tutorials/prompt-workflow.md
-https://github.com/ayqy/copy/blob/main/docs/tutorials/code-block-cleaning.md
+1. Install Copylot from the Chrome Web Store and pin it.
+2. Open a long article, table, or code block, then click `Copy to AI` in the popup or trigger copy with your chosen single-click / double-click / hover flow.
+3. Paste the result into ChatGPT, Claude, Notion, or any document to confirm your first clean copy is complete.
 
-Copylot Pro (Public roadmap only)
-- Copylot Pro is not shipped or sold today; the public route only explains the advanced workflows we may validate next.
-- Reproducible in-extension path: open Options -> Pro, then use "View the Pro roadmap" or the sharing toolkit.
-- If someone needs the install path first, send the Chrome Web Store link; if they ask about trust or data handling, send the privacy page before the roadmap.
-- Pro scope & boundaries (stable public doc, auditable): https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md
-- Note: there is no payment or subscription promise on the store page.
+## Recommended Screenshot Order (Matches the Homepage)
 
-PRIVACY & PERMISSIONS
-- Local by default: extraction/cleanup/formatting runs on your device
-- No copied content collection/upload: we do not collect, store, or upload the web content you copy
-- Anonymous usage data toggle (OFF by default): when enabled, it only stores a local anonymous event log (event name, timestamp, a few enum-like fields). No content, no URLs, no network sending. Turning it off clears the local event log immediately
-- Minimal permissions: storage, clipboardWrite, contextMenus
+1. Popup hero: `Make Your First Clean Copy in 30 Seconds`
+2. Long article copy: clean Markdown after navigation and ad removal
+3. Table copy: Markdown / CSV side by side
+4. Code block copy: preserved indentation with reduced noise
+5. Paste result: the first clean copy inside AI or docs
 
-FEEDBACK & REVIEWS
-- Feedback and feature requests: https://github.com/ayqy/copy/issues/new
-- If Copylot helps your workflow, consider sharing it with teammates or leaving an honest review on the Chrome Web Store
+## Why the First Clean Copy Comes First
+
+- The first goal after install is not configuration. It is proving the output is usable without extra cleanup.
+- Long articles, tables, and code blocks cover the first-value moment well enough on their own.
+- Once the first clean copy works, Append Mode, prompt shortcuts, and repeat workflows become much easier to adopt.
+
+## Core Features
+
+- Smart block copy: prioritize the main content and output clean Markdown / plain text.
+- Table to Markdown / CSV: ready for docs, spreadsheets, and AI chats.
+- Code block cleanup: preserve runnable structure while reducing paste-time cleanup.
+- Append Mode: hold Shift to collect multiple pieces before one final paste.
+- Prompt quick slots: combine your instruction and copied content into a repeatable workflow.
+
+## Official Entry Points
+
+- Homepage: carries the main value proposition, install CTA, and screenshot narrative.
+- Chrome Web Store listing: handles install and the first clean copy entry path.
+- Privacy page: explains local processing, data boundaries, and permission reasons.
+- Options -> Pro opens the public roadmap path for advanced workflows, and the stable scope reference stays at `docs/monetization/pro-scope.md`.
+- If someone first needs the install path, send the Chrome Web Store listing; if they ask about trust, send the privacy page before the public roadmap.
+- Pro roadmap page: explains future advanced workflows only and does not change the free core path.
+- No payment / subscription promise on the store page.
+
+## Learn More / Tutorials
+
+- `docs/tutorials/table-to-csv-markdown.md`
+- `docs/tutorials/prompt-workflow.md`
+- `docs/tutorials/code-block-cleaning.md`
+
+## Privacy & Permissions
+
+- Local by default: extraction, cleanup, and formatting run on your device.
+- No copied content collection or upload: web content, tables, and code stay with you.
+- Anonymous usage data is OFF by default; when enabled, it still stores only local anonymous events and never stores copied content.
+- Minimal permissions: `storage`, `clipboardWrite`, `contextMenus`.

@@ -609,20 +609,68 @@
     "message": "Quick Start Guide",
     "description": "Entry in popup to reopen onboarding"
   },
+  "popupFirstCopyTitle": {
+    "message": "Make your first clean copy in 30 seconds",
+    "description": "Popup hero title"
+  },
+  "popupFirstCopySubtitle": {
+    "message": "Start with a long article, table, or code block, then paste the result into ChatGPT, Claude, Notion, or your docs.",
+    "description": "Popup hero subtitle"
+  },
+  "popupFirstCopySellingPointArticle": {
+    "message": "Long articles: remove navigation and ads, then paste clean Markdown.",
+    "description": "Popup hero selling point 1"
+  },
+  "popupFirstCopySellingPointTable": {
+    "message": "Tables: convert to Markdown / CSV so the structure stays readable after paste.",
+    "description": "Popup hero selling point 2"
+  },
+  "popupFirstCopySellingPointCode": {
+    "message": "Code blocks: keep indentation and strip line-number or copy-button noise when possible.",
+    "description": "Popup hero selling point 3"
+  },
+  "popupFirstCopyStepOpen": {
+    "message": "1. Open the target block on the current page",
+    "description": "Popup hero step 1"
+  },
+  "popupFirstCopyStepCopy": {
+    "message": "2. Click \"Copy to AI\" or trigger copy directly",
+    "description": "Popup hero step 2"
+  },
+  "popupFirstCopyStepPaste": {
+    "message": "3. Paste into ChatGPT, Claude, or a doc to verify the clean result",
+    "description": "Popup hero step 3"
+  },
+  "popupFirstCopyStatusPending": {
+    "message": "First clean copy pending",
+    "description": "Popup hero status before first success"
+  },
+  "popupFirstCopyStatusDone": {
+    "message": "First clean copy completed",
+    "description": "Popup hero status after first success"
+  },
+  "popupFirstCopyHintPending": {
+    "message": "Pick the easiest long article, table, or code block on this page and verify the result first.",
+    "description": "Popup hero hint before first success"
+  },
+  "popupFirstCopyHintDone": {
+    "message": "Your first clean copy is done. Bind your most-used prompts to quick slots to speed up repeat use.",
+    "description": "Popup hero hint after first success"
+  },
   "popupOnboardingTitle": {
-    "message": "Welcome to Copylot",
+    "message": "First clean copy guide",
     "description": "Onboarding modal title"
   },
   "popupOnboardingStep1Title": {
-    "message": "Step 1: Start copying",
+    "message": "Step 1: Finish your first clean copy",
     "description": "Onboarding step 1 title"
   },
   "popupOnboardingStep1Desc1": {
-    "message": "Choose your trigger: single-click / double-click / hover.",
+    "message": "Start with the easiest proof case: a long article, table, or code block. The default setup is enough.",
     "description": "Onboarding step 1 description"
   },
   "popupOnboardingStep1Desc2": {
-    "message": "You can start with the default setup and adjust things later whenever you want.",
+    "message": "Paste the result into ChatGPT, Claude, or a doc right away so you can confirm it is clean and usable.",
     "description": "Onboarding step 1 description"
   },
   "popupOnboardingApplyRecommended": {
@@ -630,23 +678,23 @@
     "description": "Button to apply recommended settings"
   },
   "popupOnboardingStep2Title": {
-    "message": "Step 2: Append Mode",
+    "message": "Step 2: Merge multiple pieces into one paste",
     "description": "Onboarding step 2 title"
   },
   "popupOnboardingStep2Desc1": {
-    "message": "Hold Shift to append copies and paste them as one merged block.",
+    "message": "Hold Shift to append copies so multi-paragraph articles, multiple tables, or reference snippets stay together.",
     "description": "Onboarding step 2 description"
   },
   "popupOnboardingStep2Desc2": {
-    "message": "You can enable it via the \"Append Mode\" switch in the popup.",
+    "message": "You can also enable the Append Mode switch in the popup and collect several pieces before pasting them to AI.",
     "description": "Onboarding step 2 description"
   },
   "popupOnboardingStep3Title": {
-    "message": "Step 3: Shortcuts",
+    "message": "Step 3: Turn repeat actions into shortcuts",
     "description": "Onboarding step 3 title"
   },
   "popupOnboardingStep3Desc1": {
-    "message": "Bind your most-used prompts to quick slots so buttons and shortcuts can trigger them without drilling into menus.",
+    "message": "Once the first clean copy works, bind your most-used prompts to quick slots so long articles, tables, and code stay fast to reuse.",
     "description": "Onboarding step 3 description"
   },
   "popupQuickActionsTitle": {

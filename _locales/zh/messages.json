@@ -609,20 +609,68 @@
     "message": "新手引导",
     "description": "Popup 中重新打开引导的入口"
   },
+  "popupFirstCopyTitle": {
+    "message": "30 秒完成第一次干净复制",
+    "description": "Popup 首屏主标题"
+  },
+  "popupFirstCopySubtitle": {
+    "message": "先复制长文、表格或代码块，再粘贴到 ChatGPT、Claude、Notion 或文档。",
+    "description": "Popup 首屏副标题"
+  },
+  "popupFirstCopySellingPointArticle": {
+    "message": "长文：去掉导航和广告，直接得到干净 Markdown。",
+    "description": "Popup 首屏卖点 1"
+  },
+  "popupFirstCopySellingPointTable": {
+    "message": "表格：一键转成 Markdown / CSV，粘贴后仍然整齐。",
+    "description": "Popup 首屏卖点 2"
+  },
+  "popupFirstCopySellingPointCode": {
+    "message": "代码块：保留缩进，尽量去掉行号和复制按钮噪声。",
+    "description": "Popup 首屏卖点 3"
+  },
+  "popupFirstCopyStepOpen": {
+    "message": "1. 打开当前网页里的目标区块",
+    "description": "Popup 首屏步骤 1"
+  },
+  "popupFirstCopyStepCopy": {
+    "message": "2. 点“复制给 AI”或直接触发复制",
+    "description": "Popup 首屏步骤 2"
+  },
+  "popupFirstCopyStepPaste": {
+    "message": "3. 粘贴到 ChatGPT、Claude 或文档里验证结果",
+    "description": "Popup 首屏步骤 3"
+  },
+  "popupFirstCopyStatusPending": {
+    "message": "第一次干净复制待完成",
+    "description": "Popup 首屏状态：首次成功前"
+  },
+  "popupFirstCopyStatusDone": {
+    "message": "第一次干净复制已完成",
+    "description": "Popup 首屏状态：首次成功后"
+  },
+  "popupFirstCopyHintPending": {
+    "message": "先试当前页最容易验证的长文、表格或代码块。",
+    "description": "Popup 首屏提示：首次成功前"
+  },
+  "popupFirstCopyHintDone": {
+    "message": "已完成第一次干净复制，下一步把常用 Prompt 绑到快捷位，加快后续复用。",
+    "description": "Popup 首屏提示：首次成功后"
+  },
   "popupOnboardingTitle": {
-    "message": "欢迎使用 Copylot",
+    "message": "第一次干净复制引导",
     "description": "引导弹窗标题"
   },
   "popupOnboardingStep1Title": {
-    "message": "第 1 步：开始复制",
+    "message": "第 1 步：先完成第一次干净复制",
     "description": "引导第 1 步标题"
   },
   "popupOnboardingStep1Desc1": {
-    "message": "选择你习惯的触发方式：单击 / 双击 / 悬停。",
+    "message": "先挑最容易验证的场景：长文、表格或代码块，默认设置就能开始。",
     "description": "引导第 1 步说明"
   },
   "popupOnboardingStep1Desc2": {
-    "message": "先用默认设置也可以，后续随时都能调整。",
+    "message": "复制后立刻粘贴到 ChatGPT、Claude 或文档里，确认结果是干净可用的。",
     "description": "引导第 1 步说明"
   },
   "popupOnboardingApplyRecommended": {
@@ -630,23 +678,23 @@
     "description": "一键应用推荐设置按钮"
   },
   "popupOnboardingStep2Title": {
-    "message": "第 2 步：追加模式",
+    "message": "第 2 步：把多段内容拼成一次提交",
     "description": "引导第 2 步标题"
   },
   "popupOnboardingStep2Desc1": {
-    "message": "按住 Shift 进行“追加复制”，可在粘贴时合并为一段。",
+    "message": "按住 Shift 进行“追加复制”，长文多段、多个表格或参考代码可以合并后再粘贴。",
     "description": "引导第 2 步说明"
   },
   "popupOnboardingStep2Desc2": {
-    "message": "你可以在 Popup 里打开“Append Mode”开关来启用。",
+    "message": "你也可以在 Popup 里打开“追加模式”开关，连续收集后再一次贴给 AI。",
     "description": "引导第 2 步说明"
   },
   "popupOnboardingStep3Title": {
-    "message": "第 3 步：快捷键",
+    "message": "第 3 步：把高频动作变成快捷路径",
     "description": "引导第 3 步标题"
   },
   "popupOnboardingStep3Desc1": {
-    "message": "为常用 Prompt 绑定快捷位后，你可以直接用按钮或快捷键触发，无需再层层展开菜单。",
+    "message": "完成第一次干净复制后，再把常用 Prompt 绑定到快捷位，后续长文、表格和代码块都能更快复用。",
     "description": "引导第 3 步说明"
   },
   "popupQuickActionsTitle": {
@@ -714,7 +762,7 @@
     "description": "快捷 Prompt 3 的默认快捷键提示"
   },
   "quickActionSelectionFirst": {
-    "message": "有选区时优先处理选区，否则处理整页",
+    "message": "有选区时优先处理选区，否则处理整页。",
     "description": "快捷动作说明文案"
   },
   "shortcutSettingsTitle": {

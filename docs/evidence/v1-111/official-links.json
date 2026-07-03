@@ -1,0 +1,51 @@
+{
+  "packVersion": "v1-111",
+  "narrative": "first_clean_copy_in_30_seconds",
+  "title": {
+    "zh": "30 秒完成第一次干净复制",
+    "en": "Make Your First Clean Copy in 30 Seconds"
+  },
+  "topSellingPoints": [
+    {
+      "key": "long_article",
+      "zh": "长文：去掉导航、广告和杂项说明，直接得到干净 Markdown / 纯文本。",
+      "en": "Long articles: remove navigation, ads, and surrounding noise, then paste clean Markdown / plain text."
+    },
+    {
+      "key": "table",
+      "zh": "表格：一键转成 Markdown / CSV，粘贴后结构仍然清楚。",
+      "en": "Tables: convert to Markdown / CSV so structure stays readable after paste."
+    },
+    {
+      "key": "code_block",
+      "zh": "代码块：保留缩进与空行，尽量去掉行号和复制按钮噪声。",
+      "en": "Code blocks: keep indentation and blank lines while stripping line-number or copy-button noise when possible."
+    }
+  ],
+  "samples": [
+    {
+      "campaign": "first_clean_copy",
+      "medium": "popup",
+      "homepageUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=popup&utm_campaign=first_clean_copy",
+      "chromeWebStoreUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=popup&utm_campaign=first_clean_copy",
+      "privacyPolicyUrl": "https://copy.useai.online/privacy?utm_source=copylot-ext&utm_medium=popup&utm_campaign=first_clean_copy",
+      "proRoadmapUrl": "https://copy.useai.online/pricing?utm_source=copylot-ext&utm_medium=popup&utm_campaign=first_clean_copy&ext_version=1.2.3&ext_id=ehfglnbhoefcdedpkcdnainiifpflbic&nav_lang=en-US&ui_lang=en"
+    },
+    {
+      "campaign": "first_clean_copy",
+      "medium": "options",
+      "homepageUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=options&utm_campaign=first_clean_copy",
+      "chromeWebStoreUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=options&utm_campaign=first_clean_copy",
+      "privacyPolicyUrl": "https://copy.useai.online/privacy?utm_source=copylot-ext&utm_medium=options&utm_campaign=first_clean_copy",
+      "proRoadmapUrl": "https://copy.useai.online/pricing?utm_source=copylot-ext&utm_medium=options&utm_campaign=first_clean_copy&ext_version=1.2.3&ext_id=ehfglnbhoefcdedpkcdnainiifpflbic&nav_lang=en-US&ui_lang=en"
+    },
+    {
+      "campaign": "first_clean_copy",
+      "medium": "distribution_toolkit",
+      "homepageUrl": "https://copy.useai.online/?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=first_clean_copy",
+      "chromeWebStoreUrl": "https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=first_clean_copy",
+      "privacyPolicyUrl": "https://copy.useai.online/privacy?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=first_clean_copy",
+      "proRoadmapUrl": "https://copy.useai.online/pricing?utm_source=copylot-ext&utm_medium=distribution_toolkit&utm_campaign=first_clean_copy&ext_version=1.2.3&ext_id=ehfglnbhoefcdedpkcdnainiifpflbic&nav_lang=en-US&ui_lang=en"
+    }
+  ]
+}

@@ -1,6 +1,12 @@
 // @ts-ignore: CSS import for build process
 import './popup.css';
-import { getActivePrompts, getSettings, saveSettings, type Settings, FORCE_UI_LANGUAGE } from '../shared/settings-manager';
+import {
+  getActivePrompts,
+  getSettings,
+  saveSettings,
+  type Settings,
+  FORCE_UI_LANGUAGE
+} from '../shared/settings-manager';
 import {
   getQuickCommandDefaultShortcut,
   QUICK_CONVERT_COMMAND,
@@ -24,13 +30,19 @@ import {
   markFirstPopupOpened,
   type GrowthFunnelSummary
 } from '../shared/growth-stats';
-import { recordTelemetryEvent, sanitizeTelemetryEvents, TELEMETRY_EVENTS_KEY } from '../shared/telemetry';
+import {
+  recordTelemetryEvent,
+  sanitizeTelemetryEvents,
+  TELEMETRY_EVENTS_KEY
+} from '../shared/telemetry';
 import { buildProIntentAttribution } from '../shared/pro-intent-attribution';
 
 interface PopupElements {
   versionDisplay: HTMLElement;
   devBadge: HTMLElement;
   popupContent: HTMLElement;
+  firstCopyStatus: HTMLElement;
+  firstCopyHint: HTMLElement;
   enableMagicCopySwitch: HTMLInputElement;
   enableHoverMagicCopySwitch: HTMLInputElement;
   enableClipboardAccumulatorSwitch: HTMLInputElement;
@@ -165,7 +177,10 @@ function createI18nGetMessage(): I18nGetMessage {
 }
 
 function getMessage(key: string, substitutions?: string | string[]): string {
-  return chrome.i18n.getMessage(key, substitutions as Parameters<typeof chrome.i18n.getMessage>[1]) || key;
+  return (
+    chrome.i18n.getMessage(key, substitutions as Parameters<typeof chrome.i18n.getMessage>[1]) ||
+    key
+  );
 }
 
 function getElements(): PopupElements {
@@ -173,9 +188,15 @@ function getElements(): PopupElements {
     versionDisplay: document.getElementById('version-display') as HTMLElement,
     devBadge: document.getElementById('dev-badge') as HTMLElement,
     popupContent: document.getElementById('popup-content') as HTMLElement,
+    firstCopyStatus: document.getElementById('first-copy-status') as HTMLElement,
+    firstCopyHint: document.getElementById('first-copy-hint') as HTMLElement,
     enableMagicCopySwitch: document.getElementById('enable-magic-copy-switch') as HTMLInputElement,
-    enableHoverMagicCopySwitch: document.getElementById('enable-hover-magic-copy-switch') as HTMLInputElement,
-    enableClipboardAccumulatorSwitch: document.getElementById('enable-clipboard-accumulator-switch') as HTMLInputElement,
+    enableHoverMagicCopySwitch: document.getElementById(
+      'enable-hover-magic-copy-switch'
+    ) as HTMLInputElement,
+    enableClipboardAccumulatorSwitch: document.getElementById(
+      'enable-clipboard-accumulator-switch'
+    ) as HTMLInputElement,
     interactionClick: document.getElementById('interaction-click') as HTMLInputElement,
     interactionDblClick: document.getElementById('interaction-dblclick') as HTMLInputElement,
     formatMarkdown: document.getElementById('format-markdown') as HTMLInputElement,
@@ -185,7 +206,9 @@ function getElements(): PopupElements {
     attachTitle: document.getElementById('attach-title') as HTMLInputElement,
     attachURL: document.getElementById('attach-url') as HTMLInputElement,
     convertButton: document.getElementById('convert-button') as HTMLButtonElement,
-    openShortcutSettingsButton: document.getElementById('open-shortcut-settings-button') as HTMLButtonElement,
+    openShortcutSettingsButton: document.getElementById(
+      'open-shortcut-settings-button'
+    ) as HTMLButtonElement,
     shortcutSettingsFeedback: document.getElementById('shortcut-settings-feedback') as HTMLElement,
     addPromptButton: document.getElementById('add-prompt-button') as HTMLButtonElement,
     toggleMoreSettingsButton: document.getElementById('toggle-more-settings') as HTMLButtonElement,
@@ -423,7 +446,10 @@ function renderQuickPromptButtons(settings: Settings) {
       quickAction.button.hidden = false;
       quickAction.button.dataset.promptId = prompt.id;
       quickAction.title.textContent = prompt.title;
-      quickAction.shortcut.textContent = getCommandShortcutLabel(commandName, getFallbackPromptShortcut(slot));
+      quickAction.shortcut.textContent = getCommandShortcutLabel(
+        commandName,
+        getFallbackPromptShortcut(slot)
+      );
     } else {
       quickAction.button.hidden = true;
       quickAction.button.disabled = false;
@@ -453,11 +479,41 @@ function updateUIFromSettings(settings: Settings) {
   renderQuickPromptButtons(settings);
 }
 
+function renderFirstCopySummary(summary: GrowthFunnelSummary) {
+  const isActivated = summary.isActivated;
+  elements.firstCopyStatus.textContent = isActivated
+    ? getMessage('popupFirstCopyStatusDone')
+    : getMessage('popupFirstCopyStatusPending');
+  elements.firstCopyStatus.dataset.state = isActivated ? 'done' : 'pending';
+  elements.firstCopyHint.textContent = isActivated
+    ? getMessage('popupFirstCopyHintDone')
+    : getMessage('popupFirstCopyHintPending');
+}
+
+async function loadFirstCopySummary() {
+  try {
+    const stats = await getGrowthStats();
+    renderFirstCopySummary(buildGrowthFunnelSummary(stats, Date.now()));
+  } catch (error) {
+    console.warn('Failed to load first clean copy summary:', error);
+    renderFirstCopySummary(
+      buildGrowthFunnelSummary(
+        {
+          installedAt: Date.now(),
+          successfulCopyCount: 0
+        },
+        Date.now()
+      )
+    );
+  }
+}
+
 async function loadSettingsAndCommands() {
   try {
     const [settings] = await Promise.all([getSettings(), loadCommandShortcuts()]);
     currentSettings = settings;
     updateUIFromSettings(currentSettings);
+    await loadFirstCopySummary();
   } catch (error) {
     console.error('Error loading popup settings:', error);
   }
@@ -605,7 +661,10 @@ function setupEventListeners() {
     event.preventDefault();
     void (async () => {
       await recordTelemetryEvent('wom_rate_opened', { source: 'popup' });
-      const reviewsUrl = buildChromeWebStoreReviewsUrl(chrome.runtime.id, buildWomUtmParams('popup'));
+      const reviewsUrl = buildChromeWebStoreReviewsUrl(
+        chrome.runtime.id,
+        buildWomUtmParams('popup')
+      );
       await reportE2EOpenedUrl(reviewsUrl);
       chrome.tabs.create({ url: reviewsUrl });
       window.close();
@@ -622,7 +681,8 @@ function setupEventListeners() {
       void recordTelemetryEvent('wom_share_copied', { source: 'popup' });
       elements.copyShareButton.textContent = chrome.i18n.getMessage('copied') || originalText;
       window.setTimeout(() => {
-        elements.copyShareButton.textContent = chrome.i18n.getMessage('copyShareText') || originalText;
+        elements.copyShareButton.textContent =
+          chrome.i18n.getMessage('copyShareText') || originalText;
       }, 1200);
     } catch (error) {
       console.error('Error copying share text:', error);
@@ -682,7 +742,8 @@ async function initialize() {
     });
 
     // @ts-ignore: injected at build time
-    const isDevBuild = process.env.NODE_ENV !== 'production' || process.env.BUILD_TARGET !== 'production';
+    const isDevBuild =
+      process.env.NODE_ENV !== 'production' || process.env.BUILD_TARGET !== 'production';
     if (isDevBuild) {
       elements.devBadge.hidden = false;
     }

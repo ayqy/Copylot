@@ -24,18 +24,39 @@ test('popup setting toggles persist interaction mode format table format extras 
     const popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
     await completePopupOnboardingIfVisible(popup);
     await expect(popup.locator('#more-settings-panel')).toBeHidden();
-    await expect(popup.locator('#toggle-more-settings-label')).toContainText(/展开更多设置|Expand more settings/);
-    await expect(popup.locator('#open-shortcut-settings-button')).toContainText(/去设置|Go to settings/);
+    await expect(popup.locator('#toggle-more-settings-label')).toContainText(
+      /展开更多设置|Expand more settings/
+    );
+    await expect(popup.locator('#open-shortcut-settings-button')).toContainText(
+      /去设置|Go to settings/
+    );
     await popup.locator('#toggle-more-settings').click();
     await expect(popup.locator('#more-settings-panel')).toBeVisible();
     await expect(popup.locator('#toggle-more-settings')).toHaveAttribute('aria-expanded', 'true');
-    await expect(popup.locator('#toggle-more-settings-label')).toContainText(/收起更多设置|Collapse more settings/);
+    await expect(popup.locator('#toggle-more-settings-label')).toContainText(
+      /收起更多设置|Collapse more settings/
+    );
 
-    await popup.locator('label[for="interaction-dblclick"], .radio-option:has(#interaction-dblclick)').first().click();
-    await popup.locator('label[for="format-plaintext"], .radio-option:has(#format-plaintext)').first().click();
-    await popup.locator('label[for="table-format-csv"], .radio-option:has(#table-format-csv)').first().click();
-    await popup.locator('label[for="attach-title"], .checkbox-option:has(#attach-title)').first().click();
-    await popup.locator('label[for="attach-url"], .checkbox-option:has(#attach-url)').first().click();
+    await popup
+      .locator('label[for="interaction-dblclick"], .radio-option:has(#interaction-dblclick)')
+      .first()
+      .click();
+    await popup
+      .locator('label[for="format-plaintext"], .radio-option:has(#format-plaintext)')
+      .first()
+      .click();
+    await popup
+      .locator('label[for="table-format-csv"], .radio-option:has(#table-format-csv)')
+      .first()
+      .click();
+    await popup
+      .locator('label[for="attach-title"], .checkbox-option:has(#attach-title)')
+      .first()
+      .click();
+    await popup
+      .locator('label[for="attach-url"], .checkbox-option:has(#attach-url)')
+      .first()
+      .click();
     await popup.locator('#enable-clipboard-accumulator-switch + .slider').click();
 
     await expect
@@ -88,6 +109,9 @@ test('popup onboarding next-only flow persists completion state and hides reopen
     const popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
 
     await expect(popup.locator('#popup-onboarding-modal')).toBeVisible();
+    await expect(popup.locator('#popup-onboarding-step-1')).toContainText(
+      /第一次干净复制|first clean copy/i
+    );
     await expect(popup.locator('#popup-onboarding-apply-recommended')).toHaveCount(0);
     await expect(popup.locator('#popup-onboarding-open-options')).toHaveCount(0);
     await expect(popup.locator('#popup-onboarding-finish')).toHaveCount(0);

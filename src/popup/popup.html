@@ -17,7 +17,16 @@
                   <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0, 0, 0, 0.15)" />
                 </filter>
               </defs>
-              <rect x="2" y="2" width="28" height="28" rx="8" ry="8" fill="#4f46e5" filter="url(#shadow)" />
+              <rect
+                x="2"
+                y="2"
+                width="28"
+                height="28"
+                rx="8"
+                ry="8"
+                fill="#4f46e5"
+                filter="url(#shadow)"
+              />
               <g transform="translate(16, 16)" fill="none" stroke="white" stroke-width="1.5">
                 <g transform="scale(0.8) translate(-12, -12)">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -35,12 +44,61 @@
           </div>
         </div>
 
+        <section class="first-copy-hero" aria-labelledby="first-copy-title">
+          <div id="first-copy-status" class="first-copy-status">第一次干净复制待完成</div>
+          <h1 id="first-copy-title" class="first-copy-title" data-i18n="popupFirstCopyTitle">
+            30 秒完成第一次干净复制
+          </h1>
+          <p class="first-copy-subtitle" data-i18n="popupFirstCopySubtitle">
+            先复制长文、表格或代码块，再粘贴到 ChatGPT、Claude、Notion 或文档。
+          </p>
+          <ul class="first-copy-selling-points" aria-label="First clean copy scenarios">
+            <li class="first-copy-selling-point" data-i18n="popupFirstCopySellingPointArticle">
+              长文：去掉导航和广告，直接得到干净 Markdown。
+            </li>
+            <li class="first-copy-selling-point" data-i18n="popupFirstCopySellingPointTable">
+              表格：一键转成 Markdown / CSV，粘贴后仍然整齐。
+            </li>
+            <li class="first-copy-selling-point" data-i18n="popupFirstCopySellingPointCode">
+              代码块：保留缩进，尽量去掉行号和复制按钮噪声。
+            </li>
+          </ul>
+          <ol class="first-copy-steps" aria-label="First clean copy steps">
+            <li
+              id="first-copy-step-open"
+              class="first-copy-step"
+              data-i18n="popupFirstCopyStepOpen"
+            >
+              1. 打开当前网页里的目标区块
+            </li>
+            <li
+              id="first-copy-step-copy"
+              class="first-copy-step"
+              data-i18n="popupFirstCopyStepCopy"
+            >
+              2. 点“复制给 AI”或直接触发复制
+            </li>
+            <li
+              id="first-copy-step-paste"
+              class="first-copy-step"
+              data-i18n="popupFirstCopyStepPaste"
+            >
+              3. 粘贴到 ChatGPT、Claude 或文档里验证结果
+            </li>
+          </ol>
+          <p id="first-copy-hint" class="first-copy-hint">
+            先试当前页最容易验证的长文、表格或代码块。
+          </p>
+        </section>
+
         <form id="settings-form">
           <div class="section always-open">
             <div class="switch-card">
               <div class="switch-copy">
                 <span class="switch-title" data-i18n="enableFeature">启用智能复制</span>
-                <small data-i18n="popupEnableFeatureHint">关闭后，悬浮按钮和常规复制入口都会暂停。</small>
+                <small data-i18n="popupEnableFeatureHint"
+                  >关闭后，悬浮按钮和常规复制入口都会暂停。</small
+                >
               </div>
               <label class="switch">
                 <input type="checkbox" id="enable-magic-copy-switch" />
@@ -49,12 +107,28 @@
             </div>
           </div>
 
-          <button type="button" id="toggle-more-settings" class="settings-toggle" aria-expanded="false">
+          <button
+            type="button"
+            id="toggle-more-settings"
+            class="settings-toggle"
+            aria-expanded="false"
+          >
             <span class="settings-toggle-line" aria-hidden="true"></span>
-            <span id="toggle-more-settings-label" class="settings-toggle-label" data-i18n="expandMoreSettings">展开更多设置</span>
+            <span
+              id="toggle-more-settings-label"
+              class="settings-toggle-label"
+              data-i18n="expandMoreSettings"
+              >展开更多设置</span
+            >
             <span class="settings-toggle-icon" aria-hidden="true">
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path
+                  d="M3 4.5L6 7.5L9 4.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
             </span>
             <span class="settings-toggle-line" aria-hidden="true"></span>
@@ -74,7 +148,9 @@
 
               <div class="switch-card compact">
                 <div class="switch-copy">
-                  <span class="switch-title" data-i18n="enableClipboardAccumulator">启用追加模式</span>
+                  <span class="switch-title" data-i18n="enableClipboardAccumulator"
+                    >启用追加模式</span
+                  >
                 </div>
                 <label class="switch">
                   <input type="checkbox" id="enable-clipboard-accumulator-switch" />
@@ -88,12 +164,22 @@
               <div class="inline-options">
                 <div class="radio-group">
                   <label class="radio-option">
-                    <input type="radio" name="interactionMode" value="click" id="interaction-click" />
+                    <input
+                      type="radio"
+                      name="interactionMode"
+                      value="click"
+                      id="interaction-click"
+                    />
                     <span class="radio-custom"></span>
                     <span data-i18n="singleClick">单击</span>
                   </label>
                   <label class="radio-option">
-                    <input type="radio" name="interactionMode" value="dblclick" id="interaction-dblclick" />
+                    <input
+                      type="radio"
+                      name="interactionMode"
+                      value="dblclick"
+                      id="interaction-dblclick"
+                    />
                     <span class="radio-custom"></span>
                     <span data-i18n="doubleClick">双击</span>
                   </label>
@@ -111,7 +197,12 @@
                     <span data-i18n="markdown">MD</span>
                   </label>
                   <label class="radio-option">
-                    <input type="radio" name="outputFormat" value="plaintext" id="format-plaintext" />
+                    <input
+                      type="radio"
+                      name="outputFormat"
+                      value="plaintext"
+                      id="format-plaintext"
+                    />
                     <span class="radio-custom"></span>
                     <span data-i18n="plaintext">纯文本</span>
                   </label>
@@ -124,12 +215,22 @@
               <div class="inline-options">
                 <div class="radio-group">
                   <label class="radio-option">
-                    <input type="radio" name="tableOutputFormat" value="markdown" id="table-format-markdown" />
+                    <input
+                      type="radio"
+                      name="tableOutputFormat"
+                      value="markdown"
+                      id="table-format-markdown"
+                    />
                     <span class="radio-custom"></span>
                     <span data-i18n="markdown">MD</span>
                   </label>
                   <label class="radio-option">
-                    <input type="radio" name="tableOutputFormat" value="csv" id="table-format-csv" />
+                    <input
+                      type="radio"
+                      name="tableOutputFormat"
+                      value="csv"
+                      id="table-format-csv"
+                    />
                     <span class="radio-custom"></span>
                     <span data-i18n="csv">CSV</span>
                   </label>
@@ -161,6 +262,9 @@
           <button type="button" id="convert-button" class="quick-action quick-action-primary">
             <span class="quick-action-copy">
               <strong data-i18n="convertButton">复制给AI</strong>
+              <span class="quick-action-caption" data-i18n="quickActionSelectionFirst"
+                >有选区时优先处理选区，否则处理整页</span
+              >
             </span>
             <span id="convert-shortcut" class="shortcut-hint">Alt+C</span>
           </button>
@@ -189,8 +293,19 @@
 
         <section class="shortcut-settings-card" aria-labelledby="shortcut-settings-title">
           <div class="shortcut-settings-head">
-            <h3 id="shortcut-settings-title" class="shortcut-settings-title" data-i18n="shortcutSettingsTitle">快捷键设置</h3>
-            <button type="button" id="open-shortcut-settings-button" class="button-secondary shortcut-settings-button compact-inline-button" data-i18n="openShortcutSettings">
+            <h3
+              id="shortcut-settings-title"
+              class="shortcut-settings-title"
+              data-i18n="shortcutSettingsTitle"
+            >
+              快捷键设置
+            </h3>
+            <button
+              type="button"
+              id="open-shortcut-settings-button"
+              class="button-secondary shortcut-settings-button compact-inline-button"
+              data-i18n="openShortcutSettings"
+            >
               去设置
             </button>
           </div>
@@ -199,16 +314,32 @@
         </section>
 
         <div class="management-actions">
-          <button id="add-prompt-button" class="button-secondary" type="button" data-i18n="managePrompts">
+          <button
+            id="add-prompt-button"
+            class="button-secondary"
+            type="button"
+            data-i18n="managePrompts"
+          >
             管理Prompts
           </button>
-          <button id="popup-onboarding-reopen" class="button-tertiary" type="button" data-i18n="popupOnboardingReopen" hidden>
+          <button
+            id="popup-onboarding-reopen"
+            class="button-tertiary"
+            type="button"
+            data-i18n="popupOnboardingReopen"
+            hidden
+          >
             新手引导
           </button>
         </div>
 
         <div class="popup-footer-actions">
-          <button type="button" id="upgrade-pro-entry" class="popup-footer-button" data-i18n="upgradePro">
+          <button
+            type="button"
+            id="upgrade-pro-entry"
+            class="popup-footer-button"
+            data-i18n="upgradePro"
+          >
             升级 Pro
           </button>
         </div>
@@ -216,8 +347,17 @@
         <div class="footer">
           <div class="footer-item">
             <a href="#" id="feedback-link" class="footer-link">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                ></path>
               </svg>
               <span data-i18n="feedback">反馈与建议</span>
             </a>
@@ -225,22 +365,44 @@
 
           <div class="footer-item footer-item-share">
             <a href="#" id="share-link" class="footer-link">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"></path>
                 <polyline points="16 6 12 2 8 6"></polyline>
                 <line x1="12" y1="2" x2="12" y2="15"></line>
               </svg>
               <span data-i18n="shareWithFriends">分享给朋友</span>
             </a>
-            <button type="button" id="copy-share-button" class="footer-button compact-inline-button" data-i18n="copyShareText">
+            <button
+              type="button"
+              id="copy-share-button"
+              class="footer-button compact-inline-button"
+              data-i18n="copyShareText"
+            >
               复制文案
             </button>
           </div>
 
           <div class="footer-item">
             <a href="#" id="rate-link" class="footer-link">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linejoin="round"
+              >
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                ></polygon>
               </svg>
               <span data-i18n="rateUs">去评价</span>
             </a>
@@ -256,33 +418,65 @@
 
             <div class="onboarding-body">
               <div id="popup-onboarding-step-1" class="onboarding-step" data-step="1">
-                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep1Title">第 1 步：开始复制</h3>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep1Desc1">选择你习惯的触发方式：单击 / 双击 / 悬停。</p>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep1Desc2">先用默认设置也可以，后续随时都能调整。</p>
+                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep1Title">
+                  第 1 步：先完成第一次干净复制
+                </h3>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep1Desc1">
+                  先挑最容易验证的场景：长文、表格或代码块，默认设置就能开始。
+                </p>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep1Desc2">
+                  复制后立刻粘贴到 ChatGPT、Claude 或文档里，确认结果是干净可用的。
+                </p>
               </div>
 
               <div id="popup-onboarding-step-2" class="onboarding-step" data-step="2" hidden>
-                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep2Title">第 2 步：追加模式</h3>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep2Desc1">按住 Shift 进行“追加复制”，可在粘贴时合并为一段。</p>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep2Desc2">你可以在 Popup 里打开“追加模式”开关来启用。</p>
+                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep2Title">
+                  第 2 步：把多段内容拼成一次提交
+                </h3>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep2Desc1">
+                  按住 Shift 进行“追加复制”，长文多段、多个表格或参考代码可以合并后再粘贴。
+                </p>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep2Desc2">
+                  你也可以在 Popup 里打开“追加模式”开关，连续收集后再一次贴给 AI。
+                </p>
               </div>
 
               <div id="popup-onboarding-step-3" class="onboarding-step" data-step="3" hidden>
-                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep3Title">第 3 步：快捷键</h3>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep3Desc1">为常用 Prompt 绑定快捷位后，你可以直接用按钮或快捷键触发，无需再层层展开菜单。</p>
+                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep3Title">
+                  第 3 步：把高频动作变成快捷路径
+                </h3>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep3Desc1">
+                  完成第一次干净复制后，再把常用 Prompt
+                  绑定到快捷位，后续长文、表格和代码块都能更快复用。
+                </p>
               </div>
             </div>
 
             <div class="onboarding-footer">
-              <button type="button" id="popup-onboarding-skip" class="onboarding-skip-button" data-i18n="popupOnboardingSkip">
+              <button
+                type="button"
+                id="popup-onboarding-skip"
+                class="onboarding-skip-button"
+                data-i18n="popupOnboardingSkip"
+              >
                 跳过
               </button>
 
               <div class="onboarding-nav">
-                <button type="button" id="popup-onboarding-prev" class="button secondary" data-i18n="popupOnboardingPrev">
+                <button
+                  type="button"
+                  id="popup-onboarding-prev"
+                  class="button secondary"
+                  data-i18n="popupOnboardingPrev"
+                >
                   上一步
                 </button>
-                <button type="button" id="popup-onboarding-next" class="button" data-i18n="popupOnboardingNext">
+                <button
+                  type="button"
+                  id="popup-onboarding-next"
+                  class="button"
+                  data-i18n="popupOnboardingNext"
+                >
                   下一步
                 </button>
               </div>

@@ -66,7 +66,10 @@ import {
   buildProIntentV1_100Summary,
   formatProIntentV1_100Csv
 } from '../src/shared/pro-intent-funnel-v1-100.ts';
-import { buildProIntentRunEvidencePack, formatProIntentRunEvidencePackAsJson } from '../src/shared/pro-intent-run-evidence-pack.ts';
+import {
+  buildProIntentRunEvidencePack,
+  formatProIntentRunEvidencePackAsJson
+} from '../src/shared/pro-intent-run-evidence-pack.ts';
 import { buildProWaitlistSurveyIntentDistribution } from '../src/shared/pro-waitlist-survey-intent-distribution.ts';
 import {
   PRO_INTENT_BY_CAMPAIGN_CSV_COLUMNS,
@@ -230,7 +233,10 @@ async function run() {
   assert.equal(storeOptionsParsed.searchParams.get('utm_medium'), 'options');
   assert.equal(storeOptionsParsed.searchParams.get('utm_campaign'), 'v1-44');
 
-  const storeUrlRatingPrompt = buildChromeWebStoreDetailUrl(extensionId, buildWomUtmParams('rating_prompt'));
+  const storeUrlRatingPrompt = buildChromeWebStoreDetailUrl(
+    extensionId,
+    buildWomUtmParams('rating_prompt')
+  );
   const storeRatingPromptParsed = new URL(storeUrlRatingPrompt);
   assert.equal(storeRatingPromptParsed.hostname, 'chromewebstore.google.com');
   assert.equal(storeRatingPromptParsed.searchParams.get('utm_medium'), 'rating_prompt');
@@ -301,7 +307,10 @@ async function run() {
     firstPopupOpenedAt: 1_700_000_100_000,
     firstSuccessfulCopyAt: 1_700_000_101_000
   };
-  const growthFunnelSummaryForFeedback = buildGrowthFunnelSummary(growthStatsForFeedback, 1_700_000_200_000);
+  const growthFunnelSummaryForFeedback = buildGrowthFunnelSummary(
+    growthStatsForFeedback,
+    1_700_000_200_000
+  );
 
   const issueUrl = buildFeedbackIssueUrl({
     env: {
@@ -372,13 +381,22 @@ async function run() {
   };
 
   // Prompt users: eligible earlier (but still gated by min install age + min successful copies).
-  const eligiblePromptUserStats: GrowthStats = { ...eligibleStatsBase, firstPromptUsedAt: now - 1000 };
+  const eligiblePromptUserStats: GrowthStats = {
+    ...eligibleStatsBase,
+    firstPromptUsedAt: now - 1000
+  };
   assert.equal(shouldShowRatingPrompt(eligiblePromptUserStats, now), true);
 
   // Non-prompt users: require heavier copy usage to avoid "just installed -> annoying" prompt.
   assert.equal(shouldShowRatingPrompt(eligibleStatsBase, now), false);
-  assert.equal(shouldShowRatingPrompt({ ...eligibleStatsBase, successfulCopyCount: 19 }, now), false);
-  assert.equal(shouldShowRatingPrompt({ ...eligibleStatsBase, successfulCopyCount: 20 }, now), true);
+  assert.equal(
+    shouldShowRatingPrompt({ ...eligibleStatsBase, successfulCopyCount: 19 }, now),
+    false
+  );
+  assert.equal(
+    shouldShowRatingPrompt({ ...eligibleStatsBase, successfulCopyCount: 20 }, now),
+    true
+  );
 
   assert.equal(
     shouldShowRatingPrompt(
@@ -389,7 +407,10 @@ async function run() {
   );
   assert.equal(
     shouldShowRatingPrompt(
-      { ...eligiblePromptUserStats, successfulCopyCount: RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT - 1 },
+      {
+        ...eligiblePromptUserStats,
+        successfulCopyCount: RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT - 1
+      },
       now
     ),
     false
@@ -412,11 +433,20 @@ async function run() {
     successfulCopyCount: PRO_PROMPT_MIN_SUCCESSFUL_COPY_COUNT
   };
   assert.equal(shouldShowProPrompt(eligibleProNonPromptBase, now), false);
-  assert.equal(shouldShowProPrompt({ ...eligibleProNonPromptBase, successfulCopyCount: 39 }, now), false);
-  assert.equal(shouldShowProPrompt({ ...eligibleProNonPromptBase, successfulCopyCount: 40 }, now), true);
+  assert.equal(
+    shouldShowProPrompt({ ...eligibleProNonPromptBase, successfulCopyCount: 39 }, now),
+    false
+  );
+  assert.equal(
+    shouldShowProPrompt({ ...eligibleProNonPromptBase, successfulCopyCount: 40 }, now),
+    true
+  );
 
   assert.equal(
-    shouldShowProPrompt({ ...eligibleProBase, installedAt: now - PRO_PROMPT_MIN_INSTALL_AGE_MS + 1 }, now),
+    shouldShowProPrompt(
+      { ...eligibleProBase, installedAt: now - PRO_PROMPT_MIN_INSTALL_AGE_MS + 1 },
+      now
+    ),
     false
   );
   assert.equal(
@@ -440,7 +470,10 @@ async function run() {
     proPromptSnoozedUntil: now + PRO_PROMPT_SNOOZE_MS
   };
   assert.equal(shouldShowProPrompt(snoozedProStats, now), false);
-  assert.equal(shouldShowProPrompt({ ...snoozedProStats, proPromptSnoozedUntil: now - 1 }, now), true);
+  assert.equal(
+    shouldShowProPrompt({ ...snoozedProStats, proPromptSnoozedUntil: now - 1 }, now),
+    true
+  );
 
   assert.equal(
     shouldShowProPrompt(
@@ -473,7 +506,11 @@ async function run() {
   assert.equal(afterSecondCopy.firstSuccessfulCopyAt, t1, 'firstSuccessfulCopyAt: only write once');
   assert.equal(afterSecondCopy.lastSuccessfulCopyAt, t2, 'lastSuccessfulCopyAt: update every time');
   assert.equal(afterSecondCopy.firstPromptUsedAt, undefined);
-  assert.equal(afterSecondCopy.reusedWithin7DaysAt, t2, 'reusedWithin7DaysAt: write on second copy within 7d');
+  assert.equal(
+    afterSecondCopy.reusedWithin7DaysAt,
+    t2,
+    'reusedWithin7DaysAt: write on second copy within 7d'
+  );
 
   const afterThirdCopy = applySuccessfulCopyToGrowthStats(afterSecondCopy, { now: t3 });
   assert.equal(afterThirdCopy.successfulCopyCount, 3);
@@ -483,16 +520,27 @@ async function run() {
 
   const tPrompt = now + 4000;
   const tPrompt2 = now + 5000;
-  const afterPromptCopy = applySuccessfulCopyToGrowthStats(baseGrowthStats, { now: tPrompt, isPromptUsed: true });
+  const afterPromptCopy = applySuccessfulCopyToGrowthStats(baseGrowthStats, {
+    now: tPrompt,
+    isPromptUsed: true
+  });
   assert.equal(afterPromptCopy.successfulCopyCount, 1);
-  assert.equal(afterPromptCopy.firstPromptUsedAt, tPrompt, 'firstPromptUsedAt: write when prompt used and copy success');
+  assert.equal(
+    afterPromptCopy.firstPromptUsedAt,
+    tPrompt,
+    'firstPromptUsedAt: write when prompt used and copy success'
+  );
 
   const afterPromptCopyAgain = applySuccessfulCopyToGrowthStats(afterPromptCopy, {
     now: tPrompt2,
     isPromptUsed: true
   });
   assert.equal(afterPromptCopyAgain.successfulCopyCount, 2);
-  assert.equal(afterPromptCopyAgain.firstPromptUsedAt, tPrompt, 'firstPromptUsedAt: only write once');
+  assert.equal(
+    afterPromptCopyAgain.firstPromptUsedAt,
+    tPrompt,
+    'firstPromptUsedAt: only write once'
+  );
 
   const eightDaysMs = 8 * 24 * 60 * 60 * 1000;
   const tFirst = now + 10_000;
@@ -501,7 +549,11 @@ async function run() {
     { now: tFirst + eightDaysMs }
   );
   assert.equal(afterLateSecondCopy.successfulCopyCount, 2);
-  assert.equal(afterLateSecondCopy.reusedWithin7DaysAt, undefined, 'reusedWithin7DaysAt: should not write when >7d');
+  assert.equal(
+    afterLateSecondCopy.reusedWithin7DaysAt,
+    undefined,
+    'reusedWithin7DaysAt: should not write when >7d'
+  );
 
   const normalized = normalizeGrowthStatsValue(
     {
@@ -522,7 +574,10 @@ async function run() {
   assert.equal(normalized.reusedWithin7DaysAt, undefined);
 
   // growth-stats.ts (buildGrowthFunnelSummary)
-  const summaryMissing = buildGrowthFunnelSummary({ installedAt: now, successfulCopyCount: 0 }, now);
+  const summaryMissing = buildGrowthFunnelSummary(
+    { installedAt: now, successfulCopyCount: 0 },
+    now
+  );
   assert.equal(summaryMissing.timeFromFirstPopupToFirstCopyMs, undefined);
   assert.equal(summaryMissing.activatedWithin3MinutesFromFirstPopup, undefined);
   assert.equal(summaryMissing.isPopupOpened, false);
@@ -603,7 +658,10 @@ async function run() {
   assert.equal(officialSiteParsed.searchParams.get('utm_medium'), 'popup');
   assert.equal(officialSiteParsed.searchParams.get('utm_campaign'), null);
 
-  const officialSiteUrlWithCampaign = buildOfficialSiteUrl({ medium: 'options', campaign: 'twitter' });
+  const officialSiteUrlWithCampaign = buildOfficialSiteUrl({
+    medium: 'options',
+    campaign: 'twitter'
+  });
   const officialSiteCampaignParsed = new URL(officialSiteUrlWithCampaign);
   assert.equal(officialSiteCampaignParsed.searchParams.get('utm_campaign'), 'twitter');
 
@@ -648,7 +706,10 @@ async function run() {
   assert.ok(!proWaitlistUrl.includes('secret-title'));
   assert.ok(!proWaitlistUrl.includes('secret-copy'));
 
-  const chromeWebStoreUrl = buildChromeWebStoreUrl({ medium: 'distribution_toolkit', campaign: 'twitter' });
+  const chromeWebStoreUrl = buildChromeWebStoreUrl({
+    medium: 'distribution_toolkit',
+    campaign: 'twitter'
+  });
   const chromeWebStoreParsed = new URL(chromeWebStoreUrl);
   assert.equal(chromeWebStoreParsed.hostname, 'chromewebstore.google.com');
   assert.ok(chromeWebStoreParsed.pathname.endsWith(`/${publishedExtensionId}`));
@@ -664,8 +725,14 @@ async function run() {
 
   // pro-waitlist-distribution.ts (pure functions)
   assert.deepEqual(computeProWaitlistDistributionState(''), { enabled: false, campaign: null });
-  assert.deepEqual(computeProWaitlistDistributionState('http://x.com'), { enabled: false, campaign: null });
-  assert.deepEqual(computeProWaitlistDistributionState('twitter'), { enabled: true, campaign: 'twitter' });
+  assert.deepEqual(computeProWaitlistDistributionState('http://x.com'), {
+    enabled: false,
+    campaign: null
+  });
+  assert.deepEqual(computeProWaitlistDistributionState('twitter'), {
+    enabled: true,
+    campaign: 'twitter'
+  });
 
   const recruitCopyText = buildProWaitlistRecruitCopyText({
     getMessage,
@@ -748,7 +815,12 @@ async function run() {
     sanitizeTelemetryEvent({
       name: 'pro_entry_opened',
       ts: now,
-      props: { source: 'options', medium: 'options', content: 'options_waitlist_cta', campaign: 'http://x.com' }
+      props: {
+        source: 'options',
+        medium: 'options',
+        content: 'options_waitlist_cta',
+        campaign: 'http://x.com'
+      }
     }),
     {
       name: 'pro_entry_opened',
@@ -760,7 +832,12 @@ async function run() {
     sanitizeTelemetryEvent({
       name: 'pro_entry_opened',
       ts: now,
-      props: { source: 'unknown', medium: 'popup', content: 'popup_upgrade_cta', campaign: 'twitter' }
+      props: {
+        source: 'unknown',
+        medium: 'popup',
+        content: 'popup_upgrade_cta',
+        campaign: 'twitter'
+      }
     }),
     {
       name: 'pro_entry_opened',
@@ -1109,7 +1186,9 @@ async function run() {
 
   const proSurveySourceOnce1 = consumeProWaitlistSurveySourceOnce('popup');
   assert.equal(proSurveySourceOnce1.source, 'popup');
-  const proSurveySourceOnce2 = consumeProWaitlistSurveySourceOnce(proSurveySourceOnce1.nextOnceSource);
+  const proSurveySourceOnce2 = consumeProWaitlistSurveySourceOnce(
+    proSurveySourceOnce1.nextOnceSource
+  );
   assert.equal(proSurveySourceOnce2.source, 'options');
 
   assert.deepEqual(
@@ -1130,7 +1209,11 @@ async function run() {
       ts: now,
       props: { source: 'options', campaign: 'http://x.com', action: 'waitlist_url' }
     }),
-    { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'options', action: 'waitlist_url' } }
+    {
+      name: 'pro_distribution_asset_copied',
+      ts: now,
+      props: { source: 'options', action: 'waitlist_url' }
+    }
   );
   assert.deepEqual(
     sanitizeTelemetryEvent({
@@ -1138,7 +1221,11 @@ async function run() {
       ts: now,
       props: { source: 'options', campaign: 'twitter', action: 'invalid' }
     }),
-    { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'options', campaign: 'twitter' } }
+    {
+      name: 'pro_distribution_asset_copied',
+      ts: now,
+      props: { source: 'options', campaign: 'twitter' }
+    }
   );
 
   assert.deepEqual(sanitizeTelemetryEvents({ not: 'an array' }), []);
@@ -1259,7 +1346,8 @@ async function run() {
       title: 'secret-title',
       clipboardText: 'copied text'
     },
-    distributionFile: 'docs/evidence/v1-81/copylot-pro-waitlist-survey-intent-distribution-7d-2026-03-23.json',
+    distributionFile:
+      'docs/evidence/v1-81/copylot-pro-waitlist-survey-intent-distribution-7d-2026-03-23.json',
     distributionSha256: 'sha256-test'
   });
   assert.equal(decisionSummaryA.thresholds.version, DEFAULT_PRO_INTENT_DECISION_THRESHOLDS.version);
@@ -1456,11 +1544,23 @@ async function run() {
     settings: { ...settings, isAnonymousUsageDataEnabled: true },
     telemetryEvents: [
       { name: 'pro_prompt_shown', ts: now - 1, props: { source: 'popup', extra: 'x' } },
-      { name: 'pro_prompt_action', ts: now, props: { source: 'popup', action: 'join', foo: 'bar' } },
+      {
+        name: 'pro_prompt_action',
+        ts: now,
+        props: { source: 'popup', action: 'join', foo: 'bar' }
+      },
       { name: 'pro_entry_opened', ts: now, props: { source: 'popup', url: 'https://example.com' } },
       { name: 'pro_waitlist_opened', ts: now + 1, props: { source: 'options', title: 'x' } },
-      { name: 'pro_waitlist_survey_copied', ts: now + 2, props: { source: 'options', useCase: 'x' } },
-      { name: 'pro_waitlist_copied', ts: now + 3, props: { source: 'options', campaign: 'twitter', extra: 'x' } },
+      {
+        name: 'pro_waitlist_survey_copied',
+        ts: now + 2,
+        props: { source: 'options', useCase: 'x' }
+      },
+      {
+        name: 'pro_waitlist_copied',
+        ts: now + 3,
+        props: { source: 'options', campaign: 'twitter', extra: 'x' }
+      },
       { name: 'popup_opened', ts: now + 2 },
       { name: 'unknown', ts: now + 4 }
     ]
@@ -1550,11 +1650,27 @@ async function run() {
   const proWeeklyDigestCampaign = buildProIntentWeeklyDigestSummary({
     enabled: true,
     telemetryEvents: [
-      { name: 'pro_waitlist_copied', ts: now - 10, props: { source: 'options', campaign: 'twitter' } },
+      {
+        name: 'pro_waitlist_copied',
+        ts: now - 10,
+        props: { source: 'options', campaign: 'twitter' }
+      },
       { name: 'pro_waitlist_copied', ts: now - 9, props: { source: 'options' } },
-      { name: 'pro_waitlist_survey_copied', ts: now - 8, props: { source: 'options', campaign: 'twitter' } },
-      { name: 'pro_waitlist_survey_copied', ts: now - 7, props: { source: 'options', campaign: 'ph' } },
-      { name: 'pro_waitlist_opened', ts: now - 6, props: { source: 'options', campaign: 'twitter' } }
+      {
+        name: 'pro_waitlist_survey_copied',
+        ts: now - 8,
+        props: { source: 'options', campaign: 'twitter' }
+      },
+      {
+        name: 'pro_waitlist_survey_copied',
+        ts: now - 7,
+        props: { source: 'options', campaign: 'ph' }
+      },
+      {
+        name: 'pro_waitlist_opened',
+        ts: now - 6,
+        props: { source: 'options', campaign: 'twitter' }
+      }
     ],
     now
   });
@@ -1565,14 +1681,21 @@ async function run() {
   });
 
   const digestGetMessage = (key: string, substitutions?: string | string[]) => {
-    const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
-    if (key === 'proIntentWeeklyDigestMdTitle') return `Pro 意向证据摘要（过去 ${subs[0] || ''} 天）`;
-    if (key === 'proIntentWeeklyDigestMdTelemetryOffNotice') return '匿名使用数据关闭（无可用事件）';
+    const subs = Array.isArray(substitutions)
+      ? substitutions
+      : substitutions
+        ? [substitutions]
+        : [];
+    if (key === 'proIntentWeeklyDigestMdTitle')
+      return `Pro 意向证据摘要（过去 ${subs[0] || ''} 天）`;
+    if (key === 'proIntentWeeklyDigestMdTelemetryOffNotice')
+      return '匿名使用数据关闭（无可用事件）';
     if (key === 'proIntentWeeklyDigestMdSectionWindow') return '时间窗（本地时间）';
     if (key === 'proIntentWeeklyDigestMdSectionCountsOverall') return '关键事件计数（overall）';
     if (key === 'proIntentWeeklyDigestMdSectionCountsBySource') return '关键事件计数（bySource）';
     if (key === 'proIntentWeeklyDigestMdSectionRatesOverall') return '关键转化率（overall）';
-    if (key === 'proIntentWeeklyDigestMdSectionCampaignBreakdown') return '按 campaign 拆分（留资动作）';
+    if (key === 'proIntentWeeklyDigestMdSectionCampaignBreakdown')
+      return '按 campaign 拆分（留资动作）';
     if (key === 'proIntentWeeklyDigestMdCampaignNone') return '(none)';
     if (key === 'proIntentWeeklyDigestMdSectionEnv') return '环境信息';
     if (key === 'proIntentWeeklyDigestMdSectionPrivacy') return '隐私声明';
@@ -1629,7 +1752,9 @@ async function run() {
   assert.equal(proIntentCsv.rows.length, 4);
   assert.equal(proIntentCsv.csv.split('\n')[0], PRO_INTENT_EVENTS_CSV_COLUMNS.join(','));
   assert.equal(proIntentCsv.csv.trim().split('\n').length, 1 + proIntentCsv.rows.length);
-  assert.ok(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(proIntentCsv.rows[0]?.eventLocalTime || ''));
+  assert.ok(
+    /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(proIntentCsv.rows[0]?.eventLocalTime || '')
+  );
 
   const proIntentCsvCounts = proIntentCsv.rows.reduce(
     (acc, row) => {
@@ -1703,7 +1828,9 @@ async function run() {
   // pro-intent-run-evidence-pack.ts (one-file audit pack; OFF must not include details/CSV)
   const proIntentRunPackOff = buildProIntentRunEvidencePack({
     enabled: false,
-    telemetryEvents: [{ name: 'pro_waitlist_survey_copied', ts: now, props: { source: 'popup', url: 'https://x' } }],
+    telemetryEvents: [
+      { name: 'pro_waitlist_survey_copied', ts: now, props: { source: 'popup', url: 'https://x' } }
+    ],
     now,
     extensionVersion: '1.1.28',
     lookbackDays: 7,
@@ -1724,7 +1851,10 @@ async function run() {
   assert.equal(proIntentRunPackOff.env.isAnonymousUsageDataEnabled, false);
   assert.equal(proIntentRunPackOff.proFunnelSummary.enabled, false);
   assert.equal(proIntentRunPackOff.proWaitlistSurveyIntentDistribution.enabled, false);
-  assert.equal(proIntentRunPackOff.proWaitlistSurveyIntentDistribution.disabledReason, 'anonymous_usage_data_disabled');
+  assert.equal(
+    proIntentRunPackOff.proWaitlistSurveyIntentDistribution.disabledReason,
+    'anonymous_usage_data_disabled'
+  );
   assert.equal(proIntentRunPackOff.proIntentEvents7dCsv, '');
   assert.ok(proIntentRunPackOff.proIntentWeeklyDigestMarkdown.includes('匿名使用数据关闭'));
 
@@ -1735,10 +1865,26 @@ async function run() {
   const proIntentRunPackOn = buildProIntentRunEvidencePack({
     enabled: true,
     telemetryEvents: [
-      { name: 'pro_prompt_shown', ts: now - 1000, props: { source: 'popup', url: 'https://evil.example.com' } },
-      { name: 'pro_entry_opened', ts: now - 900, props: { source: 'popup', title: 'secret-title' } },
-      { name: 'pro_waitlist_opened', ts: now - 800, props: { source: 'popup', copiedText: 'secret' } },
-      { name: 'pro_waitlist_copied', ts: now - 700, props: { source: 'popup', campaign: 'twitter' } },
+      {
+        name: 'pro_prompt_shown',
+        ts: now - 1000,
+        props: { source: 'popup', url: 'https://evil.example.com' }
+      },
+      {
+        name: 'pro_entry_opened',
+        ts: now - 900,
+        props: { source: 'popup', title: 'secret-title' }
+      },
+      {
+        name: 'pro_waitlist_opened',
+        ts: now - 800,
+        props: { source: 'popup', copiedText: 'secret' }
+      },
+      {
+        name: 'pro_waitlist_copied',
+        ts: now - 700,
+        props: { source: 'popup', campaign: 'twitter' }
+      },
       {
         name: 'pro_waitlist_survey_copied',
         ts: now - 600,
@@ -1765,10 +1911,17 @@ async function run() {
   assert.equal(proIntentRunPackOn.proFunnelSummary.enabled, true);
   assert.equal(proIntentRunPackOn.proWaitlistSurveyIntentDistribution.enabled, true);
   assert.equal(proIntentRunPackOn.proWaitlistSurveyIntentDistribution.survey_intent, 1);
-  assert.ok(proIntentRunPackOn.proIntentEvents7dCsv.startsWith(PRO_INTENT_EVENTS_CSV_COLUMNS.join(',')));
-  assert.ok(proIntentRunPackOn.proIntentWeeklyDigestMarkdown.includes('pro_waitlist_survey_copied'));
+  assert.ok(
+    proIntentRunPackOn.proIntentEvents7dCsv.startsWith(PRO_INTENT_EVENTS_CSV_COLUMNS.join(','))
+  );
+  assert.ok(
+    proIntentRunPackOn.proIntentWeeklyDigestMarkdown.includes('pro_waitlist_survey_copied')
+  );
   assert.equal(proIntentRunPackOn.proFunnelSummary.overall.rates.form_started_per_entry_opened, 0);
-  assert.equal(proIntentRunPackOn.proFunnelSummary.overall.rates.form_submitted_per_entry_opened, 0);
+  assert.equal(
+    proIntentRunPackOn.proFunnelSummary.overall.rates.form_submitted_per_entry_opened,
+    0
+  );
 
   const proIntentRunPackOnJson = formatProIntentRunEvidencePackAsJson(proIntentRunPackOn);
   assert.ok(!proIntentRunPackOnJson.includes('evil.example.com'));
@@ -1777,7 +1930,13 @@ async function run() {
 
   const v1_100SummaryDisabled = buildProIntentV1_100Summary({
     enabled: false,
-    telemetryEvents: [{ name: 'pro_entry_opened', ts: now, props: { source: 'popup', medium: 'popup', content: 'popup_upgrade_cta' } }],
+    telemetryEvents: [
+      {
+        name: 'pro_entry_opened',
+        ts: now,
+        props: { source: 'popup', medium: 'popup', content: 'popup_upgrade_cta' }
+      }
+    ],
     now,
     lookbackDays: 30
   });
@@ -1806,12 +1965,22 @@ async function run() {
       {
         name: 'pro_entry_opened',
         ts: now - 700,
-        props: { source: 'options', medium: 'options', content: 'options_waitlist_cta', campaign: 'launch' }
+        props: {
+          source: 'options',
+          medium: 'options',
+          content: 'options_waitlist_cta',
+          campaign: 'launch'
+        }
       },
       {
         name: 'pro_intent_form_start',
         ts: now - 600,
-        props: { source: 'options', medium: 'options', content: 'options_waitlist_cta', campaign: 'launch' }
+        props: {
+          source: 'options',
+          medium: 'options',
+          content: 'options_waitlist_cta',
+          campaign: 'launch'
+        }
       },
       {
         name: 'pro_entry_opened',
@@ -1825,7 +1994,7 @@ async function run() {
       },
       {
         name: 'pro_intent_form_submit',
-        ts: now - (31 * 24 * 60 * 60 * 1000),
+        ts: now - 31 * 24 * 60 * 60 * 1000,
         props: { source: 'popup', medium: 'popup', content: 'popup_survey_cta', campaign: 'launch' }
       }
     ],
@@ -1834,39 +2003,48 @@ async function run() {
   });
   assert.equal(v1_100Summary.enabled, true);
   assert.equal(v1_100Summary.rows.length, 3);
-  assert.deepEqual(v1_100Summary.rows.find((row) => row.content === 'popup_survey_cta'), {
-    source: 'popup',
-    medium: 'popup',
-    content: 'popup_survey_cta',
-    campaign: 'launch',
-    upgradeEntryClicks: 1,
-    formStarts: 1,
-    formSubmits: 1,
-    formStartRate: 1,
-    intentSubmitRate: 1
-  });
-  assert.deepEqual(v1_100Summary.rows.find((row) => row.content === 'options_survey_copy_open'), {
-    source: 'options',
-    medium: 'options',
-    content: 'options_survey_copy_open',
-    campaign: 'N/A',
-    upgradeEntryClicks: 1,
-    formStarts: 0,
-    formSubmits: 1,
-    formStartRate: 0,
-    intentSubmitRate: 1
-  });
-  assert.deepEqual(v1_100Summary.rows.find((row) => row.content === 'options_waitlist_cta'), {
-    source: 'options',
-    medium: 'options',
-    content: 'options_waitlist_cta',
-    campaign: 'launch',
-    upgradeEntryClicks: 1,
-    formStarts: 1,
-    formSubmits: 0,
-    formStartRate: 1,
-    intentSubmitRate: 0
-  });
+  assert.deepEqual(
+    v1_100Summary.rows.find((row) => row.content === 'popup_survey_cta'),
+    {
+      source: 'popup',
+      medium: 'popup',
+      content: 'popup_survey_cta',
+      campaign: 'launch',
+      upgradeEntryClicks: 1,
+      formStarts: 1,
+      formSubmits: 1,
+      formStartRate: 1,
+      intentSubmitRate: 1
+    }
+  );
+  assert.deepEqual(
+    v1_100Summary.rows.find((row) => row.content === 'options_survey_copy_open'),
+    {
+      source: 'options',
+      medium: 'options',
+      content: 'options_survey_copy_open',
+      campaign: 'N/A',
+      upgradeEntryClicks: 1,
+      formStarts: 0,
+      formSubmits: 1,
+      formStartRate: 0,
+      intentSubmitRate: 1
+    }
+  );
+  assert.deepEqual(
+    v1_100Summary.rows.find((row) => row.content === 'options_waitlist_cta'),
+    {
+      source: 'options',
+      medium: 'options',
+      content: 'options_waitlist_cta',
+      campaign: 'launch',
+      upgradeEntryClicks: 1,
+      formStarts: 1,
+      formSubmits: 0,
+      formStartRate: 1,
+      intentSubmitRate: 0
+    }
+  );
   assert.deepEqual(v1_100Summary.totals, {
     upgradeEntryClicks: 3,
     formStarts: 2,
@@ -1927,7 +2105,9 @@ async function run() {
 
   const proIntentByCampaignDisabled = buildProIntentByCampaignCsv({
     enabled: false,
-    telemetryEvents: [{ name: 'pro_entry_opened', ts: now, props: { source: 'popup', campaign: 'twitter' } }],
+    telemetryEvents: [
+      { name: 'pro_entry_opened', ts: now, props: { source: 'popup', campaign: 'twitter' } }
+    ],
     now,
     extensionVersion: '1.1.23',
     emptyCampaignBucketLabel: '空 campaign',
@@ -1937,18 +2117,41 @@ async function run() {
   assert.equal(proIntentByCampaignDisabled.disabledReason, 'anonymous_usage_data_disabled');
   assert.equal(proIntentByCampaignDisabled.rows.length, 0);
   assert.ok(!proIntentByCampaignDisabled.csv.startsWith('\uFEFF'));
-  assert.equal(proIntentByCampaignDisabled.csv.trimEnd(), PRO_INTENT_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+  assert.equal(
+    proIntentByCampaignDisabled.csv.trimEnd(),
+    PRO_INTENT_BY_CAMPAIGN_CSV_COLUMNS.join(',')
+  );
 
   const proIntentByCampaign = buildProIntentByCampaignCsv({
     enabled: true,
     telemetryEvents: [
-      { name: 'pro_entry_opened', ts: sevenDaysAgo, props: { source: 'popup', campaign: 'twitter' } }, // included (=from)
-      { name: 'pro_waitlist_opened', ts: sevenDaysAgo + 1, props: { source: 'popup', campaign: 'twitter' } },
-      { name: 'pro_waitlist_survey_copied', ts: now - 1000, props: { source: 'options', campaign: 'ph' } },
+      {
+        name: 'pro_entry_opened',
+        ts: sevenDaysAgo,
+        props: { source: 'popup', campaign: 'twitter' }
+      }, // included (=from)
+      {
+        name: 'pro_waitlist_opened',
+        ts: sevenDaysAgo + 1,
+        props: { source: 'popup', campaign: 'twitter' }
+      },
+      {
+        name: 'pro_waitlist_survey_copied',
+        ts: now - 1000,
+        props: { source: 'options', campaign: 'ph' }
+      },
       { name: 'pro_waitlist_copied', ts: now, props: { source: 'options', campaign: 'ph' } }, // included (=to)
       { name: 'pro_waitlist_copied', ts: now - 500, props: { source: 'options' } }, // empty campaign bucket
-      { name: 'pro_entry_opened', ts: sevenDaysAgo - 1, props: { source: 'options', campaign: 'twitter' } }, // excluded (<from)
-      { name: 'pro_waitlist_opened', ts: now + 1, props: { source: 'options', campaign: 'twitter' } }, // excluded (>to)
+      {
+        name: 'pro_entry_opened',
+        ts: sevenDaysAgo - 1,
+        props: { source: 'options', campaign: 'twitter' }
+      }, // excluded (<from)
+      {
+        name: 'pro_waitlist_opened',
+        ts: now + 1,
+        props: { source: 'options', campaign: 'twitter' }
+      }, // excluded (>to)
       { name: 'popup_opened', ts: now },
       { name: 'pro_entry_opened', ts: now, props: { source: 'invalid', campaign: 'twitter' } } // excluded (bad source)
     ],
@@ -1984,17 +2187,31 @@ async function run() {
   assert.ok(proIntentByCampaign.rows.every((row) => Number.isInteger(row.proEntryOpened)));
   assert.ok(proIntentByCampaign.rows.every((row) => Number.isInteger(row.leads)));
   assert.ok(!proIntentByCampaign.csv.startsWith('\uFEFF'));
-  assert.equal(proIntentByCampaign.csv.split('\n')[0], PRO_INTENT_BY_CAMPAIGN_CSV_COLUMNS.join(','));
-  assert.equal(proIntentByCampaign.csv.trim().split('\n').length, 1 + proIntentByCampaign.rows.length);
+  assert.equal(
+    proIntentByCampaign.csv.split('\n')[0],
+    PRO_INTENT_BY_CAMPAIGN_CSV_COLUMNS.join(',')
+  );
+  assert.equal(
+    proIntentByCampaign.csv.trim().split('\n').length,
+    1 + proIntentByCampaign.rows.length
+  );
 
   const proIntentByCampaignCsvFilename = formatProIntentByCampaign7dCsvFilename(now);
-  assert.ok(/^copylot-pro-intent-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proIntentByCampaignCsvFilename));
+  assert.ok(
+    /^copylot-pro-intent-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(
+      proIntentByCampaignCsvFilename
+    )
+  );
 
   // pro-distribution-by-campaign-csv.ts (pure functions + 7d window -> by campaign aggregation -> CSV)
   const proDistributionByCampaignDisabled = buildProDistributionByCampaignCsv({
     enabled: false,
     telemetryEvents: [
-      { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' } }
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now,
+        props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' }
+      }
     ],
     now,
     extensionVersion: '1.1.23',
@@ -2005,18 +2222,49 @@ async function run() {
   assert.equal(proDistributionByCampaignDisabled.disabledReason, 'anonymous_usage_data_disabled');
   assert.equal(proDistributionByCampaignDisabled.rows.length, 0);
   assert.ok(!proDistributionByCampaignDisabled.csv.startsWith('\uFEFF'));
-  assert.equal(proDistributionByCampaignDisabled.csv.trimEnd(), PRO_DISTRIBUTION_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+  assert.equal(
+    proDistributionByCampaignDisabled.csv.trimEnd(),
+    PRO_DISTRIBUTION_BY_CAMPAIGN_CSV_COLUMNS.join(',')
+  );
 
   const proDistributionByCampaign = buildProDistributionByCampaignCsv({
     enabled: true,
     telemetryEvents: [
-      { name: 'pro_distribution_asset_copied', ts: sevenDaysAgo, props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' } }, // included (=from)
-      { name: 'pro_distribution_asset_copied', ts: now - 1000, props: { source: 'options', campaign: 'ph', action: 'distribution_pack' } },
-      { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'options', campaign: 'twitter', action: 'store_url' } }, // included (=to)
-      { name: 'pro_distribution_asset_copied', ts: now - 500, props: { source: 'options', action: 'recruit_copy' } }, // empty campaign bucket
-      { name: 'pro_distribution_asset_copied', ts: sevenDaysAgo - 1, props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' } }, // excluded (<from)
-      { name: 'pro_distribution_asset_copied', ts: now + 1, props: { source: 'options', campaign: 'twitter', action: 'recruit_copy' } }, // excluded (>to)
-      { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'popup', campaign: 'twitter', action: 'waitlist_url' } }, // excluded (bad source)
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: sevenDaysAgo,
+        props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' }
+      }, // included (=from)
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now - 1000,
+        props: { source: 'options', campaign: 'ph', action: 'distribution_pack' }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now,
+        props: { source: 'options', campaign: 'twitter', action: 'store_url' }
+      }, // included (=to)
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now - 500,
+        props: { source: 'options', action: 'recruit_copy' }
+      }, // empty campaign bucket
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: sevenDaysAgo - 1,
+        props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' }
+      }, // excluded (<from)
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now + 1,
+        props: { source: 'options', campaign: 'twitter', action: 'recruit_copy' }
+      }, // excluded (>to)
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now,
+        props: { source: 'popup', campaign: 'twitter', action: 'waitlist_url' }
+      }, // excluded (bad source)
       { name: 'popup_opened', ts: now }
     ],
     now,
@@ -2052,11 +2300,21 @@ async function run() {
 
   assert.ok(proDistributionByCampaign.rows.every((row) => Number.isInteger(row.distCopies)));
   assert.ok(!proDistributionByCampaign.csv.startsWith('\uFEFF'));
-  assert.equal(proDistributionByCampaign.csv.split('\n')[0], PRO_DISTRIBUTION_BY_CAMPAIGN_CSV_COLUMNS.join(','));
-  assert.equal(proDistributionByCampaign.csv.trim().split('\n').length, 1 + proDistributionByCampaign.rows.length);
+  assert.equal(
+    proDistributionByCampaign.csv.split('\n')[0],
+    PRO_DISTRIBUTION_BY_CAMPAIGN_CSV_COLUMNS.join(',')
+  );
+  assert.equal(
+    proDistributionByCampaign.csv.trim().split('\n').length,
+    1 + proDistributionByCampaign.rows.length
+  );
 
   const proDistributionByCampaignCsvFilename = formatProDistributionByCampaign7dCsvFilename(now);
-  assert.ok(/^copylot-pro-distribution-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proDistributionByCampaignCsvFilename));
+  assert.ok(
+    /^copylot-pro-distribution-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(
+      proDistributionByCampaignCsvFilename
+    )
+  );
 
   // pro-acquisition-efficiency-by-campaign-csv.ts (pure functions + 7d window -> merge leads + distCopies by campaign -> CSV)
   const proAcqEfficiencyWindow = buildProAcquisitionEfficiencyByCampaignCsv({
@@ -2082,7 +2340,11 @@ async function run() {
     enabled: false,
     telemetryEvents: [
       { name: 'pro_waitlist_copied', ts: now, props: { source: 'options', campaign: 'twitter' } },
-      { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' } }
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now,
+        props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' }
+      }
     ],
     now,
     extensionVersion: '1.1.28',
@@ -2093,25 +2355,72 @@ async function run() {
   assert.equal(proAcqEfficiencyDisabled.disabledReason, 'anonymous_usage_data_disabled');
   assert.equal(proAcqEfficiencyDisabled.rows.length, 0);
   assert.ok(!proAcqEfficiencyDisabled.csv.startsWith('\uFEFF'));
-  assert.equal(proAcqEfficiencyDisabled.csv.trimEnd(), PRO_ACQUISITION_EFFICIENCY_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+  assert.equal(
+    proAcqEfficiencyDisabled.csv.trimEnd(),
+    PRO_ACQUISITION_EFFICIENCY_BY_CAMPAIGN_CSV_COLUMNS.join(',')
+  );
 
   const mergedEvents: unknown[] = [
     // leads: twitter=2, ph=1, empty=1
-    { name: 'pro_waitlist_copied', ts: sevenDaysAgo, props: { source: 'options', campaign: 'twitter' } }, // included (=from)
-    { name: 'pro_waitlist_survey_copied', ts: sevenDaysAgo + 1, props: { source: 'popup', campaign: 'twitter' } },
+    {
+      name: 'pro_waitlist_copied',
+      ts: sevenDaysAgo,
+      props: { source: 'options', campaign: 'twitter' }
+    }, // included (=from)
+    {
+      name: 'pro_waitlist_survey_copied',
+      ts: sevenDaysAgo + 1,
+      props: { source: 'popup', campaign: 'twitter' }
+    },
     { name: 'pro_waitlist_copied', ts: now - 1000, props: { source: 'options', campaign: 'ph' } },
     { name: 'pro_waitlist_copied', ts: now - 500, props: { source: 'options' } }, // empty campaign bucket
     // distCopies: twitter=4, ph=0, empty=2
-    { name: 'pro_distribution_asset_copied', ts: sevenDaysAgo, props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' } },
-    { name: 'pro_distribution_asset_copied', ts: now - 900, props: { source: 'options', campaign: 'twitter', action: 'store_url' } },
-    { name: 'pro_distribution_asset_copied', ts: now - 800, props: { source: 'options', campaign: 'twitter', action: 'recruit_copy' } },
-    { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'options', campaign: 'twitter', action: 'distribution_pack' } }, // included (=to)
-    { name: 'pro_distribution_asset_copied', ts: now - 700, props: { source: 'options', action: 'distribution_pack' } }, // empty campaign bucket
-    { name: 'pro_distribution_asset_copied', ts: now - 600, props: { source: 'options', action: 'waitlist_url' } }, // empty campaign bucket
+    {
+      name: 'pro_distribution_asset_copied',
+      ts: sevenDaysAgo,
+      props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' }
+    },
+    {
+      name: 'pro_distribution_asset_copied',
+      ts: now - 900,
+      props: { source: 'options', campaign: 'twitter', action: 'store_url' }
+    },
+    {
+      name: 'pro_distribution_asset_copied',
+      ts: now - 800,
+      props: { source: 'options', campaign: 'twitter', action: 'recruit_copy' }
+    },
+    {
+      name: 'pro_distribution_asset_copied',
+      ts: now,
+      props: { source: 'options', campaign: 'twitter', action: 'distribution_pack' }
+    }, // included (=to)
+    {
+      name: 'pro_distribution_asset_copied',
+      ts: now - 700,
+      props: { source: 'options', action: 'distribution_pack' }
+    }, // empty campaign bucket
+    {
+      name: 'pro_distribution_asset_copied',
+      ts: now - 600,
+      props: { source: 'options', action: 'waitlist_url' }
+    }, // empty campaign bucket
     // excluded
-    { name: 'pro_waitlist_copied', ts: sevenDaysAgo - 1, props: { source: 'options', campaign: 'twitter' } }, // <from
-    { name: 'pro_distribution_asset_copied', ts: now + 1, props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' } }, // >to
-    { name: 'pro_distribution_asset_copied', ts: now, props: { source: 'popup', campaign: 'twitter', action: 'waitlist_url' } }, // bad source
+    {
+      name: 'pro_waitlist_copied',
+      ts: sevenDaysAgo - 1,
+      props: { source: 'options', campaign: 'twitter' }
+    }, // <from
+    {
+      name: 'pro_distribution_asset_copied',
+      ts: now + 1,
+      props: { source: 'options', campaign: 'twitter', action: 'waitlist_url' }
+    }, // >to
+    {
+      name: 'pro_distribution_asset_copied',
+      ts: now,
+      props: { source: 'popup', campaign: 'twitter', action: 'waitlist_url' }
+    }, // bad source
     { name: 'popup_opened', ts: now }
   ];
 
@@ -2133,7 +2442,10 @@ async function run() {
   const emptyMerged = proAcqEfficiency.rows.find((r) => r.campaign === '空 campaign');
   assert.ok(twitterMerged, 'expected twitter row in merged acquisition efficiency export');
   assert.ok(phMerged, 'expected ph row in merged acquisition efficiency export');
-  assert.ok(emptyMerged, 'expected empty campaign bucket row in merged acquisition efficiency export');
+  assert.ok(
+    emptyMerged,
+    'expected empty campaign bucket row in merged acquisition efficiency export'
+  );
 
   assert.equal(twitterMerged?.leads, 2);
   assert.equal(twitterMerged?.distCopies, 4);
@@ -2183,12 +2495,17 @@ async function run() {
   assert.ok(proAcqEfficiency.rows.every((row) => Number.isInteger(row.leads)));
   assert.ok(proAcqEfficiency.rows.every((row) => Number.isInteger(row.distCopies)));
   assert.ok(!proAcqEfficiency.csv.startsWith('\uFEFF'));
-  assert.equal(proAcqEfficiency.csv.split('\n')[0], PRO_ACQUISITION_EFFICIENCY_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+  assert.equal(
+    proAcqEfficiency.csv.split('\n')[0],
+    PRO_ACQUISITION_EFFICIENCY_BY_CAMPAIGN_CSV_COLUMNS.join(',')
+  );
   assert.equal(proAcqEfficiency.csv.trim().split('\n').length, 1 + proAcqEfficiency.rows.length);
 
   const proAcqEfficiencyCsvFilename = formatProAcquisitionEfficiencyByCampaign7dCsvFilename(now);
   assert.ok(
-    /^copylot-pro-acquisition-efficiency-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(proAcqEfficiencyCsvFilename)
+    /^copylot-pro-acquisition-efficiency-by-campaign-7d-\d{4}-\d{2}-\d{2}\.csv$/.test(
+      proAcqEfficiencyCsvFilename
+    )
   );
 
   // pro-acquisition-efficiency-by-campaign-evidence-pack-filename.ts (pure functions, stable download filename)
@@ -2198,22 +2515,32 @@ async function run() {
   const dd = String(d.getDate()).padStart(2, '0');
   const expectedDate = `${yyyy}-${mm}-${dd}`;
 
-  const evidenceFilenameOff = formatProAcquisitionEfficiencyByCampaignEvidencePackJsonFilename(now, false);
+  const evidenceFilenameOff = formatProAcquisitionEfficiencyByCampaignEvidencePackJsonFilename(
+    now,
+    false
+  );
   assert.equal(
     evidenceFilenameOff,
     `copylot-pro-acq-eff-by-campaign-evidence-pack-${expectedDate}.off.json`
   );
   assert.ok(
-    /^copylot-pro-acq-eff-by-campaign-evidence-pack-\d{4}-\d{2}-\d{2}\.off\.json$/.test(evidenceFilenameOff)
+    /^copylot-pro-acq-eff-by-campaign-evidence-pack-\d{4}-\d{2}-\d{2}\.off\.json$/.test(
+      evidenceFilenameOff
+    )
   );
 
-  const evidenceFilenameOn = formatProAcquisitionEfficiencyByCampaignEvidencePackJsonFilename(now, true);
+  const evidenceFilenameOn = formatProAcquisitionEfficiencyByCampaignEvidencePackJsonFilename(
+    now,
+    true
+  );
   assert.equal(
     evidenceFilenameOn,
     `copylot-pro-acq-eff-by-campaign-evidence-pack-${expectedDate}.on.json`
   );
   assert.ok(
-    /^copylot-pro-acq-eff-by-campaign-evidence-pack-\d{4}-\d{2}-\d{2}\.on\.json$/.test(evidenceFilenameOn)
+    /^copylot-pro-acq-eff-by-campaign-evidence-pack-\d{4}-\d{2}-\d{2}\.on\.json$/.test(
+      evidenceFilenameOn
+    )
   );
   assert.ok(!evidenceFilenameOn.includes('twitter'));
 
@@ -2224,7 +2551,9 @@ async function run() {
     `copylot-pro-weekly-channel-ops-evidence-pack-${expectedDate}.off.json`
   );
   assert.ok(
-    /^copylot-pro-weekly-channel-ops-evidence-pack-\d{4}-\d{2}-\d{2}\.off\.json$/.test(weeklyOpsFilenameOff)
+    /^copylot-pro-weekly-channel-ops-evidence-pack-\d{4}-\d{2}-\d{2}\.off\.json$/.test(
+      weeklyOpsFilenameOff
+    )
   );
 
   const weeklyOpsFilenameOn = formatProWeeklyChannelOpsEvidencePackJsonFilename(now, true);
@@ -2233,7 +2562,9 @@ async function run() {
     `copylot-pro-weekly-channel-ops-evidence-pack-${expectedDate}.on.json`
   );
   assert.ok(
-    /^copylot-pro-weekly-channel-ops-evidence-pack-\d{4}-\d{2}-\d{2}\.on\.json$/.test(weeklyOpsFilenameOn)
+    /^copylot-pro-weekly-channel-ops-evidence-pack-\d{4}-\d{2}-\d{2}\.on\.json$/.test(
+      weeklyOpsFilenameOn
+    )
   );
   assert.ok(!weeklyOpsFilenameOn.includes('twitter'));
 
@@ -2250,15 +2581,16 @@ async function run() {
   assert.equal(proAcqEffWeeklyReportDisabled.disabledReason, 'anonymous_usage_data_disabled');
   assert.equal(proAcqEffWeeklyReportDisabled.rows.length, 0);
 
-  const proAcqEffWeeklyReportDisabledMd = formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown({
-    summary: proAcqEffWeeklyReportDisabled,
-    env: {
-      extensionVersion: '1.1.28',
-      exportedAt: now,
-      isAnonymousUsageDataEnabled: false
-    },
-    getMessage
-  });
+  const proAcqEffWeeklyReportDisabledMd =
+    formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown({
+      summary: proAcqEffWeeklyReportDisabled,
+      env: {
+        extensionVersion: '1.1.28',
+        exportedAt: now,
+        isAnonymousUsageDataEnabled: false
+      },
+      getMessage
+    });
   assert.ok(proAcqEffWeeklyReportDisabledMd.includes('匿名使用数据关闭'));
   assert.ok(!proAcqEffWeeklyReportDisabledMd.includes('| campaign |'));
 
@@ -2299,10 +2631,17 @@ async function run() {
   assert.ok(proAcqEffWeeklyReportMd.includes('| twitter | 2 | 4 | 0.5000 |'));
   assert.ok(proAcqEffWeeklyReportMd.includes('| 空 campaign | 1 | 2 | 0.5000 |'));
   assert.ok(proAcqEffWeeklyReportMd.includes('| ph | 1 | 0 | N/A |'));
-  assert.ok(proAcqEffWeeklyReportMd.indexOf('| twitter |') < proAcqEffWeeklyReportMd.indexOf('| 空 campaign |'));
-  assert.ok(proAcqEffWeeklyReportMd.indexOf('| 空 campaign |') < proAcqEffWeeklyReportMd.indexOf('| ph |'));
+  assert.ok(
+    proAcqEffWeeklyReportMd.indexOf('| twitter |') <
+      proAcqEffWeeklyReportMd.indexOf('| 空 campaign |')
+  );
+  assert.ok(
+    proAcqEffWeeklyReportMd.indexOf('| 空 campaign |') < proAcqEffWeeklyReportMd.indexOf('| ph |')
+  );
   assert.ok(proAcqEffWeeklyReportMd.includes('Top1 campaign（按 leadsPerDistCopy）：twitter'));
-  assert.ok(proAcqEffWeeklyReportMd.includes('Top1 指标：leads=2 distCopies=4 leadsPerDistCopy=0.5000'));
+  assert.ok(
+    proAcqEffWeeklyReportMd.includes('Top1 指标：leads=2 distCopies=4 leadsPerDistCopy=0.5000')
+  );
   assert.ok(proAcqEffWeeklyReportMd.includes('空 campaign leads 占比：25.00%'));
 
   // pro-acquisition-efficiency-by-campaign-evidence-pack.ts (pure functions + stable JSON formatter)
@@ -2327,13 +2666,20 @@ async function run() {
   assert.equal(proAcqEffEvidenceOff.env.windowTo, now);
   assert.equal(proAcqEffEvidenceOff.env.isAnonymousUsageDataEnabled, false);
   assert.equal(proAcqEffEvidenceOff.rows.length, 0);
-  assert.equal(proAcqEffEvidenceOff.csv.trimEnd(), PRO_ACQUISITION_EFFICIENCY_BY_CAMPAIGN_CSV_COLUMNS.join(','));
+  assert.equal(
+    proAcqEffEvidenceOff.csv.trimEnd(),
+    PRO_ACQUISITION_EFFICIENCY_BY_CAMPAIGN_CSV_COLUMNS.join(',')
+  );
   assert.ok(proAcqEffEvidenceOff.weeklyReportMarkdown.includes('匿名使用数据关闭'));
   assert.ok(!proAcqEffEvidenceOff.weeklyReportMarkdown.includes('| campaign |'));
 
-  const proAcqEffEvidenceOffJson = formatProAcquisitionEfficiencyByCampaignEvidencePackAsJson(proAcqEffEvidenceOff);
+  const proAcqEffEvidenceOffJson =
+    formatProAcquisitionEfficiencyByCampaignEvidencePackAsJson(proAcqEffEvidenceOff);
   assert.ok(proAcqEffEvidenceOffJson.endsWith('\n'));
-  const proAcqEffEvidenceOffParsed = JSON.parse(proAcqEffEvidenceOffJson) as Record<string, unknown>;
+  const proAcqEffEvidenceOffParsed = JSON.parse(proAcqEffEvidenceOffJson) as Record<
+    string,
+    unknown
+  >;
   assert.deepEqual(Object.keys(proAcqEffEvidenceOffParsed), [
     'enabled',
     'disabledReason',
@@ -2380,8 +2726,17 @@ async function run() {
   assert.equal(evidenceCsvLines[0], PRO_ACQUISITION_EFFICIENCY_BY_CAMPAIGN_CSV_COLUMNS.join(','));
   assert.equal(evidenceCsvLines.length - 1, proAcqEffEvidenceOn.rows.length);
   for (const line of evidenceCsvLines.slice(1)) {
-    const [exportedAtStr, extV, fromStr, toStr, lookbackStr, campaign, leadsStr, distCopiesStr, leadsPerDistCopy] =
-      line.split(',');
+    const [
+      exportedAtStr,
+      extV,
+      fromStr,
+      toStr,
+      lookbackStr,
+      campaign,
+      leadsStr,
+      distCopiesStr,
+      leadsPerDistCopy
+    ] = line.split(',');
     assert.equal(Number(exportedAtStr), proAcqEffEvidenceOn.env.exportedAt);
     assert.equal(extV, proAcqEffEvidenceOn.env.extensionVersion);
     assert.equal(Number(fromStr), proAcqEffEvidenceOn.env.windowFrom);
@@ -2397,7 +2752,9 @@ async function run() {
   // mutual verification: evidence rows <-> weeklyReportMarkdown table
   const mdTableLines = proAcqEffEvidenceOn.weeklyReportMarkdown
     .split('\n')
-    .filter((line) => line.startsWith('| ') && !line.includes('---') && !line.startsWith('| campaign |'));
+    .filter(
+      (line) => line.startsWith('| ') && !line.includes('---') && !line.startsWith('| campaign |')
+    );
   assert.equal(mdTableLines.length, proAcqEffEvidenceOn.rows.length);
   for (const line of mdTableLines) {
     const cells = line
@@ -2412,7 +2769,8 @@ async function run() {
     assert.equal(leadsPerDistCopy, row?.leadsPerDistCopy ?? 'N/A');
   }
 
-  const proAcqEffEvidenceOnJson = formatProAcquisitionEfficiencyByCampaignEvidencePackAsJson(proAcqEffEvidenceOn);
+  const proAcqEffEvidenceOnJson =
+    formatProAcquisitionEfficiencyByCampaignEvidencePackAsJson(proAcqEffEvidenceOn);
   const proAcqEffEvidenceOnParsed = JSON.parse(proAcqEffEvidenceOnJson) as Record<string, unknown>;
   assert.deepEqual(Object.keys(proAcqEffEvidenceOnParsed), [
     'enabled',
@@ -2424,7 +2782,9 @@ async function run() {
     'weeklyReportMarkdown'
   ]);
   assert.ok(
-    String(proAcqEffEvidenceOnParsed.weeklyReportMarkdown || '').includes('| campaign | leads | distCopies | leadsPerDistCopy |'),
+    String(proAcqEffEvidenceOnParsed.weeklyReportMarkdown || '').includes(
+      '| campaign | leads | distCopies | leadsPerDistCopy |'
+    ),
     'evidence pack should embed weekly report markdown for audit and mutual verification'
   );
 
@@ -2451,7 +2811,10 @@ async function run() {
     proWeeklyOpsOff.assets.proDistributionByCampaign7dCsv.trimEnd(),
     PRO_DISTRIBUTION_BY_CAMPAIGN_CSV_COLUMNS.join(',')
   );
-  assert.equal(proWeeklyOpsOff.assets.proIntentEvents7dCsv.trimEnd(), PRO_INTENT_EVENTS_CSV_COLUMNS.join(','));
+  assert.equal(
+    proWeeklyOpsOff.assets.proIntentEvents7dCsv.trimEnd(),
+    PRO_INTENT_EVENTS_CSV_COLUMNS.join(',')
+  );
   assert.ok(proWeeklyOpsOff.assets.verifyMarkdown.includes('互证'));
 
   const proWeeklyOpsOffJson = formatProWeeklyChannelOpsEvidencePackAsJson(proWeeklyOpsOff);
@@ -2499,8 +2862,14 @@ async function run() {
     lookbackDays: 7,
     getMessage
   });
-  assert.deepEqual(proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.rows, proWeeklyOpsOnAcqAligned.rows);
-  assert.equal(proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.csv, proWeeklyOpsOnAcqAligned.csv);
+  assert.deepEqual(
+    proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.rows,
+    proWeeklyOpsOnAcqAligned.rows
+  );
+  assert.equal(
+    proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.csv,
+    proWeeklyOpsOnAcqAligned.csv
+  );
   assert.equal(
     proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.weeklyReportMarkdown,
     proWeeklyOpsOnAcqAligned.weeklyReportMarkdown
@@ -2559,9 +2928,13 @@ async function run() {
   for (const line of intentLines.slice(1)) {
     const cells = line.split(',');
     const eventName = cells[7] || '';
-    if (eventName === 'pro_waitlist_copied' || eventName === 'pro_waitlist_survey_copied') leadsFromEvents += 1;
+    if (eventName === 'pro_waitlist_copied' || eventName === 'pro_waitlist_survey_copied')
+      leadsFromEvents += 1;
   }
-  const rowsLeadsSum = proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.rows.reduce((acc, row) => acc + row.leads, 0);
+  const rowsLeadsSum = proWeeklyOpsOn.assets.acquisitionEfficiencyEvidencePack.rows.reduce(
+    (acc, row) => acc + row.leads,
+    0
+  );
   assert.equal(rowsLeadsSum, leadsFromEvents);
 
   const proWeeklyOpsOnJson = formatProWeeklyChannelOpsEvidencePackAsJson(proWeeklyOpsOn);
@@ -2575,26 +2948,39 @@ async function run() {
     'assets'
   ]);
   assert.ok(
-    String((proWeeklyOpsOnParsed.assets as Record<string, unknown>)?.verifyMarkdown || '').includes('leadsPerDistCopy'),
+    String((proWeeklyOpsOnParsed.assets as Record<string, unknown>)?.verifyMarkdown || '').includes(
+      'leadsPerDistCopy'
+    ),
     'weekly channel ops evidence pack should embed minimal mutual-verification markdown'
   );
 
   // build-weekly-channel-ops-trend.ts（fixture -> 可重复生成的 index.md + trend.csv）
-  const weeklyOpsTrendTmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'copylot-weekly-ops-trend-'));
+  const weeklyOpsTrendTmpDir = await fs.mkdtemp(
+    path.join(os.tmpdir(), 'copylot-weekly-ops-trend-')
+  );
   const weeklyOpsTrendFixture = path.join(
     process.cwd(),
     'docs/evidence/v1-64/copylot-pro-weekly-channel-ops-evidence-pack-2026-03-21.on.json'
   );
   const weeklyOpsTrendFixtureName = path.basename(weeklyOpsTrendFixture);
-  await fs.copyFile(weeklyOpsTrendFixture, path.join(weeklyOpsTrendTmpDir, weeklyOpsTrendFixtureName));
+  await fs.copyFile(
+    weeklyOpsTrendFixture,
+    path.join(weeklyOpsTrendTmpDir, weeklyOpsTrendFixtureName)
+  );
 
-  const { indexMarkdown: weeklyOpsIndex1, trendCsv: weeklyOpsCsv1 } = await buildWeeklyChannelOpsTrend(weeklyOpsTrendTmpDir);
-  const weeklyOpsIndexFile1 = await fs.readFile(path.join(weeklyOpsTrendTmpDir, 'index.md'), 'utf8');
+  const { indexMarkdown: weeklyOpsIndex1, trendCsv: weeklyOpsCsv1 } =
+    await buildWeeklyChannelOpsTrend(weeklyOpsTrendTmpDir);
+  const weeklyOpsIndexFile1 = await fs.readFile(
+    path.join(weeklyOpsTrendTmpDir, 'index.md'),
+    'utf8'
+  );
   const weeklyOpsCsvFile1 = await fs.readFile(path.join(weeklyOpsTrendTmpDir, 'trend.csv'), 'utf8');
   assert.equal(weeklyOpsIndexFile1, weeklyOpsIndex1);
   assert.equal(weeklyOpsCsvFile1, weeklyOpsCsv1);
   assert.ok(
-    weeklyOpsCsvFile1.includes('weekEndDate,distCopies,leads,leadsPerDistCopy,campaignsCount,nonEmptyCampaignsCount\n'),
+    weeklyOpsCsvFile1.includes(
+      'weekEndDate,distCopies,leads,leadsPerDistCopy,campaignsCount,nonEmptyCampaignsCount\n'
+    ),
     'trend.csv header should be stable'
   );
   assert.ok(
@@ -2610,16 +2996,25 @@ async function run() {
     'leadsPerDistCopy should keep 4 decimals in baseline table'
   );
 
-  const { indexMarkdown: weeklyOpsIndex2, trendCsv: weeklyOpsCsv2 } = await buildWeeklyChannelOpsTrend(weeklyOpsTrendTmpDir);
+  const { indexMarkdown: weeklyOpsIndex2, trendCsv: weeklyOpsCsv2 } =
+    await buildWeeklyChannelOpsTrend(weeklyOpsTrendTmpDir);
   assert.equal(weeklyOpsIndex2, weeklyOpsIndex1);
   assert.equal(weeklyOpsCsv2, weeklyOpsCsv1);
-  assert.equal(await fs.readFile(path.join(weeklyOpsTrendTmpDir, 'index.md'), 'utf8'), weeklyOpsIndex1);
-  assert.equal(await fs.readFile(path.join(weeklyOpsTrendTmpDir, 'trend.csv'), 'utf8'), weeklyOpsCsv1);
+  assert.equal(
+    await fs.readFile(path.join(weeklyOpsTrendTmpDir, 'index.md'), 'utf8'),
+    weeklyOpsIndex1
+  );
+  assert.equal(
+    await fs.readFile(path.join(weeklyOpsTrendTmpDir, 'trend.csv'), 'utf8'),
+    weeklyOpsCsv1
+  );
 
   // pro-intent-by-campaign-weekly-report.ts (pure functions + markdown formatter)
   const proIntentByCampaignWeeklyReportDisabled = buildProIntentByCampaignWeeklyReportSummary({
     enabled: false,
-    telemetryEvents: [{ name: 'pro_entry_opened', ts: now, props: { source: 'popup', campaign: 'twitter' } }],
+    telemetryEvents: [
+      { name: 'pro_entry_opened', ts: now, props: { source: 'popup', campaign: 'twitter' } }
+    ],
     now,
     extensionVersion: '1.1.23',
     emptyCampaignBucketLabel: '空 campaign',
@@ -2654,14 +3049,34 @@ async function run() {
     enabled: true,
     telemetryEvents: [
       // twitter
-      { name: 'pro_entry_opened', ts: now - 1000, props: { source: 'options', campaign: 'twitter' } },
-      { name: 'pro_entry_opened', ts: now - 999, props: { source: 'options', campaign: 'twitter' } },
-      { name: 'pro_waitlist_opened', ts: now - 998, props: { source: 'options', campaign: 'twitter' } },
-      { name: 'pro_waitlist_copied', ts: now - 997, props: { source: 'options', campaign: 'twitter' } },
+      {
+        name: 'pro_entry_opened',
+        ts: now - 1000,
+        props: { source: 'options', campaign: 'twitter' }
+      },
+      {
+        name: 'pro_entry_opened',
+        ts: now - 999,
+        props: { source: 'options', campaign: 'twitter' }
+      },
+      {
+        name: 'pro_waitlist_opened',
+        ts: now - 998,
+        props: { source: 'options', campaign: 'twitter' }
+      },
+      {
+        name: 'pro_waitlist_copied',
+        ts: now - 997,
+        props: { source: 'options', campaign: 'twitter' }
+      },
       // xhs
       { name: 'pro_entry_opened', ts: now - 900, props: { source: 'options', campaign: 'xhs' } },
       { name: 'pro_waitlist_opened', ts: now - 899, props: { source: 'options', campaign: 'xhs' } },
-      { name: 'pro_waitlist_survey_copied', ts: now - 898, props: { source: 'options', campaign: 'xhs' } },
+      {
+        name: 'pro_waitlist_survey_copied',
+        ts: now - 898,
+        props: { source: 'options', campaign: 'xhs' }
+      },
       // ads (denominator=0 -> N/A)
       { name: 'pro_waitlist_copied', ts: now - 800, props: { source: 'options', campaign: 'ads' } },
       // empty campaign bucket (missing/empty string)
@@ -2684,7 +3099,11 @@ async function run() {
 
   const adsRow = proIntentByCampaignWeeklyReport.rows.find((r) => r.campaign === 'ads');
   assert.ok(adsRow, 'expected ads row in weekly report summary');
-  assert.equal(adsRow?.leads_per_entry_opened, null, 'leads_per_entry_opened should be N/A when denominator=0');
+  assert.equal(
+    adsRow?.leads_per_entry_opened,
+    null,
+    'leads_per_entry_opened should be N/A when denominator=0'
+  );
 
   const emptyRow = proIntentByCampaignWeeklyReport.rows.find((r) => r.campaign === '空 campaign');
   assert.ok(emptyRow, 'expected empty campaign bucket row in weekly report summary');
@@ -2746,7 +3165,10 @@ async function run() {
   assert.equal(womSummary.bySource.options.rates.share_copied_per_share_opened, 1);
   assert.equal(womSummary.bySource.rating_prompt.counts.rating_prompt_shown, 1);
   assert.equal(womSummary.bySource.rating_prompt.counts.rating_prompt_action, 2);
-  assert.equal(womSummary.bySource.rating_prompt.rates.rating_prompt_rate_clicked_per_prompt_shown, 1);
+  assert.equal(
+    womSummary.bySource.rating_prompt.rates.rating_prompt_rate_clicked_per_prompt_shown,
+    1
+  );
 
   const womPack = buildWomEvidencePack({
     exportedAt: 123,
@@ -2790,11 +3212,17 @@ async function run() {
 
   // v1-42 zip 安装回归（离线可审计）：校验最新 plugin-*.zip 中关键入口与隐私导出面板存在
   const rootDir = process.cwd();
-  const rootManifest = JSON.parse(await fs.readFile(path.join(rootDir, 'manifest.json'), 'utf8')) as {
+  const rootManifest = JSON.parse(
+    await fs.readFile(path.join(rootDir, 'manifest.json'), 'utf8')
+  ) as {
     version?: string;
     homepage_url?: string;
   };
-  assert.equal(rootManifest.homepage_url, OFFICIAL_SITE_ROOT_URL, 'repo manifest homepage_url should match official site');
+  assert.equal(
+    rootManifest.homepage_url,
+    OFFICIAL_SITE_ROOT_URL,
+    'repo manifest homepage_url should match official site'
+  );
 
   const rootEntries = await fs.readdir(rootDir);
   const pluginZips = rootEntries.filter((name) => /^plugin-\d+\.\d+\.\d+\.zip$/.test(name));
@@ -2814,23 +3242,65 @@ async function run() {
 
   const latestPluginZip = pluginZips
     .slice()
-    .sort((a, b) => compareSemverTuple(parseVersionFromPluginZipFilename(a), parseVersionFromPluginZipFilename(b)))
+    .sort((a, b) =>
+      compareSemverTuple(parseVersionFromPluginZipFilename(a), parseVersionFromPluginZipFilename(b))
+    )
     .at(-1) as string;
   assert.ok(latestPluginZip, 'latest plugin zip should be resolved');
 
   const zipManifest = JSON.parse(
     execFileSync('unzip', ['-p', latestPluginZip, 'manifest.json'], { encoding: 'utf8' })
   ) as { version?: string; homepage_url?: string };
-  assert.equal(zipManifest.version, rootManifest.version, 'plugin zip manifest version should match repo manifest.json');
-  assert.equal(zipManifest.homepage_url, OFFICIAL_SITE_ROOT_URL, 'plugin zip homepage_url should match repo manifest.json');
+  assert.equal(
+    zipManifest.version,
+    rootManifest.version,
+    'plugin zip manifest version should match repo manifest.json'
+  );
+  assert.equal(
+    zipManifest.homepage_url,
+    OFFICIAL_SITE_ROOT_URL,
+    'plugin zip homepage_url should match repo manifest.json'
+  );
 
-  const popupHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.html'], { encoding: 'utf8' });
-  assert.ok(popupHtml.includes('id="upgrade-pro-entry"'), 'popup.html should include upgrade-pro-entry');
-  assert.ok(!popupHtml.includes('id="popup-pro-waitlist"'), 'popup.html should not include popup-pro-waitlist');
-  assert.ok(popupHtml.includes('id="popup-onboarding-reopen"'), 'popup.html should include popup-onboarding-reopen');
-  assert.ok(!popupHtml.includes('id="popup-pro-waitlist-copy"'), 'popup.html should not include popup-pro-waitlist-copy');
-  assert.ok(!popupHtml.includes('id="popup-pro-waitlist-survey"'), 'popup.html should not include popup-pro-waitlist-survey');
-  assert.ok(!popupHtml.includes('id="pro-waitlist-prompt"'), 'popup.html should not include pro-waitlist-prompt');
+  const popupHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.html'], {
+    encoding: 'utf8'
+  });
+  assert.ok(
+    popupHtml.includes('id="first-copy-title"'),
+    'popup.html should include first-copy-title'
+  );
+  assert.ok(
+    popupHtml.includes('id="first-copy-status"'),
+    'popup.html should include first-copy-status'
+  );
+  assert.ok(
+    popupHtml.includes('id="first-copy-step-paste"'),
+    'popup.html should include first-copy-step-paste'
+  );
+  assert.ok(
+    popupHtml.includes('id="upgrade-pro-entry"'),
+    'popup.html should include upgrade-pro-entry'
+  );
+  assert.ok(
+    !popupHtml.includes('id="popup-pro-waitlist"'),
+    'popup.html should not include popup-pro-waitlist'
+  );
+  assert.ok(
+    popupHtml.includes('id="popup-onboarding-reopen"'),
+    'popup.html should include popup-onboarding-reopen'
+  );
+  assert.ok(
+    !popupHtml.includes('id="popup-pro-waitlist-copy"'),
+    'popup.html should not include popup-pro-waitlist-copy'
+  );
+  assert.ok(
+    !popupHtml.includes('id="popup-pro-waitlist-survey"'),
+    'popup.html should not include popup-pro-waitlist-survey'
+  );
+  assert.ok(
+    !popupHtml.includes('id="pro-waitlist-prompt"'),
+    'popup.html should not include pro-waitlist-prompt'
+  );
   assert.ok(
     !popupHtml.includes('id="popup-onboarding-apply-recommended"'),
     'popup.html should not include popup-onboarding-apply-recommended'
@@ -2839,46 +3309,100 @@ async function run() {
     !popupHtml.includes('id="popup-onboarding-open-options"'),
     'popup.html should not include popup-onboarding-open-options'
   );
-  assert.ok(!popupHtml.includes('id="popup-onboarding-finish"'), 'popup.html should not include popup-onboarding-finish');
-  assert.ok(!popupHtml.includes('id="popup-onboarding-close"'), 'popup.html should not include popup-onboarding-close');
+  assert.ok(
+    !popupHtml.includes('id="popup-onboarding-finish"'),
+    'popup.html should not include popup-onboarding-finish'
+  );
+  assert.ok(
+    !popupHtml.includes('id="popup-onboarding-close"'),
+    'popup.html should not include popup-onboarding-close'
+  );
 
-  const optionsHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/options/options.html'], { encoding: 'utf8' });
+  const optionsHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/options/options.html'], {
+    encoding: 'utf8'
+  });
   assert.ok(optionsHtml.includes('data-tab="pro"'), 'options.html should include pro tab');
-  assert.ok(/id="options-onboarding-panel"[^>]*hidden/.test(optionsHtml), 'options onboarding panel should be hidden by default');
-  assert.ok(optionsHtml.includes('id="pro-intent-campaign"'), 'options.html should include pro-intent-campaign');
-  assert.ok(optionsHtml.includes('id="pro-waitlist-button"'), 'options.html should include pro-waitlist-button');
-  assert.ok(!optionsHtml.includes('id="pro-waitlist-copy"'), 'options.html should not include pro-waitlist-copy');
-  assert.ok(optionsHtml.includes('id="options-onboarding-panel"'), 'options.html should include options-onboarding-panel');
-  assert.ok(optionsHtml.includes('id="pro-intent-campaign"'), 'options.html should include hidden pro-intent-campaign');
-  assert.ok(optionsHtml.includes('id="pro-waitlist-distribution-toolkit"'), 'options.html should include hidden distribution toolkit');
-  assert.ok(optionsHtml.includes('id="pro-waitlist-url-copy"'), 'options.html should include pro-waitlist-url-copy');
+  assert.ok(
+    /id="options-onboarding-panel"[^>]*hidden/.test(optionsHtml),
+    'options onboarding panel should be hidden by default'
+  );
+  assert.ok(
+    optionsHtml.includes('id="pro-intent-campaign"'),
+    'options.html should include pro-intent-campaign'
+  );
+  assert.ok(
+    optionsHtml.includes('id="pro-waitlist-button"'),
+    'options.html should include pro-waitlist-button'
+  );
+  assert.ok(
+    !optionsHtml.includes('id="pro-waitlist-copy"'),
+    'options.html should not include pro-waitlist-copy'
+  );
+  assert.ok(
+    optionsHtml.includes('id="options-onboarding-panel"'),
+    'options.html should include options-onboarding-panel'
+  );
+  assert.ok(
+    optionsHtml.includes('id="pro-intent-campaign"'),
+    'options.html should include hidden pro-intent-campaign'
+  );
+  assert.ok(
+    optionsHtml.includes('id="pro-waitlist-distribution-toolkit"'),
+    'options.html should include hidden distribution toolkit'
+  );
+  assert.ok(
+    optionsHtml.includes('id="pro-waitlist-url-copy"'),
+    'options.html should include pro-waitlist-url-copy'
+  );
   assert.ok(
     optionsHtml.includes('id="pro-waitlist-recruit-copy"'),
     'options.html should include pro-waitlist-recruit-copy'
   );
-  assert.ok(optionsHtml.includes('id="pro-scope-learn-more"'), 'options.html should include pro-scope-learn-more');
-  
-  
-  
-  
-  
-  
-  
+  assert.ok(
+    optionsHtml.includes('id="pro-scope-learn-more"'),
+    'options.html should include pro-scope-learn-more'
+  );
 
-  const popupJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.js'], { encoding: 'utf8' });
+  const popupJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.js'], {
+    encoding: 'utf8'
+  });
+  assert.ok(
+    popupJs.includes('popupFirstCopyStatusDone'),
+    'popup.js should contain popupFirstCopyStatusDone'
+  );
   assert.ok(popupJs.includes('pro_entry_opened'), 'popup.js should contain pro_entry_opened');
-  assert.ok(!popupJs.includes('pro_waitlist_opened'), 'popup.js should not contain pro_waitlist_opened');
+  assert.ok(
+    !popupJs.includes('pro_waitlist_opened'),
+    'popup.js should not contain pro_waitlist_opened'
+  );
   assert.ok(popupJs.includes('wom_feedback_opened'), 'popup.js should contain wom_feedback_opened');
   assert.ok(popupJs.includes('wom_share_opened'), 'popup.js should contain wom_share_opened');
   assert.ok(popupJs.includes('wom_rate_opened'), 'popup.js should contain wom_rate_opened');
-  assert.ok(popupJs.includes('popupOnboardingCompletedVersion'), 'popup.js should sync onboarding completion state');
+  assert.ok(
+    popupJs.includes('popupOnboardingCompletedVersion'),
+    'popup.js should sync onboarding completion state'
+  );
 
-  const optionsJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/options/options.js'], { encoding: 'utf8' });
+  const optionsJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/options/options.js'], {
+    encoding: 'utf8'
+  });
   assert.ok(optionsJs.includes('pro_entry_opened'), 'options.js should contain pro_entry_opened');
-  assert.ok(optionsJs.includes('pro_waitlist_opened'), 'options.js should contain pro_waitlist_opened');
-  assert.ok(optionsJs.includes('pro_waitlist_copied'), 'options.js should contain pro_waitlist_copied');
-  assert.ok(optionsJs.includes('navigator.clipboard.writeText'), 'options.js should write to clipboard for waitlist copy');
-  assert.ok(optionsJs.includes('isAnonymousUsageDataEnabled'), 'options.js should reference anonymous usage data setting');
+  assert.ok(
+    optionsJs.includes('pro_waitlist_opened'),
+    'options.js should contain pro_waitlist_opened'
+  );
+  assert.ok(
+    optionsJs.includes('pro_waitlist_copied'),
+    'options.js should contain pro_waitlist_copied'
+  );
+  assert.ok(
+    optionsJs.includes('navigator.clipboard.writeText'),
+    'options.js should write to clipboard for waitlist copy'
+  );
+  assert.ok(
+    optionsJs.includes('isAnonymousUsageDataEnabled'),
+    'options.js should reference anonymous usage data setting'
+  );
 
   // prompt-sort.ts (pure functions)
   assert.equal(parsePromptSortMode('most_used'), 'most_used');
@@ -2924,17 +3448,36 @@ async function run() {
     { id: 'y', title: 'Y', usageCount: 2 }
   ];
   const defaultSorted = sortPrompts(samplePromptsDefault, 'default');
-  assert.deepEqual(defaultSorted.map((p) => p.id), ['x', 'y'], 'default: keep input order');
+  assert.deepEqual(
+    defaultSorted.map((p) => p.id),
+    ['x', 'y'],
+    'default: keep input order'
+  );
 
   const promptVisibilitySamples = [
-    { id: 'builtin-visible', title: 'Visible', template: '{content}', builtIn: true, deleted: false },
-    { id: 'builtin-deleted', title: 'Deleted', template: '{content}', builtIn: true, deleted: true },
+    {
+      id: 'builtin-visible',
+      title: 'Visible',
+      template: '{content}',
+      builtIn: true,
+      deleted: false
+    },
+    {
+      id: 'builtin-deleted',
+      title: 'Deleted',
+      template: '{content}',
+      builtIn: true,
+      deleted: true
+    },
     { id: 'custom-visible', title: 'Custom', template: '{content}' }
   ];
   assert.equal(isPromptActive(promptVisibilitySamples[0]), true);
   assert.equal(isPromptActive(promptVisibilitySamples[1]), false);
   assert.equal(isPromptActive(promptVisibilitySamples[2]), true);
-  assert.deepEqual(getActivePrompts(promptVisibilitySamples).map((prompt) => prompt.id), ['builtin-visible', 'custom-visible']);
+  assert.deepEqual(
+    getActivePrompts(promptVisibilitySamples).map((prompt) => prompt.id),
+    ['builtin-visible', 'custom-visible']
+  );
   assert.deepEqual(
     buildPromptContextMenuItems({
       prompts: getActivePrompts(promptVisibilitySamples)
@@ -2961,14 +3504,25 @@ async function run() {
   const normalizedQuickPrompts = normalizeQuickPromptAssignments(quickPromptSamples, () => true);
   assert.equal(normalizedQuickPrompts.changed, true);
   assert.equal(getQuickPromptBySlot(normalizedQuickPrompts.prompts, 1)?.id, 'p1');
-  assert.equal(normalizedQuickPrompts.prompts.find((prompt) => prompt.id === 'p2')?.quickAccessSlot, undefined);
-  assert.equal(assignQuickPromptSlot(normalizedQuickPrompts.prompts, 'p3', 2).find((prompt) => prompt.id === 'p3')?.quickAccessSlot, 2);
+  assert.equal(
+    normalizedQuickPrompts.prompts.find((prompt) => prompt.id === 'p2')?.quickAccessSlot,
+    undefined
+  );
+  assert.equal(
+    assignQuickPromptSlot(normalizedQuickPrompts.prompts, 'p3', 2).find(
+      (prompt) => prompt.id === 'p3'
+    )?.quickAccessSlot,
+    2
+  );
   assert.equal(getQuickPromptSlotFromCommand('quick-prompt-slot-1'), 1);
   assert.equal(getQuickPromptSlotFromCommand('quick-prompt-slot-3'), 3);
   assert.equal(getQuickPromptSlotFromCommand('unknown-command'), null);
 
   // code-block-cleaner.ts (pure function)
-  assert.equal(cleanCodeBlockText('const Copy = 1;\nconsole.log(Copy);'), 'const Copy = 1;\nconsole.log(Copy);');
+  assert.equal(
+    cleanCodeBlockText('const Copy = 1;\nconsole.log(Copy);'),
+    'const Copy = 1;\nconsole.log(Copy);'
+  );
   assert.equal(
     cleanCodeBlockText('console.log("Copy");\nconsole.log("Clone");'),
     'console.log("Copy");\nconsole.log("Clone");'
@@ -3011,7 +3565,10 @@ async function run() {
   );
 
   assert.equal(maskProxyUrl(new URL('http://user:pass@127.0.0.1:7890')), 'http://127.0.0.1:7890');
-  assert.equal(maskProxyUrl(new URL('socks5://user:pass@127.0.0.1:1080')), 'socks5://127.0.0.1:1080');
+  assert.equal(
+    maskProxyUrl(new URL('socks5://user:pass@127.0.0.1:1080')),
+    'socks5://127.0.0.1:1080'
+  );
   assert.equal(mergeNoProxyValue('example.com'), 'example.com');
   assert.equal(mergeNoProxyValue(undefined), 'localhost,127.0.0.1,::1');
 
@@ -3136,7 +3693,8 @@ async function run() {
   }
 
   {
-    const fakeFetch: typeof fetch = (async () => new Response('', { status: 404 })) as unknown as typeof fetch;
+    const fakeFetch: typeof fetch = (async () =>
+      new Response('', { status: 404 })) as unknown as typeof fetch;
     const report = await runCwsPreflight([{ id: 'ok', url: 'https://ok.test/' }], {
       fetchFn: fakeFetch,
       timeoutMs: 10,
@@ -3160,7 +3718,10 @@ async function run() {
       exportedAt,
       dryRun: true
     });
-    assert.equal(filename, 'copylot-cws-publish-diagnostic-pack-1.1.28-2026-03-21-010203.dry-run.json');
+    assert.equal(
+      filename,
+      'copylot-cws-publish-diagnostic-pack-1.1.28-2026-03-21-010203.dry-run.json'
+    );
     assert.ok(!filename.includes('127.0.0.1'));
     assert.ok(!filename.includes('http'));
     assert.ok(!filename.includes('user'));
@@ -3189,15 +3750,18 @@ async function run() {
       throw err;
     }) as unknown as typeof fetch;
 
-    const preflightReport = await runCwsPreflight([{ id: 'googleapis', url: 'https://throw.test/' }], {
-      fetchFn: fakeFetch,
-      timeoutMs: 10,
-      now: (() => {
-        let t = 1000;
-        return () => (t += 5);
-      })(),
-      date: () => new Date('2026-03-21T00:00:00.000Z')
-    });
+    const preflightReport = await runCwsPreflight(
+      [{ id: 'googleapis', url: 'https://throw.test/' }],
+      {
+        fetchFn: fakeFetch,
+        timeoutMs: 10,
+        now: (() => {
+          let t = 1000;
+          return () => (t += 5);
+        })(),
+        date: () => new Date('2026-03-21T00:00:00.000Z')
+      }
+    );
 
     const fixHints = buildCwsPreflightFixHints(preflightReport, {
       enabled: false,
@@ -3207,7 +3771,9 @@ async function run() {
     });
     const proxyReadiness = evaluateCwsProxyReadiness(preflightReport, { enabled: false });
     assert.ok(fixHints.length > 0);
-    assert.ok(fixHints.join('\n').includes('HTTPS_PROXY') || fixHints.join('\n').includes('CWS_PROXY'));
+    assert.ok(
+      fixHints.join('\n').includes('HTTPS_PROXY') || fixHints.join('\n').includes('CWS_PROXY')
+    );
     assert.equal(proxyReadiness.status, 'proxy_not_started');
     assert.equal(proxyReadiness.blocking, true);
     assert.ok(proxyReadiness.fixCommand?.includes('pxy'));
@@ -3246,7 +3812,12 @@ async function run() {
       preflightReport,
       preflightFixHints: fixHints,
       proxyReadiness,
-      credentials: { extensionId: false, clientId: false, clientSecret: false, refreshToken: false },
+      credentials: {
+        extensionId: false,
+        clientId: false,
+        clientSecret: false,
+        refreshToken: false
+      },
       publishAttempt: {
         uploaded: false,
         published: false,
@@ -3272,7 +3843,12 @@ async function run() {
     ]);
     assert.deepEqual(Object.keys(pack.proxyReadiness), ['status', 'fixCommand', 'blocking']);
     assert.deepEqual(Object.keys(pack.zip), ['fileName', 'filePath', 'bytes', 'sha256']);
-    assert.deepEqual(Object.keys(pack.credentials), ['extensionId', 'clientId', 'clientSecret', 'refreshToken']);
+    assert.deepEqual(Object.keys(pack.credentials), [
+      'extensionId',
+      'clientId',
+      'clientSecret',
+      'refreshToken'
+    ]);
 
     for (const v of Object.values(pack.credentials)) assert.equal(typeof v, 'boolean');
 
@@ -3283,7 +3859,10 @@ async function run() {
 
   {
     const exportedAt = new Date('2026-03-21T01:02:03.000Z');
-    const filename = formatCwsListingEvidencePackFilename({ extensionVersion: '1.1.28', exportedAt });
+    const filename = formatCwsListingEvidencePackFilename({
+      extensionVersion: '1.1.28',
+      exportedAt
+    });
     assert.equal(filename, 'cws-listing-evidence-pack-1.1.28-2026-03-21-010203.json');
     assert.ok(filename.startsWith('cws-listing-evidence-pack-'));
     assert.ok(filename.endsWith('.json'));
@@ -3312,7 +3891,14 @@ async function run() {
       assert.ok(pack.extensionVersion.length > 0);
       assert.ok(pack.inputs.length >= 5);
 
-      assert.deepEqual(Object.keys(pack), ['packVersion', 'exportedAt', 'extensionVersion', 'inputs', 'listing', 'assertions']);
+      assert.deepEqual(Object.keys(pack), [
+        'packVersion',
+        'exportedAt',
+        'extensionVersion',
+        'inputs',
+        'listing',
+        'assertions'
+      ]);
       assert.deepEqual(Object.keys(pack.listing), [
         'descriptions',
         'keywords',
@@ -3353,7 +3939,10 @@ async function run() {
   }
 
   {
-    const policyMd = await fs.readFile(path.resolve(process.cwd(), DEFAULT_CWS_LISTING_REDLINES_POLICY_PATH), 'utf-8');
+    const policyMd = await fs.readFile(
+      path.resolve(process.cwd(), DEFAULT_CWS_LISTING_REDLINES_POLICY_PATH),
+      'utf-8'
+    );
     const policy = parseCwsListingRedlinesPolicyFromMarkdown(policyMd);
 
     const keywordsMd = [
@@ -3383,7 +3972,10 @@ async function run() {
   }
 
   {
-    const policyMd = await fs.readFile(path.resolve(process.cwd(), DEFAULT_CWS_LISTING_REDLINES_POLICY_PATH), 'utf-8');
+    const policyMd = await fs.readFile(
+      path.resolve(process.cwd(), DEFAULT_CWS_LISTING_REDLINES_POLICY_PATH),
+      'utf-8'
+    );
     const policy = parseCwsListingRedlinesPolicyFromMarkdown(policyMd);
 
     const keywordsMd = [
@@ -3410,7 +4002,10 @@ async function run() {
   }
 
   {
-    const policyMd = await fs.readFile(path.resolve(process.cwd(), DEFAULT_CWS_LISTING_REDLINES_POLICY_PATH), 'utf-8');
+    const policyMd = await fs.readFile(
+      path.resolve(process.cwd(), DEFAULT_CWS_LISTING_REDLINES_POLICY_PATH),
+      'utf-8'
+    );
     const policy = parseCwsListingRedlinesPolicyFromMarkdown(policyMd);
 
     const keywordsMd = [
@@ -3437,7 +4032,10 @@ async function run() {
 
   {
     const exportedAt = new Date('2026-03-21T01:02:03.000Z');
-    const filename = formatCwsListingDiffEvidencePackFilename({ extensionVersion: '1.1.28', exportedAt });
+    const filename = formatCwsListingDiffEvidencePackFilename({
+      extensionVersion: '1.1.28',
+      exportedAt
+    });
     assert.equal(filename, 'cws-listing-diff-evidence-pack-1.1.28-2026-03-21-010203.json');
     assert.ok(filename.startsWith('cws-listing-diff-evidence-pack-'));
     assert.ok(filename.endsWith('.json'));
@@ -3478,18 +4076,25 @@ async function run() {
   }
 
   {
-    const indexMd = await fs.readFile(path.resolve(process.cwd(), 'docs/evidence/v1-66/index.md'), 'utf-8');
+    const indexMd = await fs.readFile(
+      path.resolve(process.cwd(), 'docs/evidence/v1-66/index.md'),
+      'utf-8'
+    );
     const fileName = parseCwsListingEvidencePackFileNameFromIndexMarkdown(indexMd);
     assert.ok(fileName.startsWith('cws-listing-evidence-pack-'));
     assert.ok(fileName.endsWith('.json'));
 
-    const baselinePackPath = await resolveBaselineListingEvidencePackPathFromIndexFile('docs/evidence/v1-66/index.md');
+    const baselinePackPath = await resolveBaselineListingEvidencePackPathFromIndexFile(
+      'docs/evidence/v1-66/index.md'
+    );
     assert.equal(baselinePackPath, `docs/evidence/v1-66/${fileName}`);
   }
 
   {
     const exportedAt = new Date('2026-03-21T00:00:00.000Z');
-    const baselinePackPath = await resolveBaselineListingEvidencePackPathFromIndexFile('docs/evidence/v1-66/index.md');
+    const baselinePackPath = await resolveBaselineListingEvidencePackPathFromIndexFile(
+      'docs/evidence/v1-66/index.md'
+    );
 
     const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'copylot-unit-test-v1-67-'));
     const built1 = await buildCwsListingDiffEvidencePackFromRepo({
@@ -3504,12 +4109,47 @@ async function run() {
     assert.equal(pack.exportedAt, exportedAt.toISOString());
     assert.ok(pack.extensionVersion.length > 0);
 
-    assert.deepEqual(Object.keys(pack), ['packVersion', 'exportedAt', 'extensionVersion', 'baseline', 'current', 'diff', 'redlines']);
-    assert.deepEqual(Object.keys(pack.baseline), ['packPath', 'sha256', 'extensionVersion', 'exportedAt', 'assertions']);
-    assert.deepEqual(Object.keys(pack.current), ['packPath', 'sha256', 'extensionVersion', 'exportedAt', 'assertions']);
-    assert.deepEqual(Object.keys(pack.diff), ['keywords', 'descriptions', 'screenshotPlan', 'assertions']);
-    assert.deepEqual(Object.keys(pack.diff.keywords), ['enAdded', 'enRemoved', 'zhAdded', 'zhRemoved']);
-    assert.deepEqual(Object.keys(pack.diff.descriptions), ['enSha256From', 'enSha256To', 'zhSha256From', 'zhSha256To']);
+    assert.deepEqual(Object.keys(pack), [
+      'packVersion',
+      'exportedAt',
+      'extensionVersion',
+      'baseline',
+      'current',
+      'diff',
+      'redlines'
+    ]);
+    assert.deepEqual(Object.keys(pack.baseline), [
+      'packPath',
+      'sha256',
+      'extensionVersion',
+      'exportedAt',
+      'assertions'
+    ]);
+    assert.deepEqual(Object.keys(pack.current), [
+      'packPath',
+      'sha256',
+      'extensionVersion',
+      'exportedAt',
+      'assertions'
+    ]);
+    assert.deepEqual(Object.keys(pack.diff), [
+      'keywords',
+      'descriptions',
+      'screenshotPlan',
+      'assertions'
+    ]);
+    assert.deepEqual(Object.keys(pack.diff.keywords), [
+      'enAdded',
+      'enRemoved',
+      'zhAdded',
+      'zhRemoved'
+    ]);
+    assert.deepEqual(Object.keys(pack.diff.descriptions), [
+      'enSha256From',
+      'enSha256To',
+      'zhSha256From',
+      'zhSha256To'
+    ]);
     assert.deepEqual(Object.keys(pack.diff.screenshotPlan), ['changedIds']);
     assert.deepEqual(Object.keys(pack.diff.assertions), ['changedKeys']);
 

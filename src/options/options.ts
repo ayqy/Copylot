@@ -36,7 +36,7 @@ import {
   buildChromeWebStoreUrl,
   buildOfficialSiteUrl,
   buildPrivacyPolicyUrl,
-  buildProWaitlistUrl
+  buildProRoadmapUrl
 } from '../shared/external-links';
 import {
   buildProWaitlistRecruitCopyText,
@@ -54,7 +54,10 @@ import {
   formatProIntentWeeklyDigestMarkdown,
   type ProIntentWeeklyDigestEnvInfo
 } from '../shared/pro-intent-weekly-digest';
-import { buildProIntentEventsCsv, formatProIntentEvents7dCsvFilename } from '../shared/pro-intent-events-csv';
+import {
+  buildProIntentEventsCsv,
+  formatProIntentEvents7dCsvFilename
+} from '../shared/pro-intent-events-csv';
 import {
   buildProIntentByCampaignCsv,
   formatProIntentByCampaign7dCsvFilename
@@ -103,7 +106,11 @@ import {
   type WomSummary
 } from '../shared/wom-summary';
 import { parsePromptSortMode, sortPrompts, type PromptSortMode } from '../shared/prompt-sort';
-import { buildProIntentAttribution, type ProIntentContent, type ProIntentSource } from '../shared/pro-intent-attribution';
+import {
+  buildProIntentAttribution,
+  type ProIntentContent,
+  type ProIntentSource
+} from '../shared/pro-intent-attribution';
 import {
   buildProIntentV1_100Summary,
   formatProIntentV1_100Csv,
@@ -121,9 +128,9 @@ import {
 
 // Simple UUID generator
 function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
@@ -216,7 +223,9 @@ async function reportE2EOpenedUrl(url: string): Promise<void> {
   try {
     const result = await chrome.storage.local.get(E2E_OPENED_URLS_KEY);
     const existing = Array.isArray(result[E2E_OPENED_URLS_KEY])
-      ? (result[E2E_OPENED_URLS_KEY] as unknown[]).filter((item): item is string => typeof item === 'string')
+      ? (result[E2E_OPENED_URLS_KEY] as unknown[]).filter(
+          (item): item is string => typeof item === 'string'
+        )
       : [];
     existing.push(url);
     await chrome.storage.local.set({
@@ -243,7 +252,7 @@ interface OptionsElements {
   emptyState: HTMLElement;
   createFirstPromptBtn: HTMLButtonElement;
   mobileAddBtn: HTMLButtonElement;
-  
+
   // Modal elements
   promptEditorModal: HTMLElement;
   modalTitle: HTMLElement;
@@ -260,20 +269,20 @@ interface OptionsElements {
   previewPrompt: HTMLButtonElement;
   cancelBtn: HTMLButtonElement;
   saveBtn: HTMLButtonElement;
-  
+
   // Import/Export elements
   importExportBtn: HTMLButtonElement;
   importExportModal: HTMLElement;
-  
+
   // Preview elements
   previewModal: HTMLElement;
   previewSample: HTMLTextAreaElement;
   previewResult: HTMLElement;
-  
+
   // Usage instructions
   usageInstructions: HTMLElement;
   hideInstructionsBtn: HTMLButtonElement;
-  
+
   // Sync status
   syncStatusBtn: HTMLButtonElement;
   syncStatusText: HTMLElement;
@@ -406,7 +415,7 @@ function getElements(): OptionsElements {
     emptyState: document.getElementById('empty-state') as HTMLElement,
     createFirstPromptBtn: document.getElementById('create-first-prompt-btn') as HTMLButtonElement,
     mobileAddBtn: document.getElementById('mobile-add-btn') as HTMLButtonElement,
-    
+
     promptEditorModal: document.getElementById('prompt-editor-modal') as HTMLElement,
     modalTitle: document.getElementById('modal-title') as HTMLElement,
     closeModalBtn: document.getElementById('close-modal-btn') as HTMLButtonElement,
@@ -418,100 +427,147 @@ function getElements(): OptionsElements {
     promptTargetChat: document.getElementById('prompt-target-chat') as HTMLSelectElement,
     promptAutoOpenChat: document.getElementById('prompt-auto-open-chat') as HTMLInputElement,
     promptQuickAccessSlot: document.getElementById('prompt-quick-access-slot') as HTMLSelectElement,
-    insertContentPlaceholder: document.getElementById('insert-content-placeholder') as HTMLButtonElement,
+    insertContentPlaceholder: document.getElementById(
+      'insert-content-placeholder'
+    ) as HTMLButtonElement,
     previewPrompt: document.getElementById('preview-prompt') as HTMLButtonElement,
     cancelBtn: document.getElementById('cancel-btn') as HTMLButtonElement,
     saveBtn: document.getElementById('save-btn') as HTMLButtonElement,
-    
+
     importExportBtn: document.getElementById('import-export-btn') as HTMLButtonElement,
     importExportModal: document.getElementById('import-export-modal') as HTMLElement,
-    
+
     previewModal: document.getElementById('preview-modal') as HTMLElement,
     previewSample: document.getElementById('preview-sample') as HTMLTextAreaElement,
     previewResult: document.getElementById('preview-result') as HTMLElement,
-    
+
     usageInstructions: document.getElementById('usage-instructions') as HTMLElement,
     hideInstructionsBtn: document.getElementById('hide-instructions-btn') as HTMLButtonElement,
-    
+
     syncStatusBtn: document.getElementById('sync-status-btn') as HTMLButtonElement,
     syncStatusText: document.getElementById('sync-status-text') as HTMLElement,
 
     onboardingPanel: document.getElementById('options-onboarding-panel') as HTMLElement,
     onboardingOpenButton: document.getElementById('options-onboarding-open') as HTMLButtonElement,
-    openShortcutSettingsButton: document.getElementById('options-open-shortcut-settings') as HTMLButtonElement,
-    shortcutCurrentConvert: document.getElementById('options-shortcut-current-convert') as HTMLElement,
+    openShortcutSettingsButton: document.getElementById(
+      'options-open-shortcut-settings'
+    ) as HTMLButtonElement,
+    shortcutCurrentConvert: document.getElementById(
+      'options-shortcut-current-convert'
+    ) as HTMLElement,
     shortcutCurrentSlot1: document.getElementById('options-shortcut-current-slot-1') as HTMLElement,
     shortcutCurrentSlot2: document.getElementById('options-shortcut-current-slot-2') as HTMLElement,
     shortcutCurrentSlot3: document.getElementById('options-shortcut-current-slot-3') as HTMLElement,
-    shortcutSlot1PromptName: document.getElementById('options-shortcut-slot-1-prompt-name') as HTMLElement,
-    shortcutSlot2PromptName: document.getElementById('options-shortcut-slot-2-prompt-name') as HTMLElement,
-    shortcutSlot3PromptName: document.getElementById('options-shortcut-slot-3-prompt-name') as HTMLElement,
-    shortcutSettingsFeedback: document.getElementById('options-shortcut-settings-feedback') as HTMLElement,
+    shortcutSlot1PromptName: document.getElementById(
+      'options-shortcut-slot-1-prompt-name'
+    ) as HTMLElement,
+    shortcutSlot2PromptName: document.getElementById(
+      'options-shortcut-slot-2-prompt-name'
+    ) as HTMLElement,
+    shortcutSlot3PromptName: document.getElementById(
+      'options-shortcut-slot-3-prompt-name'
+    ) as HTMLElement,
+    shortcutSettingsFeedback: document.getElementById(
+      'options-shortcut-settings-feedback'
+    ) as HTMLElement,
 
-    anonymousUsageDataSwitch: document.getElementById('anonymous-usage-data-switch') as HTMLInputElement,
-    telemetryEventsPanel: (document.getElementById('telemetry-events-panel') || document.createElement("details")) as HTMLDetailsElement,
+    anonymousUsageDataSwitch: document.getElementById(
+      'anonymous-usage-data-switch'
+    ) as HTMLInputElement,
+    telemetryEventsPanel: (document.getElementById('telemetry-events-panel') ||
+      document.createElement('details')) as HTMLDetailsElement,
     telemetryEventsCount: document.getElementById('telemetry-events-count') as HTMLElement,
-    telemetryEventsView: (document.getElementById('telemetry-events-view') || document.createElement("textarea")) as HTMLTextAreaElement,
-    telemetryEventsRefreshButton: (document.getElementById('telemetry-events-refresh') || document.createElement("button")) as HTMLButtonElement,
-    telemetryEventsCopyButton: (document.getElementById('telemetry-events-copy') || document.createElement("button")) as HTMLButtonElement,
-    telemetryEventsClearButton: (document.getElementById('telemetry-events-clear') || document.createElement("button")) as HTMLButtonElement,
-    proFunnelPanel: (document.getElementById('pro-funnel-panel') || document.createElement("details")) as HTMLDetailsElement,
-    proFunnelView: (document.getElementById('pro-funnel-view') || document.createElement("textarea")) as HTMLTextAreaElement,
+    telemetryEventsView: (document.getElementById('telemetry-events-view') ||
+      document.createElement('textarea')) as HTMLTextAreaElement,
+    telemetryEventsRefreshButton: (document.getElementById('telemetry-events-refresh') ||
+      document.createElement('button')) as HTMLButtonElement,
+    telemetryEventsCopyButton: (document.getElementById('telemetry-events-copy') ||
+      document.createElement('button')) as HTMLButtonElement,
+    telemetryEventsClearButton: (document.getElementById('telemetry-events-clear') ||
+      document.createElement('button')) as HTMLButtonElement,
+    proFunnelPanel: (document.getElementById('pro-funnel-panel') ||
+      document.createElement('details')) as HTMLDetailsElement,
+    proFunnelView: (document.getElementById('pro-funnel-view') ||
+      document.createElement('textarea')) as HTMLTextAreaElement,
     proFunnelDisabledNotice: document.getElementById('pro-funnel-disabled-notice') as HTMLElement,
-    proFunnelRefreshButton: (document.getElementById('pro-funnel-refresh') || document.createElement("button")) as HTMLButtonElement,
-    proFunnelCopyButton: (document.getElementById('pro-funnel-copy') || document.createElement("button")) as HTMLButtonElement,
-    proFunnelEvidencePackCopyButton: (document.getElementById('pro-funnel-evidence-pack-copy') || document.createElement("button")) as HTMLButtonElement,
+    proFunnelRefreshButton: (document.getElementById('pro-funnel-refresh') ||
+      document.createElement('button')) as HTMLButtonElement,
+    proFunnelCopyButton: (document.getElementById('pro-funnel-copy') ||
+      document.createElement('button')) as HTMLButtonElement,
+    proFunnelEvidencePackCopyButton: (document.getElementById('pro-funnel-evidence-pack-copy') ||
+      document.createElement('button')) as HTMLButtonElement,
     downloadProIntentRunEvidencePackButton: (document.getElementById(
       'download-pro-intent-run-evidence-pack'
-    ) || document.createElement("button")) as HTMLButtonElement,
-    exportProIntentEvents7dCsvButton: (document.getElementById('export-pro-intent-events-7d-csv') || document.createElement("button")) as HTMLButtonElement,
+    ) || document.createElement('button')) as HTMLButtonElement,
+    exportProIntentEvents7dCsvButton: (document.getElementById('export-pro-intent-events-7d-csv') ||
+      document.createElement('button')) as HTMLButtonElement,
     exportProIntentByCampaign7dCsvButton: (document.getElementById(
       'export-pro-intent-by-campaign-7d-csv'
-    ) || document.createElement("button")) as HTMLButtonElement,
+    ) || document.createElement('button')) as HTMLButtonElement,
     exportProDistributionByCampaign7dCsvButton: (document.getElementById(
       'export-pro-distribution-by-campaign-7d-csv'
-    ) || document.createElement("button")) as HTMLButtonElement,
+    ) || document.createElement('button')) as HTMLButtonElement,
     exportProAcquisitionEfficiencyByCampaign7dCsvButton: (document.getElementById(
       EXPORT_PRO_ACQ_EFF_BY_CAMPAIGN_7D_CSV_BUTTON_ID
-    ) || document.createElement("button")) as HTMLButtonElement,
+    ) || document.createElement('button')) as HTMLButtonElement,
     proAcqEffByCampaignWeeklyReportCopyButton: (document.getElementById(
       COPY_PRO_ACQ_EFF_BY_CAMPAIGN_WEEKLY_REPORT_BUTTON_ID
-    ) || document.createElement("button")) as HTMLButtonElement,
+    ) || document.createElement('button')) as HTMLButtonElement,
     proAcqEffByCampaignEvidencePackCopyButton: (document.getElementById(
       COPY_PRO_ACQ_EFF_BY_CAMPAIGN_EVIDENCE_PACK_BUTTON_ID
-    ) || document.createElement("button")) as HTMLButtonElement,
+    ) || document.createElement('button')) as HTMLButtonElement,
     proAcqEffByCampaignEvidencePackDownloadButton: (document.getElementById(
       DOWNLOAD_PRO_ACQ_EFF_BY_CAMPAIGN_EVIDENCE_PACK_BUTTON_ID
-    ) || document.createElement("button")) as HTMLButtonElement,
+    ) || document.createElement('button')) as HTMLButtonElement,
     proWeeklyChannelOpsEvidencePackDownloadButton: (document.getElementById(
       DOWNLOAD_PRO_WEEKLY_CHANNEL_OPS_EVIDENCE_PACK_BUTTON_ID
-    ) || document.createElement("button")) as HTMLButtonElement,
-    proIntentWeeklyDigestCopyButton: (document.getElementById('copy-pro-intent-weekly-digest') || document.createElement("button")) as HTMLButtonElement,
+    ) || document.createElement('button')) as HTMLButtonElement,
+    proIntentWeeklyDigestCopyButton: (document.getElementById('copy-pro-intent-weekly-digest') ||
+      document.createElement('button')) as HTMLButtonElement,
     proIntentByCampaignWeeklyReportCopyButton: (document.getElementById(
       'copy-pro-intent-by-campaign-weekly-report'
-    ) || document.createElement("button")) as HTMLButtonElement,
-    womSummaryPanel: (document.getElementById('wom-summary-panel') || document.createElement("details")) as HTMLDetailsElement,
-    womSummaryView: (document.getElementById('wom-summary-view') || document.createElement("textarea")) as HTMLTextAreaElement,
+    ) || document.createElement('button')) as HTMLButtonElement,
+    womSummaryPanel: (document.getElementById('wom-summary-panel') ||
+      document.createElement('details')) as HTMLDetailsElement,
+    womSummaryView: (document.getElementById('wom-summary-view') ||
+      document.createElement('textarea')) as HTMLTextAreaElement,
     womSummaryDisabledNotice: document.getElementById('wom-summary-disabled-notice') as HTMLElement,
-    womSummaryRefreshButton: (document.getElementById('wom-summary-refresh') || document.createElement("button")) as HTMLButtonElement,
-    womSummaryCopyButton: (document.getElementById('wom-summary-copy') || document.createElement("button")) as HTMLButtonElement,
-    womSummaryEvidencePackCopyButton: (document.getElementById('wom-summary-evidence-pack-copy') || document.createElement("button")) as HTMLButtonElement,
-    growthFunnelPanel: (document.getElementById('growth-funnel-panel') || document.createElement("details")) as HTMLDetailsElement,
-    growthFunnelView: (document.getElementById('growth-funnel-view') || document.createElement("textarea")) as HTMLTextAreaElement,
-    growthFunnelRefreshButton: (document.getElementById('growth-funnel-refresh') || document.createElement("button")) as HTMLButtonElement,
-    growthFunnelCopyButton: (document.getElementById('growth-funnel-copy') || document.createElement("button")) as HTMLButtonElement,
-    growthStatsPanel: (document.getElementById('growth-stats-panel') || document.createElement("details")) as HTMLDetailsElement,
-    growthStatsView: (document.getElementById('growth-stats-view') || document.createElement("textarea")) as HTMLTextAreaElement,
-    growthStatsRefreshButton: (document.getElementById('growth-stats-refresh') || document.createElement("button")) as HTMLButtonElement,
-    growthStatsCopyButton: (document.getElementById('growth-stats-copy') || document.createElement("button")) as HTMLButtonElement,
-    growthStatsResetButton: (document.getElementById('growth-stats-reset') || document.createElement("button")) as HTMLButtonElement,
+    womSummaryRefreshButton: (document.getElementById('wom-summary-refresh') ||
+      document.createElement('button')) as HTMLButtonElement,
+    womSummaryCopyButton: (document.getElementById('wom-summary-copy') ||
+      document.createElement('button')) as HTMLButtonElement,
+    womSummaryEvidencePackCopyButton: (document.getElementById('wom-summary-evidence-pack-copy') ||
+      document.createElement('button')) as HTMLButtonElement,
+    growthFunnelPanel: (document.getElementById('growth-funnel-panel') ||
+      document.createElement('details')) as HTMLDetailsElement,
+    growthFunnelView: (document.getElementById('growth-funnel-view') ||
+      document.createElement('textarea')) as HTMLTextAreaElement,
+    growthFunnelRefreshButton: (document.getElementById('growth-funnel-refresh') ||
+      document.createElement('button')) as HTMLButtonElement,
+    growthFunnelCopyButton: (document.getElementById('growth-funnel-copy') ||
+      document.createElement('button')) as HTMLButtonElement,
+    growthStatsPanel: (document.getElementById('growth-stats-panel') ||
+      document.createElement('details')) as HTMLDetailsElement,
+    growthStatsView: (document.getElementById('growth-stats-view') ||
+      document.createElement('textarea')) as HTMLTextAreaElement,
+    growthStatsRefreshButton: (document.getElementById('growth-stats-refresh') ||
+      document.createElement('button')) as HTMLButtonElement,
+    growthStatsCopyButton: (document.getElementById('growth-stats-copy') ||
+      document.createElement('button')) as HTMLButtonElement,
+    growthStatsResetButton: (document.getElementById('growth-stats-reset') ||
+      document.createElement('button')) as HTMLButtonElement,
 
     proIntentCampaignInput: document.getElementById('pro-intent-campaign') as HTMLInputElement,
-    proWaitlistButton: (document.getElementById('pro-waitlist-button') || document.createElement('button')) as HTMLButtonElement,
+    proWaitlistButton: (document.getElementById('pro-waitlist-button') ||
+      document.createElement('button')) as HTMLButtonElement,
     proWaitlistUrlCopyButton: document.getElementById('pro-waitlist-url-copy') as HTMLButtonElement,
-    proWaitlistRecruitCopyButton: document.getElementById('pro-waitlist-recruit-copy') as HTMLButtonElement,
+    proWaitlistRecruitCopyButton: document.getElementById(
+      'pro-waitlist-recruit-copy'
+    ) as HTMLButtonElement,
     proStoreUrlCopyButton: document.getElementById('pro-store-url-copy') as HTMLButtonElement,
-    proDistributionPackCopyButton: document.getElementById('pro-distribution-pack-copy') as HTMLButtonElement,
+    proDistributionPackCopyButton: document.getElementById(
+      'pro-distribution-pack-copy'
+    ) as HTMLButtonElement,
     proWaitlistDistributionCampaignRequiredHint: document.getElementById(
       'pro-waitlist-distribution-campaign-required'
     ) as HTMLElement,
@@ -534,7 +590,9 @@ function getElements(): OptionsElements {
     chatServicesGrid: document.getElementById('chat-services-grid') as HTMLElement,
     chatServiceEditorModal: document.getElementById('chat-service-editor-modal') as HTMLElement,
     chatServiceModalTitle: document.getElementById('chat-service-modal-title') as HTMLElement,
-    closeChatServiceModalBtn: document.getElementById('close-chat-service-modal-btn') as HTMLButtonElement,
+    closeChatServiceModalBtn: document.getElementById(
+      'close-chat-service-modal-btn'
+    ) as HTMLButtonElement,
     chatServiceForm: document.getElementById('chat-service-form') as HTMLFormElement,
     chatServiceId: document.getElementById('chat-service-id') as HTMLInputElement,
     chatServiceName: document.getElementById('chat-service-name') as HTMLInputElement,
@@ -643,9 +701,11 @@ function renderShortcutSettingsPanel(): void {
     const command = getQuickPromptSlotCommandName(slot);
     const prompt = activePrompts.find((item) => item.quickAccessSlot === slot);
     const currentShortcut = currentCommandShortcuts.get(command)?.trim();
-    currentMap[slot].textContent = currentShortcut || (!currentCommandShortcuts.has(command)
-      ? getQuickCommandDefaultShortcut(command, platform)
-      : getMessage('shortcutNotSet'));
+    currentMap[slot].textContent =
+      currentShortcut ||
+      (!currentCommandShortcuts.has(command)
+        ? getQuickCommandDefaultShortcut(command, platform)
+        : getMessage('shortcutNotSet'));
     promptNameMap[slot].textContent = prompt?.title || getMessage('shortcutPromptUnassigned');
   }
 }
@@ -659,16 +719,26 @@ async function loadSettings() {
     await loadCommandShortcuts();
     allPrompts = [...currentSettings.userPrompts];
     if (elements?.anonymousUsageDataSwitch) {
-      elements.anonymousUsageDataSwitch.checked = Boolean(currentSettings.isAnonymousUsageDataEnabled);
+      elements.anonymousUsageDataSwitch.checked = Boolean(
+        currentSettings.isAnonymousUsageDataEnabled
+      );
     }
     if (elements?.proIntentCampaignInput) {
       elements.proIntentCampaignInput.value = currentSettings.proIntentCampaign || '';
     }
     updateProWaitlistDistributionToolkitState();
-    updateProIntentEvents7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
-    updateProIntentByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
-    updateProDistributionByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
-    updateProAcquisitionEfficiencyByCampaign7dCsvExportButtonState(Boolean(currentSettings.isAnonymousUsageDataEnabled));
+    updateProIntentEvents7dCsvExportButtonState(
+      Boolean(currentSettings.isAnonymousUsageDataEnabled)
+    );
+    updateProIntentByCampaign7dCsvExportButtonState(
+      Boolean(currentSettings.isAnonymousUsageDataEnabled)
+    );
+    updateProDistributionByCampaign7dCsvExportButtonState(
+      Boolean(currentSettings.isAnonymousUsageDataEnabled)
+    );
+    updateProAcquisitionEfficiencyByCampaign7dCsvExportButtonState(
+      Boolean(currentSettings.isAnonymousUsageDataEnabled)
+    );
     syncOptionsOnboardingPanelVisibility(currentSettings);
     filterAndRenderPrompts();
     renderShortcutSettingsPanel();
@@ -690,7 +760,7 @@ function updateSyncStatus() {
     elements.syncStatusBtn.style.color = 'var(--error-color)';
     return;
   }
-  
+
   elements.syncStatusText.textContent = getMessage('syncStatusConnected');
   elements.syncStatusBtn.style.color = 'var(--success-color)';
 }
@@ -702,10 +772,10 @@ async function manualSync() {
   try {
     elements.syncStatusText.textContent = getMessage('syncStatusSyncing');
     elements.syncStatusBtn.style.color = 'var(--warning-color)';
-    
+
     // 重新保存设置以触发同步
     await saveSettings({ userPrompts: allPrompts });
-    
+
     elements.syncStatusText.textContent = getMessage('syncStatusConnected');
     elements.syncStatusBtn.style.color = 'var(--success-color)';
     showNotification(getMessage('syncSuccess'), 'success');
@@ -737,7 +807,9 @@ async function setAnonymousUsageDataEnabled(enabled: boolean): Promise<void> {
   } catch (error) {
     console.error('Failed to update anonymous usage data toggle:', error);
     if (elements?.anonymousUsageDataSwitch) {
-      elements.anonymousUsageDataSwitch.checked = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+      elements.anonymousUsageDataSwitch.checked = Boolean(
+        currentSettings?.isAnonymousUsageDataEnabled
+      );
     }
     showNotification(getMessage('savingFailed'), 'error');
   }
@@ -778,14 +850,15 @@ function filterAndRenderPrompts() {
   const categoryFilter = elements.categoryFilter.value;
   const activePrompts = getActivePrompts(allPrompts);
 
-  filteredPrompts = activePrompts.filter(prompt => {
-    const matchesSearch = !searchTerm || 
+  filteredPrompts = activePrompts.filter((prompt) => {
+    const matchesSearch =
+      !searchTerm ||
       prompt.title.toLowerCase().includes(searchTerm) ||
       prompt.template.toLowerCase().includes(searchTerm);
-    
-    const matchesCategory = categoryFilter === 'all' || 
-      getCategoryFromPrompt(prompt) === categoryFilter;
-    
+
+    const matchesCategory =
+      categoryFilter === 'all' || getCategoryFromPrompt(prompt) === categoryFilter;
+
     return matchesSearch && matchesCategory;
   });
 
@@ -803,7 +876,7 @@ function getCategoryFromPrompt(prompt: Prompt): string {
   if (prompt.category) {
     return prompt.category;
   }
-  
+
   // 回退到基于preset ID或内容推断分类（用于旧数据兼容性）
   if (prompt.id.includes('summary')) return 'summary';
   if (prompt.id.includes('translate')) return 'translate';
@@ -817,7 +890,7 @@ function getCategoryFromPrompt(prompt: Prompt): string {
  */
 function renderPrompts(prompts: Prompt[]) {
   elements.promptsGrid.innerHTML = '';
-  
+
   if (prompts.length === 0) {
     elements.emptyState.style.display = 'block';
     return;
@@ -825,7 +898,7 @@ function renderPrompts(prompts: Prompt[]) {
 
   elements.emptyState.style.display = 'none';
 
-  prompts.forEach(prompt => {
+  prompts.forEach((prompt) => {
     const card = createPromptCard(prompt);
     elements.promptsGrid.appendChild(card);
   });
@@ -838,25 +911,28 @@ function createPromptCard(prompt: Prompt): HTMLElement {
   const card = document.createElement('div');
   card.className = 'prompt-card';
   card.setAttribute('data-id', prompt.id);
-  
+
   const category = getCategoryFromPrompt(prompt);
   const categoryText = getCategoryDisplayName(category);
-  const shortcutLabel =
-    isQuickPromptSlot(prompt.quickAccessSlot) ? formatPromptSlotShortcut(prompt.quickAccessSlot) : null;
+  const shortcutLabel = isQuickPromptSlot(prompt.quickAccessSlot)
+    ? formatPromptSlotShortcut(prompt.quickAccessSlot)
+    : null;
   const quickSlotText =
     isQuickPromptSlot(prompt.quickAccessSlot) && shortcutLabel
       ? `${getMessage(`quickPromptSlot${prompt.quickAccessSlot}`)} · ${shortcutLabel}`
       : null;
   const lastUsedText =
-    typeof prompt.lastUsedAt === 'number' && Number.isFinite(prompt.lastUsedAt) && prompt.lastUsedAt > 0
+    typeof prompt.lastUsedAt === 'number' &&
+    Number.isFinite(prompt.lastUsedAt) &&
+    prompt.lastUsedAt > 0
       ? formatTimeAgo(prompt.lastUsedAt)
       : getMessage('promptNeverUsed');
-  
+
   // 为内置prompt添加特殊样式类
   if (prompt.builtIn) {
     card.classList.add('builtin-prompt');
   }
-  
+
   card.innerHTML = `
     <input type="checkbox" class="prompt-card-checkbox" data-id="${prompt.id}">
     <div class="prompt-card-header">
@@ -919,7 +995,7 @@ function getCategoryDisplayName(category: string): string {
  */
 const ICON_COLORS = [
   '#4F46E5', // 靛紫色 - ChatGPT
-  '#D97F42', // 橙棕色 - Claude  
+  '#D97F42', // 橙棕色 - Claude
   '#4285F4', // 蓝色 - Gemini
   '#295FFF', // 深蓝色 - 文心一言
   '#FF6400', // 橙色 - 通义千问
@@ -933,7 +1009,7 @@ const ICON_COLORS = [
   '#EC4899', // 粉色
   '#84CC16', // 柠檬绿
   '#F97316', // 橙红色
-  '#6366F1'  // 蓝紫色
+  '#6366F1' // 蓝紫色
 ];
 
 /**
@@ -942,31 +1018,31 @@ const ICON_COLORS = [
 function getServiceIconColor(serviceId: string): string {
   // 对于内置服务，使用预定义的颜色映射
   const builtInColors: Record<string, string> = {
-    'chatgpt': ICON_COLORS[0],
-    'claude': ICON_COLORS[1], 
-    'gemini': ICON_COLORS[2],
-    'yiyan': ICON_COLORS[3],
-    'tongyi': ICON_COLORS[4],
-    'kimi': ICON_COLORS[5],
-    'doubao': ICON_COLORS[6],
-    'deepseek': ICON_COLORS[7],
-    'poe': ICON_COLORS[8],
-    'glm': ICON_COLORS[9],
+    chatgpt: ICON_COLORS[0],
+    claude: ICON_COLORS[1],
+    gemini: ICON_COLORS[2],
+    yiyan: ICON_COLORS[3],
+    tongyi: ICON_COLORS[4],
+    kimi: ICON_COLORS[5],
+    doubao: ICON_COLORS[6],
+    deepseek: ICON_COLORS[7],
+    poe: ICON_COLORS[8],
+    glm: ICON_COLORS[9],
     'openai-playground': ICON_COLORS[10],
-    'perplexity': ICON_COLORS[11],
-    'grok': ICON_COLORS[12],
-    'lmarena': ICON_COLORS[13]
+    perplexity: ICON_COLORS[11],
+    grok: ICON_COLORS[12],
+    lmarena: ICON_COLORS[13]
   };
-  
+
   if (builtInColors[serviceId]) {
     return builtInColors[serviceId];
   }
-  
+
   // 对于自定义服务，使用简单的哈希算法分配颜色
   let hash = 0;
   for (let i = 0; i < serviceId.length; i++) {
     const char = serviceId.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // 转换为32位整数
   }
   const colorIndex = Math.abs(hash) % ICON_COLORS.length;
@@ -978,14 +1054,14 @@ function getServiceIconColor(serviceId: string): string {
  */
 function getServiceIconInfo(service: ChatService): { text: string; color: string } {
   const serviceName = service.name;
-  
+
   if (!serviceName) {
     return { text: '?', color: ICON_COLORS[0] };
   }
-  
+
   // 获取第一个字符并转换为大写
   const firstChar = serviceName.charAt(0).toUpperCase();
-  
+
   let iconText: string;
   // 如果是中文字符，直接返回
   if (/[\u4e00-\u9fff]/.test(firstChar)) {
@@ -999,7 +1075,7 @@ function getServiceIconInfo(service: ChatService): { text: string; color: string
   else {
     iconText = '?';
   }
-  
+
   return {
     text: iconText,
     color: getServiceIconColor(service.id)
@@ -1020,26 +1096,26 @@ function escapeHtml(text: string): string {
  */
 function formatTimeAgo(timestamp?: number): string {
   if (!timestamp) return getMessage('justCreated');
-  
+
   const now = Date.now();
   const diffMs = now - timestamp;
   const diffSec = Math.floor(diffMs / 1000);
   const diffMin = Math.floor(diffSec / 60);
   const diffHour = Math.floor(diffMin / 60);
   const diffDay = Math.floor(diffHour / 24);
-  
+
   if (diffSec < 60) return getMessage('justNow');
   if (diffMin < 60) return getMessage('minutesAgo', [diffMin.toString()]);
   if (diffHour < 24) return getMessage('hoursAgo', [diffHour.toString()]);
   if (diffDay < 7) return getMessage('daysAgo', [diffDay.toString()]);
-  
+
   const date = new Date(timestamp);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   const hour = String(date.getHours()).padStart(2, '0');
   const minute = String(date.getMinutes()).padStart(2, '0');
-  
+
   return `${year}-${month}-${day} ${hour}:${minute}`;
 }
 
@@ -1056,9 +1132,9 @@ function formatUsageCount(count?: number): string {
 function updateUI() {
   // 批量操作按钮总是可用，但文本会根据选择状态变化
   elements.batchActionBtn.disabled = false;
-  
+
   // 更新复选框状态
-  document.querySelectorAll('.prompt-card-checkbox').forEach(checkbox => {
+  document.querySelectorAll('.prompt-card-checkbox').forEach((checkbox) => {
     const promptId = (checkbox as HTMLInputElement).getAttribute('data-id');
     if (promptId) {
       (checkbox as HTMLInputElement).checked = selectedPrompts.has(promptId);
@@ -1082,7 +1158,7 @@ function togglePromptSelection(promptId: string) {
  * 全选prompts
  */
 function selectAllPrompts() {
-  filteredPrompts.forEach(prompt => {
+  filteredPrompts.forEach((prompt) => {
     selectedPrompts.add(prompt.id);
   });
   updateUI();
@@ -1104,11 +1180,11 @@ async function deleteSelectedPrompts() {
     showNotification(getMessage('errorNoPromptsSelected'), 'error');
     return;
   }
-  
+
   const count = selectedPrompts.size;
-      if (confirm(getMessage('confirmDeleteSelectedMessage', [count.toString()]))) {
+  if (confirm(getMessage('confirmDeleteSelectedMessage', [count.toString()]))) {
     // 处理批量删除，对内置prompt标记删除，对用户prompt直接删除
-    allPrompts.forEach(prompt => {
+    allPrompts.forEach((prompt) => {
       if (selectedPrompts.has(prompt.id)) {
         if (prompt.builtIn) {
           prompt.deleted = true;
@@ -1116,10 +1192,10 @@ async function deleteSelectedPrompts() {
       }
     });
     // 删除非内置的用户prompt
-    allPrompts = allPrompts.filter(p => !(selectedPrompts.has(p.id) && !p.builtIn));
+    allPrompts = allPrompts.filter((p) => !(selectedPrompts.has(p.id) && !p.builtIn));
     selectedPrompts.clear();
     await savePrompts();
-          showNotification(getMessage('deleteSuccessMessage', [count.toString()]), 'success');
+    showNotification(getMessage('deleteSuccessMessage', [count.toString()]), 'success');
   }
 }
 
@@ -1128,10 +1204,10 @@ async function deleteSelectedPrompts() {
  */
 function openPromptEditor(prompt?: Prompt) {
   editingPromptId = prompt?.id || null;
-  
+
   // 更新chat服务选择框
   updateChatServiceOptions();
-  
+
   if (prompt) {
     elements.modalTitle.textContent = getMessage('editPrompt');
     elements.promptId.value = prompt.id;
@@ -1139,7 +1215,8 @@ function openPromptEditor(prompt?: Prompt) {
     elements.promptCategory.value = prompt.category || getCategoryFromPrompt(prompt);
     elements.promptTemplate.value = prompt.template;
     elements.promptTargetChat.value = prompt.targetChatId || '';
-    elements.promptAutoOpenChat.checked = prompt.autoOpenChat !== undefined ? prompt.autoOpenChat : currentSettings.defaultAutoOpenChat;
+    elements.promptAutoOpenChat.checked =
+      prompt.autoOpenChat !== undefined ? prompt.autoOpenChat : currentSettings.defaultAutoOpenChat;
     elements.promptQuickAccessSlot.value = isQuickPromptSlot(prompt.quickAccessSlot)
       ? String(prompt.quickAccessSlot)
       : '';
@@ -1151,7 +1228,7 @@ function openPromptEditor(prompt?: Prompt) {
     elements.promptAutoOpenChat.checked = currentSettings.defaultAutoOpenChat;
     elements.promptQuickAccessSlot.value = '';
   }
-  
+
   elements.promptEditorModal.style.display = 'flex';
   elements.promptTitle.focus();
 }
@@ -1169,14 +1246,14 @@ function closePromptEditor() {
  */
 function openPreviewModal(template: string) {
   elements.previewModal.style.display = 'flex';
-  
+
   // 设置示例内容
   const sampleText = elements.previewSample.value || getMessage('previewSampleText');
   elements.previewSample.value = sampleText;
-  
+
   // 生成预览结果
   updatePreviewResult(template, sampleText);
-  
+
   // 监听示例内容变化
   elements.previewSample.oninput = () => {
     updatePreviewResult(template, elements.previewSample.value);
@@ -1217,7 +1294,7 @@ function hideUsageInstructions() {
  * 编辑prompt
  */
 function editPrompt(promptId: string) {
-  const prompt = allPrompts.find(p => p.id === promptId);
+  const prompt = allPrompts.find((p) => p.id === promptId);
   if (prompt) {
     openPromptEditor(prompt);
   }
@@ -1227,7 +1304,7 @@ function editPrompt(promptId: string) {
  * 复制prompt
  */
 async function duplicatePrompt(promptId: string) {
-  const prompt = allPrompts.find(p => p.id === promptId);
+  const prompt = allPrompts.find((p) => p.id === promptId);
   if (prompt) {
     const newPrompt: Prompt = {
       id: generateUUID(),
@@ -1237,7 +1314,7 @@ async function duplicatePrompt(promptId: string) {
       usageCount: 0,
       createdAt: Date.now()
     };
-    
+
     allPrompts.push(newPrompt);
     await savePrompts();
     showNotification(getMessage('duplicateSuccessMessage'), 'success');
@@ -1249,13 +1326,13 @@ async function duplicatePrompt(promptId: string) {
  */
 async function deletePrompt(promptId: string) {
   if (confirm(getMessage('confirmDeleteSingleMessage'))) {
-    const prompt = allPrompts.find(p => p.id === promptId);
+    const prompt = allPrompts.find((p) => p.id === promptId);
     if (prompt && prompt.builtIn) {
       // 对于内置prompt，标记为已删除而不是真正删除
       prompt.deleted = true;
     } else {
       // 对于用户创建的prompt，直接删除
-      allPrompts = allPrompts.filter(p => p.id !== promptId);
+      allPrompts = allPrompts.filter((p) => p.id !== promptId);
     }
     await savePrompts();
     showNotification(getMessage('deleteSingleSuccessMessage'), 'success');
@@ -1268,25 +1345,25 @@ async function deletePrompt(promptId: string) {
 async function savePrompts() {
   try {
     const wasEmpty = getActivePrompts(allPrompts).length === 0;
-    
+
     // 显示同步中状态
     elements.syncStatusText.textContent = getMessage('syncStatusSyncing');
     elements.syncStatusBtn.style.color = 'var(--warning-color)';
-    
+
     await saveSettings({ userPrompts: allPrompts });
     currentSettings.userPrompts = [...allPrompts];
     filterAndRenderPrompts();
     renderShortcutSettingsPanel();
-    
+
     // 同步成功
     elements.syncStatusText.textContent = getMessage('syncStatusConnected');
     elements.syncStatusBtn.style.color = 'var(--success-color)';
-    
+
     // 如果是第一次创建prompt，显示使用说明
     if (wasEmpty && getActivePrompts(allPrompts).length === 1) {
       showUsageInstructions();
     }
-    
+
     // 通知background script更新菜单
     chrome.runtime.sendMessage({ type: 'update-context-menu' });
   } catch (error) {
@@ -1305,27 +1382,27 @@ async function savePrompts() {
  */
 async function savePromptForm(event: Event) {
   event.preventDefault();
-  
+
   const title = elements.promptTitle.value.trim();
   const template = elements.promptTemplate.value.trim();
-  
+
   if (!title || !template) {
     showNotification(getMessage('errorFillInTitleAndTemplate'), 'error');
     return;
   }
-  
+
   const category = elements.promptCategory.value;
-  
+
   const targetChatId = elements.promptTargetChat.value || undefined;
   const autoOpenChat = elements.promptAutoOpenChat.checked;
   const quickAccessSlotValue = elements.promptQuickAccessSlot.value.trim();
   const quickAccessSlot = isQuickPromptSlot(Number.parseInt(quickAccessSlotValue, 10))
     ? (Number.parseInt(quickAccessSlotValue, 10) as QuickPromptSlot)
     : null;
-  
+
   if (editingPromptId) {
     allPrompts = assignQuickPromptSlot(allPrompts, editingPromptId, quickAccessSlot);
-    const prompt = allPrompts.find(p => p.id === editingPromptId);
+    const prompt = allPrompts.find((p) => p.id === editingPromptId);
     if (prompt) {
       prompt.title = title;
       prompt.template = template;
@@ -1350,12 +1427,12 @@ async function savePromptForm(event: Event) {
     };
     allPrompts.push(newPrompt);
   }
-  
+
   const isNewPrompt = !editingPromptId;
-  
+
   await savePrompts();
   closePromptEditor();
-  
+
   if (isNewPrompt) {
     showNotification(getMessage('saveSuccessNewPromptMessage'), 'success');
   } else {
@@ -1371,7 +1448,7 @@ function insertContentPlaceholder() {
   const start = textarea.selectionStart;
   const end = textarea.selectionEnd;
   const text = textarea.value;
-  
+
   textarea.value = text.substring(0, start) + '{content}' + text.substring(end);
   textarea.selectionStart = textarea.selectionEnd = start + '{content}'.length;
   textarea.focus();
@@ -1386,7 +1463,7 @@ function previewPrompt() {
     showNotification(getMessage('errorTemplateNeeded'), 'error');
     return;
   }
-  
+
   // 打开预览模态框
   openPreviewModal(template);
 }
@@ -1410,11 +1487,11 @@ function handleExportPrompts() {
       exportDate: new Date().toISOString(),
       prompts: allPrompts
     };
-    
+
     const jsonString = JSON.stringify(exportData, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     const a = document.createElement('a');
     a.href = url;
     a.download = `magic-copy-prompts-${new Date().toISOString().split('T')[0]}.json`;
@@ -1422,13 +1499,13 @@ function handleExportPrompts() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    
+
     showNotification(getMessage('exportSuccessMessage'), 'success');
     closeImportExportModal();
   } catch (error) {
     console.error('Export failed:', error);
     const errorMessage = (error as Error).message;
-          showNotification(getMessage('exportFailedMessage', [errorMessage]), 'error');
+    showNotification(getMessage('exportFailedMessage', [errorMessage]), 'error');
   }
 }
 
@@ -1440,46 +1517,49 @@ function handleImportPrompts() {
   input.type = 'file';
   input.accept = '.json';
   input.style.display = 'none';
-  
+
   input.onchange = async (e) => {
     const file = (e.target as HTMLInputElement).files?.[0];
     if (!file) return;
-    
+
     try {
       const text = await file.text();
       const data: unknown = JSON.parse(text);
-      
+
       if (!validateImportData(data)) {
         showNotification(getMessage('errorInvalidImportFile'), 'error');
         return;
       }
-      
+
       const importedPrompts = data.prompts;
-      const duplicateCount = importedPrompts.filter((imported) => 
-        allPrompts.some(existing => existing.id === imported.id)
+      const duplicateCount = importedPrompts.filter((imported) =>
+        allPrompts.some((existing) => existing.id === imported.id)
       ).length;
-      
+
       if (duplicateCount > 0) {
         if (!confirm(getMessage('confirmImportWithDuplicates', [duplicateCount.toString()]))) {
           return;
         }
       }
-      
+
       // 过滤重复的prompts
-      const newPrompts = importedPrompts.filter((imported) => 
-        !allPrompts.some(existing => existing.id === imported.id)
+      const newPrompts = importedPrompts.filter(
+        (imported) => !allPrompts.some((existing) => existing.id === imported.id)
       );
-      
+
       // 为导入的prompts设置默认值
       newPrompts.forEach((prompt) => {
         if (!prompt.usageCount) prompt.usageCount = 0;
         if (!prompt.createdAt) prompt.createdAt = Date.now();
       });
-      
+
       allPrompts.push(...newPrompts);
       await savePrompts();
-      
-      showNotification(getMessage('importSuccessMessage', [newPrompts.length.toString()]), 'success');
+
+      showNotification(
+        getMessage('importSuccessMessage', [newPrompts.length.toString()]),
+        'success'
+      );
       closeImportExportModal();
     } catch (error) {
       console.error('Import failed:', error);
@@ -1487,7 +1567,7 @@ function handleImportPrompts() {
       showNotification(getMessage('importFailedMessage', [errorMessage]), 'error');
     }
   };
-  
+
   document.body.appendChild(input);
   input.click();
   document.body.removeChild(input);
@@ -1501,7 +1581,11 @@ type UnknownRecord = Record<string, unknown>;
 function isPromptLike(value: unknown): value is Prompt {
   if (!value || typeof value !== 'object') return false;
   const record = value as UnknownRecord;
-  if (typeof record.id !== 'string' || typeof record.title !== 'string' || typeof record.template !== 'string') {
+  if (
+    typeof record.id !== 'string' ||
+    typeof record.title !== 'string' ||
+    typeof record.template !== 'string'
+  ) {
     return false;
   }
   if (record.usageCount !== undefined && typeof record.usageCount !== 'number') return false;
@@ -1518,7 +1602,8 @@ function isPromptLike(value: unknown): value is Prompt {
   }
   if (record.builtIn !== undefined && typeof record.builtIn !== 'boolean') return false;
   if (record.deleted !== undefined && typeof record.deleted !== 'boolean') return false;
-  if (record.templateVersion !== undefined && typeof record.templateVersion !== 'number') return false;
+  if (record.templateVersion !== undefined && typeof record.templateVersion !== 'number')
+    return false;
   return true;
 }
 
@@ -1565,14 +1650,14 @@ function showNotification(message: string, type: 'success' | 'error' | 'info' = 
     transition: all 0.3s ease;
     transform: translateX(100%);
   `;
-  
+
   document.body.appendChild(notification);
-  
+
   // 动画显示
   setTimeout(() => {
     notification.style.transform = 'translateX(0)';
   }, 10);
-  
+
   // 自动移除
   setTimeout(() => {
     notification.style.transform = 'translateX(100%)';
@@ -1587,7 +1672,7 @@ function showNotification(message: string, type: 'success' | 'error' | 'info' = 
 function sortTelemetryEventsForDisplay(events: TelemetryEvent[]): TelemetryEvent[] {
   return events
     .map((event, index) => ({ event, index }))
-    .sort((a, b) => (b.event.ts - a.event.ts) || (a.index - b.index))
+    .sort((a, b) => b.event.ts - a.event.ts || a.index - b.index)
     .map(({ event }) => event);
 }
 
@@ -1666,7 +1751,9 @@ async function clearTelemetryEventsAndRefresh(): Promise<void> {
     await clearTelemetryEvents();
     const events = (await refreshTelemetryEventsPanel()) ?? [];
     showNotification(
-      events.length === 0 ? getMessage('telemetryEventsClearSuccess') : getMessage('telemetryEventsClearFailed'),
+      events.length === 0
+        ? getMessage('telemetryEventsClearSuccess')
+        : getMessage('telemetryEventsClearFailed'),
       events.length === 0 ? 'success' : 'error'
     );
   } catch (error) {
@@ -1704,7 +1791,9 @@ function updateProAcquisitionEfficiencyByCampaign7dCsvExportButtonState(enabled:
 }
 
 function getProIntentCampaign(): string | undefined {
-  const value = elements?.proIntentCampaignInput ? elements.proIntentCampaignInput.value : (currentSettings?.proIntentCampaign || '');
+  const value = elements?.proIntentCampaignInput
+    ? elements.proIntentCampaignInput.value
+    : currentSettings?.proIntentCampaign || '';
   const sanitized = sanitizeCampaign(value);
   return sanitized || undefined;
 }
@@ -1729,7 +1818,7 @@ function updateProWaitlistDistributionToolkitState(): void {
   elements.proDistributionPackCopyButton.disabled = disabled;
   elements.proWaitlistDistributionCampaignRequiredHint.hidden = state.enabled;
 
-  const tooltip = disabled ? (getMessage('proWaitlistDistributionCampaignRequired') || '') : '';
+  const tooltip = disabled ? getMessage('proWaitlistDistributionCampaignRequired') || '' : '';
   elements.proWaitlistUrlCopyButton.title = tooltip;
   elements.proWaitlistRecruitCopyButton.title = tooltip;
   elements.proStoreUrlCopyButton.title = tooltip;
@@ -1935,7 +2024,10 @@ async function buildProIntentByCampaignWeeklyReportMarkdownForClipboard(): Promi
   try {
     extensionVersion = chrome.runtime.getManifest().version || '';
   } catch (error) {
-    console.warn('Failed to read extension version for pro intent by campaign weekly report:', error);
+    console.warn(
+      'Failed to read extension version for pro intent by campaign weekly report:',
+      error
+    );
   }
 
   const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
@@ -2015,7 +2107,10 @@ async function buildProAcquisitionEfficiencyByCampaignWeeklyReportMarkdownForCli
   try {
     extensionVersion = chrome.runtime.getManifest().version || '';
   } catch (error) {
-    console.warn('Failed to read extension version for pro acquisition efficiency by campaign weekly report:', error);
+    console.warn(
+      'Failed to read extension version for pro acquisition efficiency by campaign weekly report:',
+      error
+    );
   }
 
   const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
@@ -2041,7 +2136,11 @@ async function buildProAcquisitionEfficiencyByCampaignWeeklyReportMarkdownForCli
       emptyCampaignBucketLabel,
       lookbackDays: 7
     });
-    return formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown({ summary, env, getMessage });
+    return formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown({
+      summary,
+      env,
+      getMessage
+    });
   }
 
   if (typeof chrome === 'undefined' || !chrome.storage?.local) {
@@ -2053,7 +2152,11 @@ async function buildProAcquisitionEfficiencyByCampaignWeeklyReportMarkdownForCli
       emptyCampaignBucketLabel,
       lookbackDays: 7
     });
-    return formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown({ summary, env, getMessage });
+    return formatProAcquisitionEfficiencyByCampaignWeeklyReportMarkdown({
+      summary,
+      env,
+      getMessage
+    });
   }
 
   const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
@@ -2074,7 +2177,10 @@ async function copyProAcquisitionEfficiencyByCampaignWeeklyReportToClipboard(): 
   try {
     text = await buildProAcquisitionEfficiencyByCampaignWeeklyReportMarkdownForClipboard();
   } catch (error) {
-    console.warn('Failed to build pro acquisition efficiency by campaign weekly report markdown:', error);
+    console.warn(
+      'Failed to build pro acquisition efficiency by campaign weekly report markdown:',
+      error
+    );
     showNotification(getMessage('proAcqEffByCampaignWeeklyReportCopyFailed'), 'error');
     return;
   }
@@ -2083,7 +2189,10 @@ async function copyProAcquisitionEfficiencyByCampaignWeeklyReportToClipboard(): 
     await writeTextToClipboard(text);
     showNotification(getMessage('proAcqEffByCampaignWeeklyReportCopySuccess'), 'success');
   } catch (error) {
-    console.warn('Failed to copy pro acquisition efficiency by campaign weekly report markdown:', error);
+    console.warn(
+      'Failed to copy pro acquisition efficiency by campaign weekly report markdown:',
+      error
+    );
     const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
     if (ok) {
       showNotification(getMessage('proAcqEffByCampaignWeeklyReportCopySuccess'), 'success');
@@ -2099,7 +2208,10 @@ async function buildProAcquisitionEfficiencyByCampaignEvidencePackForClipboard()
   try {
     extensionVersion = chrome.runtime.getManifest().version || '';
   } catch (error) {
-    console.warn('Failed to read extension version for pro acquisition efficiency by campaign evidence pack:', error);
+    console.warn(
+      'Failed to read extension version for pro acquisition efficiency by campaign evidence pack:',
+      error
+    );
   }
 
   const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
@@ -2187,7 +2299,10 @@ async function downloadProAcquisitionEfficiencyByCampaignEvidencePackJson(): Pro
       Boolean(pack.env?.isAnonymousUsageDataEnabled)
     );
   } catch (error) {
-    console.warn('Failed to build pro acquisition efficiency by campaign evidence pack for download:', error);
+    console.warn(
+      'Failed to build pro acquisition efficiency by campaign evidence pack for download:',
+      error
+    );
     showNotification(getMessage('proAcqEffByCampaignEvidencePackDownloadFailed'), 'error');
     return;
   }
@@ -2207,7 +2322,10 @@ async function buildProWeeklyChannelOpsEvidencePackForDownload(): Promise<ProWee
   try {
     extensionVersion = chrome.runtime.getManifest().version || '';
   } catch (error) {
-    console.warn('Failed to read extension version for pro weekly channel ops evidence pack:', error);
+    console.warn(
+      'Failed to read extension version for pro weekly channel ops evidence pack:',
+      error
+    );
   }
 
   const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
@@ -2425,7 +2543,11 @@ async function buildProIntentV1_100SummaryForDownload(): Promise<ProIntentV1_100
 async function downloadProIntentV1_100SummaryJson(): Promise<void> {
   try {
     const summary = await buildProIntentV1_100SummaryForDownload();
-    downloadTextFile(PRO_INTENT_V1_100_SUMMARY_JSON_FILENAME, `${JSON.stringify(summary, null, 2)}\n`, 'application/json');
+    downloadTextFile(
+      PRO_INTENT_V1_100_SUMMARY_JSON_FILENAME,
+      `${JSON.stringify(summary, null, 2)}\n`,
+      'application/json'
+    );
     showNotification(getMessage('proIntentV1100SummaryExportSuccess'), 'success');
   } catch (error) {
     console.warn('Failed to download v1-100 summary json:', error);
@@ -2469,7 +2591,10 @@ async function exportProIntentEvents7dCsv(): Promise<void> {
     });
     const filename = formatProIntentEvents7dCsvFilename(exportedAt);
     downloadCsvFile(filename, result.csv);
-    showNotification(getMessage('proIntentEvents7dCsvExportSuccess', [String(result.rows.length)]), 'success');
+    showNotification(
+      getMessage('proIntentEvents7dCsvExportSuccess', [String(result.rows.length)]),
+      'success'
+    );
     return;
   }
 
@@ -2493,7 +2618,10 @@ async function exportProIntentEvents7dCsv(): Promise<void> {
 
   const filename = formatProIntentEvents7dCsvFilename(exportedAt);
   downloadCsvFile(filename, built.csv);
-  showNotification(getMessage('proIntentEvents7dCsvExportSuccess', [String(built.rows.length)]), 'success');
+  showNotification(
+    getMessage('proIntentEvents7dCsvExportSuccess', [String(built.rows.length)]),
+    'success'
+  );
 }
 
 async function exportProIntentByCampaign7dCsv(): Promise<void> {
@@ -2524,7 +2652,10 @@ async function exportProIntentByCampaign7dCsv(): Promise<void> {
     });
     const filename = formatProIntentByCampaign7dCsvFilename(exportedAt);
     downloadCsvFile(filename, result.csv);
-    showNotification(getMessage('proIntentByCampaign7dCsvExportSuccess', [String(result.rows.length)]), 'success');
+    showNotification(
+      getMessage('proIntentByCampaign7dCsvExportSuccess', [String(result.rows.length)]),
+      'success'
+    );
     return;
   }
 
@@ -2549,7 +2680,10 @@ async function exportProIntentByCampaign7dCsv(): Promise<void> {
 
   const filename = formatProIntentByCampaign7dCsvFilename(exportedAt);
   downloadCsvFile(filename, built.csv);
-  showNotification(getMessage('proIntentByCampaign7dCsvExportSuccess', [String(built.rows.length)]), 'success');
+  showNotification(
+    getMessage('proIntentByCampaign7dCsvExportSuccess', [String(built.rows.length)]),
+    'success'
+  );
 }
 
 async function exportProDistributionByCampaign7dCsv(): Promise<void> {
@@ -2558,7 +2692,10 @@ async function exportProDistributionByCampaign7dCsv(): Promise<void> {
   try {
     extensionVersion = chrome.runtime.getManifest().version || '';
   } catch (error) {
-    console.warn('Failed to read extension version for pro distribution by campaign csv export:', error);
+    console.warn(
+      'Failed to read extension version for pro distribution by campaign csv export:',
+      error
+    );
   }
 
   const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
@@ -2568,7 +2705,8 @@ async function exportProDistributionByCampaign7dCsv(): Promise<void> {
   }
 
   const emptyCampaignBucketLabel =
-    getMessage('proDistributionByCampaign7dCsvEmptyBucket') || getMessage('proIntentByCampaign7dCsvEmptyBucket');
+    getMessage('proDistributionByCampaign7dCsvEmptyBucket') ||
+    getMessage('proIntentByCampaign7dCsvEmptyBucket');
 
   if (typeof chrome === 'undefined' || !chrome.storage?.local) {
     const result = buildProDistributionByCampaignCsv({
@@ -2581,7 +2719,10 @@ async function exportProDistributionByCampaign7dCsv(): Promise<void> {
     });
     const filename = formatProDistributionByCampaign7dCsvFilename(exportedAt);
     downloadCsvFile(filename, result.csv);
-    showNotification(getMessage('proDistributionByCampaign7dCsvExportSuccess', [String(result.rows.length)]), 'success');
+    showNotification(
+      getMessage('proDistributionByCampaign7dCsvExportSuccess', [String(result.rows.length)]),
+      'success'
+    );
     return;
   }
 
@@ -2590,7 +2731,10 @@ async function exportProDistributionByCampaign7dCsv(): Promise<void> {
     const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
     stored = result[TELEMETRY_EVENTS_KEY];
   } catch (error) {
-    console.warn('Failed to read telemetry events for pro distribution by campaign csv export:', error);
+    console.warn(
+      'Failed to read telemetry events for pro distribution by campaign csv export:',
+      error
+    );
     showNotification(getMessage('proDistributionByCampaign7dCsvExportFailed'), 'error');
     return;
   }
@@ -2606,7 +2750,10 @@ async function exportProDistributionByCampaign7dCsv(): Promise<void> {
 
   const filename = formatProDistributionByCampaign7dCsvFilename(exportedAt);
   downloadCsvFile(filename, built.csv);
-  showNotification(getMessage('proDistributionByCampaign7dCsvExportSuccess', [String(built.rows.length)]), 'success');
+  showNotification(
+    getMessage('proDistributionByCampaign7dCsvExportSuccess', [String(built.rows.length)]),
+    'success'
+  );
 }
 
 async function exportProAcquisitionEfficiencyByCampaign7dCsv(): Promise<void> {
@@ -2615,7 +2762,10 @@ async function exportProAcquisitionEfficiencyByCampaign7dCsv(): Promise<void> {
   try {
     extensionVersion = chrome.runtime.getManifest().version || '';
   } catch (error) {
-    console.warn('Failed to read extension version for pro acquisition efficiency by campaign csv export:', error);
+    console.warn(
+      'Failed to read extension version for pro acquisition efficiency by campaign csv export:',
+      error
+    );
   }
 
   const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
@@ -2653,7 +2803,10 @@ async function exportProAcquisitionEfficiencyByCampaign7dCsv(): Promise<void> {
     const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
     stored = result[TELEMETRY_EVENTS_KEY];
   } catch (error) {
-    console.warn('Failed to read telemetry events for pro acquisition efficiency by campaign csv export:', error);
+    console.warn(
+      'Failed to read telemetry events for pro acquisition efficiency by campaign csv export:',
+      error
+    );
     showNotification(getMessage('proAcqEffByCampaign7dCsvExportFailed'), 'error');
     return;
   }
@@ -2948,41 +3101,41 @@ function setupEventListeners() {
     setPromptSortMode(elements.promptSortSelect.value);
     filterAndRenderPrompts();
   });
-  
+
   // 添加prompt按钮
   elements.addPromptBtn.addEventListener('click', () => openPromptEditor());
   elements.createFirstPromptBtn.addEventListener('click', () => openPromptEditor());
   elements.mobileAddBtn.addEventListener('click', () => openPromptEditor());
-  
+
   // 模态框控制
   elements.closeModalBtn.addEventListener('click', closePromptEditor);
   elements.cancelBtn.addEventListener('click', closePromptEditor);
   elements.promptForm.addEventListener('submit', savePromptForm);
-  
+
   // 编辑器工具
   elements.insertContentPlaceholder.addEventListener('click', insertContentPlaceholder);
   elements.previewPrompt.addEventListener('click', previewPrompt);
-  
+
   // 模态框背景点击关闭
   elements.promptEditorModal.addEventListener('click', (e) => {
     if (e.target === elements.promptEditorModal) {
       closePromptEditor();
     }
   });
-  
+
   // 预览模态框事件
   elements.previewModal.addEventListener('click', (e) => {
     if (e.target === elements.previewModal) {
       closePreviewModal();
     }
   });
-  
+
   // 预览模态框关闭按钮（从HTML中查找）
   const previewCloseBtn = elements.previewModal.querySelector('.close-btn');
   if (previewCloseBtn) {
     previewCloseBtn.addEventListener('click', closePreviewModal);
   }
-  
+
   // 隐藏使用说明按钮
   elements.hideInstructionsBtn.addEventListener('click', hideUsageInstructions);
 
@@ -3101,33 +3254,33 @@ function setupEventListeners() {
       closeImportExportModal();
     }
   });
-  
+
   // 导入导出模态框关闭按钮
   const closeImportExportBtn = document.getElementById('close-import-export-btn');
   if (closeImportExportBtn) {
     closeImportExportBtn.addEventListener('click', closeImportExportModal);
   }
-  
+
   // 预览模态框关闭按钮
   const closePreviewBtn = document.getElementById('close-preview-btn');
   if (closePreviewBtn) {
     closePreviewBtn.addEventListener('click', closePreviewModal);
   }
-  
+
   // 导入导出模态框内的按钮事件
   const exportBtn = document.getElementById('export-btn');
   const importBtn = document.getElementById('import-btn');
   const mainTabBtns = document.querySelectorAll('.tabs-nav .tab-btn');
   const importExportTabBtns = document.querySelectorAll('.import-export-tabs .tab-btn');
-  
+
   if (exportBtn) {
     exportBtn.addEventListener('click', handleExportPrompts);
   }
-  
+
   if (importBtn) {
     importBtn.addEventListener('click', handleImportPrompts);
   }
-  
+
   function setActiveMainTab(tabName: string) {
     const target = document.querySelector(
       `.tabs-nav .tab-btn[data-tab="${tabName}"]`
@@ -3147,7 +3300,10 @@ function setupEventListeners() {
     }
 
     if (tabName === 'pro') {
-      void recordTelemetryEvent('pro_entry_opened', buildOptionsProIntentAttribution('options_waitlist_cta'));
+      void recordTelemetryEvent(
+        'pro_entry_opened',
+        buildOptionsProIntentAttribution('options_waitlist_cta')
+      );
     }
   }
 
@@ -3243,7 +3399,7 @@ function setupEventListeners() {
   });
 
   function buildProRouteUrl(campaign?: string | null): string {
-    return buildProWaitlistUrl({
+    return buildProRoadmapUrl({
       medium: 'distribution_toolkit',
       campaign: campaign || undefined
     });
@@ -3346,7 +3502,10 @@ function setupEventListeners() {
 
   elements.proWaitlistButton.addEventListener('click', async () => {
     const url = buildWaitlistUrl();
-    await recordTelemetryEvent('pro_waitlist_opened', buildOptionsProIntentAttribution('options_waitlist_cta'));
+    await recordTelemetryEvent(
+      'pro_waitlist_opened',
+      buildOptionsProIntentAttribution('options_waitlist_cta')
+    );
     await reportE2EOpenedUrl(url);
     chrome.tabs.create({ url });
   });
@@ -3370,7 +3529,8 @@ function setupEventListeners() {
       });
       elements.proWaitlistUrlCopyButton.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
-        elements.proWaitlistUrlCopyButton.textContent = getMessage('proWaitlistUrlCopyButton') || originalText;
+        elements.proWaitlistUrlCopyButton.textContent =
+          getMessage('proWaitlistUrlCopyButton') || originalText;
       }, 1200);
     } catch (error) {
       console.warn('Failed to copy waitlist url via navigator.clipboard:', error);
@@ -3383,7 +3543,8 @@ function setupEventListeners() {
         });
         elements.proWaitlistUrlCopyButton.textContent = getMessage('copied') || originalText;
         window.setTimeout(() => {
-          elements.proWaitlistUrlCopyButton.textContent = getMessage('proWaitlistUrlCopyButton') || originalText;
+          elements.proWaitlistUrlCopyButton.textContent =
+            getMessage('proWaitlistUrlCopyButton') || originalText;
         }, 1200);
         return;
       }
@@ -3411,7 +3572,8 @@ function setupEventListeners() {
       });
       elements.proWaitlistRecruitCopyButton.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
-        elements.proWaitlistRecruitCopyButton.textContent = getMessage('proWaitlistRecruitCopyButton') || originalText;
+        elements.proWaitlistRecruitCopyButton.textContent =
+          getMessage('proWaitlistRecruitCopyButton') || originalText;
       }, 1200);
     } catch (error) {
       console.warn('Failed to copy recruit copy via navigator.clipboard:', error);
@@ -3453,7 +3615,8 @@ function setupEventListeners() {
       });
       elements.proStoreUrlCopyButton.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
-        elements.proStoreUrlCopyButton.textContent = getMessage('proStoreUrlCopyButton') || originalText;
+        elements.proStoreUrlCopyButton.textContent =
+          getMessage('proStoreUrlCopyButton') || originalText;
       }, 1200);
     } catch (error) {
       console.warn('Failed to copy store url via navigator.clipboard:', error);
@@ -3466,7 +3629,8 @@ function setupEventListeners() {
         });
         elements.proStoreUrlCopyButton.textContent = getMessage('copied') || originalText;
         window.setTimeout(() => {
-          elements.proStoreUrlCopyButton.textContent = getMessage('proStoreUrlCopyButton') || originalText;
+          elements.proStoreUrlCopyButton.textContent =
+            getMessage('proStoreUrlCopyButton') || originalText;
         }, 1200);
         return;
       }
@@ -3494,7 +3658,8 @@ function setupEventListeners() {
       });
       elements.proDistributionPackCopyButton.textContent = getMessage('copied') || originalText;
       window.setTimeout(() => {
-        elements.proDistributionPackCopyButton.textContent = getMessage('proDistributionPackCopyButton') || originalText;
+        elements.proDistributionPackCopyButton.textContent =
+          getMessage('proDistributionPackCopyButton') || originalText;
       }, 1200);
     } catch (error) {
       console.warn('Failed to copy distribution pack via navigator.clipboard:', error);
@@ -3585,7 +3750,7 @@ function setupEventListeners() {
   // Chat服务卡片事件委托
   elements.chatServicesGrid.addEventListener('click', (e) => {
     const target = e.target as Element;
-    
+
     const openBtn = target.closest('.open-service-btn') as HTMLButtonElement;
     if (openBtn) {
       const url = openBtn.getAttribute('data-url');
@@ -3594,12 +3759,12 @@ function setupEventListeners() {
       }
       return;
     }
-    
+
     const editBtn = target.closest('.edit-service-btn') as HTMLButtonElement;
     if (editBtn) {
       const serviceId = editBtn.getAttribute('data-id');
       if (serviceId) {
-        const service = currentSettings.chatServices.find(s => s.id === serviceId);
+        const service = currentSettings.chatServices.find((s) => s.id === serviceId);
         if (service) {
           openChatServiceEditor(service);
         }
@@ -3634,14 +3799,16 @@ function setupEventListeners() {
       closeChatServiceEditor();
     }
   });
-  
+
   // 批量操作菜单项事件
   const batchMenuItems = document.querySelectorAll('.batch-menu-item');
-  batchMenuItems.forEach(item => {
+  batchMenuItems.forEach((item) => {
     item.addEventListener('click', (e) => {
       e.stopPropagation();
-      const action = (e.target as HTMLElement).closest('.batch-menu-item')?.getAttribute('data-action');
-      
+      const action = (e.target as HTMLElement)
+        .closest('.batch-menu-item')
+        ?.getAttribute('data-action');
+
       switch (action) {
         case 'select-all':
           selectAllPrompts();
@@ -3655,11 +3822,11 @@ function setupEventListeners() {
       }
     });
   });
-  
+
   // 动态绑定prompt卡片事件
   elements.promptsGrid.addEventListener('click', (e) => {
     const target = e.target as Element;
-    
+
     // 处理复选框点击
     if (target.classList.contains('prompt-card-checkbox')) {
       const checkbox = target as HTMLInputElement;
@@ -3670,15 +3837,15 @@ function setupEventListeners() {
       }
       return;
     }
-    
+
     // 处理操作按钮点击
     const btn = target.closest('.action-btn') as HTMLButtonElement;
     if (btn) {
       const promptId = btn.getAttribute('data-id');
       if (!promptId) return;
-      
+
       e.stopPropagation();
-      
+
       if (btn.classList.contains('edit-btn')) {
         editPrompt(promptId);
       } else if (btn.classList.contains('duplicate-btn')) {
@@ -3688,7 +3855,7 @@ function setupEventListeners() {
       }
       return;
     }
-    
+
     // 处理卡片点击（编辑）
     const card = target.closest('.prompt-card') as HTMLElement;
     if (card) {
@@ -3698,7 +3865,7 @@ function setupEventListeners() {
       }
     }
   });
-  
+
   // 键盘快捷键
   document.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey) {
@@ -3710,7 +3877,7 @@ function setupEventListeners() {
         elements.searchInput.focus();
       }
     }
-    
+
     if (e.key === 'Escape') {
       if (elements.promptEditorModal.style.display === 'flex') {
         closePromptEditor();
@@ -3727,7 +3894,7 @@ function setupEventListeners() {
 async function initialize() {
   try {
     console.debug('Initializing options page...');
-    
+
     elements = getElements();
     localizeUI();
     loadPromptSortMode();
@@ -3740,7 +3907,7 @@ async function initialize() {
     renderChatServices();
     updateChatServiceOptions();
     setupEventListeners();
-    
+
     console.debug('Options page initialized successfully');
   } catch (error) {
     console.error('Error initializing options page:', error);
@@ -3754,26 +3921,26 @@ async function initialize() {
  * 更新chat服务选择框选项
  */
 function updateChatServiceOptions() {
-  const chatServices = currentSettings.chatServices.filter(service => service.enabled);
-  
+  const chatServices = currentSettings.chatServices.filter((service) => service.enabled);
+
   // 更新prompt编辑器中的选择框
   elements.promptTargetChat.innerHTML = `<option value="" data-i18n="useDefault">${getMessage('useDefault')}</option>`;
-  chatServices.forEach(service => {
+  chatServices.forEach((service) => {
     const option = document.createElement('option');
     option.value = service.id;
     option.textContent = service.name;
     elements.promptTargetChat.appendChild(option);
   });
-  
+
   // 更新默认chat服务选择框
   elements.defaultChatService.innerHTML = `<option value="" data-i18n="noDefault">${getMessage('noDefault')}</option>`;
-  chatServices.forEach(service => {
+  chatServices.forEach((service) => {
     const option = document.createElement('option');
     option.value = service.id;
     option.textContent = service.name;
     elements.defaultChatService.appendChild(option);
   });
-  
+
   // 设置当前值
   elements.defaultChatService.value = currentSettings.defaultChatServiceId || '';
   elements.defaultAutoOpenChat.checked = currentSettings.defaultAutoOpenChat;
@@ -3784,8 +3951,8 @@ function updateChatServiceOptions() {
  */
 function renderChatServices() {
   elements.chatServicesGrid.innerHTML = '';
-  
-  currentSettings.chatServices.forEach(service => {
+
+  currentSettings.chatServices.forEach((service) => {
     const card = createChatServiceCard(service);
     elements.chatServicesGrid.appendChild(card);
   });
@@ -3798,10 +3965,10 @@ function createChatServiceCard(service: ChatService): HTMLElement {
   const card = document.createElement('div');
   card.className = 'chat-service-card';
   card.setAttribute('data-id', service.id);
-  
+
   // 获取服务图标信息（文字和颜色）
   const iconInfo = getServiceIconInfo(service);
-  
+
   card.innerHTML = `
     <div class="chat-service-header">
       <div class="chat-service-info">
@@ -3819,7 +3986,9 @@ function createChatServiceCard(service: ChatService): HTMLElement {
             <line x1="10" y1="14" x2="21" y2="3"/>
           </svg>
         </button>
-        ${!service.builtIn ? `
+        ${
+          !service.builtIn
+            ? `
           <button class="action-btn edit-service-btn" title="${getMessage('editService')}" data-id="${service.id}">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -3834,7 +4003,9 @@ function createChatServiceCard(service: ChatService): HTMLElement {
               <line x1="14" y1="11" x2="14" y2="17"/>
             </svg>
           </button>
-        ` : ''}
+        `
+            : ''
+        }
       </div>
     </div>
     <div class="chat-service-toggle">
@@ -3856,7 +4027,7 @@ function createChatServiceCard(service: ChatService): HTMLElement {
  */
 function openChatServiceEditor(service?: ChatService) {
   editingChatServiceId = service?.id || null;
-  
+
   if (service) {
     elements.chatServiceModalTitle.textContent = getMessage('editChatService');
     elements.chatServiceId.value = service.id;
@@ -3867,7 +4038,7 @@ function openChatServiceEditor(service?: ChatService) {
     elements.chatServiceForm.reset();
     elements.chatServiceId.value = '';
   }
-  
+
   elements.chatServiceEditorModal.style.display = 'flex';
   elements.chatServiceName.focus();
 }
@@ -3885,17 +4056,17 @@ function closeChatServiceEditor() {
  */
 async function saveChatService(event: Event) {
   event.preventDefault();
-  
+
   const name = elements.chatServiceName.value.trim();
   const url = elements.chatServiceUrl.value.trim();
   if (!name || !url) {
     showNotification(getMessage('errorFillInTitleAndTemplate'), 'error');
     return;
   }
-  
+
   if (editingChatServiceId) {
     // 编辑现有服务
-    const service = currentSettings.chatServices.find(s => s.id === editingChatServiceId);
+    const service = currentSettings.chatServices.find((s) => s.id === editingChatServiceId);
     if (service) {
       service.name = name;
       service.url = url;
@@ -3911,7 +4082,7 @@ async function saveChatService(event: Event) {
     };
     currentSettings.chatServices.push(newService);
   }
-  
+
   await saveChatSettings();
   closeChatServiceEditor();
   showNotification(getMessage('saveSuccessMessage'), 'success');
@@ -3922,20 +4093,20 @@ async function saveChatService(event: Event) {
  */
 async function deleteChatService(serviceId: string) {
   if (confirm(getMessage('confirmDeleteService'))) {
-    currentSettings.chatServices = currentSettings.chatServices.filter(s => s.id !== serviceId);
-    
+    currentSettings.chatServices = currentSettings.chatServices.filter((s) => s.id !== serviceId);
+
     // 如果删除的是默认服务，清除默认设置
     if (currentSettings.defaultChatServiceId === serviceId) {
       currentSettings.defaultChatServiceId = undefined;
     }
-    
+
     // 清理使用此服务的prompts
-    allPrompts.forEach(prompt => {
+    allPrompts.forEach((prompt) => {
       if (prompt.targetChatId === serviceId) {
         prompt.targetChatId = undefined;
       }
     });
-    
+
     await saveChatSettings();
     showNotification(getMessage('deleteSingleSuccessMessage'), 'success');
   }
@@ -3945,15 +4116,15 @@ async function deleteChatService(serviceId: string) {
  * 切换chat服务启用状态
  */
 async function toggleChatServiceEnabled(serviceId: string, enabled: boolean) {
-  const service = currentSettings.chatServices.find(s => s.id === serviceId);
+  const service = currentSettings.chatServices.find((s) => s.id === serviceId);
   if (service) {
     service.enabled = enabled;
-    
+
     // 如果禁用的是默认服务，清除默认设置
     if (!enabled && currentSettings.defaultChatServiceId === serviceId) {
       currentSettings.defaultChatServiceId = undefined;
     }
-    
+
     await saveChatSettings();
   }
 }
@@ -3969,13 +4140,14 @@ async function saveChatSettings() {
       defaultAutoOpenChat: currentSettings.defaultAutoOpenChat,
       userPrompts: allPrompts
     });
-    
+
     renderChatServices();
     updateChatServiceOptions();
   } catch (error) {
     console.error('Error saving chat settings:', error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    const quotaWarning = errorMessage.includes('QUOTA_BYTES') || errorMessage.toLowerCase().includes('quota');
+    const quotaWarning =
+      errorMessage.includes('QUOTA_BYTES') || errorMessage.toLowerCase().includes('quota');
     const message = quotaWarning
       ? getMessage('storageQuotaExceeded') || 'storageQuotaExceeded'
       : getMessage('savingFailed');
