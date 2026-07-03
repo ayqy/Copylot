@@ -117,7 +117,7 @@ export interface BuildProWaitlistUrlParams extends BuildExternalLinkParams {
 }
 
 /**
- * 官网 Pro 候补落地页（默认使用官网根页 + `#pro` 锚点，避免 404 风险）。
+ * 官网 Pro 路线落地页。
  *
  * 隐私红线：
  * - 仅允许写入可审计环境字段：扩展版本/扩展ID/语言
@@ -125,7 +125,7 @@ export interface BuildProWaitlistUrlParams extends BuildExternalLinkParams {
  */
 export function buildProWaitlistUrl(params: BuildProWaitlistUrlParams): string {
   const url = new URL(OFFICIAL_SITE_ROOT_URL);
-  url.hash = '#pro';
+  url.pathname = '/pricing';
 
   const search = buildUtmSearchParams(params);
   appendProWaitlistEnvParams(search, params.env);

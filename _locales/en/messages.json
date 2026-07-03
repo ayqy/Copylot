@@ -205,7 +205,7 @@
     }
   },
   "upgradePro": {
-    "message": "Upgrade Pro",
+    "message": "View Pro roadmap",
     "description": "Popup entry for upgrading to Pro"
   },
   "joinProWaitlist": {
@@ -215,62 +215,6 @@
   "popupProWaitlistSurvey": {
     "message": "Pro survey (1 min)",
     "description": "Popup entry for the Pro waitlist survey"
-  },
-  "popupProIntentTitle": {
-    "message": "What do you want fixed first?",
-    "description": "Popup mini-card title for Pro intent routing"
-  },
-  "popupProIntentHint": {
-    "message": "Pick your strongest need first. We'll carry it into the survey so you don't start from a blank form.",
-    "description": "Popup mini-card hint for Pro intent routing"
-  },
-  "popupProIntentCleaningTitle": {
-    "message": "Cleaner article copy",
-    "description": "Popup intent option title for advanced cleaning"
-  },
-  "popupProIntentCleaningDesc": {
-    "message": "Reader mode, ad/comment filtering, and less manual cleanup after copying.",
-    "description": "Popup intent option description for advanced cleaning"
-  },
-  "popupProIntentBatchTitle": {
-    "message": "Batch collect and organize",
-    "description": "Popup intent option title for batch collection"
-  },
-  "popupProIntentBatchDesc": {
-    "message": "Collect across pages, label clips, and export in one tighter workflow.",
-    "description": "Popup intent option description for batch collection"
-  },
-  "popupProIntentPromptPackTitle": {
-    "message": "Advanced Prompt workflow",
-    "description": "Popup intent option title for prompt pack"
-  },
-  "popupProIntentPromptPackDesc": {
-    "message": "Higher-signal prompt packs, repeatable workflows, and team-friendly reuse.",
-    "description": "Popup intent option description for prompt pack"
-  },
-  "popupProIntentNoteExportTitle": {
-    "message": "Note-tool export",
-    "description": "Popup intent option title for note export"
-  },
-  "popupProIntentNoteExportDesc": {
-    "message": "Better structured export templates for Obsidian, Notion, and research notes.",
-    "description": "Popup intent option description for note export"
-  },
-  "popupProIntentCleaningUseCase": {
-    "message": "I want cleaner long-form article copy with less manual cleanup.",
-    "description": "Prefilled survey use case for advanced cleaning"
-  },
-  "popupProIntentBatchUseCase": {
-    "message": "I want to collect and organize clips across multiple pages faster.",
-    "description": "Prefilled survey use case for batch collection"
-  },
-  "popupProIntentPromptPackUseCase": {
-    "message": "I want stronger reusable Prompt workflows for repeated AI tasks.",
-    "description": "Prefilled survey use case for prompt pack"
-  },
-  "popupProIntentNoteExportUseCase": {
-    "message": "I want cleaner export templates for Obsidian, Notion, or research notes.",
-    "description": "Prefilled survey use case for note export"
   },
   "proPromptTitle": {
     "message": "Pro waitlist (optional)",
@@ -293,11 +237,11 @@
     "description": "Options Pro tab title"
   },
   "proSubtitle": {
-    "message": "If you want a more complete organization and export experience, here are the directions we are currently exploring.",
+    "message": "If you need a more complete organization and export experience, start with the Pro roadmap and rollout plan.",
     "description": "Options Pro tab subtitle"
   },
   "proIntro": {
-    "message": "This page shows the enhancements we are currently evaluating. The existing core features will remain available.",
+    "message": "This page shows the enhancements we plan to validate first. At this stage we focus on the growth loop, not on forms, surveys, or waitlists.",
     "description": "Options Pro tab intro"
   },
   "proFreeScopeTitle": {
@@ -337,7 +281,7 @@
     "description": "Options Pro tab: planned scope section title"
   },
   "proPlannedScopeHint": {
-    "message": "These are the areas where we are gathering feedback. The final experience will be shaped by actual usage.",
+    "message": "These directions will be prioritized based on real usage, repeat usage, and sharing behavior instead of survey samples.",
     "description": "Options Pro tab: planned scope section hint"
   },
   "proFeature1": {
@@ -357,7 +301,7 @@
     "description": "Pro capability bullet 4"
   },
   "proJoinWaitlist": {
-    "message": "Join waitlist",
+    "message": "View the Pro roadmap",
     "description": "Options Pro tab primary action"
   },
   "proCopyWaitlistCopy": {
@@ -373,7 +317,7 @@
     "description": "Options Pro tab: campaign input placeholder"
   },
   "proIntentCampaignHint": {
-    "message": "If a friend recommended you or you found us through an article, feel free to let us know (letters, numbers, or dashes).",
+    "message": "If you came from an article, campaign page, or a friend's share, add a short tag so we can separate sources later.",
     "description": "Options Pro tab: campaign input hint (privacy + constraints)"
   },
   "proIntentCampaignInvalid": {
@@ -381,15 +325,15 @@
     "description": "Options Pro tab: invalid campaign notice"
   },
   "proWaitlistDistributionToolkitTitle": {
-    "message": "Recommend to friends",
+    "message": "Growth sharing toolkit",
     "description": "Options Pro tab: external distribution toolkit title"
   },
   "proWaitlistDistributionToolkitHint": {
-    "message": "Love Copylot? Copy the links or text below to share it with friends who might find it useful!",
+    "message": "This stage is about growth, not form collection. Copy the official roadmap page, store install link, and share assets directly.",
     "description": "Options Pro tab: external distribution toolkit hint"
   },
   "proWaitlistUrlCopyButton": {
-    "message": "Copy waitlist link",
+    "message": "Copy roadmap page link",
     "description": "Options Pro tab: distribution toolkit - copy waitlist URL button"
   },
   "proWaitlistRecruitCopyButton": {
@@ -397,15 +341,15 @@
     "description": "Options Pro tab: distribution toolkit - copy recruit copy button"
   },
   "proStoreUrlCopyButton": {
-    "message": "Copy install link",
+    "message": "Copy store install link",
     "description": "Options Pro tab: distribution toolkit - copy store URL button"
   },
   "proDistributionPackCopyButton": {
-    "message": "Copy share pack",
+    "message": "Copy full growth pack",
     "description": "Options Pro tab: distribution toolkit - copy distribution pack button"
   },
   "proDistributionPackTemplate": {
-    "message": "# Copylot Distribution Pack (Auditable)\\n\\n- campaign: $CAMPAIGN$\\n\\n## 1) Official Site URL (UTM + campaign)\\n$OFFICIAL_SITE_URL$\\n\\n## 2) Chrome Web Store URL (UTM + campaign)\\n$STORE_URL$\\n\\n## 3) Pro Waitlist URL (UTM + campaign)\\n$WAITLIST_URL$\\n\\n## 4) Recruit Copy (ready to share)\\n\\n```text\\n$RECRUIT_COPY$\\n```\\n\\n## 5) Optional: Survey Guide\\n- If you'd like to help us shape Pro: after installing, open Copylot -> Options -> Pro, click \\\"Copy survey (with env info)\\\" and send it to us (no webpage or private content needed).\\n\\n---\\n\\nPrivacy: This pack contains no webpage content, copied content, current page URL, or title. Only fixed template + campaign + official/store/waitlist links.\\n",
+    "message": "# Copylot Distribution Pack (Auditable)\\n\\n- campaign: $CAMPAIGN$\\n\\n## 1) Official site URL (UTM + campaign)\\n$OFFICIAL_SITE_URL$\\n\\n## 2) Chrome Web Store URL (UTM + campaign)\\n$STORE_URL$\\n\\n## 3) Pro roadmap URL (UTM + campaign)\\n$WAITLIST_URL$\\n\\n## 4) Share copy (ready to post)\\n\\n```text\\n$RECRUIT_COPY$\\n```\\n\\n---\\n\\nPrivacy: This pack contains no webpage content, copied content, current page URL, or title. Only a fixed template + campaign + official/store/roadmap links.\\n",
     "description": "Options Pro tab: distribution toolkit - distribution pack markdown template",
     "placeholders": {
       "CAMPAIGN": {
@@ -426,11 +370,11 @@
     }
   },
   "proWaitlistDistributionCampaignRequired": {
-    "message": "To help us know it's from you, please fill in the source tag above before sharing.",
+    "message": "Add a valid source tag before copying the sharing assets.",
     "description": "Options Pro tab: distribution toolkit - campaign required hint"
   },
   "proWaitlistRecruitCopyTemplate": {
-    "message": "Copylot Pro (planned) waitlist is open.\\n\\nIf you want better cleaning / batch collection / exports, please join (no webpage or private content needed).\\n\\nWaitlist URL (campaign=$CAMPAIGN$):\\n$WAITLIST_URL$\\n",
+    "message": "Copylot's Pro roadmap is public.\\n\\nIf you need stronger page cleaning, batch organization, or export workflows, start with the roadmap page.\\n\\nRoadmap URL (campaign=$CAMPAIGN$):\\n$WAITLIST_URL$\\n",
     "description": "Options Pro tab: distribution toolkit - recruit copy template",
     "placeholders": {
       "WAITLIST_URL": {
@@ -442,7 +386,7 @@
     }
   },
   "proPrivacyHint": {
-    "message": "Joining the waitlist is completely safe: we won't pre-fill any webpage content, only basic environment info to help us understand your setup.",
+    "message": "At this stage we do not collect waitlists, surveys, or contact details. We focus on installs, activation, reuse, and word of mouth first.",
     "description": "Options Pro tab privacy hint"
   },
   "proWaitlistSurveyTitle": {

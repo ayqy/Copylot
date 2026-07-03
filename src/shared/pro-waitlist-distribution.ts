@@ -30,7 +30,7 @@ export function buildProWaitlistRecruitCopyText(params: BuildProWaitlistRecruitC
 
   if (text) return text;
 
-  return `Copylot Pro waitlist:\n${params.waitlistUrl}\n\ncampaign: ${params.campaign}\n`;
+  return `Copylot Pro roadmap:\n${params.waitlistUrl}\n\ncampaign: ${params.campaign}\n`;
 }
 
 export interface BuildProDistributionPackMarkdownParams {
@@ -44,7 +44,7 @@ export interface BuildProDistributionPackMarkdownParams {
 
 /**
  * 渠道分发工具包：完整投放包（Markdown）。
- * - 固定模板 + campaign + 商店/候补链接 + 招募文案 + 可选问卷引导
+ * - 固定模板 + campaign + 官网/商店/Pro 路线链接 + 分享文案
  * - 不拼入网页内容/复制内容/URL/标题
  */
 export function buildProDistributionPackMarkdown(params: BuildProDistributionPackMarkdownParams): string {

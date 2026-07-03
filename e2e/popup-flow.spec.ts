@@ -87,7 +87,7 @@ test('popup opens via extension action and can convert current page selection', 
   }
 });
 
-test('popup entry points can open options and passive pro targets', async ({
+test('popup entry points can open options and Pro roadmap entry', async ({
   extensionContext,
   extensionId,
   driverPage,
@@ -140,78 +140,14 @@ test('popup entry points can open options and passive pro targets', async ({
     ]);
     await proPage.waitForLoadState('domcontentloaded');
     await expect(proPage.locator('#pro-tab')).toHaveCount(1);
-    await proPage.close();
-
-    await page.bringToFront();
-    const popupWaitlist = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
-    await completePopupOnboardingIfVisible(popupWaitlist);
-    await popupWaitlist.locator('#popup-pro-waitlist').click();
     await expect
       .poll(async () => {
         const snapshot = await getStorageSnapshot(driverPage);
         const events = snapshot.local.copilot_telemetry_events as Array<{ name?: string }> | undefined;
-        return {
-          proEntryOpened: events?.some((event) => event.name === 'pro_entry_opened') ?? false,
-          proWaitlistOpened: events?.some((event) => event.name === 'pro_waitlist_opened') ?? false
-        };
+        return events?.some((event) => event.name === 'pro_entry_opened') ?? false;
       })
-      .toEqual({
-        proEntryOpened: true,
-        proWaitlistOpened: true
-      });
-  } finally {
-    await page.close();
-  }
-});
-
-test('popup pro intent card can deep-link to prefilled survey state', async ({
-  extensionContext,
-  extensionId,
-  driverPage,
-  fixtureOrigin
-}) => {
-  await seedSyncStorage(driverPage, {
-    copilot_settings: {
-      isAnonymousUsageDataEnabled: true,
-      popupOnboardingVersion: 1,
-      popupOnboardingCompletedVersion: 1,
-      popupOnboardingCompletedAt: 1
-    }
-  });
-
-  const page = await extensionContext.newPage();
-  try {
-    await page.goto(`${fixtureOrigin}/article.html`);
-    await page.bringToFront();
-    const popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
-    await completePopupOnboardingIfVisible(popup);
-
-    const [optionsPage] = await Promise.all([
-      extensionContext.waitForEvent('page'),
-      popup.locator('#popup-pro-intent-cleaning').click()
-    ]);
-    await optionsPage.waitForLoadState('domcontentloaded');
-    await expect(optionsPage).toHaveURL(/#pro-waitlist-survey$/);
-    await expect(optionsPage.locator('#pro-waitlist-survey-use-case')).toHaveValue(
-      /cleaner long-form article copy|更干净/
-    );
-    await expect(optionsPage.locator('#pro-waitlist-survey-capability-advanced-cleaning')).toBeChecked();
-    await expect
-      .poll(async () => {
-        const snapshot = await getStorageSnapshot(driverPage);
-        return (
-          (snapshot.local.copilot_telemetry_events as Array<{ name?: string; props?: Record<string, unknown> }> | undefined)
-            ?.filter((event) => event.name === 'pro_intent_form_start') || []
-        );
-      })
-      .toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            props: expect.objectContaining({ source: 'popup', content: 'popup_survey_cta' })
-          })
-        ])
-      );
-    await optionsPage.close();
+      .toBe(true);
+    await proPage.close();
   } finally {
     await page.close();
   }

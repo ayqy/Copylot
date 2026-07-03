@@ -419,14 +419,6 @@
                     下载 v1-100 漏斗（CSV）
                   </button>
                   <button
-                    id="export-pro-waitlist-survey-intent-distribution-7d-json"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proWaitlistSurveyIntentDistribution7dExport"
-                  >
-                    导出最近 7 天问卷意向分布 (JSON)
-                  </button>
-                  <button
                     id="export-pro-intent-events-7d-csv"
                     class="secondary-btn"
                     type="button"
@@ -622,13 +614,13 @@
           <div class="pro-header">
             <h2 data-i18n="proTitle">Copylot Pro</h2>
             <p data-i18n="proSubtitle">
-              如果你想要更完整的整理与导出体验，可以先看看我们正在收集的方向。
+              如果你需要更完整的整理与导出体验，可以先查看 Pro 路线与发布节奏。
             </p>
           </div>
 
           <div class="pro-card">
             <p class="pro-intro" data-i18n="proIntro">
-              这里展示的是我们正在评估的增强能力。现有核心功能会继续保持可用。
+              这里展示的是我们准备优先验证的增强能力。当前阶段只做增长闭环，不做表单或问卷收集。
             </p>
 
             <section id="pro-free-scope" class="pro-scope-section">
@@ -651,7 +643,7 @@
             <section id="pro-planned-scope" class="pro-scope-section">
               <h3 class="pro-scope-title" data-i18n="proPlannedScopeTitle">正在评估的增强方向</h3>
               <p class="pro-scope-hint" data-i18n="proPlannedScopeHint">
-                以下是我们正在收集反馈的方向，最终形态会以实际体验为准。
+                以下方向会根据真实使用行为、复用率和分享表现来排序，而不是依赖问卷样本。
               </p>
 
               <ul class="pro-feature-list">
@@ -661,140 +653,7 @@
                 <li data-i18n="proFeature4">面向笔记工具的导出能力（Obsidian/Notion 结构化模板）</li>
               </ul>
 
-              <section id="pro-waitlist-survey" class="pro-survey-section">
-                <h4 class="pro-survey-title" data-i18n="proWaitlistSurveyTitle">告诉我们你的使用场景</h4>
-                <p class="pro-survey-hint" data-i18n="proWaitlistSurveyHint">
-                  如果你愿意，可以补充你的使用场景和期待能力，帮助我们优先打磨更有价值的体验。
-                </p>
-
-                <div id="pro-waitlist-survey-sample-notice" class="pro-privacy-hint" hidden>
-                  <strong data-i18n="proWaitlistSurveySampleNoticeTitle">未开启匿名使用数据</strong>
-                  <span data-i18n="proWaitlistSurveySampleNoticeBody">
-                    本次填写/复制不会计入 survey_intent 统计，但你仍可继续填写。
-                  </span>
-                  <button
-                    id="pro-waitlist-survey-enable-sample"
-                    type="button"
-                    class="secondary-btn compact-inline-button"
-                    data-i18n="proWaitlistSurveyEnableSampleButton"
-                  >
-                    开启并计入样本
-                  </button>
-                </div>
-
-                <div class="pro-survey-grid">
-                  <div class="form-group pro-survey-span-2">
-                    <label for="pro-waitlist-survey-use-case" data-i18n="proWaitlistSurveyUseCaseLabel">使用场景</label>
-                    <textarea
-                      id="pro-waitlist-survey-use-case"
-                      rows="2"
-                      data-i18n-placeholder="proWaitlistSurveyUseCasePlaceholder"
-                      placeholder="例如：整理长文、沉淀研究资料、批量收集网页信息……"
-                    ></textarea>
-                  </div>
-
-                  <div class="form-group pro-survey-span-2">
-                    <div class="pro-survey-label" data-i18n="proWaitlistSurveyCapabilitiesLabel">你最希望优先看到什么</div>
-                    <div class="pro-survey-checkboxes">
-                      <label class="pro-survey-checkbox" for="pro-waitlist-survey-capability-advanced-cleaning">
-                        <input type="checkbox" id="pro-waitlist-survey-capability-advanced-cleaning" />
-                        <span data-i18n="proFeature1">高级页面清洗（阅读模式 + 去广告/评论区/推荐区规则）</span>
-                      </label>
-                      <label class="pro-survey-checkbox" for="pro-waitlist-survey-capability-batch-collection">
-                        <input type="checkbox" id="pro-waitlist-survey-capability-batch-collection" />
-                        <span data-i18n="proFeature2">批量采集与整理（跨页面收集、命名、导出、历史检索）</span>
-                      </label>
-                      <label class="pro-survey-checkbox" for="pro-waitlist-survey-capability-prompt-pack">
-                        <input type="checkbox" id="pro-waitlist-survey-capability-prompt-pack" />
-                        <span data-i18n="proFeature3">Prompt Pack 高级库/团队共享（后端能力后置）</span>
-                      </label>
-                      <label class="pro-survey-checkbox" for="pro-waitlist-survey-capability-note-export">
-                        <input type="checkbox" id="pro-waitlist-survey-capability-note-export" />
-                        <span data-i18n="proFeature4">面向笔记工具的导出能力（Obsidian/Notion 结构化模板）</span>
-                      </label>
-                    </div>
-                    <input
-                      id="pro-waitlist-survey-capabilities-other"
-                      type="text"
-                      autocomplete="off"
-                      data-i18n-placeholder="proWaitlistSurveyCapabilitiesOtherPlaceholder"
-                      placeholder="其他想法（可选）"
-                    />
-                  </div>
-
-                  <div class="form-group">
-                    <label for="pro-waitlist-survey-pay-willing" data-i18n="proWaitlistSurveyPayWillingLabel">
-                      如果未来提供增强版，你会考虑吗
-                    </label>
-                    <select id="pro-waitlist-survey-pay-willing">
-                      <option value="" data-i18n="proWaitlistSurveySelectPlaceholder">未选择</option>
-                      <option value="yes" data-i18n="proWaitlistSurveyPayWillingYes">Yes</option>
-                      <option value="maybe" data-i18n="proWaitlistSurveyPayWillingMaybe">Maybe</option>
-                      <option value="no" data-i18n="proWaitlistSurveyPayWillingNo">No</option>
-                    </select>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="pro-waitlist-survey-pay-monthly" data-i18n="proWaitlistSurveyPayMonthlyLabel">
-                      你觉得按月大概在哪个区间更合适
-                    </label>
-                    <select id="pro-waitlist-survey-pay-monthly">
-                      <option value="" data-i18n="proWaitlistSurveySelectPlaceholder">未选择</option>
-                      <option value="lt_5" data-i18n="proWaitlistSurveyPriceMonthly1">&lt; $5 / mo</option>
-                      <option value="5_10" data-i18n="proWaitlistSurveyPriceMonthly2">$5 - $10 / mo</option>
-                      <option value="10_20" data-i18n="proWaitlistSurveyPriceMonthly3">$10 - $20 / mo</option>
-                      <option value="20_50" data-i18n="proWaitlistSurveyPriceMonthly4">$20 - $50 / mo</option>
-                      <option value="50_plus" data-i18n="proWaitlistSurveyPriceMonthly5">&gt;= $50 / mo</option>
-                    </select>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="pro-waitlist-survey-pay-annual" data-i18n="proWaitlistSurveyPayAnnualLabel">
-                      按年订阅的话，大概在哪个区间更合适
-                    </label>
-                    <select id="pro-waitlist-survey-pay-annual">
-                      <option value="" data-i18n="proWaitlistSurveySelectPlaceholder">未选择</option>
-                      <option value="lt_50" data-i18n="proWaitlistSurveyPriceAnnual1">&lt; $50 / yr</option>
-                      <option value="50_100" data-i18n="proWaitlistSurveyPriceAnnual2">$50 - $100 / yr</option>
-                      <option value="100_200" data-i18n="proWaitlistSurveyPriceAnnual3">$100 - $200 / yr</option>
-                      <option value="200_500" data-i18n="proWaitlistSurveyPriceAnnual4">$200 - $500 / yr</option>
-                      <option value="500_plus" data-i18n="proWaitlistSurveyPriceAnnual5">&gt;= $500 / yr</option>
-                    </select>
-                  </div>
-
-                  <div class="form-group pro-survey-span-2">
-                    <label for="pro-waitlist-survey-contact" data-i18n="proWaitlistSurveyContactLabel">
-                      留下一个联系方式（可选）
-                    </label>
-                    <input
-                      id="pro-waitlist-survey-contact"
-                      type="text"
-                      autocomplete="off"
-                      data-i18n-placeholder="proWaitlistSurveyContactPlaceholder"
-                      placeholder="邮箱 / Telegram / 其他方式（完全自愿）"
-                    />
-                  </div>
-                </div>
-
-                <div class="pro-actions pro-survey-actions">
-                  <button id="pro-waitlist-survey-copy" class="primary-btn" data-i18n="proWaitlistSurveyCopyButton">
-                    复制反馈内容
-                  </button>
-                  <button
-                    id="pro-waitlist-survey-copy-open"
-                    class="secondary-btn"
-                    data-i18n="proWaitlistSurveyCopyOpenButton"
-                  >
-                    复制后前往候补
-                  </button>
-                </div>
-
-                <p class="pro-privacy-hint" data-i18n="proWaitlistSurveyPrivacyHint">
-                  只会带上扩展版本与语言等基础环境信息；不会包含网页内容或你复制过的内容。
-                </p>
-              </section>
-
-              <div class="form-group" hidden>
+              <div class="form-group">
                 <label for="pro-intent-campaign" data-i18n="proIntentCampaignLabel">渠道（campaign，可选）</label>
                 <input
                   id="pro-intent-campaign"
@@ -807,28 +666,27 @@
                   placeholder="例如：twitter / producthunt / xiaohongshu_2026"
                 />
                 <p class="pro-privacy-hint" data-i18n="proIntentCampaignHint">
-                  如果你是从某篇文章或活动页进入的，可以填一个简短标记，方便后续区分来源。
+                  如果你是从某篇文章、活动页或朋友分享进入的，可以填一个简短标记，方便后续区分来源。
                 </p>
               </div>
 
               <section
                 id="pro-waitlist-distribution-toolkit"
                 class="pro-survey-section pro-distribution-section"
-                hidden
               >
                 <h4 class="pro-survey-title" data-i18n="proWaitlistDistributionToolkitTitle">
                   分享链接与文案
                 </h4>
                 <p class="pro-survey-hint" data-i18n="proWaitlistDistributionToolkitHint">
-                  如果你想把候补链接分享给他人，这里可以一键复制可直接使用的链接和文案。
+                  当前阶段只做增长获客，不做表单收集。你可以直接复制官网路线页、商店安装链接和分享资料。
                 </p>
 
                 <div class="pro-actions pro-distribution-actions">
                   <button id="pro-waitlist-url-copy" class="secondary-btn" data-i18n="proWaitlistUrlCopyButton">
-                    复制候补链接（带 campaign）
+                    复制官网路线链接
                   </button>
                   <button id="pro-waitlist-recruit-copy" class="secondary-btn" data-i18n="proWaitlistRecruitCopyButton">
-                    复制招募文案（含候补链接）
+                    复制分享文案
                   </button>
                   <button id="pro-store-url-copy" class="secondary-btn" data-i18n="proStoreUrlCopyButton">
                     复制商店安装链接（带 UTM + campaign）
@@ -854,10 +712,7 @@
 
               <div class="pro-actions">
                 <button id="pro-waitlist-button" class="primary-btn" data-i18n="proJoinWaitlist">
-                  加入候补名单
-                </button>
-                <button id="pro-waitlist-copy" class="secondary-btn" data-i18n="proCopyWaitlistCopy" hidden>
-                  复制候补文案
+                  查看官网 Pro 路线
                 </button>
               </div>
 
@@ -875,7 +730,7 @@
               </p>
 
               <p class="pro-privacy-hint" data-i18n="proPrivacyHint">
-                候补页不会预填网页内容；只会带上基础环境信息，方便你确认来源。
+                当前阶段不收集候补、问卷或联系方式；先专注安装、激活、复用与口碑增长。
               </p>
             </section>
           </div>

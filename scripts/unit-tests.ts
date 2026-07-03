@@ -45,11 +45,6 @@ import {
   consumeProWaitlistSurveySourceOnce,
   parseProWaitlistSurveySourceOnceFromUrl
 } from '../src/shared/pro-waitlist-survey-source-once.ts';
-import {
-  decodeProWaitlistSurveyPrefill,
-  encodeProWaitlistSurveyPrefill,
-  parseProWaitlistSurveyPrefillFromUrl
-} from '../src/shared/pro-waitlist-survey-prefill.ts';
 import { sanitizeCampaign } from '../src/shared/campaign.ts';
 import {
   buildProWaitlistRecruitCopyText,
@@ -635,7 +630,8 @@ async function run() {
   });
   const proWaitlistParsed = new URL(proWaitlistUrl);
   assert.equal(proWaitlistParsed.origin, new URL(OFFICIAL_SITE_ROOT_URL).origin);
-  assert.equal(proWaitlistParsed.hash, '#pro');
+  assert.equal(proWaitlistParsed.pathname, '/pricing');
+  assert.equal(proWaitlistParsed.hash, '');
   assert.equal(proWaitlistParsed.searchParams.get('utm_source'), 'copylot-ext');
   assert.equal(proWaitlistParsed.searchParams.get('utm_medium'), 'popup');
   assert.equal(proWaitlistParsed.searchParams.get('utm_campaign'), 'twitter');
@@ -1009,8 +1005,6 @@ async function run() {
       props: {
         source: 'options',
         campaign: 'twitter',
-        prefill_used: true,
-        prefill_capability_count: 2,
         pay_willing: 'yes',
         pay_monthly: '10_20',
         pay_annual: '100_200',
@@ -1036,8 +1030,6 @@ async function run() {
       props: {
         source: 'options',
         campaign: 'twitter',
-        prefill_used: true,
-        prefill_capability_count: 2,
         pay_willing: 'yes',
         pay_monthly: '10_20',
         pay_annual: '100_200',
@@ -1056,8 +1048,6 @@ async function run() {
       ts: now,
       props: {
         source: 'options',
-        prefill_used: 'true',
-        prefill_capability_count: 99,
         pay_willing: 'invalid',
         pay_monthly: 'invalid',
         pay_annual: 'invalid',
@@ -1108,32 +1098,6 @@ async function run() {
   assert.equal(proSurveySourceOnce1.source, 'popup');
   const proSurveySourceOnce2 = consumeProWaitlistSurveySourceOnce(proSurveySourceOnce1.nextOnceSource);
   assert.equal(proSurveySourceOnce2.source, 'options');
-
-  const encodedSurveyPrefill = encodeProWaitlistSurveyPrefill({
-    useCase: 'Need cleaner article copy',
-    capabilities: ['advanced_cleaning', 'advanced_cleaning', 'batch_collection']
-  });
-  assert.ok(encodedSurveyPrefill);
-  assert.deepEqual(decodeProWaitlistSurveyPrefill(encodedSurveyPrefill), {
-    useCase: 'Need cleaner article copy',
-    capabilities: ['advanced_cleaning', 'batch_collection']
-  });
-  assert.deepEqual(decodeProWaitlistSurveyPrefill('%E0%A4%A'), {
-    useCase: '',
-    capabilities: []
-  });
-  const parsedSurveyPrefill = parseProWaitlistSurveyPrefillFromUrl(
-    `https://example.com/src/options/options.html?pro_survey_prefill=${encodedSurveyPrefill}#pro-waitlist-survey`
-  );
-  assert.equal(parsedSurveyPrefill.hadPrefillParam, true);
-  assert.equal(
-    parsedSurveyPrefill.cleanedUrl,
-    'https://example.com/src/options/options.html#pro-waitlist-survey'
-  );
-  assert.deepEqual(parsedSurveyPrefill.prefill, {
-    useCase: 'Need cleaner article copy',
-    capabilities: ['advanced_cleaning', 'batch_collection']
-  });
 
   assert.deepEqual(
     sanitizeTelemetryEvent({

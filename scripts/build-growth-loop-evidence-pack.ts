@@ -129,7 +129,7 @@ function assertUtmParams(urlStr: string, expected: { medium: string; campaign: s
 function assertWaitlistEnvWhitelist(u: URL) {
   const allowedKeys = new Set(['utm_source', 'utm_medium', 'utm_campaign', 'ext_version', 'ext_id', 'nav_lang', 'ui_lang']);
   for (const key of u.searchParams.keys()) {
-    assert.ok(allowedKeys.has(key), `Unexpected query key in waitlist URL: ${key}`);
+    assert.ok(allowedKeys.has(key), `Unexpected query key in Pro roadmap URL: ${key}`);
   }
 }
 
@@ -188,10 +188,11 @@ function validateOfficialLinksEvidence(evidence: OfficialLinksEvidence): void {
       assert.equal(storeParsed.hostname, 'chromewebstore.google.com');
       assertUtmParams(surface.chromeWebStoreUrl, { medium: surface.medium, campaign: sample.campaign });
 
-      // waitlist
+      // Pro roadmap
       const waitlistParsed = new URL(surface.proWaitlistUrl);
       assert.equal(waitlistParsed.origin, officialSiteRoot.origin);
-      assert.equal(waitlistParsed.hash, '#pro');
+      assert.equal(waitlistParsed.pathname, '/pricing');
+      assert.equal(waitlistParsed.hash, '');
       assertUtmParams(surface.proWaitlistUrl, { medium: surface.medium, campaign: sample.campaign });
       assertWaitlistEnvWhitelist(waitlistParsed);
 
@@ -315,7 +316,7 @@ export async function buildGrowthLoopEvidencePack(): Promise<void> {
     });
 
     const proDistributionPackMd = [
-      `# ${GROWTH_LOOP_EVIDENCE_PACK_VERSION} 对外投放包样例（campaign=${campaign}）`,
+      `# ${GROWTH_LOOP_EVIDENCE_PACK_VERSION} 对外增长投放包样例（campaign=${campaign}）`,
       '',
       '---',
       '',

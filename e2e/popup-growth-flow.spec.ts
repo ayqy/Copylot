@@ -48,23 +48,6 @@ test('popup share feedback rate and passive pro entries open real targets withou
     await proPage.close();
 
     await page.bringToFront();
-    const popupForWaitlist = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
-    await completePopupOnboardingIfVisible(popupForWaitlist);
-    await popupForWaitlist.locator('#popup-pro-waitlist').click();
-    await expect
-      .poll(async () => {
-        const urls = await getOpenedUrls(driverPage);
-        return urls.at(-1) || '';
-      })
-      .toContain('copy.useai.online');
-    await expect
-      .poll(async () => {
-        const urls = await getOpenedUrls(driverPage);
-        return urls.at(-1) || '';
-      })
-      .toContain('utm_content=popup_waitlist_cta');
-
-    await page.bringToFront();
     const popupForShare = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
     await completePopupOnboardingIfVisible(popupForShare);
     await popupForShare.locator('#copy-share-button').click();

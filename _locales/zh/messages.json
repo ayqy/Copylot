@@ -205,7 +205,7 @@
     }
   },
   "upgradePro": {
-    "message": "升级 Pro",
+    "message": "查看 Pro 路线",
     "description": "Popup 升级 Pro 入口"
   },
   "joinProWaitlist": {
@@ -215,62 +215,6 @@
   "popupProWaitlistSurvey": {
     "message": "Pro 问卷（1 分钟）",
     "description": "Popup Pro 意向问卷入口"
-  },
-  "popupProIntentTitle": {
-    "message": "你最想先解决什么",
-    "description": "Popup Pro 意向直达卡片标题"
-  },
-  "popupProIntentHint": {
-    "message": "先选一个最强诉求，我们会带着它直达问卷，减少空白填写。",
-    "description": "Popup Pro 意向直达卡片提示"
-  },
-  "popupProIntentCleaningTitle": {
-    "message": "更干净的正文",
-    "description": "Popup 高级清洗意向标题"
-  },
-  "popupProIntentCleaningDesc": {
-    "message": "阅读模式、广告/评论区过滤、复制后更少手动清理。",
-    "description": "Popup 高级清洗意向描述"
-  },
-  "popupProIntentBatchTitle": {
-    "message": "批量收集整理",
-    "description": "Popup 批量采集意向标题"
-  },
-  "popupProIntentBatchDesc": {
-    "message": "跨页面采集、命名归档、导出回顾一条链完成。",
-    "description": "Popup 批量采集意向描述"
-  },
-  "popupProIntentPromptPackTitle": {
-    "message": "高级 Prompt 工作流",
-    "description": "Popup Prompt Pack 意向标题"
-  },
-  "popupProIntentPromptPackDesc": {
-    "message": "更强的模板组合、稳定复用和团队协作方向。",
-    "description": "Popup Prompt Pack 意向描述"
-  },
-  "popupProIntentNoteExportTitle": {
-    "message": "笔记工具导出",
-    "description": "Popup 笔记导出意向标题"
-  },
-  "popupProIntentNoteExportDesc": {
-    "message": "更适配 Obsidian、Notion 和研究笔记的结构化导出模板。",
-    "description": "Popup 笔记导出意向描述"
-  },
-  "popupProIntentCleaningUseCase": {
-    "message": "我想复制长文时更干净，减少手动删除广告和杂项内容。",
-    "description": "高级清洗预填使用场景"
-  },
-  "popupProIntentBatchUseCase": {
-    "message": "我想更快地跨多个页面收集并整理资料片段。",
-    "description": "批量采集预填使用场景"
-  },
-  "popupProIntentPromptPackUseCase": {
-    "message": "我想为重复性的 AI 任务建立更强的 Prompt 工作流。",
-    "description": "Prompt Pack 预填使用场景"
-  },
-  "popupProIntentNoteExportUseCase": {
-    "message": "我想得到更适合 Obsidian、Notion 或研究笔记的导出模板。",
-    "description": "笔记导出预填使用场景"
   },
   "proPromptTitle": {
     "message": "Pro 候补（可选）",
@@ -293,11 +237,11 @@
     "description": "Options Pro Tab 标题"
   },
   "proSubtitle": {
-    "message": "如果你想要更完整的整理与导出体验，可以先看看我们正在收集的方向。",
+    "message": "如果你需要更完整的整理与导出体验，可以先查看 Pro 路线与发布节奏。",
     "description": "Options Pro Tab 副标题"
   },
   "proIntro": {
-    "message": "这里展示的是我们正在评估的增强能力。现有核心功能会继续保持可用。",
+    "message": "这里展示的是我们准备优先验证的增强能力。当前阶段只做增长闭环，不做表单、问卷或候补收集。",
     "description": "Options Pro Tab 说明"
   },
   "proFreeScopeTitle": {
@@ -337,7 +281,7 @@
     "description": "Options Pro Tab：Pro 规划区块标题"
   },
   "proPlannedScopeHint": {
-    "message": "以下是我们正在收集反馈的方向，最终形态会以实际体验为准。",
+    "message": "以下方向会根据真实使用行为、复用率和分享表现来排序，而不是依赖问卷样本。",
     "description": "Options Pro Tab：Pro 规划区块提示"
   },
   "proFeature1": {
@@ -357,7 +301,7 @@
     "description": "Pro 能力方向要点 4"
   },
   "proJoinWaitlist": {
-    "message": "加入候补名单",
+    "message": "查看官网 Pro 路线",
     "description": "Options Pro Tab 主操作按钮"
   },
   "proCopyWaitlistCopy": {
@@ -373,7 +317,7 @@
     "description": "Options Pro Tab：渠道输入项占位"
   },
   "proIntentCampaignHint": {
-    "message": "如果是由朋友推荐或通过某篇文章来到这里，欢迎告诉我们（建议使用字母或数字组合）。",
+    "message": "如果你是从某篇文章、活动页或朋友分享进入的，可以填一个简短标记，方便后续区分来源。",
     "description": "Options Pro Tab：渠道输入项提示（隐私与约束）"
   },
   "proIntentCampaignInvalid": {
@@ -381,15 +325,15 @@
     "description": "Options Pro Tab：渠道输入项非法提示"
   },
   "proWaitlistDistributionToolkitTitle": {
-    "message": "推荐给需要的朋友",
+    "message": "增长分享工具",
     "description": "Options Pro Tab：对外分发工具包标题"
   },
   "proWaitlistDistributionToolkitHint": {
-    "message": "觉得不错？一键复制下方链接或文案，把 Copylot 推荐给你的朋友吧！",
+    "message": "当前阶段只做增长获客，不做表单收集。直接复制官网路线页、商店安装链接和分享资料即可。",
     "description": "Options Pro Tab：对外分发工具包说明"
   },
   "proWaitlistUrlCopyButton": {
-    "message": "复制候补链接",
+    "message": "复制官网路线链接",
     "description": "Options Pro Tab：分发工具包 - 复制候补链接按钮"
   },
   "proWaitlistRecruitCopyButton": {
@@ -397,15 +341,15 @@
     "description": "Options Pro Tab：分发工具包 - 复制招募文案按钮"
   },
   "proStoreUrlCopyButton": {
-    "message": "复制安装链接",
+    "message": "复制商店安装链接",
     "description": "Options Pro Tab：分发工具包 - 复制商店安装链接按钮"
   },
   "proDistributionPackCopyButton": {
-    "message": "复制分享资料",
+    "message": "复制完整投放包",
     "description": "Options Pro Tab：分发工具包 - 复制完整投放包按钮"
   },
   "proDistributionPackTemplate": {
-    "message": "# Copylot 渠道分发投放包（可审计版）\\n\\n- campaign: $CAMPAIGN$\\n\\n## 1) 官网链接（带 UTM + campaign）\\n$OFFICIAL_SITE_URL$\\n\\n## 2) 商店安装链接（带 UTM + campaign）\\n$STORE_URL$\\n\\n## 3) Pro 候补链接（带 UTM + campaign）\\n$WAITLIST_URL$\\n\\n## 4) 招募文案（可直接发）\\n\\n```text\\n$RECRUIT_COPY$\\n```\\n\\n## 5) 可选：问卷引导（自愿）\\n- 如果你愿意帮助我们更快打磨 Pro：安装后打开 Copylot -> Options -> Pro，点击「复制问卷（含环境信息）」并发送给我们（不需要粘贴任何网页内容/隐私信息）。\\n\\n---\\n\\n隐私提示：本投放包不包含网页内容/复制内容/URL/标题；仅包含固定模板 + campaign + 官网/商店/候补链接。\\n",
+    "message": "# Copylot 渠道分发投放包（可审计版）\\n\\n- campaign: $CAMPAIGN$\\n\\n## 1) 官网首页链接（带 UTM + campaign）\\n$OFFICIAL_SITE_URL$\\n\\n## 2) 商店安装链接（带 UTM + campaign）\\n$STORE_URL$\\n\\n## 3) Pro 路线页链接（带 UTM + campaign）\\n$WAITLIST_URL$\\n\\n## 4) 分享文案（可直接发）\\n\\n```text\\n$RECRUIT_COPY$\\n```\\n\\n---\\n\\n隐私提示：本投放包不包含网页内容/复制内容/URL/标题；仅包含固定模板 + campaign + 官网/商店/Pro 路线页链接。\\n",
     "description": "Options Pro Tab：分发工具包 - 完整投放包 Markdown 模板",
     "placeholders": {
       "CAMPAIGN": {
@@ -426,11 +370,11 @@
     }
   },
   "proWaitlistDistributionCampaignRequired": {
-    "message": "为了让我们知道是你的推荐，分享前请先在上方填写一下来源标记哦。",
+    "message": "请先填写有效的来源标记，再复制分享资料。",
     "description": "Options Pro Tab：分发工具包 - campaign 为空/非法时提示"
   },
   "proWaitlistRecruitCopyTemplate": {
-    "message": "Copylot Pro（规划中）候补开放中：\\n\\n如果你希望更强的网页清洗/批量整理/导出能力，欢迎加入候补（无需粘贴任何网页内容/隐私信息）。\\n\\n候补链接（已绑定 campaign=$CAMPAIGN$）：\\n$WAITLIST_URL$\\n",
+    "message": "Copylot Pro 路线已公开：\\n\\n如果你需要更强的网页清洗、批量整理或导出能力，可以先看官网路线说明。\\n\\n路线页（campaign=$CAMPAIGN$）：\\n$WAITLIST_URL$\\n",
     "description": "Options Pro Tab：分发工具包 - 招募文案模板（用于 Twitter/小红书/群聊/邮件等渠道）",
     "placeholders": {
       "WAITLIST_URL": {
@@ -442,7 +386,7 @@
     }
   },
   "proPrivacyHint": {
-    "message": "候补登记是完全安全的：我们不会预填任何网页内容，只会带上基础环境信息帮助我们了解你的环境。",
+    "message": "当前阶段不收集候补、问卷或联系方式；先专注安装、激活、复用与口碑增长。",
     "description": "Options Pro Tab 隐私提示"
   },
   "proWaitlistSurveyTitle": {
