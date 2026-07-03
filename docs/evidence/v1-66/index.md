@@ -4,8 +4,8 @@
 - 生成脚本：`scripts/build-cws-listing-evidence-pack.ts`
 - packVersion：`v1-66`
 - exportedAt：`2026-03-21T00:00:00.000Z`
-- extensionVersion：`1.2.2`
-- 证据包文件：`cws-listing-evidence-pack-1.2.2-2026-03-21-000000.json`
+- extensionVersion：`1.2.3`
+- 证据包文件：`cws-listing-evidence-pack-1.2.3-2026-03-21-000000.json`
 
 ## 输入文件哈希清单（可追溯基线）
 
@@ -43,5 +43,5 @@
 
 输出文件：
 - `docs/evidence/v1-66/index.md`
-- `docs/evidence/v1-66/cws-listing-evidence-pack-1.2.2-2026-03-21-000000.json`
+- `docs/evidence/v1-66/cws-listing-evidence-pack-1.2.3-2026-03-21-000000.json`
 

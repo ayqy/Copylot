@@ -2813,7 +2813,7 @@ async function run() {
 
   const popupHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.html'], { encoding: 'utf8' });
   assert.ok(popupHtml.includes('id="upgrade-pro-entry"'), 'popup.html should include upgrade-pro-entry');
-  assert.ok(popupHtml.includes('id="popup-pro-waitlist"'), 'popup.html should include popup-pro-waitlist');
+  assert.ok(!popupHtml.includes('id="popup-pro-waitlist"'), 'popup.html should not include popup-pro-waitlist');
   assert.ok(popupHtml.includes('id="popup-onboarding-reopen"'), 'popup.html should include popup-onboarding-reopen');
   assert.ok(!popupHtml.includes('id="popup-pro-waitlist-copy"'), 'popup.html should not include popup-pro-waitlist-copy');
   assert.ok(!popupHtml.includes('id="popup-pro-waitlist-survey"'), 'popup.html should not include popup-pro-waitlist-survey');
@@ -2834,7 +2834,7 @@ async function run() {
   assert.ok(/id="options-onboarding-panel"[^>]*hidden/.test(optionsHtml), 'options onboarding panel should be hidden by default');
   assert.ok(optionsHtml.includes('id="pro-intent-campaign"'), 'options.html should include pro-intent-campaign');
   assert.ok(optionsHtml.includes('id="pro-waitlist-button"'), 'options.html should include pro-waitlist-button');
-  assert.ok(optionsHtml.includes('id="pro-waitlist-copy"'), 'options.html should include pro-waitlist-copy');
+  assert.ok(!optionsHtml.includes('id="pro-waitlist-copy"'), 'options.html should not include pro-waitlist-copy');
   assert.ok(optionsHtml.includes('id="options-onboarding-panel"'), 'options.html should include options-onboarding-panel');
   assert.ok(optionsHtml.includes('id="pro-intent-campaign"'), 'options.html should include hidden pro-intent-campaign');
   assert.ok(optionsHtml.includes('id="pro-waitlist-distribution-toolkit"'), 'options.html should include hidden distribution toolkit');
@@ -2854,7 +2854,7 @@ async function run() {
 
   const popupJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.js'], { encoding: 'utf8' });
   assert.ok(popupJs.includes('pro_entry_opened'), 'popup.js should contain pro_entry_opened');
-  assert.ok(popupJs.includes('pro_waitlist_opened'), 'popup.js should contain pro_waitlist_opened');
+  assert.ok(!popupJs.includes('pro_waitlist_opened'), 'popup.js should not contain pro_waitlist_opened');
   assert.ok(popupJs.includes('wom_feedback_opened'), 'popup.js should contain wom_feedback_opened');
   assert.ok(popupJs.includes('wom_share_opened'), 'popup.js should contain wom_share_opened');
   assert.ok(popupJs.includes('wom_rate_opened'), 'popup.js should contain wom_rate_opened');

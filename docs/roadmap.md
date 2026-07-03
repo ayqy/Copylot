@@ -46,7 +46,7 @@
 - 首次激活：新安装用户首次 `copy_success` 转化率。
 - 复用：首次 `copy_success` 后再次发生 `copy_success` 的用户占比。
 - 口碑：`wom_share_copied`、`wom_rate_opened`、商店评分与评价数量。
-- Pro 观察项：`pro_entry_opened`、`pro_waitlist_opened`、`pro_distribution_asset_copied`，仅用于路线说明与分发素材效果判断。
+- Pro 观察项：Pro 路线入口打开、Pro 路线说明页打开、分发素材复制，仅用于路线说明与分发素材效果判断。
 
 ## 来源与依据
 

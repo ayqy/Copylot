@@ -2,13 +2,13 @@
 
 ## 单一事实来源（可审计）
 - `src/shared/external-links.ts`
-  - sha256: `6cbea7aed46aa40a25c04e523d366e78904a07f9e1b34c0fe9f5ddb8394fcee0`
+  - sha256: `db2d701b8134254ce7fff52386d2b10b48ec2afeba02ee8ebd2cebaaf3b7dcdc`
 
 ## 输出文件清单（可复核）
 - `docs/evidence/v1-75/official-links.json`
-  - sha256: `9246ef13937f27a951668481ef27c8d1c7ef2932338ffb7f016da33f8253ba15`
+  - sha256: `8314d3065d3f239c181bb7131ca0287e5a2059f2dd90bca047d359548c4c2174`
 - `docs/evidence/v1-75/pro-distribution-pack.sample.md`
-  - sha256: `87e24cd26a201478976bd9b61a30b63821e5156bbf779cc12a1b2640d2179e5c`
+  - sha256: `6efb331b89dec491480771778421410e54ba7a3e529fc13b18077a1b9390599e`
 - `docs/evidence/v1-75/share-copy.sample.txt`
   - sha256: `a32cd5385fc51a3c080697a03cfd1cac06ba4b546b862855c7e3176e5e644b2d`
 
