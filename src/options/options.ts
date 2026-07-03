@@ -109,7 +109,6 @@ import {
 import { buildProIntentAttribution, type ProIntentContent, type ProIntentSource } from '../shared/pro-intent-attribution';
 import {
   DEFAULT_PRO_WAITLIST_SURVEY_PREFILL_STATE,
-  normalizeProWaitlistSurveyPrefillState,
   parseProWaitlistSurveyPrefillFromUrl,
   type ProWaitlistSurveyCapabilityKey,
   type ProWaitlistSurveyPrefillState
@@ -353,11 +352,6 @@ interface OptionsElements {
   proDistributionPackCopyButton: HTMLButtonElement;
   proWaitlistDistributionCampaignRequiredHint: HTMLElement;
   proWaitlistSurveyUseCase: HTMLTextAreaElement;
-  proWaitlistSurveyQuickIntentCleaningButton: HTMLButtonElement;
-  proWaitlistSurveyQuickIntentBatchButton: HTMLButtonElement;
-  proWaitlistSurveyQuickIntentPromptPackButton: HTMLButtonElement;
-  proWaitlistSurveyQuickIntentNoteExportButton: HTMLButtonElement;
-  proWaitlistSurveyQuickIntentStatus: HTMLElement;
   proWaitlistSurveyCapabilityAdvancedCleaning: HTMLInputElement;
   proWaitlistSurveyCapabilityBatchCollection: HTMLInputElement;
   proWaitlistSurveyCapabilityPromptPack: HTMLInputElement;
@@ -553,21 +547,6 @@ function getElements(): OptionsElements {
       'pro-waitlist-distribution-campaign-required'
     ) as HTMLElement,
     proWaitlistSurveyUseCase: document.getElementById('pro-waitlist-survey-use-case') as HTMLTextAreaElement,
-    proWaitlistSurveyQuickIntentCleaningButton: document.getElementById(
-      'pro-waitlist-survey-quick-intent-cleaning'
-    ) as HTMLButtonElement,
-    proWaitlistSurveyQuickIntentBatchButton: document.getElementById(
-      'pro-waitlist-survey-quick-intent-batch'
-    ) as HTMLButtonElement,
-    proWaitlistSurveyQuickIntentPromptPackButton: document.getElementById(
-      'pro-waitlist-survey-quick-intent-prompt-pack'
-    ) as HTMLButtonElement,
-    proWaitlistSurveyQuickIntentNoteExportButton: document.getElementById(
-      'pro-waitlist-survey-quick-intent-note-export'
-    ) as HTMLButtonElement,
-    proWaitlistSurveyQuickIntentStatus: document.getElementById(
-      'pro-waitlist-survey-quick-intent-status'
-    ) as HTMLElement,
     proWaitlistSurveyCapabilityAdvancedCleaning: document.getElementById(
       'pro-waitlist-survey-capability-advanced-cleaning'
     ) as HTMLInputElement,
@@ -3145,8 +3124,16 @@ function setupEventListeners() {
 
   let hasRecordedProIntentFormStart = readPendingProWaitlistSurveySourceOnce() === 'popup';
 
-  function setSurveyCapabilitySelection(capabilities: ProWaitlistSurveyCapabilityKey[]): void {
-    const selected = new Set(capabilities);
+  function applyPendingSurveyPrefillToForm() {
+    const prefill = pendingSurveyPrefillState;
+    if (!prefill.useCase && prefill.capabilities.length === 0) {
+      return;
+    }
+
+    if (!elements.proWaitlistSurveyUseCase.value && prefill.useCase) {
+      elements.proWaitlistSurveyUseCase.value = prefill.useCase;
+    }
+
     const capabilityMap: Record<ProWaitlistSurveyCapabilityKey, HTMLInputElement> = {
       advanced_cleaning: elements.proWaitlistSurveyCapabilityAdvancedCleaning,
       batch_collection: elements.proWaitlistSurveyCapabilityBatchCollection,
@@ -3154,81 +3141,9 @@ function setupEventListeners() {
       note_export: elements.proWaitlistSurveyCapabilityNoteExport
     };
 
-    (Object.entries(capabilityMap) as Array<[ProWaitlistSurveyCapabilityKey, HTMLInputElement]>).forEach(
-      ([capability, input]) => {
-        input.checked = selected.has(capability);
-      }
-    );
-  }
-
-  function applySurveyPrefillState(
-    input: Partial<ProWaitlistSurveyPrefillState> | null | undefined,
-    options?: {
-      overwriteUseCase?: boolean;
-      replaceCapabilities?: boolean;
-    }
-  ): void {
-    const prefill = normalizeProWaitlistSurveyPrefillState(input);
-    pendingSurveyPrefillState = prefill;
-    if (!prefill.useCase && prefill.capabilities.length === 0) {
-      return;
-    }
-
-    if ((options?.overwriteUseCase || !elements.proWaitlistSurveyUseCase.value.trim()) && prefill.useCase) {
-      elements.proWaitlistSurveyUseCase.value = prefill.useCase;
-    }
-
-    if (options?.replaceCapabilities) {
-      setSurveyCapabilitySelection(prefill.capabilities);
-      return;
-    }
-
-    const selected = new Set(prefill.capabilities);
-    if (selected.has('advanced_cleaning')) {
-      elements.proWaitlistSurveyCapabilityAdvancedCleaning.checked = true;
-    }
-    if (selected.has('batch_collection')) {
-      elements.proWaitlistSurveyCapabilityBatchCollection.checked = true;
-    }
-    if (selected.has('prompt_pack')) {
-      elements.proWaitlistSurveyCapabilityPromptPack.checked = true;
-    }
-    if (selected.has('note_export')) {
-      elements.proWaitlistSurveyCapabilityNoteExport.checked = true;
-    }
-  }
-
-  function applyPendingSurveyPrefillToForm() {
-    applySurveyPrefillState(pendingSurveyPrefillState);
-  }
-
-  function updateQuickIntentStatus(messageKey: string, substitutions?: MessageSubstitutions): void {
-    if (!elements.proWaitlistSurveyQuickIntentStatus) return;
-    elements.proWaitlistSurveyQuickIntentStatus.textContent = getMessage(messageKey, substitutions) || '';
-  }
-
-  function applyOptionsQuickIntentSelection(input: {
-    title: string;
-    useCase: string;
-    capability: ProWaitlistSurveyCapabilityKey;
-  }): void {
-    void recordTelemetryEvent('pro_entry_opened', buildOptionsProIntentAttribution('options_quick_intent_cta'));
-    applySurveyPrefillState(
-      {
-        useCase: input.useCase,
-        capabilities: [input.capability]
-      },
-      {
-        overwriteUseCase: true,
-        replaceCapabilities: true
-      }
-    );
-    updateQuickIntentStatus('proWaitlistSurveyQuickStartStatusSelected', [input.title]);
-    elements.proWaitlistSurveyUseCase.focus();
-    const currentValue = elements.proWaitlistSurveyUseCase.value;
-    elements.proWaitlistSurveyUseCase.setSelectionRange(currentValue.length, currentValue.length);
-    document.getElementById('pro-waitlist-survey')?.scrollIntoView({ block: 'nearest' });
-    void ensureProIntentFormStartRecorded('options_quick_intent_cta');
+    prefill.capabilities.forEach((capability) => {
+      capabilityMap[capability].checked = true;
+    });
   }
 
   async function ensureProIntentFormStartRecorded(content: ProIntentContent): Promise<void> {
@@ -3445,8 +3360,6 @@ function setupEventListeners() {
     ) as HTMLButtonElement | null;
     if (!target) return;
 
-    const alreadyActive = target.classList.contains('active');
-
     mainTabBtns.forEach((b) => b.classList.remove('active'));
     target.classList.add('active');
 
@@ -3461,9 +3374,7 @@ function setupEventListeners() {
 
     if (tabName === 'pro') {
       applyPendingSurveyPrefillToForm();
-      if (!alreadyActive) {
-        void recordTelemetryEvent('pro_entry_opened', buildOptionsProIntentAttribution('options_waitlist_cta'));
-      }
+      void recordTelemetryEvent('pro_entry_opened', buildOptionsProIntentAttribution('options_waitlist_cta'));
     }
   }
 
@@ -3542,45 +3453,11 @@ function setupEventListeners() {
     window.setTimeout(() => {
       document.getElementById('pro-waitlist-survey')?.scrollIntoView({ block: 'start' });
     }, 0);
-    if (readPendingProWaitlistSurveySourceOnce() === 'popup') {
-      void ensureProIntentFormStartRecorded('options_survey_cta');
-    }
+    void ensureProIntentFormStartRecorded('options_survey_cta');
   }
 
   elements.proIntentCampaignInput.addEventListener('input', () => {
     updateProWaitlistDistributionToolkitState();
-  });
-
-  elements.proWaitlistSurveyQuickIntentCleaningButton.addEventListener('click', () => {
-    applyOptionsQuickIntentSelection({
-      title: getMessage('popupProIntentCleaningTitle'),
-      useCase: getMessage('popupProIntentCleaningUseCase'),
-      capability: 'advanced_cleaning'
-    });
-  });
-
-  elements.proWaitlistSurveyQuickIntentBatchButton.addEventListener('click', () => {
-    applyOptionsQuickIntentSelection({
-      title: getMessage('popupProIntentBatchTitle'),
-      useCase: getMessage('popupProIntentBatchUseCase'),
-      capability: 'batch_collection'
-    });
-  });
-
-  elements.proWaitlistSurveyQuickIntentPromptPackButton.addEventListener('click', () => {
-    applyOptionsQuickIntentSelection({
-      title: getMessage('popupProIntentPromptPackTitle'),
-      useCase: getMessage('popupProIntentPromptPackUseCase'),
-      capability: 'prompt_pack'
-    });
-  });
-
-  elements.proWaitlistSurveyQuickIntentNoteExportButton.addEventListener('click', () => {
-    applyOptionsQuickIntentSelection({
-      title: getMessage('popupProIntentNoteExportTitle'),
-      useCase: getMessage('popupProIntentNoteExportUseCase'),
-      capability: 'note_export'
-    });
   });
 
   elements.proWaitlistSurveyEnableSampleButton.addEventListener('click', () => {

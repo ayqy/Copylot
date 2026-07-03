@@ -9,11 +9,9 @@
   - 商店：`https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy/ehfglnbhoefcdedpkcdnainiifpflbic`
 
 ## 当前进度
-- 当前进度一句话结论：S0 `13/15`，S4 `5/8`，S5 `3/3`；Top1 阻塞持续，但本轮已恢复 `Copylot` 的 GSC / GA4 真实数据链路，并连续补齐两段 Pro 高意向承接：先是 Popup 直达问卷，再是 Options 内快捷诉求预填。
+- 当前进度一句话结论：S0 `13/15`，S4 `5/8`，S5 `3/3`；Top1 阻塞持续，但本轮已恢复 `Copylot` 的 GSC / GA4 真实数据链路，并完成一轮真实增长闭环。
 - 关键阶段进度：S0 `13/15`；S4 `5/8`；S5 `3/3`
-- 本轮交付主题：
-  - `v1-106`：恢复 `Copylot` 增长数据基线，并补齐 Popup -> Pro 问卷的高意向直达链路，证据见 `docs/reports/v1-106-report.md` 与 `docs/evidence/growth/20260702-100354-growth/`。
-  - `v1-107`：补齐 `Options -> Pro` 的快捷诉求入口，避免直达 Pro 页用户从空白问卷开始，证据见 `docs/reports/v1-107-functional-report.md`。
+- 本轮交付主题：恢复 `Copylot` 增长数据基线，并补齐 Popup -> Pro 问卷的高意向直达链路，证据见 `docs/reports/v1-106-report.md` 与 `docs/evidence/growth/20260702-100354-growth/`。
 
 ## 下一步Top3（收入优先）
 1. 修复 `https://copy.useai.online/pricing` 的可访问性，并把修复结果重新提交 GSC。

@@ -103,7 +103,6 @@ type ProIntentContent =
   | 'popup_waitlist_cta'
   | 'popup_survey_cta'
   | 'options_waitlist_cta'
-  | 'options_quick_intent_cta'
   | 'options_survey_cta'
   | 'options_survey_copy_open';
 
@@ -113,7 +112,6 @@ function isProIntentContent(value: unknown): value is ProIntentContent {
     value === 'popup_waitlist_cta' ||
     value === 'popup_survey_cta' ||
     value === 'options_waitlist_cta' ||
-    value === 'options_quick_intent_cta' ||
     value === 'options_survey_cta' ||
     value === 'options_survey_copy_open'
   );
@@ -428,13 +426,6 @@ function appendTelemetryEvent(events: TelemetryEvent[], next: TelemetryEvent): T
 let cachedIsEnabled: boolean | null = null;
 let enabledInitPromise: Promise<boolean> | null = null;
 let enabledListenerInstalled = false;
-let telemetryMutationQueue: Promise<void> = Promise.resolve();
-
-function enqueueTelemetryMutation(task: () => Promise<void>): Promise<void> {
-  const next = telemetryMutationQueue.catch(() => undefined).then(task);
-  telemetryMutationQueue = next.catch(() => undefined);
-  return next;
-}
 
 async function readIsEnabledFromSync(): Promise<boolean> {
   if (typeof chrome === 'undefined' || !chrome.storage?.sync) return false;
@@ -486,14 +477,12 @@ async function isTelemetryEnabled(): Promise<boolean> {
 }
 
 export async function clearTelemetryEvents(): Promise<void> {
-  return enqueueTelemetryMutation(async () => {
-    try {
-      if (typeof chrome === 'undefined' || !chrome.storage?.local) return;
-      await chrome.storage.local.remove(TELEMETRY_EVENTS_KEY);
-    } catch (error) {
-      console.warn('Failed to clear telemetry events:', error);
-    }
-  });
+  try {
+    if (typeof chrome === 'undefined' || !chrome.storage?.local) return;
+    await chrome.storage.local.remove(TELEMETRY_EVENTS_KEY);
+  } catch (error) {
+    console.warn('Failed to clear telemetry events:', error);
+  }
 }
 
 /**
@@ -506,22 +495,20 @@ export async function recordTelemetryEvent(
   name: TelemetryEventName,
   props?: Record<string, TelemetryPropPrimitive>
 ): Promise<void> {
-  return enqueueTelemetryMutation(async () => {
-    try {
-      const enabled = await isTelemetryEnabled();
-      if (!enabled) return;
+  try {
+    const enabled = await isTelemetryEnabled();
+    if (!enabled) return;
 
-      if (typeof chrome === 'undefined' || !chrome.storage?.local) return;
+    if (typeof chrome === 'undefined' || !chrome.storage?.local) return;
 
-      const event = sanitizeTelemetryEvent({ name, ts: Date.now(), props });
-      if (!event) return;
+    const event = sanitizeTelemetryEvent({ name, ts: Date.now(), props });
+    if (!event) return;
 
-      const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
-      const existing = normalizeStoredTelemetryEvents(result[TELEMETRY_EVENTS_KEY]);
-      const nextEvents = appendTelemetryEvent(existing, event);
-      await chrome.storage.local.set({ [TELEMETRY_EVENTS_KEY]: nextEvents });
-    } catch (error) {
-      console.warn('Failed to record telemetry event:', error);
-    }
-  });
+    const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+    const existing = normalizeStoredTelemetryEvents(result[TELEMETRY_EVENTS_KEY]);
+    const nextEvents = appendTelemetryEvent(existing, event);
+    await chrome.storage.local.set({ [TELEMETRY_EVENTS_KEY]: nextEvents });
+  } catch (error) {
+    console.warn('Failed to record telemetry event:', error);
+  }
 }
