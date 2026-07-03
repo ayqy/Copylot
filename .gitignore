@@ -35,3 +35,7 @@ public/test
 .24h-studio/
 .venv/
 node_modules/
+docs/growth/
+docs/evidence/
+docs/worklog/
+tmp/
