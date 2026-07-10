@@ -110,6 +110,11 @@ test('popup opens via extension action and can convert current page selection', 
     await expect(popupAfterFirstCopy.locator('#first-copy-status')).toContainText(
       /已完成|completed/i
     );
+    await expect(popupAfterFirstCopy.locator('#reuse-primary-card')).toBeVisible();
+    await expect(popupAfterFirstCopy.locator('#reuse-primary-button')).toContainText(
+      /立即套用|Apply now/i
+    );
+    await expect(popupAfterFirstCopy.locator('#quick-prompt-slot-1-button')).toBeVisible();
   } finally {
     await page.close();
   }

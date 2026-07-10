@@ -2957,16 +2957,77 @@ async function copyWomEvidencePackToClipboard(): Promise<void> {
   }
 }
 
-function formatGrowthFunnelSummaryAsJson(summary: GrowthFunnelSummary): string {
+interface GrowthFunnelExportSummary {
+  growthFunnel: GrowthFunnelSummary;
+  secondOpenReuseAudit: {
+    firstSuccessfulCopyAt?: number;
+    secondSuccessfulCopyAt?: number;
+    firstQuickPromptSlotShownAt?: number;
+    quickPromptSlotShownCount: number;
+    firstQuickPromptSlotClickedAt?: number;
+    quickPromptSlotClickedCount: number;
+    lastQuickPromptSlotClickedSource?: string;
+    lastQuickPromptSlotClickedSlot?: number;
+    firstQuickPromptSlotUsedAt?: number;
+    quickPromptSlotUsedCount: number;
+    lastQuickPromptSlotUsedSource?: string;
+    lastQuickPromptSlotUsedSlot?: number;
+    telemetryCounts: Record<string, number>;
+    isPrivacySafe: true;
+  };
+}
+
+function buildGrowthFunnelExportSummary(
+  summary: GrowthFunnelSummary,
+  telemetryEvents: TelemetryEvent[]
+): GrowthFunnelExportSummary {
+  const telemetryCounts = telemetryEvents.reduce<Record<string, number>>((acc, event) => {
+    if (
+      event.name === 'quick_prompt_slot_shown' ||
+      event.name === 'quick_prompt_slot_clicked' ||
+      event.name === 'quick_prompt_slot_used' ||
+      event.name === 'copy_success' ||
+      event.name === 'prompt_used'
+    ) {
+      acc[event.name] = (acc[event.name] || 0) + 1;
+    }
+    return acc;
+  }, {});
+
+  return {
+    growthFunnel: summary,
+    secondOpenReuseAudit: {
+      firstSuccessfulCopyAt: summary.firstSuccessfulCopyAt,
+      secondSuccessfulCopyAt: summary.secondSuccessfulCopyAt,
+      firstQuickPromptSlotShownAt: summary.firstQuickPromptSlotShownAt,
+      quickPromptSlotShownCount: summary.quickPromptSlotShownCount || 0,
+      firstQuickPromptSlotClickedAt: summary.firstQuickPromptSlotClickedAt,
+      quickPromptSlotClickedCount: summary.quickPromptSlotClickedCount || 0,
+      lastQuickPromptSlotClickedSource: summary.lastQuickPromptSlotClickedSource,
+      lastQuickPromptSlotClickedSlot: summary.lastQuickPromptSlotClickedSlot,
+      firstQuickPromptSlotUsedAt: summary.firstQuickPromptSlotUsedAt,
+      quickPromptSlotUsedCount: summary.quickPromptSlotUsedCount || 0,
+      lastQuickPromptSlotUsedSource: summary.lastQuickPromptSlotUsedSource,
+      lastQuickPromptSlotUsedSlot: summary.lastQuickPromptSlotUsedSlot,
+      telemetryCounts,
+      isPrivacySafe: true
+    }
+  };
+}
+
+function formatGrowthFunnelSummaryAsJson(summary: GrowthFunnelExportSummary): string {
   return `${JSON.stringify(summary, null, 2)}\n`;
 }
 
-async function readGrowthFunnelSummaryForDisplay(): Promise<GrowthFunnelSummary> {
-  const stats = await getGrowthStats();
-  return buildGrowthFunnelSummary(stats, Date.now());
+async function readGrowthFunnelSummaryForDisplay(): Promise<GrowthFunnelExportSummary> {
+  const [stats, telemetryEvents] = await Promise.all([
+    getGrowthStats(),
+    readTelemetryEventsForDisplay()
+  ]);
+  return buildGrowthFunnelExportSummary(buildGrowthFunnelSummary(stats, Date.now()), telemetryEvents);
 }
 
-async function refreshGrowthFunnelPanel(): Promise<GrowthFunnelSummary | null> {
+async function refreshGrowthFunnelPanel(): Promise<GrowthFunnelExportSummary | null> {
   if (!elements?.growthFunnelView) return null;
 
   try {
@@ -2981,7 +3042,7 @@ async function refreshGrowthFunnelPanel(): Promise<GrowthFunnelSummary | null> {
 }
 
 async function copyGrowthFunnelSummaryToClipboard(): Promise<void> {
-  let summary: GrowthFunnelSummary;
+  let summary: GrowthFunnelExportSummary;
   let text: string;
 
   try {

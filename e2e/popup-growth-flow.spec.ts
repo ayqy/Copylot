@@ -1,6 +1,12 @@
 import { test, expect } from './fixtures';
 import { clearClipboard, expectClipboardTextEventually } from './helpers/clipboard';
-import { getOpenedUrls, getStorageSnapshot, seedLocalStorage, seedSyncStorage } from './helpers/extension-state';
+import {
+  getOpenedUrls,
+  getStorageSnapshot,
+  openExtensionPage,
+  seedLocalStorage,
+  seedSyncStorage
+} from './helpers/extension-state';
 import { completePopupOnboardingIfVisible, openPopupForActiveTab } from './helpers/popup';
 
 test('popup share feedback rate and passive pro entries open real targets without proactive prompts', async ({
@@ -115,6 +121,99 @@ test('popup share feedback rate and passive pro entries open real targets withou
         feedbackOpened: true,
         rateOpened: true
       });
+  } finally {
+    await page.close();
+  }
+});
+
+test('popup second-open reuse path exposes built-in prompt slot, records audit fields, and exports local summary', async ({
+  extensionContext,
+  extensionId,
+  driverPage,
+  fixtureOrigin
+}) => {
+  await clearClipboard(driverPage);
+  await seedSyncStorage(driverPage, {
+    copilot_settings: {
+      isAnonymousUsageDataEnabled: true,
+      popupOnboardingVersion: 1,
+      popupOnboardingCompletedVersion: 1,
+      popupOnboardingCompletedAt: 1,
+      language: 'en'
+    }
+  });
+
+  const page = await extensionContext.newPage();
+  try {
+    await page.goto(`${fixtureOrigin}/article.html`);
+    await page.locator('#article-paragraph').selectText();
+    await page.bringToFront();
+
+    let popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
+    await completePopupOnboardingIfVisible(popup);
+    await popup.locator('#convert-button').click();
+
+    await expect
+      .poll(async () => {
+        const snapshot = await getStorageSnapshot(driverPage);
+        const stats = snapshot.local.copilot_growth_stats as { successfulCopyCount?: number };
+        return stats?.successfulCopyCount ?? 0;
+      })
+      .toBe(1);
+
+    await page.bringToFront();
+    popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
+    await completePopupOnboardingIfVisible(popup);
+
+    await expect(popup.locator('#reuse-primary-card')).toBeVisible();
+    await expect(popup.locator('#reuse-primary-button')).toContainText(/Summarize Article/i);
+    await expect(popup.locator('#quick-prompt-slot-1-button')).toContainText(/Summarize Article/i);
+
+    await popup.locator('#reuse-primary-button').click();
+    await expectClipboardTextEventually(
+      (text) => text.includes('Please summarize the main content of the following article:'),
+      driverPage
+    );
+
+    await expect
+      .poll(async () => {
+        const snapshot = await getStorageSnapshot(driverPage);
+        const stats = snapshot.local.copilot_growth_stats as Record<string, unknown>;
+        const events = (snapshot.local.copilot_telemetry_events as Array<{ name?: string }>) || [];
+        return {
+          successfulCopyCount: stats.successfulCopyCount ?? 0,
+          secondSuccessfulCopyAt: typeof stats.secondSuccessfulCopyAt === 'number',
+          quickPromptSlotShownCount: stats.quickPromptSlotShownCount ?? 0,
+          quickPromptSlotClickedCount: stats.quickPromptSlotClickedCount ?? 0,
+          quickPromptSlotUsedCount: stats.quickPromptSlotUsedCount ?? 0,
+          hasShownEvent: events.some((event) => event.name === 'quick_prompt_slot_shown'),
+          hasClickedEvent: events.some((event) => event.name === 'quick_prompt_slot_clicked'),
+          hasUsedEvent: events.some((event) => event.name === 'quick_prompt_slot_used')
+        };
+      })
+      .toEqual({
+        successfulCopyCount: 2,
+        secondSuccessfulCopyAt: true,
+        quickPromptSlotShownCount: 1,
+        quickPromptSlotClickedCount: 1,
+        quickPromptSlotUsedCount: 1,
+        hasShownEvent: true,
+        hasClickedEvent: true,
+        hasUsedEvent: true
+      });
+
+    const optionsPage = await openExtensionPage(
+      extensionContext,
+      extensionId,
+      'src/options/options.html#data'
+    );
+    await expect
+      .poll(async () => optionsPage.locator('#growth-funnel-view').inputValue())
+      .toContain('secondOpenReuseAudit');
+    await expect
+      .poll(async () => optionsPage.locator('#growth-funnel-view').inputValue())
+      .toContain('quickPromptSlotUsedCount');
+    await optionsPage.close();
   } finally {
     await page.close();
   }

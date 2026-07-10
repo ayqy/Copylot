@@ -203,7 +203,7 @@ async function runPopupAssertions(): Promise<void> {
     assert.equal(
       getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-1-button')
         .hidden,
-      true
+      false
     );
     assert.equal(
       getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-2-button')
@@ -220,6 +220,21 @@ async function runPopupAssertions(): Promise<void> {
       '#quick-prompt-slot-2-title'
     );
     assert.equal(quickPromptSlot2Title.textContent, 'Custom Quick Slot 2');
+    const quickPromptSlot1Title = getRequiredElement<HTMLElement>(
+      page.dom.window.document,
+      '#quick-prompt-slot-1-title'
+    );
+    assert.equal(quickPromptSlot1Title.textContent, 'Summary');
+    const reusePrimaryCard = getRequiredElement<HTMLElement>(
+      page.dom.window.document,
+      '#reuse-primary-card'
+    );
+    assert.equal(reusePrimaryCard.hidden, false);
+    const reusePrimaryButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#reuse-primary-button'
+    );
+    assert.match(reusePrimaryButton.textContent || '', /Summary/i);
 
     const addPromptButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,

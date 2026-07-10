@@ -504,6 +504,7 @@ async function run() {
   const afterSecondCopy = applySuccessfulCopyToGrowthStats(afterFirstCopy, { now: t2 });
   assert.equal(afterSecondCopy.successfulCopyCount, 2);
   assert.equal(afterSecondCopy.firstSuccessfulCopyAt, t1, 'firstSuccessfulCopyAt: only write once');
+  assert.equal(afterSecondCopy.secondSuccessfulCopyAt, t2, 'secondSuccessfulCopyAt: write on second copy');
   assert.equal(afterSecondCopy.lastSuccessfulCopyAt, t2, 'lastSuccessfulCopyAt: update every time');
   assert.equal(afterSecondCopy.firstPromptUsedAt, undefined);
   assert.equal(
@@ -541,6 +542,17 @@ async function run() {
     tPrompt,
     'firstPromptUsedAt: only write once'
   );
+
+  const afterQuickSlotReuse = applySuccessfulCopyToGrowthStats(afterFirstCopy, {
+    now: t3,
+    isPromptUsed: true,
+    reuseSource: 'popup',
+    quickPromptSlot: 1
+  });
+  assert.equal(afterQuickSlotReuse.firstQuickPromptSlotUsedAt, t3);
+  assert.equal(afterQuickSlotReuse.quickPromptSlotUsedCount, 1);
+  assert.equal(afterQuickSlotReuse.lastQuickPromptSlotUsedSource, 'popup');
+  assert.equal(afterQuickSlotReuse.lastQuickPromptSlotUsedSlot, 1);
 
   const eightDaysMs = 8 * 24 * 60 * 60 * 1000;
   const tFirst = now + 10_000;
@@ -617,8 +629,19 @@ async function run() {
       successfulCopyCount: 2,
       firstPopupOpenedAt: popupOpenedAt,
       firstSuccessfulCopyAt: over3MinCopyAt,
+      secondSuccessfulCopyAt: now + 222,
       firstPromptUsedAt: now + 123,
-      reusedWithin7DaysAt: now + 456
+      reusedWithin7DaysAt: now + 456,
+      firstQuickPromptSlotShownAt: now + 300,
+      quickPromptSlotShownCount: 1,
+      firstQuickPromptSlotClickedAt: now + 350,
+      quickPromptSlotClickedCount: 1,
+      lastQuickPromptSlotClickedSource: 'popup',
+      lastQuickPromptSlotClickedSlot: 1,
+      firstQuickPromptSlotUsedAt: now + 400,
+      quickPromptSlotUsedCount: 1,
+      lastQuickPromptSlotUsedSource: 'popup',
+      lastQuickPromptSlotUsedSlot: 1
     },
     now
   );
@@ -626,6 +649,10 @@ async function run() {
   assert.equal(summaryBooleans.isActivated, true);
   assert.equal(summaryBooleans.isPromptUsed, true);
   assert.equal(summaryBooleans.isReusedWithin7Days, true);
+  assert.equal(summaryBooleans.hasQuickPromptSlotExposure, true);
+  assert.equal(summaryBooleans.hasQuickPromptSlotClick, true);
+  assert.equal(summaryBooleans.hasQuickPromptSlotUse, true);
+  assert.equal(summaryBooleans.isSecondSuccessfulCopyCompleted, true);
   assert.equal(summaryBooleans.firstPopupOpenedAt, popupOpenedAt);
   assert.equal(summaryBooleans.firstSuccessfulCopyAt, over3MinCopyAt);
 
@@ -774,6 +801,28 @@ async function run() {
       props: { source: 'auto', extra: 'x', action: 'skip' }
     }),
     { name: 'onboarding_shown', ts: now, props: { source: 'auto' } }
+  );
+
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'quick_prompt_slot_clicked',
+      ts: now,
+      props: { source: 'popup', slot: 1, extra: 'x' }
+    }),
+    { name: 'quick_prompt_slot_clicked', ts: now, props: { source: 'popup', slot: 1 } }
+  );
+
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'copy_success',
+      ts: now,
+      props: { source: 'popup', trigger: 'quick_prompt_slot', slot: 1, copiedText: 'secret' }
+    }),
+    {
+      name: 'copy_success',
+      ts: now,
+      props: { source: 'popup', trigger: 'quick_prompt_slot', slot: 1 }
+    }
   );
 
   assert.deepEqual(

@@ -89,6 +89,25 @@
           <p id="first-copy-hint" class="first-copy-hint">
             先试当前页最容易验证的长文、表格或代码块。
           </p>
+          <div id="reuse-primary-card" class="reuse-primary-card" hidden>
+            <div class="reuse-primary-copy">
+              <p id="reuse-primary-eyebrow" class="reuse-primary-eyebrow" data-i18n="popupReuseEyebrow">
+                第二次打开就复用这个动作
+              </p>
+              <h2 id="reuse-primary-title" class="reuse-primary-title" data-i18n="popupReuseTitle">
+                复制网页内容，直接套用 Prompt，再粘贴到 AI。
+              </h2>
+              <p id="reuse-primary-description" class="reuse-primary-description" data-i18n="popupReuseDescription">
+                先选中网页内容，再点下面的快捷 Prompt 槽位，立刻完成第二次复制。
+              </p>
+            </div>
+            <button type="button" id="reuse-primary-button" class="reuse-primary-button">
+              <span id="reuse-primary-button-label" data-i18n="popupReuseButtonLabel">
+                立即套用快捷 Prompt
+              </span>
+              <span id="reuse-primary-button-shortcut" class="shortcut-hint">Alt+1</span>
+            </button>
+          </div>
         </section>
 
         <form id="settings-form">
@@ -449,6 +468,18 @@
                   完成第一次干净复制后，再把常用 Prompt
                   绑定到快捷位，后续长文、表格和代码块都能更快复用。
                 </p>
+                <p class="onboarding-step-text" data-i18n="popupOnboardingStep3Desc2">
+                  第二次打开时，先复制网页内容，再点快捷 Prompt 槽位，最后粘贴到 AI。
+                </p>
+                <button
+                  type="button"
+                  id="popup-onboarding-step-3-action"
+                  class="button onboarding-step-action"
+                  data-i18n="popupOnboardingStep3Action"
+                  hidden
+                >
+                  立即套用快捷 Prompt
+                </button>
               </div>
             </div>
 

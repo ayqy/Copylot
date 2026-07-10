@@ -657,6 +657,27 @@
     "message": "Your first clean copy is done. Bind your most-used prompts to quick slots to speed up repeat use.",
     "description": "Popup hero hint after first success"
   },
+  "popupReuseEyebrow": {
+    "message": "Use this on your second open",
+    "description": "Reuse card eyebrow after first success"
+  },
+  "popupReuseTitle": {
+    "message": "Copy webpage content, apply a Prompt, then paste into AI.",
+    "description": "Reuse card title after first success"
+  },
+  "popupReuseDescription": {
+    "message": "Select content on the page, then hit the quick Prompt slot below to complete the second copy immediately.",
+    "description": "Reuse card description after first success"
+  },
+  "popupReuseButtonLabel": {
+    "message": "Apply now: $1$",
+    "description": "Reuse button label after first success",
+    "placeholders": {
+      "PROMPT_TITLE": {
+        "content": "$1"
+      }
+    }
+  },
   "popupOnboardingTitle": {
     "message": "First clean copy guide",
     "description": "Onboarding modal title"
@@ -696,6 +717,19 @@
   "popupOnboardingStep3Desc1": {
     "message": "Once the first clean copy works, bind your most-used prompts to quick slots so long articles, tables, and code stay fast to reuse.",
     "description": "Onboarding step 3 description"
+  },
+  "popupOnboardingStep3Desc2": {
+    "message": "On your second open, copy webpage content first, then hit a quick Prompt slot, and finally paste into AI.",
+    "description": "Onboarding step 3 reuse description"
+  },
+  "popupOnboardingStep3Action": {
+    "message": "Apply now: $1$",
+    "description": "Onboarding step 3 primary action",
+    "placeholders": {
+      "PROMPT_TITLE": {
+        "content": "$1"
+      }
+    }
   },
   "popupQuickActionsTitle": {
     "message": "Quick Actions",

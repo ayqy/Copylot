@@ -34,11 +34,20 @@ export async function launchExtension(options?: {
   rmSync(userDataDir, { recursive: true, force: true });
   mkdirSync(userDataDir, { recursive: true });
 
-  const context = await chromium.launchPersistentContext(userDataDir, {
-    channel: 'chromium',
+  const launchOptions = {
     headless: !headed,
     args: [`--disable-extensions-except=${E2E_EXTENSION_DIR}`, `--load-extension=${E2E_EXTENSION_DIR}`]
-  });
+  } as const;
+
+  let context: BrowserContext;
+  try {
+    context = await chromium.launchPersistentContext(userDataDir, {
+      channel: 'chromium',
+      ...launchOptions
+    });
+  } catch {
+    context = await chromium.launchPersistentContext(userDataDir, launchOptions);
+  }
 
   let [serviceWorker] = context.serviceWorkers();
   if (!serviceWorker) {

@@ -11,7 +11,9 @@ import {
   incrementSuccessfulCopyCount,
   markRatingPromptShown,
   setRatingPromptAction,
-  type RatingPromptAction
+  type RatingPromptAction,
+  type ReuseEntrySlot,
+  type ReuseEntrySource
 } from './shared/growth-stats';
 
 const isE2EBuild = process.env.BUILD_TARGET === 'e2e';
@@ -25,6 +27,14 @@ type E2EContextMenuSnapshotItem = {
   contexts: chrome.contextMenus.ContextType[];
 };
 let e2eContextMenuSnapshot: E2EContextMenuSnapshotItem[] = [];
+
+function isReuseEntrySource(value: unknown): value is ReuseEntrySource {
+  return value === 'popup' || value === 'onboarding';
+}
+
+function isReuseEntrySlot(value: unknown): value is ReuseEntrySlot {
+  return value === 1 || value === 2 || value === 3;
+}
 
 async function setE2ELastCopiedText(text: string) {
   if (!isE2EBuild) {
@@ -135,7 +145,12 @@ async function handleConvertPageContextMenu(tabId: number) {
   });
 }
 
-async function runPromptAction(tabId: number, promptId: string, selectionText?: string) {
+async function runPromptAction(
+  tabId: number,
+  promptId: string,
+  selectionText?: string,
+  audit?: { source?: ReuseEntrySource; slot?: ReuseEntrySlot }
+) {
   const settings = await getSettings();
   const prompt = getActivePrompts(settings.userPrompts).find((item: Prompt) => item.id === promptId);
   if (!prompt) {
@@ -164,7 +179,9 @@ async function runPromptAction(tabId: number, promptId: string, selectionText?: 
         promptTemplate: prompt.template,
         chatServiceUrl: chatService.url,
         chatServiceName: chatService.name,
-        selectionText: normalizedSelection
+        selectionText: normalizedSelection,
+        auditSource: audit?.source,
+        quickPromptSlot: audit?.slot
       });
     }
   }
@@ -172,7 +189,9 @@ async function runPromptAction(tabId: number, promptId: string, selectionText?: 
   return chrome.tabs.sendMessage(tabId, {
     type: 'PROCESS_SELECTION_OR_PAGE_WITH_PROMPT',
     promptTemplate: prompt.template,
-    selectionText: normalizedSelection
+    selectionText: normalizedSelection,
+    auditSource: audit?.source,
+    quickPromptSlot: audit?.slot
   });
 }
 
@@ -253,7 +272,11 @@ async function invokeContextMenuFromBridge(message: { tabId?: number; info: Part
   await handleContextMenuClick(clickInfo, tab);
 }
 
-async function executeQuickActionCommand(command: string, explicitTabId?: number) {
+async function executeQuickActionCommand(
+  command: string,
+  explicitTabId?: number,
+  audit?: { source?: ReuseEntrySource }
+) {
   let tab: chrome.tabs.Tab | null = null;
 
   if (typeof explicitTabId === 'number') {
@@ -283,7 +306,10 @@ async function executeQuickActionCommand(command: string, explicitTabId?: number
     throw new Error(chrome.i18n.getMessage('promptNotFound') || 'Prompt not found');
   }
 
-  await runPromptAction(tab.id, prompt.id);
+  await runPromptAction(tab.id, prompt.id, undefined, {
+    source: audit?.source,
+    slot
+  });
 }
 
 chrome.commands?.onCommand.addListener((command) => {
@@ -350,7 +376,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       (async () => {
         try {
           const isPromptUsed = message.isPromptUsed === true;
-          const stats = await incrementSuccessfulCopyCount({ isPromptUsed });
+          const reuseSource = isReuseEntrySource(message.reuseSource) ? message.reuseSource : undefined;
+          const quickPromptSlot = isReuseEntrySlot(message.quickPromptSlot)
+            ? message.quickPromptSlot
+            : undefined;
+          const stats = await incrementSuccessfulCopyCount({
+            isPromptUsed,
+            reuseSource,
+            quickPromptSlot
+          });
           sendResponse({ success: true, stats });
         } catch (error) {
           console.error('Failed to increment successfulCopyCount:', error);
@@ -454,9 +488,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case 'run-quick-action':
       (async () => {
         try {
+          const source = isReuseEntrySource(message.source) ? message.source : undefined;
           await executeQuickActionCommand(
             typeof message.command === 'string' ? message.command : '',
-            typeof message.tabId === 'number' ? message.tabId : undefined
+            typeof message.tabId === 'number' ? message.tabId : undefined,
+            { source }
           );
           sendResponse({ success: true });
         } catch (error) {

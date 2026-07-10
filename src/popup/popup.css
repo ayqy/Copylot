@@ -237,6 +237,59 @@ body {
   color: #cbd5e1;
 }
 
+.reuse-primary-card {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(251, 191, 36, 0.24);
+  background:
+    linear-gradient(160deg, rgba(79, 70, 229, 0.18), rgba(15, 23, 42, 0.9)),
+    rgba(15, 23, 42, 0.88);
+  display: grid;
+  gap: 10px;
+}
+
+.reuse-primary-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fbbf24;
+}
+
+.reuse-primary-title {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.35;
+  color: #fff;
+}
+
+.reuse-primary-description {
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #dbeafe;
+}
+
+.reuse-primary-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #fff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.reuse-primary-button:hover {
+  background: rgba(30, 41, 59, 0.92);
+}
+
 .quick-actions {
   padding: 8px 14px 4px;
   display: grid;
@@ -252,7 +305,7 @@ body {
   padding: 10px 12px;
   border: none;
   border-radius: 8px;
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, rgba(51, 65, 85, 0.96), rgba(30, 41, 59, 0.98));
   color: #fff;
   cursor: pointer;
   text-align: left;
@@ -263,7 +316,7 @@ body {
 }
 
 .quick-action:hover {
-  background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+  background: linear-gradient(135deg, rgba(71, 85, 105, 0.98), rgba(30, 41, 59, 1));
 }
 
 .quick-action:active {
@@ -282,6 +335,10 @@ body {
 .quick-action-primary {
   background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
   color: #fff;
+}
+
+.quick-action-primary:hover {
+  background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
 }
 
 .quick-action-primary .shortcut-hint {
@@ -449,6 +506,11 @@ body {
   background: rgba(79, 70, 229, 0.06);
   color: #c7d2fe;
   font-weight: 700;
+}
+
+.onboarding-step-action {
+  margin-top: 12px;
+  width: 100%;
 }
 
 .button-secondary:hover {

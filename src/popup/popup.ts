@@ -28,6 +28,10 @@ import {
   buildGrowthFunnelSummary,
   getGrowthStats,
   markFirstPopupOpened,
+  markQuickPromptSlotClicked,
+  markQuickPromptSlotShown,
+  type ReuseEntrySlot,
+  type ReuseEntrySource,
   type GrowthFunnelSummary
 } from '../shared/growth-stats';
 import {
@@ -43,6 +47,12 @@ interface PopupElements {
   popupContent: HTMLElement;
   firstCopyStatus: HTMLElement;
   firstCopyHint: HTMLElement;
+  reusePrimaryCard: HTMLElement;
+  reusePrimaryTitle: HTMLElement;
+  reusePrimaryDescription: HTMLElement;
+  reusePrimaryButton: HTMLButtonElement;
+  reusePrimaryButtonLabel: HTMLElement;
+  reusePrimaryButtonShortcut: HTMLElement;
   enableMagicCopySwitch: HTMLInputElement;
   enableHoverMagicCopySwitch: HTMLInputElement;
   enableClipboardAccumulatorSwitch: HTMLInputElement;
@@ -75,6 +85,7 @@ interface PopupElements {
   onboardingStep1: HTMLElement;
   onboardingStep2: HTMLElement;
   onboardingStep3: HTMLElement;
+  onboardingStep3Action: HTMLButtonElement;
 }
 
 interface QuickActionElements {
@@ -83,9 +94,18 @@ interface QuickActionElements {
   shortcut: HTMLElement;
 }
 
+interface ReuseQuickActionTarget {
+  slot: ReuseEntrySlot;
+  promptId: string;
+  title: string;
+  shortcut: string;
+}
+
 let elements: PopupElements;
 let currentSettings: Settings;
 let currentCommandShortcuts = new Map<string, string>();
+let currentGrowthSummary: GrowthFunnelSummary | null = null;
+let currentReuseQuickActionTarget: ReuseQuickActionTarget | null = null;
 
 const POPUP_ONBOARDING_TOTAL_STEPS = 3;
 let onboardingCurrentStep = 1;
@@ -190,6 +210,12 @@ function getElements(): PopupElements {
     popupContent: document.getElementById('popup-content') as HTMLElement,
     firstCopyStatus: document.getElementById('first-copy-status') as HTMLElement,
     firstCopyHint: document.getElementById('first-copy-hint') as HTMLElement,
+    reusePrimaryCard: document.getElementById('reuse-primary-card') as HTMLElement,
+    reusePrimaryTitle: document.getElementById('reuse-primary-title') as HTMLElement,
+    reusePrimaryDescription: document.getElementById('reuse-primary-description') as HTMLElement,
+    reusePrimaryButton: document.getElementById('reuse-primary-button') as HTMLButtonElement,
+    reusePrimaryButtonLabel: document.getElementById('reuse-primary-button-label') as HTMLElement,
+    reusePrimaryButtonShortcut: document.getElementById('reuse-primary-button-shortcut') as HTMLElement,
     enableMagicCopySwitch: document.getElementById('enable-magic-copy-switch') as HTMLInputElement,
     enableHoverMagicCopySwitch: document.getElementById(
       'enable-hover-magic-copy-switch'
@@ -227,7 +253,10 @@ function getElements(): PopupElements {
     onboardingNextButton: document.getElementById('popup-onboarding-next') as HTMLButtonElement,
     onboardingStep1: document.getElementById('popup-onboarding-step-1') as HTMLElement,
     onboardingStep2: document.getElementById('popup-onboarding-step-2') as HTMLElement,
-    onboardingStep3: document.getElementById('popup-onboarding-step-3') as HTMLElement
+    onboardingStep3: document.getElementById('popup-onboarding-step-3') as HTMLElement,
+    onboardingStep3Action: document.getElementById(
+      'popup-onboarding-step-3-action'
+    ) as HTMLButtonElement
   };
 }
 
@@ -308,8 +337,17 @@ function setOnboardingStep(step: number) {
 function openOnboardingModal(source: 'auto' | 'manual') {
   onboardingSource = source;
   void recordTelemetryEvent('onboarding_shown', { source });
+  if (currentGrowthSummary?.isActivated && currentReuseQuickActionTarget) {
+    void markQuickPromptSlotShown().catch((error) => {
+      console.warn('Failed to mark onboarding quick prompt slot shown:', error);
+    });
+    void recordTelemetryEvent('quick_prompt_slot_shown', {
+      source: 'onboarding',
+      slot: currentReuseQuickActionTarget.slot
+    });
+  }
   isOnboardingOpen = true;
-  setOnboardingStep(1);
+  setOnboardingStep(currentGrowthSummary?.isActivated ? 3 : 1);
   elements.onboardingModal.style.display = 'flex';
 }
 
@@ -407,7 +445,7 @@ async function openShortcutSettingsPage() {
   }
 }
 
-async function runQuickAction(command: string) {
+async function runQuickAction(command: string, source?: ReuseEntrySource, slot?: ReuseEntrySlot) {
   try {
     const tab = await resolveActiveTab();
     if (!tab?.id) {
@@ -419,10 +457,17 @@ async function runQuickAction(command: string) {
         type: 'CONVERT_PAGE_WITH_SELECTION'
       });
     } else {
+      if (source && slot) {
+        void markQuickPromptSlotClicked({ source, slot }).catch((error) => {
+          console.warn('Failed to mark quick prompt slot clicked:', error);
+        });
+        void recordTelemetryEvent('quick_prompt_slot_clicked', { source, slot });
+      }
       await chrome.runtime.sendMessage({
         type: 'run-quick-action',
         command,
-        tabId: tab.id
+        tabId: tab.id,
+        source
       });
     }
 
@@ -432,8 +477,20 @@ async function runQuickAction(command: string) {
   }
 }
 
-function renderQuickPromptButtons(settings: Settings) {
-  const activePrompts = getActivePrompts(settings.userPrompts).filter((prompt) => !prompt.builtIn);
+function getQuickPromptCandidates(settings: Settings, summary: GrowthFunnelSummary | null) {
+  const activePrompts = getActivePrompts(settings.userPrompts);
+  if (summary?.isActivated) {
+    return activePrompts;
+  }
+  return activePrompts.filter((prompt) => !prompt.builtIn);
+}
+
+function renderQuickPromptButtons(
+  settings: Settings,
+  summary: GrowthFunnelSummary | null
+): ReuseQuickActionTarget | null {
+  const activePrompts = getQuickPromptCandidates(settings, summary);
+  let firstVisibleTarget: ReuseQuickActionTarget | null = null;
   QUICK_PROMPT_SLOT_VALUES.forEach((slot) => {
     const prompt = getQuickPromptBySlot(activePrompts, slot);
     const quickAction = getQuickActionElements(slot);
@@ -446,10 +503,19 @@ function renderQuickPromptButtons(settings: Settings) {
       quickAction.button.hidden = false;
       quickAction.button.dataset.promptId = prompt.id;
       quickAction.title.textContent = prompt.title;
-      quickAction.shortcut.textContent = getCommandShortcutLabel(
+      const shortcut = getCommandShortcutLabel(
         commandName,
         getFallbackPromptShortcut(slot)
       );
+      quickAction.shortcut.textContent = shortcut;
+      if (!firstVisibleTarget) {
+        firstVisibleTarget = {
+          slot,
+          promptId: prompt.id,
+          title: prompt.title,
+          shortcut
+        };
+      }
     } else {
       quickAction.button.hidden = true;
       quickAction.button.disabled = false;
@@ -457,7 +523,17 @@ function renderQuickPromptButtons(settings: Settings) {
       quickAction.title.textContent = '';
       quickAction.shortcut.textContent = '';
     }
+    quickAction.button.classList.remove('quick-action-primary');
   });
+
+  elements.convertButton.classList.add('quick-action-primary');
+  if (summary?.isActivated && firstVisibleTarget) {
+    const activeTarget = firstVisibleTarget as ReuseQuickActionTarget;
+    elements.convertButton.classList.remove('quick-action-primary');
+    getQuickActionElements(activeTarget.slot).button.classList.add('quick-action-primary');
+  }
+
+  return firstVisibleTarget;
 }
 
 function updateUIFromSettings(settings: Settings) {
@@ -476,10 +552,11 @@ function updateUIFromSettings(settings: Settings) {
     QUICK_CONVERT_COMMAND,
     getFallbackConvertShortcut()
   );
-  renderQuickPromptButtons(settings);
+  currentReuseQuickActionTarget = renderQuickPromptButtons(settings, currentGrowthSummary);
 }
 
 function renderFirstCopySummary(summary: GrowthFunnelSummary) {
+  currentGrowthSummary = summary;
   const isActivated = summary.isActivated;
   elements.firstCopyStatus.textContent = isActivated
     ? getMessage('popupFirstCopyStatusDone')
@@ -488,12 +565,50 @@ function renderFirstCopySummary(summary: GrowthFunnelSummary) {
   elements.firstCopyHint.textContent = isActivated
     ? getMessage('popupFirstCopyHintDone')
     : getMessage('popupFirstCopyHintPending');
+  currentReuseQuickActionTarget = renderQuickPromptButtons(currentSettings, summary);
+  syncReusePrimaryExperience(summary, currentReuseQuickActionTarget);
+}
+
+function syncReusePrimaryExperience(
+  summary: GrowthFunnelSummary,
+  target: ReuseQuickActionTarget | null
+) {
+  const shouldShowReuseCard = summary.isActivated && Boolean(target);
+  elements.reusePrimaryCard.hidden = !shouldShowReuseCard;
+
+  if (!shouldShowReuseCard || !target) {
+    elements.reusePrimaryButton.disabled = true;
+    elements.reusePrimaryButton.dataset.slot = '';
+    elements.onboardingStep3Action.hidden = true;
+    elements.onboardingStep3Action.disabled = true;
+    return;
+  }
+
+  elements.reusePrimaryTitle.textContent = getMessage('popupReuseTitle');
+  elements.reusePrimaryDescription.textContent = getMessage('popupReuseDescription');
+  elements.reusePrimaryButtonLabel.textContent = getMessage('popupReuseButtonLabel', target.title);
+  elements.reusePrimaryButtonShortcut.textContent = target.shortcut;
+  elements.reusePrimaryButton.disabled = false;
+  elements.reusePrimaryButton.dataset.slot = String(target.slot);
+  elements.onboardingStep3Action.hidden = false;
+  elements.onboardingStep3Action.disabled = false;
+  elements.onboardingStep3Action.textContent = getMessage('popupOnboardingStep3Action', target.title);
 }
 
 async function loadFirstCopySummary() {
   try {
     const stats = await getGrowthStats();
-    renderFirstCopySummary(buildGrowthFunnelSummary(stats, Date.now()));
+    const summary = buildGrowthFunnelSummary(stats, Date.now());
+    renderFirstCopySummary(summary);
+    if (summary.isActivated && currentReuseQuickActionTarget) {
+      void markQuickPromptSlotShown().catch((error) => {
+        console.warn('Failed to mark quick prompt slot shown:', error);
+      });
+      void recordTelemetryEvent('quick_prompt_slot_shown', {
+        source: 'popup',
+        slot: currentReuseQuickActionTarget.slot
+      });
+    }
   } catch (error) {
     console.warn('Failed to load first clean copy summary:', error);
     renderFirstCopySummary(
@@ -528,7 +643,7 @@ function setupQuickActionListeners() {
     const quickAction = getQuickActionElements(slot);
     quickAction.button.addEventListener('click', () => {
       const prompt = getQuickPromptBySlot(
-        getActivePrompts(currentSettings.userPrompts).filter((item) => !item.builtIn),
+        getQuickPromptCandidates(currentSettings, currentGrowthSummary),
         slot
       );
       if (!prompt) {
@@ -536,7 +651,7 @@ function setupQuickActionListeners() {
         window.close();
         return;
       }
-      void runQuickAction(getQuickPromptSlotCommandName(slot));
+      void runQuickAction(getQuickPromptSlotCommandName(slot), 'popup', slot);
     });
   });
 }
@@ -572,6 +687,28 @@ function setupEventListeners() {
 
   elements.openShortcutSettingsButton.addEventListener('click', () => {
     void openShortcutSettingsPage();
+  });
+
+  elements.reusePrimaryButton.addEventListener('click', () => {
+    if (!currentReuseQuickActionTarget) {
+      return;
+    }
+    void runQuickAction(
+      getQuickPromptSlotCommandName(currentReuseQuickActionTarget.slot),
+      'popup',
+      currentReuseQuickActionTarget.slot
+    );
+  });
+
+  elements.onboardingStep3Action.addEventListener('click', () => {
+    if (!currentReuseQuickActionTarget) {
+      return;
+    }
+    void runQuickAction(
+      getQuickPromptSlotCommandName(currentReuseQuickActionTarget.slot),
+      'onboarding',
+      currentReuseQuickActionTarget.slot
+    );
   });
 
   elements.upgradeProEntry.addEventListener('click', async () => {

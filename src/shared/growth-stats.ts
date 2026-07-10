@@ -2,6 +2,8 @@ export const GROWTH_STATS_KEY = 'copilot_growth_stats';
 
 export type RatingPromptAction = 'rate' | 'later' | 'never';
 export type ProPromptAction = 'join' | 'later' | 'never';
+export type ReuseEntrySource = 'popup' | 'onboarding';
+export type ReuseEntrySlot = 1 | 2 | 3;
 
 export interface GrowthStats {
   installedAt: number;
@@ -10,9 +12,23 @@ export interface GrowthStats {
   // Funnel milestones (local only, auditable, privacy-safe)
   firstPopupOpenedAt?: number;
   firstSuccessfulCopyAt?: number;
+  secondSuccessfulCopyAt?: number;
   lastSuccessfulCopyAt?: number;
   firstPromptUsedAt?: number;
   reusedWithin7DaysAt?: number;
+  firstQuickPromptSlotShownAt?: number;
+  lastQuickPromptSlotShownAt?: number;
+  quickPromptSlotShownCount?: number;
+  firstQuickPromptSlotClickedAt?: number;
+  lastQuickPromptSlotClickedAt?: number;
+  quickPromptSlotClickedCount?: number;
+  lastQuickPromptSlotClickedSource?: ReuseEntrySource;
+  lastQuickPromptSlotClickedSlot?: ReuseEntrySlot;
+  firstQuickPromptSlotUsedAt?: number;
+  lastQuickPromptSlotUsedAt?: number;
+  quickPromptSlotUsedCount?: number;
+  lastQuickPromptSlotUsedSource?: ReuseEntrySource;
+  lastQuickPromptSlotUsedSlot?: ReuseEntrySlot;
 
   ratingPromptShownAt?: number;
   ratingPromptAction?: RatingPromptAction;
@@ -33,14 +49,29 @@ export interface GrowthFunnelSummary {
   successfulCopyCount: number;
   firstPopupOpenedAt?: number;
   firstSuccessfulCopyAt?: number;
+  secondSuccessfulCopyAt?: number;
   firstPromptUsedAt?: number;
   reusedWithin7DaysAt?: number;
+  firstQuickPromptSlotShownAt?: number;
+  quickPromptSlotShownCount?: number;
+  firstQuickPromptSlotClickedAt?: number;
+  quickPromptSlotClickedCount?: number;
+  lastQuickPromptSlotClickedSource?: ReuseEntrySource;
+  lastQuickPromptSlotClickedSlot?: ReuseEntrySlot;
+  firstQuickPromptSlotUsedAt?: number;
+  quickPromptSlotUsedCount?: number;
+  lastQuickPromptSlotUsedSource?: ReuseEntrySource;
+  lastQuickPromptSlotUsedSlot?: ReuseEntrySlot;
 
   // Derived progress flags (must not be persisted)
   isPopupOpened: boolean;
   isActivated: boolean;
   isPromptUsed: boolean;
   isReusedWithin7Days: boolean;
+  hasQuickPromptSlotExposure: boolean;
+  hasQuickPromptSlotClick: boolean;
+  hasQuickPromptSlotUse: boolean;
+  isSecondSuccessfulCopyCompleted: boolean;
 
   // Activation within 3 minutes from first popup open
   timeFromFirstPopupToFirstCopyMs?: number;
@@ -78,6 +109,14 @@ function isValidProPromptAction(value: unknown): value is ProPromptAction {
   return value === 'join' || value === 'later' || value === 'never';
 }
 
+function isValidReuseEntrySource(value: unknown): value is ReuseEntrySource {
+  return value === 'popup' || value === 'onboarding';
+}
+
+function isValidReuseEntrySlot(value: unknown): value is ReuseEntrySlot {
+  return value === 1 || value === 2 || value === 3;
+}
+
 function createDefaultGrowthStats(now: number): GrowthStats {
   return {
     installedAt: now,
@@ -93,9 +132,51 @@ export function normalizeGrowthStatsValue(stored: unknown, now: number): GrowthS
 
   const firstPopupOpenedAt = isValidTimestamp(raw.firstPopupOpenedAt) ? raw.firstPopupOpenedAt : undefined;
   const firstSuccessfulCopyAt = isValidTimestamp(raw.firstSuccessfulCopyAt) ? raw.firstSuccessfulCopyAt : undefined;
+  const secondSuccessfulCopyAt = isValidTimestamp(raw.secondSuccessfulCopyAt)
+    ? raw.secondSuccessfulCopyAt
+    : undefined;
   const lastSuccessfulCopyAt = isValidTimestamp(raw.lastSuccessfulCopyAt) ? raw.lastSuccessfulCopyAt : undefined;
   const firstPromptUsedAt = isValidTimestamp(raw.firstPromptUsedAt) ? raw.firstPromptUsedAt : undefined;
   const reusedWithin7DaysAt = isValidTimestamp(raw.reusedWithin7DaysAt) ? raw.reusedWithin7DaysAt : undefined;
+  const firstQuickPromptSlotShownAt = isValidTimestamp(raw.firstQuickPromptSlotShownAt)
+    ? raw.firstQuickPromptSlotShownAt
+    : undefined;
+  const lastQuickPromptSlotShownAt = isValidTimestamp(raw.lastQuickPromptSlotShownAt)
+    ? raw.lastQuickPromptSlotShownAt
+    : undefined;
+  const quickPromptSlotShownCount = isValidCount(raw.quickPromptSlotShownCount)
+    ? raw.quickPromptSlotShownCount
+    : undefined;
+  const firstQuickPromptSlotClickedAt = isValidTimestamp(raw.firstQuickPromptSlotClickedAt)
+    ? raw.firstQuickPromptSlotClickedAt
+    : undefined;
+  const lastQuickPromptSlotClickedAt = isValidTimestamp(raw.lastQuickPromptSlotClickedAt)
+    ? raw.lastQuickPromptSlotClickedAt
+    : undefined;
+  const quickPromptSlotClickedCount = isValidCount(raw.quickPromptSlotClickedCount)
+    ? raw.quickPromptSlotClickedCount
+    : undefined;
+  const lastQuickPromptSlotClickedSource = isValidReuseEntrySource(raw.lastQuickPromptSlotClickedSource)
+    ? raw.lastQuickPromptSlotClickedSource
+    : undefined;
+  const lastQuickPromptSlotClickedSlot = isValidReuseEntrySlot(raw.lastQuickPromptSlotClickedSlot)
+    ? raw.lastQuickPromptSlotClickedSlot
+    : undefined;
+  const firstQuickPromptSlotUsedAt = isValidTimestamp(raw.firstQuickPromptSlotUsedAt)
+    ? raw.firstQuickPromptSlotUsedAt
+    : undefined;
+  const lastQuickPromptSlotUsedAt = isValidTimestamp(raw.lastQuickPromptSlotUsedAt)
+    ? raw.lastQuickPromptSlotUsedAt
+    : undefined;
+  const quickPromptSlotUsedCount = isValidCount(raw.quickPromptSlotUsedCount)
+    ? raw.quickPromptSlotUsedCount
+    : undefined;
+  const lastQuickPromptSlotUsedSource = isValidReuseEntrySource(raw.lastQuickPromptSlotUsedSource)
+    ? raw.lastQuickPromptSlotUsedSource
+    : undefined;
+  const lastQuickPromptSlotUsedSlot = isValidReuseEntrySlot(raw.lastQuickPromptSlotUsedSlot)
+    ? raw.lastQuickPromptSlotUsedSlot
+    : undefined;
 
   const ratingPromptShownAt = isValidTimestamp(raw.ratingPromptShownAt) ? raw.ratingPromptShownAt : undefined;
   const ratingPromptAction = isValidRatingPromptAction(raw.ratingPromptAction)
@@ -123,9 +204,41 @@ export function normalizeGrowthStatsValue(stored: unknown, now: number): GrowthS
 
   if (firstPopupOpenedAt) normalized.firstPopupOpenedAt = firstPopupOpenedAt;
   if (firstSuccessfulCopyAt) normalized.firstSuccessfulCopyAt = firstSuccessfulCopyAt;
+  if (secondSuccessfulCopyAt) normalized.secondSuccessfulCopyAt = secondSuccessfulCopyAt;
   if (lastSuccessfulCopyAt) normalized.lastSuccessfulCopyAt = lastSuccessfulCopyAt;
   if (firstPromptUsedAt) normalized.firstPromptUsedAt = firstPromptUsedAt;
   if (reusedWithin7DaysAt) normalized.reusedWithin7DaysAt = reusedWithin7DaysAt;
+  if (firstQuickPromptSlotShownAt) normalized.firstQuickPromptSlotShownAt = firstQuickPromptSlotShownAt;
+  if (lastQuickPromptSlotShownAt) normalized.lastQuickPromptSlotShownAt = lastQuickPromptSlotShownAt;
+  if (quickPromptSlotShownCount && quickPromptSlotShownCount > 0) {
+    normalized.quickPromptSlotShownCount = quickPromptSlotShownCount;
+  }
+  if (firstQuickPromptSlotClickedAt) {
+    normalized.firstQuickPromptSlotClickedAt = firstQuickPromptSlotClickedAt;
+  }
+  if (lastQuickPromptSlotClickedAt) {
+    normalized.lastQuickPromptSlotClickedAt = lastQuickPromptSlotClickedAt;
+  }
+  if (quickPromptSlotClickedCount && quickPromptSlotClickedCount > 0) {
+    normalized.quickPromptSlotClickedCount = quickPromptSlotClickedCount;
+  }
+  if (lastQuickPromptSlotClickedSource) {
+    normalized.lastQuickPromptSlotClickedSource = lastQuickPromptSlotClickedSource;
+  }
+  if (lastQuickPromptSlotClickedSlot) {
+    normalized.lastQuickPromptSlotClickedSlot = lastQuickPromptSlotClickedSlot;
+  }
+  if (firstQuickPromptSlotUsedAt) normalized.firstQuickPromptSlotUsedAt = firstQuickPromptSlotUsedAt;
+  if (lastQuickPromptSlotUsedAt) normalized.lastQuickPromptSlotUsedAt = lastQuickPromptSlotUsedAt;
+  if (quickPromptSlotUsedCount && quickPromptSlotUsedCount > 0) {
+    normalized.quickPromptSlotUsedCount = quickPromptSlotUsedCount;
+  }
+  if (lastQuickPromptSlotUsedSource) {
+    normalized.lastQuickPromptSlotUsedSource = lastQuickPromptSlotUsedSource;
+  }
+  if (lastQuickPromptSlotUsedSlot) {
+    normalized.lastQuickPromptSlotUsedSlot = lastQuickPromptSlotUsedSlot;
+  }
 
   if (ratingPromptShownAt) normalized.ratingPromptShownAt = ratingPromptShownAt;
   if (ratingPromptAction) normalized.ratingPromptAction = ratingPromptAction;
@@ -147,13 +260,50 @@ export function buildGrowthFunnelSummary(stats: GrowthStats, now: number): Growt
 
   const firstPopupOpenedAt = isValidTimestamp(stats.firstPopupOpenedAt) ? stats.firstPopupOpenedAt : undefined;
   const firstSuccessfulCopyAt = isValidTimestamp(stats.firstSuccessfulCopyAt) ? stats.firstSuccessfulCopyAt : undefined;
+  const secondSuccessfulCopyAt = isValidTimestamp(stats.secondSuccessfulCopyAt)
+    ? stats.secondSuccessfulCopyAt
+    : undefined;
   const firstPromptUsedAt = isValidTimestamp(stats.firstPromptUsedAt) ? stats.firstPromptUsedAt : undefined;
   const reusedWithin7DaysAt = isValidTimestamp(stats.reusedWithin7DaysAt) ? stats.reusedWithin7DaysAt : undefined;
+  const firstQuickPromptSlotShownAt = isValidTimestamp(stats.firstQuickPromptSlotShownAt)
+    ? stats.firstQuickPromptSlotShownAt
+    : undefined;
+  const quickPromptSlotShownCount = isValidCount(stats.quickPromptSlotShownCount)
+    ? stats.quickPromptSlotShownCount
+    : undefined;
+  const firstQuickPromptSlotClickedAt = isValidTimestamp(stats.firstQuickPromptSlotClickedAt)
+    ? stats.firstQuickPromptSlotClickedAt
+    : undefined;
+  const quickPromptSlotClickedCount = isValidCount(stats.quickPromptSlotClickedCount)
+    ? stats.quickPromptSlotClickedCount
+    : undefined;
+  const lastQuickPromptSlotClickedSource = isValidReuseEntrySource(stats.lastQuickPromptSlotClickedSource)
+    ? stats.lastQuickPromptSlotClickedSource
+    : undefined;
+  const lastQuickPromptSlotClickedSlot = isValidReuseEntrySlot(stats.lastQuickPromptSlotClickedSlot)
+    ? stats.lastQuickPromptSlotClickedSlot
+    : undefined;
+  const firstQuickPromptSlotUsedAt = isValidTimestamp(stats.firstQuickPromptSlotUsedAt)
+    ? stats.firstQuickPromptSlotUsedAt
+    : undefined;
+  const quickPromptSlotUsedCount = isValidCount(stats.quickPromptSlotUsedCount)
+    ? stats.quickPromptSlotUsedCount
+    : undefined;
+  const lastQuickPromptSlotUsedSource = isValidReuseEntrySource(stats.lastQuickPromptSlotUsedSource)
+    ? stats.lastQuickPromptSlotUsedSource
+    : undefined;
+  const lastQuickPromptSlotUsedSlot = isValidReuseEntrySlot(stats.lastQuickPromptSlotUsedSlot)
+    ? stats.lastQuickPromptSlotUsedSlot
+    : undefined;
 
   const isPopupOpened = Boolean(firstPopupOpenedAt);
   const isActivated = Boolean(firstSuccessfulCopyAt) || successfulCopyCount > 0;
   const isPromptUsed = Boolean(firstPromptUsedAt);
   const isReusedWithin7Days = Boolean(reusedWithin7DaysAt);
+  const hasQuickPromptSlotExposure = Boolean(firstQuickPromptSlotShownAt);
+  const hasQuickPromptSlotClick = Boolean(firstQuickPromptSlotClickedAt);
+  const hasQuickPromptSlotUse = Boolean(firstQuickPromptSlotUsedAt);
+  const isSecondSuccessfulCopyCompleted = Boolean(secondSuccessfulCopyAt);
 
   let timeFromFirstPopupToFirstCopyMs: number | undefined;
   let activatedWithin3MinutesFromFirstPopup: boolean | undefined;
@@ -171,12 +321,27 @@ export function buildGrowthFunnelSummary(stats: GrowthStats, now: number): Growt
     successfulCopyCount,
     firstPopupOpenedAt,
     firstSuccessfulCopyAt,
+    secondSuccessfulCopyAt,
     firstPromptUsedAt,
     reusedWithin7DaysAt,
+    firstQuickPromptSlotShownAt,
+    quickPromptSlotShownCount,
+    firstQuickPromptSlotClickedAt,
+    quickPromptSlotClickedCount,
+    lastQuickPromptSlotClickedSource,
+    lastQuickPromptSlotClickedSlot,
+    firstQuickPromptSlotUsedAt,
+    quickPromptSlotUsedCount,
+    lastQuickPromptSlotUsedSource,
+    lastQuickPromptSlotUsedSlot,
     isPopupOpened,
     isActivated,
     isPromptUsed,
     isReusedWithin7Days,
+    hasQuickPromptSlotExposure,
+    hasQuickPromptSlotClick,
+    hasQuickPromptSlotUse,
+    isSecondSuccessfulCopyCompleted,
     timeFromFirstPopupToFirstCopyMs,
     activatedWithin3MinutesFromFirstPopup
   };
@@ -185,6 +350,8 @@ export function buildGrowthFunnelSummary(stats: GrowthStats, now: number): Growt
 export interface ApplySuccessfulCopyOptions {
   now: number;
   isPromptUsed?: boolean;
+  reuseSource?: ReuseEntrySource;
+  quickPromptSlot?: ReuseEntrySlot;
 }
 
 export function applySuccessfulCopyToGrowthStats(
@@ -204,8 +371,20 @@ export function applySuccessfulCopyToGrowthStats(
     lastSuccessfulCopyAt: now
   };
 
+  if (!stats.secondSuccessfulCopyAt && prevCount === 1) {
+    next.secondSuccessfulCopyAt = now;
+  }
+
   if (options.isPromptUsed && !stats.firstPromptUsedAt) {
     next.firstPromptUsedAt = now;
+  }
+
+  if (options.reuseSource && options.quickPromptSlot) {
+    next.firstQuickPromptSlotUsedAt = stats.firstQuickPromptSlotUsedAt || now;
+    next.lastQuickPromptSlotUsedAt = now;
+    next.quickPromptSlotUsedCount = (stats.quickPromptSlotUsedCount || 0) + 1;
+    next.lastQuickPromptSlotUsedSource = options.reuseSource;
+    next.lastQuickPromptSlotUsedSlot = options.quickPromptSlot;
   }
 
   if (!stats.reusedWithin7DaysAt && prevCount === 1) {
@@ -287,6 +466,14 @@ function shouldPersistNormalizedGrowthStats(stored: unknown): boolean {
     return true;
   }
 
+  if (
+    'secondSuccessfulCopyAt' in raw &&
+    raw.secondSuccessfulCopyAt !== undefined &&
+    !isValidTimestamp(raw.secondSuccessfulCopyAt)
+  ) {
+    return true;
+  }
+
   if ('lastSuccessfulCopyAt' in raw && raw.lastSuccessfulCopyAt !== undefined && !isValidTimestamp(raw.lastSuccessfulCopyAt)) {
     return true;
   }
@@ -299,6 +486,110 @@ function shouldPersistNormalizedGrowthStats(stored: unknown): boolean {
     'reusedWithin7DaysAt' in raw &&
     raw.reusedWithin7DaysAt !== undefined &&
     !isValidTimestamp(raw.reusedWithin7DaysAt)
+  ) {
+    return true;
+  }
+
+  if (
+    'firstQuickPromptSlotShownAt' in raw &&
+    raw.firstQuickPromptSlotShownAt !== undefined &&
+    !isValidTimestamp(raw.firstQuickPromptSlotShownAt)
+  ) {
+    return true;
+  }
+
+  if (
+    'lastQuickPromptSlotShownAt' in raw &&
+    raw.lastQuickPromptSlotShownAt !== undefined &&
+    !isValidTimestamp(raw.lastQuickPromptSlotShownAt)
+  ) {
+    return true;
+  }
+
+  if (
+    'quickPromptSlotShownCount' in raw &&
+    raw.quickPromptSlotShownCount !== undefined &&
+    !isValidCount(raw.quickPromptSlotShownCount)
+  ) {
+    return true;
+  }
+
+  if (
+    'firstQuickPromptSlotClickedAt' in raw &&
+    raw.firstQuickPromptSlotClickedAt !== undefined &&
+    !isValidTimestamp(raw.firstQuickPromptSlotClickedAt)
+  ) {
+    return true;
+  }
+
+  if (
+    'lastQuickPromptSlotClickedAt' in raw &&
+    raw.lastQuickPromptSlotClickedAt !== undefined &&
+    !isValidTimestamp(raw.lastQuickPromptSlotClickedAt)
+  ) {
+    return true;
+  }
+
+  if (
+    'quickPromptSlotClickedCount' in raw &&
+    raw.quickPromptSlotClickedCount !== undefined &&
+    !isValidCount(raw.quickPromptSlotClickedCount)
+  ) {
+    return true;
+  }
+
+  if (
+    'lastQuickPromptSlotClickedSource' in raw &&
+    raw.lastQuickPromptSlotClickedSource !== undefined &&
+    !isValidReuseEntrySource(raw.lastQuickPromptSlotClickedSource)
+  ) {
+    return true;
+  }
+
+  if (
+    'lastQuickPromptSlotClickedSlot' in raw &&
+    raw.lastQuickPromptSlotClickedSlot !== undefined &&
+    !isValidReuseEntrySlot(raw.lastQuickPromptSlotClickedSlot)
+  ) {
+    return true;
+  }
+
+  if (
+    'firstQuickPromptSlotUsedAt' in raw &&
+    raw.firstQuickPromptSlotUsedAt !== undefined &&
+    !isValidTimestamp(raw.firstQuickPromptSlotUsedAt)
+  ) {
+    return true;
+  }
+
+  if (
+    'lastQuickPromptSlotUsedAt' in raw &&
+    raw.lastQuickPromptSlotUsedAt !== undefined &&
+    !isValidTimestamp(raw.lastQuickPromptSlotUsedAt)
+  ) {
+    return true;
+  }
+
+  if (
+    'quickPromptSlotUsedCount' in raw &&
+    raw.quickPromptSlotUsedCount !== undefined &&
+    !isValidCount(raw.quickPromptSlotUsedCount)
+  ) {
+    return true;
+  }
+
+  if (
+    'lastQuickPromptSlotUsedSource' in raw &&
+    raw.lastQuickPromptSlotUsedSource !== undefined &&
+    !isValidReuseEntrySource(raw.lastQuickPromptSlotUsedSource)
+  ) {
+    return true;
+  }
+
+  if (
+    'lastQuickPromptSlotUsedSlot' in raw &&
+    raw.lastQuickPromptSlotUsedSlot !== undefined &&
+    !isValidReuseEntrySlot(raw.lastQuickPromptSlotUsedSlot)
   ) {
     return true;
   }
@@ -432,6 +723,8 @@ export async function markFirstPopupOpened(now: number = Date.now()): Promise<Gr
 export interface IncrementSuccessfulCopyContext {
   now?: number;
   isPromptUsed?: boolean;
+  reuseSource?: ReuseEntrySource;
+  quickPromptSlot?: ReuseEntrySlot;
 }
 
 export async function incrementSuccessfulCopyCount(
@@ -439,7 +732,47 @@ export async function incrementSuccessfulCopyCount(
 ): Promise<GrowthStats> {
   const now = typeof context.now === 'number' ? context.now : Date.now();
   const stats = await ensureGrowthStatsInitialized(now);
-  const next = applySuccessfulCopyToGrowthStats(stats, { now, isPromptUsed: context.isPromptUsed });
+  const next = applySuccessfulCopyToGrowthStats(stats, {
+    now,
+    isPromptUsed: context.isPromptUsed,
+    reuseSource: context.reuseSource,
+    quickPromptSlot: context.quickPromptSlot
+  });
+  await setGrowthStats(next);
+  return next;
+}
+
+export async function markQuickPromptSlotShown(shownAt: number = Date.now()): Promise<GrowthStats> {
+  const stats = await ensureGrowthStatsInitialized(shownAt);
+  const next: GrowthStats = {
+    ...stats,
+    firstQuickPromptSlotShownAt: stats.firstQuickPromptSlotShownAt || shownAt,
+    lastQuickPromptSlotShownAt: shownAt,
+    quickPromptSlotShownCount: (stats.quickPromptSlotShownCount || 0) + 1
+  };
+  await setGrowthStats(next);
+  return next;
+}
+
+export interface MarkQuickPromptSlotClickedContext {
+  now?: number;
+  source: ReuseEntrySource;
+  slot: ReuseEntrySlot;
+}
+
+export async function markQuickPromptSlotClicked(
+  context: MarkQuickPromptSlotClickedContext
+): Promise<GrowthStats> {
+  const now = typeof context.now === 'number' ? context.now : Date.now();
+  const stats = await ensureGrowthStatsInitialized(now);
+  const next: GrowthStats = {
+    ...stats,
+    firstQuickPromptSlotClickedAt: stats.firstQuickPromptSlotClickedAt || now,
+    lastQuickPromptSlotClickedAt: now,
+    quickPromptSlotClickedCount: (stats.quickPromptSlotClickedCount || 0) + 1,
+    lastQuickPromptSlotClickedSource: context.source,
+    lastQuickPromptSlotClickedSlot: context.slot
+  };
   await setGrowthStats(next);
   return next;
 }

@@ -11,6 +11,9 @@ export type TelemetryEventName =
   | 'popup_opened'
   | 'copy_success'
   | 'prompt_used'
+  | 'quick_prompt_slot_shown'
+  | 'quick_prompt_slot_clicked'
+  | 'quick_prompt_slot_used'
   | 'pro_prompt_shown'
   | 'pro_prompt_action'
   | 'pro_entry_opened'
@@ -39,8 +42,11 @@ export interface TelemetryEvent {
 
 const TELEMETRY_EVENT_PROP_ALLOWLIST: Record<TelemetryEventName, readonly string[]> = {
   popup_opened: [],
-  copy_success: [],
-  prompt_used: [],
+  copy_success: ['source', 'trigger', 'slot'],
+  prompt_used: ['source', 'trigger', 'slot'],
+  quick_prompt_slot_shown: ['source', 'slot'],
+  quick_prompt_slot_clicked: ['source', 'slot'],
+  quick_prompt_slot_used: ['source', 'slot'],
   pro_prompt_shown: ['source'],
   pro_prompt_action: ['source', 'action'],
   pro_entry_opened: ['source', 'medium', 'content', 'campaign'],
@@ -131,6 +137,22 @@ type OnboardingCompletedAction = 'finish' | 'skip';
 
 function isOnboardingCompletedAction(value: unknown): value is OnboardingCompletedAction {
   return value === 'finish' || value === 'skip';
+}
+
+type ReuseTelemetrySource = 'popup' | 'onboarding' | 'content';
+
+function isReuseTelemetrySource(value: unknown): value is ReuseTelemetrySource {
+  return value === 'popup' || value === 'onboarding' || value === 'content';
+}
+
+type CopyTelemetryTrigger = 'convert' | 'prompt_action' | 'quick_prompt_slot';
+
+function isCopyTelemetryTrigger(value: unknown): value is CopyTelemetryTrigger {
+  return value === 'convert' || value === 'prompt_action' || value === 'quick_prompt_slot';
+}
+
+function isTelemetryQuickPromptSlot(value: unknown): value is 1 | 2 | 3 {
+  return value === 1 || value === 2 || value === 3;
 }
 
 type RatingPromptAction = 'rate' | 'later' | 'never';
@@ -228,6 +250,17 @@ function sanitizeProps(
       continue;
     }
     if (key === 'source') {
+      if (
+        eventName === 'copy_success' ||
+        eventName === 'prompt_used' ||
+        eventName === 'quick_prompt_slot_shown' ||
+        eventName === 'quick_prompt_slot_clicked' ||
+        eventName === 'quick_prompt_slot_used'
+      ) {
+        if (!isReuseTelemetrySource(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
       if (eventName === 'rating_prompt_shown' || eventName === 'rating_prompt_action') {
         if (!isRatingPromptSource(value)) continue;
         sanitized[key] = value;
@@ -300,6 +333,18 @@ function sanitizeProps(
         sanitized[key] = value;
         continue;
       }
+    }
+
+    if (key === 'trigger') {
+      if (!isCopyTelemetryTrigger(value)) continue;
+      sanitized[key] = value;
+      continue;
+    }
+
+    if (key === 'slot') {
+      if (!isTelemetryQuickPromptSlot(value)) continue;
+      sanitized[key] = value;
+      continue;
     }
 
     if (eventName === 'pro_waitlist_survey_copied') {

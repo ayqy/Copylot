@@ -352,14 +352,23 @@ async function writeTextToClipboard(text: string): Promise<void> {
 
 type ReportSuccessfulCopyOptions = {
   isPromptUsed?: boolean;
+  reuseSource?: 'popup' | 'onboarding';
+  quickPromptSlot?: 1 | 2 | 3;
 };
 
 async function reportSuccessfulCopy(options: ReportSuccessfulCopyOptions = {}): Promise<void> {
   try {
-    const payload: { type: 'growth-stats-increment-successful-copy'; isPromptUsed?: true } = {
+    const payload: {
+      type: 'growth-stats-increment-successful-copy';
+      isPromptUsed?: true;
+      reuseSource?: 'popup' | 'onboarding';
+      quickPromptSlot?: 1 | 2 | 3;
+    } = {
       type: 'growth-stats-increment-successful-copy'
     };
     if (options.isPromptUsed) payload.isPromptUsed = true;
+    if (options.reuseSource) payload.reuseSource = options.reuseSource;
+    if (options.quickPromptSlot) payload.quickPromptSlot = options.quickPromptSlot;
     await chrome.runtime.sendMessage(payload);
   } catch (error) {
     console.warn('Failed to report successful copy:', error);
@@ -400,6 +409,8 @@ async function processPromptActionMessage(message: {
   chatServiceUrl?: string;
   chatServiceName?: string;
   selectionText?: string;
+  auditSource?: 'popup' | 'onboarding';
+  quickPromptSlot?: 1 | 2 | 3;
 }): Promise<{ success: boolean; error?: string }> {
   if (!userSettings) {
     await loadSettingsAndApply();
@@ -420,9 +431,28 @@ async function processPromptActionMessage(message: {
   try {
     await copyToClipboard(finalText);
     await recordE2ECopiedText(finalText);
-    void recordTelemetryEvent('copy_success');
-    void recordTelemetryEvent('prompt_used');
-    await reportSuccessfulCopy({ isPromptUsed: true });
+    const isQuickPromptSlotReuse = Boolean(message.auditSource && message.quickPromptSlot);
+    if (isQuickPromptSlotReuse) {
+      void recordTelemetryEvent('quick_prompt_slot_used', {
+        source: message.auditSource!,
+        slot: message.quickPromptSlot!
+      });
+    }
+    void recordTelemetryEvent('copy_success', {
+      source: message.auditSource || 'content',
+      trigger: isQuickPromptSlotReuse ? 'quick_prompt_slot' : 'prompt_action',
+      ...(message.quickPromptSlot ? { slot: message.quickPromptSlot } : {})
+    });
+    void recordTelemetryEvent('prompt_used', {
+      source: message.auditSource || 'content',
+      trigger: isQuickPromptSlotReuse ? 'quick_prompt_slot' : 'prompt_action',
+      ...(message.quickPromptSlot ? { slot: message.quickPromptSlot } : {})
+    });
+    await reportSuccessfulCopy({
+      isPromptUsed: true,
+      reuseSource: message.auditSource,
+      quickPromptSlot: message.quickPromptSlot
+    });
 
     if (message.chatServiceUrl && message.chatServiceName) {
       showChatRedirectNotification(message.chatServiceName);
@@ -937,8 +967,14 @@ async function handlePromptClick(promptId: string): Promise<void> {
     // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
     const finalText = combinePromptWithContent(prompt.template, content);
     await writeTextToClipboard(finalText);
-    void recordTelemetryEvent('copy_success');
-    void recordTelemetryEvent('prompt_used');
+    void recordTelemetryEvent('copy_success', {
+      source: 'content',
+      trigger: 'prompt_action'
+    });
+    void recordTelemetryEvent('prompt_used', {
+      source: 'content',
+      trigger: 'prompt_action'
+    });
     await reportSuccessfulCopy({ isPromptUsed: true });
     
     // 更新使用次数

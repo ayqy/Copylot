@@ -1,0 +1,53 @@
+{
+  "growthFunnel": {
+    "installedAt": 1710000000000,
+    "successfulCopyCount": 2,
+    "firstPopupOpenedAt": 1710000000500,
+    "firstSuccessfulCopyAt": 1710000001000,
+    "secondSuccessfulCopyAt": 1710000007100,
+    "firstPromptUsedAt": 1710000007100,
+    "reusedWithin7DaysAt": 1710000007100,
+    "firstQuickPromptSlotShownAt": 1710000005000,
+    "quickPromptSlotShownCount": 1,
+    "firstQuickPromptSlotClickedAt": 1710000007000,
+    "quickPromptSlotClickedCount": 1,
+    "lastQuickPromptSlotClickedSource": "popup",
+    "lastQuickPromptSlotClickedSlot": 1,
+    "firstQuickPromptSlotUsedAt": 1710000007100,
+    "quickPromptSlotUsedCount": 1,
+    "lastQuickPromptSlotUsedSource": "popup",
+    "lastQuickPromptSlotUsedSlot": 1,
+    "isPopupOpened": true,
+    "isActivated": true,
+    "isPromptUsed": true,
+    "isReusedWithin7Days": true,
+    "hasQuickPromptSlotExposure": true,
+    "hasQuickPromptSlotClick": true,
+    "hasQuickPromptSlotUse": true,
+    "isSecondSuccessfulCopyCompleted": true,
+    "timeFromFirstPopupToFirstCopyMs": 500,
+    "activatedWithin3MinutesFromFirstPopup": true
+  },
+  "secondOpenReuseAudit": {
+    "firstSuccessfulCopyAt": 1710000001000,
+    "secondSuccessfulCopyAt": 1710000007100,
+    "firstQuickPromptSlotShownAt": 1710000005000,
+    "quickPromptSlotShownCount": 1,
+    "firstQuickPromptSlotClickedAt": 1710000007000,
+    "quickPromptSlotClickedCount": 1,
+    "lastQuickPromptSlotClickedSource": "popup",
+    "lastQuickPromptSlotClickedSlot": 1,
+    "firstQuickPromptSlotUsedAt": 1710000007100,
+    "quickPromptSlotUsedCount": 1,
+    "lastQuickPromptSlotUsedSource": "popup",
+    "lastQuickPromptSlotUsedSlot": 1,
+    "telemetryCounts": {
+      "quick_prompt_slot_shown": 1,
+      "quick_prompt_slot_clicked": 1,
+      "quick_prompt_slot_used": 1,
+      "prompt_used": 1,
+      "copy_success": 2
+    },
+    "isPrivacySafe": true
+  }
+}

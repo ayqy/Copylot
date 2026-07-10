@@ -657,6 +657,27 @@
     "message": "已完成第一次干净复制，下一步把常用 Prompt 绑到快捷位，加快后续复用。",
     "description": "Popup 首屏提示：首次成功后"
   },
+  "popupReuseEyebrow": {
+    "message": "第二次打开就复用这个动作",
+    "description": "首次成功后复用卡片眉标题"
+  },
+  "popupReuseTitle": {
+    "message": "复制网页内容，直接套用 Prompt，再粘贴到 AI。",
+    "description": "首次成功后复用卡片标题"
+  },
+  "popupReuseDescription": {
+    "message": "先选中网页内容，再点下面的快捷 Prompt 槽位，立刻完成第二次复制。",
+    "description": "首次成功后复用卡片说明"
+  },
+  "popupReuseButtonLabel": {
+    "message": "立即套用：$1$",
+    "description": "首次成功后复用按钮文案",
+    "placeholders": {
+      "PROMPT_TITLE": {
+        "content": "$1"
+      }
+    }
+  },
   "popupOnboardingTitle": {
     "message": "第一次干净复制引导",
     "description": "引导弹窗标题"
@@ -696,6 +717,19 @@
   "popupOnboardingStep3Desc1": {
     "message": "完成第一次干净复制后，再把常用 Prompt 绑定到快捷位，后续长文、表格和代码块都能更快复用。",
     "description": "引导第 3 步说明"
+  },
+  "popupOnboardingStep3Desc2": {
+    "message": "第二次打开时，先复制网页内容，再点快捷 Prompt 槽位，最后粘贴到 AI。",
+    "description": "引导第 3 步复用说明"
+  },
+  "popupOnboardingStep3Action": {
+    "message": "立即套用：$1$",
+    "description": "引导第 3 步主行动",
+    "placeholders": {
+      "PROMPT_TITLE": {
+        "content": "$1"
+      }
+    }
   },
   "popupQuickActionsTitle": {
     "message": "快捷操作",
