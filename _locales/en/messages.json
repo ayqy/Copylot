@@ -670,7 +670,7 @@
     "description": "Reuse card description after first success"
   },
   "popupReuseButtonLabel": {
-    "message": "Apply now: $1$",
+    "message": "Apply now: $PROMPT_TITLE$",
     "description": "Reuse button label after first success",
     "placeholders": {
       "PROMPT_TITLE": {
@@ -723,7 +723,7 @@
     "description": "Onboarding step 3 reuse description"
   },
   "popupOnboardingStep3Action": {
-    "message": "Apply now: $1$",
+    "message": "Apply now: $PROMPT_TITLE$",
     "description": "Onboarding step 3 primary action",
     "placeholders": {
       "PROMPT_TITLE": {

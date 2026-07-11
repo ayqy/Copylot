@@ -1302,7 +1302,9 @@ async function initializeContentScript(): Promise<void> {
           promptTemplate: message.promptTemplate,
           chatServiceUrl: message.chatServiceUrl,
           chatServiceName: message.chatServiceName,
-          selectionText: message.selectionText
+          selectionText: message.selectionText,
+          auditSource: message.auditSource,
+          quickPromptSlot: message.quickPromptSlot
         });
         sendResponse(result);
         return true; // Indicates async response

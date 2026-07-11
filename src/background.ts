@@ -275,7 +275,7 @@ async function invokeContextMenuFromBridge(message: { tabId?: number; info: Part
 async function executeQuickActionCommand(
   command: string,
   explicitTabId?: number,
-  audit?: { source?: ReuseEntrySource }
+  audit?: { source?: ReuseEntrySource; slot?: ReuseEntrySlot }
 ) {
   let tab: chrome.tabs.Tab | null = null;
 
@@ -308,7 +308,7 @@ async function executeQuickActionCommand(
 
   await runPromptAction(tab.id, prompt.id, undefined, {
     source: audit?.source,
-    slot
+    slot: audit?.slot ?? slot
   });
 }
 
@@ -489,10 +489,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       (async () => {
         try {
           const source = isReuseEntrySource(message.source) ? message.source : undefined;
+          const command = typeof message.command === 'string' ? message.command : '';
+          const slot = getQuickPromptSlotFromCommand(command) || undefined;
           await executeQuickActionCommand(
-            typeof message.command === 'string' ? message.command : '',
+            command,
             typeof message.tabId === 'number' ? message.tabId : undefined,
-            { source }
+            { source, slot }
           );
           sendResponse({ success: true });
         } catch (error) {

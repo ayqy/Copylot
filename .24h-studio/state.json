@@ -1,34 +1,14 @@
 {
-  "active_main_prd": "prds/v1.md",
+  "active_main_prd": "prds/v4.md",
   "active_sub_prd": null,
   "active_sub_idx": null,
-  "next_sub_prd_index": 111,
+  "next_sub_prd_index": 2,
   "pending_fix": null,
-  "last_dev_cycle": "2026-03-25T06:05:19.637742+00:00",
+  "last_dev_cycle": "2026-07-11T04:07:16+00:00",
   "last_growth_cycle": "2026-07-02T03:15:32.858122+00:00",
   "last_quota_exhausted_at": "2026-07-03T15:00:31.136786+00:00",
   "last_run_errors": [],
   "codex_run_history": [
-    {
-      "at": "2026-03-23T19:56:51.010843+00:00",
-      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-034230-sub_prd_plan"
-    },
-    {
-      "at": "2026-03-23T20:12:45.368335+00:00",
-      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-032658-growth_execute"
-    },
-    {
-      "at": "2026-03-23T20:17:43.459469+00:00",
-      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-025337-growth_execute"
-    },
-    {
-      "at": "2026-03-23T20:27:54.246977+00:00",
-      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-034230-growth_execute"
-    },
-    {
-      "at": "2026-03-23T20:48:07.239625+00:00",
-      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-032658-growth_execute"
-    },
     {
       "at": "2026-03-23T21:03:16.596084+00:00",
       "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-034230-growth_execute"
@@ -208,38 +188,37 @@
     {
       "at": "2026-07-03T15:00:07.776921+00:00",
       "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260703-225754449-dev_execute-9731131c"
-    }
-  ],
-  "human_todos": [
-    {
-      "title": "n8n webhook 适配",
-      "impact": "阻塞",
-      "depends_on": "growth_engine",
-      "doc": "docs/growth/blocked.md",
-      "notes": "缺少 GROWTH_N8N_WEBHOOK_URL",
-      "created_at": "2026-07-02T03:15:27.562179+00:00"
     },
     {
-      "title": "listmonk API 适配",
-      "impact": "阻塞",
-      "depends_on": "growth_engine",
-      "doc": "docs/growth/blocked.md",
-      "notes": "缺少 GROWTH_LISTMONK_URL",
-      "created_at": "2026-07-02T03:15:27.562240+00:00"
+      "at": "2026-07-03T16:38:26.605439+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260704-003145375-sub_prd_plan-2c74788b"
     },
     {
-      "title": "PostHog event 适配",
-      "impact": "阻塞",
-      "depends_on": "growth_engine",
-      "doc": "docs/growth/blocked.md",
-      "notes": "缺少 capture_url 或 api_key",
-      "created_at": "2026-07-02T03:15:27.562256+00:00"
+      "at": "2026-07-10T23:05:04.233412+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260711-070035166-sub_prd_plan-2c74788b"
+    },
+    {
+      "at": "2026-07-10T23:07:06.249814+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260711-070504235-dev_execute-9731131c"
+    },
+    {
+      "at": "2026-07-10T23:13:42.244879+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260711-071141388-sub_prd_plan-2c74788b"
+    },
+    {
+      "at": "2026-07-10T23:35:06.282332+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260711-073501518-dev_execute-9731131c"
     }
   ],
+  "human_todos": [],
   "roadmap": {
     "status_path": "docs/roadmap_status.md",
-    "last_seen_stage": "- Stage：S0 上架与商店端取证闭环（收入优先）",
-    "last_seen_top3": [],
-    "last_updated_at": "2026-03-25T06:05:19.638235+00:00"
+    "last_seen_stage": "- 阶段名称：S2 / G2 `第二次复用与口碑循环`",
+    "last_seen_top3": [
+      "针对代码块场景补一轮“复制后无需返工”的稳定性专项，优先修掉影响复用的缩进、行号和噪声残留问题，并保留可回归证据。",
+      "把分享与评价提示绑定到“已完成至少 2 次成功复制”之后，并保留可导出证据，让口碑动作只发生在价值已被验证的用户上。",
+      "继续压实 Prompt 默认命中与追加模式协同，提升第二次打开后的真实复用频率，而不是只增加入口曝光。"
+    ],
+    "last_updated_at": "2026-07-10T23:36:05.942997+00:00"
   }
 }

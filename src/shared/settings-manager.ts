@@ -32,6 +32,8 @@ export interface Prompt {
   templateVersion?: number;
 }
 
+type ResolvedSettingsLanguage = 'en' | 'zh';
+
 export function isPromptActive(prompt: Prompt): boolean {
   return !(prompt.builtIn && prompt.deleted);
 }
@@ -85,21 +87,62 @@ export const DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS: string[] = [
   '[data-cangjie-editable]'
 ];
 
-// 默认内置Prompt配置
-export const DEFAULT_BUILT_IN_PROMPTS: Prompt[] = [
-  {
-    id: 'builtin-summary-article',
-    title: getMessage('builtInSummaryTitle') || '总结文章',
-    template: getMessage('builtInSummaryTemplate'),
-    category: 'summary',
-    quickAccessSlot: 1,
-    usageCount: 0,
-    createdAt: Date.now(),
-    builtIn: true,
-    deleted: false,
-    templateVersion: 2
+const BUILT_IN_SUMMARY_PROMPT_BY_LANGUAGE: Record<
+  ResolvedSettingsLanguage,
+  { title: string; template: string }
+> = {
+  en: {
+    title: 'Summarize Article',
+    template: 'Please summarize the main content of the following article:\n\n<article>\n{content}\n</article>'
+  },
+  zh: {
+    title: '总结文章',
+    template: '请总结以下文章的主要内容：\n\n<article>\n{content}\n</article>'
   }
-];
+};
+
+function resolveSettingsLanguage(language: Settings['language'] | undefined): ResolvedSettingsLanguage {
+  if (language === 'zh') {
+    return 'zh';
+  }
+  if (language === 'en') {
+    return 'en';
+  }
+  return getSystemLanguage() === 'zh' ? 'zh' : 'en';
+}
+
+function buildDefaultBuiltInPrompts(language: ResolvedSettingsLanguage): Prompt[] {
+  const localizedSummary = BUILT_IN_SUMMARY_PROMPT_BY_LANGUAGE[language];
+  return [
+    {
+      id: 'builtin-summary-article',
+      title: localizedSummary.title,
+      template: localizedSummary.template,
+      category: 'summary',
+      quickAccessSlot: 1,
+      usageCount: 0,
+      createdAt: Date.now(),
+      builtIn: true,
+      deleted: false,
+      templateVersion: 2
+    }
+  ];
+}
+
+function isDefaultBuiltInPromptValue(prompt: Prompt): boolean {
+  return Object.values(BUILT_IN_SUMMARY_PROMPT_BY_LANGUAGE).some(
+    (localizedPrompt) =>
+      prompt.title === localizedPrompt.title && prompt.template === localizedPrompt.template
+  );
+}
+
+function buildDefaultSettings(language: ResolvedSettingsLanguage): Settings {
+  return {
+    ...DEFAULT_SETTINGS,
+    language,
+    userPrompts: buildDefaultBuiltInPrompts(language)
+  };
+}
 
 // 默认Chat服务配置
 export const DEFAULT_CHAT_SERVICES: ChatService[] = [
@@ -221,7 +264,7 @@ export const DEFAULT_SETTINGS: Settings = {
   attachURL: false,
   language: 'system',
   interactionMode: 'click',
-  userPrompts: [...DEFAULT_BUILT_IN_PROMPTS],
+  userPrompts: [],
   isClipboardAccumulatorEnabled: false,
   chatServices: DEFAULT_CHAT_SERVICES,
   defaultChatServiceId: undefined,
@@ -262,21 +305,17 @@ export async function getSettings(): Promise<Settings> {
       const result = await chrome.storage.sync.get(SETTINGS_KEY);
       const storedSettings = result[SETTINGS_KEY];
 
-      const currentLanguage = getSystemLanguage(); // Get resolved system language
+      const currentLanguage = resolveSettingsLanguage('system');
+      const defaultSettings = buildDefaultSettings(currentLanguage);
 
       if (!storedSettings) {
-        // If no settings are stored, initialize with defaults including detected system language
-        const defaultWithLanguage: Settings = {
-          ...DEFAULT_SETTINGS,
-          language: currentLanguage // Initialize with resolved system language
-        };
-        await saveSettings(defaultWithLanguage);
-        return defaultWithLanguage;
+        await saveSettings(defaultSettings);
+        return defaultSettings;
       }
 
       // Merge stored settings with defaults to ensure all keys are present
       const mergedSettings: Settings = {
-        ...DEFAULT_SETTINGS,
+        ...defaultSettings,
         ...storedSettings
       };
 
@@ -304,9 +343,8 @@ export async function getSettings(): Promise<Settings> {
       }
 
       // If language is 'system' or was not resolved properly before, resolve it now
-      if (mergedSettings.language === 'system') {
-        mergedSettings.language = currentLanguage;
-      }
+      mergedSettings.language = resolveSettingsLanguage(mergedSettings.language);
+      const localizedDefaultBuiltInPrompts = buildDefaultBuiltInPrompts(mergedSettings.language);
 
       let promptsChangedByMigration = false;
       let chatServicesChangedByMigration = false;
@@ -315,7 +353,7 @@ export async function getSettings(): Promise<Settings> {
       const existingPromptIds = new Set(mergedSettings.userPrompts.map(p => p.id));
       
       // 添加缺失的内置prompt
-      DEFAULT_BUILT_IN_PROMPTS.forEach(builtInPrompt => {
+      localizedDefaultBuiltInPrompts.forEach(builtInPrompt => {
         if (!existingPromptIds.has(builtInPrompt.id)) {
           mergedSettings.userPrompts.push({ ...builtInPrompt });
           promptsChangedByMigration = true;
@@ -323,14 +361,19 @@ export async function getSettings(): Promise<Settings> {
       });
 
       // 更新现有内置prompt到最新版本
-      DEFAULT_BUILT_IN_PROMPTS.forEach(defaultPrompt => {
+      localizedDefaultBuiltInPrompts.forEach(defaultPrompt => {
         const existingPrompt = mergedSettings.userPrompts.find(p => p.id === defaultPrompt.id);
         if (existingPrompt && existingPrompt.builtIn) {
           const existingVersion = existingPrompt.templateVersion || 1; // 默认为版本1
           const defaultVersion = defaultPrompt.templateVersion || 1;
-          
-          // 如果默认版本更高，则更新模版但保留用户的使用统计
-          if (defaultVersion > existingVersion) {
+
+          const shouldSyncLocalizedDefaults =
+            defaultVersion === existingVersion &&
+            isDefaultBuiltInPromptValue(existingPrompt) &&
+            (existingPrompt.title !== defaultPrompt.title || existingPrompt.template !== defaultPrompt.template);
+
+          // 如果默认版本更高，或者仍然是系统默认文案但语言发生变化，则更新模版/标题
+          if (defaultVersion > existingVersion || shouldSyncLocalizedDefaults) {
             existingPrompt.template = defaultPrompt.template;
             existingPrompt.title = defaultPrompt.title;
             existingPrompt.templateVersion = defaultPrompt.templateVersion;
@@ -384,17 +427,11 @@ export async function getSettings(): Promise<Settings> {
     }
     // Fallback if chrome.storage is not available
     console.warn('chrome.storage.sync is not available, returning default settings.');
-    return {
-      ...DEFAULT_SETTINGS,
-      language: getSystemLanguage() // Use resolved system language
-    };
+    return buildDefaultSettings(resolveSettingsLanguage('system'));
   } catch (error) {
     console.error('Error getting settings:', error);
     // Fallback to default settings with system language on error
-    return {
-      ...DEFAULT_SETTINGS,
-      language: getSystemLanguage() // Use resolved system language
-    };
+    return buildDefaultSettings(resolveSettingsLanguage('system'));
   }
 }
 
@@ -405,12 +442,13 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
       let currentSettings: Settings;
       try {
         const result = await chrome.storage.sync.get(SETTINGS_KEY);
+        const resolvedLanguage = resolveSettingsLanguage(result[SETTINGS_KEY]?.language ?? settings.language);
         currentSettings = {
-          ...DEFAULT_SETTINGS,
+          ...buildDefaultSettings(resolvedLanguage),
           ...(result[SETTINGS_KEY] || {})
         };
       } catch {
-        currentSettings = DEFAULT_SETTINGS;
+        currentSettings = buildDefaultSettings(resolveSettingsLanguage(settings.language));
       }
       
       // Merge with new settings
@@ -431,8 +469,10 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
         return normalized;
       });
 
+      mergedSettings.language = resolveSettingsLanguage(mergedSettings.language);
+
       if (!Array.isArray(mergedSettings.userPrompts)) {
-        mergedSettings.userPrompts = [...DEFAULT_BUILT_IN_PROMPTS];
+        mergedSettings.userPrompts = buildDefaultBuiltInPrompts(mergedSettings.language);
       }
 
       mergedSettings.userPrompts = normalizeQuickPromptAssignments(mergedSettings.userPrompts, isPromptActive).prompts;

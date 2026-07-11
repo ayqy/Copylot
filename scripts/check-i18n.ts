@@ -17,6 +17,13 @@ interface UntranslatedLiteral {
   type: 'literal' | 'fallback';
 }
 
+interface ChromeLocaleMessage {
+  message?: string;
+  placeholders?: Record<string, { content?: string }>;
+}
+
+const LOCALE_FILES = ['_locales/en/messages.json', '_locales/zh/messages.json'];
+
 const CONSOLE_METHODS = ['log', 'warn', 'error', 'debug', 'info', 'trace'];
 
 function isConsoleCall(node: ts.Node): boolean {
@@ -155,6 +162,17 @@ function isDefinitionsContext(node: ts.Node): boolean {
       ) {
         return true;
       }
+    }
+    parent = parent.parent;
+  }
+  return false;
+}
+
+function isBuiltInPromptLocaleMapContext(node: ts.Node): boolean {
+  let parent = node.parent;
+  while (parent) {
+    if (ts.isVariableDeclaration(parent) && ts.isIdentifier(parent.name)) {
+      return parent.name.text === 'BUILT_IN_SUMMARY_PROMPT_BY_LANGUAGE';
     }
     parent = parent.parent;
   }
@@ -537,6 +555,13 @@ function checkStringLiteral(
     return;
   }
 
+  // 排除按设置语言切换的内置 Prompt 文案映射。
+  // 这些字面量不会直接走 chrome.i18n，因为它们需要脱离浏览器 UI 语言，
+  // 按用户设置语言生成默认 Prompt 内容。
+  if (isBuiltInPromptLocaleMapContext(node)) {
+    return;
+  }
+
   let type: 'literal' | 'fallback' = 'literal';
 
   // 检查是否是 fallback 文案 (|| 'fallback')
@@ -606,6 +631,31 @@ function analyzeFile(filePath: string): UntranslatedLiteral[] {
   return results;
 }
 
+function collectLocaleMessageErrors(): string[] {
+  const errors: string[] = [];
+
+  for (const relativeFile of LOCALE_FILES) {
+    const filePath = path.join(process.cwd(), relativeFile);
+    const raw = fs.readFileSync(filePath, 'utf-8');
+    const messages = JSON.parse(raw) as Record<string, ChromeLocaleMessage>;
+
+    for (const [key, value] of Object.entries(messages)) {
+      const message = value.message || '';
+      const placeholders = value.placeholders || {};
+      const placeholderNames = new Set(Object.keys(placeholders).map((name) => name.toLowerCase()));
+      const tokens = [...message.matchAll(/\$([A-Za-z0-9_@]+)\$/g)].map((match) => match[1]);
+
+      for (const token of tokens) {
+        if (!placeholderNames.has(token.toLowerCase())) {
+          errors.push(`${relativeFile} -> ${key}: placeholder $${token}$ 未在 placeholders 中定义`);
+        }
+      }
+    }
+  }
+
+  return errors;
+}
+
 async function main() {
   const srcDir = path.join(process.cwd(), 'src');
   const pattern = path.join(srcDir, '**/*.{ts,tsx}').replace(/\\/g, '/');
@@ -626,28 +676,40 @@ async function main() {
       allResults = allResults.concat(results);
     }
 
-    if (allResults.length === 0) {
+    const localeErrors = collectLocaleMessageErrors();
+
+    if (allResults.length === 0 && localeErrors.length === 0) {
       console.log('✅ 未发现未本地化的固定文案');
       process.exit(0);
     }
 
-    console.log(`\n❌ 发现 ${allResults.length} 个未本地化的固定文案：\n`);
+    if (allResults.length > 0) {
+      console.log(`\n❌ 发现 ${allResults.length} 个未本地化的固定文案：\n`);
     
-    // 按文件分组显示结果
-    const resultsByFile = allResults.reduce((acc, result) => {
-      const relativePath = path.relative(process.cwd(), result.file);
-      if (!acc[relativePath]) {
-        acc[relativePath] = [];
-      }
-      acc[relativePath].push(result);
-      return acc;
-    }, {} as Record<string, UntranslatedLiteral[]>);
+      // 按文件分组显示结果
+      const resultsByFile = allResults.reduce((acc, result) => {
+        const relativePath = path.relative(process.cwd(), result.file);
+        if (!acc[relativePath]) {
+          acc[relativePath] = [];
+        }
+        acc[relativePath].push(result);
+        return acc;
+      }, {} as Record<string, UntranslatedLiteral[]>);
 
-    for (const [file, results] of Object.entries(resultsByFile)) {
-      console.log(`📄 ${file}:`);
-      for (const result of results) {
-        const typeLabel = result.type === 'fallback' ? '[Fallback]' : '[Literal]';
-        console.log(`  ${result.line}:${result.column} ${typeLabel} "${result.text}"`);
+      for (const [file, results] of Object.entries(resultsByFile)) {
+        console.log(`📄 ${file}:`);
+        for (const result of results) {
+          const typeLabel = result.type === 'fallback' ? '[Fallback]' : '[Literal]';
+          console.log(`  ${result.line}:${result.column} ${typeLabel} "${result.text}"`);
+        }
+        console.log();
+      }
+    }
+
+    if (localeErrors.length > 0) {
+      console.log(`\n❌ 发现 ${localeErrors.length} 个 Chrome i18n 占位符错误：\n`);
+      for (const error of localeErrors) {
+        console.log(`  - ${error}`);
       }
       console.log();
     }

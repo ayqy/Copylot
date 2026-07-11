@@ -11,6 +11,7 @@
 - 第二次打开理由从“继续摸索”收敛为“复制网页内容 + 套用 Prompt + 粘贴到 AI”。
 - 首次成功后即使用户只保留默认内置 Prompt，也能直接看到并触发至少 1 个真实复用入口。
 - Options 的本地 `growth-funnel` 摘要现在可直接导出复用审计对象，便于复核二次成功与商业化前置信号。
+- 补齐了 3 个阻塞发布的收尾缺陷：E2E HTML 测试启动链、默认 Prompt 语言与用户设置语言对齐、匿名事件并发写入丢失。
 
 ## 修改范围
 
@@ -45,6 +46,5 @@
   - `npm run type-check`
   - `node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/unit-tests.ts`
   - `node --no-warnings=ExperimentalWarning scripts/ui-integration-tests.ts`
-- 未通过：
   - `bash scripts/test.sh`
-  - 失败点：`html-to-markdown-tests` 启动 Playwright Chromium 时触发 `SIGABRT`，日志显示浏览器进程在本机运行环境下异常退出。
+  - `npx playwright test --config=playwright.config.ts --project=main e2e/popup-growth-flow.spec.ts --grep 'popup second-open reuse path exposes built-in prompt slot, records audit fields, and exports local summary'`

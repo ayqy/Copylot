@@ -459,6 +459,12 @@ function appendTelemetryEvent(events: TelemetryEvent[], next: TelemetryEvent): T
 let cachedIsEnabled: boolean | null = null;
 let enabledInitPromise: Promise<boolean> | null = null;
 let enabledListenerInstalled = false;
+let telemetryWriteQueue: Promise<void> = Promise.resolve();
+
+function enqueueTelemetryWrite(task: () => Promise<void>): Promise<void> {
+  telemetryWriteQueue = telemetryWriteQueue.then(task, task);
+  return telemetryWriteQueue;
+}
 
 async function readIsEnabledFromSync(): Promise<boolean> {
   if (typeof chrome === 'undefined' || !chrome.storage?.sync) return false;
@@ -512,7 +518,9 @@ async function isTelemetryEnabled(): Promise<boolean> {
 export async function clearTelemetryEvents(): Promise<void> {
   try {
     if (typeof chrome === 'undefined' || !chrome.storage?.local) return;
-    await chrome.storage.local.remove(TELEMETRY_EVENTS_KEY);
+    await enqueueTelemetryWrite(async () => {
+      await chrome.storage.local.remove(TELEMETRY_EVENTS_KEY);
+    });
   } catch (error) {
     console.warn('Failed to clear telemetry events:', error);
   }
@@ -537,10 +545,12 @@ export async function recordTelemetryEvent(
     const event = sanitizeTelemetryEvent({ name, ts: Date.now(), props });
     if (!event) return;
 
-    const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
-    const existing = normalizeStoredTelemetryEvents(result[TELEMETRY_EVENTS_KEY]);
-    const nextEvents = appendTelemetryEvent(existing, event);
-    await chrome.storage.local.set({ [TELEMETRY_EVENTS_KEY]: nextEvents });
+    await enqueueTelemetryWrite(async () => {
+      const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+      const existing = normalizeStoredTelemetryEvents(result[TELEMETRY_EVENTS_KEY]);
+      const nextEvents = appendTelemetryEvent(existing, event);
+      await chrome.storage.local.set({ [TELEMETRY_EVENTS_KEY]: nextEvents });
+    });
   } catch (error) {
     console.warn('Failed to record telemetry event:', error);
   }

@@ -670,7 +670,7 @@
     "description": "首次成功后复用卡片说明"
   },
   "popupReuseButtonLabel": {
-    "message": "立即套用：$1$",
+    "message": "立即套用：$PROMPT_TITLE$",
     "description": "首次成功后复用按钮文案",
     "placeholders": {
       "PROMPT_TITLE": {
@@ -723,7 +723,7 @@
     "description": "引导第 3 步复用说明"
   },
   "popupOnboardingStep3Action": {
-    "message": "立即套用：$1$",
+    "message": "立即套用：$PROMPT_TITLE$",
     "description": "引导第 3 步主行动",
     "placeholders": {
       "PROMPT_TITLE": {
