@@ -193,3 +193,9 @@
 | run_id | data_status | outcome_status | organic_impressions | organic_clicks | organic_ctr | avg_position | organic_sessions | micro_conversions | primary_conversions | organic_primary_cvr | search_done | site_submit_done | distribution_briefs | reddit_gate | status |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 | 20260711-151428-growth | ready | flat | 3.0 | 0.0 | 0.0 | 2.0 | 0.0 | 0.0 | 0.0 | 0.0 | 1 | 0 | 0 | 0 | success |
+
+## run_id: 20260711-215257-growth
+
+| run_id | data_status | outcome_status | organic_impressions | organic_clicks | organic_ctr | avg_position | organic_sessions | micro_conversions | primary_conversions | organic_primary_cvr | search_done | site_submit_done | distribution_briefs | reddit_gate | status |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| 20260711-215257-growth | ready | flat | 3.0 | 0.0 | 0.0 | 2.0 | 0.0 | 0.0 | 0.0 | 0.0 | 1 | 0 | 0 | 0 | success |
