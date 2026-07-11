@@ -109,6 +109,7 @@ type ProIntentContent =
   | 'options_waitlist_cta'
   | 'options_advanced_cleaning_cta'
   | 'options_bulk_collection_cta'
+  | 'options_structured_export_cta'
   | 'options_survey_cta'
   | 'options_survey_copy_open';
 
@@ -120,6 +121,7 @@ function isProIntentContent(value: unknown): value is ProIntentContent {
     value === 'options_waitlist_cta' ||
     value === 'options_advanced_cleaning_cta' ||
     value === 'options_bulk_collection_cta' ||
+    value === 'options_structured_export_cta' ||
     value === 'options_survey_cta' ||
     value === 'options_survey_copy_open'
   );

@@ -30,6 +30,8 @@ test('pro tab only shows roadmap and sharing toolkit', async ({
     await expect(page.locator('#pro-validation-advanced-open')).toBeVisible();
     await expect(page.locator('#pro-validation-bulk-collection')).toBeVisible();
     await expect(page.locator('#pro-validation-bulk-open')).toBeVisible();
+    await expect(page.locator('#pro-validation-structured-export')).toBeVisible();
+    await expect(page.locator('#pro-validation-structured-open')).toBeVisible();
 
     await expect(page.locator('#pro-waitlist-copy')).toHaveCount(0);
     await expect(page.locator('#pro-waitlist-survey')).toHaveCount(0);
@@ -121,6 +123,39 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
       })
       .toContain('utm_content=options_bulk_collection_cta');
 
+    await page.locator('#pro-validation-structured-route-copy').click();
+    await expectClipboardTextEventually(
+      (text) => text.includes('/pricing') && text.includes('utm_content=options_structured_export_cta'),
+      driverPage
+    );
+
+    await page.locator('#pro-validation-structured-brief-copy').click();
+    await expectClipboardTextEventually(
+      (text) =>
+        (text.includes('Structured export and downstream workflow') ||
+          text.includes('结构化导出与下游工作流')) &&
+        text.includes('utm_content=options_structured_export_cta') &&
+        text.includes('/privacy'),
+      driverPage
+    );
+
+    await page.locator('#pro-validation-structured-checklist-copy').click();
+    await expectClipboardTextEventually(
+      (text) =>
+        (text.includes('Validation Checklist') || text.includes('验证清单')) &&
+        text.includes('utm_campaign=twitter') &&
+        !text.toLowerCase().includes('copied page content'),
+      driverPage
+    );
+
+    await page.locator('#pro-validation-structured-open').click();
+    await expect
+      .poll(async () => {
+        const urls = await getOpenedUrls(driverPage);
+        return urls.at(-1) || '';
+      })
+      .toContain('utm_content=options_structured_export_cta');
+
     await page.locator('#pro-waitlist-url-copy').click();
     await expectClipboardTextEventually(
       (text) => text.includes('/pricing') && text.includes('utm_campaign=twitter'),
@@ -188,6 +223,13 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
             })
           }),
           expect.objectContaining({
+            name: 'pro_waitlist_opened',
+            props: expect.objectContaining({
+              campaign: 'twitter',
+              content: 'options_structured_export_cta'
+            })
+          }),
+          expect.objectContaining({
             name: 'pro_distribution_asset_copied',
             props: expect.objectContaining({
               action: 'validation_route',
@@ -233,6 +275,30 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
               action: 'validation_checklist',
               campaign: 'twitter',
               content: 'options_bulk_collection_cta'
+            })
+          }),
+          expect.objectContaining({
+            name: 'pro_distribution_asset_copied',
+            props: expect.objectContaining({
+              action: 'validation_route',
+              campaign: 'twitter',
+              content: 'options_structured_export_cta'
+            })
+          }),
+          expect.objectContaining({
+            name: 'pro_distribution_asset_copied',
+            props: expect.objectContaining({
+              action: 'validation_brief',
+              campaign: 'twitter',
+              content: 'options_structured_export_cta'
+            })
+          }),
+          expect.objectContaining({
+            name: 'pro_distribution_asset_copied',
+            props: expect.objectContaining({
+              action: 'validation_checklist',
+              campaign: 'twitter',
+              content: 'options_structured_export_cta'
             })
           }),
           expect.objectContaining({

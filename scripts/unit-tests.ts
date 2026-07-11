@@ -803,6 +803,19 @@ async function run() {
   assert.equal(bulkCollectionRouteParsed.searchParams.get('utm_campaign'), 'twitter');
   assert.equal(bulkCollectionRouteParsed.searchParams.get('utm_content'), 'options_bulk_collection_cta');
 
+  const structuredExportRouteUrl = buildProValidationRouteUrl({
+    trackId: 'structured_export',
+    medium: 'distribution_toolkit',
+    campaign: 'twitter'
+  });
+  const structuredExportRouteParsed = new URL(structuredExportRouteUrl);
+  assert.equal(structuredExportRouteParsed.pathname, '/pricing');
+  assert.equal(structuredExportRouteParsed.searchParams.get('utm_campaign'), 'twitter');
+  assert.equal(
+    structuredExportRouteParsed.searchParams.get('utm_content'),
+    'options_structured_export_cta'
+  );
+
   const getMessageForValidationAssets: I18nGetMessage = (key) => {
     const messages: Record<string, string> = {
       proValidationAdvancedTitle: 'Advanced page cleaning validation',
@@ -824,7 +837,12 @@ async function run() {
       proValidationBulkGoalList: '- Goal B',
       proValidationBulkBoundaryList: '- Boundary B',
       proValidationBulkSignalList: '- Signal B',
-      proValidationBulkChecklistList: '- Checklist B'
+      proValidationBulkChecklistList: '- Checklist B',
+      proValidationStructuredExportTitle: 'Structured export and downstream workflow validation',
+      proValidationStructuredExportGoalList: '- Goal C',
+      proValidationStructuredExportBoundaryList: '- Boundary C',
+      proValidationStructuredExportSignalList: '- Signal C',
+      proValidationStructuredExportChecklistList: '- Checklist C'
     };
     return messages[key] || key;
   };
@@ -850,6 +868,15 @@ async function run() {
   });
   assert.ok(bulkCollectionBrief.includes('# Batch collection and organization validation'));
   assert.ok(bulkCollectionBrief.includes('utm_content=options_bulk_collection_cta'));
+  const structuredExportBrief = buildProValidationBriefMarkdown({
+    trackId: 'structured_export',
+    campaign: 'twitter',
+    getMessage: getMessageForValidationAssets
+  });
+  assert.ok(
+    structuredExportBrief.includes('# Structured export and downstream workflow validation')
+  );
+  assert.ok(structuredExportBrief.includes('utm_content=options_structured_export_cta'));
 
   // pro-waitlist-distribution.ts (pure functions)
   assert.deepEqual(computeProWaitlistDistributionState(''), { enabled: false, campaign: null });
@@ -1279,6 +1306,28 @@ async function run() {
         cap_note_export: false,
         has_other_capability: true,
         has_contact: false
+      }
+    }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_waitlist_opened',
+      ts: now,
+      props: {
+        source: 'options',
+        medium: 'options',
+        campaign: 'twitter',
+        content: 'options_structured_export_cta'
+      }
+    }),
+    {
+      name: 'pro_waitlist_opened',
+      ts: now,
+      props: {
+        source: 'options',
+        medium: 'options',
+        campaign: 'twitter',
+        content: 'options_structured_export_cta'
       }
     }
   );
@@ -3713,6 +3762,14 @@ async function run() {
     'options.html should include pro-validation-bulk-brief-copy'
   );
   assert.ok(
+    optionsHtml.includes('id="pro-validation-structured-open"'),
+    'options.html should include pro-validation-structured-open'
+  );
+  assert.ok(
+    optionsHtml.includes('id="pro-validation-structured-brief-copy"'),
+    'options.html should include pro-validation-structured-brief-copy'
+  );
+  assert.ok(
     optionsHtml.includes('id="pro-waitlist-url-copy"'),
     'options.html should include pro-waitlist-url-copy'
   );
@@ -3768,6 +3825,10 @@ async function run() {
   assert.ok(
     optionsJs.includes('options_bulk_collection_cta'),
     'options.js should contain options_bulk_collection_cta'
+  );
+  assert.ok(
+    optionsJs.includes('options_structured_export_cta'),
+    'options.js should contain options_structured_export_cta'
   );
   assert.ok(
     optionsJs.includes('navigator.clipboard.writeText'),

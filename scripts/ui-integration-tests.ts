@@ -530,6 +530,52 @@ async function runOptionsAssertions(): Promise<void> {
     );
     assert.ok(bulkCollectionChecklist.includes('twitter'));
 
+    const structuredExportOpenButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-validation-structured-open'
+    );
+    clickElement(structuredExportOpenButton);
+    await page.waitForIdle();
+    const structuredExportOpenUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
+    assert.ok(structuredExportOpenUrl.includes('/pricing'));
+    assert.ok(structuredExportOpenUrl.includes('utm_content=options_structured_export_cta'));
+
+    const structuredExportRouteCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-validation-structured-route-copy'
+    );
+    clickElement(structuredExportRouteCopyButton);
+    await page.waitForIdle();
+    const structuredExportRouteUrl = await page.clipboard.readText();
+    assert.ok(structuredExportRouteUrl.includes('utm_campaign=twitter'));
+    assert.ok(structuredExportRouteUrl.includes('utm_content=options_structured_export_cta'));
+
+    const structuredExportBriefCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-validation-structured-brief-copy'
+    );
+    clickElement(structuredExportBriefCopyButton);
+    await page.waitForIdle();
+    const structuredExportBrief = await page.clipboard.readText();
+    assert.ok(
+      structuredExportBrief.includes('Structured export and downstream workflow') ||
+        structuredExportBrief.includes('结构化导出与下游工作流')
+    );
+    assert.ok(structuredExportBrief.includes('utm_content=options_structured_export_cta'));
+
+    const structuredExportChecklistCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-validation-structured-checklist-copy'
+    );
+    clickElement(structuredExportChecklistCopyButton);
+    await page.waitForIdle();
+    const structuredExportChecklist = await page.clipboard.readText();
+    assert.ok(
+      structuredExportChecklist.includes('Validation Checklist') ||
+        structuredExportChecklist.includes('验证清单')
+    );
+    assert.ok(structuredExportChecklist.includes('twitter'));
+
     const proWaitlistButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
       '#pro-waitlist-button'

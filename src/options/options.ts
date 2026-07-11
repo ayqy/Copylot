@@ -53,7 +53,8 @@ import {
   buildProValidationChecklistMarkdown,
   buildProValidationRouteUrl,
   getProValidationTrack,
-  type ProValidationAssetAction
+  type ProValidationAssetAction,
+  type ProValidationTrackId
 } from '../shared/pro-route-validation';
 import {
   buildProFunnelEvidencePack,
@@ -368,6 +369,10 @@ interface OptionsElements {
   proValidationBulkRouteCopyButton: HTMLButtonElement;
   proValidationBulkBriefCopyButton: HTMLButtonElement;
   proValidationBulkChecklistCopyButton: HTMLButtonElement;
+  proValidationStructuredOpenButton: HTMLButtonElement;
+  proValidationStructuredRouteCopyButton: HTMLButtonElement;
+  proValidationStructuredBriefCopyButton: HTMLButtonElement;
+  proValidationStructuredChecklistCopyButton: HTMLButtonElement;
   proWaitlistButton: HTMLButtonElement;
   proWaitlistUrlCopyButton: HTMLButtonElement;
   proWaitlistRecruitCopyButton: HTMLButtonElement;
@@ -617,6 +622,18 @@ function getElements(): OptionsElements {
     ) as HTMLButtonElement,
     proValidationBulkChecklistCopyButton: document.getElementById(
       'pro-validation-bulk-checklist-copy'
+    ) as HTMLButtonElement,
+    proValidationStructuredOpenButton: document.getElementById(
+      'pro-validation-structured-open'
+    ) as HTMLButtonElement,
+    proValidationStructuredRouteCopyButton: document.getElementById(
+      'pro-validation-structured-route-copy'
+    ) as HTMLButtonElement,
+    proValidationStructuredBriefCopyButton: document.getElementById(
+      'pro-validation-structured-brief-copy'
+    ) as HTMLButtonElement,
+    proValidationStructuredChecklistCopyButton: document.getElementById(
+      'pro-validation-structured-checklist-copy'
     ) as HTMLButtonElement,
     proWaitlistButton: (document.getElementById('pro-waitlist-button') ||
       document.createElement('button')) as HTMLButtonElement,
@@ -1861,6 +1878,7 @@ function getProIntentCampaign(): string | undefined {
 
 const ADVANCED_CLEANING_VALIDATION_TRACK_ID = 'advanced_cleaning' as const;
 const BULK_COLLECTION_VALIDATION_TRACK_ID = 'bulk_collection' as const;
+const STRUCTURED_EXPORT_VALIDATION_TRACK_ID = 'structured_export' as const;
 
 function updateProWaitlistDistributionToolkitState(): void {
   if (
@@ -1871,6 +1889,9 @@ function updateProWaitlistDistributionToolkitState(): void {
     !elements?.proValidationBulkRouteCopyButton ||
     !elements?.proValidationBulkBriefCopyButton ||
     !elements?.proValidationBulkChecklistCopyButton ||
+    !elements?.proValidationStructuredRouteCopyButton ||
+    !elements?.proValidationStructuredBriefCopyButton ||
+    !elements?.proValidationStructuredChecklistCopyButton ||
     !elements?.proWaitlistUrlCopyButton ||
     !elements?.proWaitlistRecruitCopyButton ||
     !elements?.proStoreUrlCopyButton ||
@@ -1888,6 +1909,9 @@ function updateProWaitlistDistributionToolkitState(): void {
   elements.proValidationBulkRouteCopyButton.disabled = disabled;
   elements.proValidationBulkBriefCopyButton.disabled = disabled;
   elements.proValidationBulkChecklistCopyButton.disabled = disabled;
+  elements.proValidationStructuredRouteCopyButton.disabled = disabled;
+  elements.proValidationStructuredBriefCopyButton.disabled = disabled;
+  elements.proValidationStructuredChecklistCopyButton.disabled = disabled;
   elements.proWaitlistUrlCopyButton.disabled = disabled;
   elements.proWaitlistRecruitCopyButton.disabled = disabled;
   elements.proStoreUrlCopyButton.disabled = disabled;
@@ -1901,6 +1925,9 @@ function updateProWaitlistDistributionToolkitState(): void {
   elements.proValidationBulkRouteCopyButton.title = tooltip;
   elements.proValidationBulkBriefCopyButton.title = tooltip;
   elements.proValidationBulkChecklistCopyButton.title = tooltip;
+  elements.proValidationStructuredRouteCopyButton.title = tooltip;
+  elements.proValidationStructuredBriefCopyButton.title = tooltip;
+  elements.proValidationStructuredChecklistCopyButton.title = tooltip;
   elements.proWaitlistUrlCopyButton.title = tooltip;
   elements.proWaitlistRecruitCopyButton.title = tooltip;
   elements.proStoreUrlCopyButton.title = tooltip;
@@ -3697,7 +3724,7 @@ function setupEventListeners() {
     });
   }
 
-  function buildValidationRouteUrlForOptions(trackId: 'advanced_cleaning' | 'bulk_collection'): string {
+  function buildValidationRouteUrlForOptions(trackId: ProValidationTrackId): string {
     return buildProValidationRouteUrl({
       trackId,
       medium: 'options',
@@ -3705,10 +3732,7 @@ function setupEventListeners() {
     });
   }
 
-  function buildValidationRouteUrlForDistributionToolkit(
-    trackId: 'advanced_cleaning' | 'bulk_collection',
-    campaign: string
-  ): string {
+  function buildValidationRouteUrlForDistributionToolkit(trackId: ProValidationTrackId, campaign: string): string {
     return buildProValidationRouteUrl({
       trackId,
       medium: 'distribution_toolkit',
@@ -3716,7 +3740,7 @@ function setupEventListeners() {
     });
   }
 
-  function buildValidationBrief(trackId: 'advanced_cleaning' | 'bulk_collection', campaign: string): string {
+  function buildValidationBrief(trackId: ProValidationTrackId, campaign: string): string {
     return buildProValidationBriefMarkdown({
       trackId,
       campaign,
@@ -3724,10 +3748,7 @@ function setupEventListeners() {
     });
   }
 
-  function buildValidationChecklist(
-    trackId: 'advanced_cleaning' | 'bulk_collection',
-    campaign: string
-  ): string {
+  function buildValidationChecklist(trackId: ProValidationTrackId, campaign: string): string {
     return buildProValidationChecklistMarkdown({
       trackId,
       campaign,
@@ -3737,7 +3758,7 @@ function setupEventListeners() {
 
   async function copyValidationAsset(params: {
     button: HTMLButtonElement;
-    trackId: 'advanced_cleaning' | 'bulk_collection';
+    trackId: ProValidationTrackId;
     action: ProValidationAssetAction;
     buildText: (campaign: string) => string;
     restoreLabelKey: string;
@@ -3921,6 +3942,46 @@ function setupEventListeners() {
       action: 'validation_checklist',
       buildText: (campaign) => buildValidationChecklist(BULK_COLLECTION_VALIDATION_TRACK_ID, campaign),
       restoreLabelKey: 'proValidationBulkChecklistCopyButton'
+    });
+  });
+
+  elements.proValidationStructuredOpenButton.addEventListener('click', async () => {
+    const url = buildValidationRouteUrlForOptions(STRUCTURED_EXPORT_VALIDATION_TRACK_ID);
+    const track = getProValidationTrack(STRUCTURED_EXPORT_VALIDATION_TRACK_ID);
+    await recordTelemetryEvent('pro_waitlist_opened', buildOptionsProIntentAttribution(track.attributionContent));
+    await reportE2EOpenedUrl(url);
+    chrome.tabs.create({ url });
+  });
+
+  elements.proValidationStructuredRouteCopyButton.addEventListener('click', () => {
+    void copyValidationAsset({
+      button: elements.proValidationStructuredRouteCopyButton,
+      trackId: STRUCTURED_EXPORT_VALIDATION_TRACK_ID,
+      action: 'validation_route',
+      buildText: (campaign) =>
+        buildValidationRouteUrlForDistributionToolkit(STRUCTURED_EXPORT_VALIDATION_TRACK_ID, campaign),
+      restoreLabelKey: 'proValidationStructuredExportRouteCopyButton'
+    });
+  });
+
+  elements.proValidationStructuredBriefCopyButton.addEventListener('click', () => {
+    void copyValidationAsset({
+      button: elements.proValidationStructuredBriefCopyButton,
+      trackId: STRUCTURED_EXPORT_VALIDATION_TRACK_ID,
+      action: 'validation_brief',
+      buildText: (campaign) => buildValidationBrief(STRUCTURED_EXPORT_VALIDATION_TRACK_ID, campaign),
+      restoreLabelKey: 'proValidationStructuredExportBriefCopyButton'
+    });
+  });
+
+  elements.proValidationStructuredChecklistCopyButton.addEventListener('click', () => {
+    void copyValidationAsset({
+      button: elements.proValidationStructuredChecklistCopyButton,
+      trackId: STRUCTURED_EXPORT_VALIDATION_TRACK_ID,
+      action: 'validation_checklist',
+      buildText: (campaign) =>
+        buildValidationChecklist(STRUCTURED_EXPORT_VALIDATION_TRACK_ID, campaign),
+      restoreLabelKey: 'proValidationStructuredExportChecklistCopyButton'
     });
   });
 

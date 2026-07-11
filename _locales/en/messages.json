@@ -369,6 +369,30 @@
     "message": "Copy validation checklist",
     "description": "Options Pro tab: batch collection checklist copy button"
   },
+  "proValidationStructuredExportTitle": {
+    "message": "Structured export and downstream workflow validation",
+    "description": "Options Pro tab: structured export validation title"
+  },
+  "proValidationStructuredExportHint": {
+    "message": "Use this when the copied result still needs manual reshaping before it can move into Notion, spreadsheets, or another downstream AI workflow and you need to validate whether structured export is a future Pro-worthy direction.",
+    "description": "Options Pro tab: structured export validation hint"
+  },
+  "proValidationStructuredExportRouteOpenButton": {
+    "message": "Open structured export roadmap",
+    "description": "Options Pro tab: structured export route open button"
+  },
+  "proValidationStructuredExportRouteCopyButton": {
+    "message": "Copy roadmap link",
+    "description": "Options Pro tab: structured export route copy button"
+  },
+  "proValidationStructuredExportBriefCopyButton": {
+    "message": "Copy validation brief",
+    "description": "Options Pro tab: structured export brief copy button"
+  },
+  "proValidationStructuredExportChecklistCopyButton": {
+    "message": "Copy validation checklist",
+    "description": "Options Pro tab: structured export checklist copy button"
+  },
   "proValidationCampaignLabel": {
     "message": "campaign",
     "description": "Validation asset: campaign label"
@@ -440,6 +464,22 @@
   "proValidationBulkChecklistList": {
     "message": "- Set a campaign tag before copying assets so later exports stay attributable.\\n- Share only roadmap/install/privacy links and workflow notes; never paste copied page content into the asset.\\n- Use this kit only when the free append mode still leaves too much manual collection or renaming work.\\n- After a run, export the local Pro intent and distribution summaries and confirm the campaign is visible.",
     "description": "Validation asset: batch collection checklist list"
+  },
+  "proValidationStructuredExportGoalList": {
+    "message": "- Target workflows where the copied result must still be manually turned into tables, note blocks, database rows, or reusable templates before it can continue downstream.\\n- Validate whether structured export formats and workflow-ready bundles are valuable enough to justify a future Pro direction.",
+    "description": "Validation asset: structured export goals list"
+  },
+  "proValidationStructuredExportBoundaryList": {
+    "message": "- Keep today’s free markdown/plaintext/table export unchanged.\\n- Treat structured export as a planned direction only. The brief must not promise Notion sync, Obsidian plugins, or workflow automations today.",
+    "description": "Validation asset: structured export boundary list"
+  },
+  "proValidationStructuredExportSignalList": {
+    "message": "- A roadmap open with `utm_content=options_structured_export_cta` appears in the local intent export.\\n- Route, brief, or checklist copies appear in the local distribution export for the same campaign.\\n- Shared examples describe concrete downstream formatting work instead of generic export requests.",
+    "description": "Validation asset: structured export signal list"
+  },
+  "proValidationStructuredExportChecklistList": {
+    "message": "- Set a campaign tag before copying assets so later exports stay attributable.\\n- Share only roadmap/install/privacy links and workflow notes; never paste copied page content into the asset.\\n- Use this kit only when the free markdown/plaintext/table export still leaves material downstream reshaping work.\\n- After a run, export the local Pro intent and distribution summaries and confirm the campaign is visible.",
+    "description": "Validation asset: structured export checklist list"
   },
   "proJoinWaitlist": {
     "message": "View the Pro roadmap",

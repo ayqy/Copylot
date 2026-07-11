@@ -369,6 +369,30 @@
     "message": "复制验证清单",
     "description": "Options Pro Tab：批量采集验证清单复制按钮"
   },
+  "proValidationStructuredExportTitle": {
+    "message": "结构化导出与下游工作流验证",
+    "description": "Options Pro Tab：结构化导出验证标题"
+  },
+  "proValidationStructuredExportHint": {
+    "message": "适用于复制结果仍需要人工整理成 Notion、表格、知识库或 AI 下游工作流输入的场景；先验证“结构化导出”是否值得进入后续 Pro 路线。",
+    "description": "Options Pro Tab：结构化导出验证说明"
+  },
+  "proValidationStructuredExportRouteOpenButton": {
+    "message": "打开结构化导出路线",
+    "description": "Options Pro Tab：结构化导出路线打开按钮"
+  },
+  "proValidationStructuredExportRouteCopyButton": {
+    "message": "复制路线链接",
+    "description": "Options Pro Tab：结构化导出路线复制按钮"
+  },
+  "proValidationStructuredExportBriefCopyButton": {
+    "message": "复制验证简报",
+    "description": "Options Pro Tab：结构化导出验证简报复制按钮"
+  },
+  "proValidationStructuredExportChecklistCopyButton": {
+    "message": "复制验证清单",
+    "description": "Options Pro Tab：结构化导出验证清单复制按钮"
+  },
   "proValidationCampaignLabel": {
     "message": "campaign",
     "description": "验证素材：campaign 标签"
@@ -440,6 +464,22 @@
   "proValidationBulkChecklistList": {
     "message": "- 复制任何素材前先填写 campaign，确保后续导出里能归因。\\n- 对外只分享路线/安装/隐私链接和工作流说明，不把复制出来的网页正文塞进素材里。\\n- 只有当当前 Free 的追加模式仍留下较多手工收集、重命名或整理成本时，才使用这组素材。\\n- 一轮验证结束后，导出本地 Pro intent 与分发摘要，确认 campaign 已可见。",
     "description": "验证素材：批量采集清单列表"
+  },
+  "proValidationStructuredExportGoalList": {
+    "message": "- 重点面向复制结果仍需要人工整理成表格、知识库块、数据库记录或模板的工作流，验证这些下游重排成本是否真实存在。\\n- 判断“结构化导出格式 + 工作流就绪素材”是否足够有价值，值得进入后续 Pro 路线。",
+    "description": "验证素材：结构化导出目标列表"
+  },
+  "proValidationStructuredExportBoundaryList": {
+    "message": "- 当前 Free 的 markdown/plaintext/表格导出保持不变。\\n- 结构化导出仍是规划方向，素材里不能暗示 Notion 同步、Obsidian 插件或自动化工作流已经上线。",
+    "description": "验证素材：结构化导出边界列表"
+  },
+  "proValidationStructuredExportSignalList": {
+    "message": "- 本地 Pro intent 导出里能看到带 `utm_content=options_structured_export_cta` 的路线打开事件。\\n- 同一 campaign 下，路线链接、验证简报或验证清单的复制动作会进入本地分发导出。\\n- 被分享的案例描述的是明确的下游整理工作，而不是泛泛的“想导出更多格式”。",
+    "description": "验证素材：结构化导出验收信号列表"
+  },
+  "proValidationStructuredExportChecklistList": {
+    "message": "- 复制任何素材前先填写 campaign，确保后续导出里能归因。\\n- 对外只分享路线/安装/隐私链接和工作流说明，不把复制出来的网页正文塞进素材里。\\n- 只有当当前 Free 的 markdown/plaintext/表格导出仍留下明显的下游重排成本时，才使用这组素材。\\n- 一轮验证结束后，导出本地 Pro intent 与分发摘要，确认 campaign 已可见。",
+    "description": "验证素材：结构化导出清单列表"
   },
   "proJoinWaitlist": {
     "message": "查看官网 Pro 路线",
