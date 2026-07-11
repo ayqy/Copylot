@@ -1,0 +1,54 @@
+{
+  "enabled": true,
+  "exportedAt": 1774070009000,
+  "extensionVersion": "v4-8-evidence",
+  "windowFrom": 1773465209000,
+  "windowTo": 1774070009000,
+  "lookbackDays": 7,
+  "maxEvents": 100,
+  "telemetryFile": "docs/evidence/v4-8/route-validation-telemetry-sample.json",
+  "telemetrySha256": "3e76e81cf7dfec1907e43864d90f8a3714689ba2ca93612334a8b86a3a72a483",
+  "campaigns": [
+    "ph",
+    "reddit",
+    "twitter"
+  ],
+  "totalSignals": 10,
+  "leadingTrackId": "advanced_cleaning",
+  "leadingTrackTitle": "高级页面清洗验证",
+  "runnerUpTrackId": "bulk_collection",
+  "runnerUpTrackTitle": "批量采集与整理验证",
+  "signalGap": 2,
+  "tracks": [
+    {
+      "trackId": "advanced_cleaning",
+      "title": "高级页面清洗验证",
+      "routeOpened": 2,
+      "validationRouteCopied": 1,
+      "validationBriefCopied": 1,
+      "validationChecklistCopied": 1,
+      "totalCopies": 3,
+      "totalSignals": 5
+    },
+    {
+      "trackId": "bulk_collection",
+      "title": "批量采集与整理验证",
+      "routeOpened": 1,
+      "validationRouteCopied": 1,
+      "validationBriefCopied": 1,
+      "validationChecklistCopied": 0,
+      "totalCopies": 2,
+      "totalSignals": 3
+    },
+    {
+      "trackId": "structured_export",
+      "title": "结构化导出与下游工作流验证",
+      "routeOpened": 1,
+      "validationRouteCopied": 1,
+      "validationBriefCopied": 0,
+      "validationChecklistCopied": 0,
+      "totalCopies": 1,
+      "totalSignals": 2
+    }
+  ]
+}

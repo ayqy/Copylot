@@ -57,6 +57,12 @@ import {
   type ProValidationTrackId
 } from '../shared/pro-route-validation';
 import {
+  buildProRouteValidationComparisonSummary,
+  formatProRouteValidationComparisonMarkdown,
+  PRO_ROUTE_VALIDATION_COMPARISON_FILES,
+  type ProRouteValidationComparisonSummary
+} from '../shared/pro-route-validation-comparison';
+import {
   buildProFunnelEvidencePack,
   buildProFunnelSummary,
   type ProFunnelEvidencePack,
@@ -382,6 +388,8 @@ interface OptionsElements {
   proValidationStructuredRouteCopyButton: HTMLButtonElement;
   proValidationStructuredBriefCopyButton: HTMLButtonElement;
   proValidationStructuredChecklistCopyButton: HTMLButtonElement;
+  proRouteValidationComparisonCopyButton: HTMLButtonElement;
+  downloadProRouteValidationComparisonJsonButton: HTMLButtonElement;
   proIntentDecisionSummaryCopyButton: HTMLButtonElement;
   downloadProIntentDecisionSummaryJsonButton: HTMLButtonElement;
   proWaitlistButton: HTMLButtonElement;
@@ -646,6 +654,12 @@ function getElements(): OptionsElements {
     proValidationStructuredChecklistCopyButton: document.getElementById(
       'pro-validation-structured-checklist-copy'
     ) as HTMLButtonElement,
+    proRouteValidationComparisonCopyButton: (document.getElementById(
+      'copy-pro-route-validation-comparison-summary'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    downloadProRouteValidationComparisonJsonButton: (document.getElementById(
+      'download-pro-route-validation-comparison-json'
+    ) || document.createElement('button')) as HTMLButtonElement,
     proIntentDecisionSummaryCopyButton: (document.getElementById(
       'copy-pro-intent-decision-summary'
     ) || document.createElement('button')) as HTMLButtonElement,
@@ -2115,6 +2129,80 @@ async function buildProIntentDecisionSummaryForExport(): Promise<ProIntentDecisi
   return buildProIntentDecisionPackFromDistribution({ distribution, getMessage });
 }
 
+async function buildProRouteValidationComparisonSummaryForExport(): Promise<ProRouteValidationComparisonSummary> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for route validation comparison summary:', error);
+  }
+
+  const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    return buildProRouteValidationComparisonSummary({
+      enabled,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      getMessage,
+      lookbackDays: 7
+    });
+  }
+
+  const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+  return buildProRouteValidationComparisonSummary({
+    enabled,
+    telemetryEvents: result[TELEMETRY_EVENTS_KEY],
+    now: exportedAt,
+    extensionVersion,
+    getMessage,
+    lookbackDays: 7
+  });
+}
+
+async function copyProRouteValidationComparisonSummaryToClipboard(): Promise<void> {
+  let summary: ProRouteValidationComparisonSummary;
+  let text: string;
+
+  try {
+    summary = await buildProRouteValidationComparisonSummaryForExport();
+    text = formatProRouteValidationComparisonMarkdown(summary, getMessage);
+  } catch (error) {
+    console.warn('Failed to build pro route validation comparison markdown:', error);
+    showNotification(getMessage('proRouteValidationComparisonCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await writeTextToClipboard(text);
+    showNotification(getMessage('proRouteValidationComparisonCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy pro route validation comparison markdown:', error);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
+    if (ok) {
+      showNotification(getMessage('proRouteValidationComparisonCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('proRouteValidationComparisonCopyFailed'), 'error');
+  }
+}
+
+async function downloadProRouteValidationComparisonJson(): Promise<void> {
+  try {
+    const summary = await buildProRouteValidationComparisonSummaryForExport();
+    downloadTextFile(
+      PRO_ROUTE_VALIDATION_COMPARISON_FILES.summaryJson,
+      `${JSON.stringify(summary, null, 2)}\n`,
+      'application/json'
+    );
+    showNotification(getMessage('proRouteValidationComparisonDownloadSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to download pro route validation comparison json:', error);
+    showNotification(getMessage('proRouteValidationComparisonDownloadFailed'), 'error');
+  }
+}
+
 async function copyProIntentDecisionSummaryToClipboard(): Promise<void> {
   let summary: ProIntentDecisionPackSummary;
   let text: string;
@@ -3542,6 +3630,12 @@ function setupEventListeners() {
   });
   elements.proFunnelEvidencePackCopyButton.addEventListener('click', () => {
     void copyProFunnelEvidencePackToClipboard();
+  });
+  elements.proRouteValidationComparisonCopyButton.addEventListener('click', () => {
+    void copyProRouteValidationComparisonSummaryToClipboard();
+  });
+  elements.downloadProRouteValidationComparisonJsonButton.addEventListener('click', () => {
+    void downloadProRouteValidationComparisonJson();
   });
   elements.proIntentDecisionSummaryCopyButton.addEventListener('click', () => {
     void copyProIntentDecisionSummaryToClipboard();

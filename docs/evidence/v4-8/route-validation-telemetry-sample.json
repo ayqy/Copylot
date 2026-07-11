@@ -1,0 +1,98 @@
+[
+  {
+    "name": "pro_waitlist_opened",
+    "ts": 1774070000000,
+    "props": {
+      "source": "options",
+      "campaign": "twitter",
+      "content": "options_advanced_cleaning_cta"
+    }
+  },
+  {
+    "name": "pro_waitlist_opened",
+    "ts": 1774070001000,
+    "props": {
+      "source": "options",
+      "campaign": "twitter",
+      "content": "options_advanced_cleaning_cta"
+    }
+  },
+  {
+    "name": "pro_distribution_asset_copied",
+    "ts": 1774070002000,
+    "props": {
+      "source": "options",
+      "campaign": "twitter",
+      "content": "options_advanced_cleaning_cta",
+      "action": "validation_route"
+    }
+  },
+  {
+    "name": "pro_distribution_asset_copied",
+    "ts": 1774070003000,
+    "props": {
+      "source": "options",
+      "campaign": "twitter",
+      "content": "options_advanced_cleaning_cta",
+      "action": "validation_brief"
+    }
+  },
+  {
+    "name": "pro_distribution_asset_copied",
+    "ts": 1774070004000,
+    "props": {
+      "source": "options",
+      "campaign": "twitter",
+      "content": "options_advanced_cleaning_cta",
+      "action": "validation_checklist"
+    }
+  },
+  {
+    "name": "pro_waitlist_opened",
+    "ts": 1774070005000,
+    "props": {
+      "source": "options",
+      "campaign": "ph",
+      "content": "options_bulk_collection_cta"
+    }
+  },
+  {
+    "name": "pro_distribution_asset_copied",
+    "ts": 1774070006000,
+    "props": {
+      "source": "options",
+      "campaign": "ph",
+      "content": "options_bulk_collection_cta",
+      "action": "validation_route"
+    }
+  },
+  {
+    "name": "pro_distribution_asset_copied",
+    "ts": 1774070007000,
+    "props": {
+      "source": "options",
+      "campaign": "ph",
+      "content": "options_bulk_collection_cta",
+      "action": "validation_brief"
+    }
+  },
+  {
+    "name": "pro_waitlist_opened",
+    "ts": 1774070008000,
+    "props": {
+      "source": "options",
+      "campaign": "reddit",
+      "content": "options_structured_export_cta"
+    }
+  },
+  {
+    "name": "pro_distribution_asset_copied",
+    "ts": 1774070009000,
+    "props": {
+      "source": "options",
+      "campaign": "reddit",
+      "content": "options_structured_export_cta",
+      "action": "validation_route"
+    }
+  }
+]

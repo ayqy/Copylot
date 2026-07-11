@@ -393,6 +393,83 @@
     "message": "Copy validation checklist",
     "description": "Options Pro tab: structured export checklist copy button"
   },
+  "proRouteValidationComparisonTitle": {
+    "message": "Three-route sample comparison",
+    "description": "Options Pro tab: route comparison title"
+  },
+  "proRouteValidationComparisonHint": {
+    "message": "Compare the last 7 days of local anonymous route opens and validation asset copies to see which roadmap is closest to real paid value.",
+    "description": "Options Pro tab: route comparison hint"
+  },
+  "proRouteValidationComparisonCopy": {
+    "message": "Copy route comparison summary",
+    "description": "Options Pro tab: copy route comparison summary button"
+  },
+  "proRouteValidationComparisonDownloadJson": {
+    "message": "Download route comparison JSON",
+    "description": "Options Pro tab: download route comparison json button"
+  },
+  "proRouteValidationComparisonPrivacyHint": {
+    "message": "Uses only local anonymous aggregated actions. Never includes copied page content, URLs, titles, or contact details.",
+    "description": "Options Pro tab: route comparison privacy hint"
+  },
+  "proRouteValidationComparisonMdTitle": {
+    "message": "V4-8 Pro route sample comparison summary",
+    "description": "Route comparison markdown title"
+  },
+  "proRouteValidationComparisonMdSectionInput": {
+    "message": "Input",
+    "description": "Route comparison markdown input section heading"
+  },
+  "proRouteValidationComparisonMdSectionScoreboard": {
+    "message": "Scoreboard",
+    "description": "Route comparison markdown scoreboard section heading"
+  },
+  "proRouteValidationComparisonMdSectionDecision": {
+    "message": "Decision",
+    "description": "Route comparison markdown decision section heading"
+  },
+  "proRouteValidationComparisonInputWindow": {
+    "message": "Window",
+    "description": "Route comparison markdown input window label"
+  },
+  "proRouteValidationComparisonInputTotalSignals": {
+    "message": "Total signals",
+    "description": "Route comparison markdown total signals label"
+  },
+  "proRouteValidationComparisonInputCampaigns": {
+    "message": "campaigns",
+    "description": "Route comparison markdown campaigns label"
+  },
+  "proRouteValidationComparisonDecisionNoSignals": {
+    "message": "There are no comparable route signals yet. Keep collecting real opens and copy samples.",
+    "description": "Route comparison decision when no signals exist"
+  },
+  "proRouteValidationComparisonDecisionLeading": {
+    "message": "Leading route: $TRACK$ (gap $GAP$)",
+    "description": "Route comparison decision line when a leading track exists",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      },
+      "gap": {
+        "content": "$2"
+      }
+    }
+  },
+  "proRouteValidationComparisonDecisionNextStepCollect": {
+    "message": "Next step: keep all three routes visible, but collect more real opens and copy samples before expanding anything new.",
+    "description": "Route comparison next-step line when no leading track exists"
+  },
+  "proRouteValidationComparisonDecisionNextStepWriteback": {
+    "message": "Next step: write real task samples for $TRACK$ back into the roadmap page, store copy, and the next summary.",
+    "description": "Route comparison next-step line when a leading track exists",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      }
+    }
+  },
   "proIntentDecisionGateTitle": {
     "message": "Pre-payment decision gate",
     "description": "Options Pro tab: decision gate title"
@@ -1854,6 +1931,22 @@
   "proIntentDecisionSummaryDownloadFailed": {
     "message": "Download failed",
     "description": "Decision summary json download failure notification"
+  },
+  "proRouteValidationComparisonCopySuccess": {
+    "message": "Route comparison summary copied to clipboard",
+    "description": "Route comparison copy success notification"
+  },
+  "proRouteValidationComparisonCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Route comparison copy failure notification"
+  },
+  "proRouteValidationComparisonDownloadSuccess": {
+    "message": "Route comparison JSON downloaded",
+    "description": "Route comparison json download success notification"
+  },
+  "proRouteValidationComparisonDownloadFailed": {
+    "message": "Download failed",
+    "description": "Route comparison json download failure notification"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "Copy weekly campaign report (Markdown)",

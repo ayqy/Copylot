@@ -393,6 +393,83 @@
     "message": "复制验证清单",
     "description": "Options Pro Tab：结构化导出验证清单复制按钮"
   },
+  "proRouteValidationComparisonTitle": {
+    "message": "三条路线样本比较",
+    "description": "Options Pro Tab：路线比较标题"
+  },
+  "proRouteValidationComparisonHint": {
+    "message": "基于最近 7 天本地匿名聚合的路线打开和验证素材复制信号，直接比较三条路线谁更接近真实付费价值。",
+    "description": "Options Pro Tab：路线比较说明"
+  },
+  "proRouteValidationComparisonCopy": {
+    "message": "复制路线比较摘要",
+    "description": "Options Pro Tab：复制路线比较摘要按钮"
+  },
+  "proRouteValidationComparisonDownloadJson": {
+    "message": "下载路线比较 JSON",
+    "description": "Options Pro Tab：下载路线比较 JSON 按钮"
+  },
+  "proRouteValidationComparisonPrivacyHint": {
+    "message": "比较结果只使用本地匿名聚合动作，不包含网页正文、复制内容、URL、标题或联系方式。",
+    "description": "Options Pro Tab：路线比较隐私提示"
+  },
+  "proRouteValidationComparisonMdTitle": {
+    "message": "V4-8 三条路线样本比较摘要",
+    "description": "路线比较 Markdown 标题"
+  },
+  "proRouteValidationComparisonMdSectionInput": {
+    "message": "输入",
+    "description": "路线比较 Markdown 输入区块标题"
+  },
+  "proRouteValidationComparisonMdSectionScoreboard": {
+    "message": "记分板",
+    "description": "路线比较 Markdown 记分板区块标题"
+  },
+  "proRouteValidationComparisonMdSectionDecision": {
+    "message": "判断",
+    "description": "路线比较 Markdown 判断区块标题"
+  },
+  "proRouteValidationComparisonInputWindow": {
+    "message": "观察窗口",
+    "description": "路线比较 Markdown 观察窗口标签"
+  },
+  "proRouteValidationComparisonInputTotalSignals": {
+    "message": "总信号",
+    "description": "路线比较 Markdown 总信号标签"
+  },
+  "proRouteValidationComparisonInputCampaigns": {
+    "message": "campaign",
+    "description": "路线比较 Markdown campaign 标签"
+  },
+  "proRouteValidationComparisonDecisionNoSignals": {
+    "message": "当前还没有可比较的路线信号，继续收集真实打开与复制样本。",
+    "description": "路线比较：没有信号时的判断"
+  },
+  "proRouteValidationComparisonDecisionLeading": {
+    "message": "当前领先路线：$TRACK$（领先差值 $GAP$）",
+    "description": "路线比较：存在领先路线时的判断",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      },
+      "gap": {
+        "content": "$2"
+      }
+    }
+  },
+  "proRouteValidationComparisonDecisionNextStepCollect": {
+    "message": "下一步：继续保留三条路线入口，但先补真实打开与复制样本，不扩新路线。",
+    "description": "路线比较：没有领先路线时的下一步"
+  },
+  "proRouteValidationComparisonDecisionNextStepWriteback": {
+    "message": "下一步：优先把 $TRACK$ 的真实任务样本回写到路线页、商店说明和下一轮汇总。",
+    "description": "路线比较：存在领先路线时的下一步",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      }
+    }
+  },
   "proIntentDecisionGateTitle": {
     "message": "收费前门槛判断",
     "description": "Options Pro Tab：收费前门槛判断标题"
@@ -1854,6 +1931,22 @@
   "proIntentDecisionSummaryDownloadFailed": {
     "message": "下载失败",
     "description": "收费前门槛 JSON 下载失败提示"
+  },
+  "proRouteValidationComparisonCopySuccess": {
+    "message": "路线比较摘要已复制到剪贴板",
+    "description": "路线比较摘要复制成功提示"
+  },
+  "proRouteValidationComparisonCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "路线比较摘要复制失败提示"
+  },
+  "proRouteValidationComparisonDownloadSuccess": {
+    "message": "路线比较 JSON 已下载",
+    "description": "路线比较 JSON 下载成功提示"
+  },
+  "proRouteValidationComparisonDownloadFailed": {
+    "message": "下载失败",
+    "description": "路线比较 JSON 下载失败提示"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "复制按 campaign 的本周复盘摘要（Markdown）",

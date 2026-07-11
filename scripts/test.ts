@@ -433,6 +433,21 @@ async function run(): Promise<void> {
       'Pro intent decision pack outputs should be deterministic'
     )
   );
+  await runStep(startStep('build-pro-route-validation-comparison-pack', 'quality'), () =>
+    assertDeterministic(
+      './node_modules/.bin/ts-node',
+      [
+        'scripts/build-pro-route-validation-comparison-pack.ts',
+        'docs/evidence/v4-8/route-validation-telemetry-sample.json',
+        'docs/evidence/v4-8/comparison-pack'
+      ],
+      [
+        'docs/evidence/v4-8/comparison-pack/copylot-pro-route-validation-comparison-v4-8.md',
+        'docs/evidence/v4-8/comparison-pack/copylot-pro-route-validation-comparison-v4-8.json'
+      ],
+      'Pro route validation comparison outputs should be deterministic'
+    )
+  );
   await runStep(startStep('build-weekly-channel-ops-trend', 'quality'), () =>
     assertDeterministic(
       './node_modules/.bin/ts-node',

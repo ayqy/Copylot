@@ -28,6 +28,10 @@ import {
   buildProValidationRouteUrl
 } from '../src/shared/pro-route-validation.ts';
 import {
+  buildProRouteValidationComparisonSummary,
+  formatProRouteValidationComparisonMarkdown
+} from '../src/shared/pro-route-validation-comparison.ts';
+import {
   RATING_PROMPT_MIN_INSTALL_AGE_MS,
   RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
   PRO_PROMPT_MAX_SHOWN_COUNT,
@@ -1683,6 +1687,111 @@ async function run() {
   });
   assert.equal(decisionSummaryC.decision.code, 'C');
   assert.ok(decisionSummaryC.decision.reasons.includes('go_for_subscription_mvp'));
+
+  const comparisonGetMessage: I18nGetMessage = (key, substitutions) => {
+    const normalized =
+      typeof substitutions === 'string'
+        ? [substitutions]
+        : Array.isArray(substitutions)
+          ? substitutions
+          : [];
+    const messages: Record<string, string> = {
+      proValidationAdvancedTitle: 'Advanced page cleaning validation',
+      proValidationBulkTitle: 'Batch collection and organization validation',
+      proValidationStructuredExportTitle: 'Structured export and downstream workflow validation',
+      proRouteValidationComparisonMdTitle: 'V4-8 Pro route sample comparison summary',
+      proRouteValidationComparisonMdSectionInput: 'Input',
+      proRouteValidationComparisonMdSectionScoreboard: 'Scoreboard',
+      proRouteValidationComparisonMdSectionDecision: 'Decision',
+      proRouteValidationComparisonInputWindow: 'Window',
+      proRouteValidationComparisonInputTotalSignals: 'Total signals',
+      proRouteValidationComparisonInputCampaigns: 'campaigns',
+      proRouteValidationComparisonDecisionNoSignals: 'No route signals yet',
+      proRouteValidationComparisonDecisionLeading: `Leading route: ${normalized[0] || 'unknown'} (gap ${normalized[1] || '0'})`,
+      proRouteValidationComparisonDecisionNextStepCollect: 'Collect more real samples first',
+      proRouteValidationComparisonDecisionNextStepWriteback: `Write back ${normalized[0] || 'unknown'} next`
+    };
+    return messages[key] || key;
+  };
+
+  const comparisonSummary = buildProRouteValidationComparisonSummary({
+    enabled: true,
+    telemetryEvents: [
+      {
+        name: 'pro_waitlist_opened',
+        ts: now - 5_000,
+        props: { source: 'options', campaign: 'twitter', content: 'options_advanced_cleaning_cta' }
+      },
+      {
+        name: 'pro_waitlist_opened',
+        ts: now - 4_000,
+        props: { source: 'options', campaign: 'twitter', content: 'options_advanced_cleaning_cta' }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now - 3_000,
+        props: {
+          source: 'options',
+          campaign: 'twitter',
+          content: 'options_advanced_cleaning_cta',
+          action: 'validation_route'
+        }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now - 2_000,
+        props: {
+          source: 'options',
+          campaign: 'twitter',
+          content: 'options_advanced_cleaning_cta',
+          action: 'validation_brief'
+        }
+      },
+      {
+        name: 'pro_waitlist_opened',
+        ts: now - 1_000,
+        props: { source: 'options', campaign: 'ph', content: 'options_bulk_collection_cta' }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now - 900,
+        props: {
+          source: 'options',
+          campaign: 'ph',
+          content: 'options_bulk_collection_cta',
+          action: 'validation_route'
+        }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now - 800,
+        props: {
+          source: 'options',
+          campaign: 'ph',
+          content: 'options_structured_export_cta',
+          action: 'validation_checklist'
+        }
+      }
+    ],
+    now,
+    extensionVersion: '1.2.3',
+    getMessage: comparisonGetMessage,
+    lookbackDays: 7
+  });
+  assert.equal(comparisonSummary.leadingTrackId, 'advanced_cleaning');
+  assert.equal(comparisonSummary.tracks[0]?.routeOpened, 2);
+  assert.equal(comparisonSummary.tracks[0]?.validationRouteCopied, 1);
+  assert.equal(comparisonSummary.tracks[0]?.validationBriefCopied, 1);
+  assert.equal(comparisonSummary.tracks[0]?.totalSignals, 4);
+  assert.deepEqual(comparisonSummary.campaigns, ['ph', 'twitter']);
+  const comparisonMarkdown = formatProRouteValidationComparisonMarkdown(
+    comparisonSummary,
+    comparisonGetMessage
+  );
+  assert.ok(comparisonMarkdown.includes('V4-8 Pro route sample comparison summary'));
+  assert.ok(comparisonMarkdown.includes('Advanced page cleaning validation'));
+  assert.ok(comparisonMarkdown.includes('route_opened=2'));
+  assert.ok(comparisonMarkdown.includes('Leading route: Advanced page cleaning validation (gap 2)'));
 
   // pro-funnel.ts (pure functions)
   const proSummaryDisabled = buildProFunnelSummary({
@@ -3774,6 +3883,14 @@ async function run() {
     'options.html should include copy-pro-intent-decision-summary'
   );
   assert.ok(
+    optionsHtml.includes('id="copy-pro-route-validation-comparison-summary"'),
+    'options.html should include copy-pro-route-validation-comparison-summary'
+  );
+  assert.ok(
+    optionsHtml.includes('id="download-pro-route-validation-comparison-json"'),
+    'options.html should include download-pro-route-validation-comparison-json'
+  );
+  assert.ok(
     optionsHtml.includes('id="download-pro-intent-decision-summary-json"'),
     'options.html should include download-pro-intent-decision-summary-json'
   );
@@ -3837,6 +3954,10 @@ async function run() {
   assert.ok(
     optionsJs.includes('options_structured_export_cta'),
     'options.js should contain options_structured_export_cta'
+  );
+  assert.ok(
+    optionsJs.includes('copylot-pro-route-validation-comparison-v4-8.json'),
+    'options.js should contain route comparison export filename'
   );
   assert.ok(
     optionsJs.includes('copylot-pro-intent-decision-summary-'),

@@ -576,6 +576,24 @@ async function runOptionsAssertions(): Promise<void> {
     );
     assert.ok(structuredExportChecklist.includes('twitter'));
 
+    const routeComparisonCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#copy-pro-route-validation-comparison-summary'
+    );
+    clickElement(routeComparisonCopyButton);
+    await page.waitForIdle();
+    const routeComparisonSummary = await page.clipboard.readText();
+    assert.ok(
+      routeComparisonSummary.includes('V4-8 三条路线样本比较摘要') ||
+        routeComparisonSummary.includes('V4-8 Pro route sample comparison summary')
+    );
+    assert.ok(
+      routeComparisonSummary.includes('高级页面清洗验证') ||
+        routeComparisonSummary.includes('Advanced page cleaning validation')
+    );
+    assert.ok(routeComparisonSummary.includes('route_opened=1'));
+    assert.ok(routeComparisonSummary.includes('total_signals=4'));
+
     const decisionSummaryCopyButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
       '#copy-pro-intent-decision-summary'

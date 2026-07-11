@@ -35,6 +35,8 @@ test('pro tab only shows roadmap and sharing toolkit', async ({
     await expect(page.locator('#pro-decision-gate-panel')).toBeVisible();
     await expect(page.locator('#copy-pro-intent-decision-summary')).toBeVisible();
     await expect(page.locator('#download-pro-intent-decision-summary-json')).toBeVisible();
+    await expect(page.locator('#copy-pro-route-validation-comparison-summary')).toBeVisible();
+    await expect(page.locator('#download-pro-route-validation-comparison-json')).toBeVisible();
 
     await expect(page.locator('#pro-waitlist-copy')).toHaveCount(0);
     await expect(page.locator('#pro-waitlist-survey')).toHaveCount(0);
@@ -158,6 +160,17 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
         return urls.at(-1) || '';
       })
       .toContain('utm_content=options_structured_export_cta');
+
+    await page.locator('#copy-pro-route-validation-comparison-summary').click();
+    await expectClipboardTextEventually(
+      (text) =>
+        (text.includes('V4-8 三条路线样本比较摘要') ||
+          text.includes('V4-8 Pro route sample comparison summary')) &&
+        (text.includes('高级页面清洗验证') ||
+          text.includes('Advanced page cleaning validation')) &&
+        text.includes('total_signals=4'),
+      driverPage
+    );
 
     await page.locator('#copy-pro-intent-decision-summary').click();
     await expectClipboardTextEventually(
