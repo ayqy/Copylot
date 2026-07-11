@@ -345,6 +345,30 @@
     "message": "这些素材只包含路线边界、UTM 链接和验收信号，不会包含复制内容、网页正文、页面 URL 或标题。",
     "description": "Options Pro Tab：高级页面清洗素材隐私提示"
   },
+  "proValidationBulkTitle": {
+    "message": "批量采集与整理验证",
+    "description": "Options Pro Tab：批量采集验证标题"
+  },
+  "proValidationBulkHint": {
+    "message": "适用于一次 Prompt 仍需要人工收集多个页面、资料片段或竞品对比内容的场景；先验证“更完整的采集整理工作流”是否值得进入后续 Pro 路线。",
+    "description": "Options Pro Tab：批量采集验证说明"
+  },
+  "proValidationBulkRouteOpenButton": {
+    "message": "打开批量采集路线",
+    "description": "Options Pro Tab：批量采集路线打开按钮"
+  },
+  "proValidationBulkRouteCopyButton": {
+    "message": "复制路线链接",
+    "description": "Options Pro Tab：批量采集路线复制按钮"
+  },
+  "proValidationBulkBriefCopyButton": {
+    "message": "复制验证简报",
+    "description": "Options Pro Tab：批量采集验证简报复制按钮"
+  },
+  "proValidationBulkChecklistCopyButton": {
+    "message": "复制验证清单",
+    "description": "Options Pro Tab：批量采集验证清单复制按钮"
+  },
   "proValidationCampaignLabel": {
     "message": "campaign",
     "description": "验证素材：campaign 标签"
@@ -400,6 +424,22 @@
   "proValidationAdvancedChecklistList": {
     "message": "- 复制任何素材前先填写 campaign，确保后续导出里能归因。\\n- 对外只分享路线/安装/隐私链接和验证说明，不把复制出来的网页正文塞进素材里。\\n- 只有当当前 Free 输出仍明显受广告、评论区或推荐位干扰时，才使用这组素材。\\n- 一轮验证结束后，导出本地 Pro intent 与分发摘要，确认 campaign 已可见。",
     "description": "验证素材：高级页面清洗清单列表"
+  },
+  "proValidationBulkGoalList": {
+    "message": "- 重点面向研究资料、竞品跟踪或参考收集场景，验证用户是否仍需要在当前 Free 复制路径之外手工收集多个页面或片段。\\n- 判断“命名、分组、连续收集多个素材”的工作流价值是否足够高，值得进入后续 Pro 路线。",
+    "description": "验证素材：批量采集目标列表"
+  },
+  "proValidationBulkBoundaryList": {
+    "message": "- 当前 Free 的追加模式、快捷 Prompt 与单页复制路径保持不变。\\n- 批量采集仍是规划方向，素材里不能暗示历史库、云同步或历史检索已经上线。",
+    "description": "验证素材：批量采集边界列表"
+  },
+  "proValidationBulkSignalList": {
+    "message": "- 本地 Pro intent 导出里能看到带 `utm_content=options_bulk_collection_cta` 的路线打开事件。\\n- 同一 campaign 下，路线链接、验证简报或验证清单的复制动作会进入本地分发导出。\\n- 被分享的案例描述的是明确的多页面收集任务，而不是泛泛的“想要更多功能”。",
+    "description": "验证素材：批量采集验收信号列表"
+  },
+  "proValidationBulkChecklistList": {
+    "message": "- 复制任何素材前先填写 campaign，确保后续导出里能归因。\\n- 对外只分享路线/安装/隐私链接和工作流说明，不把复制出来的网页正文塞进素材里。\\n- 只有当当前 Free 的追加模式仍留下较多手工收集、重命名或整理成本时，才使用这组素材。\\n- 一轮验证结束后，导出本地 Pro intent 与分发摘要，确认 campaign 已可见。",
+    "description": "验证素材：批量采集清单列表"
   },
   "proJoinWaitlist": {
     "message": "查看官网 Pro 路线",

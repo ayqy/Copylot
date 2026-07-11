@@ -8,6 +8,7 @@ export type ProIntentContent =
   | 'popup_survey_cta'
   | 'options_waitlist_cta'
   | 'options_advanced_cleaning_cta'
+  | 'options_bulk_collection_cta'
   | 'options_survey_cta'
   | 'options_survey_copy_open';
 

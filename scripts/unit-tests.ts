@@ -793,6 +793,16 @@ async function run() {
   assert.equal(advancedCleaningRouteParsed.searchParams.get('utm_campaign'), 'twitter');
   assert.equal(advancedCleaningRouteParsed.searchParams.get('utm_content'), 'options_advanced_cleaning_cta');
 
+  const bulkCollectionRouteUrl = buildProValidationRouteUrl({
+    trackId: 'bulk_collection',
+    medium: 'distribution_toolkit',
+    campaign: 'twitter'
+  });
+  const bulkCollectionRouteParsed = new URL(bulkCollectionRouteUrl);
+  assert.equal(bulkCollectionRouteParsed.pathname, '/pricing');
+  assert.equal(bulkCollectionRouteParsed.searchParams.get('utm_campaign'), 'twitter');
+  assert.equal(bulkCollectionRouteParsed.searchParams.get('utm_content'), 'options_bulk_collection_cta');
+
   const getMessageForValidationAssets: I18nGetMessage = (key) => {
     const messages: Record<string, string> = {
       proValidationAdvancedTitle: 'Advanced page cleaning validation',
@@ -809,7 +819,12 @@ async function run() {
       proValidationAdvancedGoalList: '- Goal A',
       proValidationAdvancedBoundaryList: '- Boundary A',
       proValidationAdvancedSignalList: '- Signal A',
-      proValidationAdvancedChecklistList: '- Checklist A'
+      proValidationAdvancedChecklistList: '- Checklist A',
+      proValidationBulkTitle: 'Batch collection and organization validation',
+      proValidationBulkGoalList: '- Goal B',
+      proValidationBulkBoundaryList: '- Boundary B',
+      proValidationBulkSignalList: '- Signal B',
+      proValidationBulkChecklistList: '- Checklist B'
     };
     return messages[key] || key;
   };
@@ -828,6 +843,13 @@ async function run() {
   });
   assert.ok(advancedCleaningChecklist.includes('Validation Checklist'));
   assert.ok(advancedCleaningChecklist.includes('utm_campaign=twitter'));
+  const bulkCollectionBrief = buildProValidationBriefMarkdown({
+    trackId: 'bulk_collection',
+    campaign: 'twitter',
+    getMessage: getMessageForValidationAssets
+  });
+  assert.ok(bulkCollectionBrief.includes('# Batch collection and organization validation'));
+  assert.ok(bulkCollectionBrief.includes('utm_content=options_bulk_collection_cta'));
 
   // pro-waitlist-distribution.ts (pure functions)
   assert.deepEqual(computeProWaitlistDistributionState(''), { enabled: false, campaign: null });
@@ -1374,6 +1396,28 @@ async function run() {
         campaign: 'twitter',
         action: 'validation_brief',
         content: 'options_advanced_cleaning_cta'
+      }
+    }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_waitlist_opened',
+      ts: now,
+      props: {
+        source: 'options',
+        medium: 'options',
+        campaign: 'twitter',
+        content: 'options_bulk_collection_cta'
+      }
+    }),
+    {
+      name: 'pro_waitlist_opened',
+      ts: now,
+      props: {
+        source: 'options',
+        medium: 'options',
+        campaign: 'twitter',
+        content: 'options_bulk_collection_cta'
       }
     }
   );
@@ -3661,6 +3705,14 @@ async function run() {
     'options.html should include pro-validation-advanced-brief-copy'
   );
   assert.ok(
+    optionsHtml.includes('id="pro-validation-bulk-open"'),
+    'options.html should include pro-validation-bulk-open'
+  );
+  assert.ok(
+    optionsHtml.includes('id="pro-validation-bulk-brief-copy"'),
+    'options.html should include pro-validation-bulk-brief-copy'
+  );
+  assert.ok(
     optionsHtml.includes('id="pro-waitlist-url-copy"'),
     'options.html should include pro-waitlist-url-copy'
   );
@@ -3712,6 +3764,10 @@ async function run() {
   assert.ok(
     optionsJs.includes('validation_brief'),
     'options.js should contain validation_brief'
+  );
+  assert.ok(
+    optionsJs.includes('options_bulk_collection_cta'),
+    'options.js should contain options_bulk_collection_cta'
   );
   assert.ok(
     optionsJs.includes('navigator.clipboard.writeText'),

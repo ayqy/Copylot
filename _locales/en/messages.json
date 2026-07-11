@@ -345,6 +345,30 @@
     "message": "These assets contain only roadmap boundaries, UTM links, and acceptance signals. They never include copied page content, page URLs, or titles.",
     "description": "Options Pro tab: advanced cleaning asset privacy hint"
   },
+  "proValidationBulkTitle": {
+    "message": "Batch collection and organization validation",
+    "description": "Options Pro tab: batch collection validation title"
+  },
+  "proValidationBulkHint": {
+    "message": "Use this when one prompt run still requires collecting multiple pages, notes, or comparison snippets by hand and you need to validate whether a more opinionated collection workflow is worth promoting as a future Pro direction.",
+    "description": "Options Pro tab: batch collection validation hint"
+  },
+  "proValidationBulkRouteOpenButton": {
+    "message": "Open batch collection roadmap",
+    "description": "Options Pro tab: batch collection route open button"
+  },
+  "proValidationBulkRouteCopyButton": {
+    "message": "Copy roadmap link",
+    "description": "Options Pro tab: batch collection route copy button"
+  },
+  "proValidationBulkBriefCopyButton": {
+    "message": "Copy validation brief",
+    "description": "Options Pro tab: batch collection brief copy button"
+  },
+  "proValidationBulkChecklistCopyButton": {
+    "message": "Copy validation checklist",
+    "description": "Options Pro tab: batch collection checklist copy button"
+  },
   "proValidationCampaignLabel": {
     "message": "campaign",
     "description": "Validation asset: campaign label"
@@ -400,6 +424,22 @@
   "proValidationAdvancedChecklistList": {
     "message": "- Use a campaign tag before copying any asset so attribution stays exportable.\\n- Share only the roadmap/install/privacy links and validation notes. Do not paste copied page content into the asset.\\n- Use this kit only when the page truly needs stronger cleaning beyond today’s free output.\\n- After a run, export the local Pro intent and distribution summaries and confirm the campaign is visible.",
     "description": "Validation asset: advanced cleaning checklist list"
+  },
+  "proValidationBulkGoalList": {
+    "message": "- Target research, competitor tracking, or reference-collection flows where users still have to gather multiple pages or snippets manually after the current free copy path.\\n- Validate whether naming, grouping, and collecting multiple items into one workflow is valuable enough to justify a future Pro direction.",
+    "description": "Validation asset: batch collection goals list"
+  },
+  "proValidationBulkBoundaryList": {
+    "message": "- Keep today’s free append mode, prompt slots, and per-page copy flow unchanged.\\n- Treat batch collection as a planned direction only. The brief must not promise saved libraries, cloud sync, or historical search today.",
+    "description": "Validation asset: batch collection boundary list"
+  },
+  "proValidationBulkSignalList": {
+    "message": "- A roadmap open with `utm_content=options_bulk_collection_cta` appears in the local intent export.\\n- Route, brief, or checklist copies appear in the local distribution export for the same campaign.\\n- Shared examples describe concrete multi-page collection jobs instead of broad “more features” requests.",
+    "description": "Validation asset: batch collection signal list"
+  },
+  "proValidationBulkChecklistList": {
+    "message": "- Set a campaign tag before copying assets so later exports stay attributable.\\n- Share only roadmap/install/privacy links and workflow notes; never paste copied page content into the asset.\\n- Use this kit only when the free append mode still leaves too much manual collection or renaming work.\\n- After a run, export the local Pro intent and distribution summaries and confirm the campaign is visible.",
+    "description": "Validation asset: batch collection checklist list"
   },
   "proJoinWaitlist": {
     "message": "View the Pro roadmap",

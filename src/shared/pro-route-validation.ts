@@ -7,7 +7,7 @@ import {
 import type { I18nGetMessage } from './monetization.ts';
 import type { ProIntentContent } from './pro-intent-attribution.ts';
 
-export type ProValidationTrackId = 'advanced_cleaning';
+export type ProValidationTrackId = 'advanced_cleaning' | 'bulk_collection';
 
 export type ProValidationAssetAction = 'validation_route' | 'validation_brief' | 'validation_checklist';
 
@@ -32,6 +32,16 @@ const PRO_VALIDATION_TRACKS: Record<ProValidationTrackId, ProValidationTrack> = 
     boundaryListKey: 'proValidationAdvancedBoundaryList',
     signalListKey: 'proValidationAdvancedSignalList',
     checklistListKey: 'proValidationAdvancedChecklistList'
+  },
+  bulk_collection: {
+    id: 'bulk_collection',
+    attributionContent: 'options_bulk_collection_cta',
+    titleKey: 'proValidationBulkTitle',
+    hintKey: 'proValidationBulkHint',
+    goalListKey: 'proValidationBulkGoalList',
+    boundaryListKey: 'proValidationBulkBoundaryList',
+    signalListKey: 'proValidationBulkSignalList',
+    checklistListKey: 'proValidationBulkChecklistList'
   }
 };
 

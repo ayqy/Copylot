@@ -1,0 +1,33 @@
+{
+  "proIntentEvents": [
+    {
+      "eventName": "pro_waitlist_opened",
+      "source": "options",
+      "campaign": "twitter",
+      "content": "options_bulk_collection_cta"
+    }
+  ],
+  "copiedAssets": [
+    {
+      "action": "validation_route",
+      "campaign": "twitter",
+      "content": "options_bulk_collection_cta"
+    },
+    {
+      "action": "validation_brief",
+      "campaign": "twitter",
+      "content": "options_bulk_collection_cta"
+    },
+    {
+      "action": "validation_checklist",
+      "campaign": "twitter",
+      "content": "options_bulk_collection_cta"
+    }
+  ],
+  "privacyChecks": {
+    "containsCopiedText": false,
+    "containsPageBody": false,
+    "containsPageUrl": false,
+    "containsPageTitle": false
+  }
+}

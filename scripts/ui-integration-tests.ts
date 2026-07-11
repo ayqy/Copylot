@@ -484,6 +484,52 @@ async function runOptionsAssertions(): Promise<void> {
     assert.ok(advancedCleaningChecklist.includes('Validation Checklist') || advancedCleaningChecklist.includes('验证清单'));
     assert.ok(advancedCleaningChecklist.includes('twitter'));
 
+    const bulkCollectionOpenButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-validation-bulk-open'
+    );
+    clickElement(bulkCollectionOpenButton);
+    await page.waitForIdle();
+    const bulkCollectionOpenUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
+    assert.ok(bulkCollectionOpenUrl.includes('/pricing'));
+    assert.ok(bulkCollectionOpenUrl.includes('utm_content=options_bulk_collection_cta'));
+
+    const bulkCollectionRouteCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-validation-bulk-route-copy'
+    );
+    clickElement(bulkCollectionRouteCopyButton);
+    await page.waitForIdle();
+    const bulkCollectionRouteUrl = await page.clipboard.readText();
+    assert.ok(bulkCollectionRouteUrl.includes('utm_campaign=twitter'));
+    assert.ok(bulkCollectionRouteUrl.includes('utm_content=options_bulk_collection_cta'));
+
+    const bulkCollectionBriefCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-validation-bulk-brief-copy'
+    );
+    clickElement(bulkCollectionBriefCopyButton);
+    await page.waitForIdle();
+    const bulkCollectionBrief = await page.clipboard.readText();
+    assert.ok(
+      bulkCollectionBrief.includes('Batch collection and organization') ||
+        bulkCollectionBrief.includes('批量采集与整理')
+    );
+    assert.ok(bulkCollectionBrief.includes('utm_content=options_bulk_collection_cta'));
+
+    const bulkCollectionChecklistCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-validation-bulk-checklist-copy'
+    );
+    clickElement(bulkCollectionChecklistCopyButton);
+    await page.waitForIdle();
+    const bulkCollectionChecklist = await page.clipboard.readText();
+    assert.ok(
+      bulkCollectionChecklist.includes('Validation Checklist') ||
+        bulkCollectionChecklist.includes('验证清单')
+    );
+    assert.ok(bulkCollectionChecklist.includes('twitter'));
+
     const proWaitlistButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
       '#pro-waitlist-button'
