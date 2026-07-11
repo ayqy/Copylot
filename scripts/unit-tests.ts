@@ -30,10 +30,12 @@ import {
   PRO_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
   PRO_PROMPT_SNOOZE_MS,
   applySuccessfulCopyToGrowthStats,
+  buildWomActionEligibility,
   buildGrowthFunnelSummary,
   normalizeGrowthStatsValue,
   shouldShowProPrompt,
   shouldShowRatingPrompt,
+  WOM_ACTION_MIN_SUCCESSFUL_COPY_COUNT,
   type GrowthStats
 } from '../src/shared/growth-stats.ts';
 import {
@@ -521,6 +523,16 @@ async function run() {
   assert.equal(afterThirdCopy.lastSuccessfulCopyAt, t3);
   assert.equal(afterThirdCopy.reusedWithin7DaysAt, t2, 'reusedWithin7DaysAt: only write once');
 
+  const womEligibilityLocked = buildWomActionEligibility(afterFirstCopy);
+  assert.equal(womEligibilityLocked.minSuccessfulCopyCount, WOM_ACTION_MIN_SUCCESSFUL_COPY_COUNT);
+  assert.equal(womEligibilityLocked.isEligible, false);
+  assert.equal(womEligibilityLocked.remainingSuccessfulCopies, 1);
+
+  const womEligibilityUnlocked = buildWomActionEligibility(afterSecondCopy);
+  assert.equal(womEligibilityUnlocked.isEligible, true);
+  assert.equal(womEligibilityUnlocked.remainingSuccessfulCopies, 0);
+  assert.equal(womEligibilityUnlocked.secondSuccessfulCopyAt, t2);
+
   const tPrompt = now + 4000;
   const tPrompt2 = now + 5000;
   const afterPromptCopy = applySuccessfulCopyToGrowthStats(baseGrowthStats, {
@@ -598,6 +610,11 @@ async function run() {
   assert.equal(summaryMissing.isActivated, false);
   assert.equal(summaryMissing.isPromptUsed, false);
   assert.equal(summaryMissing.isReusedWithin7Days, false);
+  assert.equal(summaryMissing.isEligibleForWomActions, false);
+  assert.equal(
+    summaryMissing.remainingSuccessfulCopiesForWomActions,
+    WOM_ACTION_MIN_SUCCESSFUL_COPY_COUNT
+  );
 
   const popupOpenedAt = now + 10_000;
   const within3MinCopyAt = popupOpenedAt + 3 * 60 * 1000;
@@ -655,6 +672,8 @@ async function run() {
   assert.equal(summaryBooleans.hasQuickPromptSlotClick, true);
   assert.equal(summaryBooleans.hasQuickPromptSlotUse, true);
   assert.equal(summaryBooleans.isSecondSuccessfulCopyCompleted, true);
+  assert.equal(summaryBooleans.isEligibleForWomActions, true);
+  assert.equal(summaryBooleans.remainingSuccessfulCopiesForWomActions, 0);
   assert.equal(summaryBooleans.firstPopupOpenedAt, popupOpenedAt);
   assert.equal(summaryBooleans.firstSuccessfulCopyAt, over3MinCopyAt);
 
@@ -663,6 +682,7 @@ async function run() {
     now
   );
   assert.equal(summaryActivatedByCount.isActivated, true);
+  assert.equal(summaryActivatedByCount.isEligibleForWomActions, true);
   assert.equal(summaryActivatedByCount.timeFromFirstPopupToFirstCopyMs, undefined);
   assert.equal(summaryActivatedByCount.activatedWithin3MinutesFromFirstPopup, undefined);
 
@@ -3225,6 +3245,13 @@ async function run() {
     exportedAt: 123,
     extensionVersion: '1.1.20',
     settings: { ...settings, isAnonymousUsageDataEnabled: true },
+    growthStats: {
+      installedAt: now - 100,
+      successfulCopyCount: 2,
+      firstSuccessfulCopyAt: now - 50,
+      secondSuccessfulCopyAt: now - 10,
+      lastSuccessfulCopyAt: now - 10
+    },
     telemetryEvents: [
       { name: 'wom_share_opened', ts: now, props: { source: 'popup', url: 'https://example.com' } },
       { name: 'rating_prompt_shown', ts: now + 1, props: { source: 'rating_prompt', extra: 'x' } },
@@ -3237,11 +3264,22 @@ async function run() {
       { name: 'unknown', ts: now + 4 }
     ]
   });
-  assert.deepEqual(Object.keys(womPack).sort(), ['events', 'meta', 'settings', 'womSummary']);
+  assert.deepEqual(Object.keys(womPack).sort(), [
+    'events',
+    'meta',
+    'settings',
+    'womQualificationAudit',
+    'womSummary'
+  ]);
   assert.deepEqual(Object.keys(womPack.meta).sort(), ['exportedAt', 'extensionVersion', 'source']);
   assert.deepEqual(Object.keys(womPack.settings).sort(), ['isAnonymousUsageDataEnabled']);
   assert.equal(womPack.settings.isAnonymousUsageDataEnabled, true);
   assert.equal(womPack.events.length, 3);
+  assert.equal(womPack.womQualificationAudit.telemetryEnabled, true);
+  assert.equal(womPack.womQualificationAudit.successfulCopyCount, 2);
+  assert.equal(womPack.womQualificationAudit.isEligibleForWomActions, true);
+  assert.equal(womPack.womQualificationAudit.gatedEventsBeforeQualificationCount, 0);
+  assert.equal(womPack.womQualificationAudit.gatedEventsAfterQualificationCount, 1);
   assert.deepEqual(
     womPack.events.map((e) => e.name),
     ['wom_share_opened', 'rating_prompt_shown', 'rating_prompt_action']
@@ -3250,16 +3288,32 @@ async function run() {
   assert.deepEqual(Object.keys(womPack.events[1]?.props || {}).sort(), ['source']);
   assert.deepEqual(Object.keys(womPack.events[2]?.props || {}).sort(), ['action', 'source']);
 
+  const womPackPreQualifiedLeak = buildWomEvidencePack({
+    exportedAt: 2,
+    extensionVersion: '1.1.20',
+    settings: { ...settings, isAnonymousUsageDataEnabled: true },
+    growthStats: { installedAt: now, successfulCopyCount: 1, firstSuccessfulCopyAt: now - 5 },
+    telemetryEvents: [{ name: 'wom_share_opened', ts: now, props: { source: 'popup' } }]
+  });
+  assert.equal(womPackPreQualifiedLeak.womQualificationAudit.isEligibleForWomActions, false);
+  assert.equal(womPackPreQualifiedLeak.womQualificationAudit.gatedEventsBeforeQualificationCount, 1);
+  assert.deepEqual(womPackPreQualifiedLeak.womQualificationAudit.gatedEventsBeforeQualificationNames, [
+    'wom_share_opened'
+  ]);
+
   const womPackTelemetryOff = buildWomEvidencePack({
     exportedAt: 1,
     extensionVersion: '1.1.20',
     settings: { ...settings, isAnonymousUsageDataEnabled: false },
+    growthStats: { installedAt: now, successfulCopyCount: 1 },
     telemetryEvents: [{ name: 'wom_share_opened', ts: now, props: { source: 'popup' } }]
   });
   assert.equal(womPackTelemetryOff.settings.isAnonymousUsageDataEnabled, false);
   assert.equal(womPackTelemetryOff.events.length, 0);
   assert.equal(womPackTelemetryOff.womSummary.enabled, false);
   assert.equal(womPackTelemetryOff.womSummary.bySource.popup.counts.wom_share_opened, 0);
+  assert.equal(womPackTelemetryOff.womQualificationAudit.isEligibleForWomActions, false);
+  assert.equal(womPackTelemetryOff.womQualificationAudit.gatedEventsInspected, 0);
 
   // v1-42 zip 安装回归（离线可审计）：校验最新 plugin-*.zip 中关键入口与隐私导出面板存在
   const rootDir = process.cwd();

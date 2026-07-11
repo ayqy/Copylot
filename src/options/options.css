@@ -1314,6 +1314,13 @@ body {
   line-height: 1.6;
 }
 
+.wom-actions-status {
+  margin: -4px 0 14px 0;
+  font-size: 13px;
+  color: var(--warning-color);
+  line-height: 1.5;
+}
+
 /* Chat Services Styles */
 .chat-services-header {
   margin-bottom: 32px;

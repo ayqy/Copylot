@@ -290,6 +290,54 @@ async function runPopupAssertions(): Promise<void> {
   }
 }
 
+async function runPopupLockedWomAssertions(): Promise<void> {
+  const chromeMock = createChromeMock({
+    extensionId: 'abcdefghijklmnopabcdefghijklmnop',
+    syncData: {
+      [SETTINGS_KEY]: buildStoredSettings()
+    },
+    localData: {
+      [GROWTH_STATS_KEY]: {
+        installedAt: Date.now() - 10_000,
+        successfulCopyCount: 1,
+        firstSuccessfulCopyAt: Date.now() - 9_000,
+        popupOnboardingCompletedVersion: 1
+      },
+      [TELEMETRY_EVENTS_KEY]: []
+    }
+  });
+
+  const page = await loadExtensionPage({
+    htmlPath: 'src/popup/popup.html',
+    builtScriptPath: 'dist/src/popup/popup.js',
+    pageUrl: 'https://example.com/src/popup/popup.html',
+    chrome: chromeMock
+  });
+
+  try {
+    const shareLink = getRequiredElement<HTMLAnchorElement>(page.dom.window.document, '#share-link');
+    const rateLink = getRequiredElement<HTMLAnchorElement>(page.dom.window.document, '#rate-link');
+    const copyShareButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#copy-share-button'
+    );
+    const womStatusHint = getRequiredElement<HTMLElement>(page.dom.window.document, '#wom-status-hint');
+
+    assert.equal(shareLink.getAttribute('aria-disabled'), 'true');
+    assert.equal(rateLink.getAttribute('aria-disabled'), 'true');
+    assert.equal(copyShareButton.disabled, true);
+    assert.equal(womStatusHint.hidden, false);
+    assert.match(womStatusHint.textContent || '', /1/);
+
+    clickElement(shareLink);
+    clickElement(rateLink);
+    await page.waitForIdle();
+    assert.equal(chromeMock.logs.createdTabs.length, 0);
+  } finally {
+    page.restore();
+  }
+}
+
 async function runOptionsAssertions(): Promise<void> {
   const chromeMock = createChromeMock({
     extensionId: 'abcdefghijklmnopabcdefghijklmnop',
@@ -477,6 +525,17 @@ async function runOptionsAssertions(): Promise<void> {
       /^https:\/\/github\.com\/ayqy\/copy\/issues\/new\?/
     );
 
+    const womEvidencePackCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#wom-summary-evidence-pack-copy'
+    );
+    clickElement(womEvidencePackCopyButton);
+    await page.waitForIdle();
+    const womEvidencePack = await page.clipboard.readText();
+    assert.ok(womEvidencePack.includes('"womQualificationAudit"'));
+    assert.ok(womEvidencePack.includes('"isEligibleForWomActions": true'));
+    assert.ok(womEvidencePack.includes('"successfulCopyCount": 30'));
+
     const downloadEvidenceButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
       '#download-pro-intent-run-evidence-pack'
@@ -486,6 +545,69 @@ async function runOptionsAssertions(): Promise<void> {
     const download = page.downloads.at(-1);
     assert.ok(download);
     assert.ok((download?.download ?? '').includes('copylot-pro-intent-run-evidence-pack-v1-90-'));
+  } finally {
+    page.restore();
+  }
+}
+
+async function runOptionsLockedWomAssertions(): Promise<void> {
+  const chromeMock = createChromeMock({
+    extensionId: 'abcdefghijklmnopabcdefghijklmnop',
+    syncData: {
+      [SETTINGS_KEY]: buildStoredSettings()
+    },
+    localData: {
+      [GROWTH_STATS_KEY]: {
+        installedAt: Date.now() - 10_000,
+        successfulCopyCount: 1,
+        firstSuccessfulCopyAt: Date.now() - 8_000
+      },
+      [TELEMETRY_EVENTS_KEY]: []
+    }
+  });
+
+  const page = await loadExtensionPage({
+    htmlPath: 'src/options/options.html',
+    builtScriptPath: 'dist/src/options/options.js',
+    pageUrl: 'https://example.com/src/options/options.html#pro',
+    chrome: chromeMock
+  });
+
+  try {
+    const womShareOpenButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#wom-share-open'
+    );
+    const womShareCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#wom-share-copy'
+    );
+    const womRateOpenButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#wom-rate-open'
+    );
+    const womFeedbackOpenButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#wom-feedback-open'
+    );
+    const womActionsStatus = getRequiredElement<HTMLElement>(
+      page.dom.window.document,
+      '#wom-actions-status'
+    );
+
+    assert.equal(womShareOpenButton.disabled, true);
+    assert.equal(womShareCopyButton.disabled, true);
+    assert.equal(womRateOpenButton.disabled, true);
+    assert.equal(womFeedbackOpenButton.disabled, false);
+    assert.equal(womActionsStatus.hidden, false);
+    assert.match(womActionsStatus.textContent || '', /1/);
+
+    clickElement(womFeedbackOpenButton);
+    await page.waitForIdle();
+    assert.match(
+      chromeMock.logs.createdTabs.at(-1)?.url ?? '',
+      /^https:\/\/github\.com\/ayqy\/copy\/issues\/new\?/
+    );
   } finally {
     page.restore();
   }
@@ -540,7 +662,9 @@ async function runDevtoolsAssertions(): Promise<void> {
 
 async function run(): Promise<void> {
   await runPopupAssertions();
+  await runPopupLockedWomAssertions();
   await runOptionsAssertions();
+  await runOptionsLockedWomAssertions();
   await runDevtoolsAssertions();
   console.log('PASS ui-integration-tests');
 }

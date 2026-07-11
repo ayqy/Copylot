@@ -353,6 +353,7 @@ interface OptionsElements {
   downloadProIntentV1_100SummaryCsvButton: HTMLButtonElement;
 
   // WOM actions (Pro Tab)
+  womActionsStatusHint: HTMLElement;
   womShareOpenButton: HTMLButtonElement;
   womShareCopyButton: HTMLButtonElement;
   womRateOpenButton: HTMLButtonElement;
@@ -578,6 +579,7 @@ function getElements(): OptionsElements {
       DOWNLOAD_PRO_INTENT_V1_100_SUMMARY_CSV_BUTTON_ID
     ) || document.createElement('button')) as HTMLButtonElement,
 
+    womActionsStatusHint: document.getElementById('wom-actions-status') as HTMLElement,
     womShareOpenButton: document.getElementById('wom-share-open') as HTMLButtonElement,
     womShareCopyButton: document.getElementById('wom-share-copy') as HTMLButtonElement,
     womRateOpenButton: document.getElementById('wom-rate-open') as HTMLButtonElement,
@@ -2906,10 +2908,16 @@ async function copyWomSummaryToClipboard(): Promise<void> {
 async function buildWomEvidencePackForClipboard(): Promise<WomEvidencePack> {
   const exportedAt = Date.now();
   let extensionVersion = '';
+  let growthStats: GrowthStats = { installedAt: exportedAt, successfulCopyCount: 0 };
   try {
     extensionVersion = chrome.runtime.getManifest().version || '';
   } catch (error) {
     console.warn('Failed to read extension version for wom evidence pack:', error);
+  }
+  try {
+    growthStats = await getGrowthStats();
+  } catch (error) {
+    console.warn('Failed to read growth stats for wom evidence pack:', error);
   }
 
   if (typeof chrome === 'undefined' || !chrome.storage?.local) {
@@ -2917,6 +2925,7 @@ async function buildWomEvidencePackForClipboard(): Promise<WomEvidencePack> {
       exportedAt,
       extensionVersion,
       settings: currentSettings,
+      growthStats,
       telemetryEvents: []
     });
   }
@@ -2926,6 +2935,7 @@ async function buildWomEvidencePackForClipboard(): Promise<WomEvidencePack> {
     exportedAt,
     extensionVersion,
     settings: currentSettings,
+    growthStats,
     telemetryEvents: result[TELEMETRY_EVENTS_KEY]
   });
 }
@@ -3033,6 +3043,7 @@ async function refreshGrowthFunnelPanel(): Promise<GrowthFunnelExportSummary | n
   try {
     const summary = await readGrowthFunnelSummaryForDisplay();
     elements.growthFunnelView.value = formatGrowthFunnelSummaryAsJson(summary);
+    syncWomActionButtons(summary.growthFunnel);
     return summary;
   } catch (error) {
     console.warn('Failed to refresh growth funnel summary:', error);
@@ -3072,6 +3083,17 @@ function formatGrowthStatsAsJson(stats: GrowthStats): string {
   return `${JSON.stringify(stats, null, 2)}\n`;
 }
 
+function syncWomActionButtons(summary: GrowthFunnelSummary): void {
+  const eligible = summary.isEligibleForWomActions;
+  elements.womShareOpenButton.disabled = !eligible;
+  elements.womShareCopyButton.disabled = !eligible;
+  elements.womRateOpenButton.disabled = !eligible;
+  elements.womActionsStatusHint.hidden = eligible;
+  elements.womActionsStatusHint.textContent = eligible
+    ? ''
+    : getMessage('womActionsLockedHint', [String(summary.remainingSuccessfulCopiesForWomActions)]);
+}
+
 async function readGrowthStatsForDisplay(): Promise<GrowthStats> {
   try {
     return await getGrowthStats();
@@ -3086,6 +3108,7 @@ async function refreshGrowthStatsPanel(): Promise<GrowthStats | null> {
 
   const stats = await readGrowthStatsForDisplay();
   elements.growthStatsView.value = formatGrowthStatsAsJson(stats);
+  syncWomActionButtons(buildGrowthFunnelSummary(stats, Date.now()));
   return stats;
 }
 

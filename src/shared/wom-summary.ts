@@ -1,4 +1,5 @@
 import type { Settings } from './settings-manager.ts';
+import { buildWomActionEligibility, type GrowthStats } from './growth-stats.ts';
 import {
   TELEMETRY_MAX_EVENTS,
   sanitizeTelemetryEvents,
@@ -51,10 +52,28 @@ export interface WomEvidencePack {
   };
   settings: WomSettingsSnapshot;
   womSummary: WomSummary;
+  womQualificationAudit: WomQualificationAudit;
   events: TelemetryEvent[];
 }
 
+export interface WomQualificationAudit {
+  telemetryEnabled: boolean;
+  minSuccessfulCopyCount: number;
+  successfulCopyCount: number;
+  firstSuccessfulCopyAt?: number;
+  secondSuccessfulCopyAt?: number;
+  lastSuccessfulCopyAt?: number;
+  isSecondSuccessfulCopyCompleted: boolean;
+  isEligibleForWomActions: boolean;
+  remainingSuccessfulCopiesForWomActions: number;
+  gatedEventsInspected: number;
+  gatedEventsBeforeQualificationCount: number;
+  gatedEventsAfterQualificationCount: number;
+  gatedEventsBeforeQualificationNames: string[];
+}
+
 const WOM_SOURCES: WomSource[] = ['popup', 'options', 'rating_prompt'];
+const GATED_WOM_EVENT_NAMES = ['wom_share_opened', 'wom_share_copied', 'wom_rate_opened'] as const;
 
 function isWomEventName(name: unknown): name is WomEventName {
   return typeof name === 'string' && (WOM_EVENT_NAMES as readonly string[]).includes(name);
@@ -62,6 +81,10 @@ function isWomEventName(name: unknown): name is WomEventName {
 
 function isWomSource(value: unknown): value is WomSource {
   return value === 'popup' || value === 'options' || value === 'rating_prompt';
+}
+
+function isGatedWomEventName(name: unknown): name is (typeof GATED_WOM_EVENT_NAMES)[number] {
+  return typeof name === 'string' && (GATED_WOM_EVENT_NAMES as readonly string[]).includes(name);
 }
 
 function createEmptySourceStats(): WomSourceStats {
@@ -190,6 +213,7 @@ export interface BuildWomEvidencePackParams {
   exportedAt: number;
   extensionVersion: string;
   settings: Settings;
+  growthStats?: GrowthStats;
   telemetryEvents: unknown;
   maxEvents?: number;
 }
@@ -208,6 +232,29 @@ export function buildWomEvidencePack(params: BuildWomEvidencePackParams): WomEvi
   const womEvents = trimmed.filter((event) => isWomEventName(event.name));
 
   const safeWomEvents = enabled ? trimTelemetryEvents(sanitizeTelemetryEvents(womEvents), maxEvents) : [];
+  const womActionEligibility = buildWomActionEligibility({
+    successfulCopyCount: params.growthStats?.successfulCopyCount ?? 0,
+    secondSuccessfulCopyAt: params.growthStats?.secondSuccessfulCopyAt
+  });
+  const firstSuccessfulCopyAt =
+    typeof params.growthStats?.firstSuccessfulCopyAt === 'number' && Number.isFinite(params.growthStats.firstSuccessfulCopyAt)
+      ? params.growthStats.firstSuccessfulCopyAt
+      : undefined;
+  const lastSuccessfulCopyAt =
+    typeof params.growthStats?.lastSuccessfulCopyAt === 'number' && Number.isFinite(params.growthStats.lastSuccessfulCopyAt)
+      ? params.growthStats.lastSuccessfulCopyAt
+      : undefined;
+  const gatedEvents = safeWomEvents.filter((event) => isGatedWomEventName(event.name));
+  const gatedEventsBeforeQualification = gatedEvents.filter((event) =>
+    womActionEligibility.secondSuccessfulCopyAt
+      ? event.ts < womActionEligibility.secondSuccessfulCopyAt
+      : true
+  );
+  const gatedEventsAfterQualification = gatedEvents.filter((event) =>
+    womActionEligibility.secondSuccessfulCopyAt
+      ? event.ts >= womActionEligibility.secondSuccessfulCopyAt
+      : false
+  );
 
   return {
     meta: {
@@ -221,7 +268,21 @@ export function buildWomEvidencePack(params: BuildWomEvidencePackParams): WomEvi
       telemetryEvents: enabled ? trimmed : [],
       maxEvents
     }),
+    womQualificationAudit: {
+      telemetryEnabled: enabled,
+      minSuccessfulCopyCount: womActionEligibility.minSuccessfulCopyCount,
+      successfulCopyCount: womActionEligibility.successfulCopyCount,
+      firstSuccessfulCopyAt,
+      secondSuccessfulCopyAt: womActionEligibility.secondSuccessfulCopyAt,
+      lastSuccessfulCopyAt,
+      isSecondSuccessfulCopyCompleted: womActionEligibility.isSecondSuccessfulCopyCompleted,
+      isEligibleForWomActions: womActionEligibility.isEligible,
+      remainingSuccessfulCopiesForWomActions: womActionEligibility.remainingSuccessfulCopies,
+      gatedEventsInspected: gatedEvents.length,
+      gatedEventsBeforeQualificationCount: gatedEventsBeforeQualification.length,
+      gatedEventsAfterQualificationCount: gatedEventsAfterQualification.length,
+      gatedEventsBeforeQualificationNames: gatedEventsBeforeQualification.map((event) => event.name)
+    },
     events: safeWomEvents
   };
 }
-

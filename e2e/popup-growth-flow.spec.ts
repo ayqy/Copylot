@@ -9,6 +9,72 @@ import {
 } from './helpers/extension-state';
 import { completePopupOnboardingIfVisible, openPopupForActiveTab } from './helpers/popup';
 
+test('popup keeps WOM share/rate actions locked before second successful copy', async ({
+  extensionContext,
+  extensionId,
+  driverPage,
+  fixtureOrigin
+}) => {
+  await clearClipboard(driverPage);
+  await seedSyncStorage(driverPage, {
+    copilot_settings: {
+      isAnonymousUsageDataEnabled: true,
+      popupOnboardingVersion: 1,
+      popupOnboardingCompletedVersion: 1,
+      popupOnboardingCompletedAt: 1
+    }
+  });
+  await seedLocalStorage(driverPage, {
+    copilot_growth_stats: {
+      installedAt: Date.now() - 3 * 24 * 60 * 60 * 1000,
+      successfulCopyCount: 1,
+      firstSuccessfulCopyAt: Date.now() - 60 * 1000
+    }
+  });
+
+  const page = await extensionContext.newPage();
+  try {
+    await page.goto(`${fixtureOrigin}/article.html`);
+    await page.bringToFront();
+
+    const popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
+    await completePopupOnboardingIfVisible(popup);
+
+    await expect(popup.locator('#copy-share-button')).toBeDisabled();
+    await expect(popup.locator('#share-link')).toHaveAttribute('aria-disabled', 'true');
+    await expect(popup.locator('#rate-link')).toHaveAttribute('aria-disabled', 'true');
+    await expect(popup.locator('#wom-status-hint')).toContainText('1');
+
+    await popup.locator('#share-link').click({ force: true });
+    await popup.locator('#rate-link').click({ force: true });
+
+    await expect
+      .poll(async () => {
+        const urls = await getOpenedUrls(driverPage);
+        return urls.length;
+      })
+      .toBe(0);
+
+    await expect
+      .poll(async () => {
+        const snapshot = await getStorageSnapshot(driverPage);
+        const events = snapshot.local.copilot_telemetry_events as Array<{ name?: string }> | undefined;
+        return {
+          shareOpened: events?.some((event) => event.name === 'wom_share_opened') ?? false,
+          rateOpened: events?.some((event) => event.name === 'wom_rate_opened') ?? false,
+          shareCopied: events?.some((event) => event.name === 'wom_share_copied') ?? false
+        };
+      })
+      .toEqual({
+        shareOpened: false,
+        rateOpened: false,
+        shareCopied: false
+      });
+  } finally {
+    await page.close();
+  }
+});
+
 test('popup share feedback rate and passive pro entries open real targets without proactive prompts', async ({
   extensionContext,
   extensionId,

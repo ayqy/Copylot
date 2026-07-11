@@ -75,6 +75,7 @@ interface PopupElements {
   shareLink: HTMLAnchorElement;
   copyShareButton: HTMLButtonElement;
   rateLink: HTMLAnchorElement;
+  womStatusHint: HTMLElement;
   upgradeProEntry: HTMLButtonElement;
   onboardingReopenButton: HTMLButtonElement;
   onboardingModal: HTMLElement;
@@ -244,6 +245,7 @@ function getElements(): PopupElements {
     shareLink: document.getElementById('share-link') as HTMLAnchorElement,
     copyShareButton: document.getElementById('copy-share-button') as HTMLButtonElement,
     rateLink: document.getElementById('rate-link') as HTMLAnchorElement,
+    womStatusHint: document.getElementById('wom-status-hint') as HTMLElement,
     upgradeProEntry: document.getElementById('upgrade-pro-entry') as HTMLButtonElement,
     onboardingReopenButton: document.getElementById('popup-onboarding-reopen') as HTMLButtonElement,
     onboardingModal: document.getElementById('popup-onboarding-modal') as HTMLElement,
@@ -567,6 +569,25 @@ function renderFirstCopySummary(summary: GrowthFunnelSummary) {
     : getMessage('popupFirstCopyHintPending');
   currentReuseQuickActionTarget = renderQuickPromptButtons(currentSettings, summary);
   syncReusePrimaryExperience(summary, currentReuseQuickActionTarget);
+  syncWomActionAvailability(summary);
+}
+
+function syncWomActionAvailability(summary: GrowthFunnelSummary) {
+  const eligible = summary.isEligibleForWomActions;
+  const lockedHint = getMessage('womActionsLockedHint', [String(summary.remainingSuccessfulCopiesForWomActions)]);
+  elements.shareLink.classList.toggle('footer-link-disabled', !eligible);
+  elements.shareLink.setAttribute('aria-disabled', String(!eligible));
+  elements.shareLink.tabIndex = eligible ? 0 : -1;
+  elements.rateLink.classList.toggle('footer-link-disabled', !eligible);
+  elements.rateLink.setAttribute('aria-disabled', String(!eligible));
+  elements.rateLink.tabIndex = eligible ? 0 : -1;
+  elements.copyShareButton.disabled = !eligible;
+  elements.womStatusHint.hidden = eligible;
+  elements.womStatusHint.textContent = eligible ? '' : lockedHint;
+}
+
+function canUseWomActions(): boolean {
+  return Boolean(currentGrowthSummary?.isEligibleForWomActions);
 }
 
 function syncReusePrimaryExperience(
@@ -785,6 +806,9 @@ function setupEventListeners() {
 
   elements.shareLink.addEventListener('click', (event) => {
     event.preventDefault();
+    if (!canUseWomActions()) {
+      return;
+    }
     void (async () => {
       await recordTelemetryEvent('wom_share_opened', { source: 'popup' });
       const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id, buildWomUtmParams('popup'));
@@ -796,6 +820,9 @@ function setupEventListeners() {
 
   elements.rateLink.addEventListener('click', (event) => {
     event.preventDefault();
+    if (!canUseWomActions()) {
+      return;
+    }
     void (async () => {
       await recordTelemetryEvent('wom_rate_opened', { source: 'popup' });
       const reviewsUrl = buildChromeWebStoreReviewsUrl(
@@ -809,6 +836,9 @@ function setupEventListeners() {
   });
 
   elements.copyShareButton.addEventListener('click', async () => {
+    if (!canUseWomActions()) {
+      return;
+    }
     const storeUrl = buildChromeWebStoreDetailUrl(chrome.runtime.id, buildWomUtmParams('popup'));
     const shareText = buildShareCopyText(i18nGetMessage, storeUrl);
     const originalText = elements.copyShareButton.textContent || '';

@@ -834,6 +834,12 @@ input:checked + .slider::before {
   color: var(--brand-strong);
 }
 
+.footer-link-disabled,
+.footer-link-disabled:hover {
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
 .footer-button {
   min-height: 26px;
   padding: 0 10px;
@@ -849,6 +855,19 @@ input:checked + .slider::before {
   background: #111827;
   border-color: #4b5563;
   color: #c7d2fe;
+}
+
+.footer-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.footer-status-hint {
+  margin: 0;
+  padding: 0 14px 10px;
+  color: #9ca3af;
+  font-size: 11px;
+  line-height: 1.45;
 }
 
 .modal {

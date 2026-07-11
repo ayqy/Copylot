@@ -72,6 +72,8 @@ export interface GrowthFunnelSummary {
   hasQuickPromptSlotClick: boolean;
   hasQuickPromptSlotUse: boolean;
   isSecondSuccessfulCopyCompleted: boolean;
+  isEligibleForWomActions: boolean;
+  remainingSuccessfulCopiesForWomActions: number;
 
   // Activation within 3 minutes from first popup open
   timeFromFirstPopupToFirstCopyMs?: number;
@@ -80,6 +82,7 @@ export interface GrowthFunnelSummary {
 
 export const RATING_PROMPT_MIN_INSTALL_AGE_MS = 48 * 60 * 60 * 1000;
 export const RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT = 10;
+export const WOM_ACTION_MIN_SUCCESSFUL_COPY_COUNT = 2;
 
 const RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT_HEAVY_USER = 20;
 
@@ -304,6 +307,10 @@ export function buildGrowthFunnelSummary(stats: GrowthStats, now: number): Growt
   const hasQuickPromptSlotClick = Boolean(firstQuickPromptSlotClickedAt);
   const hasQuickPromptSlotUse = Boolean(firstQuickPromptSlotUsedAt);
   const isSecondSuccessfulCopyCompleted = Boolean(secondSuccessfulCopyAt);
+  const womActionEligibility = buildWomActionEligibility({
+    successfulCopyCount,
+    secondSuccessfulCopyAt
+  });
 
   let timeFromFirstPopupToFirstCopyMs: number | undefined;
   let activatedWithin3MinutesFromFirstPopup: boolean | undefined;
@@ -342,6 +349,8 @@ export function buildGrowthFunnelSummary(stats: GrowthStats, now: number): Growt
     hasQuickPromptSlotClick,
     hasQuickPromptSlotUse,
     isSecondSuccessfulCopyCompleted,
+    isEligibleForWomActions: womActionEligibility.isEligible,
+    remainingSuccessfulCopiesForWomActions: womActionEligibility.remainingSuccessfulCopies,
     timeFromFirstPopupToFirstCopyMs,
     activatedWithin3MinutesFromFirstPopup
   };
@@ -352,6 +361,15 @@ export interface ApplySuccessfulCopyOptions {
   isPromptUsed?: boolean;
   reuseSource?: ReuseEntrySource;
   quickPromptSlot?: ReuseEntrySlot;
+}
+
+export interface WomActionEligibility {
+  minSuccessfulCopyCount: number;
+  successfulCopyCount: number;
+  secondSuccessfulCopyAt?: number;
+  isSecondSuccessfulCopyCompleted: boolean;
+  isEligible: boolean;
+  remainingSuccessfulCopies: number;
 }
 
 export function applySuccessfulCopyToGrowthStats(
@@ -395,6 +413,29 @@ export function applySuccessfulCopyToGrowthStats(
   }
 
   return next;
+}
+
+export function buildWomActionEligibility(
+  stats: Pick<GrowthStats, 'successfulCopyCount' | 'secondSuccessfulCopyAt'>
+): WomActionEligibility {
+  const successfulCopyCount = isValidCount(stats.successfulCopyCount) ? stats.successfulCopyCount : 0;
+  const secondSuccessfulCopyAt = isValidTimestamp(stats.secondSuccessfulCopyAt)
+    ? stats.secondSuccessfulCopyAt
+    : undefined;
+  const isSecondSuccessfulCopyCompleted =
+    Boolean(secondSuccessfulCopyAt) || successfulCopyCount >= WOM_ACTION_MIN_SUCCESSFUL_COPY_COUNT;
+  const remainingSuccessfulCopies = Math.max(0, WOM_ACTION_MIN_SUCCESSFUL_COPY_COUNT - successfulCopyCount);
+  const isEligible =
+    successfulCopyCount >= WOM_ACTION_MIN_SUCCESSFUL_COPY_COUNT && isSecondSuccessfulCopyCompleted;
+
+  return {
+    minSuccessfulCopyCount: WOM_ACTION_MIN_SUCCESSFUL_COPY_COUNT,
+    successfulCopyCount,
+    secondSuccessfulCopyAt,
+    isSecondSuccessfulCopyCompleted,
+    isEligible,
+    remainingSuccessfulCopies
+  };
 }
 
 export function shouldShowRatingPrompt(stats: GrowthStats, now: number): boolean {

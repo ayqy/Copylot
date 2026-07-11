@@ -71,6 +71,15 @@
     "message": "去评价",
     "description": "Popup 中的去评价入口"
   },
+  "womActionsLockedHint": {
+    "message": "再完成 $REMAINING_COUNT$ 次成功复制后解锁分享与评价。",
+    "description": "分享与评价入口解锁前的提示语",
+    "placeholders": {
+      "REMAINING_COUNT": {
+        "content": "$1"
+      }
+    }
+  },
   "ratingPromptTitle": {
     "message": "喜欢 Copylot 吗？",
     "description": "Popup 内一次性评价引导标题"

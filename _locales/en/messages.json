@@ -71,6 +71,15 @@
     "message": "Rate",
     "description": "Rate entry in popup"
   },
+  "womActionsLockedHint": {
+    "message": "Complete $REMAINING_COUNT$ more successful copies to unlock sharing and rating.",
+    "description": "Hint shown before WOM share/rate actions are unlocked",
+    "placeholders": {
+      "REMAINING_COUNT": {
+        "content": "$1"
+      }
+    }
+  },
   "ratingPromptTitle": {
     "message": "Enjoying Copylot?",
     "description": "Title of the one-time rating prompt in popup"
