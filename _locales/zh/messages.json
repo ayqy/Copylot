@@ -309,6 +309,98 @@
     "message": "面向笔记工具的导出能力（Obsidian/Notion 结构化模板）",
     "description": "Pro 能力方向要点 4"
   },
+  "proValidationLabTitle": {
+    "message": "验证素材实验区",
+    "description": "Options Pro Tab：验证素材实验区标题"
+  },
+  "proValidationLabHint": {
+    "message": "先把路线说明、分发链接和验收信号打包成可复制素材，再用真实打开与复制数据判断方向是否成立。",
+    "description": "Options Pro Tab：验证素材实验区提示"
+  },
+  "proValidationAdvancedTitle": {
+    "message": "高级页面清洗验证",
+    "description": "Options Pro Tab：高级页面清洗验证标题"
+  },
+  "proValidationAdvancedHint": {
+    "message": "适用于长文复制时仍被广告、评论区或推荐位干扰的页面；先验证这条增强方向是否值得进入后续 Pro 路线，而不是提前承诺已上线。",
+    "description": "Options Pro Tab：高级页面清洗验证说明"
+  },
+  "proValidationAdvancedRouteOpenButton": {
+    "message": "打开高级清洗路线",
+    "description": "Options Pro Tab：高级页面清洗路线打开按钮"
+  },
+  "proValidationAdvancedRouteCopyButton": {
+    "message": "复制路线链接",
+    "description": "Options Pro Tab：高级页面清洗路线复制按钮"
+  },
+  "proValidationAdvancedBriefCopyButton": {
+    "message": "复制验证简报",
+    "description": "Options Pro Tab：高级页面清洗验证简报复制按钮"
+  },
+  "proValidationAdvancedChecklistCopyButton": {
+    "message": "复制验证清单",
+    "description": "Options Pro Tab：高级页面清洗验证清单复制按钮"
+  },
+  "proValidationAdvancedAssetHint": {
+    "message": "这些素材只包含路线边界、UTM 链接和验收信号，不会包含复制内容、网页正文、页面 URL 或标题。",
+    "description": "Options Pro Tab：高级页面清洗素材隐私提示"
+  },
+  "proValidationCampaignLabel": {
+    "message": "campaign",
+    "description": "验证素材：campaign 标签"
+  },
+  "proValidationBriefGoalsHeading": {
+    "message": "验证目标",
+    "description": "验证素材：目标标题"
+  },
+  "proValidationBriefBoundaryHeading": {
+    "message": "Free 边界",
+    "description": "验证素材：免费边界标题"
+  },
+  "proValidationBriefSignalsHeading": {
+    "message": "验收信号",
+    "description": "验证素材：验收信号标题"
+  },
+  "proValidationBriefLinksHeading": {
+    "message": "固定链接",
+    "description": "验证素材：固定链接标题"
+  },
+  "proValidationRouteLinkLabel": {
+    "message": "路线页链接",
+    "description": "验证素材：路线页链接标签"
+  },
+  "proValidationStoreLinkLabel": {
+    "message": "商店安装链接",
+    "description": "验证素材：商店链接标签"
+  },
+  "proValidationPrivacyLinkLabel": {
+    "message": "隐私页链接",
+    "description": "验证素材：隐私页链接标签"
+  },
+  "proValidationChecklistHeadingSuffix": {
+    "message": "验证清单",
+    "description": "验证素材：清单标题后缀"
+  },
+  "proValidationChecklistLinksHeading": {
+    "message": "可归因链接",
+    "description": "验证素材：清单链接标题"
+  },
+  "proValidationAdvancedGoalList": {
+    "message": "- 重点面向复制结果仍混入广告、评论区或推荐模块的页面，验证这类页面是否真的需要更强清洗。\\n- 在不削弱 Free 主路径的前提下，判断“更强页面清洗”是否足够有价值，值得进入后续 Pro 路线。",
+    "description": "验证素材：高级页面清洗目标列表"
+  },
+  "proValidationAdvancedBoundaryList": {
+    "message": "- 当前 Free 的正文复制、代码块清理、追加模式和表格导出全部保持不变。\\n- 高级页面清洗仍是规划方向，素材里不能暗示阅读模式或站点规则已经上线。",
+    "description": "验证素材：高级页面清洗边界列表"
+  },
+  "proValidationAdvancedSignalList": {
+    "message": "- 本地 Pro intent 导出里能看到带 `utm_content=options_advanced_cleaning_cta` 的路线打开事件。\\n- 同一 campaign 下，路线链接、验证简报或验证清单的复制动作会进入本地分发导出。\\n- 被分享的案例描述的是“真实噪声页面”，而不是抽象愿望清单。",
+    "description": "验证素材：高级页面清洗验收信号列表"
+  },
+  "proValidationAdvancedChecklistList": {
+    "message": "- 复制任何素材前先填写 campaign，确保后续导出里能归因。\\n- 对外只分享路线/安装/隐私链接和验证说明，不把复制出来的网页正文塞进素材里。\\n- 只有当当前 Free 输出仍明显受广告、评论区或推荐位干扰时，才使用这组素材。\\n- 一轮验证结束后，导出本地 Pro intent 与分发摘要，确认 campaign 已可见。",
+    "description": "验证素材：高级页面清洗清单列表"
+  },
   "proJoinWaitlist": {
     "message": "查看官网 Pro 路线",
     "description": "Options Pro Tab 主操作按钮"

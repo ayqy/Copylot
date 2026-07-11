@@ -442,6 +442,48 @@ async function runOptionsAssertions(): Promise<void> {
     campaignInput.dispatchEvent(new window.Event('change', { bubbles: true }));
     await page.waitForIdle();
 
+    const advancedCleaningOpenButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-validation-advanced-open'
+    );
+    clickElement(advancedCleaningOpenButton);
+    await page.waitForIdle();
+    const advancedCleaningOpenUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
+    assert.ok(advancedCleaningOpenUrl.includes('/pricing'));
+    assert.ok(advancedCleaningOpenUrl.includes('utm_medium=options'));
+    assert.ok(advancedCleaningOpenUrl.includes('utm_content=options_advanced_cleaning_cta'));
+
+    const advancedCleaningRouteCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-validation-advanced-route-copy'
+    );
+    clickElement(advancedCleaningRouteCopyButton);
+    await page.waitForIdle();
+    const advancedCleaningRouteUrl = await page.clipboard.readText();
+    assert.ok(advancedCleaningRouteUrl.includes('utm_medium=distribution_toolkit'));
+    assert.ok(advancedCleaningRouteUrl.includes('utm_campaign=twitter'));
+    assert.ok(advancedCleaningRouteUrl.includes('utm_content=options_advanced_cleaning_cta'));
+
+    const advancedCleaningBriefCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-validation-advanced-brief-copy'
+    );
+    clickElement(advancedCleaningBriefCopyButton);
+    await page.waitForIdle();
+    const advancedCleaningBrief = await page.clipboard.readText();
+    assert.ok(advancedCleaningBrief.includes('Advanced page cleaning') || advancedCleaningBrief.includes('高级页面清洗'));
+    assert.ok(advancedCleaningBrief.includes('utm_content=options_advanced_cleaning_cta'));
+
+    const advancedCleaningChecklistCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#pro-validation-advanced-checklist-copy'
+    );
+    clickElement(advancedCleaningChecklistCopyButton);
+    await page.waitForIdle();
+    const advancedCleaningChecklist = await page.clipboard.readText();
+    assert.ok(advancedCleaningChecklist.includes('Validation Checklist') || advancedCleaningChecklist.includes('验证清单'));
+    assert.ok(advancedCleaningChecklist.includes('twitter'));
+
     const proWaitlistButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
       '#pro-waitlist-button'

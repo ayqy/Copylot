@@ -1,0 +1,27 @@
+{
+  "proIntentEvents": [
+    {
+      "eventName": "pro_waitlist_opened",
+      "source": "options",
+      "campaign": "twitter",
+      "content": "options_advanced_cleaning_cta"
+    }
+  ],
+  "proDistributionByCampaignRow": {
+    "campaign": "twitter",
+    "waitlistUrlCopied": 1,
+    "recruitCopyCopied": 0,
+    "storeUrlCopied": 1,
+    "distributionPackCopied": 0,
+    "validationRouteCopied": 1,
+    "validationBriefCopied": 1,
+    "validationChecklistCopied": 1,
+    "distCopies": 4
+  },
+  "privacyChecks": {
+    "containsCopiedText": false,
+    "containsPageBody": false,
+    "containsPageUrl": false,
+    "containsPageTitle": false
+  }
+}

@@ -23,6 +23,11 @@ import {
   OFFICIAL_SITE_ROOT_URL
 } from '../src/shared/external-links.ts';
 import {
+  buildProValidationBriefMarkdown,
+  buildProValidationChecklistMarkdown,
+  buildProValidationRouteUrl
+} from '../src/shared/pro-route-validation.ts';
+import {
   RATING_PROMPT_MIN_INSTALL_AGE_MS,
   RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
   PRO_PROMPT_MAX_SHOWN_COUNT,
@@ -778,6 +783,52 @@ async function run() {
   assert.equal(privacyParsed.searchParams.get('utm_medium'), 'distribution_toolkit');
   assert.equal(privacyParsed.searchParams.get('utm_campaign'), 'twitter');
 
+  const advancedCleaningRouteUrl = buildProValidationRouteUrl({
+    trackId: 'advanced_cleaning',
+    medium: 'distribution_toolkit',
+    campaign: 'twitter'
+  });
+  const advancedCleaningRouteParsed = new URL(advancedCleaningRouteUrl);
+  assert.equal(advancedCleaningRouteParsed.pathname, '/pricing');
+  assert.equal(advancedCleaningRouteParsed.searchParams.get('utm_campaign'), 'twitter');
+  assert.equal(advancedCleaningRouteParsed.searchParams.get('utm_content'), 'options_advanced_cleaning_cta');
+
+  const getMessageForValidationAssets: I18nGetMessage = (key) => {
+    const messages: Record<string, string> = {
+      proValidationAdvancedTitle: 'Advanced page cleaning validation',
+      proValidationCampaignLabel: 'campaign',
+      proValidationBriefGoalsHeading: 'Goals',
+      proValidationBriefBoundaryHeading: 'Free boundary',
+      proValidationBriefSignalsHeading: 'Validation signals',
+      proValidationBriefLinksHeading: 'Links',
+      proValidationRouteLinkLabel: 'Roadmap URL',
+      proValidationStoreLinkLabel: 'Store install URL',
+      proValidationPrivacyLinkLabel: 'Privacy URL',
+      proValidationChecklistHeadingSuffix: 'Validation Checklist',
+      proValidationChecklistLinksHeading: 'Attribution-ready link',
+      proValidationAdvancedGoalList: '- Goal A',
+      proValidationAdvancedBoundaryList: '- Boundary A',
+      proValidationAdvancedSignalList: '- Signal A',
+      proValidationAdvancedChecklistList: '- Checklist A'
+    };
+    return messages[key] || key;
+  };
+  const advancedCleaningBrief = buildProValidationBriefMarkdown({
+    trackId: 'advanced_cleaning',
+    campaign: 'twitter',
+    getMessage: getMessageForValidationAssets
+  });
+  assert.ok(advancedCleaningBrief.includes('# Advanced page cleaning validation'));
+  assert.ok(advancedCleaningBrief.includes('utm_content=options_advanced_cleaning_cta'));
+  assert.ok(advancedCleaningBrief.includes('campaign: twitter'));
+  const advancedCleaningChecklist = buildProValidationChecklistMarkdown({
+    trackId: 'advanced_cleaning',
+    campaign: 'twitter',
+    getMessage: getMessageForValidationAssets
+  });
+  assert.ok(advancedCleaningChecklist.includes('Validation Checklist'));
+  assert.ok(advancedCleaningChecklist.includes('utm_campaign=twitter'));
+
   // pro-waitlist-distribution.ts (pure functions)
   assert.deepEqual(computeProWaitlistDistributionState(''), { enabled: false, campaign: null });
   assert.deepEqual(computeProWaitlistDistributionState('http://x.com'), {
@@ -1302,6 +1353,28 @@ async function run() {
       name: 'pro_distribution_asset_copied',
       ts: now,
       props: { source: 'options', campaign: 'twitter' }
+    }
+  );
+  assert.deepEqual(
+    sanitizeTelemetryEvent({
+      name: 'pro_distribution_asset_copied',
+      ts: now,
+      props: {
+        source: 'options',
+        campaign: 'twitter',
+        action: 'validation_brief',
+        content: 'options_advanced_cleaning_cta'
+      }
+    }),
+    {
+      name: 'pro_distribution_asset_copied',
+      ts: now,
+      props: {
+        source: 'options',
+        campaign: 'twitter',
+        action: 'validation_brief',
+        content: 'options_advanced_cleaning_cta'
+      }
     }
   );
 
@@ -2324,6 +2397,16 @@ async function run() {
       }, // included (=to)
       {
         name: 'pro_distribution_asset_copied',
+        ts: now - 250,
+        props: {
+          source: 'options',
+          campaign: 'twitter',
+          action: 'validation_brief',
+          content: 'options_advanced_cleaning_cta'
+        }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
         ts: now - 500,
         props: { source: 'options', action: 'recruit_copy' }
       }, // empty campaign bucket
@@ -2359,13 +2442,19 @@ async function run() {
   assert.equal(proDistributionByCampaign.rows[0]?.recruitCopyCopied, 0);
   assert.equal(proDistributionByCampaign.rows[0]?.storeUrlCopied, 1);
   assert.equal(proDistributionByCampaign.rows[0]?.distributionPackCopied, 0);
-  assert.equal(proDistributionByCampaign.rows[0]?.distCopies, 2);
+  assert.equal(proDistributionByCampaign.rows[0]?.validationRouteCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[0]?.validationBriefCopied, 1);
+  assert.equal(proDistributionByCampaign.rows[0]?.validationChecklistCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[0]?.distCopies, 3);
 
   assert.equal(proDistributionByCampaign.rows[1]?.campaign, 'ph');
   assert.equal(proDistributionByCampaign.rows[1]?.waitlistUrlCopied, 0);
   assert.equal(proDistributionByCampaign.rows[1]?.recruitCopyCopied, 0);
   assert.equal(proDistributionByCampaign.rows[1]?.storeUrlCopied, 0);
   assert.equal(proDistributionByCampaign.rows[1]?.distributionPackCopied, 1);
+  assert.equal(proDistributionByCampaign.rows[1]?.validationRouteCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[1]?.validationBriefCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[1]?.validationChecklistCopied, 0);
   assert.equal(proDistributionByCampaign.rows[1]?.distCopies, 1);
 
   assert.equal(proDistributionByCampaign.rows[2]?.campaign, '空 campaign');
@@ -2373,6 +2462,9 @@ async function run() {
   assert.equal(proDistributionByCampaign.rows[2]?.recruitCopyCopied, 1);
   assert.equal(proDistributionByCampaign.rows[2]?.storeUrlCopied, 0);
   assert.equal(proDistributionByCampaign.rows[2]?.distributionPackCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[2]?.validationRouteCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[2]?.validationBriefCopied, 0);
+  assert.equal(proDistributionByCampaign.rows[2]?.validationChecklistCopied, 0);
   assert.equal(proDistributionByCampaign.rows[2]?.distCopies, 1);
 
   assert.ok(proDistributionByCampaign.rows.every((row) => Number.isInteger(row.distCopies)));
@@ -2985,7 +3077,7 @@ async function run() {
   for (const line of distLines.slice(1)) {
     const cells = line.split(',');
     const campaign = cells[5] || '';
-    const distCopies = Number(cells[10] || 0);
+    const distCopies = Number(cells[13] || 0);
     distCopiesSum += distCopies;
     distByCampaign[campaign] = distCopies;
   }
@@ -3561,6 +3653,14 @@ async function run() {
     'options.html should include hidden distribution toolkit'
   );
   assert.ok(
+    optionsHtml.includes('id="pro-validation-advanced-open"'),
+    'options.html should include pro-validation-advanced-open'
+  );
+  assert.ok(
+    optionsHtml.includes('id="pro-validation-advanced-brief-copy"'),
+    'options.html should include pro-validation-advanced-brief-copy'
+  );
+  assert.ok(
     optionsHtml.includes('id="pro-waitlist-url-copy"'),
     'options.html should include pro-waitlist-url-copy'
   );
@@ -3604,6 +3704,14 @@ async function run() {
   assert.ok(
     optionsJs.includes('pro_waitlist_copied'),
     'options.js should contain pro_waitlist_copied'
+  );
+  assert.ok(
+    optionsJs.includes('options_advanced_cleaning_cta'),
+    'options.js should contain options_advanced_cleaning_cta'
+  );
+  assert.ok(
+    optionsJs.includes('validation_brief'),
+    'options.js should contain validation_brief'
   );
   assert.ok(
     optionsJs.includes('navigator.clipboard.writeText'),

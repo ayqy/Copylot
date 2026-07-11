@@ -309,6 +309,98 @@
     "message": "Exports for note tools (structured templates for Obsidian/Notion)",
     "description": "Pro capability bullet 4"
   },
+  "proValidationLabTitle": {
+    "message": "Validation assets lab",
+    "description": "Options Pro tab: validation lab title"
+  },
+  "proValidationLabHint": {
+    "message": "Package the roadmap, share links, and acceptance signals first, then judge the direction by real opens and asset copies.",
+    "description": "Options Pro tab: validation lab hint"
+  },
+  "proValidationAdvancedTitle": {
+    "message": "Advanced page cleaning validation",
+    "description": "Options Pro tab: advanced cleaning validation title"
+  },
+  "proValidationAdvancedHint": {
+    "message": "Use this when long articles are polluted by ads, comments, or recommendation blocks and you need cleaner copy output before deciding whether Pro should go deeper.",
+    "description": "Options Pro tab: advanced cleaning validation hint"
+  },
+  "proValidationAdvancedRouteOpenButton": {
+    "message": "Open advanced cleaning roadmap",
+    "description": "Options Pro tab: advanced cleaning route open button"
+  },
+  "proValidationAdvancedRouteCopyButton": {
+    "message": "Copy roadmap link",
+    "description": "Options Pro tab: advanced cleaning route copy button"
+  },
+  "proValidationAdvancedBriefCopyButton": {
+    "message": "Copy validation brief",
+    "description": "Options Pro tab: advanced cleaning brief copy button"
+  },
+  "proValidationAdvancedChecklistCopyButton": {
+    "message": "Copy validation checklist",
+    "description": "Options Pro tab: advanced cleaning checklist copy button"
+  },
+  "proValidationAdvancedAssetHint": {
+    "message": "These assets contain only roadmap boundaries, UTM links, and acceptance signals. They never include copied page content, page URLs, or titles.",
+    "description": "Options Pro tab: advanced cleaning asset privacy hint"
+  },
+  "proValidationCampaignLabel": {
+    "message": "campaign",
+    "description": "Validation asset: campaign label"
+  },
+  "proValidationBriefGoalsHeading": {
+    "message": "Goals",
+    "description": "Validation asset: goals heading"
+  },
+  "proValidationBriefBoundaryHeading": {
+    "message": "Free boundary",
+    "description": "Validation asset: free boundary heading"
+  },
+  "proValidationBriefSignalsHeading": {
+    "message": "Validation signals",
+    "description": "Validation asset: validation signals heading"
+  },
+  "proValidationBriefLinksHeading": {
+    "message": "Links",
+    "description": "Validation asset: links heading"
+  },
+  "proValidationRouteLinkLabel": {
+    "message": "Roadmap URL",
+    "description": "Validation asset: roadmap link label"
+  },
+  "proValidationStoreLinkLabel": {
+    "message": "Store install URL",
+    "description": "Validation asset: store link label"
+  },
+  "proValidationPrivacyLinkLabel": {
+    "message": "Privacy URL",
+    "description": "Validation asset: privacy link label"
+  },
+  "proValidationChecklistHeadingSuffix": {
+    "message": "Validation Checklist",
+    "description": "Validation asset: checklist title suffix"
+  },
+  "proValidationChecklistLinksHeading": {
+    "message": "Attribution-ready link",
+    "description": "Validation asset: checklist links heading"
+  },
+  "proValidationAdvancedGoalList": {
+    "message": "- Target pages where readers still need manual cleanup after copy because ads, comments, or recommendation blocks leak into the result.\\n- Validate whether a stronger cleaning mode is compelling enough to justify a future Pro direction without weakening the free path.",
+    "description": "Validation asset: advanced cleaning goals list"
+  },
+  "proValidationAdvancedBoundaryList": {
+    "message": "- Keep current free copy, code-block cleaning, append mode, and table export unchanged.\\n- Treat advanced cleaning as a planned direction only. The brief must not promise that reader mode or site-specific rules already exist today.",
+    "description": "Validation asset: advanced cleaning boundary list"
+  },
+  "proValidationAdvancedSignalList": {
+    "message": "- A roadmap open with `utm_content=options_advanced_cleaning_cta` appears in the local intent export.\\n- Route, brief, or checklist copies appear in the local distribution export for the same campaign.\\n- Shared examples describe real cluttered pages instead of abstract feature wishlists.",
+    "description": "Validation asset: advanced cleaning signal list"
+  },
+  "proValidationAdvancedChecklistList": {
+    "message": "- Use a campaign tag before copying any asset so attribution stays exportable.\\n- Share only the roadmap/install/privacy links and validation notes. Do not paste copied page content into the asset.\\n- Use this kit only when the page truly needs stronger cleaning beyond today’s free output.\\n- After a run, export the local Pro intent and distribution summaries and confirm the campaign is visible.",
+    "description": "Validation asset: advanced cleaning checklist list"
+  },
   "proJoinWaitlist": {
     "message": "View the Pro roadmap",
     "description": "Options Pro tab primary action"

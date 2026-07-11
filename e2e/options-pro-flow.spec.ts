@@ -26,6 +26,8 @@ test('pro tab only shows roadmap and sharing toolkit', async ({
     await expect(page.locator('#pro-intent-campaign')).toBeVisible();
     await expect(page.locator('#pro-waitlist-distribution-toolkit')).toBeVisible();
     await expect(page.locator('#pro-waitlist-button')).toBeVisible();
+    await expect(page.locator('#pro-validation-advanced-cleaning')).toBeVisible();
+    await expect(page.locator('#pro-validation-advanced-open')).toBeVisible();
 
     await expect(page.locator('#pro-waitlist-copy')).toHaveCount(0);
     await expect(page.locator('#pro-waitlist-survey')).toHaveCount(0);
@@ -52,6 +54,38 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
   try {
     await openOptionsTab(page, 'pro');
     await page.locator('#pro-intent-campaign').fill('twitter');
+
+    await page.locator('#pro-validation-advanced-route-copy').click();
+    await expectClipboardTextEventually(
+      (text) => text.includes('/pricing') && text.includes('utm_content=options_advanced_cleaning_cta'),
+      driverPage
+    );
+
+    await page.locator('#pro-validation-advanced-brief-copy').click();
+    await expectClipboardTextEventually(
+      (text) =>
+        (text.includes('Advanced page cleaning') || text.includes('高级页面清洗')) &&
+        text.includes('utm_content=options_advanced_cleaning_cta') &&
+        text.includes('/privacy'),
+      driverPage
+    );
+
+    await page.locator('#pro-validation-advanced-checklist-copy').click();
+    await expectClipboardTextEventually(
+      (text) =>
+        (text.includes('Validation Checklist') || text.includes('验证清单')) &&
+        text.includes('utm_campaign=twitter') &&
+        !text.toLowerCase().includes('copied page content'),
+      driverPage
+    );
+
+    await page.locator('#pro-validation-advanced-open').click();
+    await expect
+      .poll(async () => {
+        const urls = await getOpenedUrls(driverPage);
+        return urls.at(-1) || '';
+      })
+      .toContain('utm_content=options_advanced_cleaning_cta');
 
     await page.locator('#pro-waitlist-url-copy').click();
     await expectClipboardTextEventually(
@@ -104,6 +138,37 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
           expect.objectContaining({
             name: 'pro_waitlist_opened',
             props: expect.objectContaining({ campaign: 'twitter' })
+          }),
+          expect.objectContaining({
+            name: 'pro_waitlist_opened',
+            props: expect.objectContaining({
+              campaign: 'twitter',
+              content: 'options_advanced_cleaning_cta'
+            })
+          }),
+          expect.objectContaining({
+            name: 'pro_distribution_asset_copied',
+            props: expect.objectContaining({
+              action: 'validation_route',
+              campaign: 'twitter',
+              content: 'options_advanced_cleaning_cta'
+            })
+          }),
+          expect.objectContaining({
+            name: 'pro_distribution_asset_copied',
+            props: expect.objectContaining({
+              action: 'validation_brief',
+              campaign: 'twitter',
+              content: 'options_advanced_cleaning_cta'
+            })
+          }),
+          expect.objectContaining({
+            name: 'pro_distribution_asset_copied',
+            props: expect.objectContaining({
+              action: 'validation_checklist',
+              campaign: 'twitter',
+              content: 'options_advanced_cleaning_cta'
+            })
           }),
           expect.objectContaining({
             name: 'pro_distribution_asset_copied',
