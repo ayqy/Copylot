@@ -5,7 +5,8 @@
 - 已完成：Shift 追加模式的会话状态承接、Popup 承接卡片、Options 匿名状态面板与清理动作。
 - 已完成：`docs/test-cases/v4-3.md`、`docs/evidence/v4-3/*`、`docs/roadmap.md` 与 `docs/roadmap_status.md` 同步更新。
 - 已通过：`bash scripts/test.sh`，摘要为 `21 passed / 0 failed / 3 skipped`；跳过项为受管沙箱阻止的 Playwright 与 html-to-markdown 浏览器级运行。
-- 未完成：`git commit` / `git push`；当前环境对 `.git` 写入和网络访问仍有限制。
+- 已完成：本地提交 `fa0d287 feat: strengthen append mode workflow`。
+- 未完成：`git push`；当前环境无法解析 `ssh.github.com`。
 
 ## 效果
 
@@ -28,3 +29,5 @@
 - `bash scripts/test.sh`
 - `npx playwright test e2e/content-output-flow.spec.ts --reporter=line`
   结果：当前受管沙箱触发 `MachPortRendezvousServer Permission denied (1100)`，因此单独运行失败；统一入口内已按既有策略跳过并保持总退出码为 `0`
+- `git push`
+  结果：失败，错误为 `ssh: Could not resolve hostname ssh.github.com`

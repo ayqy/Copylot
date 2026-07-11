@@ -23,19 +23,20 @@
 ## 0.1) 20260711 仓库提交 / 推送受当前运行环境限制
 
 已观测结果（本机当前受管沙箱）：
-- `git add ...` 失败：`Unable to create .git/index.lock: Operation not permitted`
+- 已完成本地提交：`fa0d287 feat: strengthen append mode workflow`
+- `git push` 失败：`ssh: Could not resolve hostname ssh.github.com`
 - 环境变量显示：`CODEX_SANDBOX=seatbelt`、`CODEX_SANDBOX_NETWORK_DISABLED=1`
 
 影响：
-- 代码、测试、证据与 roadmap 已全部落盘，但当前无法在此环境内完成 `git add`、`git commit` 与 `git push`
+- 代码、测试、证据与 roadmap 已全部落盘并完成本地提交，但当前无法在此环境内完成远端推送
 
 需要的人类输入：
-- 在可写 `.git/` 且允许网络访问的终端环境执行本轮提交与推送
+- 在允许访问 GitHub 远端的终端环境执行本轮 `git push`
 
 无凭据/无权限情况下可继续推进的替代动作：
-- 保持工作区改动原样，先用 `bash scripts/test.sh` 验证统一测试入口为 `0`
-- 在恢复 `.git` 写权限后，直接执行一次性提交与推送，不需要重新生成代码或文档
-- 对于本轮 `v4-3`，实现、匿名证据、roadmap 与汇报均已落盘；恢复 `.git` 写权限后只需执行提交与推送即可闭环
+- 保持当前工作区为干净状态，先用 `bash scripts/test.sh` 复核统一测试入口为 `0`
+- 在恢复网络访问后，直接推送现有提交 `fa0d287`，不需要重新生成代码或文档
+- 对于本轮 `v4-3`，实现、匿名证据、roadmap 与汇报均已落盘；恢复网络访问后只需执行 `git push` 即可闭环
 
 ## 1) 20260427-140500-growth 自动增长执行阻塞（v1-105）
 
