@@ -20,6 +20,22 @@
 - 后续 `Copylot` 的增长与功能优先级判断，应以真实 GSC / GA4 数据为准。
 - 旧的“Copylot 无法接入 Google 数据，所以只能做离线证据包”的判断不再成立。
 
+## 0.1) 20260711 仓库提交 / 推送受当前运行环境限制
+
+已观测结果（本机当前受管沙箱）：
+- `git add ...` 失败：`Unable to create .git/index.lock: Operation not permitted`
+- 环境变量显示：`CODEX_SANDBOX=seatbelt`、`CODEX_SANDBOX_NETWORK_DISABLED=1`
+
+影响：
+- 代码、测试、证据与 roadmap 已全部落盘，但当前无法在此环境内完成 `git add`、`git commit` 与 `git push`
+
+需要的人类输入：
+- 在可写 `.git/` 且允许网络访问的终端环境执行本轮提交与推送
+
+无凭据/无权限情况下可继续推进的替代动作：
+- 保持工作区改动原样，先用 `bash scripts/test.sh` 验证统一测试入口为 `0`
+- 在恢复 `.git` 写权限后，直接执行一次性提交与推送，不需要重新生成代码或文档
+
 ## 1) 20260427-140500-growth 自动增长执行阻塞（v1-105）
 
 已观测结果（2026-04-27，本机自动执行）：
@@ -510,6 +526,11 @@ Install: https://chromewebstore.google.com/detail/ai-copilot-%E2%80%93-magiccopy
 - PostHog event 适配: 缺少 capture_url 或 api_key
 
 ## 20260702-111345-growth
+- n8n webhook 适配: 缺少 GROWTH_N8N_WEBHOOK_URL
+- listmonk API 适配: 缺少 GROWTH_LISTMONK_URL
+- PostHog event 适配: 缺少 capture_url 或 api_key
+
+## 20260711-151428-growth
 - n8n webhook 适配: 缺少 GROWTH_N8N_WEBHOOK_URL
 - listmonk API 适配: 缺少 GROWTH_LISTMONK_URL
 - PostHog event 适配: 缺少 capture_url 或 api_key
