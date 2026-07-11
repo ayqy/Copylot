@@ -18,6 +18,9 @@ export const PRO_DISTRIBUTION_BY_CAMPAIGN_CSV_COLUMNS = [
   'recruitCopyCopied',
   'storeUrlCopied',
   'distributionPackCopied',
+  'validationRouteCopied',
+  'validationBriefCopied',
+  'validationChecklistCopied',
   'distCopies'
 ] as const;
 
@@ -34,6 +37,9 @@ export interface ProDistributionByCampaignCsvRow {
   recruitCopyCopied: number;
   storeUrlCopied: number;
   distributionPackCopied: number;
+  validationRouteCopied: number;
+  validationBriefCopied: number;
+  validationChecklistCopied: number;
   distCopies: number;
 }
 
@@ -59,10 +65,25 @@ export interface ProDistributionByCampaignCsvResult {
   csv: string;
 }
 
-type ProDistributionAssetCopiedAction = 'waitlist_url' | 'recruit_copy' | 'store_url' | 'distribution_pack';
+type ProDistributionAssetCopiedAction =
+  | 'waitlist_url'
+  | 'recruit_copy'
+  | 'store_url'
+  | 'distribution_pack'
+  | 'validation_route'
+  | 'validation_brief'
+  | 'validation_checklist';
 
 function isProDistributionAssetCopiedAction(value: unknown): value is ProDistributionAssetCopiedAction {
-  return value === 'waitlist_url' || value === 'recruit_copy' || value === 'store_url' || value === 'distribution_pack';
+  return (
+    value === 'waitlist_url' ||
+    value === 'recruit_copy' ||
+    value === 'store_url' ||
+    value === 'distribution_pack' ||
+    value === 'validation_route' ||
+    value === 'validation_brief' ||
+    value === 'validation_checklist'
+  );
 }
 
 function clampLookbackDays(value: unknown): number {
@@ -123,6 +144,9 @@ function buildCsv(rows: ProDistributionByCampaignCsvRow[]): string {
       String(row.recruitCopyCopied),
       String(row.storeUrlCopied),
       String(row.distributionPackCopied),
+      String(row.validationRouteCopied),
+      String(row.validationBriefCopied),
+      String(row.validationChecklistCopied),
       String(row.distCopies)
     ];
     lines.push(cells.join(','));
@@ -137,6 +161,10 @@ function createEmptyCounts() {
     recruitCopyCopied: 0,
     storeUrlCopied: 0,
     distributionPackCopied: 0
+    ,
+    validationRouteCopied: 0,
+    validationBriefCopied: 0,
+    validationChecklistCopied: 0
   };
 }
 
@@ -197,6 +225,9 @@ export function buildProDistributionByCampaignCsv(
     if (action === 'recruit_copy') counts.recruitCopyCopied += 1;
     if (action === 'store_url') counts.storeUrlCopied += 1;
     if (action === 'distribution_pack') counts.distributionPackCopied += 1;
+    if (action === 'validation_route') counts.validationRouteCopied += 1;
+    if (action === 'validation_brief') counts.validationBriefCopied += 1;
+    if (action === 'validation_checklist') counts.validationChecklistCopied += 1;
 
     filtered.push(event);
   }
@@ -217,7 +248,13 @@ export function buildProDistributionByCampaignCsv(
     .map((campaign) => {
       const counts = byCampaign[campaign];
       const distCopies =
-        counts.waitlistUrlCopied + counts.recruitCopyCopied + counts.storeUrlCopied + counts.distributionPackCopied;
+        counts.waitlistUrlCopied +
+        counts.recruitCopyCopied +
+        counts.storeUrlCopied +
+        counts.distributionPackCopied +
+        counts.validationRouteCopied +
+        counts.validationBriefCopied +
+        counts.validationChecklistCopied;
       const displayCampaign =
         campaign === PRO_DISTRIBUTION_BY_CAMPAIGN_EMPTY_BUCKET_KEY ? emptyCampaignBucketLabel : campaign;
       return {
@@ -231,6 +268,9 @@ export function buildProDistributionByCampaignCsv(
         recruitCopyCopied: counts.recruitCopyCopied,
         storeUrlCopied: counts.storeUrlCopied,
         distributionPackCopied: counts.distributionPackCopied,
+        validationRouteCopied: counts.validationRouteCopied,
+        validationBriefCopied: counts.validationBriefCopied,
+        validationChecklistCopied: counts.validationChecklistCopied,
         distCopies
       };
     });
@@ -254,4 +294,3 @@ export function formatProDistributionByCampaign7dCsvFilename(exportedAt: number)
   const dd = pad2(d.getDate());
   return `copylot-pro-distribution-by-campaign-7d-${yyyy}-${mm}-${dd}.csv`;
 }
-

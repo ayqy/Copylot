@@ -1277,6 +1277,40 @@ body {
   margin-top: 8px;
 }
 
+.pro-validation-lab {
+  padding-bottom: 14px;
+}
+
+.pro-validation-card {
+  border: 1px solid rgba(79, 70, 229, 0.18);
+  border-radius: calc(var(--border-radius) + 2px);
+  background: rgba(79, 70, 229, 0.04);
+  padding: 14px;
+}
+
+.pro-validation-eyebrow {
+  margin: 0 0 6px 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary-color);
+}
+
+.pro-validation-title {
+  margin: 0 0 6px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pro-validation-description {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
 .pro-actions {
   display: flex;
   gap: 12px;

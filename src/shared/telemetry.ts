@@ -69,7 +69,7 @@ const TELEMETRY_EVENT_PROP_ALLOWLIST: Record<TelemetryEventName, readonly string
     'has_other_capability',
     'has_contact'
   ],
-  pro_distribution_asset_copied: ['source', 'campaign', 'action'],
+  pro_distribution_asset_copied: ['source', 'campaign', 'action', 'content'],
   onboarding_shown: ['source'],
   onboarding_completed: ['source', 'action'],
   rating_prompt_shown: ['source'],
@@ -107,6 +107,7 @@ type ProIntentContent =
   | 'popup_waitlist_cta'
   | 'popup_survey_cta'
   | 'options_waitlist_cta'
+  | 'options_advanced_cleaning_cta'
   | 'options_survey_cta'
   | 'options_survey_copy_open';
 
@@ -116,6 +117,7 @@ function isProIntentContent(value: unknown): value is ProIntentContent {
     value === 'popup_waitlist_cta' ||
     value === 'popup_survey_cta' ||
     value === 'options_waitlist_cta' ||
+    value === 'options_advanced_cleaning_cta' ||
     value === 'options_survey_cta' ||
     value === 'options_survey_copy_open'
   );
@@ -173,10 +175,25 @@ function isProDistributionSource(value: unknown): value is ProDistributionSource
   return value === 'options';
 }
 
-type ProDistributionAssetCopiedAction = 'waitlist_url' | 'recruit_copy' | 'store_url' | 'distribution_pack';
+type ProDistributionAssetCopiedAction =
+  | 'waitlist_url'
+  | 'recruit_copy'
+  | 'store_url'
+  | 'distribution_pack'
+  | 'validation_route'
+  | 'validation_brief'
+  | 'validation_checklist';
 
 function isProDistributionAssetCopiedAction(value: unknown): value is ProDistributionAssetCopiedAction {
-  return value === 'waitlist_url' || value === 'recruit_copy' || value === 'store_url' || value === 'distribution_pack';
+  return (
+    value === 'waitlist_url' ||
+    value === 'recruit_copy' ||
+    value === 'store_url' ||
+    value === 'distribution_pack' ||
+    value === 'validation_route' ||
+    value === 'validation_brief' ||
+    value === 'validation_checklist'
+  );
 }
 
 type ProWaitlistSurveyPayWilling = 'yes' | 'maybe' | 'no' | 'unknown';
@@ -268,6 +285,20 @@ function sanitizeProps(
       }
       if (isWomEventName(eventName)) {
         if (!isWomSource(value)) continue;
+        sanitized[key] = value;
+        continue;
+      }
+    }
+
+    if (key === 'content') {
+      if (
+        eventName === 'pro_entry_opened' ||
+        eventName === 'pro_intent_form_start' ||
+        eventName === 'pro_intent_form_submit' ||
+        eventName === 'pro_waitlist_opened' ||
+        eventName === 'pro_distribution_asset_copied'
+      ) {
+        if (!isProIntentContent(value)) continue;
         sanitized[key] = value;
         continue;
       }
