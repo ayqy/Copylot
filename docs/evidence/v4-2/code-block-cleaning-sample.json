@@ -1,0 +1,15 @@
+{
+  "version": "v4-2",
+  "samples": [
+    {
+      "id": "hljs-list",
+      "selector": "#code-block",
+      "output": "function buildPrompt() {\n  const tag = \"\\#summary\";\n  const docs = [\"\\[intro\\]\", \"outline\"];\n\n  return docs.join(\"\\\\n\");\n}"
+    },
+    {
+      "id": "two-column-row",
+      "selector": "#table-code-block",
+      "output": "const steps = [\n  \"install\",\n  \"verify\",\n];"
+    }
+  ]
+}

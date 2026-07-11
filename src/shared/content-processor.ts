@@ -1,6 +1,6 @@
 // Content processor functionality (using TurndownService from global scope)
 import type { Settings } from './settings-manager'; // Import type for Settings
-import { cleanCodeBlockText } from './code-block-cleaner';
+import { cleanCodeBlockText, isCopyButtonLine } from './code-block-cleaner';
 import { createVisibleClone, stripReaderModeNoise } from './dom-preprocessor';
 import { normalizeLink } from './link-utils';
 
@@ -84,6 +84,130 @@ function escapeMarkdownTableCell(text: string): string {
   return t;
 }
 
+function normalizeCodeBlockControlText(text: string): string {
+  return text
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .replace(/\u00A0/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function hasClassNameFragment(element: Element, fragments: string[]): boolean {
+  const className = (element.getAttribute('class') || '').toLowerCase();
+  return fragments.some((fragment) => className.includes(fragment));
+}
+
+function isLikelyCopyControl(element: Element): boolean {
+  if (element.id === 'ai-copilot-copy-btn') {
+    return true;
+  }
+
+  const normalizedText = normalizeCodeBlockControlText(element.textContent || '');
+  if (normalizedText && isCopyButtonLine(normalizedText)) {
+    return true;
+  }
+
+  const descriptors = [
+    element.getAttribute('aria-label') || '',
+    element.getAttribute('title') || '',
+    element.getAttribute('data-tooltip') || '',
+    element.getAttribute('data-label') || '',
+    element.getAttribute('id') || '',
+    element.getAttribute('class') || ''
+  ]
+    .join(' ')
+    .toLowerCase();
+
+  if (!descriptors) {
+    return false;
+  }
+
+  return /(copy|复制|clone|克隆|拷贝)/i.test(descriptors) && (
+    element.tagName.toLowerCase() === 'button' ||
+    element.getAttribute('role') === 'button' ||
+    hasClassNameFragment(element, ['copy', 'toolbar', 'action'])
+  );
+}
+
+function stripCodeBlockControls(element: Element): void {
+  element.querySelectorAll('*').forEach((node) => {
+    if (isLikelyCopyControl(node)) {
+      node.remove();
+    }
+  });
+}
+
+function isLikelyLineNumberCell(element: Element): boolean {
+  const normalizedText = normalizeCodeBlockControlText(element.textContent || '');
+  if (!normalizedText || !/^\d+$/.test(normalizedText)) {
+    return false;
+  }
+
+  if (element.hasAttribute('data-line-number')) {
+    return true;
+  }
+
+  return hasClassNameFragment(element, [
+    'hljs-ln-number',
+    'line-number',
+    'line-numbers',
+    'linenumber',
+    'lineno',
+    'gutter',
+    'line-no'
+  ]);
+}
+
+function extractStructuredCodeLinesFromRows(rows: Element[]): string[] | null {
+  if (rows.length < 2) {
+    return null;
+  }
+
+  const lineTexts: string[] = [];
+  let matchedRows = 0;
+
+  rows.forEach((row) => {
+    const cells = Array.from(row.children).filter((child): child is Element => isElementNode(child));
+    if (cells.length < 2 || !isLikelyLineNumberCell(cells[0])) {
+      return;
+    }
+
+    let codeCell: Element | null = null;
+    for (let index = cells.length - 1; index >= 1; index -= 1) {
+      if (!isLikelyLineNumberCell(cells[index])) {
+        codeCell = cells[index];
+        break;
+      }
+    }
+
+    if (!codeCell) {
+      return;
+    }
+
+    matchedRows += 1;
+    lineTexts.push(codeCell.textContent || '');
+  });
+
+  if (matchedRows < 2 || matchedRows / rows.length < 0.6) {
+    return null;
+  }
+
+  return lineTexts;
+}
+
+function extractStructuredCodeLines(targetElement: Element): string[] | null {
+  const tableRowLines = extractStructuredCodeLinesFromRows(
+    Array.from(targetElement.querySelectorAll('tr'))
+  );
+  if (tableRowLines) {
+    return tableRowLines;
+  }
+
+  return extractStructuredCodeLinesFromRows(
+    Array.from(targetElement.querySelectorAll('li, .hljs-ln-row, .code-line-row, [data-code-line-row]'))
+  );
+}
+
 /**
  * 统一的代码块文本提取函数，确保所有场景下的一致性
  * @param element - 代码块元素（pre或code）
@@ -91,7 +215,7 @@ function escapeMarkdownTableCell(text: string): string {
  */
 function extractCodeBlockText(element: Element): string {
   let text = '';
-  
+
   // 1. 对于pre>code结构，先从code元素开始处理
   let targetElement = element;
   if (element.tagName.toLowerCase() === 'pre') {
@@ -100,33 +224,25 @@ function extractCodeBlockText(element: Element): string {
       targetElement = codeElement;
     }
   }
-  
-  // 2. 特别处理hljs（highlight.js）代码块结构
-  // 检查是否是hljs结构：包含ol.hljs-ln列表
-  const hljsList = targetElement.querySelector('ol.hljs-ln');
-  if (hljsList) {
-    // hljs结构：从每个li中的.hljs-ln-code > .hljs-ln-line提取文本
-    const lines = hljsList.querySelectorAll('li .hljs-ln-code .hljs-ln-line');
-    const lineTexts: string[] = [];
-    
-    lines.forEach(line => {
-      // 使用innerText保持更好的格式，但对于代码行，textContent通常更准确
-      const lineText = line.textContent || '';
-      lineTexts.push(lineText);
-    });
-    
-    text = lineTexts.join('\n');
+
+  const extractionRoot = targetElement.cloneNode(true) as Element;
+  stripCodeBlockControls(extractionRoot);
+
+  // 2. 优先处理“行号 / 代码分列”结构，避免把行号拼进正文
+  const structuredLines = extractStructuredCodeLines(extractionRoot);
+  if (structuredLines) {
+    text = structuredLines.join('\n');
   } else {
     // 3. 其他情况：使用textContent获取完整内容（不受CSS影响）
-    text = targetElement.textContent || '';
+    text = extractionRoot.textContent || '';
   }
-  
+
   // 4. 清理复制按钮文本（扩展支持更多语言和位置）
   text = cleanCodeBlockText(text);
-  
+
   // 5. 只trim首尾空行，保留所有内部空行和缩进
   text = text.replace(/^\n+/, '').replace(/\n+$/, '');
-  
+
   return text;
 }
 

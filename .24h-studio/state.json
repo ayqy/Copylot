@@ -1,22 +1,14 @@
 {
   "active_main_prd": "prds/v4.md",
-  "active_sub_prd": null,
-  "active_sub_idx": null,
-  "next_sub_prd_index": 2,
+  "active_sub_prd": "prds/v4-2.md",
+  "active_sub_idx": 2,
+  "next_sub_prd_index": 3,
   "pending_fix": null,
-  "last_dev_cycle": "2026-07-11T04:07:16+00:00",
-  "last_growth_cycle": "2026-07-02T03:15:32.858122+00:00",
+  "last_dev_cycle": "2026-07-11T07:14:08.102183+00:00",
+  "last_growth_cycle": "2026-07-11T07:16:49.667684+00:00",
   "last_quota_exhausted_at": "2026-07-03T15:00:31.136786+00:00",
   "last_run_errors": [],
   "codex_run_history": [
-    {
-      "at": "2026-03-23T21:03:16.596084+00:00",
-      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-034230-growth_execute"
-    },
-    {
-      "at": "2026-03-23T21:13:26.168966+00:00",
-      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-042754-growth_execute"
-    },
     {
       "at": "2026-03-23T21:22:38.695781+00:00",
       "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-032658-growth_execute"
@@ -208,17 +200,50 @@
     {
       "at": "2026-07-10T23:35:06.282332+00:00",
       "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260711-073501518-dev_execute-9731131c"
+    },
+    {
+      "at": "2026-07-11T06:54:35.744985+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260711-145341542-sub_prd_plan-2c74788b"
+    },
+    {
+      "at": "2026-07-11T07:11:36.848849+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260711-145435747-dev_execute-9731131c"
     }
   ],
-  "human_todos": [],
+  "human_todos": [
+    {
+      "title": "n8n webhook 适配",
+      "impact": "阻塞",
+      "depends_on": "growth_engine",
+      "doc": "docs/growth/blocked.md",
+      "notes": "缺少 GROWTH_N8N_WEBHOOK_URL",
+      "created_at": "2026-07-11T07:16:49.182067+00:00"
+    },
+    {
+      "title": "listmonk API 适配",
+      "impact": "阻塞",
+      "depends_on": "growth_engine",
+      "doc": "docs/growth/blocked.md",
+      "notes": "缺少 GROWTH_LISTMONK_URL",
+      "created_at": "2026-07-11T07:16:49.182145+00:00"
+    },
+    {
+      "title": "PostHog event 适配",
+      "impact": "阻塞",
+      "depends_on": "growth_engine",
+      "doc": "docs/growth/blocked.md",
+      "notes": "缺少 capture_url 或 api_key",
+      "created_at": "2026-07-11T07:16:49.182165+00:00"
+    }
+  ],
   "roadmap": {
     "status_path": "docs/roadmap_status.md",
     "last_seen_stage": "- 阶段名称：S2 / G2 `第二次复用与口碑循环`",
     "last_seen_top3": [
-      "针对代码块场景补一轮“复制后无需返工”的稳定性专项，优先修掉影响复用的缩进、行号和噪声残留问题，并保留可回归证据。",
+      "强化 Shift 追加模式与多段收集工作流，让用户在代码块之外也有明确的第二次、第三次连续复制理由。",
       "把分享与评价提示绑定到“已完成至少 2 次成功复制”之后，并保留可导出证据，让口碑动作只发生在价值已被验证的用户上。",
       "继续压实 Prompt 默认命中与追加模式协同，提升第二次打开后的真实复用频率，而不是只增加入口曝光。"
     ],
-    "last_updated_at": "2026-07-10T23:36:05.942997+00:00"
+    "last_updated_at": "2026-07-11T07:14:08.103380+00:00"
   }
 }

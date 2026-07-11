@@ -1,7 +1,16 @@
-const COPY_BUTTON_LINE_REGEX = /^(Copy|COPY|Copy to clipboard|复制|复制代码|Clone|克隆|拷贝)$/;
+const COPY_BUTTON_LINE_REGEX =
+  /^(Copy|COPY|Copy code|Copy code block|Copy snippet|Copy to clipboard|复制|复制代码|复制此代码|Clone|克隆|拷贝)$/;
 
-function isCopyButtonLine(line: string): boolean {
-  return COPY_BUTTON_LINE_REGEX.test(line.trim());
+function normalizeCopyButtonLine(line: string): string {
+  return line
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .replace(/\u00A0/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export function isCopyButtonLine(line: string): boolean {
+  return COPY_BUTTON_LINE_REGEX.test(normalizeCopyButtonLine(line));
 }
 
 function unescapeMarkdownCharacters(text: string): string {

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <body>
+    <h1>Code Cleaning Fixture</h1>
+    <article id="code-article">
+      <p>
+        This snippet builds a prompt payload and should preserve code fences when copied as a mixed Markdown block.
+      </p>
+      <pre id="code-block"><code><ol class="hljs-ln">
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">1</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">Copy</span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">2</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">function buildPrompt() {</span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">3</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">  const tag = "\\#summary";</span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">4</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">  const docs = ["\\[intro\\]", "outline"];</span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">5</span></span><span class="hljs-ln-code"><span class="hljs-ln-line"></span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">6</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">  return docs.join("\\n");</span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">7</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">}</span></span></li>
+<li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">8</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">复制代码</span></span></li>
+      </ol></code></pre>
+      <pre id="table-code-block"><span class="code-line-row" data-code-line-row><span class="line-number-cell" data-line-number="1">1</span><span class="code-cell">const steps = [</span></span>
+<span class="code-line-row" data-code-line-row><span class="line-number-cell" data-line-number="2">2</span><span class="code-cell">  "install",</span></span>
+<span class="code-line-row" data-code-line-row><span class="line-number-cell" data-line-number="3">3</span><span class="code-cell">  "verify",</span></span>
+<span class="code-line-row" data-code-line-row><span class="line-number-cell" data-line-number="4">4</span><span class="code-cell">];<button class="copy-button" aria-label="Copy code">Copy code</button></span></span></pre>
+    </article>
+  </body>
+</html>

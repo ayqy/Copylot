@@ -164,6 +164,7 @@ import {
   scanCwsListingRedlinesFromText
 } from './scan-cws-listing-redlines.ts';
 
+
 const getMessage: I18nGetMessage = (key, substitutions) => {
   const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
 
@@ -213,6 +214,7 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
   }
   return key;
 };
+
 
 async function run() {
   const extensionId = 'abcdefghijklmnopabcdefghijklmnop';
@@ -3583,6 +3585,9 @@ async function run() {
 
   assert.equal(cleanCodeBlockText('Copy\nconst a = 1;'), 'const a = 1;');
   assert.equal(cleanCodeBlockText('const a = 1;\n复制代码'), 'const a = 1;');
+  assert.equal(cleanCodeBlockText('Copy\u00A0code\nconst a = 1;'), 'const a = 1;');
+  assert.equal(cleanCodeBlockText('Copy snippet\nconst a = 1;'), 'const a = 1;');
+  assert.equal(cleanCodeBlockText('const a = 1;\n复制此代码'), 'const a = 1;');
 
   assert.equal(
     cleanCodeBlockText('const a = 1;\nCopy\nconst b = 2;'),

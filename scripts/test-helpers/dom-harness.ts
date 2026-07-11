@@ -58,8 +58,7 @@ const GLOBAL_KEYS = [
   'localStorage',
   'requestAnimationFrame',
   'cancelAnimationFrame',
-  'getComputedStyle',
-  'performance'
+  'getComputedStyle'
 ] as const;
 
 export function createDomHarness(html: string, url: string): DomHarness {

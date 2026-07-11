@@ -18,6 +18,7 @@
         border: 1px solid #cbd5e1;
         border-radius: 12px;
         overflow: hidden;
+        margin-bottom: 24px;
       }
 
       .intro {
@@ -59,6 +60,44 @@
       .hljs-ln-row * {
         pointer-events: none;
       }
+
+      .code-toolbar {
+        display: flex;
+        justify-content: flex-end;
+        padding: 10px 12px;
+        background: #0f172a;
+        border-bottom: 1px solid #1e293b;
+      }
+
+      .copy-button {
+        border: 0;
+        border-radius: 999px;
+        background: #1d4ed8;
+        color: #eff6ff;
+        padding: 4px 10px;
+        font-size: 12px;
+      }
+
+      .code-line-row {
+        display: grid;
+        grid-template-columns: 40px 1fr;
+        gap: 12px;
+      }
+
+      .line-number-cell {
+        color: #94a3b8;
+        text-align: right;
+        user-select: none;
+      }
+
+      .code-cell {
+        white-space: pre;
+      }
+
+      .code-line-row,
+      .code-line-row * {
+        pointer-events: none;
+      }
     </style>
   </head>
   <body>
@@ -78,6 +117,15 @@
 <li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">7</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">}</span></span></li>
 <li class="hljs-ln-row"><span class="hljs-ln-numbers"><span class="hljs-ln-line">8</span></span><span class="hljs-ln-code"><span class="hljs-ln-line">复制代码</span></span></li>
         </ol></code></pre>
+      </div>
+      <div class="code-shell">
+        <div class="code-toolbar">
+          <button class="copy-button" aria-label="Copy code">Copy code</button>
+        </div>
+        <pre id="table-code-block"><span class="code-line-row" data-code-line-row><span class="line-number-cell" data-line-number="1">1</span><span class="code-cell">const steps = [</span></span>
+<span class="code-line-row" data-code-line-row><span class="line-number-cell" data-line-number="2">2</span><span class="code-cell">  "install",</span></span>
+<span class="code-line-row" data-code-line-row><span class="line-number-cell" data-line-number="3">3</span><span class="code-cell">  "verify",</span></span>
+<span class="code-line-row" data-code-line-row><span class="line-number-cell" data-line-number="4">4</span><span class="code-cell">];<button class="copy-button" aria-label="Copy code">Copy code</button></span></span></pre>
       </div>
     </article>
   </body>

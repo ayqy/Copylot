@@ -16,6 +16,11 @@
     "expected": "main: param num is 3 \nmain: a1 a2 a3 \nmain: a1 a2 a3 \nmain: ./a a1 a2 \nmain: var=main \nHello \nHello: param num is 2 \nHello: h1 h2 \nHello: h1 h2 \nHello: ./a h1 h2 \nHello: var=hello"
   },
   {
+    "path": "cases/code-block-reuse.html",
+    "title": "code block reuse",
+    "expected": "This snippet builds a prompt payload and should preserve code fences when copied as a mixed Markdown block.\n\n```\nfunction buildPrompt() {\n  const tag = \"\\#summary\";\n  const docs = [\"\\[intro\\]\", \"outline\"];\n\n  return docs.join(\"\\\\n\");\n}\n```\n\n```\nconst steps = [\n  \"install\",\n  \"verify\",\n];\n```\n"
+  },
+  {
     "path": "cases/link-with-imageless-alt.html",
     "title": "link with imageless alt",
     "expected": "[This is some text next to the image.](https://example.com/)"

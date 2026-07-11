@@ -332,11 +332,14 @@ async function runEditorExclusionAssertion(): Promise<void> {
 }
 
 async function runHoverCodeBlockAssertion(): Promise<void> {
-  const html = await readFixture('test/fixtures/content/hover-code-block.html');
+  const html = await readFixture('e2e/fixtures/code.html');
   const { harness } = await loadContentScript({
     html,
     url: 'https://example.com/hover-code',
-    settings: buildStoredSettings({ isHoverMagicCopyEnabled: true })
+    settings: buildStoredSettings({
+      isHoverMagicCopyEnabled: true,
+      outputFormat: 'plaintext'
+    })
   });
 
   try {
@@ -355,10 +358,40 @@ async function runHoverCodeBlockAssertion(): Promise<void> {
     const button = harness.dom.window.document.getElementById('ai-copilot-copy-btn') as HTMLElement | null;
     assert.ok(button);
     assert.equal(button.style.display, 'flex');
+    clickElement(button);
+    await harness.tick();
+    const copied = await harness.clipboard.readText();
+    assert.equal(
+      copied,
+      'function buildPrompt() {\n  const tag = "\\#summary";\n  const docs = ["\\[intro\\]", "outline"];\n\n  return docs.join("\\\\n");\n}'
+    );
+    assert.ok(!copied.includes('复制代码'));
+    assert.ok(!copied.includes('Copy code'));
+    assert.ok(!copied.includes('1Copy'));
+
+    const tableCodeBlock = harness.dom.window.document.getElementById('table-code-block');
+    assert.ok(tableCodeBlock);
+    Object.defineProperty(tableCodeBlock, 'clientWidth', {
+      configurable: true,
+      value: 520
+    });
+    Object.defineProperty(tableCodeBlock, 'clientHeight', {
+      configurable: true,
+      value: 120
+    });
+    mouseOverElement(tableCodeBlock);
+    await harness.tick();
+    clickElement(button);
+    await harness.tick();
+    const tableCopied = await harness.clipboard.readText();
+    assert.equal(tableCopied, 'const steps = [\n  "install",\n  "verify",\n];');
+    assert.ok(!tableCopied.includes('Copy code'));
+    assert.ok(!tableCopied.includes('1const'));
   } finally {
     harness.restore();
   }
 }
+
 
 async function runTableSelectionAssertion(): Promise<void> {
   const html = `<!doctype html><html><body><table><tr><th>Name</th><th>Age</th></tr><tr><td id="alice">Alice</td><td>30</td></tr><tr><td>Bob</td><td>28</td></tr></table></body></html>`;
