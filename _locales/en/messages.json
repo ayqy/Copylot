@@ -393,6 +393,62 @@
     "message": "Copy validation checklist",
     "description": "Options Pro tab: structured export checklist copy button"
   },
+  "proIntentDecisionGateTitle": {
+    "message": "Pre-payment decision gate",
+    "description": "Options Pro tab: decision gate title"
+  },
+  "proIntentDecisionGateHint": {
+    "message": "Turn the last 7 days of local anonymous survey-intent aggregation into an auditable A/B/C decision summary before spending time on payment or collection design.",
+    "description": "Options Pro tab: decision gate hint"
+  },
+  "proIntentDecisionSummaryCopy": {
+    "message": "Copy decision summary",
+    "description": "Options Pro tab: copy decision summary button"
+  },
+  "proIntentDecisionSummaryDownloadJson": {
+    "message": "Download decision JSON",
+    "description": "Options Pro tab: download decision summary json button"
+  },
+  "proIntentDecisionGatePrivacyHint": {
+    "message": "Derived only from local anonymous aggregate fields. Never includes copied page content, URLs, titles, or contact details.",
+    "description": "Options Pro tab: decision gate privacy hint"
+  },
+  "proIntentDecisionConclusionADataOff": {
+    "message": "Keep collecting (anonymous usage data is disabled / no usable events)",
+    "description": "Decision summary: A conclusion when anonymous data is disabled"
+  },
+  "proIntentDecisionConclusionASampleInsufficient": {
+    "message": "Keep collecting (insufficient sample size)",
+    "description": "Decision summary: A conclusion when sample size is insufficient"
+  },
+  "proIntentDecisionConclusionBHighIntentInsufficient": {
+    "message": "Iterate value messaging and capability bundle first (high-intent rate is insufficient)",
+    "description": "Decision summary: B conclusion when high-intent rate is insufficient"
+  },
+  "proIntentDecisionConclusionBPriceInsufficient": {
+    "message": "Iterate value messaging and capability bundle first (price concentration is insufficient)",
+    "description": "Decision summary: B conclusion when price concentration is insufficient"
+  },
+  "proIntentDecisionConclusionCGo": {
+    "message": "Eligible to evaluate the minimum payment/subscription path (sample and intent meet the gate)",
+    "description": "Decision summary: C conclusion when the gate is met"
+  },
+  "proIntentDecisionMdTitle": {
+    "message": "V1-81 Pro intent decision summary (auditable)",
+    "description": "Decision summary markdown title"
+  },
+  "proIntentDecisionMdSectionInput": {
+    "message": "Input",
+    "description": "Decision summary markdown input section heading"
+  },
+  "proIntentDecisionMdSectionMetrics": {
+    "message": "Metrics",
+    "description": "Decision summary markdown metrics section heading"
+  },
+  "proIntentDecisionMdSectionDecision": {
+    "message": "Decision (A/B/C)",
+    "description": "Decision summary markdown decision section heading"
+  },
   "proValidationCampaignLabel": {
     "message": "campaign",
     "description": "Validation asset: campaign label"
@@ -1782,6 +1838,22 @@
   "proIntentWeeklyDigestCopyFailed": {
     "message": "Copy failed. Please select and copy manually.",
     "description": "Weekly Pro intent digest copy failure notification"
+  },
+  "proIntentDecisionSummaryCopySuccess": {
+    "message": "Decision summary copied to clipboard",
+    "description": "Decision summary copy success notification"
+  },
+  "proIntentDecisionSummaryCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Decision summary copy failure notification"
+  },
+  "proIntentDecisionSummaryDownloadSuccess": {
+    "message": "Decision summary JSON downloaded",
+    "description": "Decision summary json download success notification"
+  },
+  "proIntentDecisionSummaryDownloadFailed": {
+    "message": "Download failed",
+    "description": "Decision summary json download failure notification"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "Copy weekly campaign report (Markdown)",

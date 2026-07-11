@@ -393,6 +393,62 @@
     "message": "复制验证清单",
     "description": "Options Pro Tab：结构化导出验证清单复制按钮"
   },
+  "proIntentDecisionGateTitle": {
+    "message": "收费前门槛判断",
+    "description": "Options Pro Tab：收费前门槛判断标题"
+  },
+  "proIntentDecisionGateHint": {
+    "message": "把最近 7 天本地匿名问卷意向聚合直接转成可审计的 A/B/C 决策摘要，再决定当前是否值得花时间进入支付或收款评估。",
+    "description": "Options Pro Tab：收费前门槛判断说明"
+  },
+  "proIntentDecisionSummaryCopy": {
+    "message": "复制收费前门槛摘要",
+    "description": "Options Pro Tab：复制收费前门槛摘要按钮"
+  },
+  "proIntentDecisionSummaryDownloadJson": {
+    "message": "下载收费前门槛 JSON",
+    "description": "Options Pro Tab：下载收费前门槛 JSON 按钮"
+  },
+  "proIntentDecisionGatePrivacyHint": {
+    "message": "摘要只使用本地匿名聚合字段，不包含页面正文、复制内容、URL、标题或联系方式。",
+    "description": "Options Pro Tab：收费前门槛判断隐私提示"
+  },
+  "proIntentDecisionConclusionADataOff": {
+    "message": "继续收集（匿名使用数据未开启/无可用事件）",
+    "description": "决策摘要：匿名数据关闭时的 A 结论"
+  },
+  "proIntentDecisionConclusionASampleInsufficient": {
+    "message": "继续收集（样本量不足）",
+    "description": "决策摘要：样本量不足时的 A 结论"
+  },
+  "proIntentDecisionConclusionBHighIntentInsufficient": {
+    "message": "先迭代价值表达与能力包（高意向占比不足）",
+    "description": "决策摘要：高意向占比不足时的 B 结论"
+  },
+  "proIntentDecisionConclusionBPriceInsufficient": {
+    "message": "先迭代价值表达与能力包（价格区间不集中/不稳定）",
+    "description": "决策摘要：价格集中度不足时的 B 结论"
+  },
+  "proIntentDecisionConclusionCGo": {
+    "message": "可推进收款/订阅链路最小实现（样本与意向达到门槛）",
+    "description": "决策摘要：达到门槛时的 C 结论"
+  },
+  "proIntentDecisionMdTitle": {
+    "message": "V1-81 Pro 意向决策摘要（可审计）",
+    "description": "决策摘要 Markdown 标题"
+  },
+  "proIntentDecisionMdSectionInput": {
+    "message": "输入",
+    "description": "决策摘要 Markdown 输入区块标题"
+  },
+  "proIntentDecisionMdSectionMetrics": {
+    "message": "指标",
+    "description": "决策摘要 Markdown 指标区块标题"
+  },
+  "proIntentDecisionMdSectionDecision": {
+    "message": "结论（A/B/C）",
+    "description": "决策摘要 Markdown 结论区块标题"
+  },
   "proValidationCampaignLabel": {
     "message": "campaign",
     "description": "验证素材：campaign 标签"
@@ -1782,6 +1838,22 @@
   "proIntentWeeklyDigestCopyFailed": {
     "message": "复制失败，请手动选择并复制",
     "description": "本周 Pro 意向证据摘要复制失败提示"
+  },
+  "proIntentDecisionSummaryCopySuccess": {
+    "message": "收费前门槛摘要已复制到剪贴板",
+    "description": "收费前门槛摘要复制成功提示"
+  },
+  "proIntentDecisionSummaryCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "收费前门槛摘要复制失败提示"
+  },
+  "proIntentDecisionSummaryDownloadSuccess": {
+    "message": "收费前门槛 JSON 已下载",
+    "description": "收费前门槛 JSON 下载成功提示"
+  },
+  "proIntentDecisionSummaryDownloadFailed": {
+    "message": "下载失败",
+    "description": "收费前门槛 JSON 下载失败提示"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "复制按 campaign 的本周复盘摘要（Markdown）",

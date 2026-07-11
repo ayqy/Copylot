@@ -576,6 +576,17 @@ async function runOptionsAssertions(): Promise<void> {
     );
     assert.ok(structuredExportChecklist.includes('twitter'));
 
+    const decisionSummaryCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#copy-pro-intent-decision-summary'
+    );
+    clickElement(decisionSummaryCopyButton);
+    await page.waitForIdle();
+    const decisionSummary = await page.clipboard.readText();
+    assert.ok(decisionSummary.includes('V1-81 Pro 意向决策摘要'));
+    assert.ok(decisionSummary.includes('code：`A`'));
+    assert.ok(decisionSummary.includes('survey_intent'));
+
     const proWaitlistButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
       '#pro-waitlist-button'

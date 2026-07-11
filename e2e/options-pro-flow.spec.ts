@@ -32,6 +32,9 @@ test('pro tab only shows roadmap and sharing toolkit', async ({
     await expect(page.locator('#pro-validation-bulk-open')).toBeVisible();
     await expect(page.locator('#pro-validation-structured-export')).toBeVisible();
     await expect(page.locator('#pro-validation-structured-open')).toBeVisible();
+    await expect(page.locator('#pro-decision-gate-panel')).toBeVisible();
+    await expect(page.locator('#copy-pro-intent-decision-summary')).toBeVisible();
+    await expect(page.locator('#download-pro-intent-decision-summary-json')).toBeVisible();
 
     await expect(page.locator('#pro-waitlist-copy')).toHaveCount(0);
     await expect(page.locator('#pro-waitlist-survey')).toHaveCount(0);
@@ -155,6 +158,15 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
         return urls.at(-1) || '';
       })
       .toContain('utm_content=options_structured_export_cta');
+
+    await page.locator('#copy-pro-intent-decision-summary').click();
+    await expectClipboardTextEventually(
+      (text) =>
+        text.includes('V1-81 Pro 意向决策摘要') &&
+        text.includes('code：`A`') &&
+        text.includes('survey_intent'),
+      driverPage
+    );
 
     await page.locator('#pro-waitlist-url-copy').click();
     await expectClipboardTextEventually(

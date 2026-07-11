@@ -840,6 +840,38 @@
                 </article>
               </section>
 
+              <section id="pro-decision-gate-panel" class="pro-survey-section pro-distribution-section">
+                <h4 class="pro-survey-title" data-i18n="proIntentDecisionGateTitle">
+                  收费前门槛判断
+                </h4>
+                <p class="pro-survey-hint" data-i18n="proIntentDecisionGateHint">
+                  基于最近 7 天本地匿名聚合问卷意向分布，直接导出 A/B/C 决策摘要，用来判断当前是否只该继续收集样本，还是已经进入下一步收费评估。
+                </p>
+
+                <div class="pro-actions pro-distribution-actions">
+                  <button
+                    id="copy-pro-intent-decision-summary"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proIntentDecisionSummaryCopy"
+                  >
+                    复制收费前门槛摘要
+                  </button>
+                  <button
+                    id="download-pro-intent-decision-summary-json"
+                    class="secondary-btn"
+                    type="button"
+                    data-i18n="proIntentDecisionSummaryDownloadJson"
+                  >
+                    下载收费前门槛 JSON
+                  </button>
+                </div>
+
+                <p class="pro-privacy-hint" data-i18n="proIntentDecisionGatePrivacyHint">
+                  摘要只使用本地匿名聚合字段，不包含页面正文、复制内容、URL、标题或联系方式。
+                </p>
+              </section>
+
               <div class="form-group">
                 <label for="pro-intent-campaign" data-i18n="proIntentCampaignLabel">渠道（campaign，可选）</label>
                 <input

@@ -3770,6 +3770,14 @@ async function run() {
     'options.html should include pro-validation-structured-brief-copy'
   );
   assert.ok(
+    optionsHtml.includes('id="copy-pro-intent-decision-summary"'),
+    'options.html should include copy-pro-intent-decision-summary'
+  );
+  assert.ok(
+    optionsHtml.includes('id="download-pro-intent-decision-summary-json"'),
+    'options.html should include download-pro-intent-decision-summary-json'
+  );
+  assert.ok(
     optionsHtml.includes('id="pro-waitlist-url-copy"'),
     'options.html should include pro-waitlist-url-copy'
   );
@@ -3829,6 +3837,10 @@ async function run() {
   assert.ok(
     optionsJs.includes('options_structured_export_cta'),
     'options.js should contain options_structured_export_cta'
+  );
+  assert.ok(
+    optionsJs.includes('copylot-pro-intent-decision-summary-'),
+    'options.js should contain decision summary export filename'
   );
   assert.ok(
     optionsJs.includes('navigator.clipboard.writeText'),

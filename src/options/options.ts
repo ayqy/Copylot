@@ -107,10 +107,19 @@ import {
   type ProIntentRunEvidencePack
 } from '../shared/pro-intent-run-evidence-pack';
 import {
+  buildProWaitlistSurveyIntentDistribution
+} from '../shared/pro-waitlist-survey-intent-distribution';
+import {
   buildProIntentByCampaignWeeklyReportSummary,
   formatProIntentByCampaignWeeklyReportMarkdown,
   type ProIntentByCampaignWeeklyReportEnvInfo
 } from '../shared/pro-intent-by-campaign-weekly-report';
+import {
+  buildProIntentDecisionPackFromDistribution,
+  formatProIntentDecisionPackMarkdown,
+  PRO_INTENT_DECISION_SUMMARY_FILES,
+  type ProIntentDecisionPackSummary
+} from '../shared/pro-intent-decision-pack';
 import { sanitizeCampaign } from '../shared/campaign';
 import {
   buildWomEvidencePack,
@@ -373,6 +382,8 @@ interface OptionsElements {
   proValidationStructuredRouteCopyButton: HTMLButtonElement;
   proValidationStructuredBriefCopyButton: HTMLButtonElement;
   proValidationStructuredChecklistCopyButton: HTMLButtonElement;
+  proIntentDecisionSummaryCopyButton: HTMLButtonElement;
+  downloadProIntentDecisionSummaryJsonButton: HTMLButtonElement;
   proWaitlistButton: HTMLButtonElement;
   proWaitlistUrlCopyButton: HTMLButtonElement;
   proWaitlistRecruitCopyButton: HTMLButtonElement;
@@ -635,6 +646,12 @@ function getElements(): OptionsElements {
     proValidationStructuredChecklistCopyButton: document.getElementById(
       'pro-validation-structured-checklist-copy'
     ) as HTMLButtonElement,
+    proIntentDecisionSummaryCopyButton: (document.getElementById(
+      'copy-pro-intent-decision-summary'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    downloadProIntentDecisionSummaryJsonButton: (document.getElementById(
+      'download-pro-intent-decision-summary-json'
+    ) || document.createElement('button')) as HTMLButtonElement,
     proWaitlistButton: (document.getElementById('pro-waitlist-button') ||
       document.createElement('button')) as HTMLButtonElement,
     proWaitlistUrlCopyButton: document.getElementById('pro-waitlist-url-copy') as HTMLButtonElement,
@@ -2055,6 +2072,91 @@ async function copyProFunnelEvidencePackToClipboard(): Promise<void> {
   }
 }
 
+async function buildProIntentDecisionSummaryForExport(): Promise<ProIntentDecisionPackSummary> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for pro intent decision summary:', error);
+  }
+
+  const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+  if (!enabled) {
+    const distribution = buildProWaitlistSurveyIntentDistribution({
+      enabled: false,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      lookbackDays: 7
+    });
+    return buildProIntentDecisionPackFromDistribution({ distribution, getMessage });
+  }
+
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    const distribution = buildProWaitlistSurveyIntentDistribution({
+      enabled: true,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      lookbackDays: 7
+    });
+    return buildProIntentDecisionPackFromDistribution({ distribution, getMessage });
+  }
+
+  const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+  const distribution = buildProWaitlistSurveyIntentDistribution({
+    enabled: true,
+    telemetryEvents: result[TELEMETRY_EVENTS_KEY],
+    now: exportedAt,
+    extensionVersion,
+    lookbackDays: 7
+  });
+  return buildProIntentDecisionPackFromDistribution({ distribution, getMessage });
+}
+
+async function copyProIntentDecisionSummaryToClipboard(): Promise<void> {
+  let summary: ProIntentDecisionPackSummary;
+  let text: string;
+
+  try {
+    summary = await buildProIntentDecisionSummaryForExport();
+    text = formatProIntentDecisionPackMarkdown(summary, getMessage);
+  } catch (error) {
+    console.warn('Failed to build pro intent decision summary markdown:', error);
+    showNotification(getMessage('proIntentDecisionSummaryCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await writeTextToClipboard(text);
+    showNotification(getMessage('proIntentDecisionSummaryCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy pro intent decision summary markdown:', error);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
+    if (ok) {
+      showNotification(getMessage('proIntentDecisionSummaryCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('proIntentDecisionSummaryCopyFailed'), 'error');
+  }
+}
+
+async function downloadProIntentDecisionSummaryJson(): Promise<void> {
+  try {
+    const summary = await buildProIntentDecisionSummaryForExport();
+    downloadTextFile(
+      PRO_INTENT_DECISION_SUMMARY_FILES.summaryJson,
+      `${JSON.stringify(summary, null, 2)}\n`,
+      'application/json'
+    );
+    showNotification(getMessage('proIntentDecisionSummaryDownloadSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to download pro intent decision summary json:', error);
+    showNotification(getMessage('proIntentDecisionSummaryDownloadFailed'), 'error');
+  }
+}
+
 async function buildProIntentWeeklyDigestMarkdownForClipboard(): Promise<string> {
   const exportedAt = Date.now();
   let extensionVersion = '';
@@ -3440,6 +3542,12 @@ function setupEventListeners() {
   });
   elements.proFunnelEvidencePackCopyButton.addEventListener('click', () => {
     void copyProFunnelEvidencePackToClipboard();
+  });
+  elements.proIntentDecisionSummaryCopyButton.addEventListener('click', () => {
+    void copyProIntentDecisionSummaryToClipboard();
+  });
+  elements.downloadProIntentDecisionSummaryJsonButton.addEventListener('click', () => {
+    void downloadProIntentDecisionSummaryJson();
   });
   elements.downloadProIntentV1_100SummaryJsonButton.addEventListener('click', () => {
     void downloadProIntentV1_100SummaryJson();
