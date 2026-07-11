@@ -10,10 +10,6 @@
   "last_run_errors": [],
   "codex_run_history": [
     {
-      "at": "2026-03-23T21:37:56.819383+00:00",
-      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-044807-growth_execute"
-    },
-    {
       "at": "2026-03-23T21:48:07.684350+00:00",
       "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-034230-growth_execute"
     },
@@ -208,6 +204,10 @@
     {
       "at": "2026-07-11T07:22:18.972970+00:00",
       "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260711-152213665-sub_prd_plan-2c74788b"
+    },
+    {
+      "at": "2026-07-11T13:23:25.122827+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260711-211926189-sub_prd_plan-2c74788b"
     }
   ],
   "human_todos": [

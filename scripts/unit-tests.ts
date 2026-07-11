@@ -39,6 +39,12 @@ import {
   type GrowthStats
 } from '../src/shared/growth-stats.ts';
 import {
+  applyAppendToAppendSession,
+  applyClearToAppendSession,
+  buildAppendSessionAudit,
+  normalizeAppendSessionValue
+} from '../src/shared/append-session.ts';
+import {
   TELEMETRY_MAX_EVENTS,
   sanitizeTelemetryEvent,
   sanitizeTelemetryEvents,
@@ -3199,6 +3205,105 @@ async function run() {
   assert.ok(proIntentByCampaignWeeklyReportMd.includes('| xhs | 1 | 1 | 0 | 1 | 1 | 1 |'));
   assert.ok(proIntentByCampaignWeeklyReportMd.includes('| ads | 0 | 0 | 1 | 0 | 1 | N/A |'));
   assert.ok(proIntentByCampaignWeeklyReportMd.includes('| 空 campaign | 1 | 0 | 0 | 0 | 0 | 0 |'));
+
+  // append-session.ts (pure functions)
+  const appendSessionNormalized = normalizeAppendSessionValue({
+    clipCount: 2,
+    workflowState: 'collecting',
+    startedAt: now - 20,
+    lastAppendedAt: now - 10,
+    lastClearedAt: Number.POSITIVE_INFINITY,
+    lastClearedClipCount: -1,
+    lastAction: 'append',
+    sessionsStarted: 1,
+    sessionsCompleted: 1,
+    sessionsCleared: -1,
+    totalCollectedClips: 2,
+    maxClipsPerSession: 2,
+    sessionCompleted: true,
+    lastCompletedAt: now - 10,
+    lastCompletedClipCount: 2
+  });
+  assert.deepEqual(appendSessionNormalized, {
+    clipCount: 2,
+    workflowState: 'collecting',
+    startedAt: now - 20,
+    lastAppendedAt: now - 10,
+    lastAction: 'append',
+    sessionCompleted: true,
+    sessionsStarted: 1,
+    sessionsCompleted: 1,
+    sessionsCleared: 0,
+    totalCollectedClips: 2,
+    maxClipsPerSession: 2,
+    lastCompletedAt: now - 10,
+    lastCompletedClipCount: 2
+  });
+
+  const appendSessionFirst = applyAppendToAppendSession({ clipCount: 0 }, now - 30);
+  assert.equal(appendSessionFirst.clipCount, 1);
+  assert.equal(appendSessionFirst.workflowState, 'collecting');
+  assert.equal(appendSessionFirst.startedAt, now - 30);
+  assert.equal(appendSessionFirst.lastAppendedAt, now - 30);
+  assert.equal(appendSessionFirst.lastAction, 'append');
+  assert.equal(appendSessionFirst.sessionsStarted, 1);
+  assert.equal(appendSessionFirst.totalCollectedClips, 1);
+  assert.equal(appendSessionFirst.maxClipsPerSession, 1);
+
+  const appendSessionSecond = applyAppendToAppendSession(appendSessionFirst, now - 10);
+  assert.equal(appendSessionSecond.clipCount, 2);
+  assert.equal(appendSessionSecond.startedAt, now - 30);
+  assert.equal(appendSessionSecond.lastAppendedAt, now - 10);
+  assert.equal(appendSessionSecond.lastAction, 'append');
+  assert.equal(appendSessionSecond.sessionCompleted, true);
+  assert.equal(appendSessionSecond.sessionsStarted, 1);
+  assert.equal(appendSessionSecond.sessionsCompleted, 1);
+  assert.equal(appendSessionSecond.totalCollectedClips, 2);
+  assert.equal(appendSessionSecond.lastCompletedAt, now - 10);
+  assert.equal(appendSessionSecond.lastCompletedClipCount, 2);
+
+  const appendSessionCleared = applyClearToAppendSession(appendSessionSecond, now, 'clear');
+  assert.deepEqual(appendSessionCleared, {
+    clipCount: 0,
+    workflowState: 'idle',
+    lastClearedAt: now,
+    lastClearedClipCount: 2,
+    lastAction: 'clear',
+    sessionCompleted: false,
+    sessionsStarted: 1,
+    sessionsCompleted: 1,
+    sessionsCleared: 1,
+    totalCollectedClips: 2,
+    maxClipsPerSession: 2,
+    lastCompletedAt: now - 10,
+    lastCompletedClipCount: 2
+  });
+
+  const appendSessionSingleCopyReset = applyClearToAppendSession(appendSessionSecond, now + 10, 'single_copy');
+  assert.deepEqual(appendSessionSingleCopyReset, {
+    clipCount: 0,
+    workflowState: 'idle',
+    lastClearedAt: now + 10,
+    lastClearedClipCount: 2,
+    lastAction: 'single_copy',
+    sessionCompleted: false,
+    sessionsStarted: 1,
+    sessionsCompleted: 1,
+    sessionsCleared: 1,
+    totalCollectedClips: 2,
+    maxClipsPerSession: 2,
+    lastCompletedAt: now - 10,
+    lastCompletedClipCount: 2
+  });
+
+  const appendSessionAudit = buildAppendSessionAudit(appendSessionSecond);
+  assert.equal(appendSessionAudit.isActive, true);
+  assert.equal(appendSessionAudit.hasMultipleClips, true);
+  assert.equal(appendSessionAudit.isPrivacySafe, true);
+  assert.equal(appendSessionAudit.clipCount, 2);
+  assert.equal(appendSessionAudit.workflowState, 'collecting');
+  assert.equal(appendSessionAudit.sessionCompleted, true);
+  assert.equal(appendSessionAudit.sessionsCompleted, 1);
 
   // wom-summary.ts (pure functions)
   const womSummaryDisabled = buildWomSummary({

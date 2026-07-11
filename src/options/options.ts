@@ -25,6 +25,11 @@ import {
   type GrowthStats
 } from '../shared/growth-stats';
 import {
+  buildAppendSessionAudit,
+  getAppendSessionState,
+  type AppendSessionAudit
+} from '../shared/append-session';
+import {
   buildChromeWebStoreDetailUrl,
   buildChromeWebStoreReviewsUrl,
   buildWomUtmParams,
@@ -335,6 +340,11 @@ interface OptionsElements {
   growthFunnelView: HTMLTextAreaElement;
   growthFunnelRefreshButton: HTMLButtonElement;
   growthFunnelCopyButton: HTMLButtonElement;
+  appendWorkflowPanel: HTMLDetailsElement;
+  appendWorkflowView: HTMLTextAreaElement;
+  appendWorkflowRefreshButton: HTMLButtonElement;
+  appendWorkflowCopyButton: HTMLButtonElement;
+  appendWorkflowClearButton: HTMLButtonElement;
   growthStatsPanel: HTMLDetailsElement;
   growthStatsView: HTMLTextAreaElement;
   growthStatsRefreshButton: HTMLButtonElement;
@@ -546,6 +556,16 @@ function getElements(): OptionsElements {
     growthFunnelRefreshButton: (document.getElementById('growth-funnel-refresh') ||
       document.createElement('button')) as HTMLButtonElement,
     growthFunnelCopyButton: (document.getElementById('growth-funnel-copy') ||
+      document.createElement('button')) as HTMLButtonElement,
+    appendWorkflowPanel: (document.getElementById('append-workflow-panel') ||
+      document.createElement('details')) as HTMLDetailsElement,
+    appendWorkflowView: (document.getElementById('append-workflow-view') ||
+      document.createElement('textarea')) as HTMLTextAreaElement,
+    appendWorkflowRefreshButton: (document.getElementById('append-workflow-refresh') ||
+      document.createElement('button')) as HTMLButtonElement,
+    appendWorkflowCopyButton: (document.getElementById('append-workflow-copy') ||
+      document.createElement('button')) as HTMLButtonElement,
+    appendWorkflowClearButton: (document.getElementById('append-workflow-clear') ||
       document.createElement('button')) as HTMLButtonElement,
     growthStatsPanel: (document.getElementById('growth-stats-panel') ||
       document.createElement('details')) as HTMLDetailsElement,
@@ -2985,11 +3005,13 @@ interface GrowthFunnelExportSummary {
     telemetryCounts: Record<string, number>;
     isPrivacySafe: true;
   };
+  appendWorkflowAudit: AppendSessionAudit;
 }
 
 function buildGrowthFunnelExportSummary(
   summary: GrowthFunnelSummary,
-  telemetryEvents: TelemetryEvent[]
+  telemetryEvents: TelemetryEvent[],
+  appendWorkflowAudit: AppendSessionAudit
 ): GrowthFunnelExportSummary {
   const telemetryCounts = telemetryEvents.reduce<Record<string, number>>((acc, event) => {
     if (
@@ -3021,7 +3043,8 @@ function buildGrowthFunnelExportSummary(
       lastQuickPromptSlotUsedSlot: summary.lastQuickPromptSlotUsedSlot,
       telemetryCounts,
       isPrivacySafe: true
-    }
+    },
+    appendWorkflowAudit
   };
 }
 
@@ -3030,11 +3053,16 @@ function formatGrowthFunnelSummaryAsJson(summary: GrowthFunnelExportSummary): st
 }
 
 async function readGrowthFunnelSummaryForDisplay(): Promise<GrowthFunnelExportSummary> {
-  const [stats, telemetryEvents] = await Promise.all([
+  const [stats, telemetryEvents, appendSession] = await Promise.all([
     getGrowthStats(),
-    readTelemetryEventsForDisplay()
+    readTelemetryEventsForDisplay(),
+    getAppendSessionState()
   ]);
-  return buildGrowthFunnelExportSummary(buildGrowthFunnelSummary(stats, Date.now()), telemetryEvents);
+  return buildGrowthFunnelExportSummary(
+    buildGrowthFunnelSummary(stats, Date.now()),
+    telemetryEvents,
+    buildAppendSessionAudit(appendSession)
+  );
 }
 
 async function refreshGrowthFunnelPanel(): Promise<GrowthFunnelExportSummary | null> {
@@ -3076,6 +3104,70 @@ async function copyGrowthFunnelSummaryToClipboard(): Promise<void> {
       return;
     }
     showNotification(getMessage('growthFunnelCopyFailed'), 'error');
+  }
+}
+
+function formatAppendWorkflowAuditAsJson(audit: AppendSessionAudit): string {
+  return `${JSON.stringify(audit, null, 2)}\n`;
+}
+
+async function readAppendWorkflowAuditForDisplay(): Promise<AppendSessionAudit> {
+  const appendSession = await getAppendSessionState();
+  return buildAppendSessionAudit(appendSession);
+}
+
+async function refreshAppendWorkflowPanel(): Promise<AppendSessionAudit | null> {
+  if (!elements?.appendWorkflowView) return null;
+
+  try {
+    const audit = await readAppendWorkflowAuditForDisplay();
+    elements.appendWorkflowView.value = formatAppendWorkflowAuditAsJson(audit);
+    return audit;
+  } catch (error) {
+    console.warn('Failed to refresh append workflow panel:', error);
+    showNotification(getMessage('appendWorkflowRefreshFailed'), 'error');
+    return null;
+  }
+}
+
+async function copyAppendWorkflowAuditToClipboard(): Promise<void> {
+  let audit: AppendSessionAudit;
+  let text: string;
+
+  try {
+    audit = await readAppendWorkflowAuditForDisplay();
+    text = formatAppendWorkflowAuditAsJson(audit);
+  } catch (error) {
+    console.warn('Failed to read append workflow audit:', error);
+    showNotification(getMessage('appendWorkflowCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await writeTextToClipboard(text);
+    showNotification(getMessage('appendWorkflowCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy append workflow audit:', error);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
+    if (ok) {
+      showNotification(getMessage('appendWorkflowCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('appendWorkflowCopyFailed'), 'error');
+  }
+}
+
+async function clearAppendWorkflowAndRefresh(): Promise<void> {
+  try {
+    await chrome.runtime.sendMessage({
+      type: 'clear-append-session',
+      clearedAt: Date.now()
+    });
+    await refreshAppendWorkflowPanel();
+    showNotification(getMessage('appendWorkflowClearSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to clear append workflow:', error);
+    showNotification(getMessage('appendWorkflowClearFailed'), 'error');
   }
 }
 
@@ -3319,6 +3411,16 @@ function setupEventListeners() {
   });
   elements.growthFunnelCopyButton.addEventListener('click', () => {
     void copyGrowthFunnelSummaryToClipboard();
+  });
+
+  elements.appendWorkflowRefreshButton.addEventListener('click', () => {
+    void refreshAppendWorkflowPanel();
+  });
+  elements.appendWorkflowCopyButton.addEventListener('click', () => {
+    void copyAppendWorkflowAuditToClipboard();
+  });
+  elements.appendWorkflowClearButton.addEventListener('click', () => {
+    void clearAppendWorkflowAndRefresh();
   });
 
   // 本地增长统计面板
@@ -3987,6 +4089,7 @@ async function initialize() {
     await refreshProFunnelPanel();
     await refreshWomSummaryPanel();
     await refreshGrowthFunnelPanel();
+    await refreshAppendWorkflowPanel();
     await refreshGrowthStatsPanel();
     renderChatServices();
     updateChatServiceOptions();

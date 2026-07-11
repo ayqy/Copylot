@@ -687,6 +687,26 @@
       }
     }
   },
+  "popupAppendSessionEyebrow": {
+    "message": "多段收集中",
+    "description": "Popup 追加收集卡片眉标题"
+  },
+  "popupAppendSessionTitle": {
+    "message": "已收集 $1 段内容",
+    "description": "Popup 追加收集卡片标题"
+  },
+  "popupAppendSessionHintSingle": {
+    "message": "继续按住 Shift 收下一段，或先清空这次收集。",
+    "description": "Popup 单段追加收集提示"
+  },
+  "popupAppendSessionHintReady": {
+    "message": "当前剪贴板已合并 $1 段内容，可以直接粘贴到 AI，或继续追加。",
+    "description": "Popup 多段追加收集提示"
+  },
+  "popupAppendSessionReset": {
+    "message": "清空收集",
+    "description": "Popup 清空当前追加收集按钮"
+  },
   "popupOnboardingTitle": {
     "message": "第一次干净复制引导",
     "description": "引导弹窗标题"
@@ -1818,6 +1838,46 @@
   "growthFunnelRefreshFailed": {
     "message": "刷新失败",
     "description": "本地漏斗摘要刷新失败提示"
+  },
+  "appendWorkflowPanelTitle": {
+    "message": "追加模式状态",
+    "description": "隐私页追加模式面板标题"
+  },
+  "appendWorkflowPanelHint": {
+    "message": "这里只记录追加模式的匿名计数、当前段数与状态枚举，用于核对多段收集是否被正确清理与复用。",
+    "description": "隐私页追加模式面板提示"
+  },
+  "appendWorkflowRefresh": {
+    "message": "刷新数据",
+    "description": "刷新追加模式状态按钮"
+  },
+  "appendWorkflowCopy": {
+    "message": "复制数据",
+    "description": "复制追加模式状态按钮"
+  },
+  "appendWorkflowClear": {
+    "message": "清空当前收集",
+    "description": "清空追加模式状态按钮"
+  },
+  "appendWorkflowCopySuccess": {
+    "message": "追加模式状态已复制",
+    "description": "复制追加模式状态成功提示"
+  },
+  "appendWorkflowCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "复制追加模式状态失败提示"
+  },
+  "appendWorkflowRefreshFailed": {
+    "message": "刷新失败",
+    "description": "刷新追加模式状态失败提示"
+  },
+  "appendWorkflowClearSuccess": {
+    "message": "当前追加收集已清空",
+    "description": "清空追加模式状态成功提示"
+  },
+  "appendWorkflowClearFailed": {
+    "message": "清空追加收集失败",
+    "description": "清空追加模式状态失败提示"
   },
   "growthStatsPanelTitle": {
     "message": "高级使用统计",

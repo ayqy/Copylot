@@ -578,6 +578,37 @@
           </div>
 
           <div class="chat-services-section">
+            <details id="append-workflow-panel" class="telemetry-events-panel">
+              <summary class="telemetry-events-summary">
+                <span data-i18n="appendWorkflowPanelTitle">追加模式状态</span>
+              </summary>
+              <div class="telemetry-events-content">
+                <p class="pro-privacy-hint" data-i18n="appendWorkflowPanelHint">
+                  这里只记录追加模式的匿名计数、当前段数与状态枚举，用于核对多段收集是否被正确清理与复用。
+                </p>
+                <div class="telemetry-events-actions">
+                  <button id="append-workflow-refresh" class="secondary-btn" type="button" data-i18n="appendWorkflowRefresh">
+                    刷新数据
+                  </button>
+                  <button id="append-workflow-copy" class="secondary-btn" type="button" data-i18n="appendWorkflowCopy">
+                    复制数据
+                  </button>
+                  <button id="append-workflow-clear" class="secondary-btn danger-btn" type="button" data-i18n="appendWorkflowClear">
+                    清空当前收集
+                  </button>
+                </div>
+                <textarea
+                  id="append-workflow-view"
+                  class="telemetry-events-view"
+                  rows="10"
+                  readonly
+                  spellcheck="false"
+                ></textarea>
+              </div>
+            </details>
+          </div>
+
+          <div class="chat-services-section">
             <details id="growth-stats-panel" class="telemetry-events-panel">
               <summary class="telemetry-events-summary">
                 <span data-i18n="growthStatsPanelTitle">高级使用统计</span>

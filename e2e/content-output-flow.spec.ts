@@ -4,7 +4,7 @@ import {
   expectClipboardTextEventually,
   normalizeClipboardText
 } from './helpers/clipboard';
-import { getBadgeText, seedSyncStorage } from './helpers/extension-state';
+import { getBadgeText, getStorageSnapshot, openPopupPage, seedSyncStorage } from './helpers/extension-state';
 
 test('markdown output includes title url and preserves inline links', async ({
   extensionContext,
@@ -105,6 +105,7 @@ test('plaintext output strips markdown formatting and omits extras', async ({
 test('append mode merges two copies and updates action badge', async ({
   extensionContext,
   driverPage,
+  extensionId,
   fixtureOrigin
 }) => {
   await clearClipboard(driverPage);
@@ -148,11 +149,21 @@ test('append mode merges two copies and updates action badge', async ({
     await page.keyboard.up('Shift');
 
     await expect.poll(() => getBadgeText(driverPage)).toBe('2');
+    const popupPage = await openPopupPage(extensionContext, extensionId);
+    await expect(popupPage.locator('#append-session-card')).toBeVisible();
+    await expect(popupPage.locator('#append-session-title')).toContainText('2');
+    await popupPage.locator('#append-session-reset-button').click();
+    await expect.poll(() => getBadgeText(driverPage)).toBe('');
+
+    const storageSnapshot = await getStorageSnapshot(driverPage);
+    expect(JSON.stringify(storageSnapshot.local.copilot_append_session || {})).toContain('"clipCount":0');
 
     const text = normalizeClipboardText(await expectClipboardTextEventually(/---/, driverPage));
     expect(text).toContain('Copylot should capture this paragraph');
     expect(text).toContain('A second paragraph exists');
     expect(text).toContain('---');
+
+    await popupPage.close();
   } finally {
     await page.close();
   }

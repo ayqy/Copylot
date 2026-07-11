@@ -1,6 +1,7 @@
 import { test, expect } from './fixtures';
 import { clearClipboard, expectClipboardTextEventually } from './helpers/clipboard';
 import {
+  getBadgeText,
   getOpenedUrls,
   getStorageSnapshot,
   openExtensionPage,
@@ -70,6 +71,77 @@ test('popup keeps WOM share/rate actions locked before second successful copy', 
         rateOpened: false,
         shareCopied: false
       });
+  } finally {
+    await page.close();
+  }
+});
+
+test('popup shows active append collection state and can clear it', async ({
+  extensionContext,
+  extensionId,
+  driverPage,
+  fixtureOrigin
+}) => {
+  await clearClipboard(driverPage);
+  await seedSyncStorage(driverPage, {
+    copilot_settings: {
+      isMagicCopyEnabled: true,
+      isHoverMagicCopyEnabled: false,
+      isAnonymousUsageDataEnabled: true,
+      outputFormat: 'plaintext',
+      tableOutputFormat: 'markdown',
+      attachTitle: false,
+      attachURL: false,
+      language: 'en',
+      interactionMode: 'click',
+      userPrompts: [],
+      isClipboardAccumulatorEnabled: true,
+      chatServices: [],
+      defaultAutoOpenChat: false,
+      popupOnboardingVersion: 1,
+      popupOnboardingCompletedVersion: 1,
+      popupOnboardingCompletedAt: 1
+    }
+  });
+
+  const page = await extensionContext.newPage();
+  try {
+    await page.goto(`${fixtureOrigin}/article.html`);
+
+    const first = page.locator('#article-paragraph');
+    await first.selectText();
+    await first.click();
+    await page.keyboard.down('Shift');
+    await page.locator('#ai-copilot-copy-btn').click();
+    await page.keyboard.up('Shift');
+
+    const second = page.locator('#article-second-paragraph');
+    await second.selectText();
+    await second.click();
+    await page.keyboard.down('Shift');
+    await page.locator('#ai-copilot-copy-btn').click();
+    await page.keyboard.up('Shift');
+
+    await expect.poll(() => getBadgeText(driverPage)).toBe('2');
+
+    await page.bringToFront();
+    const popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
+    await completePopupOnboardingIfVisible(popup);
+
+    await expect(popup.locator('#append-session-card')).toBeVisible();
+    await expect(popup.locator('#append-session-title')).toContainText('2');
+
+    await popup.locator('#append-session-reset-button').click();
+
+    await expect.poll(() => getBadgeText(driverPage)).toBe('');
+    await expect
+      .poll(async () => {
+        const snapshot = await getStorageSnapshot(driverPage);
+        const appendSession = snapshot.local.copilot_append_session as { clipCount?: number } | undefined;
+        return appendSession?.clipCount ?? 0;
+      })
+      .toBe(0);
+    await expect(popup.locator('#append-session-card')).toBeHidden();
   } finally {
     await page.close();
   }

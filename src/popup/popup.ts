@@ -35,6 +35,11 @@ import {
   type GrowthFunnelSummary
 } from '../shared/growth-stats';
 import {
+  buildAppendSessionAudit,
+  getAppendSessionState,
+  type AppendSessionAudit
+} from '../shared/append-session';
+import {
   recordTelemetryEvent,
   sanitizeTelemetryEvents,
   TELEMETRY_EVENTS_KEY
@@ -53,6 +58,10 @@ interface PopupElements {
   reusePrimaryButton: HTMLButtonElement;
   reusePrimaryButtonLabel: HTMLElement;
   reusePrimaryButtonShortcut: HTMLElement;
+  appendSessionCard: HTMLElement;
+  appendSessionTitle: HTMLElement;
+  appendSessionDescription: HTMLElement;
+  appendSessionResetButton: HTMLButtonElement;
   enableMagicCopySwitch: HTMLInputElement;
   enableHoverMagicCopySwitch: HTMLInputElement;
   enableClipboardAccumulatorSwitch: HTMLInputElement;
@@ -217,6 +226,10 @@ function getElements(): PopupElements {
     reusePrimaryButton: document.getElementById('reuse-primary-button') as HTMLButtonElement,
     reusePrimaryButtonLabel: document.getElementById('reuse-primary-button-label') as HTMLElement,
     reusePrimaryButtonShortcut: document.getElementById('reuse-primary-button-shortcut') as HTMLElement,
+    appendSessionCard: document.getElementById('append-session-card') as HTMLElement,
+    appendSessionTitle: document.getElementById('append-session-title') as HTMLElement,
+    appendSessionDescription: document.getElementById('append-session-description') as HTMLElement,
+    appendSessionResetButton: document.getElementById('append-session-reset-button') as HTMLButtonElement,
     enableMagicCopySwitch: document.getElementById('enable-magic-copy-switch') as HTMLInputElement,
     enableHoverMagicCopySwitch: document.getElementById(
       'enable-hover-magic-copy-switch'
@@ -572,6 +585,26 @@ function renderFirstCopySummary(summary: GrowthFunnelSummary) {
   syncWomActionAvailability(summary);
 }
 
+function renderAppendSessionExperience(audit: AppendSessionAudit | null) {
+  const clipCount = audit?.clipCount || 0;
+  const shouldShowCard = clipCount > 0;
+  elements.appendSessionCard.hidden = !shouldShowCard;
+
+  if (!shouldShowCard) {
+    elements.appendSessionResetButton.disabled = true;
+    elements.appendSessionTitle.textContent = '';
+    elements.appendSessionDescription.textContent = '';
+    return;
+  }
+
+  elements.appendSessionResetButton.disabled = false;
+  elements.appendSessionTitle.textContent = getMessage('popupAppendSessionTitle', [String(clipCount)]);
+  elements.appendSessionDescription.textContent =
+    clipCount > 1
+      ? getMessage('popupAppendSessionHintReady', [String(clipCount)])
+      : getMessage('popupAppendSessionHintSingle');
+}
+
 function syncWomActionAvailability(summary: GrowthFunnelSummary) {
   const eligible = summary.isEligibleForWomActions;
   const lockedHint = getMessage('womActionsLockedHint', [String(summary.remainingSuccessfulCopiesForWomActions)]);
@@ -644,14 +677,42 @@ async function loadFirstCopySummary() {
   }
 }
 
+async function loadAppendSessionSummary() {
+  try {
+    const state = await getAppendSessionState();
+    renderAppendSessionExperience(buildAppendSessionAudit(state));
+  } catch (error) {
+    console.warn('Failed to load append session summary:', error);
+    renderAppendSessionExperience(buildAppendSessionAudit({ clipCount: 0 }));
+  }
+}
+
 async function loadSettingsAndCommands() {
   try {
     const [settings] = await Promise.all([getSettings(), loadCommandShortcuts()]);
     currentSettings = settings;
     updateUIFromSettings(currentSettings);
-    await loadFirstCopySummary();
+    await Promise.all([loadFirstCopySummary(), loadAppendSessionSummary()]);
   } catch (error) {
     console.error('Error loading popup settings:', error);
+  }
+}
+
+async function clearAppendSessionFromPopup() {
+  elements.appendSessionResetButton.disabled = true;
+
+  try {
+    const response = await chrome.runtime.sendMessage({
+      type: 'clear-append-session',
+      clearedAt: Date.now()
+    });
+    if (!response?.success) {
+      throw new Error(response?.error || getMessage('appendWorkflowClearFailed'));
+    }
+    await loadAppendSessionSummary();
+  } catch (error) {
+    console.warn(getMessage('appendWorkflowClearFailed'), error);
+    elements.appendSessionResetButton.disabled = false;
   }
 }
 
@@ -689,6 +750,9 @@ function setupSettingsListeners() {
   elements.enableMagicCopySwitch.addEventListener('change', saveCurrentSettings);
   elements.enableHoverMagicCopySwitch.addEventListener('change', saveCurrentSettings);
   elements.enableClipboardAccumulatorSwitch.addEventListener('change', saveCurrentSettings);
+  elements.appendSessionResetButton.addEventListener('click', () => {
+    void clearAppendSessionFromPopup();
+  });
   elements.toggleMoreSettingsButton.addEventListener('click', () => {
     const expanded = elements.toggleMoreSettingsButton.getAttribute('aria-expanded') === 'true';
     setMoreSettingsExpanded(!expanded);

@@ -687,6 +687,26 @@
       }
     }
   },
+  "popupAppendSessionEyebrow": {
+    "message": "Multi-part collection in progress",
+    "description": "Popup eyebrow for active append session"
+  },
+  "popupAppendSessionTitle": {
+    "message": "$1 clips collected",
+    "description": "Popup title for active append session"
+  },
+  "popupAppendSessionHintSingle": {
+    "message": "Hold Shift for the next piece, or clear this collection before you start over.",
+    "description": "Popup hint when only one appended clip is active"
+  },
+  "popupAppendSessionHintReady": {
+    "message": "The clipboard already contains $1 merged clips. Paste it into AI now or keep collecting.",
+    "description": "Popup hint when multiple appended clips are active"
+  },
+  "popupAppendSessionReset": {
+    "message": "Clear collection",
+    "description": "Popup button to clear the current append collection"
+  },
   "popupOnboardingTitle": {
     "message": "First clean copy guide",
     "description": "Onboarding modal title"
@@ -1818,6 +1838,46 @@
   "growthFunnelRefreshFailed": {
     "message": "Refresh failed",
     "description": "Growth funnel summary refresh failure notification"
+  },
+  "appendWorkflowPanelTitle": {
+    "message": "Append Mode Status",
+    "description": "Append mode panel title in Options privacy tab"
+  },
+  "appendWorkflowPanelHint": {
+    "message": "Only anonymous counts, current segment totals, and workflow enums are stored here so you can verify multi-step collection cleanup and reuse without storing copied content.",
+    "description": "Append mode panel hint"
+  },
+  "appendWorkflowRefresh": {
+    "message": "Refresh Data",
+    "description": "Append mode refresh button label"
+  },
+  "appendWorkflowCopy": {
+    "message": "Copy Data",
+    "description": "Append mode copy button label"
+  },
+  "appendWorkflowClear": {
+    "message": "Clear Current Collection",
+    "description": "Append mode clear button label"
+  },
+  "appendWorkflowCopySuccess": {
+    "message": "Append mode status copied to clipboard",
+    "description": "Append mode copy success notification"
+  },
+  "appendWorkflowCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Append mode copy failure notification"
+  },
+  "appendWorkflowRefreshFailed": {
+    "message": "Refresh failed",
+    "description": "Append mode refresh failure notification"
+  },
+  "appendWorkflowClearSuccess": {
+    "message": "Current append collection cleared",
+    "description": "Append mode clear success notification"
+  },
+  "appendWorkflowClearFailed": {
+    "message": "Failed to clear the current append collection",
+    "description": "Append mode clear failure notification"
   },
   "growthStatsPanelTitle": {
     "message": "Advanced Usage Stats",

@@ -6,6 +6,7 @@ import { getRequiredElement, loadExtensionPage } from './test-helpers/extension-
 const SETTINGS_KEY = 'copilot_settings';
 const GROWTH_STATS_KEY = 'copilot_growth_stats';
 const TELEMETRY_EVENTS_KEY = 'copilot_telemetry_events';
+const APPEND_SESSION_KEY = 'copilot_append_session';
 
 interface TestChatService {
   id: string;
@@ -136,6 +137,12 @@ async function runPopupAssertions(): Promise<void> {
         successfulCopyCount: 25,
         popupOnboardingCompletedVersion: 1
       },
+      [APPEND_SESSION_KEY]: {
+        clipCount: 2,
+        startedAt: Date.now() - 7_000,
+        lastAppendedAt: Date.now() - 5_000,
+        lastAction: 'append'
+      },
       [TELEMETRY_EVENTS_KEY]: []
     }
   });
@@ -235,6 +242,16 @@ async function runPopupAssertions(): Promise<void> {
       '#reuse-primary-button'
     );
     assert.match(reusePrimaryButton.textContent || '', /Summary/i);
+    const appendSessionCard = getRequiredElement<HTMLElement>(
+      page.dom.window.document,
+      '#append-session-card'
+    );
+    assert.equal(appendSessionCard.hidden, false);
+    const appendSessionTitle = getRequiredElement<HTMLElement>(
+      page.dom.window.document,
+      '#append-session-title'
+    );
+    assert.match(appendSessionTitle.textContent || '', /2/);
 
     const addPromptButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
@@ -350,6 +367,12 @@ async function runOptionsAssertions(): Promise<void> {
         successfulCopyCount: 30,
         firstPopupOpenedAt: Date.now() - 9_000,
         firstSuccessfulCopyAt: Date.now() - 8_000
+      },
+      [APPEND_SESSION_KEY]: {
+        clipCount: 2,
+        startedAt: Date.now() - 6_000,
+        lastAppendedAt: Date.now() - 3_000,
+        lastAction: 'append'
       },
       [TELEMETRY_EVENTS_KEY]: [
         {
@@ -485,6 +508,40 @@ async function runOptionsAssertions(): Promise<void> {
     assert.ok(distributionPack.includes('chromewebstore.google.com/detail/ai-copilot'));
     assert.ok(distributionPack.includes('/privacy'));
 
+    const appendWorkflowRefreshButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#append-workflow-refresh'
+    );
+    clickElement(appendWorkflowRefreshButton);
+    await page.waitForIdle();
+    const appendWorkflowView = getRequiredElement<HTMLTextAreaElement>(
+      page.dom.window.document,
+      '#append-workflow-view'
+    );
+    assert.ok(appendWorkflowView.value.includes('"clipCount": 2'));
+    assert.ok(appendWorkflowView.value.includes('"sessionsCompleted": 1'));
+    assert.equal(appendWorkflowView.value.includes('example.com'), false);
+
+    const appendWorkflowCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#append-workflow-copy'
+    );
+    clickElement(appendWorkflowCopyButton);
+    await page.waitForIdle();
+    assert.ok((await page.clipboard.readText()).includes('"workflowState": "collecting"'));
+
+    const appendWorkflowClearButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#append-workflow-clear'
+    );
+    clickElement(appendWorkflowClearButton);
+    await page.waitForIdle();
+    assert.ok(
+      getRequiredElement<HTMLTextAreaElement>(page.dom.window.document, '#append-workflow-view').value.includes(
+        '"clipCount": 0'
+      )
+    );
+
     const womShareOpenButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
       '#wom-share-open'
@@ -524,6 +581,13 @@ async function runOptionsAssertions(): Promise<void> {
       chromeMock.logs.createdTabs.at(-1)?.url ?? '',
       /^https:\/\/github\.com\/ayqy\/copy\/issues\/new\?/
     );
+
+    const growthFunnelView = getRequiredElement<HTMLTextAreaElement>(
+      page.dom.window.document,
+      '#growth-funnel-view'
+    );
+    assert.ok(growthFunnelView.value.includes('"appendWorkflowAudit"'));
+    assert.ok(growthFunnelView.value.includes('"clipCount": 2'));
 
     const womEvidencePackCopyButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,

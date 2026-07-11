@@ -521,6 +521,51 @@ function showChatRedirectNotification(chatServiceName: string): void {
   }, 4000);
 }
 
+function showAppendModeNotification(segmentCount: number, readyForReuse: boolean): void {
+  const notification = document.createElement('div');
+  notification.id = 'ai-copilot-append-notification';
+  const segmentsLabel = `${segmentCount} 段`;
+  const detail = readyForReuse
+    ? `已连续收集 ${segmentsLabel}，可继续按住 Shift 追加，或清空后开始下一轮。`
+    : `已开始追加收集，当前 ${segmentsLabel}。继续按住 Shift 可把下一段合并进去。`;
+
+  notification.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #111827;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    box-shadow: 0 8px 24px rgba(17, 24, 39, 0.28);
+    z-index: 10000;
+    max-width: 320px;
+    transform: translateY(12px);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  `;
+  notification.textContent = detail;
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.style.opacity = '1';
+    notification.style.transform = 'translateY(0)';
+  }, 10);
+
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    notification.style.transform = 'translateY(12px)';
+    setTimeout(() => {
+      if (notification.parentElement) {
+        notification.parentElement.removeChild(notification);
+      }
+    }, 220);
+  }, 2600);
+}
+
 // Function to add all event listeners and inject UI
 function enableMagicCopyFeatures(): void {
   if (isActive) return; // Already active
@@ -883,6 +928,12 @@ async function handleMainCopyClick(): Promise<void> {
         isShiftPressed: isShiftPressed
       }, (response) => {
         if (response.success) {
+          if (response.action === 'appended' && response.appendSession) {
+            showAppendModeNotification(
+              typeof response.appendSession.clipCount === 'number' ? response.appendSession.clipCount : 1,
+              Boolean(response.appendSession.sessionCompleted)
+            );
+          }
           // @ts-ignore: updateButtonState is available from inlined ui-injector.ts
           updateButtonState(copyButtonElement!, 'copied');
         } else {

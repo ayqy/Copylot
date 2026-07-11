@@ -15,6 +15,11 @@ import {
   type ReuseEntrySlot,
   type ReuseEntrySource
 } from './shared/growth-stats';
+import {
+  buildAppendSessionAudit,
+  clearAppendSessionState,
+  recordAppendSessionClip
+} from './shared/append-session';
 
 const isE2EBuild = process.env.BUILD_TARGET === 'e2e';
 const E2E_LAST_COPIED_TEXT_KEY = 'copilot_e2e_last_copied_text';
@@ -433,17 +438,24 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const { text, isShiftPressed } = message;
         
         // Forward the message to the content script in the active tab
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
           if (tabs[0] && tabs[0].id) {
             let textToSend: string;
+            const actionAt = Date.now();
+            let appendAudit: ReturnType<typeof buildAppendSessionAudit> | null = null;
             
             if (isShiftPressed) {
+              if (clipboardStack.length === 0) {
+                await clearAppendSessionState(actionAt, 'single_copy');
+              }
               // Append mode: add to clipboard stack and combine with existing content
               clipboardStack.push(text);
               chrome.action.setBadgeText({ text: clipboardStack.length.toString() });
               textToSend = clipboardStack.join('\n\n---\n\n');
+              appendAudit = buildAppendSessionAudit(await recordAppendSessionClip(actionAt));
             } else {
               // Normal mode: clear the stack and copy just the current text
+              await clearAppendSessionState(actionAt, 'single_copy');
               clipboardStack = [text];
               chrome.action.setBadgeText({ text: '' });
               textToSend = text;
@@ -455,15 +467,27 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 type: 'copy-to-clipboard-from-background',
                 text: textToSend
               },
-              (response) => {
+              async (response) => {
                 if (chrome.runtime.lastError) {
                   console.warn('Could not send message to content script:', chrome.runtime.lastError.message);
                   sendResponse({ success: true, warning: chrome.i18n.getMessage('contentScriptUnavailable') || 'Content script not available.' });
                 } else {
-                  sendResponse({ 
-                    success: response.success, 
+                  if (response.success) {
+                    if (isShiftPressed && appendAudit) {
+                      sendResponse({
+                        success: response.success,
+                        action: 'appended',
+                        error: response.error,
+                        appendSession: appendAudit
+                      });
+                      return;
+                    }
+                  }
+
+                  sendResponse({
+                    success: response.success,
                     action: isShiftPressed ? 'appended' : 'copied',
-                    error: response.error 
+                    error: response.error
                   });
                 }
               }
@@ -475,6 +499,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
         return true; // Indicate that the response is asynchronous
       }
+
+    case 'clear-append-session':
+      (async () => {
+        try {
+          clipboardStack = [];
+          await chrome.action.setBadgeText({ text: '' });
+          const state = await clearAppendSessionState(
+            typeof message.clearedAt === 'number' ? message.clearedAt : Date.now(),
+            'clear'
+          );
+          sendResponse({ success: true, state });
+        } catch (error) {
+          console.error('Failed to clear append session:', error);
+          sendResponse({ success: false, error: (error as Error).message });
+        }
+      })();
+      return true;
 
     case 'ping':
       sendResponse({ success: true, message: 'pong' });
@@ -524,12 +565,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           sendResponse({ success: false, error: (error as Error).message });
         }
       })();
-      break;
-
-    case 'clear-clipboard-stack':
-      clipboardStack = [];
-      chrome.action.setBadgeText({ text: '' });
-      sendResponse({ success: true });
       break;
 
     case 'e2e:reset-state':
