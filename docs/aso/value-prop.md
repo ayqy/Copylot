@@ -32,3 +32,9 @@ EN:
 - Local by default: extraction/cleanup/formatting runs on your device.
 - No copied content collection/upload: we do not collect, store, or upload the web content you copy.
 - Anonymous usage data is OFF by default: when enabled, it only stores a local anonymous event log (event name, timestamp, a few enum-like fields). No copied/page content; no network sending; turning it off clears the local event log immediately.
+
+## 5) 当前 Pro 领先路线话术（v4-9）
+- 中文：当前领先路线是“高级页面清洗验证”。对外说明优先强调“长文、评论区和推荐位噪声明显的页面，也能更快变成 AI 友好的干净复制结果”。
+- EN: The current leading Pro route is “Advanced page cleaning validation.” External copy should prioritize “cleaner AI-ready output for long articles, comment-heavy pages, and recommendation-heavy layouts.”
+- 中文：对外仍只能写“路线验证中”“当前优先验证方向”，不能写成“已上线收费功能”或“已提供订阅能力”。
+- EN: External copy must stay in “currently validating” language. Do not imply that paid features or subscriptions are already live.

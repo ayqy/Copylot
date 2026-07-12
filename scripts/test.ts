@@ -448,6 +448,21 @@ async function run(): Promise<void> {
       'Pro route validation comparison outputs should be deterministic'
     )
   );
+  await runStep(startStep('build-pro-route-validation-writeback-pack', 'quality'), () =>
+    assertDeterministic(
+      './node_modules/.bin/ts-node',
+      [
+        'scripts/build-pro-route-validation-writeback-pack.ts',
+        'docs/evidence/v4-8/comparison-pack/copylot-pro-route-validation-comparison-v4-8.json',
+        'docs/evidence/v4-9/writeback-pack'
+      ],
+      [
+        'docs/evidence/v4-9/writeback-pack/copylot-pro-route-validation-writeback-v4-9.md',
+        'docs/evidence/v4-9/writeback-pack/copylot-pro-route-validation-writeback-v4-9.json'
+      ],
+      'Pro route validation writeback outputs should be deterministic'
+    )
+  );
   await runStep(startStep('build-weekly-channel-ops-trend', 'quality'), () =>
     assertDeterministic(
       './node_modules/.bin/ts-node',

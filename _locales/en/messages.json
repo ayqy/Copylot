@@ -470,6 +470,157 @@
       }
     }
   },
+  "proRouteValidationWritebackTitle": {
+    "message": "Leading route writeback pack",
+    "description": "Options Pro tab: route writeback title"
+  },
+  "proRouteValidationWritebackHint": {
+    "message": "Turn the current leading route into reusable route-page, store-copy, and next-summary text so the decision leaves the dashboard.",
+    "description": "Options Pro tab: route writeback hint"
+  },
+  "proRouteValidationWritebackCopy": {
+    "message": "Copy leading route writeback pack",
+    "description": "Options Pro tab: copy route writeback pack button"
+  },
+  "proRouteValidationWritebackDownloadJson": {
+    "message": "Download leading route writeback JSON",
+    "description": "Options Pro tab: download route writeback json button"
+  },
+  "proRouteValidationWritebackPrivacyHint": {
+    "message": "Uses only local anonymous aggregated signals. Never includes copied page content, URLs, titles, or contact details.",
+    "description": "Options Pro tab: route writeback privacy hint"
+  },
+  "proRouteValidationWritebackMdTitle": {
+    "message": "V4-9 Leading route writeback pack",
+    "description": "Route writeback markdown title"
+  },
+  "proRouteValidationWritebackMdSectionRoutePage": {
+    "message": "Route page",
+    "description": "Route writeback markdown route page section heading"
+  },
+  "proRouteValidationWritebackMdSectionStore": {
+    "message": "Store copy",
+    "description": "Route writeback markdown store section heading"
+  },
+  "proRouteValidationWritebackMdSectionSummary": {
+    "message": "Summary",
+    "description": "Route writeback markdown summary section heading"
+  },
+  "proRouteValidationWritebackNoLeader": {
+    "message": "There is no writeback-ready leading route yet. Keep collecting real task samples.",
+    "description": "Route writeback fallback when no leader exists"
+  },
+  "proRouteValidationWritebackBoundary": {
+    "message": "Keep the validation entry visible, but do not imply that payment or subscriptions are already shipped.",
+    "description": "Route writeback route-page boundary line"
+  },
+  "proRouteValidationWritebackStoreBoundary": {
+    "message": "Stay inside roadmap validation language; do not imply that charging is already live.",
+    "description": "Route writeback store boundary line"
+  },
+  "proRouteValidationWritebackSummaryNext": {
+    "message": "Next step: use this writeback pack together with the route comparison summary and the A/B/C gate before any payment evaluation.",
+    "description": "Route writeback summary next-step line"
+  },
+  "proRouteValidationWritebackScenarioAdvanced": {
+    "message": "long articles, comment-heavy pages, and recommendation-heavy layouts",
+    "description": "Route writeback scenario for advanced cleaning"
+  },
+  "proRouteValidationWritebackScenarioBulk": {
+    "message": "multi-page research runs that need collection and sorting",
+    "description": "Route writeback scenario for bulk collection"
+  },
+  "proRouteValidationWritebackScenarioStructured": {
+    "message": "handoffs that need to move cleanly into tables, Notion, or downstream AI workflows",
+    "description": "Route writeback scenario for structured export"
+  },
+  "proRouteValidationWritebackValueAdvanced": {
+    "message": "remove ads, comments, and recommendation noise before the copy reaches an AI workflow",
+    "description": "Route writeback value for advanced cleaning"
+  },
+  "proRouteValidationWritebackValueBulk": {
+    "message": "reduce tab-hopping and manual stitching when the work spans multiple pages",
+    "description": "Route writeback value for bulk collection"
+  },
+  "proRouteValidationWritebackValueStructured": {
+    "message": "reduce downstream reformatting before the copy moves into tables, notes, or AI workflows",
+    "description": "Route writeback value for structured export"
+  },
+  "proRouteValidationWritebackFocusAdvanced": {
+    "message": "less rework in noisy page-cleaning tasks",
+    "description": "Route writeback focus for advanced cleaning"
+  },
+  "proRouteValidationWritebackFocusBulk": {
+    "message": "more complete multi-page collection and organization",
+    "description": "Route writeback focus for bulk collection"
+  },
+  "proRouteValidationWritebackFocusStructured": {
+    "message": "smoother downstream structured handoff",
+    "description": "Route writeback focus for structured export"
+  },
+  "proRouteValidationWritebackRouteHeadline": {
+    "message": "Write back first: $TRACK$ for $SCENARIO$",
+    "description": "Route writeback route-page headline",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      },
+      "scenario": {
+        "content": "$2"
+      }
+    }
+  },
+  "proRouteValidationWritebackRouteProof": {
+    "message": "recent_7d total_signals=$TOTAL_SIGNALS$, signal_gap=$SIGNAL_GAP$, route_opened=$ROUTE_OPENED$, total_copies=$TOTAL_COPIES$",
+    "description": "Route writeback route-page proof line",
+    "placeholders": {
+      "total_signals": {
+        "content": "$1"
+      },
+      "signal_gap": {
+        "content": "$2"
+      },
+      "route_opened": {
+        "content": "$3"
+      },
+      "total_copies": {
+        "content": "$4"
+      }
+    }
+  },
+  "proRouteValidationWritebackStoreShort": {
+    "message": "Current leading Pro route: $TRACK$, best for $SCENARIO$.",
+    "description": "Route writeback store short description",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      },
+      "scenario": {
+        "content": "$2"
+      }
+    }
+  },
+  "proRouteValidationWritebackStoreBullet": {
+    "message": "Core value: $VALUE$.",
+    "description": "Route writeback store bullet",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "proRouteValidationWritebackSummaryJudgement": {
+    "message": "$TRACK$ is leading for now, which suggests users are more willing to carry forward materials about $FOCUS$.",
+    "description": "Route writeback summary judgement line",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      },
+      "focus": {
+        "content": "$2"
+      }
+    }
+  },
   "proIntentDecisionGateTitle": {
     "message": "Pre-payment decision gate",
     "description": "Options Pro tab: decision gate title"
@@ -1947,6 +2098,22 @@
   "proRouteValidationComparisonDownloadFailed": {
     "message": "Download failed",
     "description": "Route comparison json download failure notification"
+  },
+  "proRouteValidationWritebackCopySuccess": {
+    "message": "Route writeback pack copied to clipboard",
+    "description": "Route writeback copy success notification"
+  },
+  "proRouteValidationWritebackCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Route writeback copy failure notification"
+  },
+  "proRouteValidationWritebackDownloadSuccess": {
+    "message": "Route writeback JSON downloaded",
+    "description": "Route writeback json download success notification"
+  },
+  "proRouteValidationWritebackDownloadFailed": {
+    "message": "Download failed",
+    "description": "Route writeback json download failure notification"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "Copy weekly campaign report (Markdown)",

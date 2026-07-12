@@ -1,0 +1,22 @@
+{
+  "leadingTrackId": "advanced_cleaning",
+  "leadingTrackTitle": "高级页面清洗验证",
+  "signalGap": 2,
+  "totalSignals": 5,
+  "sourceSummaryFile": "docs/evidence/v4-8/comparison-pack/copylot-pro-route-validation-comparison-v4-8.json",
+  "sourceSummarySha256": "dca04908faa8b2b10ecac132d9f9223abe6aa51d94e4070aeafd80386ca1acec",
+  "routePage": {
+    "headline": "优先回写：高级页面清洗验证，面向 长文、评论区和推荐位噪声明显的页面",
+    "proof": "recent_7d total_signals=5，signal_gap=2，route_opened=2，total_copies=3",
+    "boundary": "继续保留验证入口，不承诺已上线支付或订阅。"
+  },
+  "storeCopy": {
+    "shortDescription": "当前优先验证路线：高级页面清洗验证，适合 长文、评论区和推荐位噪声明显的页面。",
+    "bullet": "核心价值：减少广告/评论区/推荐位干扰，让复制结果更快进入 AI 工作流",
+    "boundary": "仍处于路线验证阶段，不承诺已上线收费功能。"
+  },
+  "summary": {
+    "judgement": "高级页面清洗验证 暂时领先，说明用户更愿意为 更少返工的页面清洗价值 带走路线说明与验证素材。",
+    "nextStep": "下一步：把真实任务样本回写到路线页、商店说明和下一轮汇总，并继续用门槛摘要复核是否进入收费评估。"
+  }
+}

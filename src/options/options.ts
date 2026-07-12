@@ -63,6 +63,12 @@ import {
   type ProRouteValidationComparisonSummary
 } from '../shared/pro-route-validation-comparison';
 import {
+  buildProRouteValidationWritebackPack,
+  formatProRouteValidationWritebackMarkdown,
+  PRO_ROUTE_VALIDATION_WRITEBACK_FILES,
+  type ProRouteValidationWritebackPack
+} from '../shared/pro-route-validation-writeback';
+import {
   buildProFunnelEvidencePack,
   buildProFunnelSummary,
   type ProFunnelEvidencePack,
@@ -390,6 +396,8 @@ interface OptionsElements {
   proValidationStructuredChecklistCopyButton: HTMLButtonElement;
   proRouteValidationComparisonCopyButton: HTMLButtonElement;
   downloadProRouteValidationComparisonJsonButton: HTMLButtonElement;
+  proRouteValidationWritebackCopyButton: HTMLButtonElement;
+  downloadProRouteValidationWritebackJsonButton: HTMLButtonElement;
   proIntentDecisionSummaryCopyButton: HTMLButtonElement;
   downloadProIntentDecisionSummaryJsonButton: HTMLButtonElement;
   proWaitlistButton: HTMLButtonElement;
@@ -659,6 +667,12 @@ function getElements(): OptionsElements {
     ) || document.createElement('button')) as HTMLButtonElement,
     downloadProRouteValidationComparisonJsonButton: (document.getElementById(
       'download-pro-route-validation-comparison-json'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    proRouteValidationWritebackCopyButton: (document.getElementById(
+      'copy-pro-route-validation-writeback-summary'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    downloadProRouteValidationWritebackJsonButton: (document.getElementById(
+      'download-pro-route-validation-writeback-json'
     ) || document.createElement('button')) as HTMLButtonElement,
     proIntentDecisionSummaryCopyButton: (document.getElementById(
       'copy-pro-intent-decision-summary'
@@ -2203,6 +2217,53 @@ async function downloadProRouteValidationComparisonJson(): Promise<void> {
   }
 }
 
+async function buildProRouteValidationWritebackPackForExport(): Promise<ProRouteValidationWritebackPack> {
+  const summary = await buildProRouteValidationComparisonSummaryForExport();
+  return buildProRouteValidationWritebackPack(summary, getMessage);
+}
+
+async function copyProRouteValidationWritebackToClipboard(): Promise<void> {
+  let pack: ProRouteValidationWritebackPack;
+  let text: string;
+
+  try {
+    pack = await buildProRouteValidationWritebackPackForExport();
+    text = formatProRouteValidationWritebackMarkdown(pack, getMessage);
+  } catch (error) {
+    console.warn('Failed to build pro route validation writeback markdown:', error);
+    showNotification(getMessage('proRouteValidationWritebackCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await writeTextToClipboard(text);
+    showNotification(getMessage('proRouteValidationWritebackCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy pro route validation writeback markdown:', error);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
+    if (ok) {
+      showNotification(getMessage('proRouteValidationWritebackCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('proRouteValidationWritebackCopyFailed'), 'error');
+  }
+}
+
+async function downloadProRouteValidationWritebackJson(): Promise<void> {
+  try {
+    const pack = await buildProRouteValidationWritebackPackForExport();
+    downloadTextFile(
+      PRO_ROUTE_VALIDATION_WRITEBACK_FILES.summaryJson,
+      `${JSON.stringify(pack, null, 2)}\n`,
+      'application/json'
+    );
+    showNotification(getMessage('proRouteValidationWritebackDownloadSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to download pro route validation writeback json:', error);
+    showNotification(getMessage('proRouteValidationWritebackDownloadFailed'), 'error');
+  }
+}
+
 async function copyProIntentDecisionSummaryToClipboard(): Promise<void> {
   let summary: ProIntentDecisionPackSummary;
   let text: string;
@@ -3636,6 +3697,12 @@ function setupEventListeners() {
   });
   elements.downloadProRouteValidationComparisonJsonButton.addEventListener('click', () => {
     void downloadProRouteValidationComparisonJson();
+  });
+  elements.proRouteValidationWritebackCopyButton.addEventListener('click', () => {
+    void copyProRouteValidationWritebackToClipboard();
+  });
+  elements.downloadProRouteValidationWritebackJsonButton.addEventListener('click', () => {
+    void downloadProRouteValidationWritebackJson();
   });
   elements.proIntentDecisionSummaryCopyButton.addEventListener('click', () => {
     void copyProIntentDecisionSummaryToClipboard();

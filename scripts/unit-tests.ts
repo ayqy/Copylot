@@ -32,6 +32,10 @@ import {
   formatProRouteValidationComparisonMarkdown
 } from '../src/shared/pro-route-validation-comparison.ts';
 import {
+  buildProRouteValidationWritebackPack,
+  formatProRouteValidationWritebackMarkdown
+} from '../src/shared/pro-route-validation-writeback.ts';
+import {
   RATING_PROMPT_MIN_INSTALL_AGE_MS,
   RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
   PRO_PROMPT_MAX_SHOWN_COUNT,
@@ -1792,6 +1796,55 @@ async function run() {
   assert.ok(comparisonMarkdown.includes('Advanced page cleaning validation'));
   assert.ok(comparisonMarkdown.includes('route_opened=2'));
   assert.ok(comparisonMarkdown.includes('Leading route: Advanced page cleaning validation (gap 2)'));
+
+  const writebackGetMessage: I18nGetMessage = (key, substitutions) => {
+    const normalized =
+      typeof substitutions === 'string'
+        ? [substitutions]
+        : Array.isArray(substitutions)
+          ? substitutions
+          : [];
+    const messages: Record<string, string> = {
+      proRouteValidationWritebackMdTitle: 'V4-9 Leading route writeback pack',
+      proRouteValidationWritebackMdSectionRoutePage: 'Route page',
+      proRouteValidationWritebackMdSectionStore: 'Store copy',
+      proRouteValidationWritebackMdSectionSummary: 'Summary',
+      proRouteValidationWritebackNoLeader: 'No route leader yet',
+      proRouteValidationWritebackBoundary: 'Keep validation visible; do not imply payment is live.',
+      proRouteValidationWritebackStoreBoundary: 'Do not imply paid features are already shipped.',
+      proRouteValidationWritebackSummaryNext: 'Use this with the gate summary before payment evaluation.',
+      proRouteValidationWritebackScenarioAdvanced: 'long articles and noisy pages',
+      proRouteValidationWritebackScenarioBulk: 'multi-page research runs',
+      proRouteValidationWritebackScenarioStructured: 'structured downstream handoffs',
+      proRouteValidationWritebackValueAdvanced: 'remove ads and comments before AI handoff',
+      proRouteValidationWritebackValueBulk: 'reduce manual stitching across tabs',
+      proRouteValidationWritebackValueStructured: 'reduce downstream reformatting',
+      proRouteValidationWritebackFocusAdvanced: 'less rework in page-cleaning tasks',
+      proRouteValidationWritebackFocusBulk: 'more complete collection workflows',
+      proRouteValidationWritebackFocusStructured: 'smoother structured handoff',
+      proRouteValidationWritebackRouteHeadline: `Write back first: ${normalized[0] || 'unknown'} for ${normalized[1] || 'unknown'}`,
+      proRouteValidationWritebackRouteProof: `recent_7d total_signals=${normalized[0] || '0'}, signal_gap=${normalized[1] || '0'}, route_opened=${normalized[2] || '0'}, total_copies=${normalized[3] || '0'}`,
+      proRouteValidationWritebackStoreShort: `Leading route: ${normalized[0] || 'unknown'} for ${normalized[1] || 'unknown'}.`,
+      proRouteValidationWritebackStoreBullet: `Core value: ${normalized[0] || 'unknown'}.`,
+      proRouteValidationWritebackSummaryJudgement: `${normalized[0] || 'unknown'} leads on ${normalized[1] || 'unknown'}.`
+    };
+    return messages[key] || key;
+  };
+
+  const writebackPack = buildProRouteValidationWritebackPack(comparisonSummary, writebackGetMessage);
+  assert.equal(writebackPack.leadingTrackId, 'advanced_cleaning');
+  assert.equal(writebackPack.totalSignals, 4);
+  assert.equal(writebackPack.signalGap, 2);
+  assert.ok(writebackPack.routePage.headline.includes('Advanced page cleaning validation'));
+  assert.ok(writebackPack.routePage.proof.includes('route_opened=2'));
+  assert.ok(writebackPack.storeCopy.bullet.includes('remove ads and comments before AI handoff'));
+  const writebackMarkdown = formatProRouteValidationWritebackMarkdown(
+    writebackPack,
+    writebackGetMessage
+  );
+  assert.ok(writebackMarkdown.includes('V4-9 Leading route writeback pack'));
+  assert.ok(writebackMarkdown.includes('Write back first: Advanced page cleaning validation'));
+  assert.ok(writebackMarkdown.includes('recent_7d total_signals=4'));
 
   // pro-funnel.ts (pure functions)
   const proSummaryDisabled = buildProFunnelSummary({
@@ -3891,6 +3944,14 @@ async function run() {
     'options.html should include download-pro-route-validation-comparison-json'
   );
   assert.ok(
+    optionsHtml.includes('id="copy-pro-route-validation-writeback-summary"'),
+    'options.html should include copy-pro-route-validation-writeback-summary'
+  );
+  assert.ok(
+    optionsHtml.includes('id="download-pro-route-validation-writeback-json"'),
+    'options.html should include download-pro-route-validation-writeback-json'
+  );
+  assert.ok(
     optionsHtml.includes('id="download-pro-intent-decision-summary-json"'),
     'options.html should include download-pro-intent-decision-summary-json'
   );
@@ -3958,6 +4019,10 @@ async function run() {
   assert.ok(
     optionsJs.includes('copylot-pro-route-validation-comparison-v4-8.json'),
     'options.js should contain route comparison export filename'
+  );
+  assert.ok(
+    optionsJs.includes('copylot-pro-route-validation-writeback-v4-9.json'),
+    'options.js should contain route writeback export filename'
   );
   assert.ok(
     optionsJs.includes('copylot-pro-intent-decision-summary-'),

@@ -37,6 +37,8 @@ test('pro tab only shows roadmap and sharing toolkit', async ({
     await expect(page.locator('#download-pro-intent-decision-summary-json')).toBeVisible();
     await expect(page.locator('#copy-pro-route-validation-comparison-summary')).toBeVisible();
     await expect(page.locator('#download-pro-route-validation-comparison-json')).toBeVisible();
+    await expect(page.locator('#copy-pro-route-validation-writeback-summary')).toBeVisible();
+    await expect(page.locator('#download-pro-route-validation-writeback-json')).toBeVisible();
 
     await expect(page.locator('#pro-waitlist-copy')).toHaveCount(0);
     await expect(page.locator('#pro-waitlist-survey')).toHaveCount(0);
@@ -169,6 +171,17 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
         (text.includes('高级页面清洗验证') ||
           text.includes('Advanced page cleaning validation')) &&
         text.includes('total_signals=4'),
+      driverPage
+    );
+
+    await page.locator('#copy-pro-route-validation-writeback-summary').click();
+    await expectClipboardTextEventually(
+      (text) =>
+        (text.includes('V4-9 领先路线回写包') ||
+          text.includes('V4-9 Leading route writeback pack')) &&
+        (text.includes('高级页面清洗验证') ||
+          text.includes('Advanced page cleaning validation')) &&
+        text.includes('recent_7d total_signals=4'),
       driverPage
     );
 

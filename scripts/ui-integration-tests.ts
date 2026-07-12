@@ -594,6 +594,23 @@ async function runOptionsAssertions(): Promise<void> {
     assert.ok(routeComparisonSummary.includes('route_opened=1'));
     assert.ok(routeComparisonSummary.includes('total_signals=4'));
 
+    const routeWritebackCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#copy-pro-route-validation-writeback-summary'
+    );
+    clickElement(routeWritebackCopyButton);
+    await page.waitForIdle();
+    const routeWritebackSummary = await page.clipboard.readText();
+    assert.ok(
+      routeWritebackSummary.includes('V4-9 领先路线回写包') ||
+        routeWritebackSummary.includes('V4-9 Leading route writeback pack')
+    );
+    assert.ok(
+      routeWritebackSummary.includes('高级页面清洗验证') ||
+        routeWritebackSummary.includes('Advanced page cleaning validation')
+    );
+    assert.ok(routeWritebackSummary.includes('recent_7d total_signals=4'));
+
     const decisionSummaryCopyButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
       '#copy-pro-intent-decision-summary'

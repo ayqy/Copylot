@@ -470,6 +470,157 @@
       }
     }
   },
+  "proRouteValidationWritebackTitle": {
+    "message": "领先路线回写包",
+    "description": "Options Pro Tab：领先路线回写标题"
+  },
+  "proRouteValidationWritebackHint": {
+    "message": "把当前领先路线直接整理成路线页、商店说明和下一轮汇总可复用的三段回写文案，避免只停在内部判断。",
+    "description": "Options Pro Tab：领先路线回写说明"
+  },
+  "proRouteValidationWritebackCopy": {
+    "message": "复制领先路线回写包",
+    "description": "Options Pro Tab：复制领先路线回写包按钮"
+  },
+  "proRouteValidationWritebackDownloadJson": {
+    "message": "下载领先路线回写 JSON",
+    "description": "Options Pro Tab：下载领先路线回写 JSON 按钮"
+  },
+  "proRouteValidationWritebackPrivacyHint": {
+    "message": "回写包只使用本地匿名聚合信号，不包含网页正文、复制内容、URL、标题或联系方式。",
+    "description": "Options Pro Tab：领先路线回写隐私提示"
+  },
+  "proRouteValidationWritebackMdTitle": {
+    "message": "V4-9 领先路线回写包",
+    "description": "领先路线回写 Markdown 标题"
+  },
+  "proRouteValidationWritebackMdSectionRoutePage": {
+    "message": "路线页",
+    "description": "领先路线回写 Markdown 路线页区块标题"
+  },
+  "proRouteValidationWritebackMdSectionStore": {
+    "message": "商店说明",
+    "description": "领先路线回写 Markdown 商店说明区块标题"
+  },
+  "proRouteValidationWritebackMdSectionSummary": {
+    "message": "汇总",
+    "description": "领先路线回写 Markdown 汇总区块标题"
+  },
+  "proRouteValidationWritebackNoLeader": {
+    "message": "当前还没有可回写的领先路线，继续收集真实任务样本。",
+    "description": "领先路线回写：没有领先路线时的兜底文案"
+  },
+  "proRouteValidationWritebackBoundary": {
+    "message": "继续保留验证入口，不要暗示支付或订阅已经上线。",
+    "description": "领先路线回写：路线页边界文案"
+  },
+  "proRouteValidationWritebackStoreBoundary": {
+    "message": "对外文案仍保持路线验证口径，不要提前写成已收费能力。",
+    "description": "领先路线回写：商店说明边界文案"
+  },
+  "proRouteValidationWritebackSummaryNext": {
+    "message": "下一步：把这份回写包和路线比较摘要、A/B/C 门槛摘要一起使用，再决定是否进入收费评估。",
+    "description": "领先路线回写：汇总下一步文案"
+  },
+  "proRouteValidationWritebackScenarioAdvanced": {
+    "message": "长文、评论区和推荐位噪声明显的页面",
+    "description": "领先路线回写：高级页面清洗场景"
+  },
+  "proRouteValidationWritebackScenarioBulk": {
+    "message": "需要跨页面采集、整理和归并材料的研究场景",
+    "description": "领先路线回写：批量采集场景"
+  },
+  "proRouteValidationWritebackScenarioStructured": {
+    "message": "需要继续进入表格、Notion 或下游 AI 工作流的交接场景",
+    "description": "领先路线回写：结构化导出场景"
+  },
+  "proRouteValidationWritebackValueAdvanced": {
+    "message": "在复制结果进入 AI 工作流前，先移除广告、评论区和推荐位噪声",
+    "description": "领先路线回写：高级页面清洗价值"
+  },
+  "proRouteValidationWritebackValueBulk": {
+    "message": "减少多页面来回切换与手工拼接，让分散资料更快变成可复用输入",
+    "description": "领先路线回写：批量采集价值"
+  },
+  "proRouteValidationWritebackValueStructured": {
+    "message": "减少下游重排成本，让复制结果更快进入表格、笔记或 AI 工作流",
+    "description": "领先路线回写：结构化导出价值"
+  },
+  "proRouteValidationWritebackFocusAdvanced": {
+    "message": "更少返工的页面清洗任务",
+    "description": "领先路线回写：高级页面清洗判断焦点"
+  },
+  "proRouteValidationWritebackFocusBulk": {
+    "message": "更完整的多页面采集整理",
+    "description": "领先路线回写：批量采集判断焦点"
+  },
+  "proRouteValidationWritebackFocusStructured": {
+    "message": "更顺畅的结构化下游衔接",
+    "description": "领先路线回写：结构化导出判断焦点"
+  },
+  "proRouteValidationWritebackRouteHeadline": {
+    "message": "优先回写：$TRACK$，面向 $SCENARIO$",
+    "description": "领先路线回写：路线页标题",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      },
+      "scenario": {
+        "content": "$2"
+      }
+    }
+  },
+  "proRouteValidationWritebackRouteProof": {
+    "message": "recent_7d total_signals=$TOTAL_SIGNALS$，signal_gap=$SIGNAL_GAP$，route_opened=$ROUTE_OPENED$，total_copies=$TOTAL_COPIES$",
+    "description": "领先路线回写：路线页证明行",
+    "placeholders": {
+      "total_signals": {
+        "content": "$1"
+      },
+      "signal_gap": {
+        "content": "$2"
+      },
+      "route_opened": {
+        "content": "$3"
+      },
+      "total_copies": {
+        "content": "$4"
+      }
+    }
+  },
+  "proRouteValidationWritebackStoreShort": {
+    "message": "当前领先的 Pro 路线：$TRACK$，更适合 $SCENARIO$。",
+    "description": "领先路线回写：商店短描述",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      },
+      "scenario": {
+        "content": "$2"
+      }
+    }
+  },
+  "proRouteValidationWritebackStoreBullet": {
+    "message": "核心价值：$VALUE$。",
+    "description": "领先路线回写：商店卖点 bullet",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "proRouteValidationWritebackSummaryJudgement": {
+    "message": "$TRACK$ 目前领先，说明用户更愿意把与 $FOCUS$ 相关的说明和验证素材继续带走。",
+    "description": "领先路线回写：汇总判断文案",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      },
+      "focus": {
+        "content": "$2"
+      }
+    }
+  },
   "proIntentDecisionGateTitle": {
     "message": "收费前门槛判断",
     "description": "Options Pro Tab：收费前门槛判断标题"
@@ -1947,6 +2098,22 @@
   "proRouteValidationComparisonDownloadFailed": {
     "message": "下载失败",
     "description": "路线比较 JSON 下载失败提示"
+  },
+  "proRouteValidationWritebackCopySuccess": {
+    "message": "领先路线回写包已复制到剪贴板",
+    "description": "领先路线回写包复制成功提示"
+  },
+  "proRouteValidationWritebackCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "领先路线回写包复制失败提示"
+  },
+  "proRouteValidationWritebackDownloadSuccess": {
+    "message": "领先路线回写 JSON 已下载",
+    "description": "领先路线回写 JSON 下载成功提示"
+  },
+  "proRouteValidationWritebackDownloadFailed": {
+    "message": "下载失败",
+    "description": "领先路线回写 JSON 下载失败提示"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "复制按 campaign 的本周复盘摘要（Markdown）",
