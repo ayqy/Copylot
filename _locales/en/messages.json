@@ -974,6 +974,142 @@
     "message": "No new blockers are currently open.",
     "description": "Payment evaluation audit pack no-blockers note"
   },
+  "proRouteValidationCampaignReviewTitle": {
+    "message": "Cross-campaign route review pack",
+    "description": "Options Pro tab: cross-campaign route review pack title"
+  },
+  "proRouteValidationCampaignReviewHint": {
+    "message": "Turn each campaign's leading route, support/conflict status, and resampling priority into one review pack while all external copy stays locked to the current priority validation direction / stay_validation.",
+    "description": "Options Pro tab: cross-campaign route review pack hint"
+  },
+  "proRouteValidationCampaignReviewCopy": {
+    "message": "Copy cross-campaign review pack",
+    "description": "Options Pro tab: copy cross-campaign review pack button"
+  },
+  "proRouteValidationCampaignReviewDownloadJson": {
+    "message": "Download cross-campaign review JSON",
+    "description": "Options Pro tab: download cross-campaign review json button"
+  },
+  "proRouteValidationCampaignReviewPrivacyHint": {
+    "message": "Uses only local anonymous aggregated campaign signals and local verdict outputs. Never includes copied page content, URLs, titles, or contact details.",
+    "description": "Options Pro tab: cross-campaign route review privacy hint"
+  },
+  "proRouteValidationCampaignReviewActionSupporting": {
+    "message": "Keep strengthening the same route copy in this campaign.",
+    "description": "Cross-campaign route review: supporting action"
+  },
+  "proRouteValidationCampaignReviewActionConflicting": {
+    "message": "Collect more real tasks here before trusting the current leader.",
+    "description": "Cross-campaign route review: conflicting action"
+  },
+  "proRouteValidationCampaignReviewActionThin": {
+    "message": "The sample is still too thin. Add more route opens and copies first.",
+    "description": "Cross-campaign route review: thin-sample action"
+  },
+  "proRouteValidationCampaignReviewActionNoSignals": {
+    "message": "No usable route sample yet. Seed this campaign before drawing conclusions.",
+    "description": "Cross-campaign route review: no-signals action"
+  },
+  "proRouteValidationCampaignReviewCampaignConclusionSupporting": {
+    "message": "This campaign supports the current leader while the product still stays in validation.",
+    "description": "Cross-campaign route review: supporting campaign conclusion"
+  },
+  "proRouteValidationCampaignReviewCampaignConclusionConflicting": {
+    "message": "This campaign currently backs a different route, so acquisition bias is still unresolved here.",
+    "description": "Cross-campaign route review: conflicting campaign conclusion"
+  },
+  "proRouteValidationCampaignReviewCampaignConclusionThin": {
+    "message": "This campaign points to the current leader, but the sample is still too thin to treat it as durable demand.",
+    "description": "Cross-campaign route review: thin campaign conclusion"
+  },
+  "proRouteValidationCampaignReviewCampaignConclusionNoSignals": {
+    "message": "This campaign has no usable route signal yet, so it cannot confirm or reject the current leader.",
+    "description": "Cross-campaign route review: no-signals campaign conclusion"
+  },
+  "proRouteValidationCampaignReviewCampaignNextSupporting": {
+    "message": "Keep scaling the same route in this campaign, but keep all external messaging inside stay_validation.",
+    "description": "Cross-campaign route review: supporting campaign next step"
+  },
+  "proRouteValidationCampaignReviewCampaignNextConflicting": {
+    "message": "Prioritize this campaign in the next sampling loop before trusting the current leader.",
+    "description": "Cross-campaign route review: conflicting campaign next step"
+  },
+  "proRouteValidationCampaignReviewCampaignNextThin": {
+    "message": "Add more route opens and validation-copy signals in this campaign before reading monetization intent.",
+    "description": "Cross-campaign route review: thin campaign next step"
+  },
+  "proRouteValidationCampaignReviewCampaignNextNoSignals": {
+    "message": "Seed the first route-open and validation-copy sample in this campaign before drawing conclusions.",
+    "description": "Cross-campaign route review: no-signals campaign next step"
+  },
+  "proRouteValidationCampaignReviewConclusionConflicting": {
+    "message": "At least one campaign still backs a different leader, so acquisition bias is not resolved yet.",
+    "description": "Cross-campaign route review: conflicting conclusion"
+  },
+  "proRouteValidationCampaignReviewConclusionThin": {
+    "message": "The leader is mostly aligned, but one or more campaigns are still too thin to treat the lead as durable demand.",
+    "description": "Cross-campaign route review: thin conclusion"
+  },
+  "proRouteValidationCampaignReviewConclusionNoSignals": {
+    "message": "There is still no reliable cross-campaign leader, so keep seeding route signals before interpreting demand.",
+    "description": "Cross-campaign route review: no-signals conclusion"
+  },
+  "proRouteValidationCampaignReviewConclusionSupporting": {
+    "message": "Current campaigns are aligned enough to keep strengthening the same leader while staying in validation.",
+    "description": "Cross-campaign route review: supporting conclusion"
+  },
+  "proRouteValidationCampaignReviewBlockerAcquisitionBias": {
+    "message": "A different route still leads in at least one campaign, so acquisition bias is not resolved yet.",
+    "description": "Cross-campaign route review: acquisition-bias blocker"
+  },
+  "proRouteValidationCampaignReviewBlockerThinSamples": {
+    "message": "One or more campaigns still have thin samples, so the current lead is not durable enough yet.",
+    "description": "Cross-campaign route review: thin-sample blocker"
+  },
+  "proRouteValidationCampaignReviewBlockerNoSignals": {
+    "message": "One or more campaigns still have no usable route signal, so cross-campaign coverage is incomplete.",
+    "description": "Cross-campaign route review: no-signals blocker"
+  },
+  "proRouteValidationCampaignReviewNoBlockers": {
+    "message": "No new blockers are currently open.",
+    "description": "Cross-campaign route review: no blockers"
+  },
+  "proRouteValidationCampaignReviewNextPrioritized": {
+    "message": "Next step: prioritize the conflicting or thin campaigns before re-running the payment-evaluation audit.",
+    "description": "Cross-campaign route review: prioritized next step"
+  },
+  "proRouteValidationCampaignReviewNextSteady": {
+    "message": "Next step: keep collecting balanced cross-campaign samples and maintain stay_validation messaging.",
+    "description": "Cross-campaign route review: steady next step"
+  },
+  "proRouteValidationCampaignReviewBoundaryStayValidation": {
+    "message": "External messaging must remain in stay_validation and can only describe the current priority validation direction.",
+    "description": "Cross-campaign route review: stay_validation boundary"
+  },
+  "proRouteValidationCampaignReviewMdTitle": {
+    "message": "V4-13 Cross-campaign route review pack",
+    "description": "Cross-campaign route review markdown title"
+  },
+  "proRouteValidationCampaignReviewMdSectionStatus": {
+    "message": "Status",
+    "description": "Cross-campaign route review markdown status section heading"
+  },
+  "proRouteValidationCampaignReviewMdSectionCampaigns": {
+    "message": "Campaign review",
+    "description": "Cross-campaign route review markdown campaigns section heading"
+  },
+  "proRouteValidationCampaignReviewMdSectionBlockers": {
+    "message": "Blockers",
+    "description": "Cross-campaign route review markdown blockers section heading"
+  },
+  "proRouteValidationCampaignReviewMdSectionDecision": {
+    "message": "Decision",
+    "description": "Cross-campaign route review markdown decision section heading"
+  },
+  "proRouteValidationCampaignReviewMdSectionEvidence": {
+    "message": "Evidence chain",
+    "description": "Cross-campaign route review markdown evidence section heading"
+  },
   "proIntentDecisionConclusionADataOff": {
     "message": "Keep collecting (anonymous usage data is disabled / no usable events)",
     "description": "Decision summary: A conclusion when anonymous data is disabled"
@@ -2495,6 +2631,22 @@
   "proPaymentEvaluationAuditDownloadFailed": {
     "message": "Download failed",
     "description": "Payment evaluation audit json download failure notification"
+  },
+  "proRouteValidationCampaignReviewCopySuccess": {
+    "message": "Cross-campaign review pack copied to clipboard",
+    "description": "Cross-campaign route review pack copy success notification"
+  },
+  "proRouteValidationCampaignReviewCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Cross-campaign route review pack copy failure notification"
+  },
+  "proRouteValidationCampaignReviewDownloadSuccess": {
+    "message": "Cross-campaign review JSON downloaded",
+    "description": "Cross-campaign route review json download success notification"
+  },
+  "proRouteValidationCampaignReviewDownloadFailed": {
+    "message": "Download failed",
+    "description": "Cross-campaign route review json download failure notification"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "Copy weekly campaign report (Markdown)",

@@ -974,6 +974,142 @@
     "message": "当前没有新增阻塞项。",
     "description": "收费评估审计包：无新增阻塞项提示"
   },
+  "proRouteValidationCampaignReviewTitle": {
+    "message": "跨 campaign 领先路线复核包",
+    "description": "Options Pro Tab：跨 campaign 领先路线复核包标题"
+  },
+  "proRouteValidationCampaignReviewHint": {
+    "message": "把每个 campaign 的领先路线、支持/冲突状态和补样优先级整理成统一复核包，并把所有对外文案继续锁定在“当前优先验证方向 / stay_validation”，避免把单一获客来源误判成长期需求。",
+    "description": "Options Pro Tab：跨 campaign 领先路线复核包说明"
+  },
+  "proRouteValidationCampaignReviewCopy": {
+    "message": "复制跨 campaign 复核包",
+    "description": "Options Pro Tab：复制跨 campaign 复核包按钮"
+  },
+  "proRouteValidationCampaignReviewDownloadJson": {
+    "message": "下载跨 campaign 复核 JSON",
+    "description": "Options Pro Tab：下载跨 campaign 复核 JSON 按钮"
+  },
+  "proRouteValidationCampaignReviewPrivacyHint": {
+    "message": "复核包只使用本地匿名聚合 campaign 信号和本地 verdict 结果，不包含网页正文、复制内容、URL、标题或联系方式。",
+    "description": "Options Pro Tab：跨 campaign 领先路线复核包隐私提示"
+  },
+  "proRouteValidationCampaignReviewActionSupporting": {
+    "message": "继续在这个 campaign 强化同一条领先路线的对外文案。",
+    "description": "跨 campaign 领先路线复核包：支持状态动作"
+  },
+  "proRouteValidationCampaignReviewActionConflicting": {
+    "message": "先在这个 campaign 补更多真实任务样本，再决定是否相信当前领先路线。",
+    "description": "跨 campaign 领先路线复核包：冲突状态动作"
+  },
+  "proRouteValidationCampaignReviewActionThin": {
+    "message": "当前样本仍然过薄，先补更多路线打开与素材复制信号。",
+    "description": "跨 campaign 领先路线复核包：样本过薄动作"
+  },
+  "proRouteValidationCampaignReviewActionNoSignals": {
+    "message": "这个 campaign 还没有可用路线样本，先补最基础的验证信号。",
+    "description": "跨 campaign 领先路线复核包：无信号动作"
+  },
+  "proRouteValidationCampaignReviewCampaignConclusionSupporting": {
+    "message": "这个 campaign 目前支持当前领先路线，但产品对外仍停留在验证阶段。",
+    "description": "跨 campaign 领先路线复核包：支持 campaign 结论"
+  },
+  "proRouteValidationCampaignReviewCampaignConclusionConflicting": {
+    "message": "这个 campaign 当前支持的是另一条路线，因此 acquisition 偏差在这里还没有排除。",
+    "description": "跨 campaign 领先路线复核包：冲突 campaign 结论"
+  },
+  "proRouteValidationCampaignReviewCampaignConclusionThin": {
+    "message": "这个 campaign 目前指向当前领先路线，但样本仍然过薄，暂时还不能当成长线需求。",
+    "description": "跨 campaign 领先路线复核包：样本过薄 campaign 结论"
+  },
+  "proRouteValidationCampaignReviewCampaignConclusionNoSignals": {
+    "message": "这个 campaign 还没有可用路线信号，暂时既不能支持也不能反驳当前领先路线。",
+    "description": "跨 campaign 领先路线复核包：无信号 campaign 结论"
+  },
+  "proRouteValidationCampaignReviewCampaignNextSupporting": {
+    "message": "可以继续在这个 campaign 放大同一路线，但所有对外话术仍必须保持 stay_validation。",
+    "description": "跨 campaign 领先路线复核包：支持 campaign 下一步"
+  },
+  "proRouteValidationCampaignReviewCampaignNextConflicting": {
+    "message": "下一轮优先补这个 campaign 的真实样本，再决定是否相信当前领先路线。",
+    "description": "跨 campaign 领先路线复核包：冲突 campaign 下一步"
+  },
+  "proRouteValidationCampaignReviewCampaignNextThin": {
+    "message": "先在这个 campaign 补更多路线打开与验证素材复制信号，再判断商业化意向。",
+    "description": "跨 campaign 领先路线复核包：样本过薄 campaign 下一步"
+  },
+  "proRouteValidationCampaignReviewCampaignNextNoSignals": {
+    "message": "先在这个 campaign 补第一批路线打开与验证素材复制信号，再做判断。",
+    "description": "跨 campaign 领先路线复核包：无信号 campaign 下一步"
+  },
+  "proRouteValidationCampaignReviewConclusionConflicting": {
+    "message": "至少还有一个 campaign 支持不同的领先路线，当前 acquisition 偏差还没有排除。",
+    "description": "跨 campaign 领先路线复核包：冲突结论"
+  },
+  "proRouteValidationCampaignReviewConclusionThin": {
+    "message": "当前领先路线大体一致，但仍有一个或多个 campaign 的样本过薄，暂时还不能把这条领先当成长期需求。",
+    "description": "跨 campaign 领先路线复核包：样本过薄结论"
+  },
+  "proRouteValidationCampaignReviewConclusionNoSignals": {
+    "message": "当前还没有形成可靠的跨 campaign 领先路线，先继续补路由信号，再解释真实需求。",
+    "description": "跨 campaign 领先路线复核包：无信号结论"
+  },
+  "proRouteValidationCampaignReviewConclusionSupporting": {
+    "message": "当前 campaign 已足够对齐，可以继续强化同一条领先路线，但仍停留在验证阶段。",
+    "description": "跨 campaign 领先路线复核包：支持结论"
+  },
+  "proRouteValidationCampaignReviewBlockerAcquisitionBias": {
+    "message": "至少还有一个 campaign 的领先路线不同，因此 acquisition 偏差还没有排除。",
+    "description": "跨 campaign 领先路线复核包：获客偏差阻塞"
+  },
+  "proRouteValidationCampaignReviewBlockerThinSamples": {
+    "message": "一个或多个 campaign 的样本仍然过薄，当前领先还不够稳固。",
+    "description": "跨 campaign 领先路线复核包：样本过薄阻塞"
+  },
+  "proRouteValidationCampaignReviewBlockerNoSignals": {
+    "message": "一个或多个 campaign 还没有可用路线信号，跨 campaign 覆盖仍不完整。",
+    "description": "跨 campaign 领先路线复核包：无信号阻塞"
+  },
+  "proRouteValidationCampaignReviewNoBlockers": {
+    "message": "当前没有新的阻塞项。",
+    "description": "跨 campaign 领先路线复核包：无阻塞"
+  },
+  "proRouteValidationCampaignReviewNextPrioritized": {
+    "message": "下一步：优先补冲突或样本过薄的 campaign，再重新运行收费评估审计。",
+    "description": "跨 campaign 领先路线复核包：优先补样下一步"
+  },
+  "proRouteValidationCampaignReviewNextSteady": {
+    "message": "下一步：继续平衡收集跨 campaign 样本，并保持 stay_validation 对外话术。",
+    "description": "跨 campaign 领先路线复核包：稳定收集下一步"
+  },
+  "proRouteValidationCampaignReviewBoundaryStayValidation": {
+    "message": "所有对外文案都必须继续停留在 stay_validation，只能表达当前优先验证方向。",
+    "description": "跨 campaign 领先路线复核包：stay_validation 边界"
+  },
+  "proRouteValidationCampaignReviewMdTitle": {
+    "message": "V4-13 跨 campaign 领先路线复核包",
+    "description": "跨 campaign 领先路线复核包 Markdown 标题"
+  },
+  "proRouteValidationCampaignReviewMdSectionStatus": {
+    "message": "状态",
+    "description": "跨 campaign 领先路线复核包 Markdown 状态区块标题"
+  },
+  "proRouteValidationCampaignReviewMdSectionCampaigns": {
+    "message": "Campaign 复核",
+    "description": "跨 campaign 领先路线复核包 Markdown campaign 区块标题"
+  },
+  "proRouteValidationCampaignReviewMdSectionBlockers": {
+    "message": "阻塞项",
+    "description": "跨 campaign 领先路线复核包 Markdown 阻塞区块标题"
+  },
+  "proRouteValidationCampaignReviewMdSectionDecision": {
+    "message": "结论",
+    "description": "跨 campaign 领先路线复核包 Markdown 结论区块标题"
+  },
+  "proRouteValidationCampaignReviewMdSectionEvidence": {
+    "message": "证据链",
+    "description": "跨 campaign 领先路线复核包 Markdown 证据区块标题"
+  },
   "proIntentDecisionConclusionADataOff": {
     "message": "继续收集（匿名使用数据未开启/无可用事件）",
     "description": "决策摘要：匿名数据关闭时的 A 结论"
@@ -2495,6 +2631,22 @@
   "proPaymentEvaluationAuditDownloadFailed": {
     "message": "下载失败",
     "description": "收费评估审计 JSON 下载失败提示"
+  },
+  "proRouteValidationCampaignReviewCopySuccess": {
+    "message": "跨 campaign 复核包已复制到剪贴板",
+    "description": "跨 campaign 领先路线复核包复制成功提示"
+  },
+  "proRouteValidationCampaignReviewCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "跨 campaign 领先路线复核包复制失败提示"
+  },
+  "proRouteValidationCampaignReviewDownloadSuccess": {
+    "message": "跨 campaign 复核 JSON 已下载",
+    "description": "跨 campaign 领先路线复核 JSON 下载成功提示"
+  },
+  "proRouteValidationCampaignReviewDownloadFailed": {
+    "message": "下载失败",
+    "description": "跨 campaign 领先路线复核 JSON 下载失败提示"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "复制按 campaign 的本周复盘摘要（Markdown）",

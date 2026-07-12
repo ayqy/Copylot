@@ -332,13 +332,19 @@ async function runPopupLockedWomAssertions(): Promise<void> {
   });
 
   try {
-    const shareLink = getRequiredElement<HTMLAnchorElement>(page.dom.window.document, '#share-link');
+    const shareLink = getRequiredElement<HTMLAnchorElement>(
+      page.dom.window.document,
+      '#share-link'
+    );
     const rateLink = getRequiredElement<HTMLAnchorElement>(page.dom.window.document, '#rate-link');
     const copyShareButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
       '#copy-share-button'
     );
-    const womStatusHint = getRequiredElement<HTMLElement>(page.dom.window.document, '#wom-status-hint');
+    const womStatusHint = getRequiredElement<HTMLElement>(
+      page.dom.window.document,
+      '#wom-status-hint'
+    );
 
     assert.equal(shareLink.getAttribute('aria-disabled'), 'true');
     assert.equal(rateLink.getAttribute('aria-disabled'), 'true');
@@ -471,7 +477,10 @@ async function runOptionsAssertions(): Promise<void> {
     clickElement(advancedCleaningBriefCopyButton);
     await page.waitForIdle();
     const advancedCleaningBrief = await page.clipboard.readText();
-    assert.ok(advancedCleaningBrief.includes('Advanced page cleaning') || advancedCleaningBrief.includes('高级页面清洗'));
+    assert.ok(
+      advancedCleaningBrief.includes('Advanced page cleaning') ||
+        advancedCleaningBrief.includes('高级页面清洗')
+    );
     assert.ok(advancedCleaningBrief.includes('utm_content=options_advanced_cleaning_cta'));
 
     const advancedCleaningChecklistCopyButton = getRequiredElement<HTMLButtonElement>(
@@ -481,7 +490,10 @@ async function runOptionsAssertions(): Promise<void> {
     clickElement(advancedCleaningChecklistCopyButton);
     await page.waitForIdle();
     const advancedCleaningChecklist = await page.clipboard.readText();
-    assert.ok(advancedCleaningChecklist.includes('Validation Checklist') || advancedCleaningChecklist.includes('验证清单'));
+    assert.ok(
+      advancedCleaningChecklist.includes('Validation Checklist') ||
+        advancedCleaningChecklist.includes('验证清单')
+    );
     assert.ok(advancedCleaningChecklist.includes('twitter'));
 
     const bulkCollectionOpenButton = getRequiredElement<HTMLButtonElement>(
@@ -653,9 +665,7 @@ async function runOptionsAssertions(): Promise<void> {
     assert.ok(verdictSummary.includes('route_leader_consistent=true'));
     assert.ok(verdictSummary.includes('route_stability_ready=false'));
     assert.ok(verdictSummary.includes('gate_allows_payment_evaluation=false'));
-    assert.ok(
-      verdictSummary.includes('继续验证') || verdictSummary.includes('stay in validation')
-    );
+    assert.ok(verdictSummary.includes('继续验证') || verdictSummary.includes('stay in validation'));
 
     const paymentEvaluationAuditCopyButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
@@ -673,6 +683,32 @@ async function runOptionsAssertions(): Promise<void> {
     assert.ok(
       paymentEvaluationAuditSummary.includes('继续停留在验证阶段') ||
         paymentEvaluationAuditSummary.includes('stay in validation')
+    );
+
+    const campaignReviewCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#copy-pro-route-validation-campaign-review-summary'
+    );
+    clickElement(campaignReviewCopyButton);
+    await page.waitForIdle();
+    const campaignReviewSummary = await page.clipboard.readText();
+    assert.ok(
+      campaignReviewSummary.includes('V4-13 跨 campaign 领先路线复核包') ||
+        campaignReviewSummary.includes('V4-13 Cross-campaign route review pack')
+    );
+    assert.ok(campaignReviewSummary.includes('messaging_boundary=stay_validation'));
+    assert.ok(campaignReviewSummary.includes('prioritized_campaigns=none'));
+    assert.ok(campaignReviewSummary.includes('twitter: status=supporting'));
+
+    const campaignReviewDownloadButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#download-pro-route-validation-campaign-review-json'
+    );
+    clickElement(campaignReviewDownloadButton);
+    await page.waitForIdle();
+    assert.equal(
+      page.downloads.at(-1)?.download,
+      'copylot-pro-route-validation-campaign-review-v4-13.json'
     );
 
     const proWaitlistButton = getRequiredElement<HTMLButtonElement>(
@@ -770,9 +806,10 @@ async function runOptionsAssertions(): Promise<void> {
     clickElement(appendWorkflowClearButton);
     await page.waitForIdle();
     assert.ok(
-      getRequiredElement<HTMLTextAreaElement>(page.dom.window.document, '#append-workflow-view').value.includes(
-        '"clipCount": 0'
-      )
+      getRequiredElement<HTMLTextAreaElement>(
+        page.dom.window.document,
+        '#append-workflow-view'
+      ).value.includes('"clipCount": 0')
     );
 
     const womShareOpenButton = getRequiredElement<HTMLButtonElement>(

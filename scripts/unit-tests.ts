@@ -48,6 +48,10 @@ import {
   formatProPaymentEvaluationAuditMarkdown
 } from '../src/shared/pro-payment-evaluation-audit.ts';
 import {
+  buildProRouteValidationCampaignReviewPack,
+  formatProRouteValidationCampaignReviewMarkdown
+} from '../src/shared/pro-route-validation-campaign-review.ts';
+import {
   RATING_PROMPT_MIN_INSTALL_AGE_MS,
   RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
   PRO_PROMPT_MAX_SHOWN_COUNT,
@@ -197,7 +201,6 @@ import {
   scanCwsListingRedlinesFromText
 } from './scan-cws-listing-redlines.ts';
 
-
 const getMessage: I18nGetMessage = (key, substitutions) => {
   const subs = Array.isArray(substitutions) ? substitutions : substitutions ? [substitutions] : [];
 
@@ -247,7 +250,6 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
   }
   return key;
 };
-
 
 async function run() {
   const extensionId = 'abcdefghijklmnopabcdefghijklmnop';
@@ -539,7 +541,11 @@ async function run() {
   const afterSecondCopy = applySuccessfulCopyToGrowthStats(afterFirstCopy, { now: t2 });
   assert.equal(afterSecondCopy.successfulCopyCount, 2);
   assert.equal(afterSecondCopy.firstSuccessfulCopyAt, t1, 'firstSuccessfulCopyAt: only write once');
-  assert.equal(afterSecondCopy.secondSuccessfulCopyAt, t2, 'secondSuccessfulCopyAt: write on second copy');
+  assert.equal(
+    afterSecondCopy.secondSuccessfulCopyAt,
+    t2,
+    'secondSuccessfulCopyAt: write on second copy'
+  );
   assert.equal(afterSecondCopy.lastSuccessfulCopyAt, t2, 'lastSuccessfulCopyAt: update every time');
   assert.equal(afterSecondCopy.firstPromptUsedAt, undefined);
   assert.equal(
@@ -811,7 +817,10 @@ async function run() {
   const advancedCleaningRouteParsed = new URL(advancedCleaningRouteUrl);
   assert.equal(advancedCleaningRouteParsed.pathname, '/pricing');
   assert.equal(advancedCleaningRouteParsed.searchParams.get('utm_campaign'), 'twitter');
-  assert.equal(advancedCleaningRouteParsed.searchParams.get('utm_content'), 'options_advanced_cleaning_cta');
+  assert.equal(
+    advancedCleaningRouteParsed.searchParams.get('utm_content'),
+    'options_advanced_cleaning_cta'
+  );
 
   const bulkCollectionRouteUrl = buildProValidationRouteUrl({
     trackId: 'bulk_collection',
@@ -821,7 +830,10 @@ async function run() {
   const bulkCollectionRouteParsed = new URL(bulkCollectionRouteUrl);
   assert.equal(bulkCollectionRouteParsed.pathname, '/pricing');
   assert.equal(bulkCollectionRouteParsed.searchParams.get('utm_campaign'), 'twitter');
-  assert.equal(bulkCollectionRouteParsed.searchParams.get('utm_content'), 'options_bulk_collection_cta');
+  assert.equal(
+    bulkCollectionRouteParsed.searchParams.get('utm_content'),
+    'options_bulk_collection_cta'
+  );
 
   const structuredExportRouteUrl = buildProValidationRouteUrl({
     trackId: 'structured_export',
@@ -1807,7 +1819,9 @@ async function run() {
   assert.ok(comparisonMarkdown.includes('V4-8 Pro route sample comparison summary'));
   assert.ok(comparisonMarkdown.includes('Advanced page cleaning validation'));
   assert.ok(comparisonMarkdown.includes('route_opened=2'));
-  assert.ok(comparisonMarkdown.includes('Leading route: Advanced page cleaning validation (gap 2)'));
+  assert.ok(
+    comparisonMarkdown.includes('Leading route: Advanced page cleaning validation (gap 2)')
+  );
 
   const writebackGetMessage: I18nGetMessage = (key, substitutions) => {
     const normalized =
@@ -1824,7 +1838,8 @@ async function run() {
       proRouteValidationWritebackNoLeader: 'No route leader yet',
       proRouteValidationWritebackBoundary: 'Keep validation visible; do not imply payment is live.',
       proRouteValidationWritebackStoreBoundary: 'Do not imply paid features are already shipped.',
-      proRouteValidationWritebackSummaryNext: 'Use this with the gate summary before payment evaluation.',
+      proRouteValidationWritebackSummaryNext:
+        'Use this with the gate summary before payment evaluation.',
       proRouteValidationWritebackScenarioAdvanced: 'long articles and noisy pages',
       proRouteValidationWritebackScenarioBulk: 'multi-page research runs',
       proRouteValidationWritebackScenarioStructured: 'structured downstream handoffs',
@@ -1843,7 +1858,10 @@ async function run() {
     return messages[key] || key;
   };
 
-  const writebackPack = buildProRouteValidationWritebackPack(comparisonSummary, writebackGetMessage);
+  const writebackPack = buildProRouteValidationWritebackPack(
+    comparisonSummary,
+    writebackGetMessage
+  );
   assert.equal(writebackPack.leadingTrackId, 'advanced_cleaning');
   assert.equal(writebackPack.totalSignals, 4);
   assert.equal(writebackPack.signalGap, 2);
@@ -2107,14 +2125,10 @@ async function run() {
       proPaymentEvaluationAuditCheckLeaderPassed: `The leading route is aligned: ${normalized[0] || 'unknown'}.`,
       proPaymentEvaluationAuditCheckLeaderFailed:
         'The leading route is still not aligned across the comparison, writeback, and stability outputs.',
-      proPaymentEvaluationAuditCheckStabilityPassed:
-        `The stability verdict has reached ${normalized[0] || 'leader_stable'}.`,
-      proPaymentEvaluationAuditCheckStabilityFailed:
-        `The stability verdict is still ${normalized[0] || 'unknown'}, so payment evaluation should not start yet.`,
-      proPaymentEvaluationAuditCheckGatePassed:
-        `The pre-payment gate has reached ${normalized[0] || 'C'}: ${normalized[1] || 'go evaluate'}.`,
-      proPaymentEvaluationAuditCheckGateFailed:
-        `The pre-payment gate is still ${normalized[0] || 'A'}: ${normalized[1] || 'keep collecting'}.`,
+      proPaymentEvaluationAuditCheckStabilityPassed: `The stability verdict has reached ${normalized[0] || 'leader_stable'}.`,
+      proPaymentEvaluationAuditCheckStabilityFailed: `The stability verdict is still ${normalized[0] || 'unknown'}, so payment evaluation should not start yet.`,
+      proPaymentEvaluationAuditCheckGatePassed: `The pre-payment gate has reached ${normalized[0] || 'C'}: ${normalized[1] || 'go evaluate'}.`,
+      proPaymentEvaluationAuditCheckGateFailed: `The pre-payment gate is still ${normalized[0] || 'A'}: ${normalized[1] || 'keep collecting'}.`,
       proPaymentEvaluationAuditBoundaryNoPaymentImplementation:
         'This audit only outputs judgments and evidence. It does not implement payment, collection, subscriptions, or forms.',
       proPaymentEvaluationAuditBoundaryNoMessagingDrift:
@@ -2149,7 +2163,10 @@ async function run() {
   assert.equal(auditHold.auditStatus, 'hold_validation');
   assert.equal(auditHold.readyForPaymentEvaluation, false);
   assert.equal(auditHold.blockers.length, 1);
-  assert.equal(auditHold.evidence.at(-1)?.file, 'docs/evidence/v4-11/verdict-pack/copylot-pro-route-validation-verdict-v4-11.json');
+  assert.equal(
+    auditHold.evidence.at(-1)?.file,
+    'docs/evidence/v4-11/verdict-pack/copylot-pro-route-validation-verdict-v4-11.json'
+  );
   const auditHoldMarkdown = formatProPaymentEvaluationAuditMarkdown(auditHold, auditGetMessage);
   assert.ok(auditHoldMarkdown.includes('V4-12 Payment evaluation audit pack'));
   assert.ok(auditHoldMarkdown.includes('audit_status=hold_validation'));
@@ -2168,6 +2185,147 @@ async function run() {
   const auditEnterMarkdown = formatProPaymentEvaluationAuditMarkdown(auditEnter, auditGetMessage);
   assert.ok(auditEnterMarkdown.includes('audit_status=enter_payment_evaluation_review'));
   assert.ok(auditEnterMarkdown.includes('No new blockers are currently open.'));
+
+  const campaignReviewGetMessage: I18nGetMessage = (key) => {
+    const messages: Record<string, string> = {
+      proRouteValidationCampaignReviewActionSupporting:
+        'Keep strengthening the same route copy in this campaign.',
+      proRouteValidationCampaignReviewActionConflicting:
+        'Collect more real tasks here before trusting the current leader.',
+      proRouteValidationCampaignReviewActionThin:
+        'The sample is still too thin. Add more route opens and copies first.',
+      proRouteValidationCampaignReviewActionNoSignals:
+        'No usable route sample yet. Seed this campaign before drawing conclusions.',
+      proRouteValidationCampaignReviewCampaignConclusionSupporting:
+        'This campaign supports the current leader while the product still stays in validation.',
+      proRouteValidationCampaignReviewCampaignConclusionConflicting:
+        'This campaign currently backs a different route, so acquisition bias is still unresolved here.',
+      proRouteValidationCampaignReviewCampaignConclusionThin:
+        'This campaign points to the current leader, but the sample is still too thin to treat it as durable demand.',
+      proRouteValidationCampaignReviewCampaignConclusionNoSignals:
+        'This campaign has no usable route signal yet, so it cannot confirm or reject the current leader.',
+      proRouteValidationCampaignReviewCampaignNextSupporting:
+        'Keep scaling the same route in this campaign, but keep all external messaging inside stay_validation.',
+      proRouteValidationCampaignReviewCampaignNextConflicting:
+        'Prioritize this campaign in the next sampling loop before trusting the current leader.',
+      proRouteValidationCampaignReviewCampaignNextThin:
+        'Add more route opens and validation-copy signals in this campaign before reading monetization intent.',
+      proRouteValidationCampaignReviewCampaignNextNoSignals:
+        'Seed the first route-open and validation-copy sample in this campaign before drawing conclusions.',
+      proRouteValidationCampaignReviewConclusionConflicting:
+        'At least one campaign still backs a different leader, so acquisition bias is not resolved yet.',
+      proRouteValidationCampaignReviewConclusionThin:
+        'The leader is mostly aligned, but one or more campaigns are still too thin to treat the lead as durable demand.',
+      proRouteValidationCampaignReviewConclusionNoSignals:
+        'There is still no reliable cross-campaign leader, so keep seeding route signals before interpreting demand.',
+      proRouteValidationCampaignReviewConclusionSupporting:
+        'Current campaigns are aligned enough to keep strengthening the same leader while staying in validation.',
+      proRouteValidationCampaignReviewBlockerAcquisitionBias:
+        'A different route still leads in at least one campaign, so acquisition bias is not resolved yet.',
+      proRouteValidationCampaignReviewBlockerThinSamples:
+        'One or more campaigns still have thin samples, so the current lead is not durable enough yet.',
+      proRouteValidationCampaignReviewBlockerNoSignals:
+        'One or more campaigns still have no usable route signal, so cross-campaign coverage is incomplete.',
+      proRouteValidationCampaignReviewNoBlockers: 'No new blockers are currently open.',
+      proRouteValidationCampaignReviewNextPrioritized:
+        'Next step: prioritize the conflicting or thin campaigns before re-running the payment-evaluation audit.',
+      proRouteValidationCampaignReviewNextSteady:
+        'Next step: keep collecting balanced cross-campaign samples and maintain stay_validation messaging.',
+      proRouteValidationCampaignReviewBoundaryStayValidation:
+        'External messaging must remain in stay_validation and can only describe the current priority validation direction.',
+      proRouteValidationCampaignReviewMdTitle: 'V4-13 Cross-campaign route review pack',
+      proRouteValidationCampaignReviewMdSectionStatus: 'Status',
+      proRouteValidationCampaignReviewMdSectionCampaigns: 'Campaign review',
+      proRouteValidationCampaignReviewMdSectionBlockers: 'Blockers',
+      proRouteValidationCampaignReviewMdSectionDecision: 'Decision',
+      proRouteValidationCampaignReviewMdSectionEvidence: 'Evidence chain'
+    };
+    return messages[key] || key;
+  };
+
+  const campaignReview = buildProRouteValidationCampaignReviewPack({
+    stability: stabilitySummary,
+    verdict: verdictStay,
+    getMessage: campaignReviewGetMessage
+  });
+  assert.equal(campaignReview.reviewVersion, 'v4-13');
+  assert.equal(campaignReview.messagingBoundary, 'stay_validation');
+  assert.equal(campaignReview.overallLeaderTrackId, 'advanced_cleaning');
+  assert.deepEqual(campaignReview.supportingCampaigns, ['ph', 'twitter']);
+  assert.deepEqual(campaignReview.conflictingCampaigns, ['reddit', 'seo']);
+  assert.deepEqual(campaignReview.thinCampaigns, ['ph']);
+  assert.deepEqual(campaignReview.noSignalCampaigns, []);
+  assert.deepEqual(campaignReview.prioritizedCampaigns, ['ph', 'reddit', 'seo']);
+  assert.equal(campaignReview.blockers[0]?.code, 'acquisition_bias_unresolved');
+  assert.equal(campaignReview.blockers[1]?.code, 'sample_still_thin');
+  assert.equal(
+    campaignReview.campaigns.find((item) => item.campaign === 'twitter')?.reviewStatus,
+    'supporting'
+  );
+  assert.equal(
+    campaignReview.campaigns.find((item) => item.campaign === 'ph')?.reviewStatus,
+    'thin'
+  );
+  assert.equal(
+    campaignReview.campaigns.find((item) => item.campaign === 'reddit')?.reviewStatus,
+    'conflicting'
+  );
+  assert.equal(campaignReview.campaigns.find((item) => item.campaign === 'ph')?.prioritized, true);
+  assert.ok(campaignReview.nextStep.includes('prioritize the conflicting or thin campaigns'));
+  const campaignReviewMarkdown = formatProRouteValidationCampaignReviewMarkdown(
+    campaignReview,
+    campaignReviewGetMessage
+  );
+  assert.ok(campaignReviewMarkdown.includes('V4-13 Cross-campaign route review pack'));
+  assert.ok(campaignReviewMarkdown.includes('messaging_boundary=stay_validation'));
+  assert.ok(campaignReviewMarkdown.includes('conflicting_campaigns=reddit, seo'));
+  assert.ok(campaignReviewMarkdown.includes('thin_campaigns=ph'));
+  assert.ok(campaignReviewMarkdown.includes('prioritized_campaigns=ph, reddit, seo'));
+  assert.ok(campaignReviewMarkdown.includes('reddit: status=conflicting'));
+  assert.ok(campaignReviewMarkdown.includes('acquisition_bias_unresolved: campaigns=reddit, seo'));
+
+  const campaignReviewNoSignals = buildProRouteValidationCampaignReviewPack({
+    stability: {
+      ...stabilitySummary,
+      overallLeaderTrackId: 'none',
+      overallLeaderTrackTitle: 'No signals yet',
+      supportingCampaigns: [],
+      conflictingCampaigns: [],
+      verdictCode: 'no_signals',
+      campaigns: [
+        ...stabilitySummary.campaigns,
+        {
+          campaign: 'hackernews',
+          totalSignals: 0,
+          leadingTrackId: 'none',
+          leadingTrackTitle: 'No signals yet',
+          signalGap: 0,
+          tracks:
+            stabilitySummary.campaigns[0]?.tracks.map((track) => ({
+              ...track,
+              routeOpened: 0,
+              validationRouteCopied: 0,
+              validationBriefCopied: 0,
+              validationChecklistCopied: 0,
+              totalCopies: 0,
+              totalSignals: 0
+            })) || []
+        }
+      ]
+    },
+    verdict: {
+      ...verdictStay,
+      verdictCode: 'stay_validation'
+    },
+    getMessage: campaignReviewGetMessage
+  });
+  assert.equal(campaignReviewNoSignals.overallLeaderTrackId, 'none');
+  assert.ok(campaignReviewNoSignals.noSignalCampaigns.includes('hackernews'));
+  assert.equal(
+    campaignReviewNoSignals.campaigns.find((item) => item.campaign === 'hackernews')?.reviewStatus,
+    'no_signals'
+  );
+  assert.equal(campaignReviewNoSignals.blockers.at(-1)?.code, 'no_campaign_signals');
 
   // pro-funnel.ts (pure functions)
   const proSummaryDisabled = buildProFunnelSummary({
@@ -3949,7 +4107,11 @@ async function run() {
     lastCompletedClipCount: 2
   });
 
-  const appendSessionSingleCopyReset = applyClearToAppendSession(appendSessionSecond, now + 10, 'single_copy');
+  const appendSessionSingleCopyReset = applyClearToAppendSession(
+    appendSessionSecond,
+    now + 10,
+    'single_copy'
+  );
   assert.deepEqual(appendSessionSingleCopyReset, {
     clipCount: 0,
     workflowState: 'idle',
@@ -4071,10 +4233,14 @@ async function run() {
     telemetryEvents: [{ name: 'wom_share_opened', ts: now, props: { source: 'popup' } }]
   });
   assert.equal(womPackPreQualifiedLeak.womQualificationAudit.isEligibleForWomActions, false);
-  assert.equal(womPackPreQualifiedLeak.womQualificationAudit.gatedEventsBeforeQualificationCount, 1);
-  assert.deepEqual(womPackPreQualifiedLeak.womQualificationAudit.gatedEventsBeforeQualificationNames, [
-    'wom_share_opened'
-  ]);
+  assert.equal(
+    womPackPreQualifiedLeak.womQualificationAudit.gatedEventsBeforeQualificationCount,
+    1
+  );
+  assert.deepEqual(
+    womPackPreQualifiedLeak.womQualificationAudit.gatedEventsBeforeQualificationNames,
+    ['wom_share_opened']
+  );
 
   const womPackTelemetryOff = buildWomEvidencePack({
     exportedAt: 1,
@@ -4295,6 +4461,18 @@ async function run() {
     'options.html should include download-pro-payment-evaluation-audit-json'
   );
   assert.ok(
+    optionsHtml.includes('id="pro-route-validation-campaign-review-panel"'),
+    'options.html should include pro-route-validation-campaign-review-panel'
+  );
+  assert.ok(
+    optionsHtml.includes('id="copy-pro-route-validation-campaign-review-summary"'),
+    'options.html should include copy-pro-route-validation-campaign-review-summary'
+  );
+  assert.ok(
+    optionsHtml.includes('id="download-pro-route-validation-campaign-review-json"'),
+    'options.html should include download-pro-route-validation-campaign-review-json'
+  );
+  assert.ok(
     optionsHtml.includes('id="download-pro-intent-decision-summary-json"'),
     'options.html should include download-pro-intent-decision-summary-json'
   );
@@ -4347,10 +4525,7 @@ async function run() {
     optionsJs.includes('options_advanced_cleaning_cta'),
     'options.js should contain options_advanced_cleaning_cta'
   );
-  assert.ok(
-    optionsJs.includes('validation_brief'),
-    'options.js should contain validation_brief'
-  );
+  assert.ok(optionsJs.includes('validation_brief'), 'options.js should contain validation_brief');
   assert.ok(
     optionsJs.includes('options_bulk_collection_cta'),
     'options.js should contain options_bulk_collection_cta'
@@ -4370,6 +4545,10 @@ async function run() {
   assert.ok(
     optionsJs.includes('copylot-pro-route-validation-stability-v4-10.json'),
     'options.js should contain route stability export filename'
+  );
+  assert.ok(
+    optionsJs.includes('copylot-pro-route-validation-campaign-review-v4-13.json'),
+    'options.js should contain route campaign review export filename'
   );
   assert.ok(
     optionsJs.includes('copylot-pro-intent-decision-summary-'),

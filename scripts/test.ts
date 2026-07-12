@@ -511,6 +511,22 @@ async function run(): Promise<void> {
       'Pro payment evaluation audit outputs should be deterministic'
     )
   );
+  await runStep(startStep('build-pro-route-validation-campaign-review-pack', 'quality'), () =>
+    assertDeterministic(
+      './node_modules/.bin/ts-node',
+      [
+        'scripts/build-pro-route-validation-campaign-review-pack.ts',
+        'docs/evidence/v4-10/stability-pack/copylot-pro-route-validation-stability-v4-10.json',
+        'docs/evidence/v4-11/verdict-pack/copylot-pro-route-validation-verdict-v4-11.json',
+        'docs/evidence/v4-13/campaign-review-pack'
+      ],
+      [
+        'docs/evidence/v4-13/campaign-review-pack/copylot-pro-route-validation-campaign-review-v4-13.md',
+        'docs/evidence/v4-13/campaign-review-pack/copylot-pro-route-validation-campaign-review-v4-13.json'
+      ],
+      'Pro route validation campaign review outputs should be deterministic'
+    )
+  );
   await runStep(startStep('build-weekly-channel-ops-trend', 'quality'), () =>
     assertDeterministic(
       './node_modules/.bin/ts-node',

@@ -87,6 +87,12 @@ import {
   type ProPaymentEvaluationAuditPack
 } from '../shared/pro-payment-evaluation-audit';
 import {
+  buildProRouteValidationCampaignReviewPack,
+  formatProRouteValidationCampaignReviewMarkdown,
+  PRO_ROUTE_VALIDATION_CAMPAIGN_REVIEW_FILES,
+  type ProRouteValidationCampaignReviewPack
+} from '../shared/pro-route-validation-campaign-review';
+import {
   buildProFunnelEvidencePack,
   buildProFunnelSummary,
   type ProFunnelEvidencePack,
@@ -424,6 +430,8 @@ interface OptionsElements {
   downloadProRouteValidationVerdictJsonButton: HTMLButtonElement;
   proPaymentEvaluationAuditCopyButton: HTMLButtonElement;
   downloadProPaymentEvaluationAuditJsonButton: HTMLButtonElement;
+  proRouteValidationCampaignReviewCopyButton: HTMLButtonElement;
+  downloadProRouteValidationCampaignReviewJsonButton: HTMLButtonElement;
   proWaitlistButton: HTMLButtonElement;
   proWaitlistUrlCopyButton: HTMLButtonElement;
   proWaitlistRecruitCopyButton: HTMLButtonElement;
@@ -721,6 +729,12 @@ function getElements(): OptionsElements {
     ) || document.createElement('button')) as HTMLButtonElement,
     downloadProPaymentEvaluationAuditJsonButton: (document.getElementById(
       'download-pro-payment-evaluation-audit-json'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    proRouteValidationCampaignReviewCopyButton: (document.getElementById(
+      'copy-pro-route-validation-campaign-review-summary'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    downloadProRouteValidationCampaignReviewJsonButton: (document.getElementById(
+      'download-pro-route-validation-campaign-review-json'
     ) || document.createElement('button')) as HTMLButtonElement,
     proWaitlistButton: (document.getElementById('pro-waitlist-button') ||
       document.createElement('button')) as HTMLButtonElement,
@@ -2484,6 +2498,16 @@ async function buildProPaymentEvaluationAuditPackForExport(): Promise<ProPayment
   });
 }
 
+async function buildProRouteValidationCampaignReviewPackForExport(): Promise<ProRouteValidationCampaignReviewPack> {
+  const stability = await buildProRouteValidationStabilitySummaryForExport();
+  const verdict = await buildProRouteValidationVerdictPackForExport();
+  return buildProRouteValidationCampaignReviewPack({
+    stability,
+    verdict,
+    getMessage
+  });
+}
+
 async function copyProPaymentEvaluationAuditSummaryToClipboard(): Promise<void> {
   let pack: ProPaymentEvaluationAuditPack;
   let text: string;
@@ -2523,6 +2547,48 @@ async function downloadProPaymentEvaluationAuditJson(): Promise<void> {
   } catch (error) {
     console.warn('Failed to download pro payment evaluation audit json:', error);
     showNotification(getMessage('proPaymentEvaluationAuditDownloadFailed'), 'error');
+  }
+}
+
+async function copyProRouteValidationCampaignReviewSummaryToClipboard(): Promise<void> {
+  let pack: ProRouteValidationCampaignReviewPack;
+  let text: string;
+
+  try {
+    pack = await buildProRouteValidationCampaignReviewPackForExport();
+    text = formatProRouteValidationCampaignReviewMarkdown(pack, getMessage);
+  } catch (error) {
+    console.warn('Failed to build pro route validation campaign review markdown:', error);
+    showNotification(getMessage('proRouteValidationCampaignReviewCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await writeTextToClipboard(text);
+    showNotification(getMessage('proRouteValidationCampaignReviewCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy pro route validation campaign review markdown:', error);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
+    if (ok) {
+      showNotification(getMessage('proRouteValidationCampaignReviewCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('proRouteValidationCampaignReviewCopyFailed'), 'error');
+  }
+}
+
+async function downloadProRouteValidationCampaignReviewJson(): Promise<void> {
+  try {
+    const pack = await buildProRouteValidationCampaignReviewPackForExport();
+    downloadTextFile(
+      PRO_ROUTE_VALIDATION_CAMPAIGN_REVIEW_FILES.summaryJson,
+      `${JSON.stringify(pack, null, 2)}\n`,
+      'application/json'
+    );
+    showNotification(getMessage('proRouteValidationCampaignReviewDownloadSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to download pro route validation campaign review json:', error);
+    showNotification(getMessage('proRouteValidationCampaignReviewDownloadFailed'), 'error');
   }
 }
 
@@ -3947,6 +4013,12 @@ function setupEventListeners() {
   });
   elements.downloadProPaymentEvaluationAuditJsonButton.addEventListener('click', () => {
     void downloadProPaymentEvaluationAuditJson();
+  });
+  elements.proRouteValidationCampaignReviewCopyButton.addEventListener('click', () => {
+    void copyProRouteValidationCampaignReviewSummaryToClipboard();
+  });
+  elements.downloadProRouteValidationCampaignReviewJsonButton.addEventListener('click', () => {
+    void downloadProRouteValidationCampaignReviewJson();
   });
   elements.downloadProIntentV1_100SummaryJsonButton.addEventListener('click', () => {
     void downloadProIntentV1_100SummaryJson();

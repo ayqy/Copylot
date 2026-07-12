@@ -4,8 +4,10 @@ import {
   getOpenedUrls,
   getStorageSnapshot,
   openExtensionPage,
+  seedLocalStorage,
   seedSyncStorage
 } from './helpers/extension-state';
+import { waitForDownloadAndReadJson } from './helpers/download';
 import { openOptionsTab } from './helpers/options';
 
 test('pro tab only shows roadmap and sharing toolkit', async ({
@@ -19,7 +21,11 @@ test('pro tab only shows roadmap and sharing toolkit', async ({
     }
   });
 
-  const page = await openExtensionPage(extensionContext, extensionId, 'src/options/options.html#pro');
+  const page = await openExtensionPage(
+    extensionContext,
+    extensionId,
+    'src/options/options.html#pro'
+  );
   try {
     await openOptionsTab(page, 'pro');
 
@@ -47,6 +53,9 @@ test('pro tab only shows roadmap and sharing toolkit', async ({
     await expect(page.locator('#pro-payment-evaluation-audit-panel')).toBeVisible();
     await expect(page.locator('#copy-pro-payment-evaluation-audit-summary')).toBeVisible();
     await expect(page.locator('#download-pro-payment-evaluation-audit-json')).toBeVisible();
+    await expect(page.locator('#pro-route-validation-campaign-review-panel')).toBeVisible();
+    await expect(page.locator('#copy-pro-route-validation-campaign-review-summary')).toBeVisible();
+    await expect(page.locator('#download-pro-route-validation-campaign-review-json')).toBeVisible();
 
     await expect(page.locator('#pro-waitlist-copy')).toHaveCount(0);
     await expect(page.locator('#pro-waitlist-survey')).toHaveCount(0);
@@ -69,14 +78,19 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
     }
   });
 
-  const page = await openExtensionPage(extensionContext, extensionId, 'src/options/options.html#pro');
+  const page = await openExtensionPage(
+    extensionContext,
+    extensionId,
+    'src/options/options.html#pro'
+  );
   try {
     await openOptionsTab(page, 'pro');
     await page.locator('#pro-intent-campaign').fill('twitter');
 
     await page.locator('#pro-validation-advanced-route-copy').click();
     await expectClipboardTextEventually(
-      (text) => text.includes('/pricing') && text.includes('utm_content=options_advanced_cleaning_cta'),
+      (text) =>
+        text.includes('/pricing') && text.includes('utm_content=options_advanced_cleaning_cta'),
       driverPage
     );
 
@@ -108,7 +122,8 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
 
     await page.locator('#pro-validation-bulk-route-copy').click();
     await expectClipboardTextEventually(
-      (text) => text.includes('/pricing') && text.includes('utm_content=options_bulk_collection_cta'),
+      (text) =>
+        text.includes('/pricing') && text.includes('utm_content=options_bulk_collection_cta'),
       driverPage
     );
 
@@ -140,7 +155,8 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
 
     await page.locator('#pro-validation-structured-route-copy').click();
     await expectClipboardTextEventually(
-      (text) => text.includes('/pricing') && text.includes('utm_content=options_structured_export_cta'),
+      (text) =>
+        text.includes('/pricing') && text.includes('utm_content=options_structured_export_cta'),
       driverPage
     );
 
@@ -176,8 +192,7 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
       (text) =>
         (text.includes('V4-8 三条路线样本比较摘要') ||
           text.includes('V4-8 Pro route sample comparison summary')) &&
-        (text.includes('高级页面清洗验证') ||
-          text.includes('Advanced page cleaning validation')) &&
+        (text.includes('高级页面清洗验证') || text.includes('Advanced page cleaning validation')) &&
         text.includes('total_signals=4'),
       driverPage
     );
@@ -187,8 +202,7 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
       (text) =>
         (text.includes('V4-9 领先路线回写包') ||
           text.includes('V4-9 Leading route writeback pack')) &&
-        (text.includes('高级页面清洗验证') ||
-          text.includes('Advanced page cleaning validation')) &&
+        (text.includes('高级页面清洗验证') || text.includes('Advanced page cleaning validation')) &&
         text.includes('recent_7d total_signals=4'),
       driverPage
     );
@@ -198,8 +212,7 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
       (text) =>
         (text.includes('V4-10 领先路线稳定性摘要') ||
           text.includes('V4-10 Leading route stability summary')) &&
-        (text.includes('高级页面清洗验证') ||
-          text.includes('Advanced page cleaning validation')) &&
+        (text.includes('高级页面清洗验证') || text.includes('Advanced page cleaning validation')) &&
         text.includes('supporting_campaigns=twitter'),
       driverPage
     );
@@ -234,6 +247,17 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
       driverPage
     );
 
+    await page.locator('#copy-pro-route-validation-campaign-review-summary').click();
+    await expectClipboardTextEventually(
+      (text) =>
+        (text.includes('V4-13 跨 campaign 领先路线复核包') ||
+          text.includes('V4-13 Cross-campaign route review pack')) &&
+        text.includes('messaging_boundary=stay_validation') &&
+        text.includes('prioritized_campaigns=none') &&
+        text.includes('twitter: status=supporting'),
+      driverPage
+    );
+
     await page.locator('#pro-waitlist-url-copy').click();
     await expectClipboardTextEventually(
       (text) => text.includes('/pricing') && text.includes('utm_campaign=twitter'),
@@ -242,7 +266,8 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
 
     await page.locator('#pro-store-url-copy').click();
     await expectClipboardTextEventually(
-      (text) => text.includes('chromewebstore.google.com/detail/') && text.includes('utm_campaign=twitter'),
+      (text) =>
+        text.includes('chromewebstore.google.com/detail/') && text.includes('utm_campaign=twitter'),
       driverPage
     );
 
@@ -278,7 +303,11 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
     await expect
       .poll(async () => {
         const snapshot = await getStorageSnapshot(driverPage);
-        return (snapshot.local.copilot_telemetry_events as Array<{ name?: string; props?: Record<string, unknown> }> | undefined) || [];
+        return (
+          (snapshot.local.copilot_telemetry_events as
+            | Array<{ name?: string; props?: Record<string, unknown> }>
+            | undefined) || []
+        );
       })
       .toEqual(
         expect.arrayContaining([
@@ -397,6 +426,175 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
           })
         ])
       );
+  } finally {
+    await page.close();
+  }
+});
+
+test('campaign review json differentiates conflicting and thin blockers while staying in validation', async ({
+  extensionContext,
+  extensionId,
+  driverPage
+}) => {
+  const now = Date.now();
+
+  await seedSyncStorage(driverPage, {
+    copilot_settings: {
+      isAnonymousUsageDataEnabled: true
+    }
+  });
+  await seedLocalStorage(driverPage, {
+    copilot_telemetry_events: [
+      {
+        name: 'pro_waitlist_opened',
+        ts: now - 6 * 60 * 60 * 1000,
+        props: { source: 'options', campaign: 'twitter', content: 'options_advanced_cleaning_cta' }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now - 6 * 60 * 60 * 1000 + 1_000,
+        props: {
+          source: 'options',
+          campaign: 'twitter',
+          content: 'options_advanced_cleaning_cta',
+          action: 'validation_route'
+        }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now - 6 * 60 * 60 * 1000 + 2_000,
+        props: {
+          source: 'options',
+          campaign: 'twitter',
+          content: 'options_advanced_cleaning_cta',
+          action: 'validation_brief'
+        }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now - 6 * 60 * 60 * 1000 + 3_000,
+        props: {
+          source: 'options',
+          campaign: 'twitter',
+          content: 'options_advanced_cleaning_cta',
+          action: 'validation_checklist'
+        }
+      },
+      {
+        name: 'pro_waitlist_opened',
+        ts: now - 5 * 60 * 60 * 1000,
+        props: { source: 'options', campaign: 'ph', content: 'options_advanced_cleaning_cta' }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now - 5 * 60 * 60 * 1000 + 1_000,
+        props: {
+          source: 'options',
+          campaign: 'ph',
+          content: 'options_advanced_cleaning_cta',
+          action: 'validation_route'
+        }
+      },
+      {
+        name: 'pro_waitlist_opened',
+        ts: now - 4 * 60 * 60 * 1000,
+        props: { source: 'options', campaign: 'reddit', content: 'options_bulk_collection_cta' }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now - 4 * 60 * 60 * 1000 + 1_000,
+        props: {
+          source: 'options',
+          campaign: 'reddit',
+          content: 'options_bulk_collection_cta',
+          action: 'validation_route'
+        }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now - 4 * 60 * 60 * 1000 + 2_000,
+        props: {
+          source: 'options',
+          campaign: 'reddit',
+          content: 'options_bulk_collection_cta',
+          action: 'validation_brief'
+        }
+      },
+      {
+        name: 'pro_waitlist_opened',
+        ts: now - 3 * 60 * 60 * 1000,
+        props: { source: 'options', campaign: 'seo', content: 'options_structured_export_cta' }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: now - 3 * 60 * 60 * 1000 + 1_000,
+        props: {
+          source: 'options',
+          campaign: 'seo',
+          content: 'options_structured_export_cta',
+          action: 'validation_route'
+        }
+      }
+    ]
+  });
+
+  const page = await openExtensionPage(
+    extensionContext,
+    extensionId,
+    'src/options/options.html#pro'
+  );
+  try {
+    await openOptionsTab(page, 'pro');
+
+    const { filename, json } = await waitForDownloadAndReadJson<{
+      messagingBoundary: string;
+      overallLeaderTrackId: string;
+      supportingCampaigns: string[];
+      conflictingCampaigns: string[];
+      thinCampaigns: string[];
+      prioritizedCampaigns: string[];
+      blockers: Array<{ code: string; campaigns: string[] }>;
+      campaigns: Array<{ campaign: string; reviewStatus: string }>;
+      conclusion: string;
+      nextStep: string;
+      sources: Array<{ label: string; file?: string }>;
+    }>(page, () => page.locator('#download-pro-route-validation-campaign-review-json').click());
+
+    expect(filename).toBe('copylot-pro-route-validation-campaign-review-v4-13.json');
+    expect(json.messagingBoundary).toBe('stay_validation');
+    expect(json.overallLeaderTrackId).toBe('advanced_cleaning');
+    expect(json.supportingCampaigns).toEqual(['ph', 'twitter']);
+    expect(json.conflictingCampaigns).toEqual(['reddit', 'seo']);
+    expect(json.thinCampaigns).toEqual(['ph']);
+    expect(json.prioritizedCampaigns).toEqual(['ph', 'reddit', 'seo']);
+    expect(json.blockers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'acquisition_bias_unresolved',
+          campaigns: ['reddit', 'seo']
+        }),
+        expect.objectContaining({
+          code: 'sample_still_thin',
+          campaigns: ['ph']
+        })
+      ])
+    );
+    expect(json.campaigns).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ campaign: 'twitter', reviewStatus: 'supporting' }),
+        expect.objectContaining({ campaign: 'ph', reviewStatus: 'thin' }),
+        expect.objectContaining({ campaign: 'reddit', reviewStatus: 'conflicting' })
+      ])
+    );
+    expect(json.conclusion).toMatch(/acquisition bias|acquisition 偏差/i);
+    expect(json.nextStep).toMatch(/prioritize|优先补/i);
+    expect(json.sources).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ label: 'comparison' }),
+        expect.objectContaining({ label: 'writeback' }),
+        expect.objectContaining({ label: 'decision' })
+      ])
+    );
   } finally {
     await page.close();
   }
