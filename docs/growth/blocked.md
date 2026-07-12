@@ -42,7 +42,7 @@
 
 已观测结果（本机当前受管沙箱）：
 - 已完成本地提交：`440a073 feat: add cross-campaign route review pack`
-- 已完成阻塞回写提交：`37f94e2 docs: record v4-13 push blocker`
+- 已完成后续阻塞回写提交：见本地 `git log`
 - `git push` 失败：`ssh: Could not resolve hostname ssh.github.com`
 - 本轮 `bash scripts/test.sh` 已通过：`27 passed, 0 failed, 3 skipped`
 
@@ -54,7 +54,7 @@
 
 无凭据/无权限情况下可继续推进的替代动作：
 - 保持当前工作区为干净状态，必要时用 `bash scripts/test.sh` 复核统一测试入口仍为 `0`
-- 在恢复网络访问后，直接推送现有提交链 `440a073 -> 37f94e2`，不需要重新生成代码或文档
+- 在恢复网络访问后，直接推送当前本地提交链，不需要重新生成代码或文档
 - 若要继续下一轮 roadmap，只需基于当前本地提交继续推进，不必回滚本轮产物
 
 ## 1) 20260427-140500-growth 自动增长执行阻塞（v1-105）
