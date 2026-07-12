@@ -49,5 +49,5 @@
 
 ## commit / push 状态
 
-- commit：已完成，本地提交为 `440a073 feat: add cross-campaign route review pack`。
+- commit：已完成，本地提交为 `440a073 feat: add cross-campaign route review pack` 与 `37f94e2 docs: record v4-13 push blocker`。
 - push：未完成；当前受管沙箱内执行 `git push` 失败，错误为 `ssh: Could not resolve hostname ssh.github.com`，已同步记录到 `docs/roadmap_status.md` 与 `docs/growth/blocked.md`。
