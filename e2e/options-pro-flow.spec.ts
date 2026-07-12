@@ -44,6 +44,9 @@ test('pro tab only shows roadmap and sharing toolkit', async ({
     await expect(page.locator('#pro-route-verdict-panel')).toBeVisible();
     await expect(page.locator('#copy-pro-route-validation-verdict-summary')).toBeVisible();
     await expect(page.locator('#download-pro-route-validation-verdict-json')).toBeVisible();
+    await expect(page.locator('#pro-payment-evaluation-audit-panel')).toBeVisible();
+    await expect(page.locator('#copy-pro-payment-evaluation-audit-summary')).toBeVisible();
+    await expect(page.locator('#download-pro-payment-evaluation-audit-json')).toBeVisible();
 
     await expect(page.locator('#pro-waitlist-copy')).toHaveCount(0);
     await expect(page.locator('#pro-waitlist-survey')).toHaveCount(0);
@@ -218,6 +221,16 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
         text.includes('route_leader_consistent=true') &&
         text.includes('route_stability_ready=false') &&
         text.includes('gate_allows_payment_evaluation=false'),
+      driverPage
+    );
+
+    await page.locator('#copy-pro-payment-evaluation-audit-summary').click();
+    await expectClipboardTextEventually(
+      (text) =>
+        (text.includes('V4-12 收费评估审计包') ||
+          text.includes('V4-12 Payment evaluation audit pack')) &&
+        text.includes('audit_status=hold_validation') &&
+        text.includes('route_stability_ready=false'),
       driverPage
     );
 

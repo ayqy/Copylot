@@ -823,6 +823,157 @@
     "message": "下一步：在不做支付实现的前提下，进入收费评估审计与边界复核。",
     "description": "Pro 路线融合判断：进入收费评估时的下一步"
   },
+  "proPaymentEvaluationAuditTitle": {
+    "message": "收费评估审计包",
+    "description": "Options Pro Tab：收费评估审计包标题"
+  },
+  "proPaymentEvaluationAuditHint": {
+    "message": "把统一 verdict 进一步整理成收费评估审计包，明确 go/no-go、阻塞项、证据链和边界，但仍不直接实现支付。",
+    "description": "Options Pro Tab：收费评估审计包说明"
+  },
+  "proPaymentEvaluationAuditCopy": {
+    "message": "复制收费评估审计包",
+    "description": "Options Pro Tab：复制收费评估审计包按钮"
+  },
+  "proPaymentEvaluationAuditDownloadJson": {
+    "message": "下载收费评估审计 JSON",
+    "description": "Options Pro Tab：下载收费评估审计 JSON 按钮"
+  },
+  "proPaymentEvaluationAuditPrivacyHint": {
+    "message": "审计包只使用本地匿名聚合字段和本地判断结果，不包含网页正文、复制内容、URL、标题或联系方式。",
+    "description": "Options Pro Tab：收费评估审计包隐私提示"
+  },
+  "proPaymentEvaluationAuditMdTitle": {
+    "message": "V4-12 收费评估审计包",
+    "description": "收费评估审计包 Markdown 标题"
+  },
+  "proPaymentEvaluationAuditMdSectionStatus": {
+    "message": "状态",
+    "description": "收费评估审计包 Markdown 状态区块标题"
+  },
+  "proPaymentEvaluationAuditMdSectionChecks": {
+    "message": "检查项",
+    "description": "收费评估审计包 Markdown 检查项区块标题"
+  },
+  "proPaymentEvaluationAuditMdSectionBlockers": {
+    "message": "阻塞项",
+    "description": "收费评估审计包 Markdown 阻塞项区块标题"
+  },
+  "proPaymentEvaluationAuditMdSectionBoundaries": {
+    "message": "边界",
+    "description": "收费评估审计包 Markdown 边界区块标题"
+  },
+  "proPaymentEvaluationAuditMdSectionNext": {
+    "message": "下一步",
+    "description": "收费评估审计包 Markdown 下一步区块标题"
+  },
+  "proPaymentEvaluationAuditMdSectionEvidence": {
+    "message": "证据链",
+    "description": "收费评估审计包 Markdown 证据链区块标题"
+  },
+  "proPaymentEvaluationAuditDecisionHold": {
+    "message": "当前审计结论：继续停留在验证阶段，不进入收费实现。",
+    "description": "收费评估审计包：继续验证结论"
+  },
+  "proPaymentEvaluationAuditDecisionEnter": {
+    "message": "当前审计结论：可以进入收费评估复核，但仍不直接实现支付。",
+    "description": "收费评估审计包：进入收费评估复核结论"
+  },
+  "proPaymentEvaluationAuditCheckLeaderPassed": {
+    "message": "领先路线已对齐：$TRACK$。",
+    "description": "收费评估审计包：领先路线通过检查",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      }
+    }
+  },
+  "proPaymentEvaluationAuditCheckLeaderFailed": {
+    "message": "领先路线尚未在比较、回写与稳定性摘要之间完成对齐。",
+    "description": "收费评估审计包：领先路线未通过检查"
+  },
+  "proPaymentEvaluationAuditCheckStabilityPassed": {
+    "message": "稳定性 verdict 已进入 $VERDICT$。",
+    "description": "收费评估审计包：稳定性通过检查",
+    "placeholders": {
+      "verdict": {
+        "content": "$1"
+      }
+    }
+  },
+  "proPaymentEvaluationAuditCheckStabilityFailed": {
+    "message": "稳定性 verdict 仍是 $VERDICT$，还不能进入收费评估。",
+    "description": "收费评估审计包：稳定性未通过检查",
+    "placeholders": {
+      "verdict": {
+        "content": "$1"
+      }
+    }
+  },
+  "proPaymentEvaluationAuditCheckGatePassed": {
+    "message": "收费前门槛已进入 $CODE$：$CONCLUSION$。",
+    "description": "收费评估审计包：门槛通过检查",
+    "placeholders": {
+      "code": {
+        "content": "$1"
+      },
+      "conclusion": {
+        "content": "$2"
+      }
+    }
+  },
+  "proPaymentEvaluationAuditCheckGateFailed": {
+    "message": "收费前门槛仍为 $CODE$：$CONCLUSION$。",
+    "description": "收费评估审计包：门槛未通过检查",
+    "placeholders": {
+      "code": {
+        "content": "$1"
+      },
+      "conclusion": {
+        "content": "$2"
+      }
+    }
+  },
+  "proPaymentEvaluationAuditBoundaryNoPaymentImplementation": {
+    "message": "当前审计只输出判断与证据，不实现支付、收款、订阅或表单。",
+    "description": "收费评估审计包：不做支付实现边界"
+  },
+  "proPaymentEvaluationAuditBoundaryNoMessagingDrift": {
+    "message": "对外话术必须与当前 verdict 保持一致，不暗示已上线收费或支付。",
+    "description": "收费评估审计包：不漂移对外话术边界"
+  },
+  "proPaymentEvaluationAuditBoundaryNoSensitiveData": {
+    "message": "证据只使用本地匿名聚合字段，不包含网页正文、复制内容、URL、标题或联系方式。",
+    "description": "收费评估审计包：不包含敏感数据边界"
+  },
+  "proPaymentEvaluationAuditNextHoldSamples": {
+    "message": "继续补跨 campaign 的真实任务样本，先解决 acquisition 偏差。",
+    "description": "收费评估审计包：继续验证时的下一步 1"
+  },
+  "proPaymentEvaluationAuditNextHoldMessaging": {
+    "message": "继续把对外文案锁在 stay_validation，不提前承诺收费能力。",
+    "description": "收费评估审计包：继续验证时的下一步 2"
+  },
+  "proPaymentEvaluationAuditNextHoldRecheck": {
+    "message": "仅在三项检查全部通过后，再进入下一轮收费评估复核。",
+    "description": "收费评估审计包：继续验证时的下一步 3"
+  },
+  "proPaymentEvaluationAuditNextEnterReview": {
+    "message": "先复核价格表达、支付边界与证据链，再决定是否需要单独的收费实现计划。",
+    "description": "收费评估审计包：进入收费评估时的下一步 1"
+  },
+  "proPaymentEvaluationAuditNextEnterApproval": {
+    "message": "在进入任何收费实现前，仍需要单独的人类确认与里程碑批准。",
+    "description": "收费评估审计包：进入收费评估时的下一步 2"
+  },
+  "proPaymentEvaluationAuditNextEnterNoPaymentImplementation": {
+    "message": "即便审计通过，本轮也只停留在评估与复核，不直接实现支付。",
+    "description": "收费评估审计包：进入收费评估时的下一步 3"
+  },
+  "proPaymentEvaluationAuditNoBlockers": {
+    "message": "当前没有新增阻塞项。",
+    "description": "收费评估审计包：无新增阻塞项提示"
+  },
   "proIntentDecisionConclusionADataOff": {
     "message": "继续收集（匿名使用数据未开启/无可用事件）",
     "description": "决策摘要：匿名数据关闭时的 A 结论"
@@ -2328,6 +2479,22 @@
   "proRouteValidationVerdictDownloadFailed": {
     "message": "下载失败",
     "description": "Pro 路线融合判断 JSON 下载失败提示"
+  },
+  "proPaymentEvaluationAuditCopySuccess": {
+    "message": "收费评估审计包已复制到剪贴板",
+    "description": "收费评估审计包复制成功提示"
+  },
+  "proPaymentEvaluationAuditCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "收费评估审计包复制失败提示"
+  },
+  "proPaymentEvaluationAuditDownloadSuccess": {
+    "message": "收费评估审计 JSON 已下载",
+    "description": "收费评估审计 JSON 下载成功提示"
+  },
+  "proPaymentEvaluationAuditDownloadFailed": {
+    "message": "下载失败",
+    "description": "收费评估审计 JSON 下载失败提示"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "复制按 campaign 的本周复盘摘要（Markdown）",

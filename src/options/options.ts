@@ -81,6 +81,12 @@ import {
   type ProRouteValidationVerdictPack
 } from '../shared/pro-route-validation-verdict';
 import {
+  buildProPaymentEvaluationAuditPack,
+  formatProPaymentEvaluationAuditMarkdown,
+  PRO_PAYMENT_EVALUATION_AUDIT_FILES,
+  type ProPaymentEvaluationAuditPack
+} from '../shared/pro-payment-evaluation-audit';
+import {
   buildProFunnelEvidencePack,
   buildProFunnelSummary,
   type ProFunnelEvidencePack,
@@ -416,6 +422,8 @@ interface OptionsElements {
   downloadProIntentDecisionSummaryJsonButton: HTMLButtonElement;
   proRouteValidationVerdictCopyButton: HTMLButtonElement;
   downloadProRouteValidationVerdictJsonButton: HTMLButtonElement;
+  proPaymentEvaluationAuditCopyButton: HTMLButtonElement;
+  downloadProPaymentEvaluationAuditJsonButton: HTMLButtonElement;
   proWaitlistButton: HTMLButtonElement;
   proWaitlistUrlCopyButton: HTMLButtonElement;
   proWaitlistRecruitCopyButton: HTMLButtonElement;
@@ -707,6 +715,12 @@ function getElements(): OptionsElements {
     ) || document.createElement('button')) as HTMLButtonElement,
     downloadProRouteValidationVerdictJsonButton: (document.getElementById(
       'download-pro-route-validation-verdict-json'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    proPaymentEvaluationAuditCopyButton: (document.getElementById(
+      'copy-pro-payment-evaluation-audit-summary'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    downloadProPaymentEvaluationAuditJsonButton: (document.getElementById(
+      'download-pro-payment-evaluation-audit-json'
     ) || document.createElement('button')) as HTMLButtonElement,
     proWaitlistButton: (document.getElementById('pro-waitlist-button') ||
       document.createElement('button')) as HTMLButtonElement,
@@ -2462,6 +2476,56 @@ async function downloadProRouteValidationVerdictJson(): Promise<void> {
   }
 }
 
+async function buildProPaymentEvaluationAuditPackForExport(): Promise<ProPaymentEvaluationAuditPack> {
+  const verdict = await buildProRouteValidationVerdictPackForExport();
+  return buildProPaymentEvaluationAuditPack({
+    verdict,
+    getMessage
+  });
+}
+
+async function copyProPaymentEvaluationAuditSummaryToClipboard(): Promise<void> {
+  let pack: ProPaymentEvaluationAuditPack;
+  let text: string;
+
+  try {
+    pack = await buildProPaymentEvaluationAuditPackForExport();
+    text = formatProPaymentEvaluationAuditMarkdown(pack, getMessage);
+  } catch (error) {
+    console.warn('Failed to build pro payment evaluation audit markdown:', error);
+    showNotification(getMessage('proPaymentEvaluationAuditCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await writeTextToClipboard(text);
+    showNotification(getMessage('proPaymentEvaluationAuditCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy pro payment evaluation audit markdown:', error);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
+    if (ok) {
+      showNotification(getMessage('proPaymentEvaluationAuditCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('proPaymentEvaluationAuditCopyFailed'), 'error');
+  }
+}
+
+async function downloadProPaymentEvaluationAuditJson(): Promise<void> {
+  try {
+    const pack = await buildProPaymentEvaluationAuditPackForExport();
+    downloadTextFile(
+      PRO_PAYMENT_EVALUATION_AUDIT_FILES.summaryJson,
+      `${JSON.stringify(pack, null, 2)}\n`,
+      'application/json'
+    );
+    showNotification(getMessage('proPaymentEvaluationAuditDownloadSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to download pro payment evaluation audit json:', error);
+    showNotification(getMessage('proPaymentEvaluationAuditDownloadFailed'), 'error');
+  }
+}
+
 async function buildProIntentWeeklyDigestMarkdownForClipboard(): Promise<string> {
   const exportedAt = Date.now();
   let extensionVersion = '';
@@ -3877,6 +3941,12 @@ function setupEventListeners() {
   });
   elements.downloadProRouteValidationVerdictJsonButton.addEventListener('click', () => {
     void downloadProRouteValidationVerdictJson();
+  });
+  elements.proPaymentEvaluationAuditCopyButton.addEventListener('click', () => {
+    void copyProPaymentEvaluationAuditSummaryToClipboard();
+  });
+  elements.downloadProPaymentEvaluationAuditJsonButton.addEventListener('click', () => {
+    void downloadProPaymentEvaluationAuditJson();
   });
   elements.downloadProIntentV1_100SummaryJsonButton.addEventListener('click', () => {
     void downloadProIntentV1_100SummaryJson();

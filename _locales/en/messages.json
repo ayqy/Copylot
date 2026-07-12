@@ -823,6 +823,157 @@
     "message": "Next step: enter payment-evaluation audit and boundary review without implementing payment directly.",
     "description": "Route fusion verdict next step when entering payment evaluation"
   },
+  "proPaymentEvaluationAuditTitle": {
+    "message": "Payment evaluation audit pack",
+    "description": "Options Pro tab: payment evaluation audit pack title"
+  },
+  "proPaymentEvaluationAuditHint": {
+    "message": "Turn the unified verdict into a payment-evaluation audit pack that makes go/no-go, blockers, evidence chain, and boundaries explicit without implementing payment directly.",
+    "description": "Options Pro tab: payment evaluation audit pack hint"
+  },
+  "proPaymentEvaluationAuditCopy": {
+    "message": "Copy payment-evaluation audit pack",
+    "description": "Options Pro tab: copy payment evaluation audit pack button"
+  },
+  "proPaymentEvaluationAuditDownloadJson": {
+    "message": "Download payment-evaluation audit JSON",
+    "description": "Options Pro tab: download payment evaluation audit json button"
+  },
+  "proPaymentEvaluationAuditPrivacyHint": {
+    "message": "Uses only local anonymous aggregated fields and local verdict outputs. Never includes copied page content, URLs, titles, or contact details.",
+    "description": "Options Pro tab: payment evaluation audit privacy hint"
+  },
+  "proPaymentEvaluationAuditMdTitle": {
+    "message": "V4-12 Payment evaluation audit pack",
+    "description": "Payment evaluation audit pack markdown title"
+  },
+  "proPaymentEvaluationAuditMdSectionStatus": {
+    "message": "Status",
+    "description": "Payment evaluation audit pack markdown status section heading"
+  },
+  "proPaymentEvaluationAuditMdSectionChecks": {
+    "message": "Checks",
+    "description": "Payment evaluation audit pack markdown checks section heading"
+  },
+  "proPaymentEvaluationAuditMdSectionBlockers": {
+    "message": "Blockers",
+    "description": "Payment evaluation audit pack markdown blockers section heading"
+  },
+  "proPaymentEvaluationAuditMdSectionBoundaries": {
+    "message": "Boundaries",
+    "description": "Payment evaluation audit pack markdown boundaries section heading"
+  },
+  "proPaymentEvaluationAuditMdSectionNext": {
+    "message": "Next steps",
+    "description": "Payment evaluation audit pack markdown next-steps section heading"
+  },
+  "proPaymentEvaluationAuditMdSectionEvidence": {
+    "message": "Evidence chain",
+    "description": "Payment evaluation audit pack markdown evidence section heading"
+  },
+  "proPaymentEvaluationAuditDecisionHold": {
+    "message": "Current audit verdict: stay in validation and do not enter monetization implementation.",
+    "description": "Payment evaluation audit pack stay-validation line"
+  },
+  "proPaymentEvaluationAuditDecisionEnter": {
+    "message": "Current audit verdict: enter payment-evaluation review, but still do not implement payment directly.",
+    "description": "Payment evaluation audit pack enter-review line"
+  },
+  "proPaymentEvaluationAuditCheckLeaderPassed": {
+    "message": "The leading route is aligned: $TRACK$.",
+    "description": "Payment evaluation audit pack passed leader check",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      }
+    }
+  },
+  "proPaymentEvaluationAuditCheckLeaderFailed": {
+    "message": "The leading route is still not aligned across the comparison, writeback, and stability outputs.",
+    "description": "Payment evaluation audit pack failed leader check"
+  },
+  "proPaymentEvaluationAuditCheckStabilityPassed": {
+    "message": "The stability verdict has reached $VERDICT$.",
+    "description": "Payment evaluation audit pack passed stability check",
+    "placeholders": {
+      "verdict": {
+        "content": "$1"
+      }
+    }
+  },
+  "proPaymentEvaluationAuditCheckStabilityFailed": {
+    "message": "The stability verdict is still $VERDICT$, so payment evaluation should not start yet.",
+    "description": "Payment evaluation audit pack failed stability check",
+    "placeholders": {
+      "verdict": {
+        "content": "$1"
+      }
+    }
+  },
+  "proPaymentEvaluationAuditCheckGatePassed": {
+    "message": "The pre-payment gate has reached $CODE$: $CONCLUSION$.",
+    "description": "Payment evaluation audit pack passed gate check",
+    "placeholders": {
+      "code": {
+        "content": "$1"
+      },
+      "conclusion": {
+        "content": "$2"
+      }
+    }
+  },
+  "proPaymentEvaluationAuditCheckGateFailed": {
+    "message": "The pre-payment gate is still $CODE$: $CONCLUSION$.",
+    "description": "Payment evaluation audit pack failed gate check",
+    "placeholders": {
+      "code": {
+        "content": "$1"
+      },
+      "conclusion": {
+        "content": "$2"
+      }
+    }
+  },
+  "proPaymentEvaluationAuditBoundaryNoPaymentImplementation": {
+    "message": "This audit only outputs judgments and evidence. It does not implement payment, collection, subscriptions, or forms.",
+    "description": "Payment evaluation audit pack no-payment-implementation boundary"
+  },
+  "proPaymentEvaluationAuditBoundaryNoMessagingDrift": {
+    "message": "External messaging must stay aligned with the current verdict and must not imply that payment is already live.",
+    "description": "Payment evaluation audit pack no-messaging-drift boundary"
+  },
+  "proPaymentEvaluationAuditBoundaryNoSensitiveData": {
+    "message": "Evidence uses only local anonymous aggregate fields and never includes copied page content, URLs, titles, or contact details.",
+    "description": "Payment evaluation audit pack no-sensitive-data boundary"
+  },
+  "proPaymentEvaluationAuditNextHoldSamples": {
+    "message": "Collect more real cross-campaign task samples before trying to interpret the lead as durable demand.",
+    "description": "Payment evaluation audit pack hold next step 1"
+  },
+  "proPaymentEvaluationAuditNextHoldMessaging": {
+    "message": "Keep all external copy locked to stay_validation and avoid promising monetization capability too early.",
+    "description": "Payment evaluation audit pack hold next step 2"
+  },
+  "proPaymentEvaluationAuditNextHoldRecheck": {
+    "message": "Only re-open payment evaluation after all three checks pass in the same audit window.",
+    "description": "Payment evaluation audit pack hold next step 3"
+  },
+  "proPaymentEvaluationAuditNextEnterReview": {
+    "message": "Review pricing language, payment boundaries, and the evidence chain before proposing any separate implementation plan.",
+    "description": "Payment evaluation audit pack enter next step 1"
+  },
+  "proPaymentEvaluationAuditNextEnterApproval": {
+    "message": "A separate human approval milestone is still required before any monetization implementation starts.",
+    "description": "Payment evaluation audit pack enter next step 2"
+  },
+  "proPaymentEvaluationAuditNextEnterNoPaymentImplementation": {
+    "message": "Even when the audit passes, this loop stays at evaluation and review only. No direct payment implementation.",
+    "description": "Payment evaluation audit pack enter next step 3"
+  },
+  "proPaymentEvaluationAuditNoBlockers": {
+    "message": "No new blockers are currently open.",
+    "description": "Payment evaluation audit pack no-blockers note"
+  },
   "proIntentDecisionConclusionADataOff": {
     "message": "Keep collecting (anonymous usage data is disabled / no usable events)",
     "description": "Decision summary: A conclusion when anonymous data is disabled"
@@ -2328,6 +2479,22 @@
   "proRouteValidationVerdictDownloadFailed": {
     "message": "Download failed",
     "description": "Route fusion verdict json download failure notification"
+  },
+  "proPaymentEvaluationAuditCopySuccess": {
+    "message": "Payment-evaluation audit pack copied to clipboard",
+    "description": "Payment evaluation audit pack copy success notification"
+  },
+  "proPaymentEvaluationAuditCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Payment evaluation audit pack copy failure notification"
+  },
+  "proPaymentEvaluationAuditDownloadSuccess": {
+    "message": "Payment-evaluation audit JSON downloaded",
+    "description": "Payment evaluation audit json download success notification"
+  },
+  "proPaymentEvaluationAuditDownloadFailed": {
+    "message": "Download failed",
+    "description": "Payment evaluation audit json download failure notification"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "Copy weekly campaign report (Markdown)",

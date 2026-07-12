@@ -44,6 +44,10 @@ import {
   formatProRouteValidationVerdictMarkdown
 } from '../src/shared/pro-route-validation-verdict.ts';
 import {
+  buildProPaymentEvaluationAuditPack,
+  formatProPaymentEvaluationAuditMarkdown
+} from '../src/shared/pro-payment-evaluation-audit.ts';
+import {
   RATING_PROMPT_MIN_INSTALL_AGE_MS,
   RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
   PRO_PROMPT_MAX_SHOWN_COUNT,
@@ -2080,6 +2084,90 @@ async function run() {
   assert.equal(verdictEnter.gateAllowsPaymentEvaluation, true);
   assert.equal(verdictEnter.verdictCode, 'enter_payment_evaluation');
   assert.ok(verdictEnter.nextStep.includes('payment-evaluation audit'));
+
+  const auditGetMessage: I18nGetMessage = (key, substitutions) => {
+    const normalized =
+      typeof substitutions === 'string'
+        ? [substitutions]
+        : Array.isArray(substitutions)
+          ? substitutions
+          : [];
+    const messages: Record<string, string> = {
+      proPaymentEvaluationAuditMdTitle: 'V4-12 Payment evaluation audit pack',
+      proPaymentEvaluationAuditMdSectionStatus: 'Status',
+      proPaymentEvaluationAuditMdSectionChecks: 'Checks',
+      proPaymentEvaluationAuditMdSectionBlockers: 'Blockers',
+      proPaymentEvaluationAuditMdSectionBoundaries: 'Boundaries',
+      proPaymentEvaluationAuditMdSectionNext: 'Next steps',
+      proPaymentEvaluationAuditMdSectionEvidence: 'Evidence chain',
+      proPaymentEvaluationAuditDecisionHold:
+        'Current audit verdict: stay in validation and do not enter monetization implementation.',
+      proPaymentEvaluationAuditDecisionEnter:
+        'Current audit verdict: enter payment-evaluation review, but still do not implement payment directly.',
+      proPaymentEvaluationAuditCheckLeaderPassed: `The leading route is aligned: ${normalized[0] || 'unknown'}.`,
+      proPaymentEvaluationAuditCheckLeaderFailed:
+        'The leading route is still not aligned across the comparison, writeback, and stability outputs.',
+      proPaymentEvaluationAuditCheckStabilityPassed:
+        `The stability verdict has reached ${normalized[0] || 'leader_stable'}.`,
+      proPaymentEvaluationAuditCheckStabilityFailed:
+        `The stability verdict is still ${normalized[0] || 'unknown'}, so payment evaluation should not start yet.`,
+      proPaymentEvaluationAuditCheckGatePassed:
+        `The pre-payment gate has reached ${normalized[0] || 'C'}: ${normalized[1] || 'go evaluate'}.`,
+      proPaymentEvaluationAuditCheckGateFailed:
+        `The pre-payment gate is still ${normalized[0] || 'A'}: ${normalized[1] || 'keep collecting'}.`,
+      proPaymentEvaluationAuditBoundaryNoPaymentImplementation:
+        'This audit only outputs judgments and evidence. It does not implement payment, collection, subscriptions, or forms.',
+      proPaymentEvaluationAuditBoundaryNoMessagingDrift:
+        'External messaging must stay aligned with the current verdict and must not imply that payment is already live.',
+      proPaymentEvaluationAuditBoundaryNoSensitiveData:
+        'Evidence uses only local anonymous aggregate fields and never includes copied page content, URLs, titles, or contact details.',
+      proPaymentEvaluationAuditNextHoldSamples:
+        'Collect more real cross-campaign task samples before trying to interpret the lead as durable demand.',
+      proPaymentEvaluationAuditNextHoldMessaging:
+        'Keep all external copy locked to stay_validation and avoid promising monetization capability too early.',
+      proPaymentEvaluationAuditNextHoldRecheck:
+        'Only re-open payment evaluation after all three checks pass in the same audit window.',
+      proPaymentEvaluationAuditNextEnterReview:
+        'Review pricing language, payment boundaries, and the evidence chain before proposing any separate implementation plan.',
+      proPaymentEvaluationAuditNextEnterApproval:
+        'A separate human approval milestone is still required before any monetization implementation starts.',
+      proPaymentEvaluationAuditNextEnterNoPaymentImplementation:
+        'Even when the audit passes, this loop stays at evaluation and review only. No direct payment implementation.',
+      proPaymentEvaluationAuditNoBlockers: 'No new blockers are currently open.'
+    };
+    return messages[key] || key;
+  };
+
+  const auditHold = buildProPaymentEvaluationAuditPack({
+    verdict: verdictStay,
+    verdictSource: {
+      file: 'docs/evidence/v4-11/verdict-pack/copylot-pro-route-validation-verdict-v4-11.json',
+      sha256: 'sha-verdict'
+    },
+    getMessage: auditGetMessage
+  });
+  assert.equal(auditHold.auditStatus, 'hold_validation');
+  assert.equal(auditHold.readyForPaymentEvaluation, false);
+  assert.equal(auditHold.blockers.length, 1);
+  assert.equal(auditHold.evidence.at(-1)?.file, 'docs/evidence/v4-11/verdict-pack/copylot-pro-route-validation-verdict-v4-11.json');
+  const auditHoldMarkdown = formatProPaymentEvaluationAuditMarkdown(auditHold, auditGetMessage);
+  assert.ok(auditHoldMarkdown.includes('V4-12 Payment evaluation audit pack'));
+  assert.ok(auditHoldMarkdown.includes('audit_status=hold_validation'));
+  assert.ok(auditHoldMarkdown.includes('route_stability_ready=false'));
+  assert.ok(auditHoldMarkdown.includes('supporting_campaigns=ph, twitter'));
+  assert.ok(auditHoldMarkdown.includes('conflicting_campaigns=reddit, seo'));
+
+  const auditEnter = buildProPaymentEvaluationAuditPack({
+    verdict: verdictEnter,
+    getMessage: auditGetMessage
+  });
+  assert.equal(auditEnter.auditStatus, 'enter_payment_evaluation_review');
+  assert.equal(auditEnter.readyForPaymentEvaluation, true);
+  assert.equal(auditEnter.blockers.length, 0);
+  assert.ok(auditEnter.nextActions[0]?.includes('Review pricing language'));
+  const auditEnterMarkdown = formatProPaymentEvaluationAuditMarkdown(auditEnter, auditGetMessage);
+  assert.ok(auditEnterMarkdown.includes('audit_status=enter_payment_evaluation_review'));
+  assert.ok(auditEnterMarkdown.includes('No new blockers are currently open.'));
 
   // pro-funnel.ts (pure functions)
   const proSummaryDisabled = buildProFunnelSummary({
@@ -4193,6 +4281,18 @@ async function run() {
   assert.ok(
     optionsHtml.includes('id="download-pro-route-validation-stability-json"'),
     'options.html should include download-pro-route-validation-stability-json'
+  );
+  assert.ok(
+    optionsHtml.includes('id="pro-payment-evaluation-audit-panel"'),
+    'options.html should include pro-payment-evaluation-audit-panel'
+  );
+  assert.ok(
+    optionsHtml.includes('id="copy-pro-payment-evaluation-audit-summary"'),
+    'options.html should include copy-pro-payment-evaluation-audit-summary'
+  );
+  assert.ok(
+    optionsHtml.includes('id="download-pro-payment-evaluation-audit-json"'),
+    'options.html should include download-pro-payment-evaluation-audit-json'
   );
   assert.ok(
     optionsHtml.includes('id="download-pro-intent-decision-summary-json"'),

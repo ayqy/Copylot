@@ -1,0 +1,84 @@
+{
+  "auditVersion": "v4-12",
+  "readyForPaymentEvaluation": false,
+  "auditStatus": "hold_validation",
+  "verdictCode": "stay_validation",
+  "routeLeaderTrackId": "advanced_cleaning",
+  "routeLeaderTrackTitle": "高级页面清洗验证",
+  "decisionCode": "A",
+  "decisionConclusion": "继续收集（样本量不足）",
+  "comparisonSignalGap": 2,
+  "comparisonTotalSignals": 10,
+  "supportingCampaigns": [
+    "ph",
+    "twitter"
+  ],
+  "conflictingCampaigns": [
+    "reddit",
+    "seo"
+  ],
+  "checks": [
+    {
+      "id": "route_leader_consistent",
+      "passed": true,
+      "summary": "领先路线已对齐：高级页面清洗验证。"
+    },
+    {
+      "id": "route_stability_ready",
+      "passed": false,
+      "summary": "稳定性 verdict 仍是 leader_stable_campaign_split，还不能进入收费评估。"
+    },
+    {
+      "id": "gate_allows_payment_evaluation",
+      "passed": false,
+      "summary": "收费前门槛仍为 A：继续收集（样本量不足）。"
+    }
+  ],
+  "blockers": [
+    "稳定性 verdict 仍是 leader_stable_campaign_split，还不能进入收费评估。",
+    "收费前门槛仍为 A：继续收集（样本量不足）。"
+  ],
+  "boundaries": [
+    "当前审计只输出判断与证据，不实现支付、收款、订阅或表单。",
+    "对外话术必须与当前 verdict 保持一致，不暗示已上线收费或支付。",
+    "证据只使用本地匿名聚合字段，不包含网页正文、复制内容、URL、标题或联系方式。"
+  ],
+  "nextActions": [
+    "继续补跨 campaign 的真实任务样本，先解决 acquisition 偏差。",
+    "继续把对外文案锁在 stay_validation，不提前承诺收费能力。",
+    "仅在三项检查全部通过后，再进入下一轮收费评估复核。"
+  ],
+  "verdictReasons": [
+    "当前领先路线已对齐：高级页面清洗验证（recent_7d signal_gap=2）。",
+    "稳定性 verdict 仍是 leader_stable_campaign_split，还不满足收费评估前置条件。",
+    "收费前门槛仍为 A：继续收集（样本量不足）。"
+  ],
+  "verdictNextStep": "下一步：继续补跨 campaign 样本，并把当前判断固化成收费评估审计包，但仍不做支付实现。",
+  "evidence": [
+    {
+      "label": "comparison",
+      "file": "docs/evidence/v4-8/comparison-pack/copylot-pro-route-validation-comparison-v4-8.json",
+      "sha256": "dca04908faa8b2b10ecac132d9f9223abe6aa51d94e4070aeafd80386ca1acec"
+    },
+    {
+      "label": "writeback",
+      "file": "docs/evidence/v4-9/writeback-pack/copylot-pro-route-validation-writeback-v4-9.json",
+      "sha256": "72797bae6b13eb5eeee838c0edf228b6c7c6d63086ec03372923fe69f4001470"
+    },
+    {
+      "label": "stability",
+      "file": "docs/evidence/v4-10/stability-pack/copylot-pro-route-validation-stability-v4-10.json",
+      "sha256": "e70200ebe2b3910873ecd05a0b1baf752bc51db76d82aa2086f294d11945c3d5"
+    },
+    {
+      "label": "decision",
+      "file": "docs/evidence/v1-81/copylot-pro-waitlist-survey-intent-distribution-7d-2026-03-23.json",
+      "sha256": "abf2058c8d362fcca2b85b33a815b6d3a86576f84e81f312abaa9f5d7c1d6170"
+    },
+    {
+      "label": "verdict",
+      "file": "docs/evidence/v4-11/verdict-pack/copylot-pro-route-validation-verdict-v4-11.json",
+      "sha256": "e8f3cbda51e2bda96119c740177a47371841548e59fb229d334b9b1688fdccda"
+    }
+  ]
+}

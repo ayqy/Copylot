@@ -657,6 +657,24 @@ async function runOptionsAssertions(): Promise<void> {
       verdictSummary.includes('继续验证') || verdictSummary.includes('stay in validation')
     );
 
+    const paymentEvaluationAuditCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#copy-pro-payment-evaluation-audit-summary'
+    );
+    clickElement(paymentEvaluationAuditCopyButton);
+    await page.waitForIdle();
+    const paymentEvaluationAuditSummary = await page.clipboard.readText();
+    assert.ok(
+      paymentEvaluationAuditSummary.includes('V4-12 收费评估审计包') ||
+        paymentEvaluationAuditSummary.includes('V4-12 Payment evaluation audit pack')
+    );
+    assert.ok(paymentEvaluationAuditSummary.includes('audit_status=hold_validation'));
+    assert.ok(paymentEvaluationAuditSummary.includes('route_stability_ready=false'));
+    assert.ok(
+      paymentEvaluationAuditSummary.includes('继续停留在验证阶段') ||
+        paymentEvaluationAuditSummary.includes('stay in validation')
+    );
+
     const proWaitlistButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
       '#pro-waitlist-button'
