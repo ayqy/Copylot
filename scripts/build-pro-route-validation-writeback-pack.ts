@@ -42,13 +42,13 @@ const defaultWritebackGetMessage: I18nGetMessage = (key, substitutions) => {
     proRouteValidationWritebackFocusAdvanced: '更少返工的页面清洗价值',
     proRouteValidationWritebackFocusBulk: '更完整的采集整理工作流价值',
     proRouteValidationWritebackFocusStructured: '更顺畅的结构化下游衔接价值',
-    proRouteValidationWritebackRouteHeadline: `优先回写：${normalized[0] || '未知路线'}，面向 ${normalized[1] || '真实任务场景'}`,
+    proRouteValidationWritebackRouteHeadline: `当前优先验证路线：${normalized[0] || '未知路线'}，面向 ${normalized[1] || '真实任务场景'}`,
     proRouteValidationWritebackRouteProof: `recent_7d total_signals=${normalized[0] || '0'}，signal_gap=${normalized[1] || '0'}，route_opened=${normalized[2] || '0'}，total_copies=${normalized[3] || '0'}`,
     proRouteValidationWritebackBoundary: '继续保留验证入口，不承诺已上线支付或订阅。',
     proRouteValidationWritebackStoreShort: `当前优先验证路线：${normalized[0] || '未知路线'}，适合 ${normalized[1] || '真实任务场景'}。`,
     proRouteValidationWritebackStoreBullet: `核心价值：${normalized[0] || '继续验证真实需求。'}`,
     proRouteValidationWritebackStoreBoundary: '仍处于路线验证阶段，不承诺已上线收费功能。',
-    proRouteValidationWritebackSummaryJudgement: `${normalized[0] || '未知路线'} 暂时领先，说明用户更愿意为 ${normalized[1] || '真实价值'} 带走路线说明与验证素材。`,
+    proRouteValidationWritebackSummaryJudgement: `${normalized[0] || '未知路线'} 当前处于验证领先位，说明用户更愿意为 ${normalized[1] || '真实价值'} 带走路线说明与验证素材。`,
     proRouteValidationWritebackSummaryNext: '下一步：把真实任务样本回写到路线页、商店说明和下一轮汇总，并继续用门槛摘要复核是否进入收费评估。'
   };
   return messages[key] || key;

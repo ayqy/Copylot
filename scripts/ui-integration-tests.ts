@@ -27,6 +27,7 @@ interface TestPrompt {
   lastUsedAt?: number;
   targetChatId?: string;
   autoOpenChat?: boolean;
+  quickAccessSlot?: number;
   builtIn?: boolean;
   deleted?: boolean;
   templateVersion?: number;
@@ -709,6 +710,31 @@ async function runOptionsAssertions(): Promise<void> {
     assert.equal(
       page.downloads.at(-1)?.download,
       'copylot-pro-route-validation-campaign-review-v4-13.json'
+    );
+
+    const messagingGuardCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#copy-pro-stay-validation-messaging-guard-summary'
+    );
+    clickElement(messagingGuardCopyButton);
+    await page.waitForIdle();
+    const messagingGuardSummary = await page.clipboard.readText();
+    assert.ok(
+      messagingGuardSummary.includes('V4-14 stay_validation 外部话术守门复核包') ||
+        messagingGuardSummary.includes('V4-14 stay_validation messaging guard pack')
+    );
+    assert.ok(messagingGuardSummary.includes('guard_status=aligned'));
+    assert.ok(messagingGuardSummary.includes('route_headline: status=aligned'));
+
+    const messagingGuardDownloadButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#download-pro-stay-validation-messaging-guard-json'
+    );
+    clickElement(messagingGuardDownloadButton);
+    await page.waitForIdle();
+    assert.equal(
+      page.downloads.at(-1)?.download,
+      'copylot-pro-stay-validation-messaging-guard-v4-14.json'
     );
 
     const proWaitlistButton = getRequiredElement<HTMLButtonElement>(

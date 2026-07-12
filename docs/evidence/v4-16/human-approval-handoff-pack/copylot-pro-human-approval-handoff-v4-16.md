@@ -1,0 +1,35 @@
+# V4-16 human approval handoff pack
+
+## Status
+- handoff_status=hold_validation
+- ready_for_human_approval=false
+- messaging_boundary=stay_validation
+
+## Blockers
+- The payment-evaluation audit is still hold_validation in this window.
+- The cross-campaign review still has blockers in this window: acquisition_bias_unresolved, sample_still_thin.
+- 稳定性 verdict 仍是 leader_stable_campaign_split，还不能进入收费评估。
+- 收费前门槛仍为 A：继续收集（样本量不足）。
+- A different route still leads in at least one campaign, so acquisition bias is not resolved yet.
+- One or more campaigns still have thin samples, so the current lead is not durable enough yet.
+
+## Approval questions
+- Do the evidence chain and current samples justify opening a separate human approval review?
+- Can all external copy stay inside current-priority validation language until approval is explicitly granted?
+- If approval opens, what is the narrowest monetization scope that still avoids direct payment implementation in this loop?
+
+## Guardrails
+- This handoff does not approve or implement payment, checkout, subscriptions, or collection.
+- External messaging stays inside stay_validation until a separate human approval decision is recorded.
+- The handoff only uses local anonymous aggregate evidence and never includes copied page content, URLs, titles, or contact details.
+
+## Next steps
+- Do not open human approval yet. Wait until the same-window tracker turns green.
+- Keep resolving cross-campaign blockers before reopening the tracker.
+- Keep external copy locked to stay_validation while blocked.
+
+## Evidence chain
+- window_tracker=docs/evidence/v4-15/approval-window-tracker-pack/copylot-pro-human-approval-window-tracker-v4-15.json#df1c749b92ba83bf3f7f0bb42c0cf14ebbe12c135a5bc7993865abee9c7521a7
+- payment_audit=docs/evidence/v4-12/payment-evaluation-audit-pack/copylot-pro-payment-evaluation-audit-v4-12.json#415efc759a05b7c41d6aefd1ca2bc2dd540a872bda9e92f9be4ca4b8ddc6e551
+- campaign_review=docs/evidence/v4-13/campaign-review-pack/copylot-pro-route-validation-campaign-review-v4-13.json#7d5264b1ff58605ad8099acf9b57ad687c42076c94bd42cff804234902487b99
+- messaging_guard=docs/evidence/v4-14/messaging-guard-pack/copylot-pro-stay-validation-messaging-guard-v4-14.json#23d9036ea3b5f31f258f435a16d2ea91b9f3e180267b18cbf97cf1cc58d99591

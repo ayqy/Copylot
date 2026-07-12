@@ -631,7 +631,7 @@
     "description": "领先路线回写：结构化导出判断焦点"
   },
   "proRouteValidationWritebackRouteHeadline": {
-    "message": "优先回写：$TRACK$，面向 $SCENARIO$",
+    "message": "当前优先验证路线：$TRACK$，面向 $SCENARIO$",
     "description": "领先路线回写：路线页标题",
     "placeholders": {
       "track": {
@@ -661,7 +661,7 @@
     }
   },
   "proRouteValidationWritebackStoreShort": {
-    "message": "当前领先的 Pro 路线：$TRACK$，更适合 $SCENARIO$。",
+    "message": "当前优先验证路线：$TRACK$，更适合 $SCENARIO$。",
     "description": "领先路线回写：商店短描述",
     "placeholders": {
       "track": {
@@ -682,7 +682,7 @@
     }
   },
   "proRouteValidationWritebackSummaryJudgement": {
-    "message": "$TRACK$ 目前领先，说明用户更愿意把与 $FOCUS$ 相关的说明和验证素材继续带走。",
+    "message": "$TRACK$ 当前处于验证领先位，说明用户更愿意把与 $FOCUS$ 相关的说明和验证素材继续带走。",
     "description": "领先路线回写：汇总判断文案",
     "placeholders": {
       "track": {
@@ -1109,6 +1109,100 @@
   "proRouteValidationCampaignReviewMdSectionEvidence": {
     "message": "证据链",
     "description": "跨 campaign 领先路线复核包 Markdown 证据区块标题"
+  },
+  "proStayValidationMessagingGuardTitle": {
+    "message": "stay_validation 外部话术守门复核包",
+    "description": "Options Pro Tab：stay_validation 外部话术守门复核包标题"
+  },
+  "proStayValidationMessagingGuardHint": {
+    "message": "把会离开当前工作区的路线页、商店和汇总文案做一次守门复核，确保所有对外表述仍停留在“当前优先验证方向”，而不是暗示收费已经上线。",
+    "description": "Options Pro Tab：stay_validation 外部话术守门复核包说明"
+  },
+  "proStayValidationMessagingGuardCopy": {
+    "message": "复制话术守门复核包",
+    "description": "Options Pro Tab：复制话术守门复核包按钮"
+  },
+  "proStayValidationMessagingGuardDownloadJson": {
+    "message": "下载话术守门 JSON",
+    "description": "Options Pro Tab：下载话术守门 JSON 按钮"
+  },
+  "proStayValidationMessagingGuardPrivacyHint": {
+    "message": "复核包只使用本地路线回写文案、本地 campaign 复核结果和守门规则，不包含网页正文、复制内容、URL、标题或联系方式。",
+    "description": "Options Pro Tab：话术守门复核包隐私提示"
+  },
+  "proStayValidationMessagingGuardReasonAligned": {
+    "message": "这个文案面仍保持在“当前优先验证方向”的边界内。",
+    "description": "话术守门复核包：对齐原因"
+  },
+  "proStayValidationMessagingGuardReasonMissingValidation": {
+    "message": "这个文案面还缺少明确的“当前优先 / 验证中”表述。",
+    "description": "话术守门复核包：缺少验证表述原因"
+  },
+  "proStayValidationMessagingGuardReasonBlocked": {
+    "message": "这个文案面过早暗示了收费能力，命中：$CLAIMS$。",
+    "description": "话术守门复核包：阻塞原因",
+    "placeholders": {
+      "claims": {
+        "content": "$1"
+      }
+    }
+  },
+  "proStayValidationMessagingGuardConclusionBlocked": {
+    "message": "至少有一个对外文案面已经过早暗示收费能力，stay_validation 边界被破坏了。",
+    "description": "话术守门复核包：阻塞结论"
+  },
+  "proStayValidationMessagingGuardConclusionNeedsReview": {
+    "message": "当前没有直接命中收费暗示，但仍有一个或多个文案面缺少明确的验证阶段表述。",
+    "description": "话术守门复核包：需复核结论"
+  },
+  "proStayValidationMessagingGuardConclusionAligned": {
+    "message": "当前对外文案面都保持在“当前优先验证方向”的表述内，产品仍停留在 stay_validation。",
+    "description": "话术守门复核包：对齐结论"
+  },
+  "proStayValidationMessagingGuardNextFixBlocked": {
+    "message": "先重写命中阻塞的文案面，再重新运行这份复核包，然后才允许外发。",
+    "description": "话术守门复核包：阻塞下一步"
+  },
+  "proStayValidationMessagingGuardNextFixValidation": {
+    "message": "先把被标记的文案面补成明确的“当前优先 / 验证中”表述，再进入下一轮分发。",
+    "description": "话术守门复核包：缺少验证表述下一步"
+  },
+  "proStayValidationMessagingGuardNextHoldPrioritized": {
+    "message": "继续把所有对外文案锁在 stay_validation，并优先补这些 campaign 的样本：$CAMPAIGNS$。",
+    "description": "话术守门复核包：优先补样下一步",
+    "placeholders": {
+      "campaigns": {
+        "content": "$1"
+      }
+    }
+  },
+  "proStayValidationMessagingGuardNextHoldSteady": {
+    "message": "继续把所有对外文案锁在 stay_validation，并持续平衡收集跨 campaign 样本。",
+    "description": "话术守门复核包：稳定收集下一步"
+  },
+  "proStayValidationMessagingGuardMdTitle": {
+    "message": "V4-14 stay_validation 外部话术守门复核包",
+    "description": "话术守门复核包 Markdown 标题"
+  },
+  "proStayValidationMessagingGuardMdSectionStatus": {
+    "message": "状态",
+    "description": "话术守门复核包 Markdown 状态区块标题"
+  },
+  "proStayValidationMessagingGuardMdSectionSurfaces": {
+    "message": "文案面",
+    "description": "话术守门复核包 Markdown 文案面区块标题"
+  },
+  "proStayValidationMessagingGuardMdSectionBoundaries": {
+    "message": "边界",
+    "description": "话术守门复核包 Markdown 边界区块标题"
+  },
+  "proStayValidationMessagingGuardMdSectionDecision": {
+    "message": "结论",
+    "description": "话术守门复核包 Markdown 结论区块标题"
+  },
+  "proStayValidationMessagingGuardMdSectionEvidence": {
+    "message": "证据链",
+    "description": "话术守门复核包 Markdown 证据区块标题"
   },
   "proIntentDecisionConclusionADataOff": {
     "message": "继续收集（匿名使用数据未开启/无可用事件）",
@@ -2647,6 +2741,22 @@
   "proRouteValidationCampaignReviewDownloadFailed": {
     "message": "下载失败",
     "description": "跨 campaign 领先路线复核 JSON 下载失败提示"
+  },
+  "proStayValidationMessagingGuardCopySuccess": {
+    "message": "话术守门复核包已复制到剪贴板",
+    "description": "话术守门复核包复制成功提示"
+  },
+  "proStayValidationMessagingGuardCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "话术守门复核包复制失败提示"
+  },
+  "proStayValidationMessagingGuardDownloadSuccess": {
+    "message": "话术守门 JSON 已下载",
+    "description": "话术守门 JSON 下载成功提示"
+  },
+  "proStayValidationMessagingGuardDownloadFailed": {
+    "message": "下载失败",
+    "description": "话术守门 JSON 下载失败提示"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "复制按 campaign 的本周复盘摘要（Markdown）",

@@ -179,6 +179,20 @@ function isBuiltInPromptLocaleMapContext(node: ts.Node): boolean {
   return false;
 }
 
+function isMessagingGuardRuleContext(node: ts.Node): boolean {
+  let parent = node.parent;
+  while (parent) {
+    if (ts.isVariableDeclaration(parent) && ts.isIdentifier(parent.name)) {
+      return (
+        parent.name.text === 'REQUIRED_VALIDATION_SIGNALS' ||
+        parent.name.text === 'BLOCKED_MONETIZATION_CLAIMS'
+      );
+    }
+    parent = parent.parent;
+  }
+  return false;
+}
+
 function isNodeDescendantOf(child: ts.Node, ancestor: ts.Node): boolean {
   let current: ts.Node | undefined = child;
   while (current) {
@@ -559,6 +573,12 @@ function checkStringLiteral(
   // 这些字面量不会直接走 chrome.i18n，因为它们需要脱离浏览器 UI 语言，
   // 按用户设置语言生成默认 Prompt 内容。
   if (isBuiltInPromptLocaleMapContext(node)) {
+    return;
+  }
+
+  // 排除 stay_validation 话术守门规则里的关键字表。
+  // 这些字面量是审核规则本身，不会直接作为 UI 文案展示。
+  if (isMessagingGuardRuleContext(node)) {
     return;
   }
 

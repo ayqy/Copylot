@@ -30,7 +30,7 @@
 ## Evidence chain
 - stability_summary=docs/evidence/v4-10/stability-pack/copylot-pro-route-validation-stability-v4-10.json#e70200ebe2b3910873ecd05a0b1baf752bc51db76d82aa2086f294d11945c3d5
 - stability_telemetry=docs/evidence/v4-10/route-validation-stability-telemetry-sample.json#00df6bd7f54b02b90cf394dca60131fe15b6c29db84c570364828338bef56e88
-- verdict_summary=docs/evidence/v4-11/verdict-pack/copylot-pro-route-validation-verdict-v4-11.json#e8f3cbda51e2bda96119c740177a47371841548e59fb229d334b9b1688fdccda
+- verdict_summary=docs/evidence/v4-11/verdict-pack/copylot-pro-route-validation-verdict-v4-11.json#77f1e7d05bc1485ff06192e6edfb962a6809c508e7724ac36e20a308dc05ef90
 - comparison=docs/evidence/v4-8/comparison-pack/copylot-pro-route-validation-comparison-v4-8.json#dca04908faa8b2b10ecac132d9f9223abe6aa51d94e4070aeafd80386ca1acec
-- writeback=docs/evidence/v4-9/writeback-pack/copylot-pro-route-validation-writeback-v4-9.json#72797bae6b13eb5eeee838c0edf228b6c7c6d63086ec03372923fe69f4001470
+- writeback=docs/evidence/v4-9/writeback-pack/copylot-pro-route-validation-writeback-v4-9.json#fb6f11c11ba8dabac69b5822bfad5b012353a9499adf29e1e793f3be662167f7
 - decision=docs/evidence/v1-81/copylot-pro-waitlist-survey-intent-distribution-7d-2026-03-23.json#abf2058c8d362fcca2b85b33a815b6d3a86576f84e81f312abaa9f5d7c1d6170

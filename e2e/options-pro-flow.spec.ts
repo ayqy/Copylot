@@ -56,6 +56,9 @@ test('pro tab only shows roadmap and sharing toolkit', async ({
     await expect(page.locator('#pro-route-validation-campaign-review-panel')).toBeVisible();
     await expect(page.locator('#copy-pro-route-validation-campaign-review-summary')).toBeVisible();
     await expect(page.locator('#download-pro-route-validation-campaign-review-json')).toBeVisible();
+    await expect(page.locator('#pro-stay-validation-messaging-guard-panel')).toBeVisible();
+    await expect(page.locator('#copy-pro-stay-validation-messaging-guard-summary')).toBeVisible();
+    await expect(page.locator('#download-pro-stay-validation-messaging-guard-json')).toBeVisible();
 
     await expect(page.locator('#pro-waitlist-copy')).toHaveCount(0);
     await expect(page.locator('#pro-waitlist-survey')).toHaveCount(0);
@@ -253,8 +256,7 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
         (text.includes('V4-13 跨 campaign 领先路线复核包') ||
           text.includes('V4-13 Cross-campaign route review pack')) &&
         text.includes('messaging_boundary=stay_validation') &&
-        text.includes('prioritized_campaigns=none') &&
-        text.includes('twitter: status=supporting'),
+        text.includes('overall_leader_track_id=advanced_cleaning'),
       driverPage
     );
 
@@ -290,7 +292,7 @@ test('pro sharing toolkit copies install, privacy, roadmap assets, and opens off
         !text.toLowerCase().includes('survey'),
       driverPage
     );
-    expect(distributionPack).toContain('campaign: twitter');
+    expect(distributionPack).toContain('campaign=twitter');
 
     await page.locator('#pro-waitlist-button').click();
     await expect
@@ -595,6 +597,57 @@ test('campaign review json differentiates conflicting and thin blockers while st
         expect.objectContaining({ label: 'decision' })
       ])
     );
+  } finally {
+    await page.close();
+  }
+});
+
+test('stay_validation messaging guard pack keeps external copy inside current-priority validation language', async ({
+  extensionContext,
+  extensionId,
+  driverPage
+}) => {
+  await clearClipboard(driverPage);
+  await seedSyncStorage(driverPage, {
+    copilot_settings: {
+      isAnonymousUsageDataEnabled: true
+    }
+  });
+
+  const page = await openExtensionPage(
+    extensionContext,
+    extensionId,
+    'src/options/options.html#pro'
+  );
+  try {
+    await openOptionsTab(page, 'pro');
+
+    await page.locator('#copy-pro-stay-validation-messaging-guard-summary').click();
+    await expectClipboardTextEventually(
+      (text) =>
+        (text.includes('V4-14 stay_validation 外部话术守门复核包') ||
+          text.includes('V4-14 stay_validation messaging guard pack')) &&
+        text.includes('guard_status=aligned') &&
+        text.includes('route_headline: status=aligned'),
+      driverPage
+    );
+
+    const { filename, json } = await waitForDownloadAndReadJson<{
+      guardVersion: string;
+      guardStatus: string;
+      messagingBoundary: string;
+      prioritizedCampaigns: string[];
+    }>(page, () => page.locator('#download-pro-stay-validation-messaging-guard-json').click());
+
+    expect(filename).toBe('copylot-pro-stay-validation-messaging-guard-v4-14.json');
+    expect(json).toEqual(
+      expect.objectContaining({
+        guardVersion: 'v4-14',
+        guardStatus: 'aligned',
+        messagingBoundary: 'stay_validation'
+      })
+    );
+    expect(json.prioritizedCampaigns).toEqual([]);
   } finally {
     await page.close();
   }

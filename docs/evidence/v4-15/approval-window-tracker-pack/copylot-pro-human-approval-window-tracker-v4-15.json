@@ -1,0 +1,57 @@
+{
+  "trackerVersion": "v4-15",
+  "trackerStatus": "hold_validation",
+  "readyForHumanApproval": false,
+  "messagingBoundary": "stay_validation",
+  "verdictCode": "stay_validation",
+  "auditStatus": "hold_validation",
+  "campaignBlockerCodes": [
+    "acquisition_bias_unresolved",
+    "sample_still_thin"
+  ],
+  "guardStatus": "aligned",
+  "prioritizedCampaigns": [
+    "ph",
+    "reddit",
+    "seo"
+  ],
+  "checks": [
+    {
+      "id": "payment_audit_ready",
+      "passed": false,
+      "summary": "The payment-evaluation audit is still hold_validation in this window."
+    },
+    {
+      "id": "campaign_review_clear",
+      "passed": false,
+      "summary": "The cross-campaign review still has blockers in this window: acquisition_bias_unresolved, sample_still_thin."
+    },
+    {
+      "id": "messaging_guard_aligned",
+      "passed": true,
+      "summary": "External messaging still stays aligned with stay_validation in this window."
+    }
+  ],
+  "blockers": [
+    "The payment-evaluation audit is still hold_validation in this window.",
+    "The cross-campaign review still has blockers in this window: acquisition_bias_unresolved, sample_still_thin."
+  ],
+  "nextStep": "Keep holding at stay_validation until the payment audit, campaign review, and messaging guard all pass together in the same window.",
+  "sources": [
+    {
+      "label": "payment_audit",
+      "file": "docs/evidence/v4-12/payment-evaluation-audit-pack/copylot-pro-payment-evaluation-audit-v4-12.json",
+      "sha256": "415efc759a05b7c41d6aefd1ca2bc2dd540a872bda9e92f9be4ca4b8ddc6e551"
+    },
+    {
+      "label": "campaign_review",
+      "file": "docs/evidence/v4-13/campaign-review-pack/copylot-pro-route-validation-campaign-review-v4-13.json",
+      "sha256": "7d5264b1ff58605ad8099acf9b57ad687c42076c94bd42cff804234902487b99"
+    },
+    {
+      "label": "messaging_guard",
+      "file": "docs/evidence/v4-14/messaging-guard-pack/copylot-pro-stay-validation-messaging-guard-v4-14.json",
+      "sha256": "23d9036ea3b5f31f258f435a16d2ea91b9f3e180267b18cbf97cf1cc58d99591"
+    }
+  ]
+}

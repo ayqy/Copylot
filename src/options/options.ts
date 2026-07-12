@@ -93,6 +93,12 @@ import {
   type ProRouteValidationCampaignReviewPack
 } from '../shared/pro-route-validation-campaign-review';
 import {
+  buildProStayValidationMessagingGuardPack,
+  formatProStayValidationMessagingGuardMarkdown,
+  PRO_STAY_VALIDATION_MESSAGING_GUARD_FILES,
+  type ProStayValidationMessagingGuardPack
+} from '../shared/pro-stay-validation-messaging-guard';
+import {
   buildProFunnelEvidencePack,
   buildProFunnelSummary,
   type ProFunnelEvidencePack,
@@ -432,6 +438,8 @@ interface OptionsElements {
   downloadProPaymentEvaluationAuditJsonButton: HTMLButtonElement;
   proRouteValidationCampaignReviewCopyButton: HTMLButtonElement;
   downloadProRouteValidationCampaignReviewJsonButton: HTMLButtonElement;
+  proStayValidationMessagingGuardCopyButton: HTMLButtonElement;
+  downloadProStayValidationMessagingGuardJsonButton: HTMLButtonElement;
   proWaitlistButton: HTMLButtonElement;
   proWaitlistUrlCopyButton: HTMLButtonElement;
   proWaitlistRecruitCopyButton: HTMLButtonElement;
@@ -735,6 +743,12 @@ function getElements(): OptionsElements {
     ) || document.createElement('button')) as HTMLButtonElement,
     downloadProRouteValidationCampaignReviewJsonButton: (document.getElementById(
       'download-pro-route-validation-campaign-review-json'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    proStayValidationMessagingGuardCopyButton: (document.getElementById(
+      'copy-pro-stay-validation-messaging-guard-summary'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    downloadProStayValidationMessagingGuardJsonButton: (document.getElementById(
+      'download-pro-stay-validation-messaging-guard-json'
     ) || document.createElement('button')) as HTMLButtonElement,
     proWaitlistButton: (document.getElementById('pro-waitlist-button') ||
       document.createElement('button')) as HTMLButtonElement,
@@ -2508,6 +2522,17 @@ async function buildProRouteValidationCampaignReviewPackForExport(): Promise<Pro
   });
 }
 
+async function buildProStayValidationMessagingGuardPackForExport(): Promise<ProStayValidationMessagingGuardPack> {
+  const comparison = await buildProRouteValidationComparisonSummaryForExport();
+  const writeback = buildProRouteValidationWritebackPack(comparison, getMessage);
+  const campaignReview = await buildProRouteValidationCampaignReviewPackForExport();
+  return buildProStayValidationMessagingGuardPack({
+    writeback,
+    campaignReview,
+    getMessage
+  });
+}
+
 async function copyProPaymentEvaluationAuditSummaryToClipboard(): Promise<void> {
   let pack: ProPaymentEvaluationAuditPack;
   let text: string;
@@ -2589,6 +2614,48 @@ async function downloadProRouteValidationCampaignReviewJson(): Promise<void> {
   } catch (error) {
     console.warn('Failed to download pro route validation campaign review json:', error);
     showNotification(getMessage('proRouteValidationCampaignReviewDownloadFailed'), 'error');
+  }
+}
+
+async function copyProStayValidationMessagingGuardSummaryToClipboard(): Promise<void> {
+  let pack: ProStayValidationMessagingGuardPack;
+  let text: string;
+
+  try {
+    pack = await buildProStayValidationMessagingGuardPackForExport();
+    text = formatProStayValidationMessagingGuardMarkdown(pack, getMessage);
+  } catch (error) {
+    console.warn('Failed to build stay_validation messaging guard markdown:', error);
+    showNotification(getMessage('proStayValidationMessagingGuardCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await writeTextToClipboard(text);
+    showNotification(getMessage('proStayValidationMessagingGuardCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy stay_validation messaging guard markdown:', error);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
+    if (ok) {
+      showNotification(getMessage('proStayValidationMessagingGuardCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('proStayValidationMessagingGuardCopyFailed'), 'error');
+  }
+}
+
+async function downloadProStayValidationMessagingGuardJson(): Promise<void> {
+  try {
+    const pack = await buildProStayValidationMessagingGuardPackForExport();
+    downloadTextFile(
+      PRO_STAY_VALIDATION_MESSAGING_GUARD_FILES.summaryJson,
+      `${JSON.stringify(pack, null, 2)}\n`,
+      'application/json'
+    );
+    showNotification(getMessage('proStayValidationMessagingGuardDownloadSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to download stay_validation messaging guard json:', error);
+    showNotification(getMessage('proStayValidationMessagingGuardDownloadFailed'), 'error');
   }
 }
 
@@ -4019,6 +4086,12 @@ function setupEventListeners() {
   });
   elements.downloadProRouteValidationCampaignReviewJsonButton.addEventListener('click', () => {
     void downloadProRouteValidationCampaignReviewJson();
+  });
+  elements.proStayValidationMessagingGuardCopyButton.addEventListener('click', () => {
+    void copyProStayValidationMessagingGuardSummaryToClipboard();
+  });
+  elements.downloadProStayValidationMessagingGuardJsonButton.addEventListener('click', () => {
+    void downloadProStayValidationMessagingGuardJson();
   });
   elements.downloadProIntentV1_100SummaryJsonButton.addEventListener('click', () => {
     void downloadProIntentV1_100SummaryJson();

@@ -631,7 +631,7 @@
     "description": "Route writeback focus for structured export"
   },
   "proRouteValidationWritebackRouteHeadline": {
-    "message": "Write back first: $TRACK$ for $SCENARIO$",
+    "message": "Current validation priority: $TRACK$ for $SCENARIO$",
     "description": "Route writeback route-page headline",
     "placeholders": {
       "track": {
@@ -661,7 +661,7 @@
     }
   },
   "proRouteValidationWritebackStoreShort": {
-    "message": "Current leading Pro route: $TRACK$, best for $SCENARIO$.",
+    "message": "Current validation priority: $TRACK$, best for $SCENARIO$.",
     "description": "Route writeback store short description",
     "placeholders": {
       "track": {
@@ -682,7 +682,7 @@
     }
   },
   "proRouteValidationWritebackSummaryJudgement": {
-    "message": "$TRACK$ is leading for now, which suggests users are more willing to carry forward materials about $FOCUS$.",
+    "message": "$TRACK$ is the current validation leader, which suggests users are more willing to carry forward materials about $FOCUS$.",
     "description": "Route writeback summary judgement line",
     "placeholders": {
       "track": {
@@ -1109,6 +1109,100 @@
   "proRouteValidationCampaignReviewMdSectionEvidence": {
     "message": "Evidence chain",
     "description": "Cross-campaign route review markdown evidence section heading"
+  },
+  "proStayValidationMessagingGuardTitle": {
+    "message": "stay_validation messaging guard pack",
+    "description": "Options Pro tab: stay_validation messaging guard pack title"
+  },
+  "proStayValidationMessagingGuardHint": {
+    "message": "Audit the route-page, store, and summary copy that leaves this workspace, and make sure every external surface still says current priority / validation instead of implying live monetization.",
+    "description": "Options Pro tab: stay_validation messaging guard pack hint"
+  },
+  "proStayValidationMessagingGuardCopy": {
+    "message": "Copy messaging guard pack",
+    "description": "Options Pro tab: copy stay_validation messaging guard pack button"
+  },
+  "proStayValidationMessagingGuardDownloadJson": {
+    "message": "Download messaging guard JSON",
+    "description": "Options Pro tab: download stay_validation messaging guard json button"
+  },
+  "proStayValidationMessagingGuardPrivacyHint": {
+    "message": "Uses only local route-writeback copy, local campaign-review output, and guardrail rules. Never includes copied page content, URLs, titles, or contact details.",
+    "description": "Options Pro tab: stay_validation messaging guard pack privacy hint"
+  },
+  "proStayValidationMessagingGuardReasonAligned": {
+    "message": "This surface stays inside the current priority validation boundary.",
+    "description": "Messaging guard: aligned surface reason"
+  },
+  "proStayValidationMessagingGuardReasonMissingValidation": {
+    "message": "This surface still needs explicit current-priority validation language.",
+    "description": "Messaging guard: missing-validation surface reason"
+  },
+  "proStayValidationMessagingGuardReasonBlocked": {
+    "message": "This surface implies monetization too early via: $CLAIMS$.",
+    "description": "Messaging guard: blocked surface reason",
+    "placeholders": {
+      "claims": {
+        "content": "$1"
+      }
+    }
+  },
+  "proStayValidationMessagingGuardConclusionBlocked": {
+    "message": "At least one external copy surface now implies monetization too early, so the stay_validation boundary is broken.",
+    "description": "Messaging guard: blocked conclusion"
+  },
+  "proStayValidationMessagingGuardConclusionNeedsReview": {
+    "message": "No direct monetization claim was found, but one or more external copy surfaces still lacks explicit validation framing.",
+    "description": "Messaging guard: needs-review conclusion"
+  },
+  "proStayValidationMessagingGuardConclusionAligned": {
+    "message": "Current external copy surfaces stay inside current-priority validation language while the product remains in stay_validation.",
+    "description": "Messaging guard: aligned conclusion"
+  },
+  "proStayValidationMessagingGuardNextFixBlocked": {
+    "message": "Rewrite the blocked surfaces first, then rerun this pack before using the copy externally.",
+    "description": "Messaging guard: blocked next step"
+  },
+  "proStayValidationMessagingGuardNextFixValidation": {
+    "message": "Tighten the flagged surfaces to say current priority / validation explicitly before the next distribution round.",
+    "description": "Messaging guard: missing-validation next step"
+  },
+  "proStayValidationMessagingGuardNextHoldPrioritized": {
+    "message": "Keep external copy locked to stay_validation and prioritize these campaigns in the next sampling loop: $CAMPAIGNS$.",
+    "description": "Messaging guard: prioritized next step",
+    "placeholders": {
+      "campaigns": {
+        "content": "$1"
+      }
+    }
+  },
+  "proStayValidationMessagingGuardNextHoldSteady": {
+    "message": "Keep external copy locked to stay_validation and continue collecting balanced cross-campaign samples.",
+    "description": "Messaging guard: steady next step"
+  },
+  "proStayValidationMessagingGuardMdTitle": {
+    "message": "V4-14 stay_validation messaging guard pack",
+    "description": "Messaging guard markdown title"
+  },
+  "proStayValidationMessagingGuardMdSectionStatus": {
+    "message": "Status",
+    "description": "Messaging guard markdown status section heading"
+  },
+  "proStayValidationMessagingGuardMdSectionSurfaces": {
+    "message": "Surfaces",
+    "description": "Messaging guard markdown surfaces section heading"
+  },
+  "proStayValidationMessagingGuardMdSectionBoundaries": {
+    "message": "Boundaries",
+    "description": "Messaging guard markdown boundaries section heading"
+  },
+  "proStayValidationMessagingGuardMdSectionDecision": {
+    "message": "Decision",
+    "description": "Messaging guard markdown decision section heading"
+  },
+  "proStayValidationMessagingGuardMdSectionEvidence": {
+    "message": "Evidence chain",
+    "description": "Messaging guard markdown evidence section heading"
   },
   "proIntentDecisionConclusionADataOff": {
     "message": "Keep collecting (anonymous usage data is disabled / no usable events)",
@@ -2647,6 +2741,22 @@
   "proRouteValidationCampaignReviewDownloadFailed": {
     "message": "Download failed",
     "description": "Cross-campaign route review json download failure notification"
+  },
+  "proStayValidationMessagingGuardCopySuccess": {
+    "message": "Messaging guard pack copied to clipboard",
+    "description": "Messaging guard pack copy success notification"
+  },
+  "proStayValidationMessagingGuardCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Messaging guard pack copy failure notification"
+  },
+  "proStayValidationMessagingGuardDownloadSuccess": {
+    "message": "Messaging guard JSON downloaded",
+    "description": "Messaging guard json download success notification"
+  },
+  "proStayValidationMessagingGuardDownloadFailed": {
+    "message": "Download failed",
+    "description": "Messaging guard json download failure notification"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "Copy weekly campaign report (Markdown)",

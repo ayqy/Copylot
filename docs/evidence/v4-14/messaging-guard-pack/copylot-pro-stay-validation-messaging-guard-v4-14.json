@@ -1,0 +1,118 @@
+{
+  "guardVersion": "v4-14",
+  "messagingBoundary": "stay_validation",
+  "verdictCode": "stay_validation",
+  "overallLeaderTrackId": "advanced_cleaning",
+  "overallLeaderTrackTitle": "高级页面清洗验证",
+  "campaignBlockerCodes": [
+    "acquisition_bias_unresolved",
+    "sample_still_thin"
+  ],
+  "prioritizedCampaigns": [
+    "ph",
+    "reddit",
+    "seo"
+  ],
+  "requiredValidationSignals": [
+    "current",
+    "currently",
+    "priority",
+    "prioritizing",
+    "validation",
+    "validating",
+    "for now",
+    "当前",
+    "优先",
+    "验证",
+    "验证中"
+  ],
+  "blockedClaims": [
+    "subscription",
+    "subscribe",
+    "paid feature",
+    "paid features",
+    "pricing is live",
+    "upgrade now",
+    "buy now",
+    "收费功能",
+    "付费功能",
+    "订阅",
+    "付费升级",
+    "购买",
+    "已上线收费",
+    "已提供订阅"
+  ],
+  "boundaries": [
+    "继续保留验证入口，不承诺已上线支付或订阅。",
+    "仍处于路线验证阶段，不承诺已上线收费功能。",
+    "External messaging must remain in stay_validation and can only describe the current priority validation direction."
+  ],
+  "surfaces": [
+    {
+      "surfaceId": "route_headline",
+      "channel": "route_page",
+      "text": "当前优先验证路线：高级页面清洗验证，面向 长文、评论区和推荐位噪声明显的页面",
+      "requiresValidationLanguage": true,
+      "validationSignals": [
+        "当前",
+        "优先",
+        "验证"
+      ],
+      "blockedClaimHits": [],
+      "status": "aligned",
+      "reason": "This surface stays inside the current priority validation boundary."
+    },
+    {
+      "surfaceId": "store_short_description",
+      "channel": "store_listing",
+      "text": "当前优先验证路线：高级页面清洗验证，适合 长文、评论区和推荐位噪声明显的页面。",
+      "requiresValidationLanguage": true,
+      "validationSignals": [
+        "当前",
+        "优先",
+        "验证"
+      ],
+      "blockedClaimHits": [],
+      "status": "aligned",
+      "reason": "This surface stays inside the current priority validation boundary."
+    },
+    {
+      "surfaceId": "store_value_bullet",
+      "channel": "store_listing",
+      "text": "核心价值：减少广告/评论区/推荐位干扰，让复制结果更快进入 AI 工作流",
+      "requiresValidationLanguage": false,
+      "validationSignals": [],
+      "blockedClaimHits": [],
+      "status": "aligned",
+      "reason": "This surface stays inside the current priority validation boundary."
+    },
+    {
+      "surfaceId": "summary_judgement",
+      "channel": "summary",
+      "text": "高级页面清洗验证 当前处于验证领先位，说明用户更愿意为 更少返工的页面清洗价值 带走路线说明与验证素材。",
+      "requiresValidationLanguage": true,
+      "validationSignals": [
+        "当前",
+        "验证"
+      ],
+      "blockedClaimHits": [],
+      "status": "aligned",
+      "reason": "This surface stays inside the current priority validation boundary."
+    }
+  ],
+  "guardStatus": "aligned",
+  "conclusion": "Current external copy surfaces stay inside current-priority validation language while the product remains in stay_validation.",
+  "nextStep": "Keep external copy locked to stay_validation and prioritize these campaigns in the next sampling loop: ph, reddit, seo.",
+  "sources": [
+    {
+      "label": "writeback",
+      "file": "docs/evidence/v4-9/writeback-pack/copylot-pro-route-validation-writeback-v4-9.json",
+      "sha256": "fb6f11c11ba8dabac69b5822bfad5b012353a9499adf29e1e793f3be662167f7"
+    },
+    {
+      "label": "campaign_review",
+      "file": "docs/evidence/v4-13/campaign-review-pack/copylot-pro-route-validation-campaign-review-v4-13.json",
+      "sha256": "7d5264b1ff58605ad8099acf9b57ad687c42076c94bd42cff804234902487b99"
+    }
+  ]
+}

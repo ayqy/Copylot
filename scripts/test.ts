@@ -527,6 +527,57 @@ async function run(): Promise<void> {
       'Pro route validation campaign review outputs should be deterministic'
     )
   );
+  await runStep(startStep('build-pro-stay-validation-messaging-guard-pack', 'quality'), () =>
+    assertDeterministic(
+      './node_modules/.bin/ts-node',
+      [
+        'scripts/build-pro-stay-validation-messaging-guard-pack.ts',
+        'docs/evidence/v4-9/writeback-pack/copylot-pro-route-validation-writeback-v4-9.json',
+        'docs/evidence/v4-13/campaign-review-pack/copylot-pro-route-validation-campaign-review-v4-13.json',
+        'docs/evidence/v4-14/messaging-guard-pack'
+      ],
+      [
+        'docs/evidence/v4-14/messaging-guard-pack/copylot-pro-stay-validation-messaging-guard-v4-14.md',
+        'docs/evidence/v4-14/messaging-guard-pack/copylot-pro-stay-validation-messaging-guard-v4-14.json'
+      ],
+      'Pro stay_validation messaging guard outputs should be deterministic'
+    )
+  );
+  await runStep(startStep('build-pro-human-approval-window-tracker-pack', 'quality'), () =>
+    assertDeterministic(
+      './node_modules/.bin/ts-node',
+      [
+        'scripts/build-pro-human-approval-window-tracker-pack.ts',
+        'docs/evidence/v4-12/payment-evaluation-audit-pack/copylot-pro-payment-evaluation-audit-v4-12.json',
+        'docs/evidence/v4-13/campaign-review-pack/copylot-pro-route-validation-campaign-review-v4-13.json',
+        'docs/evidence/v4-14/messaging-guard-pack/copylot-pro-stay-validation-messaging-guard-v4-14.json',
+        'docs/evidence/v4-15/approval-window-tracker-pack'
+      ],
+      [
+        'docs/evidence/v4-15/approval-window-tracker-pack/copylot-pro-human-approval-window-tracker-v4-15.md',
+        'docs/evidence/v4-15/approval-window-tracker-pack/copylot-pro-human-approval-window-tracker-v4-15.json'
+      ],
+      'Pro human approval window tracker outputs should be deterministic'
+    )
+  );
+  await runStep(startStep('build-pro-human-approval-handoff-pack', 'quality'), () =>
+    assertDeterministic(
+      './node_modules/.bin/ts-node',
+      [
+        'scripts/build-pro-human-approval-handoff-pack.ts',
+        'docs/evidence/v4-15/approval-window-tracker-pack/copylot-pro-human-approval-window-tracker-v4-15.json',
+        'docs/evidence/v4-12/payment-evaluation-audit-pack/copylot-pro-payment-evaluation-audit-v4-12.json',
+        'docs/evidence/v4-13/campaign-review-pack/copylot-pro-route-validation-campaign-review-v4-13.json',
+        'docs/evidence/v4-14/messaging-guard-pack/copylot-pro-stay-validation-messaging-guard-v4-14.json',
+        'docs/evidence/v4-16/human-approval-handoff-pack'
+      ],
+      [
+        'docs/evidence/v4-16/human-approval-handoff-pack/copylot-pro-human-approval-handoff-v4-16.md',
+        'docs/evidence/v4-16/human-approval-handoff-pack/copylot-pro-human-approval-handoff-v4-16.json'
+      ],
+      'Pro human approval handoff outputs should be deterministic'
+    )
+  );
   await runStep(startStep('build-weekly-channel-ops-trend', 'quality'), () =>
     assertDeterministic(
       './node_modules/.bin/ts-node',

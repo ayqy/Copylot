@@ -52,6 +52,18 @@ import {
   formatProRouteValidationCampaignReviewMarkdown
 } from '../src/shared/pro-route-validation-campaign-review.ts';
 import {
+  buildProStayValidationMessagingGuardPack,
+  formatProStayValidationMessagingGuardMarkdown
+} from '../src/shared/pro-stay-validation-messaging-guard.ts';
+import {
+  buildProHumanApprovalWindowTrackerPack,
+  formatProHumanApprovalWindowTrackerMarkdown
+} from '../src/shared/pro-human-approval-window-tracker.ts';
+import {
+  buildProHumanApprovalHandoffPack,
+  formatProHumanApprovalHandoffMarkdown
+} from '../src/shared/pro-human-approval-handoff.ts';
+import {
   RATING_PROMPT_MIN_INSTALL_AGE_MS,
   RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
   PRO_PROMPT_MAX_SHOWN_COUNT,
@@ -1849,11 +1861,11 @@ async function run() {
       proRouteValidationWritebackFocusAdvanced: 'less rework in page-cleaning tasks',
       proRouteValidationWritebackFocusBulk: 'more complete collection workflows',
       proRouteValidationWritebackFocusStructured: 'smoother structured handoff',
-      proRouteValidationWritebackRouteHeadline: `Write back first: ${normalized[0] || 'unknown'} for ${normalized[1] || 'unknown'}`,
+      proRouteValidationWritebackRouteHeadline: `Current validation priority: ${normalized[0] || 'unknown'} for ${normalized[1] || 'unknown'}`,
       proRouteValidationWritebackRouteProof: `recent_7d total_signals=${normalized[0] || '0'}, signal_gap=${normalized[1] || '0'}, route_opened=${normalized[2] || '0'}, total_copies=${normalized[3] || '0'}`,
-      proRouteValidationWritebackStoreShort: `Leading route: ${normalized[0] || 'unknown'} for ${normalized[1] || 'unknown'}.`,
+      proRouteValidationWritebackStoreShort: `Current validation priority: ${normalized[0] || 'unknown'} for ${normalized[1] || 'unknown'}.`,
       proRouteValidationWritebackStoreBullet: `Core value: ${normalized[0] || 'unknown'}.`,
-      proRouteValidationWritebackSummaryJudgement: `${normalized[0] || 'unknown'} leads on ${normalized[1] || 'unknown'}.`
+      proRouteValidationWritebackSummaryJudgement: `${normalized[0] || 'unknown'} is the current validation leader for ${normalized[1] || 'unknown'}.`
     };
     return messages[key] || key;
   };
@@ -1873,7 +1885,11 @@ async function run() {
     writebackGetMessage
   );
   assert.ok(writebackMarkdown.includes('V4-9 Leading route writeback pack'));
-  assert.ok(writebackMarkdown.includes('Write back first: Advanced page cleaning validation'));
+  assert.ok(
+    writebackMarkdown.includes(
+      'Current validation priority: Advanced page cleaning validation'
+    )
+  );
   assert.ok(writebackMarkdown.includes('recent_7d total_signals=4'));
 
   const stabilityGetMessage: I18nGetMessage = (key) => {
@@ -2326,6 +2342,222 @@ async function run() {
     'no_signals'
   );
   assert.equal(campaignReviewNoSignals.blockers.at(-1)?.code, 'no_campaign_signals');
+
+  const messagingGuardGetMessage: I18nGetMessage = (key, substitutions) => {
+    const normalized =
+      typeof substitutions === 'string'
+        ? [substitutions]
+        : Array.isArray(substitutions)
+          ? substitutions
+          : [];
+    const messages: Record<string, string> = {
+      proRouteValidationCampaignReviewBoundaryStayValidation:
+        'External messaging must remain in stay_validation and can only describe the current priority validation direction.',
+      proStayValidationMessagingGuardReasonAligned:
+        'This surface stays inside the current priority validation boundary.',
+      proStayValidationMessagingGuardReasonMissingValidation:
+        'This surface still needs explicit current-priority validation language.',
+      proStayValidationMessagingGuardReasonBlocked: `This surface implies monetization too early via: ${normalized[0] || 'n/a'}.`,
+      proStayValidationMessagingGuardConclusionBlocked:
+        'At least one external copy surface now implies monetization too early, so the stay_validation boundary is broken.',
+      proStayValidationMessagingGuardConclusionNeedsReview:
+        'No direct monetization claim was found, but one or more external copy surfaces still lacks explicit validation framing.',
+      proStayValidationMessagingGuardConclusionAligned:
+        'Current external copy surfaces stay inside current-priority validation language while the product remains in stay_validation.',
+      proStayValidationMessagingGuardNextFixBlocked:
+        'Rewrite the blocked surfaces first, then rerun this pack before using the copy externally.',
+      proStayValidationMessagingGuardNextFixValidation:
+        'Tighten the flagged surfaces to say current priority / validation explicitly before the next distribution round.',
+      proStayValidationMessagingGuardNextHoldPrioritized:
+        `Keep external copy locked to stay_validation and prioritize these campaigns in the next sampling loop: ${normalized[0] || 'n/a'}.`,
+      proStayValidationMessagingGuardNextHoldSteady:
+        'Keep external copy locked to stay_validation and continue collecting balanced cross-campaign samples.',
+      proStayValidationMessagingGuardMdTitle: 'V4-14 stay_validation messaging guard pack',
+      proStayValidationMessagingGuardMdSectionStatus: 'Status',
+      proStayValidationMessagingGuardMdSectionSurfaces: 'Surfaces',
+      proStayValidationMessagingGuardMdSectionBoundaries: 'Boundaries',
+      proStayValidationMessagingGuardMdSectionDecision: 'Decision',
+      proStayValidationMessagingGuardMdSectionEvidence: 'Evidence chain'
+    };
+    return messages[key] || key;
+  };
+
+  const messagingGuard = buildProStayValidationMessagingGuardPack({
+    writeback: writebackPack,
+    campaignReview,
+    getMessage: messagingGuardGetMessage
+  });
+  assert.equal(messagingGuard.guardVersion, 'v4-14');
+  assert.equal(messagingGuard.guardStatus, 'aligned');
+  assert.deepEqual(messagingGuard.campaignBlockerCodes, [
+    'acquisition_bias_unresolved',
+    'sample_still_thin'
+  ]);
+  assert.ok(
+    messagingGuard.surfaces.find((surface) => surface.surfaceId === 'route_headline')?.validationSignals.includes('current')
+  );
+  const messagingGuardMarkdown = formatProStayValidationMessagingGuardMarkdown(
+    messagingGuard,
+    messagingGuardGetMessage
+  );
+  assert.ok(
+    messagingGuardMarkdown.includes('V4-14 stay_validation messaging guard pack')
+  );
+  assert.ok(messagingGuardMarkdown.includes('guard_status=aligned'));
+  assert.ok(messagingGuardMarkdown.includes('route_headline: status=aligned'));
+
+  const blockedMessagingGuard = buildProStayValidationMessagingGuardPack({
+    writeback: {
+      ...writebackPack,
+      routePage: {
+        ...writebackPack.routePage,
+        headline: 'Subscribe now for paid features'
+      }
+    },
+    campaignReview,
+    getMessage: messagingGuardGetMessage
+  });
+  assert.equal(blockedMessagingGuard.guardStatus, 'blocked');
+  assert.equal(
+    blockedMessagingGuard.surfaces.find((surface) => surface.surfaceId === 'route_headline')
+      ?.status,
+    'blocked'
+  );
+
+  const approvalWindowGetMessage: I18nGetMessage = (key, substitutions) => {
+    const normalized =
+      typeof substitutions === 'string'
+        ? [substitutions]
+        : Array.isArray(substitutions)
+          ? substitutions
+          : [];
+    const messages: Record<string, string> = {
+      proHumanApprovalWindowTrackerCheckAuditPassed:
+        'The payment-evaluation audit is ready inside the current window.',
+      proHumanApprovalWindowTrackerCheckAuditFailed:
+        `The payment-evaluation audit is still ${normalized[0] || 'hold_validation'} in this window.`,
+      proHumanApprovalWindowTrackerCheckCampaignPassed:
+        'The cross-campaign review is clear in this window.',
+      proHumanApprovalWindowTrackerCheckCampaignFailed:
+        `The cross-campaign review still has blockers in this window: ${normalized[0] || 'n/a'}.`,
+      proHumanApprovalWindowTrackerCheckMessagingPassed:
+        'External messaging still stays aligned with stay_validation in this window.',
+      proHumanApprovalWindowTrackerCheckMessagingFailed:
+        `The messaging guard is still ${normalized[0] || 'needs_review'} in this window.`,
+      proHumanApprovalWindowTrackerNextEnter:
+        'All three same-window checks are green. A separate human-approval review can now open, but payment implementation still stays blocked.',
+      proHumanApprovalWindowTrackerNextHold:
+        'Keep holding at stay_validation until the payment audit, campaign review, and messaging guard all pass together in the same window.',
+      proHumanApprovalWindowTrackerMdTitle: 'V4-15 human approval window tracker',
+      proHumanApprovalWindowTrackerMdSectionStatus: 'Status',
+      proHumanApprovalWindowTrackerMdSectionChecks: 'Checks',
+      proHumanApprovalWindowTrackerMdSectionBlockers: 'Blockers',
+      proHumanApprovalWindowTrackerMdSectionDecision: 'Decision',
+      proHumanApprovalWindowTrackerMdSectionEvidence: 'Evidence chain',
+      proHumanApprovalWindowTrackerNoBlockers: 'No new blockers are currently open.'
+    };
+    return messages[key] || key;
+  };
+
+  const approvalWindowTracker = buildProHumanApprovalWindowTrackerPack({
+    audit: auditHold,
+    campaignReview,
+    messagingGuard,
+    getMessage: approvalWindowGetMessage
+  });
+  assert.equal(approvalWindowTracker.trackerVersion, 'v4-15');
+  assert.equal(approvalWindowTracker.readyForHumanApproval, false);
+  assert.equal(approvalWindowTracker.checks[0]?.passed, false);
+  assert.equal(approvalWindowTracker.checks[1]?.passed, false);
+  assert.equal(approvalWindowTracker.checks[2]?.passed, true);
+  const approvalWindowMarkdown = formatProHumanApprovalWindowTrackerMarkdown(
+    approvalWindowTracker,
+    approvalWindowGetMessage
+  );
+  assert.ok(approvalWindowMarkdown.includes('V4-15 human approval window tracker'));
+  assert.ok(approvalWindowMarkdown.includes('tracker_status=hold_validation'));
+  assert.ok(approvalWindowMarkdown.includes('payment_audit_ready=false'));
+
+  const approvalWindowEnter = buildProHumanApprovalWindowTrackerPack({
+    audit: auditEnter,
+    campaignReview: {
+      ...campaignReview,
+      blockers: [],
+      prioritizedCampaigns: []
+    },
+    messagingGuard,
+    getMessage: approvalWindowGetMessage
+  });
+  assert.equal(approvalWindowEnter.readyForHumanApproval, true);
+  assert.equal(approvalWindowEnter.trackerStatus, 'enter_human_approval_review');
+
+  const approvalHandoffGetMessage: I18nGetMessage = (key) => {
+    const messages: Record<string, string> = {
+      proHumanApprovalHandoffQuestionEvidence:
+        'Do the evidence chain and current samples justify opening a separate human approval review?',
+      proHumanApprovalHandoffQuestionMessaging:
+        'Can all external copy stay inside current-priority validation language until approval is explicitly granted?',
+      proHumanApprovalHandoffQuestionImplementation:
+        'If approval opens, what is the narrowest monetization scope that still avoids direct payment implementation in this loop?',
+      proHumanApprovalHandoffGuardrailNoPayment:
+        'This handoff does not approve or implement payment, checkout, subscriptions, or collection.',
+      proHumanApprovalHandoffGuardrailStayValidation:
+        'External messaging stays inside stay_validation until a separate human approval decision is recorded.',
+      proHumanApprovalHandoffGuardrailAnonymousOnly:
+        'The handoff only uses local anonymous aggregate evidence and never includes copied page content, URLs, titles, or contact details.',
+      proHumanApprovalHandoffNextReview:
+        'Open a separate human approval review with this evidence chain and keep monetization implementation out of scope.',
+      proHumanApprovalHandoffNextScope:
+        'If approval is granted, define the narrowest evaluation-only monetization scope before any implementation work starts.',
+      proHumanApprovalHandoffNextNoImplementation:
+        'Even after approval, this round still stops at planning and review only.',
+      proHumanApprovalHandoffNextHoldTracker:
+        'Do not open human approval yet. Wait until the same-window tracker turns green.',
+      proHumanApprovalHandoffNextHoldCampaigns:
+        'Keep resolving cross-campaign blockers before reopening the tracker.',
+      proHumanApprovalHandoffNextHoldMessaging:
+        'Keep external copy locked to stay_validation while blocked.',
+      proHumanApprovalHandoffMdTitle: 'V4-16 human approval handoff pack',
+      proHumanApprovalHandoffMdSectionStatus: 'Status',
+      proHumanApprovalHandoffMdSectionBlockers: 'Blockers',
+      proHumanApprovalHandoffMdSectionQuestions: 'Approval questions',
+      proHumanApprovalHandoffMdSectionGuardrails: 'Guardrails',
+      proHumanApprovalHandoffMdSectionNext: 'Next steps',
+      proHumanApprovalHandoffMdSectionEvidence: 'Evidence chain',
+      proHumanApprovalHandoffNoBlockers: 'No new blockers are currently open.'
+    };
+    return messages[key] || key;
+  };
+
+  const approvalHandoffHold = buildProHumanApprovalHandoffPack({
+    tracker: approvalWindowTracker,
+    audit: auditHold,
+    campaignReview,
+    messagingGuard,
+    getMessage: approvalHandoffGetMessage
+  });
+  assert.equal(approvalHandoffHold.readyForHumanApproval, false);
+  assert.ok(approvalHandoffHold.blockers.length > 0);
+  const approvalHandoffHoldMarkdown = formatProHumanApprovalHandoffMarkdown(
+    approvalHandoffHold,
+    approvalHandoffGetMessage
+  );
+  assert.ok(approvalHandoffHoldMarkdown.includes('V4-16 human approval handoff pack'));
+  assert.ok(approvalHandoffHoldMarkdown.includes('handoff_status=hold_validation'));
+
+  const approvalHandoffReady = buildProHumanApprovalHandoffPack({
+    tracker: approvalWindowEnter,
+    audit: auditEnter,
+    campaignReview: {
+      ...campaignReview,
+      blockers: [],
+      prioritizedCampaigns: []
+    },
+    messagingGuard,
+    getMessage: approvalHandoffGetMessage
+  });
+  assert.equal(approvalHandoffReady.readyForHumanApproval, true);
+  assert.equal(approvalHandoffReady.handoffStatus, 'ready_for_human_approval_review');
 
   // pro-funnel.ts (pure functions)
   const proSummaryDisabled = buildProFunnelSummary({
@@ -4473,6 +4705,18 @@ async function run() {
     'options.html should include download-pro-route-validation-campaign-review-json'
   );
   assert.ok(
+    optionsHtml.includes('id="pro-stay-validation-messaging-guard-panel"'),
+    'options.html should include pro-stay-validation-messaging-guard-panel'
+  );
+  assert.ok(
+    optionsHtml.includes('id="copy-pro-stay-validation-messaging-guard-summary"'),
+    'options.html should include copy-pro-stay-validation-messaging-guard-summary'
+  );
+  assert.ok(
+    optionsHtml.includes('id="download-pro-stay-validation-messaging-guard-json"'),
+    'options.html should include download-pro-stay-validation-messaging-guard-json'
+  );
+  assert.ok(
     optionsHtml.includes('id="download-pro-intent-decision-summary-json"'),
     'options.html should include download-pro-intent-decision-summary-json'
   );
@@ -4549,6 +4793,10 @@ async function run() {
   assert.ok(
     optionsJs.includes('copylot-pro-route-validation-campaign-review-v4-13.json'),
     'options.js should contain route campaign review export filename'
+  );
+  assert.ok(
+    optionsJs.includes('copylot-pro-stay-validation-messaging-guard-v4-14.json'),
+    'options.js should contain stay_validation messaging guard export filename'
   );
   assert.ok(
     optionsJs.includes('copylot-pro-intent-decision-summary-'),
