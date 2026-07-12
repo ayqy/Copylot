@@ -33,4 +33,5 @@
 
 - 官网真实源码仍不在当前仓库；若后续要把首页承接规范落到真实站点，需要切到对应站点工程，但这不阻塞扩展仓继续推进 S4。
 - 当前跨 campaign 复核不依赖新增账号、凭据、支付权限、商店权限或人工审核。
+- 本轮代码、测试、证据与文档已完成本地提交 `440a073 feat: add cross-campaign route review pack`，但当前受管沙箱执行 `git push` 失败：`ssh: Could not resolve hostname ssh.github.com`。需要在可访问 GitHub 远端的终端环境完成推送。
 - 当前软件工厂入口 `python3 -m studio run --project /Users/pocket/Documents/project/Copylot --instruction '继续推进 roadmap 并完成下一个可验证里程碑' --once` 仍会长时间无增量输出；最新一次手动中断时堆栈停在 `studio/loops/dev_loop.py -> dev_cycle -> studio/codex_runner.py -> subprocess.run(... communicate) -> selectors.poll`。本轮继续人工接管实现与回归，后续若要完全依赖工厂自动闭环，需要单独修复该阻塞。

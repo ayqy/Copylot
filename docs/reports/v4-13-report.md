@@ -49,5 +49,5 @@
 
 ## commit / push 状态
 
-- commit：待本轮文件整理后回写。
-- push：待本轮 commit 完成后回写；若受当前受管沙箱网络限制影响，会同步记录到 `docs/roadmap_status.md` 与 `docs/growth/blocked.md`。
+- commit：已完成，本地提交为 `440a073 feat: add cross-campaign route review pack`。
+- push：未完成；当前受管沙箱内执行 `git push` 失败，错误为 `ssh: Could not resolve hostname ssh.github.com`，已同步记录到 `docs/roadmap_status.md` 与 `docs/growth/blocked.md`。
