@@ -490,6 +490,78 @@
     "message": "回写包只使用本地匿名聚合信号，不包含网页正文、复制内容、URL、标题或联系方式。",
     "description": "Options Pro Tab：领先路线回写隐私提示"
   },
+  "proRouteValidationStabilityTitle": {
+    "message": "领先路线稳定性摘要",
+    "description": "Options Pro Tab：领先路线稳定性标题"
+  },
+  "proRouteValidationStabilityHint": {
+    "message": "把最近 7 天和 14 天的领先路线、supporting campaign 与 conflicting campaign 放到同一张摘要里，避免把一次领先误判成长期需求。",
+    "description": "Options Pro Tab：领先路线稳定性说明"
+  },
+  "proRouteValidationStabilityCopy": {
+    "message": "复制领先路线稳定性摘要",
+    "description": "Options Pro Tab：复制领先路线稳定性摘要按钮"
+  },
+  "proRouteValidationStabilityDownloadJson": {
+    "message": "下载领先路线稳定性 JSON",
+    "description": "Options Pro Tab：下载领先路线稳定性 JSON 按钮"
+  },
+  "proRouteValidationStabilityPrivacyHint": {
+    "message": "稳定性摘要只使用本地匿名聚合信号，不包含网页正文、复制内容、URL、标题或联系方式。",
+    "description": "Options Pro Tab：领先路线稳定性隐私提示"
+  },
+  "proRouteValidationStabilityMdTitle": {
+    "message": "V4-10 领先路线稳定性摘要",
+    "description": "领先路线稳定性 Markdown 标题"
+  },
+  "proRouteValidationStabilityMdSectionInput": {
+    "message": "输入",
+    "description": "领先路线稳定性 Markdown 输入区块标题"
+  },
+  "proRouteValidationStabilityMdSectionWindows": {
+    "message": "窗口判断",
+    "description": "领先路线稳定性 Markdown 窗口区块标题"
+  },
+  "proRouteValidationStabilityMdSectionCampaigns": {
+    "message": "campaign 支撑",
+    "description": "领先路线稳定性 Markdown campaign 区块标题"
+  },
+  "proRouteValidationStabilityMdSectionDecision": {
+    "message": "结论",
+    "description": "领先路线稳定性 Markdown 结论区块标题"
+  },
+  "proRouteValidationStabilityNoSignals": {
+    "message": "当前没有足够的路线验证信号，继续收集真实打开与复制样本。",
+    "description": "领先路线稳定性：没有信号时的兜底文案"
+  },
+  "proRouteValidationStabilityVerdictStable": {
+    "message": "7d 与 14d 的领先路线一致，且当前 campaign 支撑已具备基础集中度，可以继续强化同一路线文案。",
+    "description": "领先路线稳定性：领先路线稳定时的判断"
+  },
+  "proRouteValidationStabilityVerdictCampaignThin": {
+    "message": "7d 与 14d 的领先路线一致，但 campaign 支撑仍然太薄，暂时不能把一次领先当成长期需求。",
+    "description": "领先路线稳定性：领先路线稳定但 campaign 仍薄时的判断"
+  },
+  "proRouteValidationStabilityVerdictCampaignSplit": {
+    "message": "7d 与 14d 的领先路线一致，但不同 campaign 仍然分裂，说明领先路线还没有跨渠道稳定成立。",
+    "description": "领先路线稳定性：领先路线稳定但 campaign 分裂时的判断"
+  },
+  "proRouteValidationStabilityVerdictWindowUnstable": {
+    "message": "7d 与 14d 的领先路线不一致，当前领先还不稳定。",
+    "description": "领先路线稳定性：不同窗口领先不一致时的判断"
+  },
+  "proRouteValidationStabilityNextCollect": {
+    "message": "下一步：继续收集真实任务样本，并保持“不做支付实现”的边界。",
+    "description": "领先路线稳定性：继续收集样本时的下一步"
+  },
+  "proRouteValidationStabilityNextCrossCampaign": {
+    "message": "下一步：优先补跨 campaign 的真实任务样本，再用回写包和门槛摘要一起复核。",
+    "description": "领先路线稳定性：campaign 分裂时的下一步"
+  },
+  "proRouteValidationStabilityNextStrengthen": {
+    "message": "下一步：可以继续强化当前领先路线文案，但仍需先经过收费前门槛复核，不能直接进入支付实现。",
+    "description": "领先路线稳定性：领先路线稳定时的下一步"
+  },
   "proRouteValidationWritebackMdTitle": {
     "message": "V4-9 领先路线回写包",
     "description": "领先路线回写 Markdown 标题"
@@ -2114,6 +2186,22 @@
   "proRouteValidationWritebackDownloadFailed": {
     "message": "下载失败",
     "description": "领先路线回写 JSON 下载失败提示"
+  },
+  "proRouteValidationStabilityCopySuccess": {
+    "message": "领先路线稳定性摘要已复制到剪贴板",
+    "description": "领先路线稳定性摘要复制成功提示"
+  },
+  "proRouteValidationStabilityCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "领先路线稳定性摘要复制失败提示"
+  },
+  "proRouteValidationStabilityDownloadSuccess": {
+    "message": "领先路线稳定性 JSON 已下载",
+    "description": "领先路线稳定性 JSON 下载成功提示"
+  },
+  "proRouteValidationStabilityDownloadFailed": {
+    "message": "下载失败",
+    "description": "领先路线稳定性 JSON 下载失败提示"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "复制按 campaign 的本周复盘摘要（Markdown）",

@@ -36,6 +36,10 @@ import {
   formatProRouteValidationWritebackMarkdown
 } from '../src/shared/pro-route-validation-writeback.ts';
 import {
+  buildProRouteValidationStabilitySummary,
+  formatProRouteValidationStabilityMarkdown
+} from '../src/shared/pro-route-validation-stability.ts';
+import {
   RATING_PROMPT_MIN_INSTALL_AGE_MS,
   RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
   PRO_PROMPT_MAX_SHOWN_COUNT,
@@ -1845,6 +1849,159 @@ async function run() {
   assert.ok(writebackMarkdown.includes('V4-9 Leading route writeback pack'));
   assert.ok(writebackMarkdown.includes('Write back first: Advanced page cleaning validation'));
   assert.ok(writebackMarkdown.includes('recent_7d total_signals=4'));
+
+  const stabilityGetMessage: I18nGetMessage = (key) => {
+    const messages: Record<string, string> = {
+      proValidationAdvancedTitle: 'Advanced page cleaning validation',
+      proValidationBulkTitle: 'Batch collection and organization validation',
+      proValidationStructuredExportTitle: 'Structured export and downstream workflow validation',
+      proRouteValidationStabilityMdTitle: 'V4-10 Leading route stability summary',
+      proRouteValidationStabilityMdSectionInput: 'Input',
+      proRouteValidationStabilityMdSectionWindows: 'Windows',
+      proRouteValidationStabilityMdSectionCampaigns: 'Campaigns',
+      proRouteValidationStabilityMdSectionDecision: 'Decision',
+      proRouteValidationStabilityNoSignals: 'No route signals yet',
+      proRouteValidationStabilityVerdictStable:
+        'The same leader holds across 7d and 14d, and campaign support is concentrated enough to keep strengthening the same route copy.',
+      proRouteValidationStabilityVerdictCampaignThin:
+        'The same leader holds across 7d and 14d, but campaign support is still too thin to treat one lead as durable demand.',
+      proRouteValidationStabilityVerdictCampaignSplit:
+        'The same leader holds across 7d and 14d, but campaigns are still split, so the lead is not yet stable across acquisition sources.',
+      proRouteValidationStabilityVerdictWindowUnstable:
+        'The 7d and 14d leaders disagree, so the current lead is still unstable.',
+      proRouteValidationStabilityNextCollect:
+        'Next step: collect more real task samples and keep the boundary of no payment implementation.',
+      proRouteValidationStabilityNextCrossCampaign:
+        'Next step: add more cross-campaign task samples, then re-check together with the writeback pack and the A/B/C gate.',
+      proRouteValidationStabilityNextStrengthen:
+        'Next step: keep strengthening the current leading route copy, but still pass the pre-payment gate before any payment implementation.'
+    };
+    return messages[key] || key;
+  };
+
+  const stabilityNow = Date.UTC(2026, 2, 31, 0, 0, 0);
+  const day = 24 * 60 * 60 * 1000;
+  const stabilitySummary = buildProRouteValidationStabilitySummary({
+    enabled: true,
+    telemetryEvents: [
+      {
+        name: 'pro_waitlist_opened',
+        ts: stabilityNow - 6 * day,
+        props: { source: 'options', campaign: 'twitter', content: 'options_advanced_cleaning_cta' }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: stabilityNow - 6 * day + 1_000,
+        props: {
+          source: 'options',
+          campaign: 'twitter',
+          content: 'options_advanced_cleaning_cta',
+          action: 'validation_route'
+        }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: stabilityNow - 6 * day + 2_000,
+        props: {
+          source: 'options',
+          campaign: 'twitter',
+          content: 'options_advanced_cleaning_cta',
+          action: 'validation_brief'
+        }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: stabilityNow - 6 * day + 3_000,
+        props: {
+          source: 'options',
+          campaign: 'twitter',
+          content: 'options_advanced_cleaning_cta',
+          action: 'validation_checklist'
+        }
+      },
+      {
+        name: 'pro_waitlist_opened',
+        ts: stabilityNow - 5 * day,
+        props: { source: 'options', campaign: 'twitter', content: 'options_advanced_cleaning_cta' }
+      },
+      {
+        name: 'pro_waitlist_opened',
+        ts: stabilityNow - 10 * day,
+        props: { source: 'options', campaign: 'ph', content: 'options_advanced_cleaning_cta' }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: stabilityNow - 10 * day + 1_000,
+        props: {
+          source: 'options',
+          campaign: 'ph',
+          content: 'options_advanced_cleaning_cta',
+          action: 'validation_route'
+        }
+      },
+      {
+        name: 'pro_waitlist_opened',
+        ts: stabilityNow - 3 * day,
+        props: { source: 'options', campaign: 'reddit', content: 'options_bulk_collection_cta' }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: stabilityNow - 3 * day + 1_000,
+        props: {
+          source: 'options',
+          campaign: 'reddit',
+          content: 'options_bulk_collection_cta',
+          action: 'validation_route'
+        }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: stabilityNow - 3 * day + 2_000,
+        props: {
+          source: 'options',
+          campaign: 'reddit',
+          content: 'options_bulk_collection_cta',
+          action: 'validation_brief'
+        }
+      },
+      {
+        name: 'pro_waitlist_opened',
+        ts: stabilityNow - 12 * day,
+        props: { source: 'options', campaign: 'seo', content: 'options_structured_export_cta' }
+      },
+      {
+        name: 'pro_distribution_asset_copied',
+        ts: stabilityNow - 12 * day + 1_000,
+        props: {
+          source: 'options',
+          campaign: 'seo',
+          content: 'options_structured_export_cta',
+          action: 'validation_route'
+        }
+      }
+    ],
+    now: stabilityNow,
+    extensionVersion: '1.2.3',
+    getMessage: stabilityGetMessage
+  });
+  assert.equal(stabilitySummary.overallLeaderTrackId, 'advanced_cleaning');
+  assert.equal(stabilitySummary.windows[0]?.leadingTrackId, 'advanced_cleaning');
+  assert.equal(stabilitySummary.windows[0]?.totalSignals, 8);
+  assert.equal(stabilitySummary.windows[1]?.leadingTrackId, 'advanced_cleaning');
+  assert.equal(stabilitySummary.windows[1]?.totalSignals, 12);
+  assert.equal(stabilitySummary.stableAcrossWindows, true);
+  assert.deepEqual(stabilitySummary.supportingCampaigns, ['ph', 'twitter']);
+  assert.deepEqual(stabilitySummary.conflictingCampaigns, ['reddit', 'seo']);
+  assert.equal(stabilitySummary.verdictCode, 'leader_stable_campaign_split');
+  const stabilityMarkdown = formatProRouteValidationStabilityMarkdown(
+    stabilitySummary,
+    stabilityGetMessage
+  );
+  assert.ok(stabilityMarkdown.includes('V4-10 Leading route stability summary'));
+  assert.ok(stabilityMarkdown.includes('7d leader=Advanced page cleaning validation'));
+  assert.ok(stabilityMarkdown.includes('14d leader=Advanced page cleaning validation'));
+  assert.ok(stabilityMarkdown.includes('supporting_campaigns=ph, twitter'));
+  assert.ok(stabilityMarkdown.includes('conflicting_campaigns=reddit, seo'));
 
   // pro-funnel.ts (pure functions)
   const proSummaryDisabled = buildProFunnelSummary({
@@ -3952,6 +4109,14 @@ async function run() {
     'options.html should include download-pro-route-validation-writeback-json'
   );
   assert.ok(
+    optionsHtml.includes('id="copy-pro-route-validation-stability-summary"'),
+    'options.html should include copy-pro-route-validation-stability-summary'
+  );
+  assert.ok(
+    optionsHtml.includes('id="download-pro-route-validation-stability-json"'),
+    'options.html should include download-pro-route-validation-stability-json'
+  );
+  assert.ok(
     optionsHtml.includes('id="download-pro-intent-decision-summary-json"'),
     'options.html should include download-pro-intent-decision-summary-json'
   );
@@ -4023,6 +4188,10 @@ async function run() {
   assert.ok(
     optionsJs.includes('copylot-pro-route-validation-writeback-v4-9.json'),
     'options.js should contain route writeback export filename'
+  );
+  assert.ok(
+    optionsJs.includes('copylot-pro-route-validation-stability-v4-10.json'),
+    'options.js should contain route stability export filename'
   );
   assert.ok(
     optionsJs.includes('copylot-pro-intent-decision-summary-'),

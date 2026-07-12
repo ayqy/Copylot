@@ -490,6 +490,78 @@
     "message": "Uses only local anonymous aggregated signals. Never includes copied page content, URLs, titles, or contact details.",
     "description": "Options Pro tab: route writeback privacy hint"
   },
+  "proRouteValidationStabilityTitle": {
+    "message": "Leading route stability summary",
+    "description": "Options Pro tab: route stability title"
+  },
+  "proRouteValidationStabilityHint": {
+    "message": "Put the last 7-day and 14-day leaders, supporting campaigns, and conflicting campaigns into one summary so a one-off lead does not get mistaken for durable demand.",
+    "description": "Options Pro tab: route stability hint"
+  },
+  "proRouteValidationStabilityCopy": {
+    "message": "Copy leading route stability summary",
+    "description": "Options Pro tab: copy route stability summary button"
+  },
+  "proRouteValidationStabilityDownloadJson": {
+    "message": "Download leading route stability JSON",
+    "description": "Options Pro tab: download route stability json button"
+  },
+  "proRouteValidationStabilityPrivacyHint": {
+    "message": "Uses only local anonymous aggregated signals. Never includes copied page content, URLs, titles, or contact details.",
+    "description": "Options Pro tab: route stability privacy hint"
+  },
+  "proRouteValidationStabilityMdTitle": {
+    "message": "V4-10 Leading route stability summary",
+    "description": "Route stability markdown title"
+  },
+  "proRouteValidationStabilityMdSectionInput": {
+    "message": "Input",
+    "description": "Route stability markdown input section heading"
+  },
+  "proRouteValidationStabilityMdSectionWindows": {
+    "message": "Windows",
+    "description": "Route stability markdown windows section heading"
+  },
+  "proRouteValidationStabilityMdSectionCampaigns": {
+    "message": "Campaigns",
+    "description": "Route stability markdown campaigns section heading"
+  },
+  "proRouteValidationStabilityMdSectionDecision": {
+    "message": "Decision",
+    "description": "Route stability markdown decision section heading"
+  },
+  "proRouteValidationStabilityNoSignals": {
+    "message": "There are not enough route validation signals yet. Keep collecting real opens and copy samples.",
+    "description": "Route stability fallback when no signals exist"
+  },
+  "proRouteValidationStabilityVerdictStable": {
+    "message": "The same leader holds across 7d and 14d, and campaign support is concentrated enough to keep strengthening the same route copy.",
+    "description": "Route stability verdict when the leader is stable"
+  },
+  "proRouteValidationStabilityVerdictCampaignThin": {
+    "message": "The same leader holds across 7d and 14d, but campaign support is still too thin to treat one lead as durable demand.",
+    "description": "Route stability verdict when the leader is stable but campaign support is thin"
+  },
+  "proRouteValidationStabilityVerdictCampaignSplit": {
+    "message": "The same leader holds across 7d and 14d, but campaigns are still split, so the lead is not yet stable across acquisition sources.",
+    "description": "Route stability verdict when the leader is stable but campaigns disagree"
+  },
+  "proRouteValidationStabilityVerdictWindowUnstable": {
+    "message": "The 7d and 14d leaders disagree, so the current lead is still unstable.",
+    "description": "Route stability verdict when the leader changes by window"
+  },
+  "proRouteValidationStabilityNextCollect": {
+    "message": "Next step: collect more real task samples and keep the boundary of no payment implementation.",
+    "description": "Route stability next step when more collection is needed"
+  },
+  "proRouteValidationStabilityNextCrossCampaign": {
+    "message": "Next step: add more cross-campaign task samples, then re-check together with the writeback pack and the A/B/C gate.",
+    "description": "Route stability next step when campaigns are split"
+  },
+  "proRouteValidationStabilityNextStrengthen": {
+    "message": "Next step: keep strengthening the current leading route copy, but still pass the pre-payment gate before any payment implementation.",
+    "description": "Route stability next step when the leader is stable"
+  },
   "proRouteValidationWritebackMdTitle": {
     "message": "V4-9 Leading route writeback pack",
     "description": "Route writeback markdown title"
@@ -2114,6 +2186,22 @@
   "proRouteValidationWritebackDownloadFailed": {
     "message": "Download failed",
     "description": "Route writeback json download failure notification"
+  },
+  "proRouteValidationStabilityCopySuccess": {
+    "message": "Route stability summary copied to clipboard",
+    "description": "Route stability copy success notification"
+  },
+  "proRouteValidationStabilityCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Route stability copy failure notification"
+  },
+  "proRouteValidationStabilityDownloadSuccess": {
+    "message": "Route stability JSON downloaded",
+    "description": "Route stability json download success notification"
+  },
+  "proRouteValidationStabilityDownloadFailed": {
+    "message": "Download failed",
+    "description": "Route stability json download failure notification"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "Copy weekly campaign report (Markdown)",

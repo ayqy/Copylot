@@ -611,6 +611,23 @@ async function runOptionsAssertions(): Promise<void> {
     );
     assert.ok(routeWritebackSummary.includes('recent_7d total_signals=4'));
 
+    const routeStabilityCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#copy-pro-route-validation-stability-summary'
+    );
+    clickElement(routeStabilityCopyButton);
+    await page.waitForIdle();
+    const routeStabilitySummary = await page.clipboard.readText();
+    assert.ok(
+      routeStabilitySummary.includes('V4-10 领先路线稳定性摘要') ||
+        routeStabilitySummary.includes('V4-10 Leading route stability summary')
+    );
+    assert.ok(
+      routeStabilitySummary.includes('高级页面清洗验证') ||
+        routeStabilitySummary.includes('Advanced page cleaning validation')
+    );
+    assert.ok(routeStabilitySummary.includes('supporting_campaigns=twitter'));
+
     const decisionSummaryCopyButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
       '#copy-pro-intent-decision-summary'

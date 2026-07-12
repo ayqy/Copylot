@@ -1,0 +1,117 @@
+[
+  {
+    "name": "pro_waitlist_opened",
+    "ts": 1774483200000,
+    "props": {
+      "source": "options",
+      "campaign": "twitter",
+      "content": "options_advanced_cleaning_cta"
+    }
+  },
+  {
+    "name": "pro_distribution_asset_copied",
+    "ts": 1774483201000,
+    "props": {
+      "source": "options",
+      "campaign": "twitter",
+      "content": "options_advanced_cleaning_cta",
+      "action": "validation_route"
+    }
+  },
+  {
+    "name": "pro_distribution_asset_copied",
+    "ts": 1774483202000,
+    "props": {
+      "source": "options",
+      "campaign": "twitter",
+      "content": "options_advanced_cleaning_cta",
+      "action": "validation_brief"
+    }
+  },
+  {
+    "name": "pro_distribution_asset_copied",
+    "ts": 1774483203000,
+    "props": {
+      "source": "options",
+      "campaign": "twitter",
+      "content": "options_advanced_cleaning_cta",
+      "action": "validation_checklist"
+    }
+  },
+  {
+    "name": "pro_waitlist_opened",
+    "ts": 1774569600000,
+    "props": {
+      "source": "options",
+      "campaign": "twitter",
+      "content": "options_advanced_cleaning_cta"
+    }
+  },
+  {
+    "name": "pro_waitlist_opened",
+    "ts": 1774137600000,
+    "props": {
+      "source": "options",
+      "campaign": "ph",
+      "content": "options_advanced_cleaning_cta"
+    }
+  },
+  {
+    "name": "pro_distribution_asset_copied",
+    "ts": 1774137601000,
+    "props": {
+      "source": "options",
+      "campaign": "ph",
+      "content": "options_advanced_cleaning_cta",
+      "action": "validation_route"
+    }
+  },
+  {
+    "name": "pro_waitlist_opened",
+    "ts": 1774742400000,
+    "props": {
+      "source": "options",
+      "campaign": "reddit",
+      "content": "options_bulk_collection_cta"
+    }
+  },
+  {
+    "name": "pro_distribution_asset_copied",
+    "ts": 1774742401000,
+    "props": {
+      "source": "options",
+      "campaign": "reddit",
+      "content": "options_bulk_collection_cta",
+      "action": "validation_route"
+    }
+  },
+  {
+    "name": "pro_distribution_asset_copied",
+    "ts": 1774742402000,
+    "props": {
+      "source": "options",
+      "campaign": "reddit",
+      "content": "options_bulk_collection_cta",
+      "action": "validation_brief"
+    }
+  },
+  {
+    "name": "pro_waitlist_opened",
+    "ts": 1773964800000,
+    "props": {
+      "source": "options",
+      "campaign": "seo",
+      "content": "options_structured_export_cta"
+    }
+  },
+  {
+    "name": "pro_distribution_asset_copied",
+    "ts": 1773964801000,
+    "props": {
+      "source": "options",
+      "campaign": "seo",
+      "content": "options_structured_export_cta",
+      "action": "validation_route"
+    }
+  }
+]

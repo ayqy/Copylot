@@ -16,7 +16,7 @@
 | `docs/aso/keywords.md` | 2217 | `eb702760c5b5895d7388b193966aa5f1643ec0ec536c22d42315b5ec6b345ac8` |
 | `docs/aso/store-assets.md` | 10906 | `9f1509fc4b671ebf9a310faa07d4650cd48a859d4f3eb6019a0a249adf8210a8` |
 | `docs/aso/cws-release-notes-template.md` | 1351 | `4de9cf37ed4cad839640528d8106d5a13604e85dddea05988da1ae4b7c1ca5a3` |
-| `docs/aso/value-prop.md` | 3856 | `4445d81d9b5d2b05a6bbd83a1467ae7aff767e5355201cd8183bf92cb01c7e49` |
+| `docs/aso/value-prop.md` | 4350 | `14925461124c7906778ecde15b6047f8bc3238c4172537820a3c381db439d747` |
 
 ## 关键断言（自动化门禁）
 

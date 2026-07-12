@@ -1,0 +1,275 @@
+{
+  "enabled": true,
+  "exportedAt": 1774742402000,
+  "extensionVersion": "v4-10-evidence",
+  "telemetryFile": "docs/evidence/v4-10/route-validation-stability-telemetry-sample.json",
+  "telemetrySha256": "00df6bd7f54b02b90cf394dca60131fe15b6c29db84c570364828338bef56e88",
+  "windowSetDays": [
+    7,
+    14
+  ],
+  "overallLeaderTrackId": "advanced_cleaning",
+  "overallLeaderTrackTitle": "高级页面清洗验证",
+  "stableAcrossWindows": true,
+  "supportingCampaigns": [
+    "ph",
+    "twitter"
+  ],
+  "conflictingCampaigns": [
+    "reddit",
+    "seo"
+  ],
+  "verdictCode": "leader_stable_campaign_split",
+  "windows": [
+    {
+      "lookbackDays": 7,
+      "totalSignals": 8,
+      "campaigns": [
+        "reddit",
+        "twitter"
+      ],
+      "leadingTrackId": "advanced_cleaning",
+      "leadingTrackTitle": "高级页面清洗验证",
+      "runnerUpTrackId": "bulk_collection",
+      "runnerUpTrackTitle": "批量采集与整理验证",
+      "signalGap": 2,
+      "tracks": [
+        {
+          "trackId": "advanced_cleaning",
+          "title": "高级页面清洗验证",
+          "routeOpened": 2,
+          "validationRouteCopied": 1,
+          "validationBriefCopied": 1,
+          "validationChecklistCopied": 1,
+          "totalCopies": 3,
+          "totalSignals": 5
+        },
+        {
+          "trackId": "bulk_collection",
+          "title": "批量采集与整理验证",
+          "routeOpened": 1,
+          "validationRouteCopied": 1,
+          "validationBriefCopied": 1,
+          "validationChecklistCopied": 0,
+          "totalCopies": 2,
+          "totalSignals": 3
+        },
+        {
+          "trackId": "structured_export",
+          "title": "结构化导出与下游工作流验证",
+          "routeOpened": 0,
+          "validationRouteCopied": 0,
+          "validationBriefCopied": 0,
+          "validationChecklistCopied": 0,
+          "totalCopies": 0,
+          "totalSignals": 0
+        }
+      ]
+    },
+    {
+      "lookbackDays": 14,
+      "totalSignals": 12,
+      "campaigns": [
+        "ph",
+        "reddit",
+        "seo",
+        "twitter"
+      ],
+      "leadingTrackId": "advanced_cleaning",
+      "leadingTrackTitle": "高级页面清洗验证",
+      "runnerUpTrackId": "bulk_collection",
+      "runnerUpTrackTitle": "批量采集与整理验证",
+      "signalGap": 4,
+      "tracks": [
+        {
+          "trackId": "advanced_cleaning",
+          "title": "高级页面清洗验证",
+          "routeOpened": 3,
+          "validationRouteCopied": 2,
+          "validationBriefCopied": 1,
+          "validationChecklistCopied": 1,
+          "totalCopies": 4,
+          "totalSignals": 7
+        },
+        {
+          "trackId": "bulk_collection",
+          "title": "批量采集与整理验证",
+          "routeOpened": 1,
+          "validationRouteCopied": 1,
+          "validationBriefCopied": 1,
+          "validationChecklistCopied": 0,
+          "totalCopies": 2,
+          "totalSignals": 3
+        },
+        {
+          "trackId": "structured_export",
+          "title": "结构化导出与下游工作流验证",
+          "routeOpened": 1,
+          "validationRouteCopied": 1,
+          "validationBriefCopied": 0,
+          "validationChecklistCopied": 0,
+          "totalCopies": 1,
+          "totalSignals": 2
+        }
+      ]
+    }
+  ],
+  "campaigns": [
+    {
+      "campaign": "ph",
+      "totalSignals": 2,
+      "leadingTrackId": "advanced_cleaning",
+      "leadingTrackTitle": "高级页面清洗验证",
+      "signalGap": 2,
+      "tracks": [
+        {
+          "trackId": "advanced_cleaning",
+          "title": "高级页面清洗验证",
+          "routeOpened": 1,
+          "validationRouteCopied": 1,
+          "validationBriefCopied": 0,
+          "validationChecklistCopied": 0,
+          "totalCopies": 1,
+          "totalSignals": 2
+        },
+        {
+          "trackId": "bulk_collection",
+          "title": "批量采集与整理验证",
+          "routeOpened": 0,
+          "validationRouteCopied": 0,
+          "validationBriefCopied": 0,
+          "validationChecklistCopied": 0,
+          "totalCopies": 0,
+          "totalSignals": 0
+        },
+        {
+          "trackId": "structured_export",
+          "title": "结构化导出与下游工作流验证",
+          "routeOpened": 0,
+          "validationRouteCopied": 0,
+          "validationBriefCopied": 0,
+          "validationChecklistCopied": 0,
+          "totalCopies": 0,
+          "totalSignals": 0
+        }
+      ]
+    },
+    {
+      "campaign": "reddit",
+      "totalSignals": 3,
+      "leadingTrackId": "bulk_collection",
+      "leadingTrackTitle": "批量采集与整理验证",
+      "signalGap": 3,
+      "tracks": [
+        {
+          "trackId": "bulk_collection",
+          "title": "批量采集与整理验证",
+          "routeOpened": 1,
+          "validationRouteCopied": 1,
+          "validationBriefCopied": 1,
+          "validationChecklistCopied": 0,
+          "totalCopies": 2,
+          "totalSignals": 3
+        },
+        {
+          "trackId": "advanced_cleaning",
+          "title": "高级页面清洗验证",
+          "routeOpened": 0,
+          "validationRouteCopied": 0,
+          "validationBriefCopied": 0,
+          "validationChecklistCopied": 0,
+          "totalCopies": 0,
+          "totalSignals": 0
+        },
+        {
+          "trackId": "structured_export",
+          "title": "结构化导出与下游工作流验证",
+          "routeOpened": 0,
+          "validationRouteCopied": 0,
+          "validationBriefCopied": 0,
+          "validationChecklistCopied": 0,
+          "totalCopies": 0,
+          "totalSignals": 0
+        }
+      ]
+    },
+    {
+      "campaign": "seo",
+      "totalSignals": 2,
+      "leadingTrackId": "structured_export",
+      "leadingTrackTitle": "结构化导出与下游工作流验证",
+      "signalGap": 2,
+      "tracks": [
+        {
+          "trackId": "structured_export",
+          "title": "结构化导出与下游工作流验证",
+          "routeOpened": 1,
+          "validationRouteCopied": 1,
+          "validationBriefCopied": 0,
+          "validationChecklistCopied": 0,
+          "totalCopies": 1,
+          "totalSignals": 2
+        },
+        {
+          "trackId": "advanced_cleaning",
+          "title": "高级页面清洗验证",
+          "routeOpened": 0,
+          "validationRouteCopied": 0,
+          "validationBriefCopied": 0,
+          "validationChecklistCopied": 0,
+          "totalCopies": 0,
+          "totalSignals": 0
+        },
+        {
+          "trackId": "bulk_collection",
+          "title": "批量采集与整理验证",
+          "routeOpened": 0,
+          "validationRouteCopied": 0,
+          "validationBriefCopied": 0,
+          "validationChecklistCopied": 0,
+          "totalCopies": 0,
+          "totalSignals": 0
+        }
+      ]
+    },
+    {
+      "campaign": "twitter",
+      "totalSignals": 5,
+      "leadingTrackId": "advanced_cleaning",
+      "leadingTrackTitle": "高级页面清洗验证",
+      "signalGap": 5,
+      "tracks": [
+        {
+          "trackId": "advanced_cleaning",
+          "title": "高级页面清洗验证",
+          "routeOpened": 2,
+          "validationRouteCopied": 1,
+          "validationBriefCopied": 1,
+          "validationChecklistCopied": 1,
+          "totalCopies": 3,
+          "totalSignals": 5
+        },
+        {
+          "trackId": "bulk_collection",
+          "title": "批量采集与整理验证",
+          "routeOpened": 0,
+          "validationRouteCopied": 0,
+          "validationBriefCopied": 0,
+          "validationChecklistCopied": 0,
+          "totalCopies": 0,
+          "totalSignals": 0
+        },
+        {
+          "trackId": "structured_export",
+          "title": "结构化导出与下游工作流验证",
+          "routeOpened": 0,
+          "validationRouteCopied": 0,
+          "validationBriefCopied": 0,
+          "validationChecklistCopied": 0,
+          "totalCopies": 0,
+          "totalSignals": 0
+        }
+      ]
+    }
+  ]
+}

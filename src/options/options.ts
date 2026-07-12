@@ -69,6 +69,12 @@ import {
   type ProRouteValidationWritebackPack
 } from '../shared/pro-route-validation-writeback';
 import {
+  buildProRouteValidationStabilitySummary,
+  formatProRouteValidationStabilityMarkdown,
+  PRO_ROUTE_VALIDATION_STABILITY_FILES,
+  type ProRouteValidationStabilitySummary
+} from '../shared/pro-route-validation-stability';
+import {
   buildProFunnelEvidencePack,
   buildProFunnelSummary,
   type ProFunnelEvidencePack,
@@ -398,6 +404,8 @@ interface OptionsElements {
   downloadProRouteValidationComparisonJsonButton: HTMLButtonElement;
   proRouteValidationWritebackCopyButton: HTMLButtonElement;
   downloadProRouteValidationWritebackJsonButton: HTMLButtonElement;
+  proRouteValidationStabilityCopyButton: HTMLButtonElement;
+  downloadProRouteValidationStabilityJsonButton: HTMLButtonElement;
   proIntentDecisionSummaryCopyButton: HTMLButtonElement;
   downloadProIntentDecisionSummaryJsonButton: HTMLButtonElement;
   proWaitlistButton: HTMLButtonElement;
@@ -673,6 +681,12 @@ function getElements(): OptionsElements {
     ) || document.createElement('button')) as HTMLButtonElement,
     downloadProRouteValidationWritebackJsonButton: (document.getElementById(
       'download-pro-route-validation-writeback-json'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    proRouteValidationStabilityCopyButton: (document.getElementById(
+      'copy-pro-route-validation-stability-summary'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    downloadProRouteValidationStabilityJsonButton: (document.getElementById(
+      'download-pro-route-validation-stability-json'
     ) || document.createElement('button')) as HTMLButtonElement,
     proIntentDecisionSummaryCopyButton: (document.getElementById(
       'copy-pro-intent-decision-summary'
@@ -2222,6 +2236,36 @@ async function buildProRouteValidationWritebackPackForExport(): Promise<ProRoute
   return buildProRouteValidationWritebackPack(summary, getMessage);
 }
 
+async function buildProRouteValidationStabilitySummaryForExport(): Promise<ProRouteValidationStabilitySummary> {
+  const exportedAt = Date.now();
+  let extensionVersion = '';
+  try {
+    extensionVersion = chrome.runtime.getManifest().version || '';
+  } catch (error) {
+    console.warn('Failed to read extension version for route validation stability summary:', error);
+  }
+
+  const enabled = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    return buildProRouteValidationStabilitySummary({
+      enabled,
+      telemetryEvents: [],
+      now: exportedAt,
+      extensionVersion,
+      getMessage
+    });
+  }
+
+  const result = await chrome.storage.local.get(TELEMETRY_EVENTS_KEY);
+  return buildProRouteValidationStabilitySummary({
+    enabled,
+    telemetryEvents: result[TELEMETRY_EVENTS_KEY],
+    now: exportedAt,
+    extensionVersion,
+    getMessage
+  });
+}
+
 async function copyProRouteValidationWritebackToClipboard(): Promise<void> {
   let pack: ProRouteValidationWritebackPack;
   let text: string;
@@ -2261,6 +2305,48 @@ async function downloadProRouteValidationWritebackJson(): Promise<void> {
   } catch (error) {
     console.warn('Failed to download pro route validation writeback json:', error);
     showNotification(getMessage('proRouteValidationWritebackDownloadFailed'), 'error');
+  }
+}
+
+async function copyProRouteValidationStabilitySummaryToClipboard(): Promise<void> {
+  let summary: ProRouteValidationStabilitySummary;
+  let text: string;
+
+  try {
+    summary = await buildProRouteValidationStabilitySummaryForExport();
+    text = formatProRouteValidationStabilityMarkdown(summary, getMessage);
+  } catch (error) {
+    console.warn('Failed to build pro route validation stability markdown:', error);
+    showNotification(getMessage('proRouteValidationStabilityCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await writeTextToClipboard(text);
+    showNotification(getMessage('proRouteValidationStabilityCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy pro route validation stability markdown:', error);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
+    if (ok) {
+      showNotification(getMessage('proRouteValidationStabilityCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('proRouteValidationStabilityCopyFailed'), 'error');
+  }
+}
+
+async function downloadProRouteValidationStabilityJson(): Promise<void> {
+  try {
+    const summary = await buildProRouteValidationStabilitySummaryForExport();
+    downloadTextFile(
+      PRO_ROUTE_VALIDATION_STABILITY_FILES.summaryJson,
+      `${JSON.stringify(summary, null, 2)}\n`,
+      'application/json'
+    );
+    showNotification(getMessage('proRouteValidationStabilityDownloadSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to download pro route validation stability json:', error);
+    showNotification(getMessage('proRouteValidationStabilityDownloadFailed'), 'error');
   }
 }
 
@@ -3703,6 +3789,12 @@ function setupEventListeners() {
   });
   elements.downloadProRouteValidationWritebackJsonButton.addEventListener('click', () => {
     void downloadProRouteValidationWritebackJson();
+  });
+  elements.proRouteValidationStabilityCopyButton.addEventListener('click', () => {
+    void copyProRouteValidationStabilitySummaryToClipboard();
+  });
+  elements.downloadProRouteValidationStabilityJsonButton.addEventListener('click', () => {
+    void downloadProRouteValidationStabilityJson();
   });
   elements.proIntentDecisionSummaryCopyButton.addEventListener('click', () => {
     void copyProIntentDecisionSummaryToClipboard();
