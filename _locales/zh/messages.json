@@ -713,6 +713,116 @@
     "message": "摘要只使用本地匿名聚合字段，不包含页面正文、复制内容、URL、标题或联系方式。",
     "description": "Options Pro Tab：收费前门槛判断隐私提示"
   },
+  "proRouteValidationVerdictTitle": {
+    "message": "Pro 路线融合判断摘要",
+    "description": "Options Pro Tab：Pro 路线融合判断标题"
+  },
+  "proRouteValidationVerdictHint": {
+    "message": "把路线比较、回写、稳定性和收费前门槛四份判断合成一个最终 verdict，避免继续靠人工拼读多个摘要。",
+    "description": "Options Pro Tab：Pro 路线融合判断说明"
+  },
+  "proRouteValidationVerdictCopy": {
+    "message": "复制 Pro 路线融合判断摘要",
+    "description": "Options Pro Tab：复制 Pro 路线融合判断摘要按钮"
+  },
+  "proRouteValidationVerdictDownloadJson": {
+    "message": "下载 Pro 路线融合判断 JSON",
+    "description": "Options Pro Tab：下载 Pro 路线融合判断 JSON 按钮"
+  },
+  "proRouteValidationVerdictPrivacyHint": {
+    "message": "融合判断只使用本地匿名聚合信号和本地判断结果，不包含网页正文、复制内容、URL、标题或联系方式。",
+    "description": "Options Pro Tab：Pro 路线融合判断隐私提示"
+  },
+  "proRouteValidationVerdictMdTitle": {
+    "message": "V4-11 Pro 路线融合判断摘要",
+    "description": "Pro 路线融合判断 Markdown 标题"
+  },
+  "proRouteValidationVerdictMdSectionInputs": {
+    "message": "输入",
+    "description": "Pro 路线融合判断 Markdown 输入区块标题"
+  },
+  "proRouteValidationVerdictMdSectionChecks": {
+    "message": "检查项",
+    "description": "Pro 路线融合判断 Markdown 检查项区块标题"
+  },
+  "proRouteValidationVerdictMdSectionDecision": {
+    "message": "结论",
+    "description": "Pro 路线融合判断 Markdown 结论区块标题"
+  },
+  "proRouteValidationVerdictDecisionStay": {
+    "message": "当前结论：继续验证，不进入支付评估。",
+    "description": "Pro 路线融合判断：继续验证结论"
+  },
+  "proRouteValidationVerdictDecisionEnter": {
+    "message": "当前结论：可以进入收费评估，但仍不直接实现支付。",
+    "description": "Pro 路线融合判断：进入收费评估结论"
+  },
+  "proRouteValidationVerdictReasonLeaderAligned": {
+    "message": "当前领先路线已对齐：$TRACK$（recent_7d signal_gap=$GAP$）。",
+    "description": "Pro 路线融合判断：领先路线对齐原因",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      },
+      "gap": {
+        "content": "$2"
+      }
+    }
+  },
+  "proRouteValidationVerdictReasonLeaderMismatch": {
+    "message": "路线比较、回写包和稳定性摘要的 leader 还没有对齐。",
+    "description": "Pro 路线融合判断：领先路线不一致原因"
+  },
+  "proRouteValidationVerdictReasonStabilityBlocked": {
+    "message": "稳定性 verdict 仍是 $VERDICT$，还不满足收费评估前置条件。",
+    "description": "Pro 路线融合判断：稳定性未达标原因",
+    "placeholders": {
+      "verdict": {
+        "content": "$1"
+      }
+    }
+  },
+  "proRouteValidationVerdictReasonStabilityReady": {
+    "message": "稳定性 verdict 已进入 $VERDICT$，路线稳定性前置条件已满足。",
+    "description": "Pro 路线融合判断：稳定性达标原因",
+    "placeholders": {
+      "verdict": {
+        "content": "$1"
+      }
+    }
+  },
+  "proRouteValidationVerdictReasonGateBlocked": {
+    "message": "收费前门槛仍为 $CODE$：$CONCLUSION$。",
+    "description": "Pro 路线融合判断：门槛未通过原因",
+    "placeholders": {
+      "code": {
+        "content": "$1"
+      },
+      "conclusion": {
+        "content": "$2"
+      }
+    }
+  },
+  "proRouteValidationVerdictReasonGateReady": {
+    "message": "收费前门槛已进入 $CODE$：$CONCLUSION$。",
+    "description": "Pro 路线融合判断：门槛已通过原因",
+    "placeholders": {
+      "code": {
+        "content": "$1"
+      },
+      "conclusion": {
+        "content": "$2"
+      }
+    }
+  },
+  "proRouteValidationVerdictNextStay": {
+    "message": "下一步：继续补跨 campaign 样本，并把当前判断固化成收费评估审计包，但仍不做支付实现。",
+    "description": "Pro 路线融合判断：继续验证时的下一步"
+  },
+  "proRouteValidationVerdictNextEnter": {
+    "message": "下一步：在不做支付实现的前提下，进入收费评估审计与边界复核。",
+    "description": "Pro 路线融合判断：进入收费评估时的下一步"
+  },
   "proIntentDecisionConclusionADataOff": {
     "message": "继续收集（匿名使用数据未开启/无可用事件）",
     "description": "决策摘要：匿名数据关闭时的 A 结论"
@@ -2202,6 +2312,22 @@
   "proRouteValidationStabilityDownloadFailed": {
     "message": "下载失败",
     "description": "领先路线稳定性 JSON 下载失败提示"
+  },
+  "proRouteValidationVerdictCopySuccess": {
+    "message": "Pro 路线融合判断摘要已复制到剪贴板",
+    "description": "Pro 路线融合判断摘要复制成功提示"
+  },
+  "proRouteValidationVerdictCopyFailed": {
+    "message": "复制失败，请手动选择并复制",
+    "description": "Pro 路线融合判断摘要复制失败提示"
+  },
+  "proRouteValidationVerdictDownloadSuccess": {
+    "message": "Pro 路线融合判断 JSON 已下载",
+    "description": "Pro 路线融合判断 JSON 下载成功提示"
+  },
+  "proRouteValidationVerdictDownloadFailed": {
+    "message": "下载失败",
+    "description": "Pro 路线融合判断 JSON 下载失败提示"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "复制按 campaign 的本周复盘摘要（Markdown）",

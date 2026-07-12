@@ -6,11 +6,11 @@
 - exportedAt：`2026-03-21T00:00:00.000Z`
 - extensionVersion：`1.2.3`
 - baseline pack：`docs/evidence/v1-66/cws-listing-evidence-pack-1.2.3-2026-03-21-000000.json`
-  - sha256：`3ce8fdc79ef019f47b9e1ad0dfe583802329e0ed937a96088ed78c33c4b48637`
+  - sha256：`913bf1f83b4a7cd18e5ef4fa368c978d9e15548243753b7a90339db186e24a7e`
 - current pack：`docs/evidence/v1-67/cws-listing-evidence-pack-1.2.3-2026-03-21-000000.json`
-  - sha256：`3ce8fdc79ef019f47b9e1ad0dfe583802329e0ed937a96088ed78c33c4b48637`
+  - sha256：`913bf1f83b4a7cd18e5ef4fa368c978d9e15548243753b7a90339db186e24a7e`
 - diff pack：`docs/evidence/v1-67/cws-listing-diff-evidence-pack-1.2.3-2026-03-21-000000.json`
-  - sha256：`2caf27266e35d261fa7dd2b5614ccac1da0813d1a8489cf60187f2f369c213e2`
+  - sha256：`02c6b8709b3fcbb7c28b5b433d2849917008e0e31ad30b0bc562985f9c6f1f3e`
 
 ## 关键变更摘要（baseline -> current）
 

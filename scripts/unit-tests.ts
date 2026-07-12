@@ -40,6 +40,10 @@ import {
   formatProRouteValidationStabilityMarkdown
 } from '../src/shared/pro-route-validation-stability.ts';
 import {
+  buildProRouteValidationVerdictPack,
+  formatProRouteValidationVerdictMarkdown
+} from '../src/shared/pro-route-validation-verdict.ts';
+import {
   RATING_PROMPT_MIN_INSTALL_AGE_MS,
   RATING_PROMPT_MIN_SUCCESSFUL_COPY_COUNT,
   PRO_PROMPT_MAX_SHOWN_COUNT,
@@ -2002,6 +2006,80 @@ async function run() {
   assert.ok(stabilityMarkdown.includes('14d leader=Advanced page cleaning validation'));
   assert.ok(stabilityMarkdown.includes('supporting_campaigns=ph, twitter'));
   assert.ok(stabilityMarkdown.includes('conflicting_campaigns=reddit, seo'));
+
+  const verdictGetMessage: I18nGetMessage = (key, substitutions) => {
+    const normalized =
+      typeof substitutions === 'string'
+        ? [substitutions]
+        : Array.isArray(substitutions)
+          ? substitutions
+          : [];
+    const messages: Record<string, string> = {
+      proRouteValidationVerdictMdTitle: 'V4-11 Pro route fusion verdict summary',
+      proRouteValidationVerdictMdSectionInputs: 'Inputs',
+      proRouteValidationVerdictMdSectionChecks: 'Checks',
+      proRouteValidationVerdictMdSectionDecision: 'Decision',
+      proRouteValidationVerdictDecisionStay:
+        'Current verdict: stay in validation and do not enter payment evaluation.',
+      proRouteValidationVerdictDecisionEnter:
+        'Current verdict: enter payment evaluation, but still do not implement payment directly.',
+      proRouteValidationVerdictReasonLeaderAligned: `The current leading route is aligned: ${normalized[0] || 'unknown'} (recent_7d signal_gap=${normalized[1] || '0'}).`,
+      proRouteValidationVerdictReasonLeaderMismatch:
+        'The route comparison, writeback pack, and stability summary still disagree on the leader.',
+      proRouteValidationVerdictReasonStabilityBlocked: `The stability verdict is still ${normalized[0] || 'unknown'}, so the route is not yet stable enough for payment evaluation.`,
+      proRouteValidationVerdictReasonStabilityReady: `The stability verdict has reached ${normalized[0] || 'unknown'}, so the route-stability prerequisite is satisfied.`,
+      proRouteValidationVerdictReasonGateBlocked: `The pre-payment gate is still ${normalized[0] || 'A'}: ${normalized[1] || 'keep collecting'}.`,
+      proRouteValidationVerdictReasonGateReady: `The pre-payment gate has reached ${normalized[0] || 'C'}: ${normalized[1] || 'go evaluate'}.`,
+      proRouteValidationVerdictNextStay:
+        'Next step: collect more cross-campaign samples and lock the current verdict into a payment-evaluation audit pack, but still do not implement payment.',
+      proRouteValidationVerdictNextEnter:
+        'Next step: enter payment-evaluation audit and boundary review without implementing payment directly.'
+    };
+    return messages[key] || key;
+  };
+
+  const verdictStay = buildProRouteValidationVerdictPack({
+    comparison: comparisonSummary,
+    writeback: writebackPack,
+    stability: stabilitySummary,
+    decision: decisionSummaryC,
+    getMessage: verdictGetMessage
+  });
+  assert.equal(verdictStay.routeLeaderTrackId, 'advanced_cleaning');
+  assert.equal(verdictStay.routeLeaderConsistent, true);
+  assert.equal(verdictStay.routeStabilityReady, false);
+  assert.equal(verdictStay.gateAllowsPaymentEvaluation, true);
+  assert.equal(verdictStay.verdictCode, 'stay_validation');
+  assert.equal(verdictStay.sources?.comparison?.file, comparisonSummary.telemetryFile);
+  assert.equal(verdictStay.sources?.writeback?.file, writebackPack.sourceSummaryFile);
+  assert.equal(verdictStay.sources?.stability?.file, stabilitySummary.telemetryFile);
+  assert.equal(verdictStay.sources?.decision?.file, decisionSummaryC.input.distributionFile);
+  const verdictStayMarkdown = formatProRouteValidationVerdictMarkdown(
+    verdictStay,
+    verdictGetMessage
+  );
+  assert.ok(verdictStayMarkdown.includes('V4-11 Pro route fusion verdict summary'));
+  assert.ok(verdictStayMarkdown.includes('route_leader_consistent=true'));
+  assert.ok(verdictStayMarkdown.includes('route_stability_ready=false'));
+  assert.ok(verdictStayMarkdown.includes('gate_allows_payment_evaluation=true'));
+  assert.ok(verdictStayMarkdown.includes('Current verdict: stay in validation'));
+
+  const verdictEnter = buildProRouteValidationVerdictPack({
+    comparison: comparisonSummary,
+    writeback: writebackPack,
+    stability: {
+      ...stabilitySummary,
+      verdictCode: 'leader_stable',
+      conflictingCampaigns: []
+    },
+    decision: decisionSummaryC,
+    getMessage: verdictGetMessage
+  });
+  assert.equal(verdictEnter.routeLeaderConsistent, true);
+  assert.equal(verdictEnter.routeStabilityReady, true);
+  assert.equal(verdictEnter.gateAllowsPaymentEvaluation, true);
+  assert.equal(verdictEnter.verdictCode, 'enter_payment_evaluation');
+  assert.ok(verdictEnter.nextStep.includes('payment-evaluation audit'));
 
   // pro-funnel.ts (pure functions)
   const proSummaryDisabled = buildProFunnelSummary({

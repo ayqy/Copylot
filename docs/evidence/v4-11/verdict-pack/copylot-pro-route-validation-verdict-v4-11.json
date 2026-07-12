@@ -1,0 +1,50 @@
+{
+  "routeLeaderTrackId": "advanced_cleaning",
+  "routeLeaderTrackTitle": "高级页面清洗验证",
+  "comparisonLeaderTrackId": "advanced_cleaning",
+  "comparisonLeaderTrackTitle": "高级页面清洗验证",
+  "comparisonSignalGap": 2,
+  "comparisonTotalSignals": 10,
+  "writebackLeaderTrackId": "advanced_cleaning",
+  "stabilityLeaderTrackId": "advanced_cleaning",
+  "stabilityLeaderTrackTitle": "高级页面清洗验证",
+  "stabilityVerdictCode": "leader_stable_campaign_split",
+  "supportingCampaigns": [
+    "ph",
+    "twitter"
+  ],
+  "conflictingCampaigns": [
+    "reddit",
+    "seo"
+  ],
+  "decisionCode": "A",
+  "decisionConclusion": "继续收集（样本量不足）",
+  "routeLeaderConsistent": true,
+  "routeStabilityReady": false,
+  "gateAllowsPaymentEvaluation": false,
+  "verdictCode": "stay_validation",
+  "reasons": [
+    "当前领先路线已对齐：高级页面清洗验证（recent_7d signal_gap=2）。",
+    "稳定性 verdict 仍是 leader_stable_campaign_split，还不满足收费评估前置条件。",
+    "收费前门槛仍为 A：继续收集（样本量不足）。"
+  ],
+  "nextStep": "下一步：继续补跨 campaign 样本，并把当前判断固化成收费评估审计包，但仍不做支付实现。",
+  "sources": {
+    "comparison": {
+      "file": "docs/evidence/v4-8/comparison-pack/copylot-pro-route-validation-comparison-v4-8.json",
+      "sha256": "dca04908faa8b2b10ecac132d9f9223abe6aa51d94e4070aeafd80386ca1acec"
+    },
+    "writeback": {
+      "file": "docs/evidence/v4-9/writeback-pack/copylot-pro-route-validation-writeback-v4-9.json",
+      "sha256": "72797bae6b13eb5eeee838c0edf228b6c7c6d63086ec03372923fe69f4001470"
+    },
+    "stability": {
+      "file": "docs/evidence/v4-10/stability-pack/copylot-pro-route-validation-stability-v4-10.json",
+      "sha256": "e70200ebe2b3910873ecd05a0b1baf752bc51db76d82aa2086f294d11945c3d5"
+    },
+    "decision": {
+      "file": "docs/evidence/v1-81/copylot-pro-waitlist-survey-intent-distribution-7d-2026-03-23.json",
+      "sha256": "abf2058c8d362fcca2b85b33a815b6d3a86576f84e81f312abaa9f5d7c1d6170"
+    }
+  }
+}

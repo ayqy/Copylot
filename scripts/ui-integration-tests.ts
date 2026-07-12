@@ -639,6 +639,24 @@ async function runOptionsAssertions(): Promise<void> {
     assert.ok(decisionSummary.includes('code：`A`'));
     assert.ok(decisionSummary.includes('survey_intent'));
 
+    const verdictSummaryCopyButton = getRequiredElement<HTMLButtonElement>(
+      page.dom.window.document,
+      '#copy-pro-route-validation-verdict-summary'
+    );
+    clickElement(verdictSummaryCopyButton);
+    await page.waitForIdle();
+    const verdictSummary = await page.clipboard.readText();
+    assert.ok(
+      verdictSummary.includes('V4-11 Pro 路线融合判断摘要') ||
+        verdictSummary.includes('V4-11 Pro route fusion verdict summary')
+    );
+    assert.ok(verdictSummary.includes('route_leader_consistent=true'));
+    assert.ok(verdictSummary.includes('route_stability_ready=false'));
+    assert.ok(verdictSummary.includes('gate_allows_payment_evaluation=false'));
+    assert.ok(
+      verdictSummary.includes('继续验证') || verdictSummary.includes('stay in validation')
+    );
+
     const proWaitlistButton = getRequiredElement<HTMLButtonElement>(
       page.dom.window.document,
       '#pro-waitlist-button'

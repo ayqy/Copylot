@@ -75,6 +75,12 @@ import {
   type ProRouteValidationStabilitySummary
 } from '../shared/pro-route-validation-stability';
 import {
+  buildProRouteValidationVerdictPack,
+  formatProRouteValidationVerdictMarkdown,
+  PRO_ROUTE_VALIDATION_VERDICT_FILES,
+  type ProRouteValidationVerdictPack
+} from '../shared/pro-route-validation-verdict';
+import {
   buildProFunnelEvidencePack,
   buildProFunnelSummary,
   type ProFunnelEvidencePack,
@@ -408,6 +414,8 @@ interface OptionsElements {
   downloadProRouteValidationStabilityJsonButton: HTMLButtonElement;
   proIntentDecisionSummaryCopyButton: HTMLButtonElement;
   downloadProIntentDecisionSummaryJsonButton: HTMLButtonElement;
+  proRouteValidationVerdictCopyButton: HTMLButtonElement;
+  downloadProRouteValidationVerdictJsonButton: HTMLButtonElement;
   proWaitlistButton: HTMLButtonElement;
   proWaitlistUrlCopyButton: HTMLButtonElement;
   proWaitlistRecruitCopyButton: HTMLButtonElement;
@@ -693,6 +701,12 @@ function getElements(): OptionsElements {
     ) || document.createElement('button')) as HTMLButtonElement,
     downloadProIntentDecisionSummaryJsonButton: (document.getElementById(
       'download-pro-intent-decision-summary-json'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    proRouteValidationVerdictCopyButton: (document.getElementById(
+      'copy-pro-route-validation-verdict-summary'
+    ) || document.createElement('button')) as HTMLButtonElement,
+    downloadProRouteValidationVerdictJsonButton: (document.getElementById(
+      'download-pro-route-validation-verdict-json'
     ) || document.createElement('button')) as HTMLButtonElement,
     proWaitlistButton: (document.getElementById('pro-waitlist-button') ||
       document.createElement('button')) as HTMLButtonElement,
@@ -2392,6 +2406,62 @@ async function downloadProIntentDecisionSummaryJson(): Promise<void> {
   }
 }
 
+async function buildProRouteValidationVerdictPackForExport(): Promise<ProRouteValidationVerdictPack> {
+  const comparison = await buildProRouteValidationComparisonSummaryForExport();
+  const writeback = buildProRouteValidationWritebackPack(comparison, getMessage);
+  const stability = await buildProRouteValidationStabilitySummaryForExport();
+  const decision = await buildProIntentDecisionSummaryForExport();
+  return buildProRouteValidationVerdictPack({
+    comparison,
+    writeback,
+    stability,
+    decision,
+    getMessage
+  });
+}
+
+async function copyProRouteValidationVerdictSummaryToClipboard(): Promise<void> {
+  let pack: ProRouteValidationVerdictPack;
+  let text: string;
+
+  try {
+    pack = await buildProRouteValidationVerdictPackForExport();
+    text = formatProRouteValidationVerdictMarkdown(pack, getMessage);
+  } catch (error) {
+    console.warn('Failed to build pro route validation verdict markdown:', error);
+    showNotification(getMessage('proRouteValidationVerdictCopyFailed'), 'error');
+    return;
+  }
+
+  try {
+    await writeTextToClipboard(text);
+    showNotification(getMessage('proRouteValidationVerdictCopySuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to copy pro route validation verdict markdown:', error);
+    const ok = await fallbackCopyTextForE2E(text, fallbackCopyText(text));
+    if (ok) {
+      showNotification(getMessage('proRouteValidationVerdictCopySuccess'), 'success');
+      return;
+    }
+    showNotification(getMessage('proRouteValidationVerdictCopyFailed'), 'error');
+  }
+}
+
+async function downloadProRouteValidationVerdictJson(): Promise<void> {
+  try {
+    const pack = await buildProRouteValidationVerdictPackForExport();
+    downloadTextFile(
+      PRO_ROUTE_VALIDATION_VERDICT_FILES.summaryJson,
+      `${JSON.stringify(pack, null, 2)}\n`,
+      'application/json'
+    );
+    showNotification(getMessage('proRouteValidationVerdictDownloadSuccess'), 'success');
+  } catch (error) {
+    console.warn('Failed to download pro route validation verdict json:', error);
+    showNotification(getMessage('proRouteValidationVerdictDownloadFailed'), 'error');
+  }
+}
+
 async function buildProIntentWeeklyDigestMarkdownForClipboard(): Promise<string> {
   const exportedAt = Date.now();
   let extensionVersion = '';
@@ -3801,6 +3871,12 @@ function setupEventListeners() {
   });
   elements.downloadProIntentDecisionSummaryJsonButton.addEventListener('click', () => {
     void downloadProIntentDecisionSummaryJson();
+  });
+  elements.proRouteValidationVerdictCopyButton.addEventListener('click', () => {
+    void copyProRouteValidationVerdictSummaryToClipboard();
+  });
+  elements.downloadProRouteValidationVerdictJsonButton.addEventListener('click', () => {
+    void downloadProRouteValidationVerdictJson();
   });
   elements.downloadProIntentV1_100SummaryJsonButton.addEventListener('click', () => {
     void downloadProIntentV1_100SummaryJson();

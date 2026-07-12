@@ -478,6 +478,24 @@ async function run(): Promise<void> {
       'Pro route validation stability outputs should be deterministic'
     )
   );
+  await runStep(startStep('build-pro-route-validation-verdict-pack', 'quality'), () =>
+    assertDeterministic(
+      './node_modules/.bin/ts-node',
+      [
+        'scripts/build-pro-route-validation-verdict-pack.ts',
+        'docs/evidence/v4-8/comparison-pack/copylot-pro-route-validation-comparison-v4-8.json',
+        'docs/evidence/v4-9/writeback-pack/copylot-pro-route-validation-writeback-v4-9.json',
+        'docs/evidence/v4-10/stability-pack/copylot-pro-route-validation-stability-v4-10.json',
+        'docs/evidence/v1-81/copylot-pro-intent-decision-summary-v1-81.json',
+        'docs/evidence/v4-11/verdict-pack'
+      ],
+      [
+        'docs/evidence/v4-11/verdict-pack/copylot-pro-route-validation-verdict-v4-11.md',
+        'docs/evidence/v4-11/verdict-pack/copylot-pro-route-validation-verdict-v4-11.json'
+      ],
+      'Pro route validation verdict outputs should be deterministic'
+    )
+  );
   await runStep(startStep('build-weekly-channel-ops-trend', 'quality'), () =>
     assertDeterministic(
       './node_modules/.bin/ts-node',

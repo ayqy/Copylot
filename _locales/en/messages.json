@@ -713,6 +713,116 @@
     "message": "Derived only from local anonymous aggregate fields. Never includes copied page content, URLs, titles, or contact details.",
     "description": "Options Pro tab: decision gate privacy hint"
   },
+  "proRouteValidationVerdictTitle": {
+    "message": "Pro route fusion verdict summary",
+    "description": "Options Pro tab: route fusion verdict title"
+  },
+  "proRouteValidationVerdictHint": {
+    "message": "Fuse the route comparison, writeback, stability, and pre-payment gate outputs into one final verdict so you stop hand-reading multiple summaries.",
+    "description": "Options Pro tab: route fusion verdict hint"
+  },
+  "proRouteValidationVerdictCopy": {
+    "message": "Copy Pro route fusion verdict summary",
+    "description": "Options Pro tab: copy route fusion verdict summary button"
+  },
+  "proRouteValidationVerdictDownloadJson": {
+    "message": "Download Pro route fusion verdict JSON",
+    "description": "Options Pro tab: download route fusion verdict json button"
+  },
+  "proRouteValidationVerdictPrivacyHint": {
+    "message": "Uses only local anonymous aggregated signals and local verdict outputs. Never includes copied page content, URLs, titles, or contact details.",
+    "description": "Options Pro tab: route fusion verdict privacy hint"
+  },
+  "proRouteValidationVerdictMdTitle": {
+    "message": "V4-11 Pro route fusion verdict summary",
+    "description": "Route fusion verdict markdown title"
+  },
+  "proRouteValidationVerdictMdSectionInputs": {
+    "message": "Inputs",
+    "description": "Route fusion verdict markdown inputs section heading"
+  },
+  "proRouteValidationVerdictMdSectionChecks": {
+    "message": "Checks",
+    "description": "Route fusion verdict markdown checks section heading"
+  },
+  "proRouteValidationVerdictMdSectionDecision": {
+    "message": "Decision",
+    "description": "Route fusion verdict markdown decision section heading"
+  },
+  "proRouteValidationVerdictDecisionStay": {
+    "message": "Current verdict: stay in validation and do not enter payment evaluation.",
+    "description": "Route fusion verdict stay-validation line"
+  },
+  "proRouteValidationVerdictDecisionEnter": {
+    "message": "Current verdict: enter payment evaluation, but still do not implement payment directly.",
+    "description": "Route fusion verdict enter-payment-evaluation line"
+  },
+  "proRouteValidationVerdictReasonLeaderAligned": {
+    "message": "The current leading route is aligned: $TRACK$ (recent_7d signal_gap=$GAP$).",
+    "description": "Route fusion verdict aligned leader reason",
+    "placeholders": {
+      "track": {
+        "content": "$1"
+      },
+      "gap": {
+        "content": "$2"
+      }
+    }
+  },
+  "proRouteValidationVerdictReasonLeaderMismatch": {
+    "message": "The route comparison, writeback pack, and stability summary still disagree on the leader.",
+    "description": "Route fusion verdict mismatch reason"
+  },
+  "proRouteValidationVerdictReasonStabilityBlocked": {
+    "message": "The stability verdict is still $VERDICT$, so the route is not yet stable enough for payment evaluation.",
+    "description": "Route fusion verdict stability blocked reason",
+    "placeholders": {
+      "verdict": {
+        "content": "$1"
+      }
+    }
+  },
+  "proRouteValidationVerdictReasonStabilityReady": {
+    "message": "The stability verdict has reached $VERDICT$, so the route-stability prerequisite is satisfied.",
+    "description": "Route fusion verdict stability ready reason",
+    "placeholders": {
+      "verdict": {
+        "content": "$1"
+      }
+    }
+  },
+  "proRouteValidationVerdictReasonGateBlocked": {
+    "message": "The pre-payment gate is still $CODE$: $CONCLUSION$.",
+    "description": "Route fusion verdict gate blocked reason",
+    "placeholders": {
+      "code": {
+        "content": "$1"
+      },
+      "conclusion": {
+        "content": "$2"
+      }
+    }
+  },
+  "proRouteValidationVerdictReasonGateReady": {
+    "message": "The pre-payment gate has reached $CODE$: $CONCLUSION$.",
+    "description": "Route fusion verdict gate ready reason",
+    "placeholders": {
+      "code": {
+        "content": "$1"
+      },
+      "conclusion": {
+        "content": "$2"
+      }
+    }
+  },
+  "proRouteValidationVerdictNextStay": {
+    "message": "Next step: collect more cross-campaign samples and lock the current verdict into a payment-evaluation audit pack, but still do not implement payment.",
+    "description": "Route fusion verdict next step when staying in validation"
+  },
+  "proRouteValidationVerdictNextEnter": {
+    "message": "Next step: enter payment-evaluation audit and boundary review without implementing payment directly.",
+    "description": "Route fusion verdict next step when entering payment evaluation"
+  },
   "proIntentDecisionConclusionADataOff": {
     "message": "Keep collecting (anonymous usage data is disabled / no usable events)",
     "description": "Decision summary: A conclusion when anonymous data is disabled"
@@ -2202,6 +2312,22 @@
   "proRouteValidationStabilityDownloadFailed": {
     "message": "Download failed",
     "description": "Route stability json download failure notification"
+  },
+  "proRouteValidationVerdictCopySuccess": {
+    "message": "Route fusion verdict summary copied to clipboard",
+    "description": "Route fusion verdict copy success notification"
+  },
+  "proRouteValidationVerdictCopyFailed": {
+    "message": "Copy failed. Please select and copy manually.",
+    "description": "Route fusion verdict copy failure notification"
+  },
+  "proRouteValidationVerdictDownloadSuccess": {
+    "message": "Route fusion verdict JSON downloaded",
+    "description": "Route fusion verdict json download success notification"
+  },
+  "proRouteValidationVerdictDownloadFailed": {
+    "message": "Download failed",
+    "description": "Route fusion verdict json download failure notification"
   },
   "proIntentByCampaignWeeklyReportCopy": {
     "message": "Copy weekly campaign report (Markdown)",
