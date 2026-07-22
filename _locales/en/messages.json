@@ -246,67 +246,99 @@
     "description": "Options Pro tab title"
   },
   "proSubtitle": {
-    "message": "If you need a more complete organization and export experience, start with the Pro roadmap and rollout plan.",
+    "message": "If you often organize long reads, collect material across pages, or keep sending results into AI, Notion, spreadsheets, or a knowledge base, first check whether the Pro direction actually fits your workflow.",
     "description": "Options Pro tab subtitle"
   },
   "proIntro": {
-    "message": "This page shows the enhancements we plan to validate first. At this stage we focus on the growth loop, not on forms, surveys, or waitlists.",
+    "message": "Start with what is already free today, then see which upgrade paths are worth following. Validation material stays behind the disclosure so everyday users can judge the value quickly.",
     "description": "Options Pro tab intro"
   },
+  "proAudienceTitle": {
+    "message": "Who Pro is for",
+    "description": "Options Pro tab summary card 1 title"
+  },
+  "proAudienceDescription": {
+    "message": "People who regularly organize long reads, collect material across pages, or need to move copied results into AI, Notion, spreadsheets, or a knowledge base.",
+    "description": "Options Pro tab summary card 1 description"
+  },
+  "proCurrentTitle": {
+    "message": "What to expect now",
+    "description": "Options Pro tab summary card 2 title"
+  },
+  "proCurrentDescription": {
+    "message": "The goal right now is clarity: show which advanced directions could actually help heavy organization work, without pushing internal experiments onto everyday users.",
+    "description": "Options Pro tab summary card 2 description"
+  },
+  "proStatusTitle": {
+    "message": "Current stage",
+    "description": "Options Pro tab summary card 3 title"
+  },
+  "proStatusDescription": {
+    "message": "Pro is still in validation. Review the capability boundary first, then decide whether the roadmap really matches your workflow before you keep following it.",
+    "description": "Options Pro tab summary card 3 description"
+  },
+  "proAdvancedTitle": {
+    "message": "View validation details (optional)",
+    "description": "Options Pro tab advanced disclosure title"
+  },
+  "proAdvancedDescription": {
+    "message": "Open this only if you want to participate in validation. Most users already have enough information here to decide whether Pro is worth following.",
+    "description": "Options Pro tab advanced disclosure description"
+  },
   "proFreeScopeTitle": {
-    "message": "Free (Always free)",
+    "message": "Free today",
     "description": "Options Pro tab: free scope section title"
   },
   "proFreeScopeHint": {
-    "message": "These are shipped core capabilities, and we commit to keep them free (no paywall).",
+    "message": "These capabilities are already shipped and stay inside Free. No extra unlock is required.",
     "description": "Options Pro tab: free scope section hint"
   },
   "proFreeFeature1": {
-    "message": "Smart block copy: click/double-click to extract the main content and copy as Markdown / plain text",
+    "message": "Keep the main page content clean enough to paste straight into AI.",
     "description": "Options Pro tab: free capability bullet 1"
   },
   "proFreeFeature2": {
-    "message": "Hover-to-copy for code blocks + conservative cleanup (indent/blank lines, bounded line number handling, drop leading/trailing Copy-label lines)",
+    "message": "Copy code blocks and tables with less noise from buttons, line numbers, and broken formatting.",
     "description": "Options Pro tab: free capability bullet 2"
   },
   "proFreeFeature3": {
-    "message": "Append Mode (hold Shift to merge multiple clips with separators)",
+    "message": "Use Shift to append multiple clips before you organize them together.",
     "description": "Options Pro tab: free capability bullet 3"
   },
   "proFreeFeature4": {
-    "message": "One-click table to Markdown / CSV",
+    "message": "Turn tables into Markdown or CSV in one step.",
     "description": "Options Pro tab: free capability bullet 4"
   },
   "proFreeFeature5": {
-    "message": "Prompt Manager (templates/categories/sync) and one-click apply",
+    "message": "Manage prompt templates, categories, sync, and one-click reuse.",
     "description": "Options Pro tab: free capability bullet 5"
   },
   "proFreeFeature6": {
-    "message": "Configurable default chat service and auto-open-after-copy (based on local settings)",
+    "message": "Tune default chat targets, auto-open behavior, and shortcuts to match your local workflow.",
     "description": "Options Pro tab: free capability bullet 6"
   },
   "proPlannedScopeTitle": {
-    "message": "Directions under evaluation",
+    "message": "Most likely upgrade paths",
     "description": "Options Pro tab: planned scope section title"
   },
   "proPlannedScopeHint": {
-    "message": "These directions will be prioritized based on real usage, repeat usage, and sharing behavior instead of survey samples.",
+    "message": "Only the directions that help heavy organization work stay here. Internal evaluation language no longer belongs on the first screen.",
     "description": "Options Pro tab: planned scope section hint"
   },
   "proFeature1": {
-    "message": "Advanced page cleaning (reader mode + rules to remove ads/comments/recommendations)",
+    "message": "Stronger page cleanup for long reads, comments, and recommendation clutter.",
     "description": "Pro capability bullet 1"
   },
   "proFeature2": {
-    "message": "Batch collection & organization (collect across pages, naming, export, history search)",
+    "message": "Cross-page collection, naming, and organization with less manual back-and-forth.",
     "description": "Pro capability bullet 2"
   },
   "proFeature3": {
-    "message": "Advanced Prompt Pack / team sharing (backend features postponed)",
+    "message": "A fuller prompt pack and sharing workflow for repeatable setups.",
     "description": "Pro capability bullet 3"
   },
   "proFeature4": {
-    "message": "Exports for note tools (structured templates for Obsidian/Notion)",
+    "message": "Structured export for Notion, Obsidian, spreadsheets, and knowledge bases.",
     "description": "Pro capability bullet 4"
   },
   "proValidationLabTitle": {
@@ -1634,39 +1666,39 @@
     "message": "Manage Prompts"
   },
   "popupOnboardingReopen": {
-    "message": "Quick Start Guide",
+    "message": "View usage steps",
     "description": "Entry in popup to reopen onboarding"
   },
   "popupFirstCopyTitle": {
-    "message": "Make your first clean copy in 30 seconds",
+    "message": "Try one clean copy first",
     "description": "Popup hero title"
   },
   "popupFirstCopySubtitle": {
-    "message": "Start with a long article, table, or code block, then paste the result into ChatGPT, Claude, Notion, or your docs.",
+    "message": "Select an article, table, or code block on this page, click \"Copy to AI\", and paste immediately to verify the result.",
     "description": "Popup hero subtitle"
   },
   "popupFirstCopySellingPointArticle": {
-    "message": "Long articles: remove navigation and ads, then paste clean Markdown.",
+    "message": "Articles: remove navigation and ads so only AI-ready content stays.",
     "description": "Popup hero selling point 1"
   },
   "popupFirstCopySellingPointTable": {
-    "message": "Tables: convert to Markdown / CSV so the structure stays readable after paste.",
+    "message": "Tables: convert to Markdown / CSV so the structure stays clear after paste.",
     "description": "Popup hero selling point 2"
   },
   "popupFirstCopySellingPointCode": {
-    "message": "Code blocks: keep indentation and strip line-number or copy-button noise when possible.",
+    "message": "Code: keep indentation and reduce line-number or copy-button noise.",
     "description": "Popup hero selling point 3"
   },
   "popupFirstCopyStepOpen": {
-    "message": "1. Open the target block on the current page",
+    "message": "1. Select the content you actually want to keep",
     "description": "Popup hero step 1"
   },
   "popupFirstCopyStepCopy": {
-    "message": "2. Click \"Copy to AI\" or trigger copy directly",
+    "message": "2. Click \"Copy to AI\" or use the shortcut",
     "description": "Popup hero step 2"
   },
   "popupFirstCopyStepPaste": {
-    "message": "3. Paste into ChatGPT, Claude, or a doc to verify the clean result",
+    "message": "3. Paste into ChatGPT, Claude, or a doc and confirm the result",
     "description": "Popup hero step 3"
   },
   "popupFirstCopyStatusPending": {
@@ -1678,7 +1710,7 @@
     "description": "Popup hero status after first success"
   },
   "popupFirstCopyHintPending": {
-    "message": "Pick the easiest long article, table, or code block on this page and verify the result first.",
+    "message": "Start with the easiest piece of content on this page and confirm the result fits your workflow.",
     "description": "Popup hero hint before first success"
   },
   "popupFirstCopyHintDone": {
@@ -1959,10 +1991,10 @@
     "description": "Button to open popup onboarding from options"
   },
   "promptManagerTitle": {
-    "message": "Private Prompt Manager"
+    "message": "Prompt and Copy Workspace"
   },
   "promptManagerSubtitle": {
-    "message": "Manage your AI assistant instruction templates"
+    "message": "Manage prompts, copy settings, and chat services"
   },
   "searchPlaceholder": {
     "message": "Search prompts..."
@@ -2347,8 +2379,40 @@
     "description": "Options privacy tab main title"
   },
   "privacyDescription": {
-    "message": "We believe your data is yours. Here is a list of all locally saved data. You can view, copy, or clear it at any time.",
+    "message": "Web content stays local by default. This page tells you, in plain language, what Copylot stores, what it does not store, and how you can clear local data whenever you want.",
     "description": "Options privacy tab description"
+  },
+  "privacyPromiseTitle": {
+    "message": "No webpage body is stored",
+    "description": "Options privacy overview card 1 title"
+  },
+  "privacyPromiseDescription": {
+    "message": "Copylot does not upload webpage body text, selected text, page titles, or links to an external service. The controls here only describe local settings and local stats.",
+    "description": "Options privacy overview card 1 description"
+  },
+  "privacyStorageTitle": {
+    "message": "What stays on device",
+    "description": "Options privacy overview card 2 title"
+  },
+  "privacyStorageDescription": {
+    "message": "Mostly your prompts, toggles, quick slots, and optional anonymous counters, so you can keep reusing the same copy workflow across pages.",
+    "description": "Options privacy overview card 2 description"
+  },
+  "privacyControlTitle": {
+    "message": "You can clear it anytime",
+    "description": "Options privacy overview card 3 title"
+  },
+  "privacyControlDescription": {
+    "message": "Open the local logs or stats only when you need to troubleshoot. If you do not need them, turn anonymous usage data off or clear the local records directly.",
+    "description": "Options privacy overview card 3 description"
+  },
+  "privacyDiagnosticsTitle": {
+    "message": "View local diagnostics and exports (optional)",
+    "description": "Options privacy advanced diagnostics disclosure title"
+  },
+  "privacyDiagnosticsDescription": {
+    "message": "Expand this only when you need to troubleshoot, inspect local counters, or export evidence. Everyday use should not require these panels.",
+    "description": "Options privacy advanced diagnostics disclosure description"
   },
   "anonymousUsageDataSectionTitle": {
     "message": "Anonymous usage data",

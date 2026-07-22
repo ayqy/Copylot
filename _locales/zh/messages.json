@@ -246,67 +246,99 @@
     "description": "Options Pro Tab 标题"
   },
   "proSubtitle": {
-    "message": "如果你需要更完整的整理与导出体验，可以先查看 Pro 路线与发布节奏。",
+    "message": "如果你经常要整理长文、跨页面收集资料，或把结果继续送进 AI、Notion、表格和知识库，可以先看看 Pro 方向是否贴合你的工作流。",
     "description": "Options Pro Tab 副标题"
   },
   "proIntro": {
-    "message": "这里展示的是我们准备优先验证的增强能力。当前阶段只做增长闭环，不做表单、问卷或候补收集。",
+    "message": "先告诉你今天免费能做什么，再告诉你哪几类增强能力最值得继续关注。内部验证资料继续收在折叠层后面，不打断普通用户判断。",
     "description": "Options Pro Tab 说明"
   },
+  "proAudienceTitle": {
+    "message": "适合谁关注 Pro",
+    "description": "Options Pro Tab 摘要卡 1 标题"
+  },
+  "proAudienceDescription": {
+    "message": "适合经常整理长文、跨页面收集资料，或者希望把复制结果继续送进 AI、Notion、表格和知识库的用户。",
+    "description": "Options Pro Tab 摘要卡 1 说明"
+  },
+  "proCurrentTitle": {
+    "message": "现在能期待什么",
+    "description": "Options Pro Tab 摘要卡 2 标题"
+  },
+  "proCurrentDescription": {
+    "message": "当前重点是把方向和边界讲清楚：哪些增强能力最可能解决重度整理问题，而不是把内部实验过程直接暴露给普通用户。",
+    "description": "Options Pro Tab 摘要卡 2 说明"
+  },
+  "proStatusTitle": {
+    "message": "当前阶段",
+    "description": "Options Pro Tab 摘要卡 3 标题"
+  },
+  "proStatusDescription": {
+    "message": "Pro 仍在验证期。你可以先看能力边界和路线说明，判断它是否真的贴合你的复制和整理工作流，再决定是否继续关注。",
+    "description": "Options Pro Tab 摘要卡 3 说明"
+  },
+  "proAdvancedTitle": {
+    "message": "查看验证细节（可选）",
+    "description": "Options Pro Tab 高级折叠区标题"
+  },
+  "proAdvancedDescription": {
+    "message": "如果你要参与路线验证，再打开本地评估和素材；普通用户看到这里就已经足够判断是否值得继续关注。",
+    "description": "Options Pro Tab 高级折叠区说明"
+  },
   "proFreeScopeTitle": {
-    "message": "Free（永久免费）",
+    "message": "今天就能免费使用",
     "description": "Options Pro Tab：Free 能力清单区块标题"
   },
   "proFreeScopeHint": {
-    "message": "以下为已发货的核心能力清单，并承诺长期免费（不做付费墙）。",
+    "message": "这些能力已经发货，并会继续保持在 Free 里，不需要额外解锁。",
     "description": "Options Pro Tab：Free 能力清单区块提示"
   },
   "proFreeFeature1": {
-    "message": "智能区块复制：单击/双击提取正文，复制为 Markdown / 纯文本",
+    "message": "复制网页正文时，优先保留能直接贴给 AI 的干净内容。",
     "description": "Options Pro Tab：Free 能力要点 1"
   },
   "proFreeFeature2": {
-    "message": "代码块悬停复制 + 保守清理（缩进/空行、行号边界、Copy 文案整行移除）",
+    "message": "代码块和表格可以更稳地复制，少一点按钮、行号和格式噪声。",
     "description": "Options Pro Tab：Free 能力要点 2"
   },
   "proFreeFeature3": {
-    "message": "追加模式（Shift 追加合并，多段内容用分隔符整理）",
+    "message": "用 Shift 追加多段内容，把零散资料先并到同一次整理里。",
     "description": "Options Pro Tab：Free 能力要点 3"
   },
   "proFreeFeature4": {
-    "message": "表格一键转 Markdown / CSV",
+    "message": "表格可直接转成 Markdown / CSV。",
     "description": "Options Pro Tab：Free 能力要点 4"
   },
   "proFreeFeature5": {
-    "message": "Prompt 管理器（模板/分类/同步）与一键套用",
+    "message": "Prompt 管理器支持模板分类、同步和一键套用。",
     "description": "Options Pro Tab：Free 能力要点 5"
   },
   "proFreeFeature6": {
-    "message": "可配置默认 Chat 服务与复制后自动打开（基于本地设置）",
+    "message": "默认 Chat 服务、自动打开和快捷键都能按你的本地习惯调整。",
     "description": "Options Pro Tab：Free 能力要点 6"
   },
   "proPlannedScopeTitle": {
-    "message": "正在评估的增强方向",
+    "message": "可能最先加入的增强能力",
     "description": "Options Pro Tab：Pro 规划区块标题"
   },
   "proPlannedScopeHint": {
-    "message": "以下方向会根据真实使用行为、复用率和分享表现来排序，而不是依赖问卷样本。",
+    "message": "这里只保留对重度整理场景真正有帮助的方向，不再把内部实验口径直接摆在首屏。",
     "description": "Options Pro Tab：Pro 规划区块提示"
   },
   "proFeature1": {
-    "message": "高级页面清洗（阅读模式 + 去广告/评论区/推荐区规则）",
+    "message": "更强的页面清理：长文、评论区和推荐位一起收干净。",
     "description": "Pro 能力方向要点 1"
   },
   "proFeature2": {
-    "message": "批量采集与整理（跨页面收集、命名、导出、历史检索）",
+    "message": "多页面资料收集与命名整理，减少手工来回复制。",
     "description": "Pro 能力方向要点 2"
   },
   "proFeature3": {
-    "message": "Prompt Pack 高级库/团队共享（后端能力后置）",
+    "message": "更完整的 Prompt 方案包与共享方式，适合固定工作流复用。",
     "description": "Pro 能力方向要点 3"
   },
   "proFeature4": {
-    "message": "面向笔记工具的导出能力（Obsidian/Notion 结构化模板）",
+    "message": "面向 Notion、Obsidian、表格和知识库的结构化导出。",
     "description": "Pro 能力方向要点 4"
   },
   "proValidationLabTitle": {
@@ -1634,39 +1666,39 @@
     "message": "管理Prompts"
   },
   "popupOnboardingReopen": {
-    "message": "新手引导",
+    "message": "查看操作说明",
     "description": "Popup 中重新打开引导的入口"
   },
   "popupFirstCopyTitle": {
-    "message": "30 秒完成第一次干净复制",
+    "message": "先试一次干净复制",
     "description": "Popup 首屏主标题"
   },
   "popupFirstCopySubtitle": {
-    "message": "先复制长文、表格或代码块，再粘贴到 ChatGPT、Claude、Notion 或文档。",
+    "message": "选中当前页里的文章、表格或代码块，点“复制给 AI”，马上粘贴验证。",
     "description": "Popup 首屏副标题"
   },
   "popupFirstCopySellingPointArticle": {
-    "message": "长文：去掉导航和广告，直接得到干净 Markdown。",
+    "message": "文章：去掉导航和广告，只保留能直接贴给 AI 的正文。",
     "description": "Popup 首屏卖点 1"
   },
   "popupFirstCopySellingPointTable": {
-    "message": "表格：一键转成 Markdown / CSV，粘贴后仍然整齐。",
+    "message": "表格：整理成 Markdown / CSV，贴过去仍然清楚。",
     "description": "Popup 首屏卖点 2"
   },
   "popupFirstCopySellingPointCode": {
-    "message": "代码块：保留缩进，尽量去掉行号和复制按钮噪声。",
+    "message": "代码：尽量保留缩进，减少行号和复制按钮噪声。",
     "description": "Popup 首屏卖点 3"
   },
   "popupFirstCopyStepOpen": {
-    "message": "1. 打开当前网页里的目标区块",
+    "message": "1. 先选中最想带走的内容",
     "description": "Popup 首屏步骤 1"
   },
   "popupFirstCopyStepCopy": {
-    "message": "2. 点“复制给 AI”或直接触发复制",
+    "message": "2. 点击“复制给 AI”或对应快捷键",
     "description": "Popup 首屏步骤 2"
   },
   "popupFirstCopyStepPaste": {
-    "message": "3. 粘贴到 ChatGPT、Claude 或文档里验证结果",
+    "message": "3. 粘贴到 ChatGPT、Claude 或文档里确认结果",
     "description": "Popup 首屏步骤 3"
   },
   "popupFirstCopyStatusPending": {
@@ -1678,11 +1710,11 @@
     "description": "Popup 首屏状态：首次成功后"
   },
   "popupFirstCopyHintPending": {
-    "message": "先试当前页最容易验证的长文、表格或代码块。",
+    "message": "先用当前页最容易验证的一段内容试一次，确认结果符合你的工作流。",
     "description": "Popup 首屏提示：首次成功前"
   },
   "popupFirstCopyHintDone": {
-    "message": "已完成第一次干净复制，下一步把常用 Prompt 绑到快捷位，加快后续复用。",
+    "message": "第一次干净复制已完成，下一步把常用 Prompt 绑到快捷位，让后续复制更快。",
     "description": "Popup 首屏提示：首次成功后"
   },
   "popupReuseEyebrow": {
@@ -1959,10 +1991,10 @@
     "description": "Options 一键打开引导按钮"
   },
   "promptManagerTitle": {
-    "message": "私人Prompt管理器"
+    "message": "Prompt 与复制工作台"
   },
   "promptManagerSubtitle": {
-    "message": "管理您的AI助手指令模板"
+    "message": "整理 Prompt、复制设置和 Chat 服务"
   },
   "searchPlaceholder": {
     "message": "搜索prompt..."
@@ -2347,8 +2379,40 @@
     "description": "隐私页主标题"
   },
   "privacyDescription": {
-    "message": "我们坚信你的数据只属于你。这里列出了所有本地保存的数据，你可以随时查看、复制或清空。",
+    "message": "网页内容默认留在本地。这里用最直接的方式告诉你：Copylot 会保存什么、不会保存什么，以及你随时能怎么清理。",
     "description": "隐私页描述"
+  },
+  "privacyPromiseTitle": {
+    "message": "不会保存网页正文",
+    "description": "隐私页总览卡 1 标题"
+  },
+  "privacyPromiseDescription": {
+    "message": "Copylot 不会把网页正文、选中文本、页面标题或链接上传到外部服务；这里展示的都只是本地控制项和本地统计。",
+    "description": "隐私页总览卡 1 说明"
+  },
+  "privacyStorageTitle": {
+    "message": "本地会保存什么",
+    "description": "隐私页总览卡 2 标题"
+  },
+  "privacyStorageDescription": {
+    "message": "主要包括你的 Prompt、开关设置、快捷位和可选匿名计数，方便你在不同页面持续复用复制工作流。",
+    "description": "隐私页总览卡 2 说明"
+  },
+  "privacyControlTitle": {
+    "message": "你随时可以清理",
+    "description": "隐私页总览卡 3 标题"
+  },
+  "privacyControlDescription": {
+    "message": "需要排查问题时再展开下面的本地日志或统计；不需要时，可以直接关闭匿名数据或清空本地记录。",
+    "description": "隐私页总览卡 3 说明"
+  },
+  "privacyDiagnosticsTitle": {
+    "message": "查看本地诊断与导出（可选）",
+    "description": "隐私页高级诊断折叠区标题"
+  },
+  "privacyDiagnosticsDescription": {
+    "message": "只在排查问题、核对本地统计或导出证据时展开；普通使用不需要处理这些面板。",
+    "description": "隐私页高级诊断折叠区说明"
   },
   "anonymousUsageDataSectionTitle": {
     "message": "匿名使用数据",

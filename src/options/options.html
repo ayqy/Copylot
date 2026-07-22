@@ -423,7 +423,30 @@
             </p>
           </div>
 
-          <div class="chat-services-section">
+          <div class="privacy-overview-grid">
+            <article class="privacy-overview-card">
+              <h3 data-i18n="privacyPromiseTitle">不会保存网页正文</h3>
+              <p data-i18n="privacyPromiseDescription">
+                Copylot
+                不会把网页正文、选中文本、页面标题或链接上传到外部服务；这里展示的都只是本地控制项和本地统计。
+              </p>
+            </article>
+            <article class="privacy-overview-card">
+              <h3 data-i18n="privacyStorageTitle">本地会保存什么</h3>
+              <p data-i18n="privacyStorageDescription">
+                主要包括你的
+                Prompt、开关设置、快捷位和可选匿名计数，方便你在不同页面持续复用复制工作流。
+              </p>
+            </article>
+            <article class="privacy-overview-card">
+              <h3 data-i18n="privacyControlTitle">你随时可以清理</h3>
+              <p data-i18n="privacyControlDescription">
+                需要排查问题时再展开下面的本地日志或统计；不需要时，可以直接关闭匿名数据或清空本地记录。
+              </p>
+            </article>
+          </div>
+
+          <div class="chat-services-section privacy-primary-card">
             <div class="section-header">
               <h3 data-i18n="anonymousUsageDataSectionTitle">匿名使用数据</h3>
             </div>
@@ -443,398 +466,413 @@
             </p>
           </div>
 
-          <div class="chat-services-section">
-            <details id="telemetry-events-panel" class="telemetry-events-panel" open>
-              <summary class="telemetry-events-summary">
-                <span data-i18n="telemetryEventsPanelTitle">匿名事件日志</span>
-                <span class="telemetry-events-summary-meta">
-                  <span data-i18n="telemetryEventsCountLabel">事件数</span>
-                  <span id="telemetry-events-count" class="telemetry-events-count">0</span>
-                </span>
-              </summary>
-              <div class="telemetry-events-content">
-                <p class="pro-privacy-hint" data-i18n="telemetryEventsPanelHint">
-                  本地记录的基础交互事件。我们承诺：日志中绝不包含任何网页内容、选中的文字、页面链接或标题。
-                </p>
-                <div class="telemetry-events-actions">
-                  <button
-                    id="telemetry-events-refresh"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="telemetryEventsRefresh"
-                  >
-                    刷新数据
-                  </button>
-                  <button
-                    id="telemetry-events-copy"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="telemetryEventsCopy"
-                  >
-                    复制数据
-                  </button>
-                  <button
-                    id="telemetry-events-clear"
-                    class="secondary-btn danger-btn"
-                    type="button"
-                    data-i18n="telemetryEventsClear"
-                  >
-                    清空数据
-                  </button>
-                </div>
-                <textarea
-                  id="telemetry-events-view"
-                  class="telemetry-events-view"
-                  rows="12"
-                  readonly
-                  spellcheck="false"
-                ></textarea>
-              </div>
-            </details>
-          </div>
+          <details class="privacy-diagnostics-shell">
+            <summary class="privacy-diagnostics-summary">
+              <span class="privacy-diagnostics-title" data-i18n="privacyDiagnosticsTitle">
+                查看本地诊断与导出（可选）
+              </span>
+              <span
+                class="privacy-diagnostics-description"
+                data-i18n="privacyDiagnosticsDescription"
+              >
+                只在排查问题、核对本地统计或导出证据时展开；普通使用不需要处理这些面板。
+              </span>
+            </summary>
 
-          <div class="chat-services-section">
-            <details id="pro-funnel-panel" class="telemetry-events-panel">
-              <summary class="telemetry-events-summary">
-                <span data-i18n="proFunnelPanelTitle">Pro 意向漏斗摘要</span>
-              </summary>
-              <div class="telemetry-events-content">
-                <p class="pro-privacy-hint" data-i18n="proFunnelPanelHint">
-                  这里仅在本地统计你对 Pro
-                  功能的探索情况（例如点击次数）。它完全不会包含网页内容或任何隐私信息。
-                </p>
-                <p
-                  id="pro-funnel-disabled-notice"
-                  class="pro-privacy-hint"
-                  data-i18n="proFunnelDisabledNotice"
-                  hidden
-                >
-                  当前已关闭匿名数据记录，因此没有数据可导出。
-                </p>
-                <div class="telemetry-events-actions">
-                  <button
-                    id="pro-funnel-refresh"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proFunnelRefresh"
-                  >
-                    刷新数据
-                  </button>
-                  <button
-                    id="pro-funnel-copy"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proFunnelCopy"
-                  >
-                    复制统计数据
-                  </button>
-                  <button
-                    id="pro-funnel-evidence-pack-copy"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proFunnelEvidencePackCopy"
-                  >
-                    复制完整报告包
-                  </button>
-                  <button
-                    id="download-pro-intent-run-evidence-pack"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proIntentRunEvidencePackDownload"
-                  >
-                    导出全部统计数据 (JSON)
-                  </button>
-                  <button
-                    id="download-pro-intent-v1-100-summary-json"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proIntentV1100SummaryDownload"
-                  >
-                    下载 v1-100 摘要（JSON）
-                  </button>
-                  <button
-                    id="download-pro-intent-v1-100-summary-csv"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proIntentV1100FunnelDownload"
-                  >
-                    下载 v1-100 漏斗（CSV）
-                  </button>
-                  <button
-                    id="export-pro-intent-events-7d-csv"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proIntentEvents7dCsvExport"
-                  >
-                    导出最近 7 天访问明细 (CSV)
-                  </button>
-                  <button
-                    id="export-pro-intent-by-campaign-7d-csv"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proIntentByCampaign7dCsvExport"
-                  >
-                    导出最近 7 天渠道来源汇总 (CSV)
-                  </button>
-                  <button
-                    id="export-pro-distribution-by-campaign-7d-csv"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proDistributionByCampaign7dCsvExport"
-                  >
-                    导出最近 7 天分享操作统计 (CSV)
-                  </button>
-                  <button
-                    id="export-pro-acquisition-efficiency-by-campaign-7d-csv"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proAcqEffByCampaign7dCsvExport"
-                  >
-                    导出最近 7 天增长效率汇总 (CSV)
-                  </button>
-                  <button
-                    id="copy-pro-intent-weekly-digest"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proIntentWeeklyDigestCopy"
-                  >
-                    复制本周 Pro 意向证据摘要
-                  </button>
-                  <button
-                    id="copy-pro-intent-by-campaign-weekly-report"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proIntentByCampaignWeeklyReportCopy"
-                  >
-                    复制按 campaign 的本周复盘摘要（Markdown）
-                  </button>
-                  <button
-                    id="copy-pro-acquisition-efficiency-by-campaign-weekly-report"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proAcqEffByCampaignWeeklyReportCopy"
-                  >
-                    复制本周获客效率复盘摘要（Markdown，按 campaign）
-                  </button>
-                  <button
-                    id="copy-pro-acquisition-efficiency-by-campaign-evidence-pack"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proAcqEffByCampaignEvidencePackCopy"
-                  >
-                    复制增长分析报告包 (JSON)
-                  </button>
-                  <button
-                    id="download-pro-acquisition-efficiency-by-campaign-evidence-pack"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proAcqEffByCampaignEvidencePackDownload"
-                  >
-                    下载增长分析报告包 (JSON)
-                  </button>
-                  <button
-                    id="download-pro-weekly-channel-ops-evidence-pack"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proWeeklyChannelOpsEvidencePackDownload"
-                  >
-                    下载本周渠道分析报告包 (JSON)
-                  </button>
-                </div>
-                <textarea
-                  id="pro-funnel-view"
-                  class="telemetry-events-view"
-                  rows="14"
-                  readonly
-                  spellcheck="false"
-                ></textarea>
+            <div class="privacy-diagnostics-body">
+              <div class="chat-services-section">
+                <details id="telemetry-events-panel" class="telemetry-events-panel">
+                  <summary class="telemetry-events-summary">
+                    <span data-i18n="telemetryEventsPanelTitle">匿名事件日志</span>
+                    <span class="telemetry-events-summary-meta">
+                      <span data-i18n="telemetryEventsCountLabel">事件数</span>
+                      <span id="telemetry-events-count" class="telemetry-events-count">0</span>
+                    </span>
+                  </summary>
+                  <div class="telemetry-events-content">
+                    <p class="pro-privacy-hint" data-i18n="telemetryEventsPanelHint">
+                      本地记录的基础交互事件。我们承诺：日志中绝不包含任何网页内容、选中的文字、页面链接或标题。
+                    </p>
+                    <div class="telemetry-events-actions">
+                      <button
+                        id="telemetry-events-refresh"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="telemetryEventsRefresh"
+                      >
+                        刷新数据
+                      </button>
+                      <button
+                        id="telemetry-events-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="telemetryEventsCopy"
+                      >
+                        复制数据
+                      </button>
+                      <button
+                        id="telemetry-events-clear"
+                        class="secondary-btn danger-btn"
+                        type="button"
+                        data-i18n="telemetryEventsClear"
+                      >
+                        清空数据
+                      </button>
+                    </div>
+                    <textarea
+                      id="telemetry-events-view"
+                      class="telemetry-events-view"
+                      rows="12"
+                      readonly
+                      spellcheck="false"
+                    ></textarea>
+                  </div>
+                </details>
               </div>
-            </details>
-          </div>
 
-          <div class="chat-services-section">
-            <details id="wom-summary-panel" class="telemetry-events-panel">
-              <summary class="telemetry-events-summary">
-                <span data-i18n="womSummaryPanelTitle">推荐与好评统计</span>
-              </summary>
-              <div class="telemetry-events-content">
-                <p class="pro-privacy-hint" data-i18n="womSummaryPanelHint">
-                  这里仅在本地统计与评价或分享相关的数据。它完全不会包含网页内容或任何隐私信息。
-                </p>
-                <p
-                  id="wom-summary-disabled-notice"
-                  class="pro-privacy-hint"
-                  data-i18n="womSummaryDisabledNotice"
-                  hidden
-                >
-                  当前已关闭匿名数据记录，因此没有数据可导出。
-                </p>
-                <div class="telemetry-events-actions">
-                  <button
-                    id="wom-summary-refresh"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="womSummaryRefresh"
-                  >
-                    刷新数据
-                  </button>
-                  <button
-                    id="wom-summary-copy"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="womSummaryCopy"
-                  >
-                    复制统计数据
-                  </button>
-                  <button
-                    id="wom-summary-evidence-pack-copy"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="womSummaryEvidencePackCopy"
-                  >
-                    复制完整报告包
-                  </button>
-                </div>
-                <textarea
-                  id="wom-summary-view"
-                  class="telemetry-events-view"
-                  rows="10"
-                  readonly
-                  spellcheck="false"
-                ></textarea>
+              <div class="chat-services-section">
+                <details id="pro-funnel-panel" class="telemetry-events-panel">
+                  <summary class="telemetry-events-summary">
+                    <span data-i18n="proFunnelPanelTitle">Pro 意向漏斗摘要</span>
+                  </summary>
+                  <div class="telemetry-events-content">
+                    <p class="pro-privacy-hint" data-i18n="proFunnelPanelHint">
+                      这里仅在本地统计你对 Pro 功能的探索情况（例如点击次数）。它完全不会包含网页内容或任何隐私信息。
+                    </p>
+                    <p
+                      id="pro-funnel-disabled-notice"
+                      class="pro-privacy-hint"
+                      data-i18n="proFunnelDisabledNotice"
+                      hidden
+                    >
+                      当前已关闭匿名数据记录，因此没有数据可导出。
+                    </p>
+                    <div class="telemetry-events-actions">
+                      <button
+                        id="pro-funnel-refresh"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proFunnelRefresh"
+                      >
+                        刷新数据
+                      </button>
+                      <button
+                        id="pro-funnel-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proFunnelCopy"
+                      >
+                        复制统计数据
+                      </button>
+                      <button
+                        id="pro-funnel-evidence-pack-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proFunnelEvidencePackCopy"
+                      >
+                        复制完整报告包
+                      </button>
+                      <button
+                        id="download-pro-intent-run-evidence-pack"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proIntentRunEvidencePackDownload"
+                      >
+                        导出全部统计数据 (JSON)
+                      </button>
+                      <button
+                        id="download-pro-intent-v1-100-summary-json"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proIntentV1100SummaryDownload"
+                      >
+                        下载 v1-100 摘要（JSON）
+                      </button>
+                      <button
+                        id="download-pro-intent-v1-100-summary-csv"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proIntentV1100FunnelDownload"
+                      >
+                        下载 v1-100 漏斗（CSV）
+                      </button>
+                      <button
+                        id="export-pro-intent-events-7d-csv"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proIntentEvents7dCsvExport"
+                      >
+                        导出最近 7 天访问明细 (CSV)
+                      </button>
+                      <button
+                        id="export-pro-intent-by-campaign-7d-csv"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proIntentByCampaign7dCsvExport"
+                      >
+                        导出最近 7 天渠道来源汇总 (CSV)
+                      </button>
+                      <button
+                        id="export-pro-distribution-by-campaign-7d-csv"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proDistributionByCampaign7dCsvExport"
+                      >
+                        导出最近 7 天分享操作统计 (CSV)
+                      </button>
+                      <button
+                        id="export-pro-acquisition-efficiency-by-campaign-7d-csv"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proAcqEffByCampaign7dCsvExport"
+                      >
+                        导出最近 7 天增长效率汇总 (CSV)
+                      </button>
+                      <button
+                        id="copy-pro-intent-weekly-digest"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proIntentWeeklyDigestCopy"
+                      >
+                        复制本周 Pro 意向证据摘要
+                      </button>
+                      <button
+                        id="copy-pro-intent-by-campaign-weekly-report"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proIntentByCampaignWeeklyReportCopy"
+                      >
+                        复制按 campaign 的本周复盘摘要（Markdown）
+                      </button>
+                      <button
+                        id="copy-pro-acquisition-efficiency-by-campaign-weekly-report"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proAcqEffByCampaignWeeklyReportCopy"
+                      >
+                        复制本周获客效率复盘摘要（Markdown，按 campaign）
+                      </button>
+                      <button
+                        id="copy-pro-acquisition-efficiency-by-campaign-evidence-pack"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proAcqEffByCampaignEvidencePackCopy"
+                      >
+                        复制增长分析报告包 (JSON)
+                      </button>
+                      <button
+                        id="download-pro-acquisition-efficiency-by-campaign-evidence-pack"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proAcqEffByCampaignEvidencePackDownload"
+                      >
+                        下载增长分析报告包 (JSON)
+                      </button>
+                      <button
+                        id="download-pro-weekly-channel-ops-evidence-pack"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proWeeklyChannelOpsEvidencePackDownload"
+                      >
+                        下载本周渠道分析报告包 (JSON)
+                      </button>
+                    </div>
+                    <textarea
+                      id="pro-funnel-view"
+                      class="telemetry-events-view"
+                      rows="14"
+                      readonly
+                      spellcheck="false"
+                    ></textarea>
+                  </div>
+                </details>
               </div>
-            </details>
-          </div>
 
-          <div class="chat-services-section">
-            <details id="growth-funnel-panel" class="telemetry-events-panel">
-              <summary class="telemetry-events-summary">
-                <span data-i18n="growthFunnelPanelTitle">基础使用统计</span>
-              </summary>
-              <div class="telemetry-events-content">
-                <p class="pro-privacy-hint" data-i18n="growthFunnelPanelHint">
-                  这里仅在本地统计核心功能的使用次数。它完全不会包含网页内容、链接或你复制的任何文字。
-                </p>
-                <div class="telemetry-events-actions">
-                  <button
-                    id="growth-funnel-refresh"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="growthFunnelRefresh"
-                  >
-                    刷新数据
-                  </button>
-                  <button
-                    id="growth-funnel-copy"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="growthFunnelCopy"
-                  >
-                    复制数据
-                  </button>
-                </div>
-                <textarea
-                  id="growth-funnel-view"
-                  class="telemetry-events-view"
-                  rows="10"
-                  readonly
-                  spellcheck="false"
-                ></textarea>
+              <div class="chat-services-section">
+                <details id="wom-summary-panel" class="telemetry-events-panel">
+                  <summary class="telemetry-events-summary">
+                    <span data-i18n="womSummaryPanelTitle">推荐与好评统计</span>
+                  </summary>
+                  <div class="telemetry-events-content">
+                    <p class="pro-privacy-hint" data-i18n="womSummaryPanelHint">
+                      这里仅在本地统计与评价或分享相关的数据。它完全不会包含网页内容或任何隐私信息。
+                    </p>
+                    <p
+                      id="wom-summary-disabled-notice"
+                      class="pro-privacy-hint"
+                      data-i18n="womSummaryDisabledNotice"
+                      hidden
+                    >
+                      当前已关闭匿名数据记录，因此没有数据可导出。
+                    </p>
+                    <div class="telemetry-events-actions">
+                      <button
+                        id="wom-summary-refresh"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="womSummaryRefresh"
+                      >
+                        刷新数据
+                      </button>
+                      <button
+                        id="wom-summary-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="womSummaryCopy"
+                      >
+                        复制统计数据
+                      </button>
+                      <button
+                        id="wom-summary-evidence-pack-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="womSummaryEvidencePackCopy"
+                      >
+                        复制完整报告包
+                      </button>
+                    </div>
+                    <textarea
+                      id="wom-summary-view"
+                      class="telemetry-events-view"
+                      rows="10"
+                      readonly
+                      spellcheck="false"
+                    ></textarea>
+                  </div>
+                </details>
               </div>
-            </details>
-          </div>
 
-          <div class="chat-services-section">
-            <details id="append-workflow-panel" class="telemetry-events-panel">
-              <summary class="telemetry-events-summary">
-                <span data-i18n="appendWorkflowPanelTitle">追加模式状态</span>
-              </summary>
-              <div class="telemetry-events-content">
-                <p class="pro-privacy-hint" data-i18n="appendWorkflowPanelHint">
-                  这里只记录追加模式的匿名计数、当前段数与状态枚举，用于核对多段收集是否被正确清理与复用。
-                </p>
-                <div class="telemetry-events-actions">
-                  <button
-                    id="append-workflow-refresh"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="appendWorkflowRefresh"
-                  >
-                    刷新数据
-                  </button>
-                  <button
-                    id="append-workflow-copy"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="appendWorkflowCopy"
-                  >
-                    复制数据
-                  </button>
-                  <button
-                    id="append-workflow-clear"
-                    class="secondary-btn danger-btn"
-                    type="button"
-                    data-i18n="appendWorkflowClear"
-                  >
-                    清空当前收集
-                  </button>
-                </div>
-                <textarea
-                  id="append-workflow-view"
-                  class="telemetry-events-view"
-                  rows="10"
-                  readonly
-                  spellcheck="false"
-                ></textarea>
+              <div class="chat-services-section">
+                <details id="growth-funnel-panel" class="telemetry-events-panel">
+                  <summary class="telemetry-events-summary">
+                    <span data-i18n="growthFunnelPanelTitle">基础使用统计</span>
+                  </summary>
+                  <div class="telemetry-events-content">
+                    <p class="pro-privacy-hint" data-i18n="growthFunnelPanelHint">
+                      这里仅在本地统计核心功能的使用次数。它完全不会包含网页内容、链接或你复制的任何文字。
+                    </p>
+                    <div class="telemetry-events-actions">
+                      <button
+                        id="growth-funnel-refresh"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="growthFunnelRefresh"
+                      >
+                        刷新数据
+                      </button>
+                      <button
+                        id="growth-funnel-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="growthFunnelCopy"
+                      >
+                        复制数据
+                      </button>
+                    </div>
+                    <textarea
+                      id="growth-funnel-view"
+                      class="telemetry-events-view"
+                      rows="10"
+                      readonly
+                      spellcheck="false"
+                    ></textarea>
+                  </div>
+                </details>
               </div>
-            </details>
-          </div>
 
-          <div class="chat-services-section">
-            <details id="growth-stats-panel" class="telemetry-events-panel">
-              <summary class="telemetry-events-summary">
-                <span data-i18n="growthStatsPanelTitle">高级使用统计</span>
-              </summary>
-              <div class="telemetry-events-content">
-                <p class="pro-privacy-hint" data-i18n="growthStatsPanelHint">
-                  同样仅在本地统计部分交互数据（如选项修改）。它完全不会包含网页内容、链接或你复制的任何文字。
-                </p>
-                <div class="telemetry-events-actions">
-                  <button
-                    id="growth-stats-refresh"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="growthStatsRefresh"
-                  >
-                    刷新数据
-                  </button>
-                  <button
-                    id="growth-stats-copy"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="growthStatsCopy"
-                  >
-                    复制数据
-                  </button>
-                  <button
-                    id="growth-stats-reset"
-                    class="secondary-btn danger-btn"
-                    type="button"
-                    data-i18n="growthStatsReset"
-                  >
-                    重置数据
-                  </button>
-                </div>
-                <textarea
-                  id="growth-stats-view"
-                  class="telemetry-events-view"
-                  rows="10"
-                  readonly
-                  spellcheck="false"
-                ></textarea>
+              <div class="chat-services-section">
+                <details id="append-workflow-panel" class="telemetry-events-panel">
+                  <summary class="telemetry-events-summary">
+                    <span data-i18n="appendWorkflowPanelTitle">追加模式状态</span>
+                  </summary>
+                  <div class="telemetry-events-content">
+                    <p class="pro-privacy-hint" data-i18n="appendWorkflowPanelHint">
+                      这里只记录追加模式的匿名计数、当前段数与状态枚举，用于核对多段收集是否被正确清理与复用。
+                    </p>
+                    <div class="telemetry-events-actions">
+                      <button
+                        id="append-workflow-refresh"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="appendWorkflowRefresh"
+                      >
+                        刷新数据
+                      </button>
+                      <button
+                        id="append-workflow-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="appendWorkflowCopy"
+                      >
+                        复制数据
+                      </button>
+                      <button
+                        id="append-workflow-clear"
+                        class="secondary-btn danger-btn"
+                        type="button"
+                        data-i18n="appendWorkflowClear"
+                      >
+                        清空当前收集
+                      </button>
+                    </div>
+                    <textarea
+                      id="append-workflow-view"
+                      class="telemetry-events-view"
+                      rows="10"
+                      readonly
+                      spellcheck="false"
+                    ></textarea>
+                  </div>
+                </details>
               </div>
-            </details>
-          </div>
+
+              <div class="chat-services-section">
+                <details id="growth-stats-panel" class="telemetry-events-panel">
+                  <summary class="telemetry-events-summary">
+                    <span data-i18n="growthStatsPanelTitle">高级使用统计</span>
+                  </summary>
+                  <div class="telemetry-events-content">
+                    <p class="pro-privacy-hint" data-i18n="growthStatsPanelHint">
+                      同样仅在本地统计部分交互数据（如选项修改）。它完全不会包含网页内容、链接或你复制的任何文字。
+                    </p>
+                    <div class="telemetry-events-actions">
+                      <button
+                        id="growth-stats-refresh"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="growthStatsRefresh"
+                      >
+                        刷新数据
+                      </button>
+                      <button
+                        id="growth-stats-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="growthStatsCopy"
+                      >
+                        复制数据
+                      </button>
+                      <button
+                        id="growth-stats-reset"
+                        class="secondary-btn danger-btn"
+                        type="button"
+                        data-i18n="growthStatsReset"
+                      >
+                        重置数据
+                      </button>
+                    </div>
+                    <textarea
+                      id="growth-stats-view"
+                      class="telemetry-events-view"
+                      rows="10"
+                      readonly
+                      spellcheck="false"
+                    ></textarea>
+                  </div>
+                </details>
+              </div>
+            </div>
+          </details>
         </div>
 
         <!-- Pro Tab -->
@@ -846,592 +884,634 @@
             </p>
           </div>
 
+          <div class="pro-summary-grid">
+            <article class="pro-summary-card">
+              <h3 data-i18n="proAudienceTitle">适合谁关注 Pro</h3>
+              <p data-i18n="proAudienceDescription">
+                如果你经常要整理长文、跨页面收集资料，或者想把复制结果继续送进
+                AI、Notion、表格和知识库，可以先关注 Pro 路线。
+              </p>
+            </article>
+            <article class="pro-summary-card">
+              <h3 data-i18n="proCurrentTitle">现在能期待什么</h3>
+              <p data-i18n="proCurrentDescription">
+                当前先把方向讲清楚：哪些增强能力最值得做、哪些问题值得优先验证，而不是把内部实验和增长过程直接扔给普通用户。
+              </p>
+            </article>
+            <article class="pro-summary-card">
+              <h3 data-i18n="proStatusTitle">当前阶段</h3>
+              <p data-i18n="proStatusDescription">
+                Pro
+                还在验证期。你可以先看路线说明，确认它是否真的贴合你的复制和整理工作流，再决定是否继续关注。
+              </p>
+            </article>
+          </div>
+
           <div class="pro-card">
             <p class="pro-intro" data-i18n="proIntro">
-              这里展示的是我们准备优先验证的增强能力。当前阶段只做增长闭环，不做表单或问卷收集。
+              先告诉你今天免费能做什么，再告诉你哪几类增强能力最值得继续关注。内部验证资料继续收在折叠层后面，不打断普通用户判断。
             </p>
 
-            <section id="pro-free-scope" class="pro-scope-section">
-              <h3 class="pro-scope-title" data-i18n="proFreeScopeTitle">Free（永久免费）</h3>
-              <p class="pro-scope-hint" data-i18n="proFreeScopeHint">
-                以下为已发货的核心能力清单，并承诺长期免费（不做付费墙）。
-              </p>
-              <ul class="pro-feature-list">
-                <li data-i18n="proFreeFeature1">
-                  智能区块复制：单击/双击提取正文，复制为 Markdown / 纯文本
-                </li>
-                <li data-i18n="proFreeFeature2">
-                  代码块悬停复制 + 保守清理（缩进/空行、行号边界、Copy 文案整行移除）
-                </li>
-                <li data-i18n="proFreeFeature3">
-                  追加模式（Shift 追加合并，多段内容用分隔符整理）
-                </li>
-                <li data-i18n="proFreeFeature4">表格一键转 Markdown / CSV</li>
-                <li data-i18n="proFreeFeature5">Prompt 管理器（模板/分类/同步）与一键套用</li>
-                <li data-i18n="proFreeFeature6">
-                  可配置默认 Chat 服务与复制后自动打开（基于本地设置）
-                </li>
-              </ul>
-            </section>
+            <div class="pro-scope-grid">
+              <section id="pro-free-scope" class="pro-scope-section pro-scope-card">
+                <h3 class="pro-scope-title" data-i18n="proFreeScopeTitle">今天就能免费使用</h3>
+                <p class="pro-scope-hint" data-i18n="proFreeScopeHint">
+                  这些能力已经发货，并会继续保持在 Free 里，不需要额外解锁。
+                </p>
+                <ul class="pro-feature-list">
+                  <li data-i18n="proFreeFeature1">
+                    复制网页正文时，优先保留能直接贴给 AI 的干净内容。
+                  </li>
+                  <li data-i18n="proFreeFeature2">
+                    代码块和表格可以更稳地复制，少一点按钮、行号和格式噪声。
+                  </li>
+                  <li data-i18n="proFreeFeature3">
+                    用 Shift 追加多段内容，把零散资料先并到同一次整理里。
+                  </li>
+                  <li data-i18n="proFreeFeature4">表格可直接转成 Markdown / CSV。</li>
+                  <li data-i18n="proFreeFeature5">Prompt 管理器支持模板分类、同步和一键套用。</li>
+                  <li data-i18n="proFreeFeature6">
+                    默认 Chat 服务、自动打开和快捷键都能按你的本地习惯调整。
+                  </li>
+                </ul>
+              </section>
 
-            <hr class="pro-scope-divider" />
-
-            <section id="pro-planned-scope" class="pro-scope-section">
-              <h3 class="pro-scope-title" data-i18n="proPlannedScopeTitle">正在评估的增强方向</h3>
-              <p class="pro-scope-hint" data-i18n="proPlannedScopeHint">
-                以下方向会根据真实使用行为、复用率和分享表现来排序，而不是依赖问卷样本。
-              </p>
-
-              <ul class="pro-feature-list">
-                <li data-i18n="proFeature1">高级页面清洗（阅读模式 + 去广告/评论区/推荐区规则）</li>
-                <li data-i18n="proFeature2">批量采集与整理（跨页面收集、命名、导出、历史检索）</li>
-                <li data-i18n="proFeature3">Prompt Pack 高级库/团队共享（后端能力后置）</li>
-                <li data-i18n="proFeature4">
-                  面向笔记工具的导出能力（Obsidian/Notion 结构化模板）
-                </li>
-              </ul>
-
-              <section id="pro-validation-lab" class="pro-survey-section pro-validation-lab">
-                <h4 class="pro-survey-title" data-i18n="proValidationLabTitle">验证素材实验区</h4>
-                <p class="pro-survey-hint" data-i18n="proValidationLabHint">
-                  先把路线说明、分发链接和验收标准做成可复制素材，再看真实打开与复制信号是否成立。
+              <section id="pro-planned-scope" class="pro-scope-section pro-scope-card">
+                <h3 class="pro-scope-title" data-i18n="proPlannedScopeTitle">
+                  可能最先加入的增强能力
+                </h3>
+                <p class="pro-scope-hint" data-i18n="proPlannedScopeHint">
+                  这里只保留对重度整理场景真正有帮助的方向，不再把内部实验口径直接摆在首屏。
                 </p>
 
-                <article id="pro-validation-advanced-cleaning" class="pro-validation-card">
-                  <p class="pro-validation-eyebrow">S3-1</p>
-                  <h5 class="pro-validation-title" data-i18n="proValidationAdvancedTitle">
-                    高级页面清洗验证
-                  </h5>
-                  <p class="pro-validation-description" data-i18n="proValidationAdvancedHint">
-                    面向长文、评论区噪声和推荐位干扰明显的网页，先验证“是否值得做更强清洗”。
+                <ul class="pro-feature-list">
+                  <li data-i18n="proFeature1">更强的页面清理：长文、评论区和推荐位一起收干净。</li>
+                  <li data-i18n="proFeature2">多页面资料收集与命名整理，减少手工来回复制。</li>
+                  <li data-i18n="proFeature3">
+                    更完整的 Prompt 方案包与共享方式，适合固定工作流复用。
+                  </li>
+                  <li data-i18n="proFeature4">面向 Notion、Obsidian、表格和知识库的结构化导出。</li>
+                </ul>
+              </section>
+            </div>
+
+            <details class="pro-advanced-shell">
+              <summary class="pro-advanced-shell-summary">
+                <span data-i18n="proAdvancedTitle">查看验证细节（可选）</span>
+                <small data-i18n="proAdvancedDescription">
+                  如果你要参与路线验证，再打开本地评估和素材；普通用户看到这里就已经足够判断是否值得继续关注。
+                </small>
+              </summary>
+              <div class="pro-advanced-shell-body">
+                <section id="pro-validation-lab" class="pro-survey-section pro-validation-lab">
+                  <h4 class="pro-survey-title" data-i18n="proValidationLabTitle">验证素材实验区</h4>
+                  <p class="pro-survey-hint" data-i18n="proValidationLabHint">
+                    先把路线说明、分发链接和验收标准做成可复制素材，再看真实打开与复制信号是否成立。
                   </p>
 
-                  <div class="pro-actions">
-                    <button
-                      id="pro-validation-advanced-open"
-                      class="primary-btn"
-                      type="button"
-                      data-i18n="proValidationAdvancedRouteOpenButton"
+                  <article id="pro-validation-advanced-cleaning" class="pro-validation-card">
+                    <p class="pro-validation-eyebrow">S3-1</p>
+                    <h5 class="pro-validation-title" data-i18n="proValidationAdvancedTitle">
+                      高级页面清洗验证
+                    </h5>
+                    <p class="pro-validation-description" data-i18n="proValidationAdvancedHint">
+                      面向长文、评论区噪声和推荐位干扰明显的网页，先验证“是否值得做更强清洗”。
+                    </p>
+
+                    <div class="pro-actions">
+                      <button
+                        id="pro-validation-advanced-open"
+                        class="primary-btn"
+                        type="button"
+                        data-i18n="proValidationAdvancedRouteOpenButton"
+                      >
+                        打开高级清洗路线
+                      </button>
+                      <button
+                        id="pro-validation-advanced-route-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proValidationAdvancedRouteCopyButton"
+                      >
+                        复制路线链接
+                      </button>
+                      <button
+                        id="pro-validation-advanced-brief-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proValidationAdvancedBriefCopyButton"
+                      >
+                        复制验证简报
+                      </button>
+                      <button
+                        id="pro-validation-advanced-checklist-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proValidationAdvancedChecklistCopyButton"
+                      >
+                        复制验证清单
+                      </button>
+                    </div>
+
+                    <p class="pro-privacy-hint" data-i18n="proValidationAdvancedAssetHint">
+                      素材里只包含路线边界、UTM 链接和验收信号，不包含网页正文、复制内容或页面 URL。
+                    </p>
+                  </article>
+
+                  <article id="pro-validation-bulk-collection" class="pro-validation-card">
+                    <p class="pro-validation-eyebrow">S3-2</p>
+                    <h5 class="pro-validation-title" data-i18n="proValidationBulkTitle">
+                      批量采集与整理验证
+                    </h5>
+                    <p class="pro-validation-description" data-i18n="proValidationBulkHint">
+                      面向多页面、多段资料和竞品对比收集场景，先验证“是否值得把批量采集整理做成更完整的
+                      Pro 路线”。
+                    </p>
+
+                    <div class="pro-actions">
+                      <button
+                        id="pro-validation-bulk-open"
+                        class="primary-btn"
+                        type="button"
+                        data-i18n="proValidationBulkRouteOpenButton"
+                      >
+                        打开批量采集路线
+                      </button>
+                      <button
+                        id="pro-validation-bulk-route-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proValidationBulkRouteCopyButton"
+                      >
+                        复制路线链接
+                      </button>
+                      <button
+                        id="pro-validation-bulk-brief-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proValidationBulkBriefCopyButton"
+                      >
+                        复制验证简报
+                      </button>
+                      <button
+                        id="pro-validation-bulk-checklist-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proValidationBulkChecklistCopyButton"
+                      >
+                        复制验证清单
+                      </button>
+                    </div>
+
+                    <p class="pro-privacy-hint" data-i18n="proValidationAdvancedAssetHint">
+                      素材里只包含路线边界、UTM 链接和验收信号，不包含网页正文、复制内容或页面 URL。
+                    </p>
+                  </article>
+
+                  <article id="pro-validation-structured-export" class="pro-validation-card">
+                    <p class="pro-validation-eyebrow">S3-3</p>
+                    <h5 class="pro-validation-title" data-i18n="proValidationStructuredExportTitle">
+                      结构化导出与下游工作流验证
+                    </h5>
+                    <p
+                      class="pro-validation-description"
+                      data-i18n="proValidationStructuredExportHint"
                     >
-                      打开高级清洗路线
-                    </button>
+                      面向需要把复制结果继续送进 Notion、表格、知识库或 AI
+                      下游链路的场景，先验证“结构化导出”是否值得做成独立 Pro 方向。
+                    </p>
+
+                    <div class="pro-actions">
+                      <button
+                        id="pro-validation-structured-open"
+                        class="primary-btn"
+                        type="button"
+                        data-i18n="proValidationStructuredExportRouteOpenButton"
+                      >
+                        打开结构化导出路线
+                      </button>
+                      <button
+                        id="pro-validation-structured-route-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proValidationStructuredExportRouteCopyButton"
+                      >
+                        复制路线链接
+                      </button>
+                      <button
+                        id="pro-validation-structured-brief-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proValidationStructuredExportBriefCopyButton"
+                      >
+                        复制验证简报
+                      </button>
+                      <button
+                        id="pro-validation-structured-checklist-copy"
+                        class="secondary-btn"
+                        type="button"
+                        data-i18n="proValidationStructuredExportChecklistCopyButton"
+                      >
+                        复制验证清单
+                      </button>
+                    </div>
+
+                    <p class="pro-privacy-hint" data-i18n="proValidationAdvancedAssetHint">
+                      素材里只包含路线边界、UTM 链接和验收信号，不包含网页正文、复制内容或页面 URL。
+                    </p>
+                  </article>
+                </section>
+
+                <section
+                  id="pro-route-comparison-panel"
+                  class="pro-survey-section pro-distribution-section"
+                >
+                  <h4 class="pro-survey-title" data-i18n="proRouteValidationComparisonTitle">
+                    三条路线样本比较
+                  </h4>
+                  <p class="pro-survey-hint" data-i18n="proRouteValidationComparisonHint">
+                    基于最近 7
+                    天本地匿名聚合的路线打开和验证素材复制信号，直接比较三条路线谁更接近真实付费价值。
+                  </p>
+
+                  <div class="pro-actions pro-distribution-actions">
                     <button
-                      id="pro-validation-advanced-route-copy"
+                      id="copy-pro-route-validation-comparison-summary"
                       class="secondary-btn"
                       type="button"
-                      data-i18n="proValidationAdvancedRouteCopyButton"
+                      data-i18n="proRouteValidationComparisonCopy"
                     >
-                      复制路线链接
+                      复制路线比较摘要
                     </button>
                     <button
-                      id="pro-validation-advanced-brief-copy"
+                      id="download-pro-route-validation-comparison-json"
                       class="secondary-btn"
                       type="button"
-                      data-i18n="proValidationAdvancedBriefCopyButton"
+                      data-i18n="proRouteValidationComparisonDownloadJson"
                     >
-                      复制验证简报
-                    </button>
-                    <button
-                      id="pro-validation-advanced-checklist-copy"
-                      class="secondary-btn"
-                      type="button"
-                      data-i18n="proValidationAdvancedChecklistCopyButton"
-                    >
-                      复制验证清单
+                      下载路线比较 JSON
                     </button>
                   </div>
 
-                  <p class="pro-privacy-hint" data-i18n="proValidationAdvancedAssetHint">
-                    素材里只包含路线边界、UTM 链接和验收信号，不包含网页正文、复制内容或页面 URL。
+                  <p class="pro-privacy-hint" data-i18n="proRouteValidationComparisonPrivacyHint">
+                    比较结果只使用本地匿名聚合动作，不包含网页正文、复制内容、URL、标题或联系方式。
                   </p>
-                </article>
+                </section>
 
-                <article id="pro-validation-bulk-collection" class="pro-validation-card">
-                  <p class="pro-validation-eyebrow">S3-2</p>
-                  <h5 class="pro-validation-title" data-i18n="proValidationBulkTitle">
-                    批量采集与整理验证
-                  </h5>
-                  <p class="pro-validation-description" data-i18n="proValidationBulkHint">
-                    面向多页面、多段资料和竞品对比收集场景，先验证“是否值得把批量采集整理做成更完整的
-                    Pro 路线”。
+                <section
+                  id="pro-route-writeback-panel"
+                  class="pro-survey-section pro-distribution-section"
+                >
+                  <h4 class="pro-survey-title" data-i18n="proRouteValidationWritebackTitle">
+                    领先路线回写包
+                  </h4>
+                  <p class="pro-survey-hint" data-i18n="proRouteValidationWritebackHint">
+                    把当前领先路线直接整理成路线页、商店说明和下一轮汇总可复用的三段回写文案，避免只停在内部判断。
                   </p>
 
-                  <div class="pro-actions">
+                  <div class="pro-actions pro-distribution-actions">
                     <button
-                      id="pro-validation-bulk-open"
-                      class="primary-btn"
-                      type="button"
-                      data-i18n="proValidationBulkRouteOpenButton"
-                    >
-                      打开批量采集路线
-                    </button>
-                    <button
-                      id="pro-validation-bulk-route-copy"
+                      id="copy-pro-route-validation-writeback-summary"
                       class="secondary-btn"
                       type="button"
-                      data-i18n="proValidationBulkRouteCopyButton"
+                      data-i18n="proRouteValidationWritebackCopy"
                     >
-                      复制路线链接
+                      复制领先路线回写包
                     </button>
                     <button
-                      id="pro-validation-bulk-brief-copy"
+                      id="download-pro-route-validation-writeback-json"
                       class="secondary-btn"
                       type="button"
-                      data-i18n="proValidationBulkBriefCopyButton"
+                      data-i18n="proRouteValidationWritebackDownloadJson"
                     >
-                      复制验证简报
-                    </button>
-                    <button
-                      id="pro-validation-bulk-checklist-copy"
-                      class="secondary-btn"
-                      type="button"
-                      data-i18n="proValidationBulkChecklistCopyButton"
-                    >
-                      复制验证清单
+                      下载领先路线回写 JSON
                     </button>
                   </div>
 
-                  <p class="pro-privacy-hint" data-i18n="proValidationAdvancedAssetHint">
-                    素材里只包含路线边界、UTM 链接和验收信号，不包含网页正文、复制内容或页面 URL。
+                  <p class="pro-privacy-hint" data-i18n="proRouteValidationWritebackPrivacyHint">
+                    回写包只使用本地匿名聚合信号，不包含网页正文、复制内容、URL、标题或联系方式。
                   </p>
-                </article>
+                </section>
 
-                <article id="pro-validation-structured-export" class="pro-validation-card">
-                  <p class="pro-validation-eyebrow">S3-3</p>
-                  <h5 class="pro-validation-title" data-i18n="proValidationStructuredExportTitle">
-                    结构化导出与下游工作流验证
-                  </h5>
+                <section
+                  id="pro-route-stability-panel"
+                  class="pro-survey-section pro-distribution-section"
+                >
+                  <h4 class="pro-survey-title" data-i18n="proRouteValidationStabilityTitle">
+                    领先路线稳定性摘要
+                  </h4>
+                  <p class="pro-survey-hint" data-i18n="proRouteValidationStabilityHint">
+                    把最近 7 天和 14 天的领先路线、supporting campaign 与 conflicting campaign
+                    放到同一张摘要里，避免把一次领先误判成长期需求。
+                  </p>
+
+                  <div class="pro-actions pro-distribution-actions">
+                    <button
+                      id="copy-pro-route-validation-stability-summary"
+                      class="secondary-btn"
+                      type="button"
+                      data-i18n="proRouteValidationStabilityCopy"
+                    >
+                      复制领先路线稳定性摘要
+                    </button>
+                    <button
+                      id="download-pro-route-validation-stability-json"
+                      class="secondary-btn"
+                      type="button"
+                      data-i18n="proRouteValidationStabilityDownloadJson"
+                    >
+                      下载领先路线稳定性 JSON
+                    </button>
+                  </div>
+
+                  <p class="pro-privacy-hint" data-i18n="proRouteValidationStabilityPrivacyHint">
+                    稳定性摘要只使用本地匿名聚合信号，不包含网页正文、复制内容、URL、标题或联系方式。
+                  </p>
+                </section>
+
+                <section
+                  id="pro-decision-gate-panel"
+                  class="pro-survey-section pro-distribution-section"
+                >
+                  <h4 class="pro-survey-title" data-i18n="proIntentDecisionGateTitle">
+                    收费前门槛判断
+                  </h4>
+                  <p class="pro-survey-hint" data-i18n="proIntentDecisionGateHint">
+                    基于最近 7 天本地匿名聚合问卷意向分布，直接导出 A/B/C
+                    决策摘要，用来判断当前是否只该继续收集样本，还是已经进入下一步收费评估。
+                  </p>
+
+                  <div class="pro-actions pro-distribution-actions">
+                    <button
+                      id="copy-pro-intent-decision-summary"
+                      class="secondary-btn"
+                      type="button"
+                      data-i18n="proIntentDecisionSummaryCopy"
+                    >
+                      复制收费前门槛摘要
+                    </button>
+                    <button
+                      id="download-pro-intent-decision-summary-json"
+                      class="secondary-btn"
+                      type="button"
+                      data-i18n="proIntentDecisionSummaryDownloadJson"
+                    >
+                      下载收费前门槛 JSON
+                    </button>
+                  </div>
+
+                  <p class="pro-privacy-hint" data-i18n="proIntentDecisionGatePrivacyHint">
+                    摘要只使用本地匿名聚合字段，不包含页面正文、复制内容、URL、标题或联系方式。
+                  </p>
+                </section>
+
+                <section
+                  id="pro-route-verdict-panel"
+                  class="pro-survey-section pro-distribution-section"
+                >
+                  <h4 class="pro-survey-title" data-i18n="proRouteValidationVerdictTitle">
+                    Pro 路线融合判断摘要
+                  </h4>
+                  <p class="pro-survey-hint" data-i18n="proRouteValidationVerdictHint">
+                    把路线比较、回写、稳定性和收费前门槛四份判断合成一个最终
+                    verdict，避免继续靠人工拼读多个摘要。
+                  </p>
+
+                  <div class="pro-actions pro-distribution-actions">
+                    <button
+                      id="copy-pro-route-validation-verdict-summary"
+                      class="secondary-btn"
+                      type="button"
+                      data-i18n="proRouteValidationVerdictCopy"
+                    >
+                      复制 Pro 路线融合判断摘要
+                    </button>
+                    <button
+                      id="download-pro-route-validation-verdict-json"
+                      class="secondary-btn"
+                      type="button"
+                      data-i18n="proRouteValidationVerdictDownloadJson"
+                    >
+                      下载 Pro 路线融合判断 JSON
+                    </button>
+                  </div>
+
+                  <p class="pro-privacy-hint" data-i18n="proRouteValidationVerdictPrivacyHint">
+                    融合判断只使用本地匿名聚合信号和本地判断结果，不包含网页正文、复制内容、URL、标题或联系方式。
+                  </p>
+                </section>
+
+                <section
+                  id="pro-payment-evaluation-audit-panel"
+                  class="pro-survey-section pro-distribution-section"
+                >
+                  <h4 class="pro-survey-title" data-i18n="proPaymentEvaluationAuditTitle">
+                    收费评估审计包
+                  </h4>
+                  <p class="pro-survey-hint" data-i18n="proPaymentEvaluationAuditHint">
+                    把统一 verdict 进一步整理成收费评估审计包，明确
+                    go/no-go、阻塞项、证据链和边界，但仍不直接实现支付。
+                  </p>
+
+                  <div class="pro-actions pro-distribution-actions">
+                    <button
+                      id="copy-pro-payment-evaluation-audit-summary"
+                      class="secondary-btn"
+                      type="button"
+                      data-i18n="proPaymentEvaluationAuditCopy"
+                    >
+                      复制收费评估审计包
+                    </button>
+                    <button
+                      id="download-pro-payment-evaluation-audit-json"
+                      class="secondary-btn"
+                      type="button"
+                      data-i18n="proPaymentEvaluationAuditDownloadJson"
+                    >
+                      下载收费评估审计 JSON
+                    </button>
+                  </div>
+
+                  <p class="pro-privacy-hint" data-i18n="proPaymentEvaluationAuditPrivacyHint">
+                    审计包只使用本地匿名聚合字段和本地判断结果，不包含网页正文、复制内容、URL、标题或联系方式。
+                  </p>
+                </section>
+
+                <section
+                  id="pro-route-validation-campaign-review-panel"
+                  class="pro-survey-section pro-distribution-section"
+                >
+                  <h4 class="pro-survey-title" data-i18n="proRouteValidationCampaignReviewTitle">
+                    跨 campaign 领先路线复核包
+                  </h4>
+                  <p class="pro-survey-hint" data-i18n="proRouteValidationCampaignReviewHint">
+                    把每个 campaign
+                    的领先路线、支持/冲突状态和补样优先级整理成统一复核包，并把所有对外文案继续锁定在“当前优先验证方向
+                    / stay_validation”，避免把单一获客来源误判成长期需求。
+                  </p>
+
+                  <div class="pro-actions pro-distribution-actions">
+                    <button
+                      id="copy-pro-route-validation-campaign-review-summary"
+                      class="secondary-btn"
+                      type="button"
+                      data-i18n="proRouteValidationCampaignReviewCopy"
+                    >
+                      复制跨 campaign 复核包
+                    </button>
+                    <button
+                      id="download-pro-route-validation-campaign-review-json"
+                      class="secondary-btn"
+                      type="button"
+                      data-i18n="proRouteValidationCampaignReviewDownloadJson"
+                    >
+                      下载跨 campaign 复核 JSON
+                    </button>
+                  </div>
+
                   <p
-                    class="pro-validation-description"
-                    data-i18n="proValidationStructuredExportHint"
+                    class="pro-privacy-hint"
+                    data-i18n="proRouteValidationCampaignReviewPrivacyHint"
                   >
-                    面向需要把复制结果继续送进 Notion、表格、知识库或 AI
-                    下游链路的场景，先验证“结构化导出”是否值得做成独立 Pro 方向。
+                    复核包只使用本地匿名聚合 campaign 信号和本地 verdict
+                    结果，不包含网页正文、复制内容、URL、标题或联系方式。
+                  </p>
+                </section>
+
+                <section
+                  id="pro-stay-validation-messaging-guard-panel"
+                  class="pro-survey-section pro-distribution-section"
+                >
+                  <h4 class="pro-survey-title" data-i18n="proStayValidationMessagingGuardTitle">
+                    stay_validation 外部话术守门复核包
+                  </h4>
+                  <p class="pro-survey-hint" data-i18n="proStayValidationMessagingGuardHint">
+                    把会离开当前工作区的路线页、商店和汇总文案做一次守门复核，确保所有对外表述仍停留在“当前优先验证方向”，而不是暗示收费已经上线。
                   </p>
 
-                  <div class="pro-actions">
+                  <div class="pro-actions pro-distribution-actions">
                     <button
-                      id="pro-validation-structured-open"
-                      class="primary-btn"
-                      type="button"
-                      data-i18n="proValidationStructuredExportRouteOpenButton"
-                    >
-                      打开结构化导出路线
-                    </button>
-                    <button
-                      id="pro-validation-structured-route-copy"
+                      id="copy-pro-stay-validation-messaging-guard-summary"
                       class="secondary-btn"
                       type="button"
-                      data-i18n="proValidationStructuredExportRouteCopyButton"
+                      data-i18n="proStayValidationMessagingGuardCopy"
                     >
-                      复制路线链接
+                      复制话术守门复核包
                     </button>
                     <button
-                      id="pro-validation-structured-brief-copy"
+                      id="download-pro-stay-validation-messaging-guard-json"
                       class="secondary-btn"
                       type="button"
-                      data-i18n="proValidationStructuredExportBriefCopyButton"
+                      data-i18n="proStayValidationMessagingGuardDownloadJson"
                     >
-                      复制验证简报
-                    </button>
-                    <button
-                      id="pro-validation-structured-checklist-copy"
-                      class="secondary-btn"
-                      type="button"
-                      data-i18n="proValidationStructuredExportChecklistCopyButton"
-                    >
-                      复制验证清单
+                      下载话术守门 JSON
                     </button>
                   </div>
 
-                  <p class="pro-privacy-hint" data-i18n="proValidationAdvancedAssetHint">
-                    素材里只包含路线边界、UTM 链接和验收信号，不包含网页正文、复制内容或页面 URL。
+                  <p
+                    class="pro-privacy-hint"
+                    data-i18n="proStayValidationMessagingGuardPrivacyHint"
+                  >
+                    复核包只使用本地路线回写文案、本地 campaign
+                    复核结果和守门规则，不包含网页正文、复制内容、URL、标题或联系方式。
                   </p>
-                </article>
-              </section>
+                </section>
 
-              <section
-                id="pro-route-comparison-panel"
-                class="pro-survey-section pro-distribution-section"
-              >
-                <h4 class="pro-survey-title" data-i18n="proRouteValidationComparisonTitle">
-                  三条路线样本比较
-                </h4>
-                <p class="pro-survey-hint" data-i18n="proRouteValidationComparisonHint">
-                  基于最近 7
-                  天本地匿名聚合的路线打开和验证素材复制信号，直接比较三条路线谁更接近真实付费价值。
-                </p>
-
-                <div class="pro-actions pro-distribution-actions">
-                  <button
-                    id="copy-pro-route-validation-comparison-summary"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proRouteValidationComparisonCopy"
+                <div class="form-group">
+                  <label for="pro-intent-campaign" data-i18n="proIntentCampaignLabel"
+                    >渠道（campaign，可选）</label
                   >
-                    复制路线比较摘要
-                  </button>
-                  <button
-                    id="download-pro-route-validation-comparison-json"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proRouteValidationComparisonDownloadJson"
-                  >
-                    下载路线比较 JSON
-                  </button>
+                  <input
+                    id="pro-intent-campaign"
+                    type="text"
+                    autocomplete="off"
+                    inputmode="latin"
+                    spellcheck="false"
+                    maxlength="32"
+                    data-i18n-placeholder="proIntentCampaignPlaceholder"
+                    placeholder="例如：twitter / producthunt / xiaohongshu_2026"
+                  />
+                  <p class="pro-privacy-hint" data-i18n="proIntentCampaignHint">
+                    如果你是从某篇文章、活动页或朋友分享进入的，可以填一个简短标记，方便后续区分来源。
+                  </p>
                 </div>
 
-                <p class="pro-privacy-hint" data-i18n="proRouteValidationComparisonPrivacyHint">
-                  比较结果只使用本地匿名聚合动作，不包含网页正文、复制内容、URL、标题或联系方式。
-                </p>
-              </section>
-
-              <section
-                id="pro-route-writeback-panel"
-                class="pro-survey-section pro-distribution-section"
-              >
-                <h4 class="pro-survey-title" data-i18n="proRouteValidationWritebackTitle">
-                  领先路线回写包
-                </h4>
-                <p class="pro-survey-hint" data-i18n="proRouteValidationWritebackHint">
-                  把当前领先路线直接整理成路线页、商店说明和下一轮汇总可复用的三段回写文案，避免只停在内部判断。
-                </p>
-
-                <div class="pro-actions pro-distribution-actions">
-                  <button
-                    id="copy-pro-route-validation-writeback-summary"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proRouteValidationWritebackCopy"
-                  >
-                    复制领先路线回写包
-                  </button>
-                  <button
-                    id="download-pro-route-validation-writeback-json"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proRouteValidationWritebackDownloadJson"
-                  >
-                    下载领先路线回写 JSON
-                  </button>
-                </div>
-
-                <p class="pro-privacy-hint" data-i18n="proRouteValidationWritebackPrivacyHint">
-                  回写包只使用本地匿名聚合信号，不包含网页正文、复制内容、URL、标题或联系方式。
-                </p>
-              </section>
-
-              <section
-                id="pro-route-stability-panel"
-                class="pro-survey-section pro-distribution-section"
-              >
-                <h4 class="pro-survey-title" data-i18n="proRouteValidationStabilityTitle">
-                  领先路线稳定性摘要
-                </h4>
-                <p class="pro-survey-hint" data-i18n="proRouteValidationStabilityHint">
-                  把最近 7 天和 14 天的领先路线、supporting campaign 与 conflicting campaign
-                  放到同一张摘要里，避免把一次领先误判成长期需求。
-                </p>
-
-                <div class="pro-actions pro-distribution-actions">
-                  <button
-                    id="copy-pro-route-validation-stability-summary"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proRouteValidationStabilityCopy"
-                  >
-                    复制领先路线稳定性摘要
-                  </button>
-                  <button
-                    id="download-pro-route-validation-stability-json"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proRouteValidationStabilityDownloadJson"
-                  >
-                    下载领先路线稳定性 JSON
-                  </button>
-                </div>
-
-                <p class="pro-privacy-hint" data-i18n="proRouteValidationStabilityPrivacyHint">
-                  稳定性摘要只使用本地匿名聚合信号，不包含网页正文、复制内容、URL、标题或联系方式。
-                </p>
-              </section>
-
-              <section
-                id="pro-decision-gate-panel"
-                class="pro-survey-section pro-distribution-section"
-              >
-                <h4 class="pro-survey-title" data-i18n="proIntentDecisionGateTitle">
-                  收费前门槛判断
-                </h4>
-                <p class="pro-survey-hint" data-i18n="proIntentDecisionGateHint">
-                  基于最近 7 天本地匿名聚合问卷意向分布，直接导出 A/B/C
-                  决策摘要，用来判断当前是否只该继续收集样本，还是已经进入下一步收费评估。
-                </p>
-
-                <div class="pro-actions pro-distribution-actions">
-                  <button
-                    id="copy-pro-intent-decision-summary"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proIntentDecisionSummaryCopy"
-                  >
-                    复制收费前门槛摘要
-                  </button>
-                  <button
-                    id="download-pro-intent-decision-summary-json"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proIntentDecisionSummaryDownloadJson"
-                  >
-                    下载收费前门槛 JSON
-                  </button>
-                </div>
-
-                <p class="pro-privacy-hint" data-i18n="proIntentDecisionGatePrivacyHint">
-                  摘要只使用本地匿名聚合字段，不包含页面正文、复制内容、URL、标题或联系方式。
-                </p>
-              </section>
-
-              <section
-                id="pro-route-verdict-panel"
-                class="pro-survey-section pro-distribution-section"
-              >
-                <h4 class="pro-survey-title" data-i18n="proRouteValidationVerdictTitle">
-                  Pro 路线融合判断摘要
-                </h4>
-                <p class="pro-survey-hint" data-i18n="proRouteValidationVerdictHint">
-                  把路线比较、回写、稳定性和收费前门槛四份判断合成一个最终
-                  verdict，避免继续靠人工拼读多个摘要。
-                </p>
-
-                <div class="pro-actions pro-distribution-actions">
-                  <button
-                    id="copy-pro-route-validation-verdict-summary"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proRouteValidationVerdictCopy"
-                  >
-                    复制 Pro 路线融合判断摘要
-                  </button>
-                  <button
-                    id="download-pro-route-validation-verdict-json"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proRouteValidationVerdictDownloadJson"
-                  >
-                    下载 Pro 路线融合判断 JSON
-                  </button>
-                </div>
-
-                <p class="pro-privacy-hint" data-i18n="proRouteValidationVerdictPrivacyHint">
-                  融合判断只使用本地匿名聚合信号和本地判断结果，不包含网页正文、复制内容、URL、标题或联系方式。
-                </p>
-              </section>
-
-              <section
-                id="pro-payment-evaluation-audit-panel"
-                class="pro-survey-section pro-distribution-section"
-              >
-                <h4 class="pro-survey-title" data-i18n="proPaymentEvaluationAuditTitle">
-                  收费评估审计包
-                </h4>
-                <p class="pro-survey-hint" data-i18n="proPaymentEvaluationAuditHint">
-                  把统一 verdict 进一步整理成收费评估审计包，明确
-                  go/no-go、阻塞项、证据链和边界，但仍不直接实现支付。
-                </p>
-
-                <div class="pro-actions pro-distribution-actions">
-                  <button
-                    id="copy-pro-payment-evaluation-audit-summary"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proPaymentEvaluationAuditCopy"
-                  >
-                    复制收费评估审计包
-                  </button>
-                  <button
-                    id="download-pro-payment-evaluation-audit-json"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proPaymentEvaluationAuditDownloadJson"
-                  >
-                    下载收费评估审计 JSON
-                  </button>
-                </div>
-
-                <p class="pro-privacy-hint" data-i18n="proPaymentEvaluationAuditPrivacyHint">
-                  审计包只使用本地匿名聚合字段和本地判断结果，不包含网页正文、复制内容、URL、标题或联系方式。
-                </p>
-              </section>
-
-              <section
-                id="pro-route-validation-campaign-review-panel"
-                class="pro-survey-section pro-distribution-section"
-              >
-                <h4 class="pro-survey-title" data-i18n="proRouteValidationCampaignReviewTitle">
-                  跨 campaign 领先路线复核包
-                </h4>
-                <p class="pro-survey-hint" data-i18n="proRouteValidationCampaignReviewHint">
-                  把每个 campaign
-                  的领先路线、支持/冲突状态和补样优先级整理成统一复核包，并把所有对外文案继续锁定在“当前优先验证方向
-                  / stay_validation”，避免把单一获客来源误判成长期需求。
-                </p>
-
-                <div class="pro-actions pro-distribution-actions">
-                  <button
-                    id="copy-pro-route-validation-campaign-review-summary"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proRouteValidationCampaignReviewCopy"
-                  >
-                    复制跨 campaign 复核包
-                  </button>
-                  <button
-                    id="download-pro-route-validation-campaign-review-json"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proRouteValidationCampaignReviewDownloadJson"
-                  >
-                    下载跨 campaign 复核 JSON
-                  </button>
-                </div>
-
-                <p class="pro-privacy-hint" data-i18n="proRouteValidationCampaignReviewPrivacyHint">
-                  复核包只使用本地匿名聚合 campaign 信号和本地 verdict
-                  结果，不包含网页正文、复制内容、URL、标题或联系方式。
-                </p>
-              </section>
-
-              <section
-                id="pro-stay-validation-messaging-guard-panel"
-                class="pro-survey-section pro-distribution-section"
-              >
-                <h4 class="pro-survey-title" data-i18n="proStayValidationMessagingGuardTitle">
-                  stay_validation 外部话术守门复核包
-                </h4>
-                <p class="pro-survey-hint" data-i18n="proStayValidationMessagingGuardHint">
-                  把会离开当前工作区的路线页、商店和汇总文案做一次守门复核，确保所有对外表述仍停留在“当前优先验证方向”，而不是暗示收费已经上线。
-                </p>
-
-                <div class="pro-actions pro-distribution-actions">
-                  <button
-                    id="copy-pro-stay-validation-messaging-guard-summary"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proStayValidationMessagingGuardCopy"
-                  >
-                    复制话术守门复核包
-                  </button>
-                  <button
-                    id="download-pro-stay-validation-messaging-guard-json"
-                    class="secondary-btn"
-                    type="button"
-                    data-i18n="proStayValidationMessagingGuardDownloadJson"
-                  >
-                    下载话术守门 JSON
-                  </button>
-                </div>
-
-                <p class="pro-privacy-hint" data-i18n="proStayValidationMessagingGuardPrivacyHint">
-                  复核包只使用本地路线回写文案、本地 campaign 复核结果和守门规则，不包含网页正文、复制内容、URL、标题或联系方式。
-                </p>
-              </section>
-
-              <div class="form-group">
-                <label for="pro-intent-campaign" data-i18n="proIntentCampaignLabel"
-                  >渠道（campaign，可选）</label
+                <section
+                  id="pro-waitlist-distribution-toolkit"
+                  class="pro-survey-section pro-distribution-section"
                 >
-                <input
-                  id="pro-intent-campaign"
-                  type="text"
-                  autocomplete="off"
-                  inputmode="latin"
-                  spellcheck="false"
-                  maxlength="32"
-                  data-i18n-placeholder="proIntentCampaignPlaceholder"
-                  placeholder="例如：twitter / producthunt / xiaohongshu_2026"
-                />
-                <p class="pro-privacy-hint" data-i18n="proIntentCampaignHint">
-                  如果你是从某篇文章、活动页或朋友分享进入的，可以填一个简短标记，方便后续区分来源。
-                </p>
+                  <h4 class="pro-survey-title" data-i18n="proWaitlistDistributionToolkitTitle">
+                    分享链接与文案
+                  </h4>
+                  <p class="pro-survey-hint" data-i18n="proWaitlistDistributionToolkitHint">
+                    当前阶段只做增长获客，不做表单收集。你可以直接复制官网路线页、商店安装链接和分享资料。
+                  </p>
+
+                  <div class="pro-actions pro-distribution-actions">
+                    <button
+                      id="pro-waitlist-url-copy"
+                      class="secondary-btn"
+                      data-i18n="proWaitlistUrlCopyButton"
+                    >
+                      复制官网路线链接
+                    </button>
+                    <button
+                      id="pro-waitlist-recruit-copy"
+                      class="secondary-btn"
+                      data-i18n="proWaitlistRecruitCopyButton"
+                    >
+                      复制分享文案
+                    </button>
+                    <button
+                      id="pro-store-url-copy"
+                      class="secondary-btn"
+                      data-i18n="proStoreUrlCopyButton"
+                    >
+                      复制商店安装链接（带 UTM + campaign）
+                    </button>
+                    <button
+                      id="pro-distribution-pack-copy"
+                      class="secondary-btn"
+                      data-i18n="proDistributionPackCopyButton"
+                    >
+                      复制完整投放包（Markdown）
+                    </button>
+                  </div>
+
+                  <p
+                    id="pro-waitlist-distribution-campaign-required"
+                    class="pro-privacy-hint"
+                    data-i18n="proWaitlistDistributionCampaignRequired"
+                    hidden
+                  >
+                    请先填写有效的来源标记。
+                  </p>
+                </section>
               </div>
+            </details>
 
-              <section
-                id="pro-waitlist-distribution-toolkit"
-                class="pro-survey-section pro-distribution-section"
+            <div class="pro-actions">
+              <button id="pro-waitlist-button" class="primary-btn" data-i18n="proJoinWaitlist">
+                查看 Pro 路线说明
+              </button>
+            </div>
+
+            <p class="pro-scope-links">
+              <a
+                id="pro-scope-learn-more"
+                class="pro-scope-link"
+                href="https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md"
+                target="_blank"
+                rel="noreferrer noopener"
+                data-i18n="proScopeLearnMore"
               >
-                <h4 class="pro-survey-title" data-i18n="proWaitlistDistributionToolkitTitle">
-                  分享链接与文案
-                </h4>
-                <p class="pro-survey-hint" data-i18n="proWaitlistDistributionToolkitHint">
-                  当前阶段只做增长获客，不做表单收集。你可以直接复制官网路线页、商店安装链接和分享资料。
-                </p>
+                查看功能边界说明
+              </a>
+            </p>
 
-                <div class="pro-actions pro-distribution-actions">
-                  <button
-                    id="pro-waitlist-url-copy"
-                    class="secondary-btn"
-                    data-i18n="proWaitlistUrlCopyButton"
-                  >
-                    复制官网路线链接
-                  </button>
-                  <button
-                    id="pro-waitlist-recruit-copy"
-                    class="secondary-btn"
-                    data-i18n="proWaitlistRecruitCopyButton"
-                  >
-                    复制分享文案
-                  </button>
-                  <button
-                    id="pro-store-url-copy"
-                    class="secondary-btn"
-                    data-i18n="proStoreUrlCopyButton"
-                  >
-                    复制商店安装链接（带 UTM + campaign）
-                  </button>
-                  <button
-                    id="pro-distribution-pack-copy"
-                    class="secondary-btn"
-                    data-i18n="proDistributionPackCopyButton"
-                  >
-                    复制完整投放包（Markdown）
-                  </button>
-                </div>
-
-                <p
-                  id="pro-waitlist-distribution-campaign-required"
-                  class="pro-privacy-hint"
-                  data-i18n="proWaitlistDistributionCampaignRequired"
-                  hidden
-                >
-                  请先填写有效的来源标记。
-                </p>
-              </section>
-
-              <div class="pro-actions">
-                <button id="pro-waitlist-button" class="primary-btn" data-i18n="proJoinWaitlist">
-                  查看官网 Pro 路线
-                </button>
-              </div>
-
-              <p class="pro-scope-links">
-                <a
-                  id="pro-scope-learn-more"
-                  class="pro-scope-link"
-                  href="https://github.com/ayqy/copy/blob/main/docs/monetization/pro-scope.md"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  data-i18n="proScopeLearnMore"
-                >
-                  查看 Pro 范围/边界文档
-                </a>
-              </p>
-
-              <p class="pro-privacy-hint" data-i18n="proPrivacyHint">
-                当前阶段不收集候补、问卷或联系方式；先专注安装、激活、复用与口碑增长。
-              </p>
-            </section>
+            <p class="pro-privacy-hint" data-i18n="proPrivacyHint">
+              当前阶段不收集候补、问卷或联系方式；这里只负责把能力边界和后续方向讲清楚。
+            </p>
           </div>
 
           <div id="wom-actions-panel" class="pro-card wom-actions-panel">
