@@ -4,27 +4,11 @@
   "active_sub_idx": 3,
   "next_sub_prd_index": 4,
   "pending_fix": null,
-  "last_dev_cycle": "2026-07-11T07:14:08.102183+00:00",
-  "last_growth_cycle": "2026-07-11T07:16:49.667684+00:00",
+  "last_dev_cycle": "2026-07-12T04:44:59.486244+00:00",
+  "last_growth_cycle": "2026-07-12T04:47:20.408612+00:00",
   "last_quota_exhausted_at": "2026-07-03T15:00:31.136786+00:00",
   "last_run_errors": [],
   "codex_run_history": [
-    {
-      "at": "2026-03-23T21:48:07.684350+00:00",
-      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-034230-growth_execute"
-    },
-    {
-      "at": "2026-03-23T21:55:01.110237+00:00",
-      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260324-042754-growth_execute"
-    },
-    {
-      "at": "2026-03-25T00:48:13.188678+00:00",
-      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-084252-sub_prd_plan"
-    },
-    {
-      "at": "2026-03-25T01:02:05.264747+00:00",
-      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-084813-dev_execute"
-    },
     {
       "at": "2026-03-25T02:20:20.182752+00:00",
       "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260325-101350-sub_prd_plan"
@@ -208,6 +192,22 @@
     {
       "at": "2026-07-11T13:23:25.122827+00:00",
       "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260711-211926189-sub_prd_plan-2c74788b"
+    },
+    {
+      "at": "2026-07-11T13:48:15.251606+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260711-214810443-dev_execute-9731131c"
+    },
+    {
+      "at": "2026-07-11T14:09:32.573021+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260711-220927771-sub_prd_plan-2c74788b"
+    },
+    {
+      "at": "2026-07-12T04:12:54.147556+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260712-120517883-sub_prd_plan-2c74788b"
+    },
+    {
+      "at": "2026-07-12T04:40:48.517026+00:00",
+      "run_dir": "/Users/pocket/Documents/project/Copylot/.24h-studio/runs/20260712-121254150-dev_execute-9731131c"
     }
   ],
   "human_todos": [
@@ -217,7 +217,7 @@
       "depends_on": "growth_engine",
       "doc": "docs/growth/blocked.md",
       "notes": "缺少 GROWTH_N8N_WEBHOOK_URL",
-      "created_at": "2026-07-11T07:16:49.182067+00:00"
+      "created_at": "2026-07-12T04:47:20.346236+00:00"
     },
     {
       "title": "listmonk API 适配",
@@ -225,7 +225,7 @@
       "depends_on": "growth_engine",
       "doc": "docs/growth/blocked.md",
       "notes": "缺少 GROWTH_LISTMONK_URL",
-      "created_at": "2026-07-11T07:16:49.182145+00:00"
+      "created_at": "2026-07-12T04:47:20.346306+00:00"
     },
     {
       "title": "PostHog event 适配",
@@ -233,17 +233,17 @@
       "depends_on": "growth_engine",
       "doc": "docs/growth/blocked.md",
       "notes": "缺少 capture_url 或 api_key",
-      "created_at": "2026-07-11T07:16:49.182165+00:00"
+      "created_at": "2026-07-12T04:47:20.346317+00:00"
     }
   ],
   "roadmap": {
     "status_path": "docs/roadmap_status.md",
-    "last_seen_stage": "- 阶段名称：S2 / G2 `第二次复用与口碑循环`",
+    "last_seen_stage": "- 阶段名称：S4 / G4 `跨 campaign 样本复核与增长纪律`",
     "last_seen_top3": [
-      "强化 Shift 追加模式与多段收集工作流，让用户在代码块之外也有明确的第二次、第三次连续复制理由。",
-      "继续压实 Prompt 默认命中与追加模式协同，提升第二次打开后的真实复用频率，而不是只增加入口曝光。",
-      "开始观察 WOM 解锁后的真实分享/评价证据，判断哪些承接文案最容易带来新的安装与评分增长。"
+      "优先补 `ph / reddit / seo` 的真实任务样本，先清掉 `sample_still_thin` 与 `acquisition_bias_unresolved`。",
+      "继续把官网、商店、扩展内导出摘要与分发素材锁在 `stay_validation`，避免任何“已验证收费”或“已接近支付上线”的暗示。",
+      "只有当跨 campaign 复核与收费评估审计包在同一套口径下连续通过门槛后，才创建单独的人类批准与收费实现规划。"
     ],
-    "last_updated_at": "2026-07-11T07:40:50+00:00"
+    "last_updated_at": "2026-07-12T04:44:59.488794+00:00"
   }
 }
