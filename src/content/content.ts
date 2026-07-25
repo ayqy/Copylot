@@ -2,6 +2,7 @@
 // before inlining. This helps with TypeScript checking for the main script file.
 // The actual functions/constants from these modules will be globally available after inlining.
 import type { Prompt, Settings } from '../shared/settings-manager';
+import type { CopyActionErrorCode, CopyActionResult } from '../shared/copy-action-result';
 // No need to import specific functions like isViableBlock, createButton etc. here,
 // as they will be part of the global scope after the inline build step.
 // The /* INLINE:... */ comments will bring their definitions directly into this file.
@@ -12,6 +13,7 @@ declare const DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS: string[] | undefined
 declare function getActivePrompts(prompts: Prompt[]): Prompt[];
 declare function getMessage(key: string): string;
 declare function recordTelemetryEvent(name: string, props?: Record<string, unknown>): Promise<void>;
+declare function showCopyActionFeedback(message: string, kind: 'success' | 'error'): void;
 
 /* INLINE:block-identifier */
 /* INLINE:prompt-shortcuts */
@@ -320,6 +322,13 @@ function getSelectionAnchorElement(): Element | null {
 async function copyToClipboard(text: string): Promise<void> {
   const textarea = document.createElement('textarea');
   textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  Object.assign(textarea.style, {
+    position: 'fixed',
+    top: '-1000px',
+    left: '-1000px',
+    opacity: '0'
+  });
   document.body.appendChild(textarea);
   textarea.select();
   const success = document.execCommand('copy');
@@ -375,6 +384,78 @@ async function reportSuccessfulCopy(options: ReportSuccessfulCopyOptions = {}): 
   }
 }
 
+function getCopyActionFailureMessage(code: CopyActionErrorCode): string {
+  switch (code) {
+    case 'NO_CONTENT':
+      return getMessage('copyErrorNoContent');
+    case 'SETTINGS_UNAVAILABLE':
+      return getMessage('copyErrorSettingsUnavailable');
+    case 'CLIPBOARD_WRITE_FAILED':
+      return getMessage('copyErrorClipboard');
+    case 'CONTENT_SCRIPT_UNAVAILABLE':
+      return getMessage('copyErrorPageUnavailable');
+    case 'NO_ACTIVE_TAB':
+      return getMessage('copyErrorNoActiveTab');
+    default:
+      return getMessage('copyErrorUnknown');
+  }
+}
+
+function createContentCopyFailure(code: CopyActionErrorCode): CopyActionResult {
+  const error = getCopyActionFailureMessage(code);
+  showCopyActionFeedback(error, 'error');
+  return {
+    success: false,
+    code,
+    error
+  };
+}
+
+async function processSelectionOrPageCopy(preferSelection: boolean): Promise<CopyActionResult> {
+  if (!userSettings) {
+    await loadSettingsAndApply();
+  }
+
+  if (!userSettings) {
+    return createContentCopyFailure('SETTINGS_UNAVAILABLE');
+  }
+
+  const selectionRoot = preferSelection ? getSelectionRootElementForProcessing() : null;
+  const processingRoot = selectionRoot || document.body;
+  if (!processingRoot) {
+    return createContentCopyFailure('NO_CONTENT');
+  }
+
+  let content = '';
+  try {
+    // @ts-ignore: processContent is available from inlined content-processor.ts
+    content = processContent(processingRoot, userSettings);
+  } catch (error) {
+    console.error('AI Copilot: Failed to process page content:', error);
+    return createContentCopyFailure('UNKNOWN');
+  }
+
+  if (!content.trim()) {
+    return createContentCopyFailure('NO_CONTENT');
+  }
+
+  try {
+    await copyToClipboard(content);
+    await recordE2ECopiedText(content);
+  } catch (error) {
+    console.error('AI Copilot: Failed to write copied content:', error);
+    return createContentCopyFailure('CLIPBOARD_WRITE_FAILED');
+  }
+
+  void recordTelemetryEvent('copy_success');
+  await reportSuccessfulCopy();
+  showCopyActionFeedback(
+    getMessage(selectionRoot ? 'copySuccessSelection' : 'copySuccessPage'),
+    'success'
+  );
+  return { success: true };
+}
+
 function extractSelectionOrPageContent(explicitSelectionText?: string): string {
   if (!userSettings) {
     return '';
@@ -411,18 +492,18 @@ async function processPromptActionMessage(message: {
   selectionText?: string;
   auditSource?: 'popup' | 'onboarding';
   quickPromptSlot?: 1 | 2 | 3;
-}): Promise<{ success: boolean; error?: string }> {
+}): Promise<CopyActionResult> {
   if (!userSettings) {
     await loadSettingsAndApply();
   }
 
   if (!userSettings) {
-    return { success: false, error: getMessage('settingsNotLoaded') };
+    return createContentCopyFailure('SETTINGS_UNAVAILABLE');
   }
 
   const content = extractSelectionOrPageContent(message.selectionText);
   if (!content.trim()) {
-    return { success: false, error: getMessage('noContentToCopy') };
+    return createContentCopyFailure('NO_CONTENT');
   }
 
   // @ts-ignore: combinePromptWithContent is available from inlined settings-manager.ts
@@ -459,13 +540,27 @@ async function processPromptActionMessage(message: {
       setTimeout(() => {
         window.open(message.chatServiceUrl!, '_blank');
       }, 1500);
+    } else {
+      showCopyActionFeedback(getMessage('copySuccessPrompt'), 'success');
     }
 
     return { success: true };
   } catch (error) {
     console.error('Error copying prompt action to clipboard:', error);
-    return { success: false, error: getMessage('failedCopyClipboard') };
+    return createContentCopyFailure('CLIPBOARD_WRITE_FAILED');
   }
+}
+
+function sendCopyActionResponse(
+  action: Promise<CopyActionResult>,
+  sendResponse: (response?: unknown) => void
+): void {
+  void action
+    .then((result) => sendResponse(result))
+    .catch((error) => {
+      console.error('AI Copilot: Unhandled copy action error:', error);
+      sendResponse(createContentCopyFailure('UNKNOWN'));
+    });
 }
 
 /**
@@ -1252,141 +1347,87 @@ async function initializeContentScript(): Promise<void> {
     }
 
     // Listener for messages from background script or popup
-    chrome.runtime.onMessage.addListener(async (message, _sender, sendResponse) => {
+    chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       if (message.type === 'CONVERT_PAGE') {
-        if (!userSettings) {
-          await loadSettingsAndApply();
-        }
-        if (userSettings) {
-          // @ts-ignore: processContent is available from inlined content-processor.ts
-          const content = processContent(document.body, userSettings);
-          if (content.trim()) {
-            try {
-              await copyToClipboard(content);
-              await recordE2ECopiedText(content);
-              void recordTelemetryEvent('copy_success');
-              await reportSuccessfulCopy();
-              sendResponse({ success: true });
-            } catch (error) {
-              console.error('Error copying to clipboard:', error);
-              sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
-            }
-          } else {
-            sendResponse({ success: false, error: getMessage('noContentToCopy') });
-          }
-        } else {
-          sendResponse({ success: false, error: getMessage('settingsNotLoaded') });
-        }
-        return true; // Indicates async response
+        sendCopyActionResponse(processSelectionOrPageCopy(false), sendResponse);
+        return true;
       }
 
       if (message.type === 'CONVERT_PAGE_WITH_SELECTION') {
-        if (!userSettings) {
-          await loadSettingsAndApply();
-        }
-        if (userSettings) {
-          const selectionRoot = getSelectionRootElementForProcessing();
-          let content: string;
-
-          if (selectionRoot) {
-            console.debug('AI Copilot: Processing selection root element');
-            // @ts-ignore: processContent is available from inlined content-processor.ts
-            content = processContent(selectionRoot, userSettings);
-          } else {
-            console.debug('AI Copilot: No selection found, processing entire page');
-            // @ts-ignore: processContent is available from inlined content-processor.ts
-            content = processContent(document.body, userSettings);
-          }
-          
-          if (content.trim()) {
-            try {
-              await copyToClipboard(content);
-              await recordE2ECopiedText(content);
-              void recordTelemetryEvent('copy_success');
-              await reportSuccessfulCopy();
-              sendResponse({ success: true });
-            } catch (error) {
-              console.error('Error copying to clipboard:', error);
-              sendResponse({ success: false, error: getMessage('failedCopyClipboard') });
-            }
-          } else {
-            sendResponse({ success: false, error: getMessage('noContentToCopy') });
-          }
-        } else {
-          sendResponse({ success: false, error: getMessage('settingsNotLoaded') });
-        }
-        return true; // Indicates async response
+        sendCopyActionResponse(processSelectionOrPageCopy(true), sendResponse);
+        return true;
       }
 
       if (message.type === 'PROCESS_SELECTION_WITH_PROMPT') {
-        const result = await processPromptActionMessage({
-          promptTemplate: message.promptTemplate,
-          chatServiceUrl: message.chatServiceUrl,
-          chatServiceName: message.chatServiceName
-        });
-        sendResponse(result);
-        return true; // Indicates async response
+        sendCopyActionResponse(
+          processPromptActionMessage({
+            promptTemplate: message.promptTemplate,
+            chatServiceUrl: message.chatServiceUrl,
+            chatServiceName: message.chatServiceName
+          }),
+          sendResponse
+        );
+        return true;
       }
 
       if (message.type === 'PROCESS_PAGE_WITH_PROMPT') {
-        const result = await processPromptActionMessage({
-          promptTemplate: message.promptTemplate,
-          selectionText: ''
-        });
-        sendResponse(result);
-        return true; // Indicates async response
+        sendCopyActionResponse(
+          processPromptActionMessage({
+            promptTemplate: message.promptTemplate,
+            selectionText: ''
+          }),
+          sendResponse
+        );
+        return true;
       }
 
       if (message.type === 'PROCESS_PAGE_WITH_PROMPT_AND_CHAT') {
-        const result = await processPromptActionMessage({
-          promptTemplate: message.promptTemplate,
-          chatServiceUrl: message.chatServiceUrl,
-          chatServiceName: message.chatServiceName,
-          selectionText: ''
-        });
-        sendResponse(result);
-        return true; // Indicates async response
+        sendCopyActionResponse(
+          processPromptActionMessage({
+            promptTemplate: message.promptTemplate,
+            chatServiceUrl: message.chatServiceUrl,
+            chatServiceName: message.chatServiceName,
+            selectionText: ''
+          }),
+          sendResponse
+        );
+        return true;
       }
 
       if (message.type === 'PROCESS_SELECTION_OR_PAGE_WITH_PROMPT') {
-        const result = await processPromptActionMessage({
-          promptTemplate: message.promptTemplate,
-          chatServiceUrl: message.chatServiceUrl,
-          chatServiceName: message.chatServiceName,
-          selectionText: message.selectionText,
-          auditSource: message.auditSource,
-          quickPromptSlot: message.quickPromptSlot
-        });
-        sendResponse(result);
-        return true; // Indicates async response
+        sendCopyActionResponse(
+          processPromptActionMessage({
+            promptTemplate: message.promptTemplate,
+            chatServiceUrl: message.chatServiceUrl,
+            chatServiceName: message.chatServiceName,
+            selectionText: message.selectionText,
+            auditSource: message.auditSource,
+            quickPromptSlot: message.quickPromptSlot
+          }),
+          sendResponse
+        );
+        return true;
       }
 
       if (message.type === 'copy-to-clipboard-from-background') {
         const { text } = message;
-        try {
-          const textarea = document.createElement('textarea');
-          textarea.style.position = 'fixed';
-          textarea.style.top = '-100px';
-          textarea.value = text;
-          document.body.appendChild(textarea);
-          textarea.select();
-          const success = document.execCommand('copy');
-          document.body.removeChild(textarea);
-
-          if (success) {
+        void (async () => {
+          try {
+            await copyToClipboard(text);
             await recordE2ECopiedText(text);
             void recordTelemetryEvent('copy_success');
             await reportSuccessfulCopy();
-            sendResponse({ success: true });
-          } else {
-            throw new Error('document.execCommand("copy") returned false.');
+            showCopyActionFeedback(getMessage('copySuccessPage'), 'success');
+            sendResponse({ success: true } satisfies CopyActionResult);
+          } catch (error) {
+            console.error('Failed to copy text from background:', error);
+            sendResponse(createContentCopyFailure('CLIPBOARD_WRITE_FAILED'));
           }
-        } catch (err) {
-          console.error('Failed to copy text from content script using execCommand:', err);
-          sendResponse({ success: false, error: err instanceof Error ? err.message : String(err) });
-        }
-        return true; // Indicates async response
+        })();
+        return true;
       }
+
+      return false;
     });
 
     isInitialized = true; // Mark as initialized regardless of feature state

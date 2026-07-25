@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Designing, refining, and maintaining agent skills at Perplexity</title>
+  </head>
+  <body>
+    <header class="site-header navigation-shell">
+      <a href="/">Perplexity</a>
+      <a href="/research">Research</a>
+      <a href="/about">About</a>
+      <a href="/careers">Careers</a>
+    </header>
+    <div id="main">
+      <header class="framer-4bma1s">
+        <p>Research</p>
+        <p>May 1, 2026</p>
+        <h1>Designing, refining, and maintaining agent skills at Perplexity</h1>
+      </header>
+      <header class="framer-1edu8jh"></header>
+      <header class="framer-159wj77">
+        <p>
+          Agent skills are reusable packages of instructions, examples, and resources that help
+          agents perform specialized work consistently. At Perplexity, we treat them as maintained
+          product surfaces rather than one-off prompt fragments, with clear owners and measurable
+          outcomes for the people who depend on them.
+        </p>
+        <h2>Design around real tasks</h2>
+        <p>
+          A useful skill begins with representative user tasks and the constraints of the runtime.
+          The author identifies the decision points that require judgment, keeps deterministic work
+          in tools, and makes the expected output easy to verify. This keeps instructions focused
+          while preserving the context an agent needs to make sound decisions.
+        </p>
+        <p>
+          Refinement comes from reviewing failed runs, distinguishing missing context from weak
+          procedure, and updating the smallest part of the skill that explains the failure. Each
+          revision is tested against both the original case and neighboring cases so a local fix
+          does not create a broader regression.
+        </p>
+        <h2>Maintain quality over time</h2>
+        <p>
+          Maintenance includes checking external dependencies, removing stale guidance, and
+          recording why important constraints exist. Teams review changes as product changes:
+          users should experience more reliable outcomes without needing to understand the
+          implementation details behind the skill.
+        </p>
+        <ul>
+          <li>Ground instructions in observed tasks.</li>
+          <li>Keep examples representative and testable.</li>
+          <li>Review failures and revise with evidence.</li>
+        </ul>
+        <aside class="share-toolbar">
+          <a href="/share/x">Share on X</a>
+          <a href="/share/linkedin">Share on LinkedIn</a>
+        </aside>
+        <footer class="related-recommendations">
+          <a href="/articles/one">Related article one</a>
+          <a href="/articles/two">Related article two</a>
+        </footer>
+      </header>
+    </div>
+    <footer>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/status">Status</a>
+      <a href="/contact">Contact</a>
+    </footer>
+  </body>
+</html>

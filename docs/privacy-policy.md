@@ -1,6 +1,6 @@
 # Privacy Policy for Copylot
 
-**Last Updated:** 2026-03-19
+**Last Updated:** 2026-07-25
 
 ## Overview
 
@@ -37,23 +37,27 @@ Copylot stores some data in your browser storage to make the extension work and 
 
 Note: `chrome.storage.sync` is provided by the browser. If you enable Chrome Sync in your browser, this data may be synced across your devices by Chrome/Google. Copylot does not operate that sync service and does not receive this data.
 
-### Growth / UX Stats (Local Only)
+### Basic Product State (Current Device Only)
 
 - Storage: `chrome.storage.local`
 - Key: `copilot_growth_stats`
-- What it includes:
+- What it may include:
   - Install timestamp
-  - Successful copy count (for showing one-time prompts like rating guidance)
-  - One-time rating prompt state (shown/action/time)
+  - Successful copy count
+  - Temporary append-session state used to combine several copied sections
+- What it never includes:
+  - Copied or selected content
+  - Page titles or URLs
+- Network: **not sent over the network**
 
-### Anonymous Usage Data (Optional, Local Only)
+### Local Usage Records (Optional, Current Device Only)
 
-Copylot provides an “Anonymous usage data” toggle for privacy-safe, local-only observability.
+Copylot provides a “Local usage records” toggle for optional, on-device troubleshooting.
 
 - Default: **OFF**
 - Storage: `chrome.storage.local`
 - Key: `copilot_telemetry_events`
-- When ON: Copylot records a local event log with a strict schema (event name, timestamp, and a small set of allowlisted enum-like fields).
+- When ON: Copylot records a local event log with a strict schema (feature action, timestamp, and a small set of allowlisted enum-like fields).
 - What it never contains: any copied content, page content, URLs, page titles, or other sensitive data.
 - Network: **not sent over the network**
 - Retention: keeps up to the most recent 100 events (FIFO)
@@ -78,7 +82,7 @@ Copylot also runs content scripts on web pages (as declared in `manifest.json`) 
 ## Your Choices
 
 - You can change settings at any time in the extension Options/Popup.
-- You can keep “Anonymous usage data” OFF (default). Turning it OFF clears the local event log immediately.
+- You can keep “Local usage records” OFF (default). Turning it OFF clears the optional local event log immediately.
 - Uninstalling the extension removes its local data from your browser.
 
 ## Contact
@@ -86,4 +90,3 @@ Copylot also runs content scripts on web pages (as declared in `manifest.json`) 
 If you have questions or concerns about this privacy policy, please contact us via:
 
 - GitHub Issues: https://github.com/ayqy/copy/issues/new
-

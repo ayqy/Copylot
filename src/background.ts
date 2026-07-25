@@ -20,6 +20,11 @@ import {
   clearAppendSessionState,
   recordAppendSessionClip
 } from './shared/append-session';
+import {
+  createCopyActionFailure,
+  isCopyActionResult,
+  type CopyActionResult
+} from './shared/copy-action-result';
 
 const isE2EBuild = process.env.BUILD_TARGET === 'e2e';
 const E2E_LAST_COPIED_TEXT_KEY = 'copilot_e2e_last_copied_text';
@@ -144,8 +149,36 @@ async function updateContextMenu() {
 
 let clipboardStack: string[] = [];
 
-async function handleConvertPageContextMenu(tabId: number) {
-  return chrome.tabs.sendMessage(tabId, {
+function getCopyActionMessage(key: string): string {
+  return chrome.i18n.getMessage(key) || chrome.i18n.getMessage('failedCopyClipboard');
+}
+
+async function sendCopyActionMessage(
+  tabId: number,
+  message: Record<string, unknown>
+): Promise<CopyActionResult> {
+  try {
+    const response = await chrome.tabs.sendMessage(tabId, message);
+    if (isCopyActionResult(response)) {
+      return response;
+    }
+    return createCopyActionFailure(
+      'UNKNOWN',
+      getCopyActionMessage('copyErrorUnknown')
+    );
+  } catch (error) {
+    console.warn('Could not reach the Copylot content script:', error);
+    return createCopyActionFailure(
+      'CONTENT_SCRIPT_UNAVAILABLE',
+      getCopyActionMessage(
+        'copyErrorPageUnavailable'
+      )
+    );
+  }
+}
+
+async function handleConvertPageContextMenu(tabId: number): Promise<CopyActionResult> {
+  return sendCopyActionMessage(tabId, {
     type: 'CONVERT_PAGE_WITH_SELECTION'
   });
 }
@@ -155,11 +188,14 @@ async function runPromptAction(
   promptId: string,
   selectionText?: string,
   audit?: { source?: ReuseEntrySource; slot?: ReuseEntrySlot }
-) {
+): Promise<CopyActionResult> {
   const settings = await getSettings();
   const prompt = getActivePrompts(settings.userPrompts).find((item: Prompt) => item.id === promptId);
   if (!prompt) {
-    return;
+    return createCopyActionFailure(
+      'UNKNOWN',
+      chrome.i18n.getMessage('promptNotFound') || 'Prompt not found'
+    );
   }
 
   prompt.usageCount = (prompt.usageCount || 0) + 1;
@@ -179,7 +215,7 @@ async function runPromptAction(
   if (shouldOpenChat && targetChatId) {
     const chatService = settings.chatServices.find((service: ChatService) => service.id === targetChatId && service.enabled);
     if (chatService) {
-      return chrome.tabs.sendMessage(tabId, {
+      return sendCopyActionMessage(tabId, {
         type: 'PROCESS_SELECTION_OR_PAGE_WITH_PROMPT',
         promptTemplate: prompt.template,
         chatServiceUrl: chatService.url,
@@ -191,7 +227,7 @@ async function runPromptAction(
     }
   }
 
-  return chrome.tabs.sendMessage(tabId, {
+  return sendCopyActionMessage(tabId, {
     type: 'PROCESS_SELECTION_OR_PAGE_WITH_PROMPT',
     promptTemplate: prompt.template,
     selectionText: normalizedSelection,
@@ -200,21 +236,35 @@ async function runPromptAction(
   });
 }
 
-async function handleContextMenuClick(info: chrome.contextMenus.OnClickData, tab?: chrome.tabs.Tab) {
+async function handleContextMenuClick(
+  info: chrome.contextMenus.OnClickData,
+  tab?: chrome.tabs.Tab
+): Promise<CopyActionResult> {
   if (!tab?.id) {
-    return;
+    return createCopyActionFailure(
+      'NO_ACTIVE_TAB',
+      getCopyActionMessage('copyErrorNoActiveTab')
+    );
   }
 
   if (info.menuItemId === 'convert-page-to-ai-friendly-format') {
-    await handleConvertPageContextMenu(tab.id);
-    return;
+    return handleConvertPageContextMenu(tab.id);
   }
 
   const settings = await getSettings();
   const promptExists = getActivePrompts(settings.userPrompts).some((prompt) => prompt.id === info.menuItemId);
   if (promptExists) {
-    await runPromptAction(tab.id, String(info.menuItemId), typeof info.selectionText === 'string' ? info.selectionText : undefined);
+    return runPromptAction(
+      tab.id,
+      String(info.menuItemId),
+      typeof info.selectionText === 'string' ? info.selectionText : undefined
+    );
   }
+
+  return createCopyActionFailure(
+    'UNKNOWN',
+    getCopyActionMessage('copyErrorUnknown')
+  );
 }
 
 async function resetE2EState() {
@@ -245,7 +295,9 @@ async function openPopupForTab(tabId?: number) {
   await chrome.action.openPopup();
 }
 
-async function invokeContextMenuFromBridge(message: { tabId?: number; info: Partial<chrome.contextMenus.OnClickData> }) {
+async function invokeContextMenuFromBridge(
+  message: { tabId?: number; info: Partial<chrome.contextMenus.OnClickData> }
+): Promise<CopyActionResult> {
   let tab: chrome.tabs.Tab | null = null;
 
   if (typeof message.tabId === 'number') {
@@ -274,14 +326,14 @@ async function invokeContextMenuFromBridge(message: { tabId?: number; info: Part
     checked: message.info.checked
   } as chrome.contextMenus.OnClickData;
 
-  await handleContextMenuClick(clickInfo, tab);
+  return handleContextMenuClick(clickInfo, tab);
 }
 
 async function executeQuickActionCommand(
   command: string,
   explicitTabId?: number,
   audit?: { source?: ReuseEntrySource; slot?: ReuseEntrySlot }
-) {
+): Promise<CopyActionResult> {
   let tab: chrome.tabs.Tab | null = null;
 
   if (typeof explicitTabId === 'number') {
@@ -292,35 +344,49 @@ async function executeQuickActionCommand(
   }
 
   if (!tab?.id) {
-    throw new Error(chrome.i18n.getMessage('noActiveTabFound') || 'No active tab found.');
+    return createCopyActionFailure(
+      'NO_ACTIVE_TAB',
+      getCopyActionMessage('copyErrorNoActiveTab')
+    );
   }
 
   if (command === QUICK_CONVERT_COMMAND) {
-    await handleConvertPageContextMenu(tab.id);
-    return;
+    return handleConvertPageContextMenu(tab.id);
   }
 
   const slot = getQuickPromptSlotFromCommand(command);
   if (!slot) {
-    throw new Error(chrome.i18n.getMessage('unknownMessageType') || 'Unknown message type');
+    return createCopyActionFailure(
+      'UNKNOWN',
+      getCopyActionMessage('copyErrorUnknown')
+    );
   }
 
   const settings = await getSettings();
   const prompt = getQuickPromptBySlot(getActivePrompts(settings.userPrompts), slot);
   if (!prompt) {
-    throw new Error(chrome.i18n.getMessage('promptNotFound') || 'Prompt not found');
+    return createCopyActionFailure(
+      'UNKNOWN',
+      chrome.i18n.getMessage('promptNotFound') || 'Prompt not found'
+    );
   }
 
-  await runPromptAction(tab.id, prompt.id, undefined, {
+  return runPromptAction(tab.id, prompt.id, undefined, {
     source: audit?.source,
     slot: audit?.slot ?? slot
   });
 }
 
 chrome.commands?.onCommand.addListener((command) => {
-  void executeQuickActionCommand(command).catch((error) => {
-    console.error('Failed to execute command:', command, error);
-  });
+  void executeQuickActionCommand(command)
+    .then((result) => {
+      if (!result.success) {
+        console.warn('Copylot command did not complete:', command, result.code, result.error);
+      }
+    })
+    .catch((error) => {
+      console.error('Failed to execute command:', command, error);
+    });
 });
 
 // Extension lifecycle events
@@ -461,40 +527,31 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
               textToSend = text;
             }
             
-            chrome.tabs.sendMessage(
-              tabs[0].id,
-              {
-                type: 'copy-to-clipboard-from-background',
-                text: textToSend
-              },
-              async (response) => {
-                if (chrome.runtime.lastError) {
-                  console.warn('Could not send message to content script:', chrome.runtime.lastError.message);
-                  sendResponse({ success: true, warning: chrome.i18n.getMessage('contentScriptUnavailable') || 'Content script not available.' });
-                } else {
-                  if (response.success) {
-                    if (isShiftPressed && appendAudit) {
-                      sendResponse({
-                        success: response.success,
-                        action: 'appended',
-                        error: response.error,
-                        appendSession: appendAudit
-                      });
-                      return;
-                    }
-                  }
+            const result = await sendCopyActionMessage(tabs[0].id, {
+              type: 'copy-to-clipboard-from-background',
+              text: textToSend
+            });
+            if (result.success && isShiftPressed && appendAudit) {
+              sendResponse({
+                ...result,
+                action: 'appended',
+                appendSession: appendAudit
+              });
+              return;
+            }
 
-                  sendResponse({
-                    success: response.success,
-                    action: isShiftPressed ? 'appended' : 'copied',
-                    error: response.error
-                  });
-                }
-              }
-            );
+            sendResponse({
+              ...result,
+              action: isShiftPressed ? 'appended' : 'copied'
+            });
           } else {
             console.error('No active tab found to send the message to.');
-            sendResponse({ success: false, error: chrome.i18n.getMessage('noActiveTabFound') || 'No active tab found.' });
+            sendResponse(
+              createCopyActionFailure(
+                'NO_ACTIVE_TAB',
+                getCopyActionMessage('copyErrorNoActiveTab')
+              )
+            );
           }
         });
         return true; // Indicate that the response is asynchronous
@@ -532,18 +589,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           const source = isReuseEntrySource(message.source) ? message.source : undefined;
           const command = typeof message.command === 'string' ? message.command : '';
           const slot = getQuickPromptSlotFromCommand(command) || undefined;
-          await executeQuickActionCommand(
+          const result = await executeQuickActionCommand(
             command,
             typeof message.tabId === 'number' ? message.tabId : undefined,
             { source, slot }
           );
-          sendResponse({ success: true });
+          sendResponse(result);
         } catch (error) {
           console.error('Failed to run quick action:', error);
-          sendResponse({ success: false, error: (error as Error).message });
+          sendResponse(
+            createCopyActionFailure(
+              'UNKNOWN',
+              getCopyActionMessage('copyErrorUnknown')
+            )
+          );
         }
       })();
-      break;
+      return true;
 
     case 'update-prompt-usage':
       // 处理从content script发来的使用次数更新请求
@@ -710,8 +772,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       (async () => {
         try {
           if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
-          await invokeContextMenuFromBridge(message as { tabId?: number; info: Partial<chrome.contextMenus.OnClickData> });
-          sendResponse({ success: true });
+          const result = await invokeContextMenuFromBridge(
+            message as { tabId?: number; info: Partial<chrome.contextMenus.OnClickData> }
+          );
+          sendResponse(result);
         } catch (error) {
           sendResponse({ success: false, error: (error as Error).message });
         }
@@ -751,11 +815,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       (async () => {
         try {
           if (!isE2EBuild) throw new Error(chrome.i18n.getMessage('e2eBridgeUnavailable'));
-          await executeQuickActionCommand(
+          const result = await executeQuickActionCommand(
             typeof message.command === 'string' ? message.command : '',
             typeof message.tabId === 'number' ? message.tabId : undefined
           );
-          sendResponse({ success: true });
+          sendResponse(result);
         } catch (error) {
           sendResponse({ success: false, error: (error as Error).message });
         }
@@ -787,7 +851,10 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 
 // Handle context menu click
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  await handleContextMenuClick(info, tab);
+  const result = await handleContextMenuClick(info, tab);
+  if (!result.success) {
+    console.warn('Copylot context-menu action did not complete:', result.code, result.error);
+  }
 });
 
 // Performance monitoring (development only)

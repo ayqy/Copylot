@@ -64,7 +64,7 @@
     "description": "Share entry in popup"
   },
   "copyShareText": {
-    "message": "Copy Text",
+    "message": "Copy Share Text",
     "description": "Copy share text button"
   },
   "rateUs": {
@@ -214,8 +214,8 @@
     }
   },
   "upgradePro": {
-    "message": "View Pro roadmap",
-    "description": "Popup entry for upgrading to Pro"
+    "message": "Pro roadmap",
+    "description": "Popup Pro planning entry"
   },
   "joinProWaitlist": {
     "message": "Join waitlist",
@@ -238,7 +238,7 @@
     "description": "Popup entry: copy Pro waitlist template"
   },
   "proTab": {
-    "message": "Pro",
+    "message": "Pro roadmap",
     "description": "Options tab label for Pro"
   },
   "proTitle": {
@@ -1631,7 +1631,7 @@
     "description": "Label for the hover trigger switch"
   },
   "convertButton": {
-    "message": "Copy to AI"
+    "message": "Copy for AI"
   },
   "convertPage": {
     "message": "Copy to AI",
@@ -1820,15 +1820,15 @@
     "description": "Popup quick actions subtitle"
   },
   "popupEnableFeatureHint": {
-    "message": "Turn this off to pause floating-button copy and standard copy entry points.",
+    "message": "Show smart copy controls on webpages.",
     "description": "Popup master switch helper text"
   },
   "expandMoreSettings": {
-    "message": "Expand more settings",
+    "message": "More copy settings",
     "description": "Popup expand more settings button"
   },
   "collapseMoreSettings": {
-    "message": "Collapse more settings",
+    "message": "Hide copy settings",
     "description": "Popup collapse more settings button"
   },
   "shortcutNotSet": {
@@ -1976,7 +1976,7 @@
     "description": "Onboarding finish button"
   },
   "optionsTitle": {
-    "message": "Prompt Manager - Copylot"
+    "message": "Copylot Settings"
   },
   "optionsOnboardingTitle": {
     "message": "Onboarding",
@@ -2363,23 +2363,23 @@
     "description": "Button text to dismiss the usage instructions"
   },
   "promptsTab": {
-    "message": "Prompt Manager",
+    "message": "Prompts",
     "description": "Prompt management tab title"
   },
   "chatServicesTab": {
-    "message": "Chat Services",
+    "message": "AI Services",
     "description": "Chat services management tab title"
   },
   "privacyTab": {
-    "message": "Privacy",
+    "message": "Privacy & Data",
     "description": "Options privacy tab title"
   },
   "privacyTitle": {
-    "message": "Data & Privacy",
+    "message": "Privacy & Data",
     "description": "Options privacy tab main title"
   },
   "privacyDescription": {
-    "message": "Web content stays local by default. This page tells you, in plain language, what Copylot stores, what it does not store, and how you can clear local data whenever you want.",
+    "message": "Copylot cleans webpages in your browser. Copied content is never sent to Copylot.",
     "description": "Options privacy tab description"
   },
   "privacyPromiseTitle": {
@@ -3341,5 +3341,249 @@
   "storageQuotaExceeded": {
     "message": "Sync storage is full. Remove some chat services before trying again.",
     "description": "Shown when Chrome sync storage quota prevents adding more chat services"
+  },
+  "copySuccessSelection": {
+    "message": "Selected content copied",
+    "description": "Page feedback after successfully copying a selection"
+  },
+  "copySuccessPage": {
+    "message": "Full page copied",
+    "description": "Page feedback after successfully copying a full page"
+  },
+  "copySuccessPrompt": {
+    "message": "Prompt applied and copied",
+    "description": "Page feedback after a prompt quick action succeeds"
+  },
+  "copyErrorNoContent": {
+    "message": "No copyable content was found. Select a section and try again.",
+    "description": "Recoverable error shown when extraction returns no content"
+  },
+  "copyErrorSettingsUnavailable": {
+    "message": "Settings are temporarily unavailable. Refresh the page and try again.",
+    "description": "Recoverable error shown when settings cannot be loaded"
+  },
+  "copyErrorClipboard": {
+    "message": "Copylot could not write to the clipboard. Check browser permissions and try again.",
+    "description": "Recoverable error shown when clipboard writing fails"
+  },
+  "copyErrorPageUnavailable": {
+    "message": "This page cannot be copied right now. Refresh it or try a regular webpage.",
+    "description": "Recoverable error shown when the content script is unavailable"
+  },
+  "copyErrorNoActiveTab": {
+    "message": "No current webpage was found. Open a webpage and try again.",
+    "description": "Recoverable error shown when no active tab is available"
+  },
+  "copyErrorUnknown": {
+    "message": "Copy did not finish. Try again, or refresh the page if the problem continues.",
+    "description": "Fallback error for an unknown copy failure"
+  },
+  "popupProductTagline": {
+    "message": "Turn webpages into usable content",
+    "description": "Popup brand subtitle"
+  },
+  "popupCopyTitle": {
+    "message": "Copy current content",
+    "description": "Popup primary task heading"
+  },
+  "popupCopyDescription": {
+    "message": "Copies your selection first, or cleans up the full page.",
+    "description": "Popup primary task description"
+  },
+  "popupQuickPromptsTitle": {
+    "message": "Quick Prompts",
+    "description": "Popup quick prompt section heading"
+  },
+  "popupQuickPromptsDescription": {
+    "message": "Apply a saved instruction while copying.",
+    "description": "Popup quick prompt section description"
+  },
+  "popupCopyWorking": {
+    "message": "Cleaning the page and writing to your clipboard…",
+    "description": "Popup copy in-progress status"
+  },
+  "popupCopyWorkingButton": {
+    "message": "Copying…",
+    "description": "Popup copy in-progress button label"
+  },
+  "popupCopySuccess": {
+    "message": "Copied. Ready to paste.",
+    "description": "Popup copy success status"
+  },
+  "optionsHeaderTitle": {
+    "message": "Copylot Settings",
+    "description": "Options page heading"
+  },
+  "optionsHeaderSubtitle": {
+    "message": "Manage copying, Prompts, AI services, and privacy",
+    "description": "Options page subtitle"
+  },
+  "privacyEyebrow": {
+    "message": "Your content, your choice",
+    "description": "Privacy page eyebrow"
+  },
+  "privacyLocalBadge": {
+    "message": "Processed locally",
+    "description": "Privacy page local-processing status"
+  },
+  "privacyContentLocalTitle": {
+    "message": "Copied content is processed locally",
+    "description": "Privacy page local content title"
+  },
+  "privacyContentLocalDescription": {
+    "message": "Page content, selections, titles, and links are cleaned in the current page and written straight to your clipboard.",
+    "description": "Privacy page local content description"
+  },
+  "privacySyncTitle": {
+    "message": "Sync settings and Prompts with Chrome",
+    "description": "Privacy page sync storage title"
+  },
+  "privacySyncDescription": {
+    "message": "Chrome can sync your settings, Prompts, and AI service configuration. Copylot does not receive this synced data.",
+    "description": "Privacy page sync storage description"
+  },
+  "privacyLocalRecordsTitle": {
+    "message": "Optional records stay on this device",
+    "description": "Privacy page local records title"
+  },
+  "privacyLocalRecordsDescription": {
+    "message": "Local usage records contain no webpage text, titles, or URLs and are never sent over the network.",
+    "description": "Privacy page local records description"
+  },
+  "localUsageRecordsTitle": {
+    "message": "Local usage records",
+    "description": "Local usage records setting title"
+  },
+  "localUsageRecordsDescription": {
+    "message": "Optionally record feature actions and times to help troubleshoot Copylot itself.",
+    "description": "Local usage records setting description"
+  },
+  "localUsageRecordsToggleLabel": {
+    "message": "Allow local usage records",
+    "description": "Accessible label for the local usage records toggle"
+  },
+  "localUsageRecordsBoundaryContent": {
+    "message": "Never records webpage text, selected text, page titles, or URLs",
+    "description": "Local usage records content boundary"
+  },
+  "localUsageRecordsBoundaryNetwork": {
+    "message": "Never sent to Copylot or another external service",
+    "description": "Local usage records network boundary"
+  },
+  "localUsageRecordsBoundaryOff": {
+    "message": "Turning this off immediately clears existing local event records",
+    "description": "Local usage records off behavior"
+  },
+  "localUsageRecordsStatusOn": {
+    "message": "On · Records stay on this device",
+    "description": "Local usage records enabled status"
+  },
+  "localUsageRecordsStatusOff": {
+    "message": "Off · No local events are recorded",
+    "description": "Local usage records disabled status"
+  },
+  "localUsageRecordsClearFailed": {
+    "message": "Recording is off, but old records could not be cleared. Reopen this page and turn it off again.",
+    "description": "Local usage records clear failure message"
+  },
+  "privacyPolicyLinkTitle": {
+    "message": "Read the full privacy policy",
+    "description": "Full privacy policy link title"
+  },
+  "privacyPolicyLinkDescription": {
+    "message": "Learn about browser permissions, storage, and your choices",
+    "description": "Full privacy policy link description"
+  },
+  "proPlanningEyebrow": {
+    "message": "In planning",
+    "description": "Pro page status eyebrow"
+  },
+  "proPlanningTitle": {
+    "message": "Copylot Pro",
+    "description": "Pro planning page title"
+  },
+  "proNotAvailableBadge": {
+    "message": "Not available yet",
+    "description": "Pro unavailable status"
+  },
+  "proPlanningDescription": {
+    "message": "We are exploring more advanced ways to organize research. There is no subscription, payment, or waitlist today.",
+    "description": "Pro planning page description"
+  },
+  "proViewPlanButton": {
+    "message": "View the roadmap",
+    "description": "View Pro plans button"
+  },
+  "proFreeEyebrow": {
+    "message": "Available now",
+    "description": "Free capabilities eyebrow"
+  },
+  "proFreeTitle": {
+    "message": "The free version covers everyday copying",
+    "description": "Free capabilities heading"
+  },
+  "proFreeDescription": {
+    "message": "These capabilities will remain free and are not affected by Pro planning.",
+    "description": "Free capabilities description"
+  },
+  "proFreeCapabilityClean": {
+    "message": "Clean articles, tables, and code into Markdown, CSV, or plain text",
+    "description": "Free content-cleaning capability"
+  },
+  "proFreeCapabilitySelection": {
+    "message": "Copy a selection first, or clean the full page in one action",
+    "description": "Free selection and full-page capability"
+  },
+  "proFreeCapabilityPrompt": {
+    "message": "Use three keyboard shortcuts to apply custom Prompts",
+    "description": "Free Prompt capability"
+  },
+  "proFreeCapabilityAppend": {
+    "message": "Collect several sections and paste them together",
+    "description": "Free append capability"
+  },
+  "proRoadmapEyebrow": {
+    "message": "Exploration areas",
+    "description": "Pro roadmap eyebrow"
+  },
+  "proRoadmapTitle": {
+    "message": "Explore more advanced research workflows",
+    "description": "Pro roadmap heading"
+  },
+  "proRoadmapDescription": {
+    "message": "These capabilities are still being planned. Scope and release timing are not set.",
+    "description": "Pro roadmap description"
+  },
+  "proDirectionCleaningTitle": {
+    "message": "Complex page cleanup",
+    "description": "Pro complex-page direction title"
+  },
+  "proDirectionCleaningDescription": {
+    "message": "Handle long-form, dynamic, and non-standard layouts more reliably while reducing navigation and recommendation noise.",
+    "description": "Pro complex-page direction description"
+  },
+  "proDirectionCollectionTitle": {
+    "message": "Multi-page collection",
+    "description": "Pro multi-page direction title"
+  },
+  "proDirectionCollectionDescription": {
+    "message": "Organize multiple pages or source excerpts into one reusable research input.",
+    "description": "Pro multi-page direction description"
+  },
+  "proDirectionExportTitle": {
+    "message": "Export to your tools",
+    "description": "Pro export direction title"
+  },
+  "proDirectionExportDescription": {
+    "message": "Move cleaned results more smoothly into documents, knowledge bases, and other work tools.",
+    "description": "Pro export direction description"
+  },
+  "proBoundaryTitle": {
+    "message": "Nothing to decide today",
+    "description": "Pro boundary note title"
+  },
+  "proBoundaryDescription": {
+    "message": "Pro has no subscription, payment, or waitlist signup yet. Your free features and data choices will not change.",
+    "description": "Pro boundary note description"
   }
 }

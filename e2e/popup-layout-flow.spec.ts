@@ -1,7 +1,7 @@
 import type { Locator } from '@playwright/test';
 import { test, expect } from './fixtures';
 import { seedSyncStorage } from './helpers/extension-state';
-import { completePopupOnboardingIfVisible, openPopupForActiveTab } from './helpers/popup';
+import { openPopupForActiveTab } from './helpers/popup';
 
 async function expectBoxSize(
   locator: Locator,
@@ -32,7 +32,7 @@ async function expectPseudoElementSize(
   expect(size.height).toBeCloseTo(expected.height, 1);
 }
 
-test('real popup layout keeps settings before quick actions and fits without vertical scroll', async ({
+test('popup keeps the primary copy action first and avoids horizontal overflow', async ({
   extensionContext,
   extensionId,
   driverPage,
@@ -40,13 +40,10 @@ test('real popup layout keeps settings before quick actions and fits without ver
 }) => {
   await seedSyncStorage(driverPage, {
     copilot_settings: {
-      popupOnboardingVersion: 1,
-      popupOnboardingCompletedVersion: 1,
-      popupOnboardingCompletedAt: 1,
       userPrompts: [
         {
           id: 'layout-slot-1',
-          title: 'Layout Slot 1',
+          title: 'Summarize article',
           template: 'Summary:\n\n{content}',
           usageCount: 0,
           createdAt: 1,
@@ -65,38 +62,39 @@ test('real popup layout keeps settings before quick actions and fits without ver
     await page.bringToFront();
 
     const popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
-    await completePopupOnboardingIfVisible(popup);
+    await popup.setViewportSize({ width: 400, height: 600 });
 
     const order = await popup.locator('.popup-container > *').evaluateAll((nodes) =>
       nodes.map((node) => (node as HTMLElement).id || (node as HTMLElement).className)
     );
-    expect(order.indexOf('settings-form')).toBeGreaterThan(-1);
-    expect(order.indexOf('quick-actions')).toBeGreaterThan(-1);
-    expect(order.indexOf('settings-form')).toBeLessThan(order.indexOf('quick-actions'));
+    expect(order.indexOf('copy-panel')).toBeLessThan(order.indexOf('quick-prompts-section'));
+    expect(order.indexOf('quick-prompts-section')).toBeLessThan(order.indexOf('settings-form'));
 
-    await expect(popup.locator('#convert-button small')).toHaveCount(0);
-    await expect(popup.locator('#quick-prompt-slot-1-button small')).toHaveCount(0);
-    await expect(popup.locator('.shortcut-settings-hint')).toHaveCount(0);
+    await expect(popup.locator('#convert-button')).toBeVisible();
+    await expect(popup.locator('#quick-prompt-slot-1-button')).toBeVisible();
 
-    const hasVerticalScroll = await popup.locator('body').evaluate(() => {
-      return document.documentElement.scrollHeight > window.innerHeight || document.body.scrollHeight > window.innerHeight;
-    });
-    expect(hasVerticalScroll).toBe(false);
+    const overflow = await popup.locator('body').evaluate(() => ({
+      documentWidth: document.documentElement.scrollWidth,
+      viewportWidth: document.documentElement.clientWidth
+    }));
+    expect(overflow.documentWidth).toBeLessThanOrEqual(overflow.viewportWidth);
 
-    const rootColors = await popup.locator('#convert-button').evaluate((element) => {
+    const primaryStyles = await popup.locator('#convert-button').evaluate((element) => {
       const styles = window.getComputedStyle(element);
       return {
         color: styles.color,
-        background: styles.backgroundColor || styles.backgroundImage
+        background: styles.backgroundColor,
+        minHeight: Number.parseFloat(styles.minHeight)
       };
     });
-    expect(rootColors.color).not.toBe(rootColors.background);
+    expect(primaryStyles.color).not.toBe(primaryStyles.background);
+    expect(primaryStyles.minHeight).toBeGreaterThanOrEqual(48);
   } finally {
     await page.close();
   }
 });
 
-test('popup and options keep readable contrast in light and dark color schemes', async ({
+test('popup and options retain readable surfaces in light and dark themes', async ({
   extensionContext,
   extensionId,
   driverPage,
@@ -109,26 +107,19 @@ test('popup and options keep readable contrast in light and dark color schemes',
     await hostPage.goto(`${fixtureOrigin}/article.html`);
     await hostPage.bringToFront();
     popupPage = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
-    await completePopupOnboardingIfVisible(popupPage);
     await popupPage.emulateMedia({ colorScheme: 'light' });
     await options.emulateMedia({ colorScheme: 'dark' });
-    await options.goto(`chrome-extension://${extensionId}/src/options/options.html`);
+    await options.goto(`chrome-extension://${extensionId}/src/options/options.html#privacy`);
 
-    const popupContrast = await popupPage.locator('.shortcut-settings-card').evaluate((element) => {
+    const popupContrast = await popupPage.locator('.copy-panel').evaluate((element) => {
       const styles = window.getComputedStyle(element);
-      return {
-        color: styles.color,
-        background: styles.backgroundColor
-      };
+      return { color: styles.color, background: styles.backgroundColor };
     });
     expect(popupContrast.color).not.toBe(popupContrast.background);
 
-    const optionsContrast = await options.locator('.shortcut-command-card').first().evaluate((element) => {
+    const optionsContrast = await options.locator('.data-choice-panel').evaluate((element) => {
       const styles = window.getComputedStyle(element);
-      return {
-        color: styles.color,
-        background: styles.backgroundColor
-      };
+      return { color: styles.color, background: styles.backgroundColor };
     });
     expect(optionsContrast.color).not.toBe(optionsContrast.background);
   } finally {
@@ -152,23 +143,21 @@ test('popup switches keep fixed track geometry in flex layouts', async ({
     await page.bringToFront();
 
     const popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
-    await completePopupOnboardingIfVisible(popup);
-
     await popup.locator('#toggle-more-settings').click();
     await expect(popup.locator('#more-settings-panel')).toBeVisible();
 
-    const selectors = [
+    for (const selector of [
       '#enable-magic-copy-switch',
       '#enable-hover-magic-copy-switch',
       '#enable-clipboard-accumulator-switch'
-    ];
-
-    for (const selector of selectors) {
-      const switchLabel = popup.locator(selector).locator('xpath=ancestor::label[contains(@class, "switch")]');
+    ]) {
+      const switchLabel = popup
+        .locator(selector)
+        .locator('xpath=ancestor::label[contains(@class, "switch")]');
       const slider = popup.locator(`${selector} + .slider`);
-      await expectBoxSize(switchLabel, { width: 42, height: 24 });
-      await expectBoxSize(slider, { width: 42, height: 24 });
-      await expectPseudoElementSize(slider, '::before', { width: 18, height: 18 });
+      await expectBoxSize(switchLabel, { width: 36, height: 20 });
+      await expectBoxSize(slider, { width: 36, height: 20 });
+      await expectPseudoElementSize(slider, '::before', { width: 14, height: 14 });
     }
   } finally {
     await page.close();

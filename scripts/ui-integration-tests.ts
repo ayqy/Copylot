@@ -4,7 +4,6 @@ import { createChromeMock } from './test-helpers/chrome-mock.ts';
 import { getRequiredElement, loadExtensionPage } from './test-helpers/extension-page-harness.ts';
 
 const SETTINGS_KEY = 'copilot_settings';
-const GROWTH_STATS_KEY = 'copilot_growth_stats';
 const TELEMETRY_EVENTS_KEY = 'copilot_telemetry_events';
 const APPEND_SESSION_KEY = 'copilot_append_session';
 
@@ -133,18 +132,12 @@ async function runPopupAssertions(): Promise<void> {
       [SETTINGS_KEY]: buildStoredSettings()
     },
     localData: {
-      [GROWTH_STATS_KEY]: {
-        installedAt: Date.now() - 10_000,
-        successfulCopyCount: 25,
-        popupOnboardingCompletedVersion: 1
-      },
       [APPEND_SESSION_KEY]: {
         clipCount: 2,
         startedAt: Date.now() - 7_000,
         lastAppendedAt: Date.now() - 5_000,
         lastAction: 'append'
-      },
-      [TELEMETRY_EVENTS_KEY]: []
+      }
     }
   });
 
@@ -156,172 +149,123 @@ async function runPopupAssertions(): Promise<void> {
   });
 
   try {
-    const firstCopyTitle = getRequiredElement<HTMLElement>(
-      page.dom.window.document,
-      '#first-copy-title'
-    );
-    assert.match(firstCopyTitle.textContent || '', /第一次干净复制|first clean copy/i);
-    const firstCopyStatus = getRequiredElement<HTMLElement>(
-      page.dom.window.document,
-      '#first-copy-status'
-    );
-    assert.match(firstCopyStatus.textContent || '', /已完成|completed/i);
-    assert.equal(firstCopyStatus.dataset.state, 'done');
-    assert.equal(page.dom.window.document.querySelectorAll('.first-copy-selling-point').length, 3);
+    const document = page.dom.window.document;
+    assert.equal(document.querySelector('#first-copy-title'), null);
+    assert.equal(document.querySelector('#first-copy-status'), null);
+    assert.equal(document.querySelector('#reuse-primary-card'), null);
+    assert.equal(document.querySelector('#popup-onboarding-modal'), null);
+    assert.equal(document.querySelector('#wom-status-hint'), null);
 
-    const convertButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#convert-button'
-    );
-    assert.match(convertButton.textContent || '', /复制给AI|Copy to AI/);
-    clickElement(convertButton);
-    await page.waitForIdle();
-    assert.equal(chromeMock.logs.queriedTabs.length, 1);
-    assert.equal(chromeMock.logs.sentTabMessages.length, 1);
+    const copyTitle = getRequiredElement<HTMLElement>(document, '#popup-copy-title');
+    assert.match(copyTitle.textContent || '', /复制当前内容|Copy current content/i);
 
-    const convertShortcut = getRequiredElement<HTMLElement>(
-      page.dom.window.document,
-      '#convert-shortcut'
+    const convertButton = getRequiredElement<HTMLButtonElement>(document, '#convert-button');
+    assert.match(convertButton.textContent || '', /复制给 AI|Copy for AI/i);
+    assert.equal(convertButton.disabled, false);
+    assert.match(
+      getRequiredElement<HTMLElement>(document, '#convert-shortcut').textContent || '',
+      /Alt\+C/
     );
-    assert.match(convertShortcut.textContent || '', /Alt\+C/);
 
-    const shortcutSettingsButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#open-shortcut-settings-button'
+    const quickPromptsSection = getRequiredElement<HTMLElement>(
+      document,
+      '#quick-prompts-section'
     );
-    assert.match(shortcutSettingsButton.textContent || '', /去设置|Go to settings/);
-    clickElement(shortcutSettingsButton);
-    await page.waitForIdle();
-    assert.equal(chromeMock.logs.openedOptionsPageCount, 1);
+    assert.equal(quickPromptsSection.hidden, false);
+    assert.equal(
+      getRequiredElement<HTMLButtonElement>(document, '#quick-prompt-slot-1-button').hidden,
+      false
+    );
+    assert.equal(
+      getRequiredElement<HTMLButtonElement>(document, '#quick-prompt-slot-2-button').hidden,
+      false
+    );
+    assert.equal(
+      getRequiredElement<HTMLButtonElement>(document, '#quick-prompt-slot-3-button').hidden,
+      true
+    );
+    assert.equal(
+      getRequiredElement<HTMLElement>(document, '#quick-prompt-slot-2-title').textContent,
+      'Custom Quick Slot 2'
+    );
+
+    const appendSessionCard = getRequiredElement<HTMLElement>(document, '#append-session-card');
+    assert.equal(appendSessionCard.hidden, false);
+    assert.match(
+      getRequiredElement<HTMLElement>(document, '#append-session-title').textContent || '',
+      /2/
+    );
 
     const moreSettingsToggle = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
+      document,
       '#toggle-more-settings'
     );
     assert.equal(moreSettingsToggle.getAttribute('aria-expanded'), 'false');
-    assert.match(moreSettingsToggle.textContent || '', /展开更多设置|Expand more settings/);
+    assert.match(moreSettingsToggle.textContent || '', /更多复制设置|More copy settings/i);
     clickElement(moreSettingsToggle);
     await page.waitForIdle();
-    assert.equal(
-      getRequiredElement<HTMLElement>(page.dom.window.document, '#more-settings-panel').hidden,
-      false
-    );
+    assert.equal(getRequiredElement<HTMLElement>(document, '#more-settings-panel').hidden, false);
     assert.equal(moreSettingsToggle.getAttribute('aria-expanded'), 'true');
 
-    assert.equal(
-      getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-1-button')
-        .hidden,
-      false
-    );
-    assert.equal(
-      getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-2-button')
-        .hidden,
-      false
-    );
-    assert.equal(
-      getRequiredElement<HTMLButtonElement>(page.dom.window.document, '#quick-prompt-slot-3-button')
-        .hidden,
-      true
-    );
-    const quickPromptSlot2Title = getRequiredElement<HTMLElement>(
-      page.dom.window.document,
-      '#quick-prompt-slot-2-title'
-    );
-    assert.equal(quickPromptSlot2Title.textContent, 'Custom Quick Slot 2');
-    const quickPromptSlot1Title = getRequiredElement<HTMLElement>(
-      page.dom.window.document,
-      '#quick-prompt-slot-1-title'
-    );
-    assert.equal(quickPromptSlot1Title.textContent, 'Summary');
-    const reusePrimaryCard = getRequiredElement<HTMLElement>(
-      page.dom.window.document,
-      '#reuse-primary-card'
-    );
-    assert.equal(reusePrimaryCard.hidden, false);
-    const reusePrimaryButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#reuse-primary-button'
-    );
-    assert.match(reusePrimaryButton.textContent || '', /Summary/i);
-    const appendSessionCard = getRequiredElement<HTMLElement>(
-      page.dom.window.document,
-      '#append-session-card'
-    );
-    assert.equal(appendSessionCard.hidden, false);
-    const appendSessionTitle = getRequiredElement<HTMLElement>(
-      page.dom.window.document,
-      '#append-session-title'
-    );
-    assert.match(appendSessionTitle.textContent || '', /2/);
-
-    const addPromptButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#add-prompt-button'
-    );
-    clickElement(addPromptButton);
+    clickElement(getRequiredElement<HTMLButtonElement>(document, '#add-prompt-button'));
     await page.waitForIdle();
-    assert.equal(chromeMock.logs.openedOptionsPageCount, 2);
-
-    const feedbackLink = getRequiredElement<HTMLAnchorElement>(
-      page.dom.window.document,
-      '#feedback-link'
+    assert.ok(
+      (chromeMock.logs.createdTabs.at(-1)?.url ?? '').includes(
+        '/src/options/options.html#prompts'
+      )
     );
-    clickElement(feedbackLink);
+
+    clickElement(
+      getRequiredElement<HTMLButtonElement>(document, '#open-shortcut-settings-button')
+    );
     await page.waitForIdle();
-    assert.match(
-      chromeMock.logs.createdTabs.at(-1)?.url ?? '',
-      /^https:\/\/github\.com\/ayqy\/copy\/issues\/new\?/
-    );
+    assert.equal(chromeMock.logs.createdTabs.at(-1)?.url, 'chrome://extensions/shortcuts');
 
-    const shareLink = getRequiredElement<HTMLAnchorElement>(
-      page.dom.window.document,
-      '#share-link'
-    );
+    const shareLink = getRequiredElement<HTMLAnchorElement>(document, '#share-link');
+    const rateLink = getRequiredElement<HTMLAnchorElement>(document, '#rate-link');
+    const copyShareButton = getRequiredElement<HTMLButtonElement>(document, '#copy-share-button');
+    assert.notEqual(shareLink.getAttribute('aria-disabled'), 'true');
+    assert.notEqual(rateLink.getAttribute('aria-disabled'), 'true');
+    assert.equal(copyShareButton.disabled, false);
+
     clickElement(shareLink);
     await page.waitForIdle();
-    const shareUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
-    assert.ok(shareUrl.includes('chromewebstore.google.com/detail/ai-copilot'));
-    assert.ok(shareUrl.includes('utm_medium=popup'));
+    assert.ok((chromeMock.logs.createdTabs.at(-1)?.url ?? '').includes('utm_medium=popup'));
 
-    const rateLink = getRequiredElement<HTMLAnchorElement>(page.dom.window.document, '#rate-link');
     clickElement(rateLink);
     await page.waitForIdle();
-    const rateUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
-    assert.ok(rateUrl.includes('chromewebstore.google.com/detail/ai-copilot'));
-    assert.ok(rateUrl.includes('/reviews?'));
-    assert.ok(rateUrl.includes('utm_medium=popup'));
+    assert.ok((chromeMock.logs.createdTabs.at(-1)?.url ?? '').includes('/reviews?'));
 
-    assert.equal(page.dom.window.document.querySelector('#rating-prompt'), null);
-    assert.equal(page.dom.window.document.querySelector('#popup-pro-waitlist-survey'), null);
-    assert.equal(page.dom.window.document.querySelector('#popup-pro-waitlist-copy'), null);
-
-    const popupProEntryButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#upgrade-pro-entry'
-    );
-    clickElement(popupProEntryButton);
+    clickElement(getRequiredElement<HTMLButtonElement>(document, '#upgrade-pro-entry'));
     await page.waitForIdle();
-    const proRouteUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
-    assert.ok(proRouteUrl.includes('/src/options/options.html#pro'));
+    assert.ok(
+      (chromeMock.logs.createdTabs.at(-1)?.url ?? '').includes('/src/options/options.html#pro')
+    );
+
+    clickElement(convertButton);
+    await page.waitForIdle();
+    assert.equal(chromeMock.logs.sentTabMessages.length, 1);
+    assert.deepEqual(chromeMock.logs.sentTabMessages[0]?.message, {
+      type: 'CONVERT_PAGE_WITH_SELECTION'
+    });
+    const status = getRequiredElement<HTMLElement>(document, '#copy-action-status');
+    assert.equal(status.dataset.state, 'success');
+    assert.match(status.textContent || '', /已复制|Copied/i);
   } finally {
     page.restore();
   }
 }
 
-async function runPopupLockedWomAssertions(): Promise<void> {
+async function runPopupFailureAssertions(): Promise<void> {
   const chromeMock = createChromeMock({
     extensionId: 'abcdefghijklmnopabcdefghijklmnop',
     syncData: {
       [SETTINGS_KEY]: buildStoredSettings()
     },
-    localData: {
-      [GROWTH_STATS_KEY]: {
-        installedAt: Date.now() - 10_000,
-        successfulCopyCount: 1,
-        firstSuccessfulCopyAt: Date.now() - 9_000,
-        popupOnboardingCompletedVersion: 1
-      },
-      [TELEMETRY_EVENTS_KEY]: []
+    tabMessageResponse: {
+      success: false,
+      code: 'NO_CONTENT',
+      error: 'No copyable content was found. Select a section and try again.'
     }
   });
 
@@ -333,30 +277,18 @@ async function runPopupLockedWomAssertions(): Promise<void> {
   });
 
   try {
-    const shareLink = getRequiredElement<HTMLAnchorElement>(
-      page.dom.window.document,
-      '#share-link'
-    );
-    const rateLink = getRequiredElement<HTMLAnchorElement>(page.dom.window.document, '#rate-link');
-    const copyShareButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#copy-share-button'
-    );
-    const womStatusHint = getRequiredElement<HTMLElement>(
-      page.dom.window.document,
-      '#wom-status-hint'
-    );
-
-    assert.equal(shareLink.getAttribute('aria-disabled'), 'true');
-    assert.equal(rateLink.getAttribute('aria-disabled'), 'true');
-    assert.equal(copyShareButton.disabled, true);
-    assert.equal(womStatusHint.hidden, false);
-    assert.match(womStatusHint.textContent || '', /1/);
-
-    clickElement(shareLink);
-    clickElement(rateLink);
+    const document = page.dom.window.document;
+    const convertButton = getRequiredElement<HTMLButtonElement>(document, '#convert-button');
+    clickElement(convertButton);
     await page.waitForIdle();
-    assert.equal(chromeMock.logs.createdTabs.length, 0);
+
+    const status = getRequiredElement<HTMLElement>(document, '#copy-action-status');
+    assert.equal(status.hidden, false);
+    assert.equal(status.dataset.state, 'error');
+    assert.equal(status.getAttribute('role'), 'alert');
+    assert.match(status.textContent || '', /Select a section and try again/i);
+    assert.equal(convertButton.disabled, false);
+    assert.match(convertButton.textContent || '', /Copy for AI/i);
   } finally {
     page.restore();
   }
@@ -366,36 +298,14 @@ async function runOptionsAssertions(): Promise<void> {
   const chromeMock = createChromeMock({
     extensionId: 'abcdefghijklmnopabcdefghijklmnop',
     syncData: {
-      [SETTINGS_KEY]: buildStoredSettings()
+      [SETTINGS_KEY]: buildStoredSettings({ isAnonymousUsageDataEnabled: true })
     },
     localData: {
-      [GROWTH_STATS_KEY]: {
-        installedAt: Date.now() - 10_000,
-        successfulCopyCount: 30,
-        firstPopupOpenedAt: Date.now() - 9_000,
-        firstSuccessfulCopyAt: Date.now() - 8_000
-      },
-      [APPEND_SESSION_KEY]: {
-        clipCount: 2,
-        startedAt: Date.now() - 6_000,
-        lastAppendedAt: Date.now() - 3_000,
-        lastAction: 'append'
-      },
       [TELEMETRY_EVENTS_KEY]: [
         {
-          name: 'pro_entry_opened',
-          ts: Date.now() - 5_000,
-          props: { source: 'options', campaign: 'twitter' }
-        },
-        {
-          name: 'pro_waitlist_opened',
-          ts: Date.now() - 4_000,
-          props: { source: 'options', campaign: 'twitter' }
-        },
-        {
-          name: 'pro_waitlist_copied',
+          name: 'copy_success',
           ts: Date.now() - 3_000,
-          props: { source: 'options', campaign: 'twitter' }
+          props: { source: 'content' }
         }
       ]
     }
@@ -409,565 +319,82 @@ async function runOptionsAssertions(): Promise<void> {
   });
 
   try {
-    const shortcutCurrentConvert = getRequiredElement<HTMLElement>(
-      page.dom.window.document,
-      '#options-shortcut-current-convert'
+    const document = page.dom.window.document;
+    assert.match(
+      getRequiredElement<HTMLElement>(document, '.logo-section h1').textContent || '',
+      /Copylot/
     );
-    assert.match(shortcutCurrentConvert.textContent || '', /Alt\+C/);
+    assert.equal(getRequiredElement<HTMLElement>(document, '#pro-tab').classList.contains('active'), true);
+
+    const proText = getRequiredElement<HTMLElement>(document, '#pro-tab').textContent || '';
+    assert.match(proText, /Copylot Pro/);
+    assert.match(proText, /尚未上线|Not available yet/i);
+    assert.match(proText, /没有订阅|no subscription/i);
+    assert.match(proText, /免费|free/i);
+    assert.equal(document.querySelectorAll('.roadmap-item').length, 3);
+    assert.equal(document.querySelector('#pro-intent-campaign'), null);
+    assert.equal(document.querySelector('#pro-validation-advanced-open'), null);
+    assert.equal(document.querySelector('#pro-funnel-panel'), null);
+    assert.equal(document.querySelector('#wom-actions-status'), null);
+    assert.equal(document.querySelector('[id*="evidence"]'), null);
+    assert.doesNotMatch(
+      proText,
+      /telemetry|funnel|campaign|validation lab|evidence pack|verdict|stay_validation|audit/i
+    );
+
+    const privacyTabButton = getRequiredElement<HTMLButtonElement>(
+      document,
+      '.tabs-nav .tab-btn[data-tab="privacy"]'
+    );
+    clickElement(privacyTabButton);
+    await page.waitForIdle();
+    assert.equal(
+      getRequiredElement<HTMLElement>(document, '#privacy-tab').classList.contains('active'),
+      true
+    );
+
+    const privacyText = getRequiredElement<HTMLElement>(document, '#privacy-tab').textContent || '';
+    assert.match(privacyText, /本机处理|Processed locally/i);
+    assert.match(privacyText, /Chrome Sync/i);
+    assert.match(privacyText, /正文|webpage text/i);
+    assert.match(privacyText, /URL/i);
+    assert.equal(document.querySelector('#telemetry-events-panel'), null);
+    assert.equal(document.querySelector('#growth-funnel-panel'), null);
+    assert.equal(document.querySelector('#append-workflow-panel'), null);
+
+    const usageSwitch = getRequiredElement<HTMLInputElement>(
+      document,
+      '#anonymous-usage-data-switch'
+    );
+    assert.equal(usageSwitch.checked, true);
+    usageSwitch.checked = false;
+    usageSwitch.dispatchEvent(new window.Event('change', { bubbles: true }));
+    await page.waitForIdle();
+
+    const storedSettings = chromeMock.storage.sync.snapshot()[SETTINGS_KEY] as Settings;
+    assert.equal(storedSettings.isAnonymousUsageDataEnabled, false);
+    const storedEvents = chromeMock.storage.local.snapshot()[TELEMETRY_EVENTS_KEY];
+    assert.ok(storedEvents === undefined || (Array.isArray(storedEvents) && storedEvents.length === 0));
+    const usageStatus = getRequiredElement<HTMLElement>(
+      document,
+      '#anonymous-usage-data-status'
+    );
+    assert.equal(usageStatus.dataset.state, 'disabled');
+    assert.match(usageStatus.textContent || '', /已关闭|Off/i);
+
+    const policyLink = getRequiredElement<HTMLAnchorElement>(
+      document,
+      '.privacy-policy-link'
+    );
+    assert.equal(policyLink.href, 'https://copy.useai.online/privacy');
 
     const optionsShortcutButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
+      document,
       '#options-open-shortcut-settings'
     );
-    assert.match(optionsShortcutButton.textContent || '', /去设置|Go to settings/);
     clickElement(optionsShortcutButton);
     await page.waitForIdle();
     assert.equal(chromeMock.logs.createdTabs.at(-1)?.url, 'chrome://extensions/shortcuts');
-    assert.equal(
-      getRequiredElement<HTMLElement>(
-        page.dom.window.document,
-        '#options-shortcut-slot-1-prompt-name'
-      ).textContent,
-      'Summary'
-    );
-    clickElement(
-      getRequiredElement<HTMLElement>(
-        page.dom.window.document,
-        '[data-shortcut-command-card="slot-1"]'
-      )
-    );
-    await page.waitForIdle();
-    assert.equal(chromeMock.logs.createdTabs.at(-1)?.url, 'chrome://extensions/shortcuts');
-
-    const campaignInput = getRequiredElement<HTMLInputElement>(
-      page.dom.window.document,
-      '#pro-intent-campaign'
-    );
-    assert.equal(campaignInput.closest('.form-group')?.hasAttribute('hidden'), true);
-    campaignInput.value = 'twitter';
-    campaignInput.dispatchEvent(new window.Event('input', { bubbles: true }));
-    campaignInput.dispatchEvent(new window.Event('change', { bubbles: true }));
-    await page.waitForIdle();
-
-    const advancedCleaningOpenButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-validation-advanced-open'
-    );
-    clickElement(advancedCleaningOpenButton);
-    await page.waitForIdle();
-    const advancedCleaningOpenUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
-    assert.ok(advancedCleaningOpenUrl.includes('/pricing'));
-    assert.ok(advancedCleaningOpenUrl.includes('utm_medium=options'));
-    assert.ok(advancedCleaningOpenUrl.includes('utm_content=options_advanced_cleaning_cta'));
-
-    const advancedCleaningRouteCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-validation-advanced-route-copy'
-    );
-    clickElement(advancedCleaningRouteCopyButton);
-    await page.waitForIdle();
-    const advancedCleaningRouteUrl = await page.clipboard.readText();
-    assert.ok(advancedCleaningRouteUrl.includes('utm_medium=distribution_toolkit'));
-    assert.ok(advancedCleaningRouteUrl.includes('utm_campaign=twitter'));
-    assert.ok(advancedCleaningRouteUrl.includes('utm_content=options_advanced_cleaning_cta'));
-
-    const advancedCleaningBriefCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-validation-advanced-brief-copy'
-    );
-    clickElement(advancedCleaningBriefCopyButton);
-    await page.waitForIdle();
-    const advancedCleaningBrief = await page.clipboard.readText();
-    assert.ok(
-      advancedCleaningBrief.includes('Advanced page cleaning') ||
-        advancedCleaningBrief.includes('高级页面清洗')
-    );
-    assert.ok(advancedCleaningBrief.includes('utm_content=options_advanced_cleaning_cta'));
-
-    const advancedCleaningChecklistCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-validation-advanced-checklist-copy'
-    );
-    clickElement(advancedCleaningChecklistCopyButton);
-    await page.waitForIdle();
-    const advancedCleaningChecklist = await page.clipboard.readText();
-    assert.ok(
-      advancedCleaningChecklist.includes('Validation Checklist') ||
-        advancedCleaningChecklist.includes('验证清单')
-    );
-    assert.ok(advancedCleaningChecklist.includes('twitter'));
-
-    const bulkCollectionOpenButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-validation-bulk-open'
-    );
-    clickElement(bulkCollectionOpenButton);
-    await page.waitForIdle();
-    const bulkCollectionOpenUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
-    assert.ok(bulkCollectionOpenUrl.includes('/pricing'));
-    assert.ok(bulkCollectionOpenUrl.includes('utm_content=options_bulk_collection_cta'));
-
-    const bulkCollectionRouteCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-validation-bulk-route-copy'
-    );
-    clickElement(bulkCollectionRouteCopyButton);
-    await page.waitForIdle();
-    const bulkCollectionRouteUrl = await page.clipboard.readText();
-    assert.ok(bulkCollectionRouteUrl.includes('utm_campaign=twitter'));
-    assert.ok(bulkCollectionRouteUrl.includes('utm_content=options_bulk_collection_cta'));
-
-    const bulkCollectionBriefCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-validation-bulk-brief-copy'
-    );
-    clickElement(bulkCollectionBriefCopyButton);
-    await page.waitForIdle();
-    const bulkCollectionBrief = await page.clipboard.readText();
-    assert.ok(
-      bulkCollectionBrief.includes('Batch collection and organization') ||
-        bulkCollectionBrief.includes('批量采集与整理')
-    );
-    assert.ok(bulkCollectionBrief.includes('utm_content=options_bulk_collection_cta'));
-
-    const bulkCollectionChecklistCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-validation-bulk-checklist-copy'
-    );
-    clickElement(bulkCollectionChecklistCopyButton);
-    await page.waitForIdle();
-    const bulkCollectionChecklist = await page.clipboard.readText();
-    assert.ok(
-      bulkCollectionChecklist.includes('Validation Checklist') ||
-        bulkCollectionChecklist.includes('验证清单')
-    );
-    assert.ok(bulkCollectionChecklist.includes('twitter'));
-
-    const structuredExportOpenButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-validation-structured-open'
-    );
-    clickElement(structuredExportOpenButton);
-    await page.waitForIdle();
-    const structuredExportOpenUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
-    assert.ok(structuredExportOpenUrl.includes('/pricing'));
-    assert.ok(structuredExportOpenUrl.includes('utm_content=options_structured_export_cta'));
-
-    const structuredExportRouteCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-validation-structured-route-copy'
-    );
-    clickElement(structuredExportRouteCopyButton);
-    await page.waitForIdle();
-    const structuredExportRouteUrl = await page.clipboard.readText();
-    assert.ok(structuredExportRouteUrl.includes('utm_campaign=twitter'));
-    assert.ok(structuredExportRouteUrl.includes('utm_content=options_structured_export_cta'));
-
-    const structuredExportBriefCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-validation-structured-brief-copy'
-    );
-    clickElement(structuredExportBriefCopyButton);
-    await page.waitForIdle();
-    const structuredExportBrief = await page.clipboard.readText();
-    assert.ok(
-      structuredExportBrief.includes('Structured export and downstream workflow') ||
-        structuredExportBrief.includes('结构化导出与下游工作流')
-    );
-    assert.ok(structuredExportBrief.includes('utm_content=options_structured_export_cta'));
-
-    const structuredExportChecklistCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-validation-structured-checklist-copy'
-    );
-    clickElement(structuredExportChecklistCopyButton);
-    await page.waitForIdle();
-    const structuredExportChecklist = await page.clipboard.readText();
-    assert.ok(
-      structuredExportChecklist.includes('Validation Checklist') ||
-        structuredExportChecklist.includes('验证清单')
-    );
-    assert.ok(structuredExportChecklist.includes('twitter'));
-
-    const routeComparisonCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#copy-pro-route-validation-comparison-summary'
-    );
-    clickElement(routeComparisonCopyButton);
-    await page.waitForIdle();
-    const routeComparisonSummary = await page.clipboard.readText();
-    assert.ok(
-      routeComparisonSummary.includes('V4-8 三条路线样本比较摘要') ||
-        routeComparisonSummary.includes('V4-8 Pro route sample comparison summary')
-    );
-    assert.ok(
-      routeComparisonSummary.includes('高级页面清洗验证') ||
-        routeComparisonSummary.includes('Advanced page cleaning validation')
-    );
-    assert.ok(routeComparisonSummary.includes('route_opened=1'));
-    assert.ok(routeComparisonSummary.includes('total_signals=4'));
-
-    const routeWritebackCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#copy-pro-route-validation-writeback-summary'
-    );
-    clickElement(routeWritebackCopyButton);
-    await page.waitForIdle();
-    const routeWritebackSummary = await page.clipboard.readText();
-    assert.ok(
-      routeWritebackSummary.includes('V4-9 领先路线回写包') ||
-        routeWritebackSummary.includes('V4-9 Leading route writeback pack')
-    );
-    assert.ok(
-      routeWritebackSummary.includes('高级页面清洗验证') ||
-        routeWritebackSummary.includes('Advanced page cleaning validation')
-    );
-    assert.ok(routeWritebackSummary.includes('recent_7d total_signals=4'));
-
-    const routeStabilityCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#copy-pro-route-validation-stability-summary'
-    );
-    clickElement(routeStabilityCopyButton);
-    await page.waitForIdle();
-    const routeStabilitySummary = await page.clipboard.readText();
-    assert.ok(
-      routeStabilitySummary.includes('V4-10 领先路线稳定性摘要') ||
-        routeStabilitySummary.includes('V4-10 Leading route stability summary')
-    );
-    assert.ok(
-      routeStabilitySummary.includes('高级页面清洗验证') ||
-        routeStabilitySummary.includes('Advanced page cleaning validation')
-    );
-    assert.ok(routeStabilitySummary.includes('supporting_campaigns=twitter'));
-
-    const decisionSummaryCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#copy-pro-intent-decision-summary'
-    );
-    clickElement(decisionSummaryCopyButton);
-    await page.waitForIdle();
-    const decisionSummary = await page.clipboard.readText();
-    assert.ok(decisionSummary.includes('V1-81 Pro 意向决策摘要'));
-    assert.ok(decisionSummary.includes('code：`A`'));
-    assert.ok(decisionSummary.includes('survey_intent'));
-
-    const verdictSummaryCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#copy-pro-route-validation-verdict-summary'
-    );
-    clickElement(verdictSummaryCopyButton);
-    await page.waitForIdle();
-    const verdictSummary = await page.clipboard.readText();
-    assert.ok(
-      verdictSummary.includes('V4-11 Pro 路线融合判断摘要') ||
-        verdictSummary.includes('V4-11 Pro route fusion verdict summary')
-    );
-    assert.ok(verdictSummary.includes('route_leader_consistent=true'));
-    assert.ok(verdictSummary.includes('route_stability_ready=false'));
-    assert.ok(verdictSummary.includes('gate_allows_payment_evaluation=false'));
-    assert.ok(verdictSummary.includes('继续验证') || verdictSummary.includes('stay in validation'));
-
-    const paymentEvaluationAuditCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#copy-pro-payment-evaluation-audit-summary'
-    );
-    clickElement(paymentEvaluationAuditCopyButton);
-    await page.waitForIdle();
-    const paymentEvaluationAuditSummary = await page.clipboard.readText();
-    assert.ok(
-      paymentEvaluationAuditSummary.includes('V4-12 收费评估审计包') ||
-        paymentEvaluationAuditSummary.includes('V4-12 Payment evaluation audit pack')
-    );
-    assert.ok(paymentEvaluationAuditSummary.includes('audit_status=hold_validation'));
-    assert.ok(paymentEvaluationAuditSummary.includes('route_stability_ready=false'));
-    assert.ok(
-      paymentEvaluationAuditSummary.includes('继续停留在验证阶段') ||
-        paymentEvaluationAuditSummary.includes('stay in validation')
-    );
-
-    const campaignReviewCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#copy-pro-route-validation-campaign-review-summary'
-    );
-    clickElement(campaignReviewCopyButton);
-    await page.waitForIdle();
-    const campaignReviewSummary = await page.clipboard.readText();
-    assert.ok(
-      campaignReviewSummary.includes('V4-13 跨 campaign 领先路线复核包') ||
-        campaignReviewSummary.includes('V4-13 Cross-campaign route review pack')
-    );
-    assert.ok(campaignReviewSummary.includes('messaging_boundary=stay_validation'));
-    assert.ok(campaignReviewSummary.includes('prioritized_campaigns=none'));
-    assert.ok(campaignReviewSummary.includes('twitter: status=supporting'));
-
-    const campaignReviewDownloadButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#download-pro-route-validation-campaign-review-json'
-    );
-    clickElement(campaignReviewDownloadButton);
-    await page.waitForIdle();
-    assert.equal(
-      page.downloads.at(-1)?.download,
-      'copylot-pro-route-validation-campaign-review-v4-13.json'
-    );
-
-    const messagingGuardCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#copy-pro-stay-validation-messaging-guard-summary'
-    );
-    clickElement(messagingGuardCopyButton);
-    await page.waitForIdle();
-    const messagingGuardSummary = await page.clipboard.readText();
-    assert.ok(
-      messagingGuardSummary.includes('V4-14 stay_validation 外部话术守门复核包') ||
-        messagingGuardSummary.includes('V4-14 stay_validation messaging guard pack')
-    );
-    assert.ok(messagingGuardSummary.includes('guard_status=aligned'));
-    assert.ok(messagingGuardSummary.includes('route_headline: status=aligned'));
-
-    const messagingGuardDownloadButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#download-pro-stay-validation-messaging-guard-json'
-    );
-    clickElement(messagingGuardDownloadButton);
-    await page.waitForIdle();
-    assert.equal(
-      page.downloads.at(-1)?.download,
-      'copylot-pro-stay-validation-messaging-guard-v4-14.json'
-    );
-
-    const proWaitlistButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-waitlist-button'
-    );
-    clickElement(proWaitlistButton);
-    await page.waitForIdle();
-    const waitlistUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
-    assert.ok(waitlistUrl.includes('https://copy.useai.online/'));
-    assert.ok(waitlistUrl.includes('#pro'));
-    assert.ok(waitlistUrl.includes('utm_medium=options'));
-
-    const proWaitlistCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-waitlist-copy'
-    );
-    assert.equal(proWaitlistCopyButton.hidden, true);
-
-    const proWaitlistUrlCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-waitlist-url-copy'
-    );
-    assert.equal(
-      getRequiredElement<HTMLElement>(
-        page.dom.window.document,
-        '#pro-waitlist-distribution-toolkit'
-      ).hidden,
-      true
-    );
-    clickElement(proWaitlistUrlCopyButton);
-    await page.waitForIdle();
-    const waitlistCopyUrl = await page.clipboard.readText();
-    assert.ok(waitlistCopyUrl.includes('utm_medium=distribution_toolkit'));
-    assert.ok(waitlistCopyUrl.includes('utm_campaign=twitter'));
-
-    const proWaitlistRecruitCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-waitlist-recruit-copy'
-    );
-    clickElement(proWaitlistRecruitCopyButton);
-    await page.waitForIdle();
-    const recruitCopy = await page.clipboard.readText();
-    assert.ok(recruitCopy.includes('twitter'));
-    assert.ok(recruitCopy.includes('/privacy'));
-    assert.ok(recruitCopy.includes('chromewebstore.google.com/detail/ai-copilot'));
-
-    const proStoreUrlCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-store-url-copy'
-    );
-    clickElement(proStoreUrlCopyButton);
-    await page.waitForIdle();
-    const storeCopyUrl = await page.clipboard.readText();
-    assert.ok(storeCopyUrl.includes('chromewebstore.google.com/detail/ai-copilot'));
-    assert.ok(storeCopyUrl.includes('utm_campaign=twitter'));
-
-    const proDistributionPackCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#pro-distribution-pack-copy'
-    );
-    clickElement(proDistributionPackCopyButton);
-    await page.waitForIdle();
-    const distributionPack = await page.clipboard.readText();
-    assert.ok(distributionPack.includes('https://copy.useai.online/'));
-    assert.ok(distributionPack.includes('chromewebstore.google.com/detail/ai-copilot'));
-    assert.ok(distributionPack.includes('/privacy'));
-
-    const appendWorkflowRefreshButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#append-workflow-refresh'
-    );
-    clickElement(appendWorkflowRefreshButton);
-    await page.waitForIdle();
-    const appendWorkflowView = getRequiredElement<HTMLTextAreaElement>(
-      page.dom.window.document,
-      '#append-workflow-view'
-    );
-    assert.ok(appendWorkflowView.value.includes('"clipCount": 2'));
-    assert.ok(appendWorkflowView.value.includes('"sessionsCompleted": 1'));
-    assert.equal(appendWorkflowView.value.includes('example.com'), false);
-
-    const appendWorkflowCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#append-workflow-copy'
-    );
-    clickElement(appendWorkflowCopyButton);
-    await page.waitForIdle();
-    assert.ok((await page.clipboard.readText()).includes('"workflowState": "collecting"'));
-
-    const appendWorkflowClearButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#append-workflow-clear'
-    );
-    clickElement(appendWorkflowClearButton);
-    await page.waitForIdle();
-    assert.ok(
-      getRequiredElement<HTMLTextAreaElement>(
-        page.dom.window.document,
-        '#append-workflow-view'
-      ).value.includes('"clipCount": 0')
-    );
-
-    const womShareOpenButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#wom-share-open'
-    );
-    clickElement(womShareOpenButton);
-    await page.waitForIdle();
-    assert.ok((chromeMock.logs.createdTabs.at(-1)?.url ?? '').includes('utm_medium=options'));
-
-    const womShareCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#wom-share-copy'
-    );
-    clickElement(womShareCopyButton);
-    await page.waitForIdle();
-    const womShareCopy = await page.clipboard.readText();
-    assert.ok(womShareCopy.includes('chromewebstore.google.com/detail/ai-copilot'));
-    assert.equal(womShareCopy.toLowerCase().includes('waitlist'), false);
-    assert.equal(womShareCopy.toLowerCase().includes('survey'), false);
-
-    const womRateOpenButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#wom-rate-open'
-    );
-    clickElement(womRateOpenButton);
-    await page.waitForIdle();
-    const womRateUrl = chromeMock.logs.createdTabs.at(-1)?.url ?? '';
-    assert.ok(womRateUrl.includes('/reviews?'));
-    assert.ok(womRateUrl.includes('utm_medium=options'));
-
-    const womFeedbackOpenButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#wom-feedback-open'
-    );
-    clickElement(womFeedbackOpenButton);
-    await page.waitForIdle();
-    assert.match(
-      chromeMock.logs.createdTabs.at(-1)?.url ?? '',
-      /^https:\/\/github\.com\/ayqy\/copy\/issues\/new\?/
-    );
-
-    const growthFunnelView = getRequiredElement<HTMLTextAreaElement>(
-      page.dom.window.document,
-      '#growth-funnel-view'
-    );
-    assert.ok(growthFunnelView.value.includes('"appendWorkflowAudit"'));
-    assert.ok(growthFunnelView.value.includes('"clipCount": 2'));
-
-    const womEvidencePackCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#wom-summary-evidence-pack-copy'
-    );
-    clickElement(womEvidencePackCopyButton);
-    await page.waitForIdle();
-    const womEvidencePack = await page.clipboard.readText();
-    assert.ok(womEvidencePack.includes('"womQualificationAudit"'));
-    assert.ok(womEvidencePack.includes('"isEligibleForWomActions": true'));
-    assert.ok(womEvidencePack.includes('"successfulCopyCount": 30'));
-
-    const downloadEvidenceButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#download-pro-intent-run-evidence-pack'
-    );
-    clickElement(downloadEvidenceButton);
-    await page.waitForIdle();
-    const download = page.downloads.at(-1);
-    assert.ok(download);
-    assert.ok((download?.download ?? '').includes('copylot-pro-intent-run-evidence-pack-v1-90-'));
-  } finally {
-    page.restore();
-  }
-}
-
-async function runOptionsLockedWomAssertions(): Promise<void> {
-  const chromeMock = createChromeMock({
-    extensionId: 'abcdefghijklmnopabcdefghijklmnop',
-    syncData: {
-      [SETTINGS_KEY]: buildStoredSettings()
-    },
-    localData: {
-      [GROWTH_STATS_KEY]: {
-        installedAt: Date.now() - 10_000,
-        successfulCopyCount: 1,
-        firstSuccessfulCopyAt: Date.now() - 8_000
-      },
-      [TELEMETRY_EVENTS_KEY]: []
-    }
-  });
-
-  const page = await loadExtensionPage({
-    htmlPath: 'src/options/options.html',
-    builtScriptPath: 'dist/src/options/options.js',
-    pageUrl: 'https://example.com/src/options/options.html#pro',
-    chrome: chromeMock
-  });
-
-  try {
-    const womShareOpenButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#wom-share-open'
-    );
-    const womShareCopyButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#wom-share-copy'
-    );
-    const womRateOpenButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#wom-rate-open'
-    );
-    const womFeedbackOpenButton = getRequiredElement<HTMLButtonElement>(
-      page.dom.window.document,
-      '#wom-feedback-open'
-    );
-    const womActionsStatus = getRequiredElement<HTMLElement>(
-      page.dom.window.document,
-      '#wom-actions-status'
-    );
-
-    assert.equal(womShareOpenButton.disabled, true);
-    assert.equal(womShareCopyButton.disabled, true);
-    assert.equal(womRateOpenButton.disabled, true);
-    assert.equal(womFeedbackOpenButton.disabled, false);
-    assert.equal(womActionsStatus.hidden, false);
-    assert.match(womActionsStatus.textContent || '', /1/);
-
-    clickElement(womFeedbackOpenButton);
-    await page.waitForIdle();
-    assert.match(
-      chromeMock.logs.createdTabs.at(-1)?.url ?? '',
-      /^https:\/\/github\.com\/ayqy\/copy\/issues\/new\?/
-    );
   } finally {
     page.restore();
   }
@@ -1022,9 +449,8 @@ async function runDevtoolsAssertions(): Promise<void> {
 
 async function run(): Promise<void> {
   await runPopupAssertions();
-  await runPopupLockedWomAssertions();
+  await runPopupFailureAssertions();
   await runOptionsAssertions();
-  await runOptionsLockedWomAssertions();
   await runDevtoolsAssertions();
   console.log('PASS ui-integration-tests');
 }

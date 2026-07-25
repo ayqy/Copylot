@@ -504,6 +504,34 @@ async function runReaderModePruningAssertion(): Promise<void> {
   }
 }
 
+async function runReaderModeFramerHeaderAssertion(): Promise<void> {
+  const html = await readFixture('test/fixtures/content/reader-mode-framer-header.html');
+  const { harness, chromeMock } = await loadContentScript({
+    html,
+    url: 'https://research.perplexity.ai/articles/designing-refining-and-maintaining-agent-skills-at-perplexity',
+    settings: buildStoredSettings()
+  });
+
+  try {
+    const responses = await chromeMock.dispatchRuntimeMessage({ type: 'CONVERT_PAGE' });
+    await harness.tick();
+    await harness.tick();
+    const copied = await harness.clipboard.readText();
+    assert.ok(
+      copied.includes('Designing, refining, and maintaining agent skills at Perplexity'),
+      copied
+    );
+    assert.ok(copied.includes('Design around real tasks'), copied);
+    assert.ok(copied.includes('Maintenance includes checking external dependencies'), copied);
+    assert.ok(!copied.includes('Share on X'), copied);
+    assert.ok(!copied.includes('Related article one'), copied);
+    assert.ok(!copied.includes('Privacy Terms Status Contact'), copied);
+    assert.deepEqual(responses.at(-1), { success: true });
+  } finally {
+    harness.restore();
+  }
+}
+
 async function runLocalBlockPruningAssertion(): Promise<void> {
   const html = await readFixture('test/fixtures/content/local-block-pruning.html');
   const { harness, chromeMock } = await loadContentScript({
@@ -541,6 +569,7 @@ async function run(): Promise<void> {
   await runReaderModeSemanticAssertion();
   await runReaderModeDensityAssertion();
   await runReaderModePruningAssertion();
+  await runReaderModeFramerHeaderAssertion();
   await runLocalBlockPruningAssertion();
   console.log('PASS content-interaction-tests');
 }

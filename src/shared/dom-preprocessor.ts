@@ -189,6 +189,9 @@ const READER_MODE_POSITIVE_NAME_REGEX =
   /\b(article|content|main|post|entry|story|body|doc|markdown|read)\b/i;
 const READER_MODE_NEGATIVE_TEXT_REGEX =
   /(?:推荐阅读|继续滑动看下一个|向上滑动看下一个|轻触阅读原文|Comment|LikeSharePopularComment)/i;
+const READER_MODE_CONTENT_HEADER_MIN_TEXT_LENGTH = 600;
+const READER_MODE_CONTENT_HEADER_MIN_PARAGRAPH_COUNT = 3;
+const READER_MODE_CONTENT_HEADER_MAX_LINK_DENSITY = 0.25;
 
 function getReaderModeElementTextLength(el: Element): number {
   return (el.textContent ?? '').replace(/\s+/g, ' ').trim().length;
@@ -213,6 +216,37 @@ function getReaderModeNameSignal(el: HTMLElement): string {
     .join(' ');
 }
 
+function isReaderModeContentHeader(
+  el: HTMLElement,
+  textLength: number,
+  linkDensity: number,
+  role: string
+): boolean {
+  if (el.tagName.toLowerCase() !== 'header') {
+    return false;
+  }
+
+  if (role === 'banner' || role === 'navigation') {
+    return false;
+  }
+
+  const paragraphLikeCount = el.querySelectorAll('p, pre, blockquote, li, table').length;
+  const hasPrimaryHeading = Boolean(el.querySelector('h1'));
+  if (
+    hasPrimaryHeading &&
+    textLength >= 24 &&
+    linkDensity <= READER_MODE_CONTENT_HEADER_MAX_LINK_DENSITY
+  ) {
+    return true;
+  }
+
+  return (
+    textLength >= READER_MODE_CONTENT_HEADER_MIN_TEXT_LENGTH &&
+    paragraphLikeCount >= READER_MODE_CONTENT_HEADER_MIN_PARAGRAPH_COUNT &&
+    linkDensity <= READER_MODE_CONTENT_HEADER_MAX_LINK_DENSITY
+  );
+}
+
 function shouldStripReaderModeNoiseNode(el: HTMLElement): boolean {
   const tagName = el.tagName.toLowerCase();
   if (READER_MODE_TABLE_STRUCTURAL_TAGS.has(tagName)) {
@@ -227,6 +261,10 @@ function shouldStripReaderModeNoiseNode(el: HTMLElement): boolean {
   const hasPositiveNameSignal = READER_MODE_POSITIVE_NAME_REGEX.test(nameSignal);
   const hasNegativeNameSignal = READER_MODE_NEGATIVE_NAME_REGEX.test(nameSignal);
   const hasNegativeTextSignal = READER_MODE_NEGATIVE_TEXT_REGEX.test(textSignal);
+
+  if (isReaderModeContentHeader(el, textLength, linkDensity, role)) {
+    return false;
+  }
 
   if (READER_MODE_STRUCTURAL_NOISE_TAGS.has(tagName) || READER_MODE_STRUCTURAL_NOISE_ROLES.has(role)) {
     return true;

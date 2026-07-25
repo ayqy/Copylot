@@ -4543,273 +4543,107 @@ async function run() {
   const popupHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.html'], {
     encoding: 'utf8'
   });
-  assert.ok(
-    popupHtml.includes('id="first-copy-title"'),
-    'popup.html should include first-copy-title'
-  );
-  assert.ok(
-    popupHtml.includes('id="first-copy-status"'),
-    'popup.html should include first-copy-status'
-  );
-  assert.ok(
-    popupHtml.includes('id="first-copy-step-paste"'),
-    'popup.html should include first-copy-step-paste'
-  );
-  assert.ok(
-    popupHtml.includes('id="upgrade-pro-entry"'),
-    'popup.html should include upgrade-pro-entry'
-  );
-  assert.ok(
-    !popupHtml.includes('id="popup-pro-waitlist"'),
-    'popup.html should not include popup-pro-waitlist'
-  );
-  assert.ok(
-    popupHtml.includes('id="popup-onboarding-reopen"'),
-    'popup.html should include popup-onboarding-reopen'
-  );
-  assert.ok(
-    !popupHtml.includes('id="popup-pro-waitlist-copy"'),
-    'popup.html should not include popup-pro-waitlist-copy'
-  );
-  assert.ok(
-    !popupHtml.includes('id="popup-pro-waitlist-survey"'),
-    'popup.html should not include popup-pro-waitlist-survey'
-  );
-  assert.ok(
-    !popupHtml.includes('id="pro-waitlist-prompt"'),
-    'popup.html should not include pro-waitlist-prompt'
-  );
-  assert.ok(
-    !popupHtml.includes('id="popup-onboarding-apply-recommended"'),
-    'popup.html should not include popup-onboarding-apply-recommended'
-  );
-  assert.ok(
-    !popupHtml.includes('id="popup-onboarding-open-options"'),
-    'popup.html should not include popup-onboarding-open-options'
-  );
-  assert.ok(
-    !popupHtml.includes('id="popup-onboarding-finish"'),
-    'popup.html should not include popup-onboarding-finish'
-  );
-  assert.ok(
-    !popupHtml.includes('id="popup-onboarding-close"'),
-    'popup.html should not include popup-onboarding-close'
-  );
+  for (const id of [
+    'popup-copy-title',
+    'convert-button',
+    'copy-action-status',
+    'quick-prompts-section',
+    'settings-form',
+    'upgrade-pro-entry'
+  ]) {
+    assert.ok(popupHtml.includes(`id="${id}"`), `popup.html should include ${id}`);
+  }
+  for (const removedId of [
+    'first-copy-title',
+    'first-copy-status',
+    'first-copy-step-paste',
+    'reuse-primary-card',
+    'popup-onboarding-modal',
+    'popup-onboarding-reopen',
+    'popup-pro-waitlist',
+    'popup-pro-waitlist-copy',
+    'popup-pro-waitlist-survey',
+    'pro-waitlist-prompt'
+  ]) {
+    assert.ok(
+      !popupHtml.includes(`id="${removedId}"`),
+      `popup.html should not include removed ${removedId}`
+    );
+  }
 
   const optionsHtml = execFileSync('unzip', ['-p', latestPluginZip, 'src/options/options.html'], {
     encoding: 'utf8'
   });
-  assert.ok(optionsHtml.includes('data-tab="pro"'), 'options.html should include pro tab');
-  assert.ok(
-    /id="options-onboarding-panel"[^>]*hidden/.test(optionsHtml),
-    'options onboarding panel should be hidden by default'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-intent-campaign"'),
-    'options.html should include pro-intent-campaign'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-waitlist-button"'),
-    'options.html should include pro-waitlist-button'
-  );
-  assert.ok(
-    !optionsHtml.includes('id="pro-waitlist-copy"'),
-    'options.html should not include pro-waitlist-copy'
-  );
-  assert.ok(
-    optionsHtml.includes('id="options-onboarding-panel"'),
-    'options.html should include options-onboarding-panel'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-intent-campaign"'),
-    'options.html should include hidden pro-intent-campaign'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-waitlist-distribution-toolkit"'),
-    'options.html should include hidden distribution toolkit'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-validation-advanced-open"'),
-    'options.html should include pro-validation-advanced-open'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-validation-advanced-brief-copy"'),
-    'options.html should include pro-validation-advanced-brief-copy'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-validation-bulk-open"'),
-    'options.html should include pro-validation-bulk-open'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-validation-bulk-brief-copy"'),
-    'options.html should include pro-validation-bulk-brief-copy'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-validation-structured-open"'),
-    'options.html should include pro-validation-structured-open'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-validation-structured-brief-copy"'),
-    'options.html should include pro-validation-structured-brief-copy'
-  );
-  assert.ok(
-    optionsHtml.includes('id="copy-pro-intent-decision-summary"'),
-    'options.html should include copy-pro-intent-decision-summary'
-  );
-  assert.ok(
-    optionsHtml.includes('id="copy-pro-route-validation-comparison-summary"'),
-    'options.html should include copy-pro-route-validation-comparison-summary'
-  );
-  assert.ok(
-    optionsHtml.includes('id="download-pro-route-validation-comparison-json"'),
-    'options.html should include download-pro-route-validation-comparison-json'
-  );
-  assert.ok(
-    optionsHtml.includes('id="copy-pro-route-validation-writeback-summary"'),
-    'options.html should include copy-pro-route-validation-writeback-summary'
-  );
-  assert.ok(
-    optionsHtml.includes('id="download-pro-route-validation-writeback-json"'),
-    'options.html should include download-pro-route-validation-writeback-json'
-  );
-  assert.ok(
-    optionsHtml.includes('id="copy-pro-route-validation-stability-summary"'),
-    'options.html should include copy-pro-route-validation-stability-summary'
-  );
-  assert.ok(
-    optionsHtml.includes('id="download-pro-route-validation-stability-json"'),
-    'options.html should include download-pro-route-validation-stability-json'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-payment-evaluation-audit-panel"'),
-    'options.html should include pro-payment-evaluation-audit-panel'
-  );
-  assert.ok(
-    optionsHtml.includes('id="copy-pro-payment-evaluation-audit-summary"'),
-    'options.html should include copy-pro-payment-evaluation-audit-summary'
-  );
-  assert.ok(
-    optionsHtml.includes('id="download-pro-payment-evaluation-audit-json"'),
-    'options.html should include download-pro-payment-evaluation-audit-json'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-route-validation-campaign-review-panel"'),
-    'options.html should include pro-route-validation-campaign-review-panel'
-  );
-  assert.ok(
-    optionsHtml.includes('id="copy-pro-route-validation-campaign-review-summary"'),
-    'options.html should include copy-pro-route-validation-campaign-review-summary'
-  );
-  assert.ok(
-    optionsHtml.includes('id="download-pro-route-validation-campaign-review-json"'),
-    'options.html should include download-pro-route-validation-campaign-review-json'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-stay-validation-messaging-guard-panel"'),
-    'options.html should include pro-stay-validation-messaging-guard-panel'
-  );
-  assert.ok(
-    optionsHtml.includes('id="copy-pro-stay-validation-messaging-guard-summary"'),
-    'options.html should include copy-pro-stay-validation-messaging-guard-summary'
-  );
-  assert.ok(
-    optionsHtml.includes('id="download-pro-stay-validation-messaging-guard-json"'),
-    'options.html should include download-pro-stay-validation-messaging-guard-json'
-  );
-  assert.ok(
-    optionsHtml.includes('id="download-pro-intent-decision-summary-json"'),
-    'options.html should include download-pro-intent-decision-summary-json'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-waitlist-url-copy"'),
-    'options.html should include pro-waitlist-url-copy'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-waitlist-recruit-copy"'),
-    'options.html should include pro-waitlist-recruit-copy'
-  );
-  assert.ok(
-    optionsHtml.includes('id="pro-scope-learn-more"'),
-    'options.html should include pro-scope-learn-more'
-  );
+  for (const marker of [
+    'data-tab="privacy"',
+    'data-tab="pro"',
+    'id="privacy-page-title"',
+    'id="anonymous-usage-data-switch"',
+    'id="pro-page-title"',
+    'id="pro-roadmap"'
+  ]) {
+    assert.ok(optionsHtml.includes(marker), `options.html should include ${marker}`);
+  }
+  for (const removedId of [
+    'options-onboarding-panel',
+    'pro-intent-campaign',
+    'pro-waitlist-button',
+    'pro-waitlist-distribution-toolkit',
+    'pro-validation-advanced-open',
+    'copy-pro-intent-decision-summary',
+    'pro-payment-evaluation-audit-panel',
+    'pro-route-validation-campaign-review-panel',
+    'pro-stay-validation-messaging-guard-panel'
+  ]) {
+    assert.ok(
+      !optionsHtml.includes(`id="${removedId}"`),
+      `options.html should not include removed ${removedId}`
+    );
+  }
 
   const popupJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/popup/popup.js'], {
     encoding: 'utf8'
   });
   assert.ok(
-    popupJs.includes('popupFirstCopyStatusDone'),
-    'popup.js should contain popupFirstCopyStatusDone'
+    popupJs.includes('CONVERT_PAGE_WITH_SELECTION'),
+    'popup.js should request full-page or selection conversion'
   );
-  assert.ok(popupJs.includes('pro_entry_opened'), 'popup.js should contain pro_entry_opened');
   assert.ok(
-    !popupJs.includes('pro_waitlist_opened'),
-    'popup.js should not contain pro_waitlist_opened'
+    popupJs.includes('CONTENT_SCRIPT_UNAVAILABLE'),
+    'popup.js should preserve a stable content-script failure'
   );
-  assert.ok(popupJs.includes('wom_feedback_opened'), 'popup.js should contain wom_feedback_opened');
-  assert.ok(popupJs.includes('wom_share_opened'), 'popup.js should contain wom_share_opened');
-  assert.ok(popupJs.includes('wom_rate_opened'), 'popup.js should contain wom_rate_opened');
   assert.ok(
-    popupJs.includes('popupOnboardingCompletedVersion'),
-    'popup.js should sync onboarding completion state'
+    popupJs.includes('popupCopySuccess'),
+    'popup.js should render a confirmed copy result'
+  );
+  assert.ok(
+    !popupJs.includes('popupFirstCopyStatusDone'),
+    'popup.js should not contain the removed first-copy guide'
   );
 
   const optionsJs = execFileSync('unzip', ['-p', latestPluginZip, 'src/options/options.js'], {
     encoding: 'utf8'
   });
-  assert.ok(optionsJs.includes('pro_entry_opened'), 'options.js should contain pro_entry_opened');
-  assert.ok(
-    optionsJs.includes('pro_waitlist_opened'),
-    'options.js should contain pro_waitlist_opened'
-  );
-  assert.ok(
-    optionsJs.includes('pro_waitlist_copied'),
-    'options.js should contain pro_waitlist_copied'
-  );
-  assert.ok(
-    optionsJs.includes('options_advanced_cleaning_cta'),
-    'options.js should contain options_advanced_cleaning_cta'
-  );
-  assert.ok(optionsJs.includes('validation_brief'), 'options.js should contain validation_brief');
-  assert.ok(
-    optionsJs.includes('options_bulk_collection_cta'),
-    'options.js should contain options_bulk_collection_cta'
-  );
-  assert.ok(
-    optionsJs.includes('options_structured_export_cta'),
-    'options.js should contain options_structured_export_cta'
-  );
-  assert.ok(
-    optionsJs.includes('copylot-pro-route-validation-comparison-v4-8.json'),
-    'options.js should contain route comparison export filename'
-  );
-  assert.ok(
-    optionsJs.includes('copylot-pro-route-validation-writeback-v4-9.json'),
-    'options.js should contain route writeback export filename'
-  );
-  assert.ok(
-    optionsJs.includes('copylot-pro-route-validation-stability-v4-10.json'),
-    'options.js should contain route stability export filename'
-  );
-  assert.ok(
-    optionsJs.includes('copylot-pro-route-validation-campaign-review-v4-13.json'),
-    'options.js should contain route campaign review export filename'
-  );
-  assert.ok(
-    optionsJs.includes('copylot-pro-stay-validation-messaging-guard-v4-14.json'),
-    'options.js should contain stay_validation messaging guard export filename'
-  );
-  assert.ok(
-    optionsJs.includes('copylot-pro-intent-decision-summary-'),
-    'options.js should contain decision summary export filename'
-  );
-  assert.ok(
-    optionsJs.includes('navigator.clipboard.writeText'),
-    'options.js should write to clipboard for waitlist copy'
-  );
   assert.ok(
     optionsJs.includes('isAnonymousUsageDataEnabled'),
     'options.js should reference anonymous usage data setting'
   );
+  assert.ok(
+    optionsJs.includes('localUsageRecordsStatusOff'),
+    'options.js should render the local-records privacy choice'
+  );
+  for (const removedMarker of [
+    'pro_waitlist_opened',
+    'pro_waitlist_copied',
+    'options_advanced_cleaning_cta',
+    'validation_brief',
+    'copylot-pro-route-validation'
+  ]) {
+    assert.ok(
+      !optionsJs.includes(removedMarker),
+      `options.js should not contain removed internal marker ${removedMarker}`
+    );
+  }
 
   // prompt-sort.ts (pure functions)
   assert.equal(parsePromptSortMode('most_used'), 'most_used');

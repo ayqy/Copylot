@@ -3,210 +3,125 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Copylot Settings</title>
+    <title>Copylot</title>
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
     <div id="popup-content">
-      <div class="popup-container">
-        <div class="header">
-          <div class="logo">
-            <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true">
-              <defs>
-                <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0, 0, 0, 0.15)" />
-                </filter>
-              </defs>
-              <rect
-                x="2"
-                y="2"
-                width="28"
-                height="28"
-                rx="8"
-                ry="8"
-                fill="#4f46e5"
-                filter="url(#shadow)"
-              />
-              <g transform="translate(16, 16)" fill="none" stroke="white" stroke-width="1.5">
+      <main class="popup-container">
+        <header class="header">
+          <div class="brand">
+            <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+              <rect x="2" y="2" width="28" height="28" rx="8" fill="#4f46e5" />
+              <g transform="translate(16, 16)" fill="none" stroke="white" stroke-width="1.6">
                 <g transform="scale(0.8) translate(-12, -12)">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <rect x="9" y="9" width="13" height="13" rx="2"></rect>
                   <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                 </g>
               </g>
             </svg>
-            <div class="logo-copy">
-              <span data-i18n="appName">Copylot</span>
-            </div>
-          </div>
-          <div class="header-right">
-            <span id="dev-badge" class="dev-badge" hidden>DEV</span>
-            <div class="version" id="version-display"></div>
-          </div>
-        </div>
-
-        <section class="quick-actions-shell" aria-labelledby="popup-quick-actions-title">
-          <div class="quick-actions-shell-head">
             <div>
-              <h2
-                id="popup-quick-actions-title"
-                class="quick-actions-title"
-                data-i18n="popupQuickActionsTitle"
-              >
-                快捷操作
-              </h2>
-              <p class="quick-actions-hint" data-i18n="popupQuickActionsHint">
-                高频动作放在最上层，右键入口保留，快捷键是最短路径。
-              </p>
-            </div>
-            <button
-              id="popup-onboarding-reopen"
-              class="hero-inline-link"
-              type="button"
-              data-i18n="popupOnboardingReopen"
-              hidden
-            >
-              查看操作说明
-            </button>
-          </div>
-
-          <div class="quick-actions" id="quick-actions">
-            <button type="button" id="convert-button" class="quick-action quick-action-primary">
-              <span class="quick-action-copy">
-                <strong data-i18n="convertButton">复制给AI</strong>
-                <span class="quick-action-caption" data-i18n="quickActionSelectionFirst"
-                  >有选区时优先处理选区，否则处理整页</span
-                >
-              </span>
-              <span id="convert-shortcut" class="shortcut-hint">Alt+C</span>
-            </button>
-
-            <button type="button" id="quick-prompt-slot-1-button" class="quick-action" hidden>
-              <span class="quick-action-copy">
-                <strong id="quick-prompt-slot-1-title" data-i18n="quickPromptSlot1"
-                  >快捷键 1</strong
-                >
-              </span>
-              <span id="quick-prompt-slot-1-shortcut" class="shortcut-hint">Alt+1</span>
-            </button>
-
-            <button type="button" id="quick-prompt-slot-2-button" class="quick-action" hidden>
-              <span class="quick-action-copy">
-                <strong id="quick-prompt-slot-2-title" data-i18n="quickPromptSlot2"
-                  >快捷键 2</strong
-                >
-              </span>
-              <span id="quick-prompt-slot-2-shortcut" class="shortcut-hint">Alt+2</span>
-            </button>
-
-            <button type="button" id="quick-prompt-slot-3-button" class="quick-action" hidden>
-              <span class="quick-action-copy">
-                <strong id="quick-prompt-slot-3-title" data-i18n="quickPromptSlot3"
-                  >快捷键 3</strong
-                >
-              </span>
-              <span id="quick-prompt-slot-3-shortcut" class="shortcut-hint">Alt+3</span>
-            </button>
-          </div>
-        </section>
-
-        <section class="first-copy-hero" aria-labelledby="first-copy-title">
-          <div class="first-copy-hero-head">
-            <div class="first-copy-hero-copy">
-              <div id="first-copy-status" class="first-copy-status">第一次干净复制待完成</div>
-              <h1 id="first-copy-title" class="first-copy-title" data-i18n="popupFirstCopyTitle">
-                先试一次干净复制
-              </h1>
-              <p class="first-copy-subtitle" data-i18n="popupFirstCopySubtitle">
-                选中当前页里的文章、表格或代码块，点“复制给 AI”，马上粘贴验证。
-              </p>
+              <strong data-i18n="appName">Copylot</strong>
+              <span data-i18n="popupProductTagline">把网页整理成可用内容</span>
             </div>
           </div>
-          <ol class="first-copy-steps" aria-label="First clean copy steps">
-            <li
-              id="first-copy-step-open"
-              class="first-copy-step"
-              data-i18n="popupFirstCopyStepOpen"
-            >
-              1. 先选中最想带走的内容
-            </li>
-            <li
-              id="first-copy-step-copy"
-              class="first-copy-step"
-              data-i18n="popupFirstCopyStepCopy"
-            >
-              2. 点击“复制给 AI”或对应快捷键
-            </li>
-            <li
-              id="first-copy-step-paste"
-              class="first-copy-step"
-              data-i18n="popupFirstCopyStepPaste"
-            >
-              3. 粘贴到 ChatGPT、Claude 或文档里确认结果
-            </li>
-          </ol>
-          <p id="first-copy-hint" class="first-copy-hint">
-            先用当前页最容易验证的一段内容试一次，确认结果符合你的工作流。
-          </p>
-          <div id="reuse-primary-card" class="reuse-primary-card" hidden>
-            <div class="reuse-primary-copy">
-              <p
-                id="reuse-primary-eyebrow"
-                class="reuse-primary-eyebrow"
-                data-i18n="popupReuseEyebrow"
-              >
-                第二次打开就复用这个动作
-              </p>
-              <h2 id="reuse-primary-title" class="reuse-primary-title" data-i18n="popupReuseTitle">
-                复制网页内容，直接套用 Prompt，再粘贴到 AI。
-              </h2>
-              <p
-                id="reuse-primary-description"
-                class="reuse-primary-description"
-                data-i18n="popupReuseDescription"
-              >
-                先选中网页内容，再点下面的快捷 Prompt 槽位，立刻完成第二次复制。
-              </p>
-            </div>
-            <button type="button" id="reuse-primary-button" class="reuse-primary-button">
-              <span id="reuse-primary-button-label" data-i18n="popupReuseButtonLabel">
-                立即套用快捷 Prompt
-              </span>
-              <span id="reuse-primary-button-shortcut" class="shortcut-hint">Alt+1</span>
-            </button>
+          <div class="header-meta">
+            <span id="dev-badge" class="dev-badge" hidden>DEV</span>
+            <span class="version" id="version-display"></span>
           </div>
+        </header>
+
+        <section class="copy-panel" aria-labelledby="popup-copy-title">
+          <div class="section-heading">
+            <div>
+              <h1 id="popup-copy-title" data-i18n="popupCopyTitle">复制当前内容</h1>
+              <p data-i18n="popupCopyDescription">有选区时复制选区，否则自动整理整页。</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            id="convert-button"
+            class="copy-button"
+            aria-describedby="copy-action-status"
+          >
+            <span class="copy-button-content">
+              <span class="copy-button-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <rect x="8" y="8" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2" />
+                  <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="2" />
+                </svg>
+              </span>
+              <span id="convert-button-label" data-i18n="convertButton">复制给 AI</span>
+            </span>
+            <span id="convert-shortcut" class="shortcut-hint">Alt+C</span>
+          </button>
+
+          <p
+            id="copy-action-status"
+            class="copy-action-status"
+            role="status"
+            aria-live="polite"
+            hidden
+          ></p>
+
           <div id="append-session-card" class="append-session-card" hidden>
             <div class="append-session-copy">
-              <p class="append-session-eyebrow" data-i18n="popupAppendSessionEyebrow">多段收集中</p>
-              <h2 id="append-session-title" class="append-session-title">已收集 1 段内容</h2>
-              <p id="append-session-description" class="append-session-description">
-                继续按住 Shift 收下一段，或先清空这次收集。
-              </p>
+              <span class="append-session-dot" aria-hidden="true"></span>
+              <div>
+                <strong id="append-session-title">已收集 1 段内容</strong>
+                <p id="append-session-description">继续复制下一段，或清空本次收集。</p>
+              </div>
             </div>
             <button
               type="button"
               id="append-session-reset-button"
-              class="append-session-reset-button compact-inline-button"
+              class="text-button"
               data-i18n="popupAppendSessionReset"
             >
-              清空收集
+              清空
             </button>
           </div>
         </section>
 
-        <form id="settings-form">
-          <div class="section always-open">
-            <div class="switch-card">
-              <div class="switch-copy">
-                <span class="switch-title" data-i18n="enableFeature">启用智能复制</span>
-                <small data-i18n="popupEnableFeatureHint"
-                  >关闭后，悬浮按钮和常规复制入口都会暂停。</small
-                >
-              </div>
-              <label class="switch">
-                <input type="checkbox" id="enable-magic-copy-switch" />
-                <span class="slider round"></span>
-              </label>
+        <section
+          id="quick-prompts-section"
+          class="quick-prompts-section"
+          aria-labelledby="popup-quick-prompts-title"
+          hidden
+        >
+          <div class="section-heading compact-heading">
+            <div>
+              <h2 id="popup-quick-prompts-title" data-i18n="popupQuickPromptsTitle">快捷 Prompt</h2>
+              <p data-i18n="popupQuickPromptsDescription">复制内容时直接套用你的常用指令。</p>
             </div>
+          </div>
+          <div class="quick-prompts-list">
+            <button type="button" id="quick-prompt-slot-1-button" class="prompt-action" hidden>
+              <span id="quick-prompt-slot-1-title"></span>
+              <span id="quick-prompt-slot-1-shortcut" class="shortcut-hint subtle">Alt+1</span>
+            </button>
+            <button type="button" id="quick-prompt-slot-2-button" class="prompt-action" hidden>
+              <span id="quick-prompt-slot-2-title"></span>
+              <span id="quick-prompt-slot-2-shortcut" class="shortcut-hint subtle">Alt+2</span>
+            </button>
+            <button type="button" id="quick-prompt-slot-3-button" class="prompt-action" hidden>
+              <span id="quick-prompt-slot-3-title"></span>
+              <span id="quick-prompt-slot-3-shortcut" class="shortcut-hint subtle">Alt+3</span>
+            </button>
+          </div>
+        </section>
+
+        <form id="settings-form" class="settings-form">
+          <div class="switch-card">
+            <div class="switch-copy">
+              <span class="switch-title" data-i18n="enableFeature">启用智能复制</span>
+              <small data-i18n="popupEnableFeatureHint">在网页中显示智能复制入口。</small>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="enable-magic-copy-switch" />
+              <span class="slider round"></span>
+            </label>
           </div>
 
           <button
@@ -215,352 +130,105 @@
             class="settings-toggle"
             aria-expanded="false"
           >
-            <span class="settings-toggle-line" aria-hidden="true"></span>
-            <span
-              id="toggle-more-settings-label"
-              class="settings-toggle-label"
-              data-i18n="expandMoreSettings"
-              >展开更多设置</span
-            >
-            <span class="settings-toggle-icon" aria-hidden="true">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path
-                  d="M3 4.5L6 7.5L9 4.5"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </span>
-            <span class="settings-toggle-line" aria-hidden="true"></span>
+            <span id="toggle-more-settings-label" data-i18n="expandMoreSettings">更多复制设置</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M3.5 5.25 7 8.75l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
           </button>
 
           <div id="more-settings-panel" class="more-settings-panel" hidden>
-            <div class="section">
-              <div class="switch-card compact">
-                <div class="switch-copy">
-                  <span class="switch-title" data-i18n="enableHoverTrigger">启用悬停触发</span>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="enable-hover-magic-copy-switch" />
-                  <span class="slider round"></span>
+            <div class="switch-card compact">
+              <div class="switch-copy">
+                <span class="switch-title" data-i18n="enableHoverTrigger">悬停触发</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="enable-hover-magic-copy-switch" />
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <div class="switch-card compact">
+              <div class="switch-copy">
+                <span class="switch-title" data-i18n="enableClipboardAccumulator">追加模式</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="enable-clipboard-accumulator-switch" />
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <fieldset class="setting-row">
+              <legend data-i18n="interactionMode">触发方式</legend>
+              <div class="segmented-control">
+                <label>
+                  <input type="radio" name="interactionMode" value="click" id="interaction-click" />
+                  <span data-i18n="singleClick">单击</span>
+                </label>
+                <label>
+                  <input type="radio" name="interactionMode" value="dblclick" id="interaction-dblclick" />
+                  <span data-i18n="doubleClick">双击</span>
                 </label>
               </div>
+            </fieldset>
 
-              <div class="switch-card compact">
-                <div class="switch-copy">
-                  <span class="switch-title" data-i18n="enableClipboardAccumulator"
-                    >启用追加模式</span
-                  >
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="enable-clipboard-accumulator-switch" />
-                  <span class="slider round"></span>
+            <fieldset class="setting-row">
+              <legend data-i18n="outputFormat">内容格式</legend>
+              <div class="segmented-control">
+                <label>
+                  <input type="radio" name="outputFormat" value="markdown" id="format-markdown" />
+                  <span data-i18n="markdown">Markdown</span>
+                </label>
+                <label>
+                  <input type="radio" name="outputFormat" value="plaintext" id="format-plaintext" />
+                  <span data-i18n="plaintext">纯文本</span>
                 </label>
               </div>
-            </div>
+            </fieldset>
 
-            <div class="inline-section">
-              <label class="inline-title" data-i18n="interactionMode">交互：</label>
-              <div class="inline-options">
-                <div class="radio-group">
-                  <label class="radio-option">
-                    <input
-                      type="radio"
-                      name="interactionMode"
-                      value="click"
-                      id="interaction-click"
-                    />
-                    <span class="radio-custom"></span>
-                    <span data-i18n="singleClick">单击</span>
-                  </label>
-                  <label class="radio-option">
-                    <input
-                      type="radio"
-                      name="interactionMode"
-                      value="dblclick"
-                      id="interaction-dblclick"
-                    />
-                    <span class="radio-custom"></span>
-                    <span data-i18n="doubleClick">双击</span>
-                  </label>
-                </div>
+            <fieldset class="setting-row">
+              <legend data-i18n="tableOutputFormat">表格格式</legend>
+              <div class="segmented-control">
+                <label>
+                  <input type="radio" name="tableOutputFormat" value="markdown" id="table-format-markdown" />
+                  <span data-i18n="markdown">Markdown</span>
+                </label>
+                <label>
+                  <input type="radio" name="tableOutputFormat" value="csv" id="table-format-csv" />
+                  <span data-i18n="csv">CSV</span>
+                </label>
               </div>
-            </div>
+            </fieldset>
 
-            <div class="inline-section">
-              <label class="inline-title" data-i18n="outputFormat">格式：</label>
-              <div class="inline-options">
-                <div class="radio-group">
-                  <label class="radio-option">
-                    <input type="radio" name="outputFormat" value="markdown" id="format-markdown" />
-                    <span class="radio-custom"></span>
-                    <span data-i18n="markdown">MD</span>
-                  </label>
-                  <label class="radio-option">
-                    <input
-                      type="radio"
-                      name="outputFormat"
-                      value="plaintext"
-                      id="format-plaintext"
-                    />
-                    <span class="radio-custom"></span>
-                    <span data-i18n="plaintext">纯文本</span>
-                  </label>
-                </div>
+            <fieldset class="setting-row">
+              <legend data-i18n="additionalInfo">附加信息</legend>
+              <div class="check-options">
+                <label><input type="checkbox" id="attach-title" /><span data-i18n="attachTitle">页面标题</span></label>
+                <label><input type="checkbox" id="attach-url" /><span data-i18n="attachURL">来源 URL</span></label>
               </div>
-            </div>
-
-            <div class="inline-section">
-              <label class="inline-title" data-i18n="tableOutputFormat">表格：</label>
-              <div class="inline-options">
-                <div class="radio-group">
-                  <label class="radio-option">
-                    <input
-                      type="radio"
-                      name="tableOutputFormat"
-                      value="markdown"
-                      id="table-format-markdown"
-                    />
-                    <span class="radio-custom"></span>
-                    <span data-i18n="markdown">MD</span>
-                  </label>
-                  <label class="radio-option">
-                    <input
-                      type="radio"
-                      name="tableOutputFormat"
-                      value="csv"
-                      id="table-format-csv"
-                    />
-                    <span class="radio-custom"></span>
-                    <span data-i18n="csv">CSV</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="inline-section">
-              <label class="inline-title" data-i18n="additionalInfo">附加：</label>
-              <div class="inline-options">
-                <div class="checkbox-group">
-                  <label class="checkbox-option">
-                    <input type="checkbox" id="attach-title" />
-                    <span class="checkbox-custom"></span>
-                    <span data-i18n="attachTitle">页面标题</span>
-                  </label>
-                  <label class="checkbox-option">
-                    <input type="checkbox" id="attach-url" />
-                    <span class="checkbox-custom"></span>
-                    <span data-i18n="attachURL">来源URL</span>
-                  </label>
-                </div>
-              </div>
-            </div>
+            </fieldset>
           </div>
         </form>
 
-        <section class="shortcut-settings-card" aria-labelledby="shortcut-settings-title">
-          <div class="shortcut-settings-head">
-            <h3
-              id="shortcut-settings-title"
-              class="shortcut-settings-title"
-              data-i18n="shortcutSettingsTitle"
-            >
-              快捷键设置
-            </h3>
-            <button
-              type="button"
-              id="open-shortcut-settings-button"
-              class="button-secondary shortcut-settings-button compact-inline-button"
-              data-i18n="openShortcutSettings"
-            >
-              去设置
-            </button>
-          </div>
-
-          <p id="shortcut-settings-feedback" class="shortcut-settings-feedback" hidden></p>
-        </section>
-
-        <div class="management-actions">
-          <button
-            id="add-prompt-button"
-            class="button-secondary"
-            type="button"
-            data-i18n="managePrompts"
-          >
-            管理Prompts
+        <nav class="utility-actions" aria-label="Copylot">
+          <button type="button" id="open-shortcut-settings-button" class="utility-button">
+            <span data-i18n="shortcutSettingsTitle">快捷键</span>
           </button>
-        </div>
-
-        <div class="popup-footer-actions">
-          <button
-            type="button"
-            id="upgrade-pro-entry"
-            class="popup-footer-button"
-            data-i18n="upgradePro"
-          >
-            升级 Pro
+          <button type="button" id="add-prompt-button" class="utility-button">
+            <span data-i18n="managePrompts">管理 Prompt</span>
           </button>
-        </div>
+          <button type="button" id="upgrade-pro-entry" class="utility-button">
+            <span data-i18n="upgradePro">Pro 规划</span>
+          </button>
+        </nav>
+        <p id="shortcut-settings-feedback" class="inline-feedback" role="status" hidden></p>
 
-        <div class="footer">
-          <div class="footer-item">
-            <a href="#" id="feedback-link" class="footer-link">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path
-                  d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
-                ></path>
-              </svg>
-              <span data-i18n="feedback">反馈与建议</span>
-            </a>
-          </div>
-
-          <div class="footer-item footer-item-share">
-            <a href="#" id="share-link" class="footer-link">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"></path>
-                <polyline points="16 6 12 2 8 6"></polyline>
-                <line x1="12" y1="2" x2="12" y2="15"></line>
-              </svg>
-              <span data-i18n="shareWithFriends">分享给朋友</span>
-            </a>
-            <button
-              type="button"
-              id="copy-share-button"
-              class="footer-button compact-inline-button"
-              data-i18n="copyShareText"
-            >
-              复制文案
-            </button>
-          </div>
-
-          <div class="footer-item">
-            <a href="#" id="rate-link" class="footer-link">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linejoin="round"
-              >
-                <polygon
-                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                ></polygon>
-              </svg>
-              <span data-i18n="rateUs">去评价</span>
-            </a>
-          </div>
-        </div>
-
-        <p id="wom-status-hint" class="footer-status-hint" hidden>
-          完成至少 2 次成功复制后解锁分享与评价。
-        </p>
-
-        <div id="popup-onboarding-modal" class="modal onboarding-modal" style="display: none">
-          <div class="modal-content onboarding-modal-content">
-            <div class="onboarding-header">
-              <div class="onboarding-title" data-i18n="popupOnboardingTitle">欢迎使用 Copylot</div>
-              <div id="popup-onboarding-progress" class="onboarding-progress">1/3</div>
-            </div>
-
-            <div class="onboarding-body">
-              <div id="popup-onboarding-step-1" class="onboarding-step" data-step="1">
-                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep1Title">
-                  第 1 步：先完成第一次干净复制
-                </h3>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep1Desc1">
-                  先挑最容易验证的场景：长文、表格或代码块，默认设置就能开始。
-                </p>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep1Desc2">
-                  复制后立刻粘贴到 ChatGPT、Claude 或文档里，确认结果是干净可用的。
-                </p>
-              </div>
-
-              <div id="popup-onboarding-step-2" class="onboarding-step" data-step="2" hidden>
-                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep2Title">
-                  第 2 步：把多段内容拼成一次提交
-                </h3>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep2Desc1">
-                  按住 Shift 进行“追加复制”，长文多段、多个表格或参考代码可以合并后再粘贴。
-                </p>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep2Desc2">
-                  你也可以在 Popup 里打开“追加模式”开关，连续收集后再一次贴给 AI。
-                </p>
-              </div>
-
-              <div id="popup-onboarding-step-3" class="onboarding-step" data-step="3" hidden>
-                <h3 class="onboarding-step-title" data-i18n="popupOnboardingStep3Title">
-                  第 3 步：把高频动作变成快捷路径
-                </h3>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep3Desc1">
-                  完成第一次干净复制后，再把常用 Prompt
-                  绑定到快捷位，后续长文、表格和代码块都能更快复用。
-                </p>
-                <p class="onboarding-step-text" data-i18n="popupOnboardingStep3Desc2">
-                  第二次打开时，先复制网页内容，再点快捷 Prompt 槽位，最后粘贴到 AI。
-                </p>
-                <button
-                  type="button"
-                  id="popup-onboarding-step-3-action"
-                  class="button onboarding-step-action"
-                  data-i18n="popupOnboardingStep3Action"
-                  hidden
-                >
-                  立即套用快捷 Prompt
-                </button>
-              </div>
-            </div>
-
-            <div class="onboarding-footer">
-              <button
-                type="button"
-                id="popup-onboarding-skip"
-                class="onboarding-skip-button"
-                data-i18n="popupOnboardingSkip"
-              >
-                跳过
-              </button>
-
-              <div class="onboarding-nav">
-                <button
-                  type="button"
-                  id="popup-onboarding-prev"
-                  class="button secondary"
-                  data-i18n="popupOnboardingPrev"
-                >
-                  上一步
-                </button>
-                <button
-                  type="button"
-                  id="popup-onboarding-next"
-                  class="button"
-                  data-i18n="popupOnboardingNext"
-                >
-                  下一步
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+        <footer class="footer">
+          <a href="#" id="feedback-link" data-i18n="feedback">反馈</a>
+          <a href="#" id="share-link" data-i18n="shareWithFriends">分享</a>
+          <button type="button" id="copy-share-button" data-i18n="copyShareText">复制分享文案</button>
+          <a href="#" id="rate-link" data-i18n="rateUs">评价</a>
+        </footer>
+      </main>
       <script type="module" src="popup.js"></script>
     </div>
   </body>

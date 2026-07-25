@@ -27,6 +27,8 @@ export interface ChromeMockOptions {
   localData?: Record<string, unknown>;
   commands?: Array<{ name?: string; shortcut?: string }>;
   uiLanguage?: string;
+  tabMessageResponse?: unknown | ((message: unknown) => unknown | Promise<unknown>);
+  tabMessageError?: string;
 }
 
 export interface ChromeMockLogs {
@@ -434,8 +436,17 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
         callback?: (response: { success: boolean }) => void
       ) {
         logs.sentTabMessages.push({ tabId, message });
-        callback?.({ success: true });
-        return Promise.resolve({ success: true });
+        if (options.tabMessageError) {
+          return Promise.reject(new Error(options.tabMessageError));
+        }
+        const configuredResponse =
+          typeof options.tabMessageResponse === 'function'
+            ? options.tabMessageResponse(message)
+            : (options.tabMessageResponse ?? { success: true });
+        return Promise.resolve(configuredResponse).then((response) => {
+          callback?.(response as { success: boolean });
+          return response;
+        });
       }
     }
   } as unknown as typeof chrome;

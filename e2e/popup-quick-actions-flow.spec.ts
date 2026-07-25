@@ -1,7 +1,7 @@
 import { test, expect } from './fixtures';
 import { clearClipboard } from './helpers/clipboard';
 import { getSettingsSnapshot, getStorageSnapshot, seedSyncStorage } from './helpers/extension-state';
-import { completePopupOnboardingIfVisible, openPopupForActiveTab } from './helpers/popup';
+import { openPopupForActiveTab } from './helpers/popup';
 
 test('popup quick actions execute copy-to-ai and bound prompt slots', async ({
   extensionContext,
@@ -72,7 +72,6 @@ test('popup quick actions execute copy-to-ai and bound prompt slots', async ({
     await page.bringToFront();
 
     let popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
-    await completePopupOnboardingIfVisible(popup);
 
     await expect(popup.locator('#quick-prompt-slot-1-title')).toHaveText('Slot 1 Prompt');
     await expect(popup.locator('#quick-prompt-slot-2-title')).toHaveText('Slot 2 Prompt');
@@ -89,7 +88,6 @@ test('popup quick actions execute copy-to-ai and bound prompt slots', async ({
 
     await page.bringToFront();
     popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
-    await completePopupOnboardingIfVisible(popup);
     await popup.locator('#quick-prompt-slot-1-button').click();
     await expect
       .poll(async () => {
@@ -101,7 +99,6 @@ test('popup quick actions execute copy-to-ai and bound prompt slots', async ({
 
     await page.bringToFront();
     popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
-    await completePopupOnboardingIfVisible(popup);
     await popup.locator('#quick-prompt-slot-2-button').click();
     await expect
       .poll(async () => {
@@ -113,7 +110,6 @@ test('popup quick actions execute copy-to-ai and bound prompt slots', async ({
 
     await page.bringToFront();
     popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
-    await completePopupOnboardingIfVisible(popup);
     await popup.locator('#quick-prompt-slot-3-button').click();
     await expect
       .poll(async () => {
@@ -144,7 +140,7 @@ test('popup quick actions execute copy-to-ai and bound prompt slots', async ({
   }
 });
 
-test('popup quick actions show setup copy for unassigned slots', async ({
+test('popup keeps the built-in prompt secondary and hides unassigned slots', async ({
   extensionContext,
   extensionId,
   driverPage,
@@ -166,9 +162,12 @@ test('popup quick actions show setup copy for unassigned slots', async ({
     await page.bringToFront();
 
     const popup = await openPopupForActiveTab(extensionContext, extensionId, driverPage);
-    await completePopupOnboardingIfVisible(popup);
 
-    await expect(popup.locator('#quick-prompt-slot-1-button')).toBeHidden();
+    await expect(popup.locator('#quick-prompts-section')).toBeVisible();
+    await expect(popup.locator('#quick-prompt-slot-1-button')).toBeVisible();
+    await expect(popup.locator('#quick-prompt-slot-1-button')).toContainText(
+      /总结文章|Summarize Article/i
+    );
     await expect(popup.locator('#quick-prompt-slot-2-button')).toBeHidden();
     await expect(popup.locator('#quick-prompt-slot-3-button')).toBeHidden();
   } finally {

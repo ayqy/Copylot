@@ -64,7 +64,7 @@
     "description": "Popup 中的分享入口"
   },
   "copyShareText": {
-    "message": "复制文案",
+    "message": "复制分享文案",
     "description": "一键复制分享文案按钮"
   },
   "rateUs": {
@@ -214,8 +214,8 @@
     }
   },
   "upgradePro": {
-    "message": "查看 Pro 路线",
-    "description": "Popup 升级 Pro 入口"
+    "message": "Pro 规划",
+    "description": "Popup Pro 规划入口"
   },
   "joinProWaitlist": {
     "message": "加入候补名单",
@@ -238,7 +238,7 @@
     "description": "Popup：复制候补文案按钮"
   },
   "proTab": {
-    "message": "Pro",
+    "message": "Pro 规划",
     "description": "Options Pro Tab 标签"
   },
   "proTitle": {
@@ -1631,7 +1631,7 @@
     "description": "悬停触发开关的标签"
   },
   "convertButton": {
-    "message": "复制给AI"
+    "message": "复制给 AI"
   },
   "convertPage": {
     "message": "复制给AI",
@@ -1663,7 +1663,7 @@
     "message": "私人prompt"
   },
   "managePrompts": {
-    "message": "管理Prompts"
+    "message": "管理 Prompt"
   },
   "popupOnboardingReopen": {
     "message": "查看操作说明",
@@ -1820,15 +1820,15 @@
     "description": "Popup 快捷操作区副标题"
   },
   "popupEnableFeatureHint": {
-    "message": "关闭后，悬浮按钮和常规复制入口都会暂停。",
+    "message": "在网页中显示智能复制入口。",
     "description": "Popup 总开关说明"
   },
   "expandMoreSettings": {
-    "message": "展开更多设置",
+    "message": "更多复制设置",
     "description": "Popup 展开更多设置按钮"
   },
   "collapseMoreSettings": {
-    "message": "收起更多设置",
+    "message": "收起复制设置",
     "description": "Popup 收起更多设置按钮"
   },
   "shortcutNotSet": {
@@ -1976,7 +1976,7 @@
     "description": "引导完成按钮"
   },
   "optionsTitle": {
-    "message": "Prompt管理器 - Copylot"
+    "message": "Copylot 设置"
   },
   "optionsOnboardingTitle": {
     "message": "新手引导",
@@ -2363,23 +2363,23 @@
     "description": "关闭使用说明的按钮文本"
   },
   "promptsTab": {
-    "message": "Prompt管理",
+    "message": "Prompt",
     "description": "Prompt管理标签页标题"
   },
   "chatServicesTab": {
-    "message": "Chat服务",
+    "message": "AI 服务",
     "description": "Chat服务管理标签页标题"
   },
   "privacyTab": {
-    "message": "隐私",
+    "message": "隐私与数据",
     "description": "隐私标签页标题"
   },
   "privacyTitle": {
-    "message": "数据与隐私",
+    "message": "隐私与数据",
     "description": "隐私页主标题"
   },
   "privacyDescription": {
-    "message": "网页内容默认留在本地。这里用最直接的方式告诉你：Copylot 会保存什么、不会保存什么，以及你随时能怎么清理。",
+    "message": "Copylot 在你的浏览器里整理网页。复制内容不会发送给 Copylot。",
     "description": "隐私页描述"
   },
   "privacyPromiseTitle": {
@@ -3341,5 +3341,249 @@
   "storageQuotaExceeded": {
     "message": "同步空间不足，无法保存更多 Chat 服务，请删除部分服务后重试。",
     "description": "chat 服务同步空间用尽时的提示"
+  },
+  "copySuccessSelection": {
+    "message": "已复制选中内容",
+    "description": "选区复制成功后的页面提示"
+  },
+  "copySuccessPage": {
+    "message": "已复制整页内容",
+    "description": "整页复制成功后的页面提示"
+  },
+  "copySuccessPrompt": {
+    "message": "已套用 Prompt 并复制",
+    "description": "Prompt 快捷操作成功后的页面提示"
+  },
+  "copyErrorNoContent": {
+    "message": "没有识别到可复制内容。请先选择一段内容后重试。",
+    "description": "页面提取为空时的可恢复错误提示"
+  },
+  "copyErrorSettingsUnavailable": {
+    "message": "设置暂时不可用。请刷新页面后重试。",
+    "description": "设置加载失败时的可恢复错误提示"
+  },
+  "copyErrorClipboard": {
+    "message": "无法写入剪贴板。请检查浏览器权限后重试。",
+    "description": "剪贴板写入失败时的可恢复错误提示"
+  },
+  "copyErrorPageUnavailable": {
+    "message": "当前页面暂不支持复制。请刷新页面，或在普通网页中重试。",
+    "description": "内容脚本不可用时的可恢复错误提示"
+  },
+  "copyErrorNoActiveTab": {
+    "message": "没有找到当前网页。请打开一个网页后重试。",
+    "description": "找不到活动标签页时的可恢复错误提示"
+  },
+  "copyErrorUnknown": {
+    "message": "复制没有完成。请重试；若问题仍存在，请刷新页面。",
+    "description": "复制动作未知错误提示"
+  },
+  "popupProductTagline": {
+    "message": "把网页整理成可用内容",
+    "description": "Popup 品牌副标题"
+  },
+  "popupCopyTitle": {
+    "message": "复制当前内容",
+    "description": "Popup 主任务标题"
+  },
+  "popupCopyDescription": {
+    "message": "有选区时复制选区，否则自动整理整页。",
+    "description": "Popup 主任务说明"
+  },
+  "popupQuickPromptsTitle": {
+    "message": "快捷 Prompt",
+    "description": "Popup 快捷 Prompt 区标题"
+  },
+  "popupQuickPromptsDescription": {
+    "message": "复制内容时直接套用你的常用指令。",
+    "description": "Popup 快捷 Prompt 区说明"
+  },
+  "popupCopyWorking": {
+    "message": "正在整理页面并写入剪贴板…",
+    "description": "Popup 复制进行中状态"
+  },
+  "popupCopyWorkingButton": {
+    "message": "正在复制…",
+    "description": "Popup 复制进行中按钮文案"
+  },
+  "popupCopySuccess": {
+    "message": "已复制，可以粘贴使用。",
+    "description": "Popup 复制成功状态"
+  },
+  "optionsHeaderTitle": {
+    "message": "Copylot 设置",
+    "description": "Options 页面总标题"
+  },
+  "optionsHeaderSubtitle": {
+    "message": "管理复制方式、Prompt、AI 服务和隐私设置",
+    "description": "Options 页面总说明"
+  },
+  "privacyEyebrow": {
+    "message": "你的内容，你做主",
+    "description": "隐私页眉标签"
+  },
+  "privacyLocalBadge": {
+    "message": "本机处理",
+    "description": "隐私页本机处理状态"
+  },
+  "privacyContentLocalTitle": {
+    "message": "复制内容仅在本机处理",
+    "description": "隐私页内容处理标题"
+  },
+  "privacyContentLocalDescription": {
+    "message": "网页正文、选区、标题和链接只在当前页面中整理，结果直接写入剪贴板。",
+    "description": "隐私页内容处理说明"
+  },
+  "privacySyncTitle": {
+    "message": "设置与 Prompt 随 Chrome 同步",
+    "description": "隐私页同步存储标题"
+  },
+  "privacySyncDescription": {
+    "message": "Chrome 可同步你的设置、Prompt 和 AI 服务配置；Copylot 不会接收这些同步数据。",
+    "description": "隐私页同步存储说明"
+  },
+  "privacyLocalRecordsTitle": {
+    "message": "可选记录只留在当前设备",
+    "description": "隐私页本地记录标题"
+  },
+  "privacyLocalRecordsDescription": {
+    "message": "本地使用记录不含网页正文、标题或 URL，也不会通过网络发送。",
+    "description": "隐私页本地记录说明"
+  },
+  "localUsageRecordsTitle": {
+    "message": "本地使用记录",
+    "description": "本地使用记录设置标题"
+  },
+  "localUsageRecordsDescription": {
+    "message": "可选记录功能操作与时间，帮助排查 Copylot 自身的问题。",
+    "description": "本地使用记录设置说明"
+  },
+  "localUsageRecordsToggleLabel": {
+    "message": "允许本地使用记录",
+    "description": "本地使用记录开关的无障碍标签"
+  },
+  "localUsageRecordsBoundaryContent": {
+    "message": "不记录网页正文、选中文字、页面标题或 URL",
+    "description": "本地使用记录内容边界"
+  },
+  "localUsageRecordsBoundaryNetwork": {
+    "message": "不发送到 Copylot 或其他外部服务",
+    "description": "本地使用记录网络边界"
+  },
+  "localUsageRecordsBoundaryOff": {
+    "message": "关闭后立即清除已有的本地事件记录",
+    "description": "本地使用记录关闭行为"
+  },
+  "localUsageRecordsStatusOn": {
+    "message": "已开启 · 记录仅保存在当前设备",
+    "description": "本地使用记录开启状态"
+  },
+  "localUsageRecordsStatusOff": {
+    "message": "已关闭 · 不记录本地事件",
+    "description": "本地使用记录关闭状态"
+  },
+  "localUsageRecordsClearFailed": {
+    "message": "设置已关闭，但旧记录清理失败。请重新打开此页面后再关闭一次。",
+    "description": "本地使用记录清理失败提示"
+  },
+  "privacyPolicyLinkTitle": {
+    "message": "查看完整隐私政策",
+    "description": "完整隐私政策链接标题"
+  },
+  "privacyPolicyLinkDescription": {
+    "message": "了解浏览器权限、存储范围和你的选择",
+    "description": "完整隐私政策链接说明"
+  },
+  "proPlanningEyebrow": {
+    "message": "规划中",
+    "description": "Pro 页状态标签"
+  },
+  "proPlanningTitle": {
+    "message": "Copylot Pro",
+    "description": "Pro 规划页标题"
+  },
+  "proNotAvailableBadge": {
+    "message": "尚未上线",
+    "description": "Pro 未上线状态"
+  },
+  "proPlanningDescription": {
+    "message": "我们正在探索更复杂的资料整理工作流。现在没有订阅、付费或候补名单。",
+    "description": "Pro 规划页说明"
+  },
+  "proViewPlanButton": {
+    "message": "查看 Pro 规划",
+    "description": "查看 Pro 规划按钮"
+  },
+  "proFreeEyebrow": {
+    "message": "现在即可使用",
+    "description": "免费能力区标签"
+  },
+  "proFreeTitle": {
+    "message": "免费版已覆盖日常复制",
+    "description": "免费能力区标题"
+  },
+  "proFreeDescription": {
+    "message": "以下能力会继续免费提供，不受 Pro 规划影响。",
+    "description": "免费能力区说明"
+  },
+  "proFreeCapabilityClean": {
+    "message": "整理文章、表格和代码为 Markdown、CSV 或纯文本",
+    "description": "免费内容整理能力"
+  },
+  "proFreeCapabilitySelection": {
+    "message": "优先复制选区，也可一键整理整页",
+    "description": "免费选区与整页能力"
+  },
+  "proFreeCapabilityPrompt": {
+    "message": "通过三个快捷键快速套用自定义 Prompt",
+    "description": "免费 Prompt 能力"
+  },
+  "proFreeCapabilityAppend": {
+    "message": "追加收集多段内容后一次粘贴",
+    "description": "免费追加能力"
+  },
+  "proRoadmapEyebrow": {
+    "message": "探索方向",
+    "description": "Pro 方向区标签"
+  },
+  "proRoadmapTitle": {
+    "message": "探索更复杂的资料整理能力",
+    "description": "Pro 方向区标题"
+  },
+  "proRoadmapDescription": {
+    "message": "以下能力仍在规划，具体范围和上线时间尚未确定。",
+    "description": "Pro 方向区说明"
+  },
+  "proDirectionCleaningTitle": {
+    "message": "复杂页面清理",
+    "description": "Pro 复杂页面方向标题"
+  },
+  "proDirectionCleaningDescription": {
+    "message": "更稳定地识别长文、动态页面与非标准布局，减少导航和推荐内容干扰。",
+    "description": "Pro 复杂页面方向说明"
+  },
+  "proDirectionCollectionTitle": {
+    "message": "多页面收集",
+    "description": "Pro 多页面方向标题"
+  },
+  "proDirectionCollectionDescription": {
+    "message": "把多个页面或资料片段组织成一次可复用的研究输入。",
+    "description": "Pro 多页面方向说明"
+  },
+  "proDirectionExportTitle": {
+    "message": "导出到常用工具",
+    "description": "Pro 导出方向标题"
+  },
+  "proDirectionExportDescription": {
+    "message": "将整理结果更顺畅地交给文档、知识库与其他工作工具。",
+    "description": "Pro 导出方向说明"
+  },
+  "proBoundaryTitle": {
+    "message": "当前无需做任何决定",
+    "description": "Pro 边界说明标题"
+  },
+  "proBoundaryDescription": {
+    "message": "Pro 尚未开放订阅、支付或候补登记；你现有的免费功能和数据选择不会改变。",
+    "description": "Pro 边界说明"
   }
 }

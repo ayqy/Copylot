@@ -323,6 +323,35 @@ export function updateButtonState(button: HTMLElement, state: 'copy' | 'copied' 
   }
 }
 
+export function showCopyActionFeedback(
+  message: string,
+  kind: 'success' | 'error'
+): void {
+  const existing = document.getElementById('copylot-action-feedback');
+  existing?.remove();
+
+  const feedback = document.createElement('div');
+  feedback.id = 'copylot-action-feedback';
+  feedback.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+  feedback.setAttribute('aria-live', kind === 'error' ? 'assertive' : 'polite');
+  feedback.dataset.kind = kind;
+  feedback.className = `copylot-action-feedback copylot-action-feedback-${kind}`;
+  feedback.textContent = message;
+  feedback.style.zIndex = MAX_Z_INDEX.toString();
+
+  document.body.appendChild(feedback);
+  requestAnimationFrame(() => {
+    feedback.style.opacity = '1';
+    feedback.style.transform = 'translateY(0)';
+  });
+
+  window.setTimeout(() => {
+    feedback.style.opacity = '0';
+    feedback.style.transform = 'translateY(-8px)';
+    window.setTimeout(() => feedback.remove(), 180);
+  }, kind === 'error' ? 5200 : 2400);
+}
+
 export function injectStyles(): void {
   if (document.getElementById('ai-copilot-styles')) return;
 
@@ -365,6 +394,35 @@ export function injectStyles(): void {
     
     .ai-copilot-prompt-item:hover {
       background-color: rgb(79, 70, 229) !important;
+    }
+
+    .copylot-action-feedback {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      max-width: min(360px, calc(100vw - 40px));
+      padding: 12px 16px;
+      border-radius: 10px;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.45;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.26);
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 160ms ease, transform 160ms ease;
+      pointer-events: none;
+    }
+
+    .copylot-action-feedback-success {
+      border: 1px solid rgba(167, 243, 208, 0.5);
+      background: #065f46;
+    }
+
+    .copylot-action-feedback-error {
+      border: 1px solid rgba(254, 202, 202, 0.55);
+      background: #991b1b;
     }
   `;
 

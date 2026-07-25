@@ -1,6 +1,14 @@
 import type { Locator } from '@playwright/test';
 import { test, expect } from './fixtures';
-import { openExtensionPage, waitForPromptCardById, waitForPromptCardByTitle } from './helpers/extension-state';
+import {
+  getStorageSnapshot,
+  openExtensionPage,
+  seedLocalStorage,
+  seedSyncStorage,
+  waitForPromptCardById,
+  waitForPromptCardByTitle
+} from './helpers/extension-state';
+import { openOptionsTab } from './helpers/options';
 
 async function expectBoxSize(locator: Locator, expected: { width: number; height: number }): Promise<void> {
   const box = await locator.boundingBox();
@@ -70,6 +78,77 @@ test('options prompt modal switch and prompt card action buttons keep fixed geom
     await expectBoxSize(firstCard.locator('.edit-btn'), { width: 32, height: 32 });
     await expectBoxSize(firstCard.locator('.duplicate-btn'), { width: 32, height: 32 });
     await expectBoxSize(firstCard.locator('.delete-btn'), { width: 32, height: 32 });
+  } finally {
+    await page.close();
+  }
+});
+
+test('privacy tab explains data boundaries and clears optional local records when disabled', async ({
+  extensionContext,
+  extensionId,
+  driverPage
+}) => {
+  await seedSyncStorage(driverPage, {
+    copilot_settings: {
+      isAnonymousUsageDataEnabled: true
+    }
+  });
+  await seedLocalStorage(driverPage, {
+    copilot_telemetry_events: [
+      {
+        name: 'popup_opened',
+        ts: Date.now()
+      }
+    ]
+  });
+
+  const page = await openExtensionPage(
+    extensionContext,
+    extensionId,
+    'src/options/options.html#privacy'
+  );
+  try {
+    await openOptionsTab(page, 'privacy');
+
+    await expect(page.locator('#privacy-page-title')).toContainText(
+      /隐私与数据|Privacy and data/i
+    );
+    await expect(page.locator('.trust-item')).toHaveCount(3);
+    await expect(page.locator('.privacy-page-hero')).toContainText(
+      /不会发送给 Copylot|is not sent to Copylot/i
+    );
+    await expect(page.locator('#anonymous-usage-data-switch')).toBeChecked();
+
+    await page.locator('#anonymous-usage-data-switch + .slider').click();
+    await expect(page.locator('#anonymous-usage-data-switch')).not.toBeChecked();
+    await expect(page.locator('#anonymous-usage-data-status')).toHaveAttribute(
+      'data-state',
+      'disabled'
+    );
+    await expect(page.locator('#anonymous-usage-data-status')).toContainText(
+      /已关闭|Off/i
+    );
+
+    await expect
+      .poll(async () => {
+        const snapshot = await getStorageSnapshot(driverPage);
+        return {
+          enabled: (snapshot.sync.copilot_settings as Record<string, unknown>)
+            .isAnonymousUsageDataEnabled,
+          hasLocalEvents: Object.prototype.hasOwnProperty.call(
+            snapshot.local,
+            'copilot_telemetry_events'
+          )
+        };
+      })
+      .toEqual({
+        enabled: false,
+        hasLocalEvents: false
+      });
+
+    await expect(page.locator('#growth-funnel-view')).toHaveCount(0);
+    await expect(page.locator('[id*="audit"]')).toHaveCount(0);
+    await expect(page.locator('[id*="evidence"]')).toHaveCount(0);
   } finally {
     await page.close();
   }
