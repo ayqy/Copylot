@@ -1,0 +1,88 @@
+{
+  "version": "4.0",
+  "project_id": "copylot",
+  "roadmap_path": "docs/roadmap.md",
+  "status_path": "docs/roadmap_status.md",
+  "original_roadmap_sha256": "5ac6ee0118e2697a67fbbdc8d9668e4abdb58e89ad5a62693e26b0679e448e2e",
+  "original_status_sha256": "f394ed5cf80ca23288d2a9dc940b9928ef6e918cebf915f1ebef91fc1bbabb18",
+  "recovery": "Use Git history and the recorded SHA-256 values; the superseded roadmap is not retained as an active document.",
+  "disposition": [
+    {
+      "item": "产品内 Onboarding/新手引导主线",
+      "decision": "kill",
+      "reason": "功能简单且没有可信首次成功失败证据，额外界面增加复杂度。",
+      "reentry_condition": "可信 cohort 证明首次成功失败集中且只能由产品内引导解决时才可重入。"
+    },
+    {
+      "item": "官网/商店简单使用说明",
+      "decision": "keep",
+      "reason": "它能低成本承担教育而不污染插件主任务。",
+      "reentry_condition": "按真实失败问题更新，保持简短。"
+    },
+    {
+      "item": "Pro 问卷、候补与价格意向",
+      "decision": "kill",
+      "reason": "没有接收端、持久化、去重和回收闭环，事实无法收回。",
+      "reentry_condition": "有明确研究问题和真实接收端时可在产品路径之外重入，但不得替代付款。"
+    },
+    {
+      "item": "隐私表单、隐私候补与风险教育",
+      "decision": "kill",
+      "reason": "核心正文不上传，不应人为制造并不存在的风险焦虑。",
+      "reentry_condition": "产品真正新增正文上传或第三方处理并需有效同意时才重入。"
+    },
+    {
+      "item": "本地处理、低权限、不上传复制正文",
+      "decision": "keep",
+      "reason": "这是可由 Manifest 和运行事实核验的正向信任优势。",
+      "reentry_condition": "在官网、商店和隐私页持续准确表达。"
+    },
+    {
+      "item": "把本地隐私宣称为独占壁垒或付费意愿",
+      "decision": "kill",
+      "reason": "没有竞争选择或真实购买证据。",
+      "reentry_condition": "只有真实用户选择和成功付款证明其影响购买时重入。"
+    },
+    {
+      "item": "tracker、审计包、批准包、复核包与 handoff",
+      "decision": "demote",
+      "reason": "它们是内部支持材料，不是客户结果或商业结果。",
+      "reentry_condition": "仅自动生成且维护成本接近零时保留，不能重返商业主线。"
+    },
+    {
+      "item": "历史 Pro 统计与决策代码",
+      "decision": "demote",
+      "reason": "沉没代码量不构成保留理由。",
+      "reentry_condition": "具体能力被真实复用或付款路径需要时逐项重入，否则后续安全删除。"
+    },
+    {
+      "item": "Join thousands 与 MagicCopy 旧品牌/内部经营语言",
+      "decision": "kill",
+      "reason": "与官方用户数和当前品牌冲突，会损害信任。",
+      "reentry_condition": "规模话术只有官方可核验数字达到对应量级后才使用准确表述；旧品牌不重入。"
+    },
+    {
+      "item": "打开商店评分页事件",
+      "decision": "demote",
+      "reason": "打开动作不是公开评分或口碑。",
+      "reentry_condition": "只以商店真实评分和评论作为结果。"
+    },
+    {
+      "item": "先建设完整 Pro、支付、账户、订阅与套餐矩阵",
+      "decision": "kill",
+      "reason": "重复价值和可购买结果都未被证明。",
+      "reentry_condition": "多个独立复用用户接受同一完整购买结果后，只允许最小成交闭环重入。"
+    }
+  ],
+  "revisions": [
+    {
+      "revision": "af8eb2364a3b9b7b",
+      "migrated_at": "2026-08-02T07:18:37.271941+00:00",
+      "source_fingerprint": "8e9afeb73ec172bda4bbc158fe2ed006adbc43e978cf4a3d3409a35e5b7bb3f3",
+      "previous_roadmap_sha256": "5ac6ee0118e2697a67fbbdc8d9668e4abdb58e89ad5a62693e26b0679e448e2e",
+      "previous_status_sha256": "f394ed5cf80ca23288d2a9dc940b9928ef6e918cebf915f1ebef91fc1bbabb18",
+      "new_roadmap_sha256": "6ccc1da403ca4600063dfaaa2a134c056ee14133e886544efc63b0e8a5798566",
+      "new_status_sha256": "8beb97c86bab376c521efbaa7e1e5833c8f17f9ee697ad3f60492fa2d2e828d0"
+    }
+  ]
+}

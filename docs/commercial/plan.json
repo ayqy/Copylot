@@ -1,0 +1,498 @@
+{
+  "meta": {
+    "project_id": "copylot",
+    "analysis_version": "4.0",
+    "generated_by_model": "gpt-5.6-sol",
+    "generated_at": "2026-08-02T07:18:37.266425+00:00",
+    "revision": "af8eb2364a3b9b7b",
+    "source_fingerprint": "8e9afeb73ec172bda4bbc158fe2ed006adbc43e978cf4a3d3409a35e5b7bb3f3"
+  },
+  "recommendation": {
+    "decision": "maintain",
+    "one_sentence": "建议做低成本纠偏并列为组合第四优先级，因为 Copylot 尚无营收闭环，必须先删除不闭环问卷并退出新手引导/隐私风险主线，用无需引导的真实首次成功和复用决定是否值得建立最小付费结果。",
+    "portfolio_priority": 4,
+    "rationale": [
+      "当前没有真实支付、订单或可履约付费结果。",
+      "插件核心任务简单，官网/商店可承担用法说明。",
+      "本地处理、低权限和不上传正文是应正向表达的事实，但不能代替复用和付款证据。"
+    ],
+    "confidence": "high",
+    "fatal_assumption": "已有可信全量数据证明用户首次成功、自然复用和明确付费结果，只是本次输入未包含。"
+  },
+  "evidence_ledger": [
+    {
+      "id": "copylot-op-1",
+      "kind": "OPERATOR_FACT",
+      "claim": "Copylot 当前功能上不具备真实营收闭环，组合优先级最低。",
+      "source": "docs/commercial/profile.json operator_facts",
+      "confidence": "operator_unverified"
+    },
+    {
+      "id": "copylot-op-2",
+      "kind": "OPERATOR_FACT",
+      "claim": "插件功能简单，不需要额外新手引导；用法应在官方网站写清楚。",
+      "source": "经营者于 2026-08-02 明确指出",
+      "confidence": "operator_unverified"
+    },
+    {
+      "id": "copylot-fact-1",
+      "kind": "FACT",
+      "claim": "历史 Pro 问卷只写入本地事件，没有服务端接收、持久化、去重和回收闭环。",
+      "source": "src/shared/pro-* 与 v3.0 仓库审计",
+      "confidence": "verified"
+    },
+    {
+      "id": "copylot-fact-2",
+      "kind": "FACT",
+      "claim": "Manifest 仅有 storage、clipboardWrite、contextMenus，无 host_permissions；复制正文在浏览器本地处理。",
+      "source": "manifest.json 与官网隐私说明",
+      "confidence": "verified"
+    },
+    {
+      "id": "copylot-fact-3",
+      "kind": "FACT",
+      "claim": "2026-07-26 Chrome Web Store 显示 54 users、No ratings；商店说明与官网仍有夸大规模/旧品牌冲突。",
+      "source": "Chrome Web Store 官方页面与 v3.1 评估证据",
+      "confidence": "verified"
+    },
+    {
+      "id": "copylot-inference-1",
+      "kind": "INFERENCE",
+      "claim": "当前承重约束是可信首次成功和自然复用证据，而不是更多 Pro 代码、tracker 或内部包。",
+      "source": "无营收闭环 + 小用户样本 + 本地数据不能外推",
+      "confidence": "high"
+    },
+    {
+      "id": "copylot-unknown-1",
+      "kind": "UNKNOWN",
+      "claim": "真实用户无需引导的首次成功率、自然复用与愿意购买的完整结果均未知。",
+      "source": "无跨用户可信闭环数据",
+      "confidence": "unknown"
+    }
+  ],
+  "data_health": {
+    "status": "diagnostic_only",
+    "decision_scope": "足以删除错误路线、修正公开事实、保留本地处理优势并进行低成本真实使用验证；不足以授权 Pro、支付或大规模 SEO。",
+    "sources": [
+      {
+        "name": "Chrome Web Store public listing",
+        "status": "diagnostic_only",
+        "scope": "公开用户数、版本、评分和评论",
+        "freshness": "2026-07-26"
+      },
+      {
+        "name": "in-browser local events",
+        "status": "diagnostic_only",
+        "scope": "单设备动作，不能代表全量用户",
+        "freshness": "2026-08-02"
+      },
+      {
+        "name": "payment/order source",
+        "status": "missing",
+        "scope": "成功付款毛营收",
+        "freshness": "2026-08-02"
+      },
+      {
+        "name": "questionnaire receiver",
+        "status": "missing",
+        "scope": "Pro 问卷提交、去重和回收",
+        "freshness": "2026-08-02"
+      }
+    ],
+    "missing": [
+      "无需引导的真实首次成功 cohort",
+      "7/28 天自然复用证据",
+      "明确可购买结果与真实付款"
+    ],
+    "safe_next_action": "删除无接收端问卷并让产品内引导退出主线，官网/商店准确说明用法和本地处理事实，再用不采集正文的独立使用 cohort 验证首次成功与复用。"
+  },
+  "commercial_model": {
+    "target_customer": "需要把网页正文、代码或表格快速复制成适合 AI 和笔记工具使用格式的浏览器用户",
+    "core_job": "在当前网页上一键得到干净的 Markdown 或纯文本并立即粘贴到 AI",
+    "commercial_stage": "pre_monetization_value_validation",
+    "revenue_paths": [
+      "当前没有经真实付款验证的收入路径；后续路径必须在重复价值成立后通过真实成功付款建立。"
+    ],
+    "value_facts": [
+      "网页正文、代码和表格清洗在用户设备本地完成。",
+      "不收集、不存储、不上传用户复制的网页正文。",
+      "权限保持最小化，用户配置通过浏览器存储及可选的 Chrome/Google 账号同步。",
+      "插件核心操作足够简单，官网说明与商店素材应承担教育责任。"
+    ],
+    "north_star": "gross_revenue",
+    "financial_policy": {
+      "primary_metric": "gross_revenue",
+      "cost_assumption": "zero",
+      "refunds_in_decisions": false
+    }
+  },
+  "binding_constraint": {
+    "name": "可信的安装后首次成功与自然复用证据缺失。",
+    "evidence": [
+      "当前无营收闭环。",
+      "公开用户样本小且无评分。",
+      "本地事件不能外推全量。"
+    ],
+    "confidence": "high",
+    "fails_if": "Chrome Web Store、支持系统或可信 cohort 已提供用户级首次成功和复用数据。",
+    "cheapest_falsification": "使用当前核心功能、官网简单说明和不采集正文的固定 cohort，验证新用户能否直接完成第一次干净复制并在自然周期复用。",
+    "kill_criterion": "目标用户多数无需该任务、无法直接成功或在自然周期不复用，则停止 Pro 与营收闭环建设并重新评估定位。"
+  },
+  "current_roadmap_disposition": [
+    {
+      "item": "产品内 Onboarding/新手引导主线",
+      "decision": "kill",
+      "reason": "功能简单且没有可信首次成功失败证据，额外界面增加复杂度。",
+      "reentry_condition": "可信 cohort 证明首次成功失败集中且只能由产品内引导解决时才可重入。"
+    },
+    {
+      "item": "官网/商店简单使用说明",
+      "decision": "keep",
+      "reason": "它能低成本承担教育而不污染插件主任务。",
+      "reentry_condition": "按真实失败问题更新，保持简短。"
+    },
+    {
+      "item": "Pro 问卷、候补与价格意向",
+      "decision": "kill",
+      "reason": "没有接收端、持久化、去重和回收闭环，事实无法收回。",
+      "reentry_condition": "有明确研究问题和真实接收端时可在产品路径之外重入，但不得替代付款。"
+    },
+    {
+      "item": "隐私表单、隐私候补与风险教育",
+      "decision": "kill",
+      "reason": "核心正文不上传，不应人为制造并不存在的风险焦虑。",
+      "reentry_condition": "产品真正新增正文上传或第三方处理并需有效同意时才重入。"
+    },
+    {
+      "item": "本地处理、低权限、不上传复制正文",
+      "decision": "keep",
+      "reason": "这是可由 Manifest 和运行事实核验的正向信任优势。",
+      "reentry_condition": "在官网、商店和隐私页持续准确表达。"
+    },
+    {
+      "item": "把本地隐私宣称为独占壁垒或付费意愿",
+      "decision": "kill",
+      "reason": "没有竞争选择或真实购买证据。",
+      "reentry_condition": "只有真实用户选择和成功付款证明其影响购买时重入。"
+    },
+    {
+      "item": "tracker、审计包、批准包、复核包与 handoff",
+      "decision": "demote",
+      "reason": "它们是内部支持材料，不是客户结果或商业结果。",
+      "reentry_condition": "仅自动生成且维护成本接近零时保留，不能重返商业主线。"
+    },
+    {
+      "item": "历史 Pro 统计与决策代码",
+      "decision": "demote",
+      "reason": "沉没代码量不构成保留理由。",
+      "reentry_condition": "具体能力被真实复用或付款路径需要时逐项重入，否则后续安全删除。"
+    },
+    {
+      "item": "Join thousands 与 MagicCopy 旧品牌/内部经营语言",
+      "decision": "kill",
+      "reason": "与官方用户数和当前品牌冲突，会损害信任。",
+      "reentry_condition": "规模话术只有官方可核验数字达到对应量级后才使用准确表述；旧品牌不重入。"
+    },
+    {
+      "item": "打开商店评分页事件",
+      "decision": "demote",
+      "reason": "打开动作不是公开评分或口碑。",
+      "reentry_condition": "只以商店真实评分和评论作为结果。"
+    },
+    {
+      "item": "先建设完整 Pro、支付、账户、订阅与套餐矩阵",
+      "decision": "kill",
+      "reason": "重复价值和可购买结果都未被证明。",
+      "reentry_condition": "多个独立复用用户接受同一完整购买结果后，只允许最小成交闭环重入。"
+    }
+  ],
+  "strategic_options": [
+    {
+      "name": "继续 Pro tracker、问卷和内部审计包",
+      "customer_result": "用户核心任务不改善",
+      "commercial_result": "继续没有成功付款毛营收",
+      "effort": "high",
+      "earliest_decision": "只能得到更多内部文件",
+      "load_bearing_assumption": "内部判断材料最终会带来收入",
+      "failure_condition": "没有真实复用或付款",
+      "opportunity_cost": "占用前三项目收入实验资源",
+      "decision": "reject"
+    },
+    {
+      "name": "删除错误分支并验证无需引导的复用",
+      "customer_result": "用户直接完成干净复制并自然复用",
+      "commercial_result": "为一个最小可购买结果建立行为门禁",
+      "effort": "low",
+      "earliest_decision": "7–28 天",
+      "load_bearing_assumption": "核心任务对一部分用户会重复发生",
+      "failure_condition": "用户不成功或不复用",
+      "opportunity_cost": "暂缓 Pro 和支付",
+      "decision": "recommend"
+    },
+    {
+      "name": "停止新增，仅维护商店可用",
+      "customer_result": "现有用户继续使用免费核心",
+      "commercial_result": "不建立营收闭环",
+      "effort": "low",
+      "earliest_decision": "当前即可决定",
+      "load_bearing_assumption": "复用价值不足",
+      "failure_condition": "出现重复使用和真实购买接受",
+      "opportunity_cost": "放弃潜在小型工具收入",
+      "decision": "defer"
+    }
+  ],
+  "outcome_roadmap": [
+    {
+      "id": "p0-delete-dead-branches-and-verify-repeat",
+      "stage": "删除无接收端问卷并退出产品内引导主线，验证无需引导的首次成功与复用",
+      "status": "active",
+      "customer_outcome": "真实新用户只看官网/商店简短说明即可完成第一次干净复制，并在自然工作周期再次使用。",
+      "commercial_outcome": "确认核心任务是否有可重复价值；在此之前不宣称或建设营收闭环。",
+      "hypothesis": "删除不闭环 Pro 问卷并停止产品内引导路线后，真实任务 cohort 能更干净地证明核心价值和复用。",
+      "target_customer": "需要把网页正文、代码或表格快速复制成适合 AI 和笔记工具使用格式的浏览器用户",
+      "revenue_path": "官网/商店准确说明 → 安装后直接完成干净复制 → 自然周期重复使用 → 重复价值成立后验证一个最小可购买结果 → 成功付款",
+      "baseline": "2026-07-26 官方商店显示 54 users、No ratings；首次成功和 7/28 天复用 UNKNOWN；成功付款毛营收=0 且收入路径缺失。",
+      "target": "TBD：先建立无需引导的独立用户首次成功和自然复用基线；只有多个独立用户重复同一任务才通过。",
+      "primary_metric": "verified_repeat_task_users",
+      "guardrail_metrics": [
+        "verified_first_task_users",
+        "time_to_first_success",
+        "result_rework_rate",
+        "chrome_store_public_users",
+        "gross_revenue"
+      ],
+      "denominator": "进入固定 cohort 的独立新安装用户及其自然复用周期；公开商店指标单独报告。",
+      "dedupe": "匿名 cohort ID + 安装窗口；不采集、存储或上传复制正文；本地事件不得外推为全量。",
+      "data_sources": [
+        "fixed_opt_in_cohort_record",
+        "Chrome_Web_Store_public_listing",
+        "support_and_public_reviews"
+      ],
+      "owner": "software_factory",
+      "cheapest_test": "删除无接收端 Pro 问卷入口，停用额外产品内引导路线；用当前版本和官网说明运行不采集正文的 7/28 天 cohort。",
+      "observation_window": "首次成功 7–14 天；自然复用 28 天或真实工作周期。",
+      "decision_rules": {
+        "stop": "核心任务不被需要、无法可靠完成，或结果普遍需要大量返工。",
+        "continue": "首次成功成立但复用周期未完成时保持免费核心并完成固定窗口。",
+        "scale": "多个独立用户无需额外产品引导完成任务，并在自然周期重复成功。",
+        "adjust": "失败集中时只修一个真实可用性阻断；成功但不复用时重新审视任务频率和定位。"
+      },
+      "kill_criterion": "固定 cohort 在真实周期内没有多个独立复用用户。",
+      "unlocks": "只解锁一个最小可购买结果的真实报价测试，不解锁完整 Pro。",
+      "not_doing": [
+        "不建设 Onboarding",
+        "不恢复无接收端 Pro questionnaire",
+        "不建设 privacy form 或风险教育",
+        "不把本地事件外推全量",
+        "不以 tracker 或 audit pack 结项"
+      ],
+      "allowed_action_families": [
+        "product_delivery",
+        "measurement_repair"
+      ],
+      "execution_budget": {
+        "keyword_candidates": 0,
+        "pages_publish": 0,
+        "outreach_attempts": 0,
+        "product_changes": 1
+      }
+    },
+    {
+      "id": "p1-one-minimum-paid-result",
+      "stage": "只验证一个由重复任务证明的最小可购买结果",
+      "status": "next",
+      "customer_outcome": "重复用户购买一个完整、明确且保持正文不上传的增强结果。",
+      "commercial_outcome": "获得第一笔独立真实成功付款毛营收并完成承诺结果。",
+      "hypothesis": "只有来自真实复用任务的一个完整增强结果，才可能比问卷或套餐矩阵更快形成付款。",
+      "target_customer": "需要把网页正文、代码或表格快速复制成适合 AI 和笔记工具使用格式的浏览器用户",
+      "revenue_path": "官网/商店准确说明 → 安装后直接完成干净复制 → 自然周期重复使用 → 重复价值成立后验证一个最小可购买结果 → 成功付款",
+      "baseline": "由 p0 的复用任务和替代方案建立；当前无真实收入路径。",
+      "target": "至少 1 笔独立真实成功付款并完成交付；仅证明链路。",
+      "primary_metric": "paid_order_count",
+      "guardrail_metrics": [
+        "gross_revenue",
+        "delivery_success",
+        "free_core_integrity",
+        "local_processing_promise"
+      ],
+      "denominator": "p0 中已验证复用的独立用户和两个报价观察窗。",
+      "dedupe": "用户和支付交易唯一 ID；测试交易排除。",
+      "data_sources": [
+        "real_offer_acceptance",
+        "payment_provider",
+        "delivery_record"
+      ],
+      "owner": "software_factory",
+      "cheapest_test": "从至少三个可购买结果中按 p0 行为证据选一个，只做可回退的最小真实成交与交付。",
+      "observation_window": "两个购买观察窗。",
+      "decision_rules": {
+        "stop": "无人真实付款、交付失败或需要上传正文而破坏核心优势。",
+        "continue": "出现一笔真实付款时完成交付和第二窗口。",
+        "scale": "多个独立用户为同一结果付款并成功获得结果。",
+        "adjust": "保留重复任务，仅替换一个结果包装或定价模型。"
+      },
+      "kill_criterion": "两个观察窗无真实付款。",
+      "unlocks": "解锁最小产品化，不解锁套餐矩阵。",
+      "not_doing": [
+        "不使用产品内问卷定价",
+        "不先建完整 Pro",
+        "不削弱免费核心",
+        "不上传复制正文"
+      ],
+      "allowed_action_families": [
+        "payment_closure",
+        "product_delivery",
+        "measurement_repair"
+      ],
+      "execution_budget": {
+        "keyword_candidates": 0,
+        "pages_publish": 0,
+        "outreach_attempts": 0,
+        "product_changes": 1
+      }
+    },
+    {
+      "id": "p2-repeat-gross-revenue-before-productization",
+      "stage": "重复成功付款毛营收后再决定最小产品化",
+      "status": "queued",
+      "customer_outcome": "多个独立付费用户稳定获得同一增强结果。",
+      "commercial_outcome": "成功付款毛营收在多个窗口重复出现。",
+      "hypothesis": "重复付款和稳定交付比历史 Pro 代码量更能证明值得产品化。",
+      "target_customer": "需要把网页正文、代码或表格快速复制成适合 AI 和笔记工具使用格式的浏览器用户",
+      "revenue_path": "官网/商店准确说明 → 安装后直接完成干净复制 → 自然周期重复使用 → 重复价值成立后验证一个最小可购买结果 → 成功付款",
+      "baseline": "由 p1 建立。",
+      "target": "TBD：只用真实付款基线预注册。",
+      "primary_metric": "gross_revenue",
+      "guardrail_metrics": [
+        "independent_paid_users",
+        "delivery_success",
+        "repeat_task_users"
+      ],
+      "denominator": "独立付费用户与固定月度窗口。",
+      "dedupe": "支付交易、用户与交付记录分别去重。",
+      "data_sources": [
+        "payment_provider",
+        "delivery_record",
+        "repeat_cohort"
+      ],
+      "owner": "software_factory",
+      "cheapest_test": "只自动化 p1 中重复发生且不改变本地处理承诺的一个交付步骤。",
+      "observation_window": "两个 30 天窗口。",
+      "decision_rules": {
+        "stop": "毛营收不能重复或交付不稳定。",
+        "continue": "方向为正但周期未覆盖时保持小规模。",
+        "scale": "两个窗口成功付款毛营收和独立付费用户均增长。",
+        "adjust": "保留胜出结果，只调整一个交付或获客变量。"
+      },
+      "kill_criterion": "两个完整窗口无重复毛营收。",
+      "unlocks": "解锁最小 Pro 产品化。",
+      "not_doing": [
+        "不按沉没代码决定功能",
+        "不扩套餐矩阵",
+        "不牺牲本地处理事实"
+      ],
+      "allowed_action_families": [
+        "product_delivery",
+        "conversion_optimization"
+      ],
+      "execution_budget": {
+        "keyword_candidates": 0,
+        "pages_publish": 0,
+        "outreach_attempts": 0,
+        "product_changes": 1
+      }
+    }
+  ],
+  "measurement_contract": [
+    {
+      "metric": "verified_first_task_users",
+      "definition": "独立真实新用户无需额外产品引导完成一次可用的干净复制。",
+      "source": "固定 opt-in cohort 记录",
+      "denominator": "进入 cohort 的独立新安装用户",
+      "dedupe": "匿名 cohort ID",
+      "decision_use": "判断是否存在真实激活阻断"
+    },
+    {
+      "metric": "verified_repeat_task_users",
+      "definition": "同一独立用户在自然工作周期再次完成可用复制。",
+      "source": "固定 opt-in cohort 与公开支持/评论交叉",
+      "denominator": "首次成功用户",
+      "dedupe": "匿名 cohort ID + 自然周期",
+      "decision_use": "p0 Scale 门禁"
+    },
+    {
+      "metric": "chrome_store_public_users",
+      "definition": "Chrome Web Store 官方公开用户数及其采集日期。",
+      "source": "Chrome Web Store 官方页面",
+      "denominator": "商店展示口径",
+      "dedupe": "日期快照",
+      "decision_use": "获客诊断，不等于活跃、复用或收入"
+    },
+    {
+      "metric": "gross_revenue",
+      "definition": "未来支付平台确认的成功付款金额之和；当前为 0 且收入路径缺失。",
+      "source": "未来真实支付提供方",
+      "denominator": "固定购买窗口",
+      "dedupe": "支付平台唯一交易 ID",
+      "decision_use": "p1 之后唯一商业北极星"
+    }
+  ],
+  "seo_feedback_policy": [
+    {
+      "signal": "官网曝光增加但商店用户数不增加",
+      "interpretation": "意图、承诺或安装承接不匹配",
+      "action": "先修现有官网/商店表达",
+      "forbidden_inference": "不得自动扩 SEO 页面"
+    },
+    {
+      "signal": "商店用户数增加但首次成功未知",
+      "interpretation": "获客有变化但价值未验证",
+      "action": "完成固定 cohort，不新增产品内引导",
+      "forbidden_inference": "不得把安装当复用或收入"
+    },
+    {
+      "signal": "首次成功高但自然复用低",
+      "interpretation": "任务频率或持续价值不足",
+      "action": "审计真实工作故事和替代方案",
+      "forbidden_inference": "不得进入 Pro"
+    },
+    {
+      "signal": "复用与真实付款同时出现",
+      "interpretation": "出现商业入口",
+      "action": "完成第二购买窗口后只产品化一个结果",
+      "forbidden_inference": "不得从问卷或单笔付款扩套餐"
+    }
+  ],
+  "review_cadence": {
+    "data_health_days": 7,
+    "experiment_decision_days": 14,
+    "roadmap_reorder_days": 30,
+    "release_review": "每次发布前冻结基线、动作与观察窗；窗口结束后由规则自动执行 Stop/Continue/Scale/Adjust。",
+    "triggered_review": [
+      "官方商店用户数或评分变化",
+      "首次出现多个独立复用用户",
+      "第一笔真实成功付款",
+      "权限或正文处理方式发生变化"
+    ]
+  },
+  "not_doing": [
+    "不把新手引导、Pro 问卷或隐私风险教育作为商业主线",
+    "不把 tracker、审计包、批准包、复核包或 handoff 当成果",
+    "不把本地处理自动解释为护城河或付费意愿",
+    "不在真实复用和购买结果前建设完整营收系统"
+  ],
+  "security_side_issues": [
+    "若官网模板或历史仓库仍含疑似真实凭据，仅记录为独立安全阻断并轮换/移出；该动作不计增长或营收成果。"
+  ],
+  "unknowns": [
+    "当前准确商店用户数与评分",
+    "无需引导的首次成功和自然复用",
+    "用户愿意购买的完整增强结果",
+    "可用的最小支付与交付方式"
+  ],
+  "next_7_days": [
+    "删除无服务端接收端的 Pro 问卷入口，并使产品内引导退出活动商业路线。",
+    "校正商店/官网的用户规模、品牌和本地处理表述，确保所有主张可由 Manifest 与运行事实核验。",
+    "建立不采集复制正文的固定首次成功/复用 cohort，冻结 Pro、支付和批量 SEO 扩张。"
+  ]
+}

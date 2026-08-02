@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-08-02T07:25:04.210059+00:00",
+  "financial_policy": {
+    "primary_metric": "gross_revenue",
+    "cost_assumption": "zero",
+    "refunds_in_decisions": false
+  },
+  "paid_order_count": 0,
+  "gross_revenue_minor_by_currency": {},
+  "gross_revenue_minor_by_provider": {},
+  "gross_revenue_minor_by_day": {},
+  "directly_attributed_order_count": 0,
+  "latest_paid_at": null,
+  "provider_status": [
+    {
+      "provider": "none_configured",
+      "status": "missing",
+      "event_count": 0,
+      "notes": [
+        "未配置订单数据源；保留经营者事实，不把缺少仓库订单 API 解释为无营收。"
+      ],
+      "evidence": [],
+      "checked_at": "2026-08-02T07:25:04.209754+00:00"
+    }
+  ],
+  "event_store": ".24h-studio/commercial/revenue-events.jsonl"
+}

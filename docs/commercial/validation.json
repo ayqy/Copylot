@@ -1,0 +1,10 @@
+{
+  "validated_at": "2026-08-02T07:18:37.267357+00:00",
+  "status": "ready",
+  "revision": "af8eb2364a3b9b7b",
+  "errors": [],
+  "generation_errors": [],
+  "used_deterministic_fallback": false,
+  "model": "gpt-5.6-sol",
+  "migration_source": "v3.1 evidence + v4.0 deterministic gates"
+}

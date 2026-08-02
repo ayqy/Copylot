@@ -1,0 +1,71 @@
+{
+  "project_id": "copylot",
+  "project_name": "Copylot",
+  "portfolio_priority": 4,
+  "product_type": "chrome_extension",
+  "product_complexity": "simple",
+  "commercial_stage": "pre_monetization_value_validation",
+  "revenue_state": "no_revenue_loop",
+  "primary_customer": "需要把网页正文、代码或表格快速复制成适合 AI 和笔记工具使用格式的浏览器用户",
+  "core_job": "在当前网页上一键得到干净的 Markdown 或纯文本并立即粘贴到 AI",
+  "operator_facts": [
+    "经营者确认 Copylot 当前功能上不具备真实营收闭环，因此组合优先级最低。",
+    "插件功能非常简单，不需要额外新手引导；用法应在官方网站写清楚。",
+    "原 Pro 问卷没有接入接收服务接口，数据事实上无法收回，属于不闭环功能，必须删除且不得作为路线。",
+    "插件未接入第三方内容处理服务；除浏览器/Google 账号提供的用户配置同步外，不上传用户复制的正文。",
+    "本地处理、低权限、不上传复制正文应作为官网核心正向优势，而不是把隐私风险教育或隐私表单作为产品主线。",
+    "经营口径只看成功付款毛营收，成本固定视为 0，退款、拒付与售后不参与路线判断。",
+    "商业路线通过 Schema 与确定性 Validator 后由软件工厂自动执行，不设置人工审批。"
+  ],
+  "revenue_paths": [],
+  "order_sources": [],
+  "external_payment_path": false,
+  "payment_is_fulfillment": false,
+  "preserve_conversion_path": [
+    "官网或 Chrome Web Store 说明核心用途",
+    "安装后直接在真实网页完成第一次干净复制",
+    "在自然工作周期再次使用相同核心能力",
+    "只有重复价值被真实行为证明后才设计最小可购买结果"
+  ],
+  "value_facts": [
+    "网页正文、代码和表格清洗在用户设备本地完成。",
+    "不收集、不存储、不上传用户复制的网页正文。",
+    "权限保持最小化，用户配置通过浏览器存储及可选的 Chrome/Google 账号同步。",
+    "插件核心操作足够简单，官网说明与商店素材应承担教育责任。"
+  ],
+  "known_bad_cases": [
+    "Onboarding、新手引导不得成为商业主线。",
+    "无服务端接收端的 Pro questionnaire、Pro survey 或任何问卷必须删除。",
+    "privacy form、隐私表单、privacy risk education 或隐私风险教育必须删除或降级为静态事实说明。",
+    "audit pack、审计包、tracker、handoff、批准包和人工批准窗口不是客户结果或商业结果。",
+    "Pro 路线入口、分享素材复制、stay_validation verdict 与跨 campaign 复核不能代替真实复用或付款。",
+    "官网模板中的测试支付、认证或价格配置不得被解释为 Copylot 已有营收闭环。"
+  ],
+  "financial_policy": {
+    "primary_metric": "gross_revenue",
+    "cost_assumption": "zero",
+    "refunds_in_decisions": false
+  },
+  "automation_policy": {
+    "human_approval_required": false,
+    "on_missing_data": "reuse_snapshot_or_execute_safe_measurement_action"
+  },
+  "review_cadence": {
+    "data_health_days": 7,
+    "experiment_decision_days": 14,
+    "roadmap_reorder_days": 30
+  },
+  "metadata": {
+    "portfolio_group": "commercial_projects_2026_08",
+    "official_site_url": "https://copy.useai.online",
+    "chrome_web_store_url": "https://chromewebstore.google.com/detail/copylot/ehfglnbhoefcdedpkcdnainiifpflbic",
+    "latest_seo_evidence": "docs/evidence/growth/20260702-111449-seo-report/seo-report.json",
+    "latest_seo_summary": {
+      "organic_impressions": 1,
+      "organic_clicks": 0,
+      "organic_sessions": 0,
+      "gross_revenue": 0,
+      "revenue_loop": "absent"
+    }
+  }
+}
