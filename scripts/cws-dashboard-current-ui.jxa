@@ -324,13 +324,7 @@ function listingSnapshot(tab, listing) {
   return state;
 }
 
-function assertListingSnapshot(state, listing, phase) {
-  if (!state.descriptionMatches || !state.supportMatches || !state.summaryMatches) {
-    throw new Error(`${phase}: Store Listing text mismatch`);
-  }
-  if (!state.categoryText.includes(listing.category)) {
-    throw new Error(`${phase}: Store Listing category mismatch`);
-  }
+function assertListingAssets(state, phase) {
   for (const asset of state.assets) {
     if (!asset.state.ok) throw new Error(`${phase}: ${asset.role} slot missing`);
     if (asset.state.multiple && asset.state.removeCount !== asset.expectedCount) {
@@ -340,6 +334,16 @@ function assertListingSnapshot(state, listing, phase) {
       throw new Error(`${phase}: ${asset.role} preview missing`);
     }
   }
+}
+
+function assertListingSnapshot(state, listing, phase) {
+  if (!state.descriptionMatches || !state.supportMatches || !state.summaryMatches) {
+    throw new Error(`${phase}: Store Listing text mismatch`);
+  }
+  if (!state.categoryText.includes(listing.category)) {
+    throw new Error(`${phase}: Store Listing category mismatch`);
+  }
+  assertListingAssets(state, phase);
 }
 
 function visibleErrors(tab) {
@@ -385,25 +389,6 @@ function configureStoreListing(tab, config, evidenceDir) {
   const listing = config.store_listing;
   const identity = navigate(tab, config, 'store_listing');
   assertIdentity(identity, 'store_listing');
-  const updated = executeJson(tab, `(() => {
-    const setValue = (node, value) => {
-      const prototype = node instanceof HTMLTextAreaElement
-        ? HTMLTextAreaElement.prototype
-        : HTMLInputElement.prototype;
-      Object.getOwnPropertyDescriptor(prototype, 'value').set.call(node, value);
-      node.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: null }));
-      node.dispatchEvent(new Event('change', { bubbles: true }));
-      node.dispatchEvent(new Event('blur', { bubbles: true }));
-    };
-    const description = document.querySelector('textarea[maxlength="16000"]');
-    const support = document.querySelector('input[placeholder="Support URL"]');
-    if (!description || !support) return JSON.stringify({ ok: false, error: 'listing_fields_missing' });
-    setValue(description, ${JSON.stringify(listing.description)});
-    setValue(support, ${JSON.stringify(listing.support_url)});
-    return JSON.stringify({ ok: true, descriptionLength: description.value.length, supportUrl: support.value });
-  })()`, 'listing_update');
-  if (!updated.ok) throw new Error(updated.error || 'Store Listing fields missing');
-
   let categoryState = listingSnapshot(tab, { ...listing, assets: [] });
   if (!categoryState.categoryText.includes(listing.category)) {
     const opened = tab.execute({ javascript: `(() => {
@@ -431,7 +416,29 @@ function configureStoreListing(tab, config, evidenceDir) {
     clearAssetSlot(tab, asset);
     for (const file of asset.resolved_files) uploads.push(uploadAssetFile(tab, asset, file));
   }
-  const beforeSave = listingSnapshot(tab, listing);
+  const assetsBeforeText = listingSnapshot(tab, listing);
+  assertListingAssets(assetsBeforeText, 'before_text_update');
+
+  const updated = executeJson(tab, `(() => {
+    const setValue = (node, value) => {
+      const prototype = node instanceof HTMLTextAreaElement
+        ? HTMLTextAreaElement.prototype
+        : HTMLInputElement.prototype;
+      Object.getOwnPropertyDescriptor(prototype, 'value').set.call(node, value);
+      node.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: null }));
+      node.dispatchEvent(new Event('change', { bubbles: true }));
+      node.dispatchEvent(new Event('blur', { bubbles: true }));
+    };
+    const description = document.querySelector('textarea[maxlength="16000"]');
+    const support = document.querySelector('input[placeholder="Support URL"]');
+    if (!description || !support) return JSON.stringify({ ok: false, error: 'listing_fields_missing' });
+    setValue(description, ${JSON.stringify(listing.description)});
+    setValue(support, ${JSON.stringify(listing.support_url)});
+    return JSON.stringify({ ok: true, descriptionLength: description.value.length, supportUrl: support.value });
+  })()`, 'listing_update');
+  if (!updated.ok) throw new Error(updated.error || 'Store Listing fields missing');
+  delay(2);
+  const beforeSave = listingSnapshot(tab, { ...listing, assets: [] });
   assertListingSnapshot(beforeSave, listing, 'before_save');
   const saveClicked = clickButton(tab, ['Save draft', 'Save', '保存草稿', '保存']);
   if (saveClicked) delay(8);
@@ -453,6 +460,7 @@ function configureStoreListing(tab, config, evidenceDir) {
     identity,
     updated,
     uploads,
+    assetsBeforeText,
     beforeSave,
     afterReload,
     saveClicked,
