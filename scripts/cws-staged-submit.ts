@@ -11,6 +11,14 @@ import {
   createUndiciProxyDispatcher,
   resolveCwsProxyEnv
 } from './cws-proxy.ts';
+import {
+  formatCwsItemErrors,
+  formatCwsV2UploadFailure,
+  sanitizeCwsDraftStatus,
+  sanitizeCwsV2UploadStatus,
+  type CwsDraftStatus,
+  type CwsV2UploadStatus
+} from './cws-staged-status.ts';
 
 type Command = 'validate' | 'status' | 'submit';
 
@@ -315,6 +323,14 @@ function v2Url(config: SubmitConfig, action: 'fetchStatus' | 'publish'): string 
   return `https://chromewebstore.googleapis.com/v2/${itemName(config)}:${action}`;
 }
 
+function v1DraftUrl(config: SubmitConfig): string {
+  return `https://www.googleapis.com/chromewebstore/v1.1/items/${config.dashboard.item_id}?projection=DRAFT`;
+}
+
+function v2UploadUrl(config: SubmitConfig): string {
+  return `https://chromewebstore.googleapis.com/upload/v2/${itemName(config)}:upload`;
+}
+
 async function fetchStatus(config: SubmitConfig, accessToken: string): Promise<FetchStatusResponse> {
   const response = await fetch(v2Url(config, 'fetchStatus'), {
     headers: { authorization: `Bearer ${accessToken}` }
@@ -327,6 +343,21 @@ async function fetchStatus(config: SubmitConfig, accessToken: string): Promise<F
     throw new Error('CWS fetchStatus identity mismatch');
   }
   return payload;
+}
+
+async function fetchDraftStatus(config: SubmitConfig, accessToken: string): Promise<CwsDraftStatus> {
+  const response = await fetch(v1DraftUrl(config), {
+    headers: { authorization: `Bearer ${accessToken}` }
+  });
+  const payload = (await response.json()) as unknown;
+  const status = sanitizeCwsDraftStatus(payload);
+  if (!response.ok) {
+    throw new Error(`CWS draft status failed: HTTP ${response.status}`);
+  }
+  if (status.id !== config.dashboard.item_id) {
+    throw new Error('CWS draft status identity mismatch');
+  }
+  return status;
 }
 
 function revisionVersions(revision: RevisionStatus | undefined): string[] {
@@ -357,34 +388,32 @@ async function uploadPackage(
   config: SubmitConfig,
   packagePath: string,
   accessToken: string
-): Promise<Record<string, unknown>> {
-  const endpoint = `https://www.googleapis.com/upload/chromewebstore/v1.1/items/${config.dashboard.item_id}`;
-  const response = await fetch(endpoint, {
-    method: 'PUT',
+): Promise<CwsV2UploadStatus> {
+  const response = await fetch(v2UploadUrl(config), {
+    method: 'POST',
     headers: {
       authorization: `Bearer ${accessToken}`,
-      'x-goog-api-version': '2'
+      'content-type': 'application/octet-stream'
     },
     body: createReadStream(packagePath),
     duplex: 'half'
   } as RequestInit & { duplex: 'half' });
-  const payload = (await response.json()) as {
-    id?: string;
-    uploadState?: string;
-    itemError?: Array<{ error_code?: string; error_detail?: string }>;
-    error?: { status?: string };
-  };
-  if (!response.ok) {
-    throw new Error(`CWS upload failed: HTTP ${response.status} ${payload.error?.status ?? 'unknown'}`);
+  const payload = (await response.json()) as unknown;
+  return sanitizeCwsV2UploadStatus(response.status, payload);
+}
+
+async function pollUploadState(
+  config: SubmitConfig,
+  accessToken: string,
+  timeoutMs = 120_000
+): Promise<FetchStatusResponse> {
+  const deadline = Date.now() + timeoutMs;
+  let latest = await fetchStatus(config, accessToken);
+  while (latest.lastAsyncUploadState === 'IN_PROGRESS' && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 5_000));
+    latest = await fetchStatus(config, accessToken);
   }
-  if (payload.id !== config.dashboard.item_id || payload.uploadState !== 'SUCCESS') {
-    throw new Error(`CWS upload did not reach SUCCESS: ${payload.uploadState ?? 'unknown'}`);
-  }
-  return {
-    id: payload.id,
-    uploadState: payload.uploadState,
-    itemError: payload.itemError ?? []
-  };
+  return latest;
 }
 
 async function publishStaged(config: SubmitConfig, accessToken: string): Promise<Record<string, unknown>> {
@@ -488,6 +517,7 @@ async function main(): Promise<void> {
   const before = await fetchStatus(config, accessToken);
 
   if (args.command === 'status') {
+    const draft = await fetchDraftStatus(config, accessToken);
     const payload = {
       ok: true,
       action: 'STATUS',
@@ -497,6 +527,7 @@ async function main(): Promise<void> {
       itemId: config.dashboard.item_id,
       proxy,
       status: sanitizeStatus(before),
+      draft,
       checkedAt: new Date().toISOString()
     };
     const output = await writeEvidence(args.evidenceDir, 'cws-status.json', payload);
@@ -505,6 +536,47 @@ async function main(): Promise<void> {
   }
 
   const upload = await uploadPackage(config, packagePath, accessToken);
+  const asyncUploadStatus =
+    upload.uploadState === 'IN_PROGRESS' ? await pollUploadState(config, accessToken) : null;
+  const uploadSucceeded =
+    upload.uploadState === 'SUCCEEDED' || asyncUploadStatus?.lastAsyncUploadState === 'SUCCEEDED';
+  if (
+    upload.httpStatus < 200 ||
+    upload.httpStatus >= 300 ||
+    upload.itemId !== config.dashboard.item_id ||
+    upload.name !== itemName(config) ||
+    !uploadSucceeded
+  ) {
+    let draft: CwsDraftStatus | null = null;
+    let draftReadError: string | null = null;
+    try {
+      draft = await fetchDraftStatus(config, accessToken);
+    } catch (error) {
+      draftReadError = error instanceof Error ? error.message : String(error);
+    }
+    const failurePayload = {
+      ok: false,
+      action: 'UPLOAD',
+      externalMutation: true,
+      product: config.product,
+      publisherId: config.dashboard.publisher_id,
+      itemId: config.dashboard.item_id,
+      package: {
+        path: path.relative(config.product.root, packagePath),
+        sha256: await sha256(packagePath)
+      },
+      upload,
+      asyncUploadStatus: asyncUploadStatus ? sanitizeStatus(asyncUploadStatus) : null,
+      draft,
+      draftReadError,
+      failedAt: new Date().toISOString()
+    };
+    const output = await writeEvidence(args.evidenceDir, 'cws-upload-failure.json', failurePayload);
+    const draftErrors = draft?.itemError.length ? `; ${formatCwsItemErrors(draft.itemError)}` : '';
+    throw new Error(
+      `CWS upload did not reach SUCCEEDED: ${formatCwsV2UploadFailure(upload)}${draftErrors}; evidence=${output}`
+    );
+  }
   const publish = await publishStaged(config, accessToken);
   const after = await pollSubmittedState(config, accessToken);
   const payload = {
@@ -526,6 +598,7 @@ async function main(): Promise<void> {
     proxy,
     before: sanitizeStatus(before),
     upload,
+    asyncUploadStatus: asyncUploadStatus ? sanitizeStatus(asyncUploadStatus) : null,
     publish,
     after: sanitizeStatus(after),
     terminalState: after.submittedItemRevisionStatus?.state,

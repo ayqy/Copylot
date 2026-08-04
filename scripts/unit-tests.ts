@@ -179,6 +179,12 @@ import {
   resolveCwsProxyEnv
 } from './cws-proxy.ts';
 import {
+  formatCwsItemErrors,
+  formatCwsV2UploadFailure,
+  sanitizeCwsDraftStatus,
+  sanitizeCwsV2UploadStatus
+} from './cws-staged-status.ts';
+import {
   buildCwsPreflightFixHints,
   CWS_EXPECTED_HOMEPAGE_URL,
   classifyCwsPreflightError,
@@ -4868,6 +4874,73 @@ async function run() {
   );
 
   // scripts/cws-proxy.ts (v1-39 publish:cws 代理链路确定性)
+
+  {
+    const draft = sanitizeCwsDraftStatus({
+      id: 'ehfglnbhoefcdedpkcdnainiifpflbic',
+      crxVersion: '1.2.4',
+      uploadState: 'FAILURE',
+      itemError: [
+        {
+          error_code: 'PKG_INVALID_MANIFEST',
+          error_detail: 'Invalid manifest value'
+        }
+      ]
+    });
+    assert.deepEqual(draft, {
+      id: 'ehfglnbhoefcdedpkcdnainiifpflbic',
+      crxVersion: '1.2.4',
+      uploadState: 'FAILURE',
+      itemError: [
+        {
+          error_code: 'PKG_INVALID_MANIFEST',
+          error_detail: 'Invalid manifest value'
+        }
+      ]
+    });
+    assert.equal(
+      formatCwsItemErrors(draft.itemError),
+      'PKG_INVALID_MANIFEST: Invalid manifest value'
+    );
+  }
+
+  {
+    const draft = sanitizeCwsDraftStatus({ itemError: [null, { error_code: 7 }] });
+    assert.deepEqual(draft.itemError, [
+      { error_code: null, error_detail: null },
+      { error_code: null, error_detail: null }
+    ]);
+    assert.equal(
+      formatCwsItemErrors(draft.itemError),
+      'UNKNOWN: no detail; UNKNOWN: no detail'
+    );
+  }
+
+  {
+    const upload = sanitizeCwsV2UploadStatus(409, {
+      error: {
+        code: 409,
+        status: 'FAILED_PRECONDITION',
+        message: 'The item cannot be updated while it is pending review.'
+      }
+    });
+    assert.deepEqual(upload, {
+      httpStatus: 409,
+      name: null,
+      itemId: null,
+      crxVersion: null,
+      uploadState: null,
+      error: {
+        code: 409,
+        status: 'FAILED_PRECONDITION',
+        message: 'The item cannot be updated while it is pending review.'
+      }
+    });
+    assert.equal(
+      formatCwsV2UploadFailure(upload),
+      'uploadState=unknown; FAILED_PRECONDITION: The item cannot be updated while it is pending review.'
+    );
+  }
   {
     const resolvedDefault = resolveCwsProxyEnv({} as NodeJS.ProcessEnv);
     assert.equal(resolvedDefault.proxyEnabled, false);
