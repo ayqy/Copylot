@@ -2,6 +2,7 @@ import type { Locator } from '@playwright/test';
 import { test, expect } from './fixtures';
 import { clearClipboard, expectClipboardTextEventually } from './helpers/clipboard';
 import {
+  getActiveTabId,
   getStorageSnapshot,
   openExtensionPage,
   seedSyncStorage
@@ -105,16 +106,22 @@ test('prompt with target chat auto-opens configured chat service', async ({
     try {
       await article.goto(`${fixtureOrigin}/article.html`);
       await article.locator('#article-paragraph').selectText();
+      await article.bringToFront();
+      const activeTabId = await getActiveTabId(driverPage);
+      expect(activeTabId).not.toBeNull();
+
+      const chatPagePromise = extensionContext.waitForEvent('page', {
+        predicate: (candidate) => candidate.url().startsWith(`${fixtureOrigin}/chat.html?target=fixture`)
+      });
 
       await invokeContextMenu(driverPage, {
+        tabId: activeTabId!,
         menuItemId: promptId!,
         selectionText: (await article.locator('#article-paragraph').textContent()) || '',
         pageUrl: article.url()
       });
 
-      const chatPage = await extensionContext.waitForEvent('page', {
-        predicate: (candidate) => candidate.url().startsWith(`${fixtureOrigin}/chat.html?target=fixture`)
-      });
+      const chatPage = await chatPagePromise;
       await chatPage.waitForLoadState('domcontentloaded');
       await expect(chatPage.locator('#chat-heading')).toBeVisible();
       await expectClipboardTextEventually(/Send this:/, driverPage);
