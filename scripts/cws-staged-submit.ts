@@ -12,6 +12,7 @@ import {
   resolveCwsProxyEnv
 } from './cws-proxy.ts';
 import {
+  classifyCwsCancelResponseBody,
   classifyCwsCancellationState,
   formatCwsItemErrors,
   formatCwsV2UploadFailure,
@@ -351,7 +352,8 @@ function v2Url(
 type CancelSubmissionResponse = {
   httpStatus: number;
   ok: boolean;
-  responseBodyEmpty: boolean;
+  responseBodyAccepted: boolean;
+  responseBodyKind: 'empty' | 'empty_object' | 'unexpected';
   error: {
     status: string | null;
     message: string | null;
@@ -367,6 +369,7 @@ async function cancelSubmission(
     headers: { authorization: `Bearer ${accessToken}` }
   });
   const body = await response.text();
+  const responseBodyKind = classifyCwsCancelResponseBody(body);
   let error: CancelSubmissionResponse['error'] = null;
   if (body.trim()) {
     try {
@@ -384,7 +387,8 @@ async function cancelSubmission(
   return {
     httpStatus: response.status,
     ok: response.ok,
-    responseBodyEmpty: body.trim().length === 0,
+    responseBodyAccepted: responseBodyKind !== 'unexpected',
+    responseBodyKind,
     error
   };
 }
@@ -643,7 +647,7 @@ async function main(): Promise<void> {
     let after = before;
     if (decision === 'cancel_required') {
       request = await cancelSubmission(config, accessToken);
-      if (!request.ok || !request.responseBodyEmpty) {
+      if (!request.ok || !request.responseBodyAccepted || request.error) {
         const failurePayload = {
           ok: false,
           action: 'CANCEL_SUBMISSION',

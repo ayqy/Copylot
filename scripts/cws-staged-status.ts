@@ -29,6 +29,11 @@ export type CwsCancellationDecision =
   | 'target_submitted'
   | 'unexpected';
 
+export type CwsCancelResponseBodyKind =
+  | 'empty'
+  | 'empty_object'
+  | 'unexpected';
+
 type CwsVersionedStatus = {
   submittedItemRevisionStatus?: {
     state?: string;
@@ -123,5 +128,26 @@ export function classifyCwsCancellationState(
   if (versions.includes(pendingVersion) && state === 'CANCELLED') {
     return 'already_cancelled';
   }
+  return 'unexpected';
+}
+
+export function classifyCwsCancelResponseBody(body: string): CwsCancelResponseBodyKind {
+  const trimmed = body.trim();
+  if (!trimmed) return 'empty';
+
+  try {
+    const payload = JSON.parse(trimmed) as unknown;
+    if (
+      payload &&
+      typeof payload === 'object' &&
+      !Array.isArray(payload) &&
+      Object.keys(payload).length === 0
+    ) {
+      return 'empty_object';
+    }
+  } catch {
+    return 'unexpected';
+  }
+
   return 'unexpected';
 }

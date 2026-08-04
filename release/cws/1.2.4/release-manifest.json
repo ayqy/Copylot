@@ -57,7 +57,7 @@
     {
       "url": "https://developer.chrome.com/docs/webstore/api/reference/rest/v2/publishers.items/cancelSubmission",
       "checked_at": "2026-08-04",
-      "claim": "cancelSubmission cancels the current active submission with an empty request body and returns an empty response on success.",
+      "claim": "cancelSubmission cancels the current active submission with an empty request body and returns an empty JSON response on success; the live API may serialize that response as {}.",
       "topic": "lifecycle",
       "evidence_kind": "direct"
     }

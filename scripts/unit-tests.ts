@@ -179,6 +179,7 @@ import {
   resolveCwsProxyEnv
 } from './cws-proxy.ts';
 import {
+  classifyCwsCancelResponseBody,
   classifyCwsCancellationState,
   formatCwsItemErrors,
   formatCwsV2UploadFailure,
@@ -4995,6 +4996,14 @@ async function run() {
     ),
     'unexpected'
   );
+  assert.equal(classifyCwsCancelResponseBody(''), 'empty');
+  assert.equal(classifyCwsCancelResponseBody('  \n'), 'empty');
+  assert.equal(classifyCwsCancelResponseBody('{}'), 'empty_object');
+  assert.equal(classifyCwsCancelResponseBody(' { } \n'), 'empty_object');
+  assert.equal(classifyCwsCancelResponseBody('[]'), 'unexpected');
+  assert.equal(classifyCwsCancelResponseBody('null'), 'unexpected');
+  assert.equal(classifyCwsCancelResponseBody('{"ok":true}'), 'unexpected');
+  assert.equal(classifyCwsCancelResponseBody('not-json'), 'unexpected');
   {
     const resolvedDefault = resolveCwsProxyEnv({} as NodeJS.ProcessEnv);
     assert.equal(resolvedDefault.proxyEnabled, false);

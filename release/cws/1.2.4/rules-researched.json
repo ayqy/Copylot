@@ -37,7 +37,7 @@
       "url": "https://developer.chrome.com/docs/webstore/api/reference/rest/v2/publishers.items/cancelSubmission",
       "checked_at": "2026-08-04",
       "topic": "automation",
-      "claim": "cancelSubmission 使用空请求体取消当前活动提交，成功响应为空。",
+      "claim": "cancelSubmission 使用空请求体取消当前活动提交；实时 API 的空 JSON 成功响应可能序列化为 {}。",
       "decision": "仅当版本化状态精确显示 1.2.3=PENDING_REVIEW 时撤回，并在状态达到 1.2.3=CANCELLED 后才允许上传 1.2.4。",
       "evidence_kind": "direct"
     }
