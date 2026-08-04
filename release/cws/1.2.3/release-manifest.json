@@ -261,6 +261,18 @@
     "preflight": {
       "commands": [
         {
+          "label": "Validate opaque CWS promotional assets",
+          "argv": [
+            "node",
+            "scripts/finalize-cws-store-assets.mjs",
+            "--check"
+          ],
+          "cwd": ".",
+          "required_env": [],
+          "timeout_seconds": 1800,
+          "read_only": true
+        },
+        {
           "label": "Type-check release adapter and product source",
           "argv": [
             "npm",
