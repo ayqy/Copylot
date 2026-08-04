@@ -24,9 +24,18 @@ function writeText(filePath, text) {
 function findTargetTab(chrome, dashboard) {
   const targetFragment = `${dashboard.publisher_id}/${dashboard.item_id}`;
   for (const win of chrome.windows()) {
+    const activeTab = win.activeTab();
+    if ((activeTab.url() || '').includes(targetFragment)) return activeTab;
+  }
+  const matches = [];
+  for (const win of chrome.windows()) {
     for (const tab of win.tabs()) {
-      if ((tab.url() || '').includes(targetFragment)) return tab;
+      if ((tab.url() || '').includes(targetFragment)) matches.push(tab);
     }
+  }
+  if (matches.length === 1) return matches[0];
+  if (matches.length > 1) {
+    throw new Error('multiple target CWS Dashboard tabs found; focus the intended tab');
   }
   throw new Error('target CWS Dashboard tab not found');
 }
@@ -169,7 +178,7 @@ function slotSnapshot(tab, asset) {
       removeCount: removeButtons.length,
       imageSources: Array.from(resolved.container.querySelectorAll('img')).map((image) => image.src),
     });
-  })()`, `${asset.role}_slot_snapshot`);
+  })()`, `${asset.role}:${asset.slot_label}:${asset.occurrence || 0}_slot_snapshot`);
 }
 
 function removeOneAsset(tab, asset) {
