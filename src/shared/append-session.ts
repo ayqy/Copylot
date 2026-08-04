@@ -301,19 +301,34 @@ export async function setAppendSessionState(state: AppendSessionState): Promise<
   }
 }
 
-export async function recordAppendSessionClip(appendedAt: number = Date.now()): Promise<AppendSessionState> {
-  const state = await getAppendSessionState();
-  const next = applyAppendToAppendSession(state, appendedAt);
-  await setAppendSessionState(next);
-  return next;
+let appendSessionMutationQueue: Promise<void> = Promise.resolve();
+
+function enqueueAppendSessionMutation<T>(mutation: () => Promise<T>): Promise<T> {
+  const result = appendSessionMutationQueue.then(mutation);
+  appendSessionMutationQueue = result.then(
+    () => undefined,
+    () => undefined
+  );
+  return result;
 }
 
-export async function clearAppendSessionState(
+export function recordAppendSessionClip(appendedAt: number = Date.now()): Promise<AppendSessionState> {
+  return enqueueAppendSessionMutation(async () => {
+    const state = await getAppendSessionState();
+    const next = applyAppendToAppendSession(state, appendedAt);
+    await setAppendSessionState(next);
+    return next;
+  });
+}
+
+export function clearAppendSessionState(
   clearedAt: number = Date.now(),
   action: AppendSessionLastAction = 'clear'
 ): Promise<AppendSessionState> {
-  const state = await getAppendSessionState();
-  const next = applyClearToAppendSession(state, clearedAt, action);
-  await setAppendSessionState(next);
-  return next;
+  return enqueueAppendSessionMutation(async () => {
+    const state = await getAppendSessionState();
+    const next = applyClearToAppendSession(state, clearedAt, action);
+    await setAppendSessionState(next);
+    return next;
+  });
 }

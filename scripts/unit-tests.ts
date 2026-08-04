@@ -83,6 +83,8 @@ import {
   applyAppendToAppendSession,
   applyClearToAppendSession,
   buildAppendSessionAudit,
+  clearAppendSessionState,
+  recordAppendSessionClip,
   normalizeAppendSessionValue
 } from '../src/shared/append-session.ts';
 import {
@@ -4321,6 +4323,41 @@ async function run() {
   assert.equal(appendSessionSecond.totalCollectedClips, 2);
   assert.equal(appendSessionSecond.lastCompletedAt, now - 10);
   assert.equal(appendSessionSecond.lastCompletedClipCount, 2);
+
+  const mutableGlobal = globalThis as typeof globalThis & { chrome?: typeof chrome };
+  const originalChrome = mutableGlobal.chrome;
+  let mockedAppendSessionStorage: Record<string, unknown> = {};
+  mutableGlobal.chrome = {
+    storage: {
+      local: {
+        get: async (key: string) => {
+          await new Promise((resolve) => setTimeout(resolve, 10));
+          return { [key]: mockedAppendSessionStorage[key] };
+        },
+        set: async (values: Record<string, unknown>) => {
+          await new Promise((resolve) => setTimeout(resolve, 10));
+          mockedAppendSessionStorage = { ...mockedAppendSessionStorage, ...values };
+        }
+      }
+    }
+  } as unknown as typeof chrome;
+  try {
+    const [concurrentAppendFirst, concurrentAppendSecond] = await Promise.all([
+      recordAppendSessionClip(now + 1),
+      recordAppendSessionClip(now + 2)
+    ]);
+    assert.equal(concurrentAppendFirst.clipCount, 1);
+    assert.equal(concurrentAppendSecond.clipCount, 2);
+    assert.equal(
+      (mockedAppendSessionStorage.copilot_append_session as { clipCount: number }).clipCount,
+      2
+    );
+    const concurrentClear = await clearAppendSessionState(now + 3, 'clear');
+    assert.equal(concurrentClear.clipCount, 0);
+  } finally {
+    if (originalChrome) mutableGlobal.chrome = originalChrome;
+    else Reflect.deleteProperty(mutableGlobal, 'chrome');
+  }
 
   const appendSessionCleared = applyClearToAppendSession(appendSessionSecond, now, 'clear');
   assert.deepEqual(appendSessionCleared, {
