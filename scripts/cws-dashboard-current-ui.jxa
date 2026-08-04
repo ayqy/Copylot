@@ -121,20 +121,19 @@ function expectedTitle(section) {
 function navigate(tab, config, section) {
   const target = sectionUrl(config, section);
   tab.url = target;
-  let ready = false;
+  let consecutiveMatches = 0;
   for (let attempt = 0; attempt < 60; attempt += 1) {
     delay(1);
     const state = identitySnapshot(tab, config);
-    ready = state.url === target
+    const matches = state.url === target
       && state.title === expectedTitle(section)
       && state.accountMatches
       && state.publisherMatches
       && state.itemMatches;
-    if (ready) break;
+    consecutiveMatches = matches ? consecutiveMatches + 1 : 0;
+    if (consecutiveMatches >= 2) return state;
   }
-  if (!ready) throw new Error(`${section}: page load or identity verification timed out`);
-  delay(1);
-  return identitySnapshot(tab, config);
+  throw new Error(`${section}: page load or identity verification timed out`);
 }
 
 function acceptsImageFiles(acceptValue) {
