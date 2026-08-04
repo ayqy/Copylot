@@ -98,14 +98,27 @@ function navigate(tab, config, section) {
   return identitySnapshot(tab, config);
 }
 
+function acceptsImageFiles(acceptValue) {
+  const tokens = String(acceptValue || '')
+    .toLowerCase()
+    .split(',')
+    .map((token) => token.trim())
+    .filter(Boolean);
+  if (!tokens.length) return true;
+  return tokens.some((token) =>
+    token.startsWith('image/') || /^\.(?:png|jpe?g|webp|gif|avif|bmp)$/.test(token)
+  );
+}
+
 function slotHelpersSource() {
   return `
     const normalize = (value) => String(value || '').trim().replace(/\\s+/g, ' ').toLowerCase();
+    const acceptsImageFiles = ${acceptsImageFiles.toString()};
     const resolveSlot = (spec) => {
       const label = normalize(spec.slot_label);
       const candidates = Array.from(document.querySelectorAll('input[type="file"]'))
         .map((input, inputIndex) => {
-          if (input.accept && !input.accept.toLowerCase().includes('image')) return null;
+          if (!acceptsImageFiles(input.accept)) return null;
           let current = input;
           for (let depth = 0; depth <= 8 && current; depth += 1, current = current.parentElement) {
             const text = normalize(current.innerText);
@@ -709,7 +722,21 @@ function configureTestInstructions(tab, config, evidenceDir) {
 function run(rawArgv) {
   const argv = rawArgv[0] === '--' ? rawArgv.slice(1) : rawArgv;
   if (argv.length === 1 && argv[0] === 'self-test') {
-    return JSON.stringify({ ok: true, runtime: 'jxa', mutation: false });
+    const acceptanceCases = {
+      currentCwsExtensions: acceptsImageFiles('.png,.jpg,.jpeg'),
+      mimeWildcard: acceptsImageFiles('image/*'),
+      emptyAccept: acceptsImageFiles(''),
+      videoOnlyRejected: !acceptsImageFiles('.mp4,video/mp4'),
+    };
+    if (Object.values(acceptanceCases).some((passed) => !passed)) {
+      throw new Error(`image accept matcher self-test failed: ${JSON.stringify(acceptanceCases)}`);
+    }
+    return JSON.stringify({
+      ok: true,
+      runtime: 'jxa',
+      mutation: false,
+      acceptanceCases,
+    });
   }
   if (argv.length !== 3) {
     throw new Error('usage: <probe|configure> <runtime-config-json> <evidence-dir>');
