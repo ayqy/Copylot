@@ -286,6 +286,19 @@
           "read_only": true
         },
         {
+          "label": "Self-test Copylot current CWS console adapter",
+          "argv": [
+            "python3",
+            "{root}/scripts/cws-dashboard-current-ui.py",
+            "{pub_root}",
+            "self-test"
+          ],
+          "cwd": ".",
+          "required_env": [],
+          "timeout_seconds": 1800,
+          "read_only": true
+        },
+        {
           "label": "Run guarded CWS tests, build, package, and network dry-run",
           "argv": [
             "npm",
@@ -310,7 +323,8 @@
           "label": "Configure and reload-verify Copylot CWS Store Listing",
           "argv": [
             "python3",
-            "{pub_root}/scripts/cws_dashboard.py",
+            "{root}/scripts/cws-dashboard-current-ui.py",
+            "{pub_root}",
             "configure",
             "{root}/release/cws/1.2.3/dashboard-config.json",
             "--evidence-dir",

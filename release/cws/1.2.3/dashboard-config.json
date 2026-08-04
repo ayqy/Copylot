@@ -22,7 +22,23 @@
     "assets": [
       {
         "role": "screenshot",
-        "slot_label": "Screenshots",
+        "slot_label": "Localized screenshots",
+        "occurrence": 0,
+        "multiple": true,
+        "replace": true,
+        "paths": [
+          "release/cws/1.2.3/assets/final/01-clean-copy-starts-here.png",
+          "release/cws/1.2.3/assets/final/02-markdown-without-the-mess.png",
+          "release/cws/1.2.3/assets/final/03-tables-stay-structured.png",
+          "release/cws/1.2.3/assets/final/04-code-keeps-its-shape.png",
+          "release/cws/1.2.3/assets/final/05-prompt-shortcuts.png"
+        ],
+        "width": 1280,
+        "height": 800
+      },
+      {
+        "role": "screenshot",
+        "slot_label": "Global screenshots",
         "occurrence": 0,
         "multiple": true,
         "replace": true,
@@ -38,7 +54,7 @@
       },
       {
         "role": "small_promo",
-        "slot_label": "Small promo",
+        "slot_label": "Small promo tile",
         "occurrence": 0,
         "multiple": false,
         "replace": true,

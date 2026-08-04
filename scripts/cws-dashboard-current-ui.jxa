@@ -1,0 +1,767 @@
+ObjC.import('Foundation');
+
+function readJson(filePath) {
+  const data = $.NSData.dataWithContentsOfFile($(filePath));
+  if (!data) throw new Error(`cannot read JSON: ${filePath}`);
+  const text = ObjC.unwrap($.NSString.alloc.initWithDataEncoding(data, $.NSUTF8StringEncoding));
+  return JSON.parse(text);
+}
+
+function writeText(filePath, text) {
+  const value = $.NSString.stringWithString($(text));
+  const parent = $(filePath).stringByDeletingLastPathComponent;
+  $.NSFileManager.defaultManager.createDirectoryAtPathWithIntermediateDirectoriesAttributesError(
+    parent,
+    true,
+    $(),
+    null,
+  );
+  if (!value.writeToFileAtomicallyEncodingError($(filePath), true, $.NSUTF8StringEncoding, null)) {
+    throw new Error(`cannot write evidence: ${filePath}`);
+  }
+}
+
+function findTargetTab(chrome, dashboard) {
+  const targetFragment = `${dashboard.publisher_id}/${dashboard.item_id}`;
+  for (const win of chrome.windows()) {
+    for (const tab of win.tabs()) {
+      if ((tab.url() || '').includes(targetFragment)) return tab;
+    }
+  }
+  throw new Error('target CWS Dashboard tab not found');
+}
+
+function executeJson(tab, javascript) {
+  const raw = tab.execute({ javascript });
+  if (typeof raw !== 'string') throw new Error('Chrome JavaScript result was not JSON text');
+  return JSON.parse(raw);
+}
+
+function identitySnapshot(tab, config) {
+  const expected = {
+    publisherId: config.dashboard.publisher_id,
+    itemId: config.dashboard.item_id,
+    accountHint: config.dashboard.account_hint,
+  };
+  return executeJson(tab, `(() => {
+    const expected = ${JSON.stringify(expected)};
+    const accountMatches = Array.from(document.querySelectorAll('[aria-label]'))
+      .some((node) => (node.getAttribute('aria-label') || '').includes(expected.accountHint));
+    return JSON.stringify({
+      title: document.title,
+      url: location.href,
+      accountMatches,
+      publisherMatches: location.href.includes(expected.publisherId),
+      itemMatches: location.href.includes(expected.itemId),
+    });
+  })()`);
+}
+
+function assertIdentity(state, phase) {
+  if (!state.accountMatches || !state.publisherMatches || !state.itemMatches) {
+    throw new Error(`${phase}: account, Publisher, or item identity mismatch`);
+  }
+}
+
+function sectionUrl(config, section) {
+  const dashboard = config.dashboard;
+  const base = `${dashboard.base_url}/${dashboard.publisher_id}/${dashboard.item_id}`;
+  if (section === 'test_instructions') return `${base}/testcredentials`;
+  if (section === 'store_listing') return `${base}/edit/listing`;
+  if (section === 'privacy') return `${base}/edit/privacy`;
+  throw new Error(`unsupported CWS section: ${section}`);
+}
+
+function expectedTitle(section) {
+  if (section === 'store_listing') return 'Store Listing';
+  if (section === 'privacy') return 'Privacy';
+  if (section === 'test_instructions') return 'Test instructions';
+  return '';
+}
+
+function navigate(tab, config, section) {
+  const target = sectionUrl(config, section);
+  tab.url = target;
+  let ready = false;
+  for (let attempt = 0; attempt < 60; attempt += 1) {
+    delay(1);
+    const state = identitySnapshot(tab, config);
+    ready = state.url === target
+      && state.title === expectedTitle(section)
+      && state.accountMatches
+      && state.publisherMatches
+      && state.itemMatches;
+    if (ready) break;
+  }
+  if (!ready) throw new Error(`${section}: page load or identity verification timed out`);
+  delay(1);
+  return identitySnapshot(tab, config);
+}
+
+function slotHelpersSource() {
+  return `
+    const normalize = (value) => String(value || '').trim().replace(/\\s+/g, ' ').toLowerCase();
+    const resolveSlot = (spec) => {
+      const label = normalize(spec.slot_label);
+      const candidates = Array.from(document.querySelectorAll('input[type="file"]'))
+        .map((input, inputIndex) => {
+          if (input.accept && !input.accept.toLowerCase().includes('image')) return null;
+          let current = input;
+          for (let depth = 0; depth <= 8 && current; depth += 1, current = current.parentElement) {
+            const text = normalize(current.innerText);
+            if (text.includes(label)) return { input, inputIndex, container: current, depth, text };
+          }
+          return null;
+        })
+        .filter(Boolean);
+      if (!candidates.length) return { error: 'slot_not_found', candidateCount: 0 };
+      const minimumDepth = Math.min(...candidates.map((item) => item.depth));
+      const nearest = candidates.filter((item) => item.depth === minimumDepth);
+      const selected = nearest[spec.occurrence || 0];
+      if (!selected) return { error: 'slot_occurrence_not_found', candidateCount: nearest.length };
+      return { ...selected, candidateCount: nearest.length };
+    };
+  `;
+}
+
+function slotSnapshot(tab, asset) {
+  const spec = {
+    slot_label: asset.slot_label,
+    occurrence: asset.occurrence,
+    multiple: asset.multiple,
+  };
+  return executeJson(tab, `(() => {
+    ${slotHelpersSource()}
+    const resolved = resolveSlot(${JSON.stringify(spec)});
+    if (resolved.error) return JSON.stringify({ ok: false, ...resolved });
+    const removeButtons = Array.from(resolved.container.querySelectorAll('[aria-label^="Remove image"], [aria-label^="删除图片"]'));
+    return JSON.stringify({
+      ok: true,
+      inputIndex: resolved.inputIndex,
+      candidateCount: resolved.candidateCount,
+      multiple: spec.multiple,
+      inputMultiple: Boolean(resolved.input.multiple),
+      slotText: resolved.text.slice(0, 300),
+      removeCount: removeButtons.length,
+      imageSources: Array.from(resolved.container.querySelectorAll('img')).map((image) => image.src),
+    });
+  })()`);
+}
+
+function removeOneAsset(tab, asset) {
+  const spec = {
+    slot_label: asset.slot_label,
+    occurrence: asset.occurrence,
+    multiple: asset.multiple,
+  };
+  const clicked = tab.execute({ javascript: `(() => {
+    ${slotHelpersSource()}
+    const resolved = resolveSlot(${JSON.stringify(spec)});
+    if (resolved.error) return false;
+    const button = resolved.container.querySelector('[aria-label^="Remove image"], [aria-label^="删除图片"]');
+    if (!button) return false;
+    button.click();
+    return true;
+  })()` });
+  if (!clicked) return false;
+  delay(0.5);
+  const confirmed = tab.execute({ javascript: `(() => {
+    const dialogs = Array.from(document.querySelectorAll('[role="dialog"]')).filter((dialog) => {
+      const rect = dialog.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+    const dialog = dialogs.at(-1);
+    if (!dialog) return true;
+    const button = Array.from(dialog.querySelectorAll('button')).find((node) =>
+      /^(Remove|Delete|删除|移除)$/i.test((node.innerText || '').trim())
+    );
+    if (!button) return false;
+    button.click();
+    return true;
+  })()` });
+  if (!confirmed) throw new Error(`${asset.role}: image-removal confirmation missing`);
+  delay(0.8);
+  return true;
+}
+
+function clearAssetSlot(tab, asset) {
+  let state = slotSnapshot(tab, asset);
+  if (!state.ok) throw new Error(`${asset.role}: ${state.error}`);
+  if (!asset.replace || !asset.multiple) return state;
+  for (let attempt = 0; attempt < 20 && state.removeCount > 0; attempt += 1) {
+    const before = state.removeCount;
+    if (!removeOneAsset(tab, asset)) break;
+    state = slotSnapshot(tab, asset);
+    if (!state.ok || state.removeCount >= before) {
+      throw new Error(`${asset.role}: existing image count did not decrease`);
+    }
+  }
+  if (state.removeCount !== 0) throw new Error(`${asset.role}: old images remain after replacement`);
+  return state;
+}
+
+function readBase64(filePath) {
+  const data = $.NSData.dataWithContentsOfFile($(filePath));
+  if (!data) throw new Error(`cannot read upload file: ${filePath}`);
+  return {
+    base64: ObjC.unwrap(data.base64EncodedStringWithOptions(0)),
+    bytes: Number(data.length),
+  };
+}
+
+function uploadAssetFile(tab, asset, file) {
+  const before = slotSnapshot(tab, asset);
+  if (!before.ok) throw new Error(`${asset.role}: ${before.error}`);
+  const content = readBase64(file.absolute_path);
+  const fileName = file.absolute_path.split('/').pop();
+  const spec = {
+    slot_label: asset.slot_label,
+    occurrence: asset.occurrence,
+    multiple: asset.multiple,
+  };
+  const dispatch = executeJson(tab, `(() => {
+    ${slotHelpersSource()}
+    const resolved = resolveSlot(${JSON.stringify(spec)});
+    if (resolved.error) return JSON.stringify({ ok: false, error: resolved.error });
+    const raw = atob(${JSON.stringify(content.base64)});
+    const bytes = new Uint8Array(raw.length);
+    for (let index = 0; index < raw.length; index += 1) bytes[index] = raw.charCodeAt(index);
+    const file = new File([bytes], ${JSON.stringify(fileName)}, { type: 'image/png' });
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    resolved.input.files = transfer.files;
+    resolved.input.dispatchEvent(new Event('input', { bubbles: true }));
+    resolved.input.dispatchEvent(new Event('change', { bubbles: true }));
+    return JSON.stringify({ ok: true, name: file.name, size: file.size });
+  })()`);
+  if (!dispatch.ok || dispatch.size !== content.bytes) {
+    throw new Error(`${asset.role}: file-input dispatch failed`);
+  }
+
+  let after = before;
+  let verified = false;
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    delay(1);
+    after = slotSnapshot(tab, asset);
+    if (!after.ok) continue;
+    verified = asset.multiple
+      ? after.removeCount === before.removeCount + 1
+      : after.imageSources.length > 0
+        && JSON.stringify(after.imageSources) !== JSON.stringify(before.imageSources);
+    if (verified) break;
+  }
+  if (!verified) throw new Error(`${asset.role}: upload preview verification timed out`);
+  return {
+    role: asset.role,
+    slotLabel: asset.slot_label,
+    occurrence: asset.occurrence,
+    repositoryPath: file.path,
+    sha256: file.sha256,
+    bytes: content.bytes,
+    beforeCount: before.removeCount,
+    afterCount: after.removeCount,
+    previewChanged: JSON.stringify(after.imageSources) !== JSON.stringify(before.imageSources),
+  };
+}
+
+function listingSnapshot(tab, listing) {
+  const state = executeJson(tab, `(() => {
+    const description = document.querySelector('textarea[maxlength="16000"]');
+    const support = document.querySelector('input[placeholder="Support URL"]');
+    const category = Array.from(document.querySelectorAll('[role="combobox"]'))
+      .find((node) => /category/i.test((node.innerText || node.getAttribute('aria-label') || '').trim()));
+    return JSON.stringify({
+      title: document.title,
+      url: location.href,
+      descriptionMatches: description?.value === ${JSON.stringify(listing.description)},
+      descriptionLength: description?.value.length || 0,
+      supportMatches: support?.value === ${JSON.stringify(listing.support_url)},
+      supportUrl: support?.value || '',
+      categoryText: (category?.innerText || category?.getAttribute('aria-label') || '').trim().replace(/\\s+/g, ' '),
+      summaryMatches: ${JSON.stringify(Boolean(listing.summary_from_package))}
+        ? document.body.innerText.includes(${JSON.stringify(listing.summary_from_package || '')})
+        : true,
+    });
+  })()`);
+  state.assets = listing.assets.map((asset) => ({
+    role: asset.role,
+    expectedCount: asset.multiple ? asset.resolved_files.length : 1,
+    state: slotSnapshot(tab, asset),
+  }));
+  return state;
+}
+
+function assertListingSnapshot(state, listing, phase) {
+  if (!state.descriptionMatches || !state.supportMatches || !state.summaryMatches) {
+    throw new Error(`${phase}: Store Listing text mismatch`);
+  }
+  if (!state.categoryText.includes(listing.category)) {
+    throw new Error(`${phase}: Store Listing category mismatch`);
+  }
+  for (const asset of state.assets) {
+    if (!asset.state.ok) throw new Error(`${phase}: ${asset.role} slot missing`);
+    if (asset.state.multiple && asset.state.removeCount !== asset.expectedCount) {
+      throw new Error(`${phase}: ${asset.role} image count mismatch`);
+    }
+    if (!asset.state.multiple && asset.state.imageSources.length < 1) {
+      throw new Error(`${phase}: ${asset.role} preview missing`);
+    }
+  }
+}
+
+function visibleErrors(tab) {
+  return executeJson(tab, `JSON.stringify(Array.from(document.querySelectorAll('[role="alert"], [role="dialog"]'))
+    .filter((node) => {
+      const rect = node.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    })
+    .map((node) => (node.innerText || '').trim().replace(/\\s+/g, ' '))
+    .filter((text) => /error|failed|invalid|required/i.test(text))
+    .slice(0, 12))`);
+}
+
+function clickButton(tab, texts) {
+  return tab.execute({ javascript: `(() => {
+    const texts = ${JSON.stringify(texts)};
+    const button = Array.from(document.querySelectorAll('button')).find((node) =>
+      texts.includes((node.innerText || '').trim()) && !node.disabled
+    );
+    if (!button) return false;
+    button.click();
+    return true;
+  })()` });
+}
+
+function reloadSection(tab, config, section) {
+  const currentUrl = sectionUrl(config, section);
+  tab.url = currentUrl;
+  let loaded = false;
+  for (let attempt = 0; attempt < 60; attempt += 1) {
+    delay(1);
+    const state = identitySnapshot(tab, config);
+    loaded = state.url === currentUrl
+      && state.title === expectedTitle(section)
+      && state.accountMatches;
+    if (loaded) break;
+  }
+  if (!loaded) throw new Error(`${section}: reload timed out`);
+  delay(1);
+}
+
+function configureStoreListing(tab, config, evidenceDir) {
+  const listing = config.store_listing;
+  const identity = navigate(tab, config, 'store_listing');
+  assertIdentity(identity, 'store_listing');
+  const updated = executeJson(tab, `(() => {
+    const setValue = (node, value) => {
+      const prototype = node instanceof HTMLTextAreaElement
+        ? HTMLTextAreaElement.prototype
+        : HTMLInputElement.prototype;
+      Object.getOwnPropertyDescriptor(prototype, 'value').set.call(node, value);
+      node.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: null }));
+      node.dispatchEvent(new Event('change', { bubbles: true }));
+      node.dispatchEvent(new Event('blur', { bubbles: true }));
+    };
+    const description = document.querySelector('textarea[maxlength="16000"]');
+    const support = document.querySelector('input[placeholder="Support URL"]');
+    if (!description || !support) return JSON.stringify({ ok: false, error: 'listing_fields_missing' });
+    setValue(description, ${JSON.stringify(listing.description)});
+    setValue(support, ${JSON.stringify(listing.support_url)});
+    return JSON.stringify({ ok: true, descriptionLength: description.value.length, supportUrl: support.value });
+  })()`);
+  if (!updated.ok) throw new Error(updated.error || 'Store Listing fields missing');
+
+  let categoryState = listingSnapshot(tab, { ...listing, assets: [] });
+  if (!categoryState.categoryText.includes(listing.category)) {
+    const opened = tab.execute({ javascript: `(() => {
+      const combo = Array.from(document.querySelectorAll('[role="combobox"]'))
+        .find((node) => /category/i.test((node.innerText || node.getAttribute('aria-label') || '').trim()));
+      if (!combo) return false;
+      combo.click();
+      return true;
+    })()` });
+    if (!opened) throw new Error('Store Listing category control missing');
+    delay(0.8);
+    const selected = tab.execute({ javascript: `(() => {
+      const option = Array.from(document.querySelectorAll('[role="option"], [role="menuitem"]'))
+        .find((node) => (node.innerText || '').trim() === ${JSON.stringify(listing.category)});
+      if (!option) return false;
+      option.click();
+      return true;
+    })()` });
+    if (!selected) throw new Error(`Store Listing category option missing: ${listing.category}`);
+    delay(1);
+  }
+
+  const uploads = [];
+  for (const asset of listing.assets) {
+    clearAssetSlot(tab, asset);
+    for (const file of asset.resolved_files) uploads.push(uploadAssetFile(tab, asset, file));
+  }
+  const beforeSave = listingSnapshot(tab, listing);
+  assertListingSnapshot(beforeSave, listing, 'before_save');
+  const saveClicked = clickButton(tab, ['Save draft', 'Save', '保存草稿', '保存']);
+  if (saveClicked) delay(8);
+  const errors = visibleErrors(tab);
+  if (errors.length) throw new Error(`Store Listing save errors: ${JSON.stringify(errors)}`);
+  reloadSection(tab, config, 'store_listing');
+  const afterReload = listingSnapshot(tab, listing);
+  assertListingSnapshot(afterReload, listing, 'after_reload');
+  const evidence = {
+    generatedAt: new Date().toISOString(),
+    action: 'CONFIGURE',
+    section: 'store_listing',
+    product: config.product.name,
+    platform: 'cws',
+    version: config.product.version,
+    publisherId: config.dashboard.publisher_id,
+    itemId: config.dashboard.item_id,
+    accountHint: config.dashboard.account_hint,
+    identity,
+    updated,
+    uploads,
+    beforeSave,
+    afterReload,
+    saveClicked,
+    submittedForReview: false,
+    publicReleaseTriggered: false,
+  };
+  writeText(`${evidenceDir}/store-listing.json`, `${JSON.stringify(evidence, null, 2)}\n`);
+  return evidence;
+}
+
+function privacySnapshot(tab, privacy) {
+  const expected = {
+    singlePurpose: privacy.single_purpose,
+    fields: privacy.field_values,
+    remoteCode: privacy.remote_code,
+    dataUsageAll: privacy.data_usage_all_labels,
+    dataUsageSelected: privacy.data_usage_selected_labels,
+    certifications: privacy.certification_labels,
+    privacyUrl: privacy.privacy_policy_url,
+    privacyUrlSelectors: privacy.privacy_url_selectors || [
+      'input[placeholder="Privacy policy URL"]',
+      'input[aria-label*="Privacy policy"]',
+    ],
+  };
+  return executeJson(tab, `(() => {
+    const expected = ${JSON.stringify(expected)};
+    const findFirst = (selectors) => selectors.map((selector) => document.querySelector(selector)).find(Boolean);
+    const singlePurpose = findFirst([
+      'textarea[maxlength="1000"]:not([disabled]):not([data-payload])',
+      'textarea[aria-label*="single purpose" i]',
+    ]);
+    const remoteRadio = document.querySelector('input[type="radio"][value="' + String(expected.remoteCode) + '"]');
+    const dataUsage = expected.dataUsageAll.map((label) => {
+      const input = Array.from(document.querySelectorAll('input[type="checkbox"][aria-label]'))
+        .find((node) => (node.getAttribute('aria-label') || '').trim() === label);
+      return { label, exists: Boolean(input), checked: Boolean(input?.checked), expected: expected.dataUsageSelected.includes(label) };
+    });
+    const certifications = expected.certifications.map((label) => {
+      const input = Array.from(document.querySelectorAll('input[type="checkbox"][aria-label]'))
+        .find((node) => (node.getAttribute('aria-label') || '').trim() === label);
+      return { label, exists: Boolean(input), checked: Boolean(input?.checked) };
+    });
+    const privacyUrl = findFirst(expected.privacyUrlSelectors);
+    return JSON.stringify({
+      title: document.title,
+      url: location.href,
+      singlePurposeMatches: singlePurpose?.value === expected.singlePurpose,
+      fields: expected.fields.map((field) => {
+        const node = findFirst(field.selectors);
+        return { name: field.name, exists: Boolean(node), matches: node?.value === field.value };
+      }),
+      remoteCodeMatches: Boolean(remoteRadio?.checked),
+      dataUsage,
+      certifications,
+      privacyUrlMatches: privacyUrl?.value === expected.privacyUrl,
+    });
+  })()`);
+}
+
+function assertPrivacySnapshot(state, phase) {
+  if (!state.singlePurposeMatches || !state.remoteCodeMatches || !state.privacyUrlMatches) {
+    throw new Error(`${phase}: Privacy core field mismatch`);
+  }
+  if (state.fields.some((field) => !field.exists || !field.matches)) {
+    throw new Error(`${phase}: Privacy permission field mismatch`);
+  }
+  if (state.dataUsage.some((item) => !item.exists || item.checked !== item.expected)) {
+    throw new Error(`${phase}: Privacy data-use selection mismatch`);
+  }
+  if (state.certifications.some((item) => !item.exists || !item.checked)) {
+    throw new Error(`${phase}: Privacy certification mismatch`);
+  }
+}
+
+function configurePrivacy(tab, config, evidenceDir) {
+  const privacy = config.privacy;
+  const identity = navigate(tab, config, 'privacy');
+  assertIdentity(identity, 'privacy');
+  const expected = {
+    singlePurpose: privacy.single_purpose,
+    fields: privacy.field_values,
+    remoteCode: privacy.remote_code,
+    dataUsageAll: privacy.data_usage_all_labels,
+    dataUsageSelected: privacy.data_usage_selected_labels,
+    certifications: privacy.certification_labels,
+    privacyUrl: privacy.privacy_policy_url,
+    privacyUrlSelectors: privacy.privacy_url_selectors || [
+      'input[placeholder="Privacy policy URL"]',
+      'input[aria-label*="Privacy policy"]',
+    ],
+  };
+  const update = executeJson(tab, `(() => {
+    const expected = ${JSON.stringify(expected)};
+    const findFirst = (selectors) => selectors.map((selector) => document.querySelector(selector)).find(Boolean);
+    const setValue = (node, value) => {
+      const prototype = node instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+      Object.getOwnPropertyDescriptor(prototype, 'value').set.call(node, value);
+      node.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: null }));
+      node.dispatchEvent(new Event('change', { bubbles: true }));
+      node.dispatchEvent(new Event('blur', { bubbles: true }));
+    };
+    const singlePurpose = findFirst([
+      'textarea[maxlength="1000"]:not([disabled]):not([data-payload])',
+      'textarea[aria-label*="single purpose" i]',
+    ]);
+    const privacyUrl = findFirst(expected.privacyUrlSelectors);
+    if (!singlePurpose || !privacyUrl) return JSON.stringify({ ok: false, error: 'privacy_core_field_missing' });
+    setValue(singlePurpose, expected.singlePurpose);
+    setValue(privacyUrl, expected.privacyUrl);
+    for (const field of expected.fields) {
+      const node = findFirst(field.selectors);
+      if (!node) return JSON.stringify({ ok: false, error: 'privacy_field_missing', field: field.name });
+      setValue(node, field.value);
+    }
+    const remoteRadio = document.querySelector('input[type="radio"][value="' + String(expected.remoteCode) + '"]');
+    if (!remoteRadio) return JSON.stringify({ ok: false, error: 'remote_code_radio_missing' });
+    if (!remoteRadio.checked) remoteRadio.click();
+    for (const label of expected.dataUsageAll) {
+      const input = Array.from(document.querySelectorAll('input[type="checkbox"][aria-label]'))
+        .find((node) => (node.getAttribute('aria-label') || '').trim() === label);
+      if (!input) return JSON.stringify({ ok: false, error: 'data_usage_checkbox_missing', label });
+      const desired = expected.dataUsageSelected.includes(label);
+      if (input.checked !== desired) input.click();
+    }
+    for (const label of expected.certifications) {
+      const input = Array.from(document.querySelectorAll('input[type="checkbox"][aria-label]'))
+        .find((node) => (node.getAttribute('aria-label') || '').trim() === label);
+      if (!input) return JSON.stringify({ ok: false, error: 'certification_missing', label });
+      if (!input.checked) input.click();
+    }
+    return JSON.stringify({ ok: true, fieldCount: expected.fields.length });
+  })()`);
+  if (!update.ok) throw new Error(`Privacy update failed: ${JSON.stringify(update)}`);
+  delay(1);
+  const beforeSave = privacySnapshot(tab, privacy);
+  assertPrivacySnapshot(beforeSave, 'before_save');
+  const saveClicked = clickButton(tab, ['Save draft', 'Save', '保存草稿', '保存']);
+  if (saveClicked) delay(8);
+  const errors = visibleErrors(tab);
+  if (errors.length) throw new Error(`Privacy save errors: ${JSON.stringify(errors)}`);
+  reloadSection(tab, config, 'privacy');
+  const afterReload = privacySnapshot(tab, privacy);
+  assertPrivacySnapshot(afterReload, 'after_reload');
+  const evidence = {
+    generatedAt: new Date().toISOString(),
+    action: 'CONFIGURE',
+    section: 'privacy',
+    product: config.product.name,
+    platform: 'cws',
+    version: config.product.version,
+    publisherId: config.dashboard.publisher_id,
+    itemId: config.dashboard.item_id,
+    accountHint: config.dashboard.account_hint,
+    identity,
+    update,
+    beforeSave,
+    afterReload,
+    saveClicked,
+    submittedForReview: false,
+    publicReleaseTriggered: false,
+  };
+  writeText(`${evidenceDir}/privacy.json`, `${JSON.stringify(evidence, null, 2)}\n`);
+  return evidence;
+}
+
+function testInstructionsSnapshot(tab, test) {
+  const expected = {
+    instructions: test.instructions,
+    username: test.username || '',
+    password: test.password || '',
+  };
+  return executeJson(tab, `(() => {
+    const expected = ${JSON.stringify(expected)};
+    const username = document.querySelector('input[placeholder="Username"]');
+    const password = document.querySelector('input[placeholder="Password"]');
+    const additional = document.querySelector('textarea[placeholder="Additional instructions"]');
+    return JSON.stringify({
+      title: document.title,
+      url: location.href,
+      usernameMatches: username?.value === expected.username,
+      passwordMatches: password?.value === expected.password,
+      usernamePresent: Boolean(username?.value),
+      passwordPresent: Boolean(password?.value),
+      instructionsMatch: additional?.value.trimEnd() === expected.instructions,
+      instructionsLength: additional?.value.trimEnd().length || 0,
+      formLocked: Boolean(username?.disabled && password?.disabled && additional?.disabled),
+      editButtonVisible: Array.from(document.querySelectorAll('button')).some((node) => (node.innerText || '').trim() === 'Edit'),
+    });
+  })()`);
+}
+
+function assertTestInstructionsSnapshot(state, test, phase) {
+  if (!state.usernameMatches || !state.passwordMatches || !state.instructionsMatch) {
+    throw new Error(`${phase}: Test instructions value mismatch`);
+  }
+  if (state.instructionsLength > test.max_length) {
+    throw new Error(`${phase}: Test instructions exceed configured limit`);
+  }
+  if (!state.formLocked || !state.editButtonVisible) {
+    throw new Error(`${phase}: Test instructions saved-state marker missing`);
+  }
+}
+
+function configureTestInstructions(tab, config, evidenceDir) {
+  const test = config.test_instructions;
+  const identity = navigate(tab, config, 'test_instructions');
+  assertIdentity(identity, 'test_instructions');
+  const editable = tab.execute({ javascript: `(() => {
+    const additional = document.querySelector('textarea[placeholder="Additional instructions"]');
+    if (additional && !additional.disabled) return true;
+    const button = Array.from(document.querySelectorAll('button')).find((node) => (node.innerText || '').trim() === 'Edit');
+    if (!button || button.disabled) return false;
+    button.click();
+    return true;
+  })()` });
+  if (!editable) throw new Error('Test instructions Edit control unavailable');
+  delay(1);
+  const values = {
+    username: test.username || '',
+    password: test.password || '',
+    instructions: test.instructions,
+  };
+  const update = executeJson(tab, `(() => {
+    const values = ${JSON.stringify(values)};
+    const username = document.querySelector('input[placeholder="Username"]');
+    const password = document.querySelector('input[placeholder="Password"]');
+    const additional = document.querySelector('textarea[placeholder="Additional instructions"]');
+    if (!username || !password || !additional || additional.disabled) {
+      return JSON.stringify({ ok: false, error: 'editable_test_form_missing' });
+    }
+    const setValue = (node, value) => {
+      const prototype = node instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+      Object.getOwnPropertyDescriptor(prototype, 'value').set.call(node, value);
+      node.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: null }));
+      node.dispatchEvent(new Event('change', { bubbles: true }));
+      node.dispatchEvent(new Event('blur', { bubbles: true }));
+    };
+    setValue(username, values.username);
+    setValue(password, values.password);
+    setValue(additional, values.instructions);
+    return JSON.stringify({
+      ok: true,
+      usernamePresent: Boolean(username.value),
+      passwordPresent: Boolean(password.value),
+      instructionsLength: additional.value.length,
+    });
+  })()`);
+  if (!update.ok || update.instructionsLength !== test.instructions.length) {
+    throw new Error(`Test instructions update failed: ${JSON.stringify(update)}`);
+  }
+  const saveClicked = clickButton(tab, ['Save changes', 'Save', '保存更改', '保存']);
+  if (!saveClicked) throw new Error('Test instructions Save changes control unavailable');
+  let locked = false;
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    delay(1);
+    locked = tab.execute({ javascript: `Boolean(document.querySelector('textarea[placeholder="Additional instructions"]')?.disabled)` });
+    if (locked) break;
+  }
+  if (!locked) throw new Error('Test instructions did not reach saved state');
+  const afterSave = testInstructionsSnapshot(tab, test);
+  assertTestInstructionsSnapshot(afterSave, test, 'after_save');
+  reloadSection(tab, config, 'test_instructions');
+  const afterReload = testInstructionsSnapshot(tab, test);
+  assertTestInstructionsSnapshot(afterReload, test, 'after_reload');
+  const evidence = {
+    generatedAt: new Date().toISOString(),
+    action: 'CONFIGURE',
+    section: 'test_instructions',
+    product: config.product.name,
+    platform: 'cws',
+    version: config.product.version,
+    publisherId: config.dashboard.publisher_id,
+    itemId: config.dashboard.item_id,
+    accountHint: config.dashboard.account_hint,
+    identity,
+    update,
+    afterSave,
+    afterReload,
+    saveClicked,
+    submittedForReview: false,
+    publicReleaseTriggered: false,
+  };
+  writeText(`${evidenceDir}/test-instructions.json`, `${JSON.stringify(evidence, null, 2)}\n`);
+  return evidence;
+}
+
+function run(rawArgv) {
+  const argv = rawArgv[0] === '--' ? rawArgv.slice(1) : rawArgv;
+  if (argv.length === 1 && argv[0] === 'self-test') {
+    return JSON.stringify({ ok: true, runtime: 'jxa', mutation: false });
+  }
+  if (argv.length !== 3) {
+    throw new Error('usage: <probe|configure> <runtime-config-json> <evidence-dir>');
+  }
+  const mode = argv[0];
+  if (!['probe', 'configure'].includes(mode)) throw new Error(`unsupported mode: ${mode}`);
+  const config = readJson(argv[1]);
+  const evidenceDir = argv[2].replace(/\/$/, '');
+  const chrome = Application('Google Chrome');
+  const tab = findTargetTab(chrome, config.dashboard);
+  const identity = identitySnapshot(tab, config);
+  assertIdentity(identity, 'probe');
+  if (mode === 'probe') {
+    const evidence = {
+      ok: true,
+      mode: 'probe',
+      externalMutation: false,
+      product: config.product.name,
+      version: config.product.version,
+      publisherId: config.dashboard.publisher_id,
+      itemId: config.dashboard.item_id,
+      accountHint: config.dashboard.account_hint,
+      identity,
+    };
+    writeText(`${evidenceDir}/probe.json`, `${JSON.stringify(evidence, null, 2)}\n`);
+    return JSON.stringify(evidence);
+  }
+
+  const sections = [];
+  for (const section of config.sections) {
+    if (section === 'store_listing') sections.push(configureStoreListing(tab, config, evidenceDir));
+    if (section === 'privacy') sections.push(configurePrivacy(tab, config, evidenceDir));
+    if (section === 'test_instructions') sections.push(configureTestInstructions(tab, config, evidenceDir));
+  }
+  const result = {
+    ok: true,
+    mode: 'configure',
+    action: 'CONFIGURE',
+    product: config.product.name,
+    platform: 'cws',
+    version: config.product.version,
+    publisherId: config.dashboard.publisher_id,
+    itemId: config.dashboard.item_id,
+    accountHint: config.dashboard.account_hint,
+    sections: sections.map((section) => ({
+      section: section.section,
+      saveClicked: section.saveClicked,
+      persistedAfterReload: true,
+    })),
+    submittedForReview: false,
+    publicReleaseTriggered: false,
+  };
+  writeText(`${evidenceDir}/result.json`, `${JSON.stringify(result, null, 2)}\n`);
+  return JSON.stringify(result);
+}
