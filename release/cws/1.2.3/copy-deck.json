@@ -1,0 +1,53 @@
+{
+  "locale": "en",
+  "name": "Copylot",
+  "summary": "Copy web pages as clean Markdown, plain text, or CSV for AI and docs. One click, privacy-first, and processed on-device.",
+  "summary_length": 120,
+  "description": "Copylot turns messy web content into clean, paste-ready text for AI and documents. Use the popup or your chosen click or hover shortcut to copy a selection first, or clean up the current page when nothing is selected.\n\nWHAT YOU CAN DO\n\n• Copy article content as Markdown or plain text.\n• Convert web tables to Markdown or CSV.\n• Keep code indentation and blank lines while removing recognizable line-number and Copy-label noise.\n• Hold Shift in Append Mode to collect multiple clips with separators.\n• Save prompt templates and assign three quick slots to combine an instruction with copied content.\n\nPRIVATE BY DESIGN\n\n• Extraction, cleanup, and formatting run on your device.\n• Copylot does not collect, store, or upload the content you copy.\n• Optional anonymous usage data is off by default. If enabled, it records only local events and never sends copied content.\n• Permissions are limited to storage, clipboardWrite, and contextMenus.\n\nSTART IN THREE STEPS\n\n1. Install and pin Copylot.\n2. Open an article, table, or code block.\n3. Copy, then paste into your AI tool, notes, spreadsheet, or document.\n\nHomepage: https://copy.useai.online/\nPrivacy: https://copy.useai.online/privacy\n\nCopylot works in Chrome and compatible Chromium-based browsers.",
+  "localized_zh": {
+    "summary": "一键把网页复制成干净的 Markdown、纯文本或 CSV，直接粘贴到 AI 与文档；隐私优先，全程本地处理。",
+    "description": "Copylot 把网页中的正文、表格或代码整理成可直接粘贴到 AI、文档或表格工具的干净内容。优先复制当前选区；没有选区时，也可以整理当前页面。\n\n你可以：\n• 把正文复制为 Markdown 或纯文本。\n• 把网页表格转换为 Markdown 或 CSV。\n• 保留代码缩进与空行，并移除可识别的行号和 Copy 文案噪声。\n• 按住 Shift 使用追加模式，跨页面收集多段内容。\n• 保存 Prompt 模板，并把三个常用模板设为快捷位。\n\n隐私优先：\n• 提取、清理和格式化都在本机完成。\n• Copylot 不收集、存储或上传你复制的内容。\n• 可选的匿名使用数据默认关闭；开启后也只记录本地事件，不发送复制内容。\n• 权限仅包含 storage、clipboardWrite 和 contextMenus。"
+  },
+  "frames": [
+    {
+      "id": "01-popup",
+      "title": "Clean copy starts here",
+      "subtitle": "Selection first. Full-page cleanup when you need it.",
+      "proof_hook": "Real Copylot popup from version 1.2.3",
+      "visual_angle": "Popup as the main focal panel"
+    },
+    {
+      "id": "02-markdown",
+      "title": "Markdown without the mess",
+      "subtitle": "Keep the article. Leave navigation and surrounding noise behind.",
+      "proof_hook": "Actual Markdown copied from the article fixture",
+      "visual_angle": "Source article and copied result side by side"
+    },
+    {
+      "id": "03-table",
+      "title": "Tables that stay structured",
+      "subtitle": "Copy as Markdown or CSV—ready for docs and spreadsheets.",
+      "proof_hook": "Actual RFC4180-style CSV copied from the table fixture",
+      "visual_angle": "Table input and CSV output"
+    },
+    {
+      "id": "04-code",
+      "title": "Code that keeps its shape",
+      "subtitle": "Preserve indentation and blank lines. Remove recognizable copy noise.",
+      "proof_hook": "Actual cleaned code copied from the code fixture",
+      "visual_angle": "Code input and cleaned output"
+    },
+    {
+      "id": "05-prompts",
+      "title": "Prompt shortcuts, built in",
+      "subtitle": "Combine an instruction and copied content from three quick slots.",
+      "proof_hook": "Real Prompt management UI from version 1.2.3",
+      "visual_angle": "Options page prompt cards and shortcut slots"
+    }
+  ],
+  "small_promo": {
+    "title": "Clean copy. Ready to paste.",
+    "subtitle": "Markdown • CSV • AI",
+    "proof_hook": "Existing Copylot icon plus the adopted background family"
+  }
+}

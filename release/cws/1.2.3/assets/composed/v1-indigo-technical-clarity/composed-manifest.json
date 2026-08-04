@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "product": "Copylot",
+  "version": "1.2.3",
+  "mode": "imagegen-background-plus-real-runtime-proof",
+  "adopted_variant": "v1-indigo-technical-clarity",
+  "imagegen_source": "release/cws/1.2.3/assets/imagegen/raw/v1-indigo-technical-clarity.png",
+  "icon_reused": "public/icons/icon-128.png",
+  "screenshots": [
+    {
+      "role": "screenshot",
+      "copy_id": "01-popup",
+      "path": "release/cws/1.2.3/assets/composed/v1-indigo-technical-clarity/01-clean-copy-starts-here.png",
+      "width": 1280,
+      "height": 800,
+      "format": "png",
+      "sha256": "6292a444f9c4ff10e5313d8d3eda1ff45a219d72240aea56880d4aa328db6cb4"
+    },
+    {
+      "role": "screenshot",
+      "copy_id": "02-markdown",
+      "path": "release/cws/1.2.3/assets/composed/v1-indigo-technical-clarity/02-markdown-without-the-mess.png",
+      "width": 1280,
+      "height": 800,
+      "format": "png",
+      "sha256": "1511d09d1481eb87019b6258804bff65b88097dda0df77bc4e2b7387d0899efb"
+    },
+    {
+      "role": "screenshot",
+      "copy_id": "03-table",
+      "path": "release/cws/1.2.3/assets/composed/v1-indigo-technical-clarity/03-tables-stay-structured.png",
+      "width": 1280,
+      "height": 800,
+      "format": "png",
+      "sha256": "f731643fee74f3c7d383aae2e5c12319d56062b9332a19ba878c529bc8228a8d"
+    },
+    {
+      "role": "screenshot",
+      "copy_id": "04-code",
+      "path": "release/cws/1.2.3/assets/composed/v1-indigo-technical-clarity/04-code-keeps-its-shape.png",
+      "width": 1280,
+      "height": 800,
+      "format": "png",
+      "sha256": "4e4e1e72410937f388a29b2b34993edeaa3100a704ead1395adf1cda4b57f7e0"
+    },
+    {
+      "role": "screenshot",
+      "copy_id": "05-prompts",
+      "path": "release/cws/1.2.3/assets/composed/v1-indigo-technical-clarity/05-prompt-shortcuts.png",
+      "width": 1280,
+      "height": 800,
+      "format": "png",
+      "sha256": "47b7412841f78dc77e8b0c97b2e1c07f12dd781e86aa9feee743ff28b18c9c3f"
+    }
+  ],
+  "small_promo": {
+    "role": "small_promo",
+    "copy_id": "small_promo",
+    "path": "release/cws/1.2.3/assets/composed/v1-indigo-technical-clarity/small-promo-440x280.png",
+    "width": 440,
+    "height": 280,
+    "format": "png",
+    "sha256": "e113e1f4c264c09c91cd8dbbbeb59cdb9fa38e79b3ab4ee16b49a7392c567736"
+  },
+  "product_ui_policy": "Only runtime captures from the unpacked 1.2.3 build are used as product UI.",
+  "generated_at": "2026-08-04T05:50:55.765Z"
+}

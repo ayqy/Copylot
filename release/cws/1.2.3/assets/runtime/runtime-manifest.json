@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "product": "Copylot",
+  "version": "1.2.3",
+  "evidence_kind": "direct",
+  "capture_surface": "Playwright Chromium with the unpacked 1.2.3 E2E build",
+  "captures": [
+    {
+      "path": "release/cws/1.2.3/assets/runtime/01-popup.png",
+      "width": 420,
+      "height": 720,
+      "format": "png",
+      "sha256": "e4c3b8a226f4b59067845dd93276d5307ef2fd17f7b5a55a953ba1fbe11ecacf"
+    },
+    {
+      "path": "release/cws/1.2.3/assets/runtime/02-article-source.png",
+      "width": 1040,
+      "height": 650,
+      "format": "png",
+      "sha256": "b78187e71a864746d91d8c51f0f56e79cd2f75c693875455e9f4fe1962a7bd10"
+    },
+    {
+      "path": "release/cws/1.2.3/assets/runtime/03-table-source.png",
+      "width": 1040,
+      "height": 650,
+      "format": "png",
+      "sha256": "49106c8b30526790f69488fd83c79de93e1e83fadaf1d949f36d6c3c157d11f6"
+    },
+    {
+      "path": "release/cws/1.2.3/assets/runtime/04-code-source.png",
+      "width": 1040,
+      "height": 650,
+      "format": "png",
+      "sha256": "38a13563ab5fe1ca167b1b163363673b693bf6c419bb48b3e032e50cfe19568d"
+    },
+    {
+      "path": "release/cws/1.2.3/assets/runtime/05-prompts.png",
+      "width": 1120,
+      "height": 700,
+      "format": "png",
+      "sha256": "18a1e078ee85c651d6fd932a11b5831b60e3f33159970b89cf3c63d927da28a2"
+    }
+  ],
+  "text_results": {
+    "markdown": {
+      "path": "release/cws/1.2.3/assets/runtime/02-markdown-result.md",
+      "sha256": "b029197639c19058b8b092e39486d0346959148c5f8908828db14de24d947211"
+    },
+    "csv": {
+      "path": "release/cws/1.2.3/assets/runtime/03-csv-result.csv",
+      "sha256": "1a43e087efeeb2d640f92dac0ba5e3739318695dc2e2cb7a3379051d250d5250"
+    },
+    "code": {
+      "path": "release/cws/1.2.3/assets/runtime/04-code-result.txt",
+      "sha256": "78d3c6e295fdfa76e36e1e05f2b5f6442f4cdf40a1bb75611312bad24263f57b"
+    }
+  }
+}

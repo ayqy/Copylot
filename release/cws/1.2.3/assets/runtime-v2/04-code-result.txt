@@ -1,0 +1,6 @@
+function buildPrompt() {
+  const tag = "\#summary";
+  const docs = ["\[intro\]", "outline"];
+
+  return docs.join("\\n");
+}

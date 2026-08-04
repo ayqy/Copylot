@@ -1,0 +1,24 @@
+{
+  "mode": "built-in-imagegen",
+  "use_case": "ads-marketing",
+  "common_constraints": [
+    "Background artwork only; no browser window, app interface, chat interface, document text, logo, icon, letters, numbers, or watermark.",
+    "Keep a calm, professional productivity-tool tone.",
+    "Leave broad low-detail zones for later insertion of real product UI and deterministic typography.",
+    "Do not imply cloud upload, automation speed, or features beyond copying and structuring content."
+  ],
+  "variants": [
+    {
+      "version": "v1-indigo-technical-clarity",
+      "prompt": "Use case: ads-marketing\nAsset type: Chrome Web Store promotional background family\nPrimary request: create an abstract productivity background that suggests messy web fragments becoming clean structured blocks\nScene/backdrop: deep indigo to violet studio gradient with subtle soft grain\nSubject: a restrained flow of thin luminous lines and simple translucent rectangular layers moving from loose fragments toward one aligned stack\nStyle/medium: premium 3D-inflected editorial illustration, precise and calm\nComposition/framing: wide landscape, strong negative space across the center and right for real UI overlays, visual anchor near the lower-left edge\nLighting/mood: controlled soft glow, trustworthy, technical clarity\nColor palette: #17143F, #4038D9, #6D5BFF, small cool-cyan accents\nConstraints: background artwork only; no browser window, app interface, chat interface, document text, logo, icon, letters, numbers, or watermark; no fake UI; no busy center; no neon cyberpunk clutter"
+    },
+    {
+      "version": "v2-warm-editorial-paper",
+      "prompt": "Use case: ads-marketing\nAsset type: Chrome Web Store promotional background family\nPrimary request: create an editorial background suggesting web content being cleaned into an orderly document\nScene/backdrop: warm off-white paper field with subtle fiber and gentle violet edge light\nSubject: abstract paper layers and empty text-like blocks moving from slightly scattered to precisely aligned, without any readable glyphs\nStyle/medium: tactile editorial collage with refined product-photography lighting\nComposition/framing: wide landscape with the main texture at the edges and a large quiet center for real product UI overlays\nLighting/mood: warm, focused, calm, practical\nColor palette: warm white, graphite, muted lavender, one saturated indigo accent\nConstraints: background artwork only; no browser window, app interface, chat interface, document text, logo, icon, letters, numbers, or watermark; no fake UI; no torn-paper chaos; no stock-photo desk objects"
+    },
+    {
+      "version": "v3-electric-flow",
+      "prompt": "Use case: ads-marketing\nAsset type: Chrome Web Store promotional background family\nPrimary request: create a bold abstract background showing loose content fragments flowing into a clean organized card system\nScene/backdrop: dark violet field with high-contrast blue-violet energy paths\nSubject: a few geometric fragments entering from the left and becoming aligned translucent rectangles, with no readable marks\nStyle/medium: polished dimensional vector-like illustration, energetic but not futuristic\nComposition/framing: wide landscape, motion kept to the outer thirds, broad dark center reserved for real product UI and copy\nLighting/mood: crisp, confident, focused\nColor palette: deep navy, electric violet, cool blue, white highlights\nConstraints: background artwork only; no browser window, app interface, chat interface, document text, logo, icon, letters, numbers, or watermark; no fake UI; no speedometer, rockets, clouds, robots, or cyberpunk clutter"
+    }
+  ]
+}

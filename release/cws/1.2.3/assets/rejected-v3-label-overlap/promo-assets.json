@@ -1,0 +1,62 @@
+{
+  "app_name": "Copylot",
+  "mode": "direct-imagegen-with-runtime-proof",
+  "source_manifest": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/promo-source-manifest.json",
+  "output_dir": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/assets/final",
+  "assets": [
+    {
+      "source": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/assets/composed/v1-indigo-technical-clarity/01-clean-copy-starts-here.png",
+      "output_name": "01-clean-copy-starts-here.png",
+      "width": 1280,
+      "height": 800,
+      "path": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/assets/final/01-clean-copy-starts-here.png",
+      "actual_width": 1280,
+      "actual_height": 800
+    },
+    {
+      "source": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/assets/composed/v1-indigo-technical-clarity/02-markdown-without-the-mess.png",
+      "output_name": "02-markdown-without-the-mess.png",
+      "width": 1280,
+      "height": 800,
+      "path": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/assets/final/02-markdown-without-the-mess.png",
+      "actual_width": 1280,
+      "actual_height": 800
+    },
+    {
+      "source": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/assets/composed/v1-indigo-technical-clarity/03-tables-stay-structured.png",
+      "output_name": "03-tables-stay-structured.png",
+      "width": 1280,
+      "height": 800,
+      "path": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/assets/final/03-tables-stay-structured.png",
+      "actual_width": 1280,
+      "actual_height": 800
+    },
+    {
+      "source": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/assets/composed/v1-indigo-technical-clarity/04-code-keeps-its-shape.png",
+      "output_name": "04-code-keeps-its-shape.png",
+      "width": 1280,
+      "height": 800,
+      "path": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/assets/final/04-code-keeps-its-shape.png",
+      "actual_width": 1280,
+      "actual_height": 800
+    },
+    {
+      "source": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/assets/composed/v1-indigo-technical-clarity/05-prompt-shortcuts.png",
+      "output_name": "05-prompt-shortcuts.png",
+      "width": 1280,
+      "height": 800,
+      "path": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/assets/final/05-prompt-shortcuts.png",
+      "actual_width": 1280,
+      "actual_height": 800
+    },
+    {
+      "source": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/assets/composed/v1-indigo-technical-clarity/small-promo-440x280.png",
+      "output_name": "small-promo-440x280.png",
+      "width": 440,
+      "height": 280,
+      "path": "/Users/pocket/Documents/project/Copylot/release/cws/1.2.3/assets/final/small-promo-440x280.png",
+      "actual_width": 440,
+      "actual_height": 280
+    }
+  ]
+}

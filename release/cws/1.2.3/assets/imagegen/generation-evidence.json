@@ -1,0 +1,99 @@
+{
+  "product": "Copylot",
+  "platform": "Chrome Web Store",
+  "version": "1.2.3",
+  "generation_mode": "current-session-built-in-image_gen",
+  "overall_status": "success",
+  "image_api_used": false,
+  "scripts_image_gen_py_used": false,
+  "credentials_accessed": false,
+  "assets": [
+    {
+      "variant": "v1-indigo-technical-clarity",
+      "final_prompt": "Use case: ads-marketing\nAsset type: Chrome Web Store promotional background family\nPrimary request: create an abstract productivity background that suggests messy web fragments becoming clean structured blocks\nScene/backdrop: deep indigo to violet studio gradient with subtle soft grain\nSubject: a restrained flow of thin luminous lines and simple translucent rectangular layers moving from loose fragments toward one aligned stack\nStyle/medium: premium 3D-inflected editorial illustration, precise and calm\nComposition/framing: wide landscape, strong negative space across the center and right for real UI overlays, visual anchor near the lower-left edge\nLighting/mood: controlled soft glow, trustworthy, technical clarity\nColor palette: #17143F, #4038D9, #6D5BFF, small cool-cyan accents\nConstraints: background artwork only; no browser window, app interface, chat interface, document text, logo, icon, letters, numbers, or watermark; no fake UI; no busy center; no neon cyberpunk clutter\n\nCommon constraints:\n- Background artwork only; no browser window, app interface, chat interface, document text, logo, icon, letters, numbers, or watermark.\n- Keep a calm, professional productivity-tool tone.\n- Leave broad low-detail zones for later insertion of real product UI and deterministic typography.\n- Do not imply cloud upload, automation speed, or features beyond copying and structuring content.",
+      "builtin_tool_completion_status": "success",
+      "generated_images_source_path": "/Users/pocket/.codex/generated_images/019fcb11-10dc-78d1-91fa-ed4718572188/exec-84e9ff1d-4ae9-400b-af29-ff20cb096b47.png",
+      "preserved_generation_source": true,
+      "project_final_path": "release/cws/1.2.3/assets/imagegen/raw/v1-indigo-technical-clarity.png",
+      "destination_collision": {
+        "base_path_existed": false,
+        "retry_suffix_used": false
+      },
+      "actual_format": "PNG",
+      "actual_dimensions": {
+        "width": 1717,
+        "height": 916
+      },
+      "sha256": "5c002fbbdb41e77ac06300d67968b2160087d0693faecd885a9744d1ee4db044",
+      "source_and_project_hash_match": true,
+      "visual_inspection": {
+        "tool": "view_image",
+        "status": "pass",
+        "no_text": true,
+        "no_watermark": true,
+        "no_fake_ui": true,
+        "real_ui_insertion_zone": "broad low-detail center and right",
+        "conclusion": "靛紫抽象背景仅在左下与左侧形成几何流动焦点；中心和右侧连续留空，可承载真实 UI。未见文字、水印、浏览器窗口、产品 UI 或聊天 UI。"
+      },
+      "rejection_reason": null
+    },
+    {
+      "variant": "v2-warm-editorial-paper",
+      "final_prompt": "Use case: ads-marketing\nAsset type: Chrome Web Store promotional background family\nPrimary request: create an editorial background suggesting web content being cleaned into an orderly document\nScene/backdrop: warm off-white paper field with subtle fiber and gentle violet edge light\nSubject: abstract paper layers and empty text-like blocks moving from slightly scattered to precisely aligned, without any readable glyphs\nStyle/medium: tactile editorial collage with refined product-photography lighting\nComposition/framing: wide landscape with the main texture at the edges and a large quiet center for real product UI overlays\nLighting/mood: warm, focused, calm, practical\nColor palette: warm white, graphite, muted lavender, one saturated indigo accent\nConstraints: background artwork only; no browser window, app interface, chat interface, document text, logo, icon, letters, numbers, or watermark; no fake UI; no torn-paper chaos; no stock-photo desk objects\n\nCommon constraints:\n- Background artwork only; no browser window, app interface, chat interface, document text, logo, icon, letters, numbers, or watermark.\n- Keep a calm, professional productivity-tool tone.\n- Leave broad low-detail zones for later insertion of real product UI and deterministic typography.\n- Do not imply cloud upload, automation speed, or features beyond copying and structuring content.",
+      "builtin_tool_completion_status": "success",
+      "generated_images_source_path": "/Users/pocket/.codex/generated_images/019fcb11-10dc-78d1-91fa-ed4718572188/exec-a2647dd3-ed5d-4616-b77c-91592846a015.png",
+      "preserved_generation_source": true,
+      "project_final_path": "release/cws/1.2.3/assets/imagegen/raw/v2-warm-editorial-paper.png",
+      "destination_collision": {
+        "base_path_existed": false,
+        "retry_suffix_used": false
+      },
+      "actual_format": "PNG",
+      "actual_dimensions": {
+        "width": 1568,
+        "height": 1003
+      },
+      "sha256": "3ca78bc8a95d5bb6a1e387a5686a0ccb9622b2968789d7116eb1606607862ff2",
+      "source_and_project_hash_match": true,
+      "visual_inspection": {
+        "tool": "view_image",
+        "status": "pass",
+        "no_text": true,
+        "no_watermark": true,
+        "no_fake_ui": true,
+        "real_ui_insertion_zone": "broad low-detail center",
+        "conclusion": "暖白纸张拼贴与无字几何纸块集中在两侧，中央为连续低细节纸面，可承载真实 UI。未见可读字形、水印、浏览器窗口、产品 UI 或聊天 UI。"
+      },
+      "rejection_reason": null
+    },
+    {
+      "variant": "v3-electric-flow",
+      "final_prompt": "Use case: ads-marketing\nAsset type: Chrome Web Store promotional background family\nPrimary request: create a bold abstract background showing loose content fragments flowing into a clean organized card system\nScene/backdrop: dark violet field with high-contrast blue-violet energy paths\nSubject: a few geometric fragments entering from the left and becoming aligned translucent rectangles, with no readable marks\nStyle/medium: polished dimensional vector-like illustration, energetic but not futuristic\nComposition/framing: wide landscape, motion kept to the outer thirds, broad dark center reserved for real product UI and copy\nLighting/mood: crisp, confident, focused\nColor palette: deep navy, electric violet, cool blue, white highlights\nConstraints: background artwork only; no browser window, app interface, chat interface, document text, logo, icon, letters, numbers, or watermark; no fake UI; no speedometer, rockets, clouds, robots, or cyberpunk clutter\n\nCommon constraints:\n- Background artwork only; no browser window, app interface, chat interface, document text, logo, icon, letters, numbers, or watermark.\n- Keep a calm, professional productivity-tool tone.\n- Leave broad low-detail zones for later insertion of real product UI and deterministic typography.\n- Do not imply cloud upload, automation speed, or features beyond copying and structuring content.",
+      "builtin_tool_completion_status": "success",
+      "generated_images_source_path": "/Users/pocket/.codex/generated_images/019fcb11-10dc-78d1-91fa-ed4718572188/exec-58c518d7-9b66-4ce7-91b8-b2d47b8811aa.png",
+      "preserved_generation_source": true,
+      "project_final_path": "release/cws/1.2.3/assets/imagegen/raw/v3-electric-flow.png",
+      "destination_collision": {
+        "base_path_existed": false,
+        "retry_suffix_used": false
+      },
+      "actual_format": "PNG",
+      "actual_dimensions": {
+        "width": 1659,
+        "height": 948
+      },
+      "sha256": "f470557e7d149c6069323361380283740ce8e87e4f416217e25453bddc9cef62",
+      "source_and_project_hash_match": true,
+      "visual_inspection": {
+        "tool": "view_image",
+        "status": "pass",
+        "no_text": true,
+        "no_watermark": true,
+        "no_fake_ui": true,
+        "real_ui_insertion_zone": "broad low-detail center",
+        "conclusion": "蓝紫几何碎片与抽象矩形系统位于外侧，中央保留宽阔深色低细节区域，可承载真实 UI。矩形无控件、标签或内容，不构成产品或聊天界面；未见文字或水印。"
+      },
+      "rejection_reason": null
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-08-04",
+  "rules": [
+    {
+      "url": "https://developer.chrome.com/docs/webstore/publish/",
+      "checked_at": "2026-08-04",
+      "topic": "lifecycle",
+      "claim": "提交审核与公开发布是不同状态；关闭审核通过后自动发布可使用 deferred publishing，批准后最多 30 天内手动发布。",
+      "decision": "本次只提审，必须使用 STAGED_PUBLISH，不触发公开发布。",
+      "evidence_kind": "direct"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/webstore/images/",
+      "checked_at": "2026-08-04",
+      "topic": "assets",
+      "claim": "需要 128x128 PNG icon、440x280 small promotional image，以及至少一张 1280x800 或 640x400 全幅截图。",
+      "decision": "复用现有 128 icon，生成一张 440x280 small promo 和五张 1280x800 截图。",
+      "evidence_kind": "direct"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/webstore/program-policies/",
+      "checked_at": "2026-08-04",
+      "topic": "policy",
+      "claim": "政策适用于扩展完整用户体验，包括营销素材；隐私、权限和披露必须真实一致。",
+      "decision": "移除公开页中无法证明的‘终极、完美、数千用户、Premium 已提供’话术，只保留代码与运行时可验证能力。",
+      "evidence_kind": "direct"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/webstore/api/reference/rest/v2/publishers.items/publish",
+      "checked_at": "2026-08-04",
+      "topic": "automation",
+      "claim": "publish 请求支持 publishType=STAGED_PUBLISH、skipReview=false；成功后返回当前 ItemState。",
+      "decision": "新提审适配器使用 v2 API、STAGED_PUBLISH、skipReview=false，并核验 PENDING_REVIEW 或 STAGED。",
+      "evidence_kind": "direct"
+    }
+  ]
+}

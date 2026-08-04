@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "product": "Copylot",
+  "platform": "Chrome Web Store",
+  "version": "1.2.3",
+  "rubric": [
+    "product_clarity",
+    "visual_specificity",
+    "trust_truthfulness",
+    "store_fit",
+    "distinctiveness"
+  ],
+  "candidates": [
+    {
+      "version": "v1-indigo-technical-clarity",
+      "asset_type": "promotional_background_family",
+      "scores": {
+        "product_clarity": 5,
+        "visual_specificity": 5,
+        "trust_truthfulness": 5,
+        "store_fit": 5,
+        "distinctiveness": 4
+      },
+      "total": 24,
+      "strengths": [
+        "与现有靛紫 icon 和产品 UI 形成连续品牌系统",
+        "中心和右侧低细节区域足以承载真实运行截图",
+        "缩略图对比度最高且没有生成式伪 UI"
+      ],
+      "weaknesses": [
+        "需要在最终排版中严格控制标题宽度，避免品牌背景显得过满"
+      ],
+      "selected": true
+    },
+    {
+      "version": "v2-warm-editorial-paper",
+      "asset_type": "promotional_background_family",
+      "scores": {
+        "product_clarity": 4,
+        "visual_specificity": 4,
+        "trust_truthfulness": 5,
+        "store_fit": 4,
+        "distinctiveness": 4
+      },
+      "total": 21,
+      "strengths": [
+        "纸张质感适合正文与写作场景",
+        "中央低细节区域可安全叠加真实 UI"
+      ],
+      "weaknesses": [
+        "与现有靛紫 icon 的品牌连续性较弱",
+        "对表格和代码两个高价值场景的技术感不足"
+      ],
+      "rejection_reason": "总分低于 v1，且跨五张截图时品牌统一性和缩略图识别度较弱。",
+      "selected": false
+    },
+    {
+      "version": "v3-electric-flow",
+      "asset_type": "promotional_background_family",
+      "scores": {
+        "product_clarity": 4,
+        "visual_specificity": 5,
+        "trust_truthfulness": 5,
+        "store_fit": 4,
+        "distinctiveness": 5
+      },
+      "total": 23,
+      "strengths": [
+        "视觉记忆点强，中心仍保留真实 UI 插入区",
+        "适合代码与结构化数据场景"
+      ],
+      "weaknesses": [
+        "外侧碎片在 640x400 缩略图中更容易与真实界面争夺注意力"
+      ],
+      "rejection_reason": "仅落后 v1 一分，但 v1 在产品清晰度和现有品牌连续性上更稳健。",
+      "selected": false
+    }
+  ],
+  "layout_refinements": [
+    {
+      "version": "rejected-v1-layout",
+      "status": "rejected",
+      "reason": "第一轮标题与证据区层级不够稳定。"
+    },
+    {
+      "version": "rejected-v2-overflow",
+      "status": "rejected",
+      "reason": "第二轮局部文字溢出，不满足 CWS 全幅与缩略图可读性要求。"
+    },
+    {
+      "version": "rejected-v3-label-overlap",
+      "status": "rejected",
+      "reason": "第三轮来源标签遮挡真实网页标题，降低产品证据可读性。"
+    },
+    {
+      "version": "final",
+      "status": "selected",
+      "reason": "五张 1280x800 截图和 440x280 小型宣传图均通过尺寸与视觉复核，来源标签不再遮挡真实 UI。"
+    }
+  ],
+  "winner": "v1-indigo-technical-clarity/final",
+  "winner_selection_note": "v1 在真实产品证据、现有品牌连续性、缩略图对比度和无伪 UI 风险之间取得最高总分；最终排版又修复了层级、溢出和来源标签遮挡问题。"
+}

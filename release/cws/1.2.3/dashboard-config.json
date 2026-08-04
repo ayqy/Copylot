@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "operation": "configure",
+  "product": {
+    "name": "Copylot",
+    "platform": "cws",
+    "version": "1.2.3",
+    "root": "/Users/pocket/Documents/project/Copylot"
+  },
+  "dashboard": {
+    "publisher_id": "301e74b1-6567-4278-a30a-74b31afa142c",
+    "item_id": "ehfglnbhoefcdedpkcdnainiifpflbic",
+    "account_hint": "Google Account"
+  },
+  "sections": [
+    "store_listing"
+  ],
+  "store_listing": {
+    "description": "Copylot turns messy web content into clean, paste-ready text for AI and documents. Use the popup or your chosen click or hover shortcut to copy a selection first, or clean up the current page when nothing is selected.\n\nWHAT YOU CAN DO\n\n• Copy article content as Markdown or plain text.\n• Convert web tables to Markdown or CSV.\n• Keep code indentation and blank lines while removing recognizable line-number and Copy-label noise.\n• Hold Shift in Append Mode to collect multiple clips with separators.\n• Save prompt templates and assign three quick slots to combine an instruction with copied content.\n\nPRIVATE BY DESIGN\n\n• Extraction, cleanup, and formatting run on your device.\n• Copylot does not collect, store, or upload the content you copy.\n• Optional anonymous usage data is off by default. If enabled, it records only local events and never sends copied content.\n• Permissions are limited to storage, clipboardWrite, and contextMenus.\n\nSTART IN THREE STEPS\n\n1. Install and pin Copylot.\n2. Open an article, table, or code block.\n3. Copy, then paste into your AI tool, notes, spreadsheet, or document.\n\nHomepage: https://copy.useai.online/\nPrivacy: https://copy.useai.online/privacy\n\nCopylot works in Chrome and compatible Chromium-based browsers.",
+    "support_url": "https://github.com/ayqy/Copylot/issues",
+    "category": "Tools",
+    "assets": [
+      {
+        "role": "screenshot",
+        "slot_label": "Screenshots",
+        "occurrence": 0,
+        "multiple": true,
+        "replace": true,
+        "paths": [
+          "release/cws/1.2.3/assets/final/01-clean-copy-starts-here.png",
+          "release/cws/1.2.3/assets/final/02-markdown-without-the-mess.png",
+          "release/cws/1.2.3/assets/final/03-tables-stay-structured.png",
+          "release/cws/1.2.3/assets/final/04-code-keeps-its-shape.png",
+          "release/cws/1.2.3/assets/final/05-prompt-shortcuts.png"
+        ],
+        "width": 1280,
+        "height": 800
+      },
+      {
+        "role": "small_promo",
+        "slot_label": "Small promo",
+        "occurrence": 0,
+        "multiple": false,
+        "replace": true,
+        "paths": [
+          "release/cws/1.2.3/assets/final/small-promo-440x280.png"
+        ],
+        "width": 440,
+        "height": 280
+      }
+    ]
+  }
+}

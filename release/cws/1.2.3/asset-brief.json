@@ -1,0 +1,66 @@
+{
+  "product_name": "Copylot",
+  "platform": "Chrome Web Store",
+  "version": "1.2.3",
+  "primary_user_job": "把网页中的正文、表格或代码复制成结构清晰、可直接粘贴到 AI、文档或表格工具的内容。",
+  "one_sentence_promise": "One click turns web content into clean, paste-ready Markdown, plain text, or CSV.",
+  "top_proof_points": [
+    {
+      "claim": "选区优先，无选区时可整理当前页面",
+      "evidence_kind": "direct",
+      "source": "src/popup/popup.html, src/popup/popup.ts, e2e/popup-flow.spec.ts"
+    },
+    {
+      "claim": "网页表格可复制为 Markdown 或 CSV",
+      "evidence_kind": "direct",
+      "source": "src/shared/content-processor.ts, e2e/table-flow.spec.ts"
+    },
+    {
+      "claim": "代码块清理保留缩进与空行，并移除可识别的行号或 Copy 文案噪声",
+      "evidence_kind": "direct",
+      "source": "src/shared/code-block-cleaner.ts, e2e/code-block-flow.spec.ts"
+    }
+  ],
+  "tone_keywords": [
+    "clear",
+    "practical",
+    "precise",
+    "calm",
+    "trustworthy"
+  ],
+  "visual_anchors": [
+    "现有靛紫色圆角 icon",
+    "两个重叠矩形所表达的复制与转换",
+    "真实 Popup 与真实复制结果",
+    "从网页噪声到结构化内容的前后对照"
+  ],
+  "visual_avoid": [
+    "伪造 AI 聊天界面或功能",
+    "竞争产品 logo 或商标",
+    "抽象渐变压过产品证据",
+    "无法在 640x400 缩略图中阅读的小字",
+    "终极、完美、数千用户、效率保证等无证据话术"
+  ],
+  "icon_metaphor": "复用现有两个重叠矩形图标，不重新生成。",
+  "screenshot_story": [
+    "Copy current content：真实 Popup 作为第一价值入口",
+    "Clean Markdown：真实文章输入与实际复制结果",
+    "Structured tables：真实表格输入与实际 CSV 结果",
+    "Cleaner code：真实代码块输入与实际清理结果",
+    "Prompt shortcuts：真实 Options Prompt 管理界面"
+  ],
+  "community_reference_map": [
+    "CWS 官方素材规范：全幅、强缩略图可读性、真实代表产品",
+    "Behance browser-extension 项目集合：产品界面大图、单一焦点、品牌色块",
+    "OpenAI GPT Image prompting guide：场景→主体→细节→限制的固定结构"
+  ],
+  "style_family_candidates": [
+    "indigo-technical-clarity",
+    "warm-editorial-paper",
+    "electric-flow"
+  ],
+  "inference_notes": [
+    "目标用户覆盖研究、写作、开发和数据整理场景来自功能组合与现有文档，未使用用户调研或搜索量证明。",
+    "视觉方向的转化效果属于设计推断，不作为发布结果承诺。"
+  ]
+}

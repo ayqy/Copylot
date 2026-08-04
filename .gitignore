@@ -30,6 +30,7 @@ dist-ssr
 
 # Build artifacts from publish script
 plugin-*.zip
+release/**/evidence/
 
 public/test
 .24h-studio/

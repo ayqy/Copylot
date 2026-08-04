@@ -1,0 +1,8 @@
+1Copy
+2function buildPrompt() {
+3 const tag = "\\#summary";
+4 const docs = ["\\[intro\\]", "outline"];
+5
+6 return docs.join("\\n");
+7}
+8复制代码

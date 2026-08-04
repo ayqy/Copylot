@@ -26,6 +26,7 @@ const E2E_EXTENSION_DIR = path.resolve(process.cwd(), '.tmp_e2e/extension');
 export async function launchExtension(options?: {
   headed?: boolean;
   userDataDir?: string;
+  locale?: string;
 }): Promise<LoadedExtension> {
   const userDataDir =
     options?.userDataDir || path.resolve(process.cwd(), '.tmp_e2e/chromium-user-data', randomUUID());
@@ -36,7 +37,12 @@ export async function launchExtension(options?: {
 
   const launchOptions = {
     headless: !headed,
-    args: [`--disable-extensions-except=${E2E_EXTENSION_DIR}`, `--load-extension=${E2E_EXTENSION_DIR}`]
+    args: [
+      `--disable-extensions-except=${E2E_EXTENSION_DIR}`,
+      `--load-extension=${E2E_EXTENSION_DIR}`,
+      ...(options?.locale ? [`--lang=${options.locale}`] : [])
+    ],
+    ...(options?.locale ? { locale: options.locale } : {})
   } as const;
 
   let context: BrowserContext;

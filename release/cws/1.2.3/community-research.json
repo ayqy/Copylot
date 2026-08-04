@@ -1,0 +1,50 @@
+{
+  "checked_at": "2026-08-04",
+  "sources": [
+    {
+      "url": "https://developer.chrome.com/docs/webstore/images/",
+      "source_type": "official_platform_constraint",
+      "date_checked": "2026-08-04",
+      "what_it_shows": "CWS 要求 128x128 icon、440x280 small promo；截图为 1280x800 或 640x400，需全幅且无 padding，并会缩小展示。",
+      "useful_pattern": "单一焦点、大字号、全幅背景、在 640x400 下仍可识别的真实 UI。",
+      "risk_if_copied_blindly": "只满足尺寸而忽略真实产品代表性和小尺寸可读性。",
+      "where_to_apply": "全部截图和 small promo 的画布、留白和字号。"
+    },
+    {
+      "url": "https://www.behance.net/search/projects?search=browser%20extension",
+      "source_type": "current_design_community_gallery",
+      "date_checked": "2026-08-04",
+      "what_it_shows": "当前 browser extension 项目集合以真实界面大图、单一产品焦点、品牌色块和少量说明文案为常见呈现结构。",
+      "useful_pattern": "让产品 UI 成为主角，用一致背景系统串联多张素材。",
+      "risk_if_copied_blindly": "作品集页面可能追求氛围而隐藏操作证据，不能照搬为商店截图。",
+      "where_to_apply": "采用统一品牌背景，但保留真实运行界面与结果文本。"
+    },
+    {
+      "url": "https://developers.openai.com/cookbook/examples/multimodal/image-gen-models-prompting-guide#2-prompting-fundamentals",
+      "source_type": "current_prompt_structure_reference",
+      "date_checked": "2026-08-04",
+      "what_it_shows": "生产提示词应按场景、主体、关键细节、限制组织，并明确用途、构图、留白与不变量。",
+      "useful_pattern": "固定场景→主体→构图→颜色→限制的可审计提示词模板。",
+      "risk_if_copied_blindly": "过长提示会混入不必要叙事；本任务只生成背景，不让模型生成产品 UI 或文字。",
+      "where_to_apply": "三套风格背景提示词与无假 UI、无文字、无水印限制。"
+    }
+  ],
+  "style_families": [
+    {
+      "id": "indigo-technical-clarity",
+      "pattern": "靛紫到深蓝的清晰层次、细线转换轨迹、留出真实 UI 面板区域",
+      "product_mapping": "承接现有 icon 色彩与复制/转换语义"
+    },
+    {
+      "id": "warm-editorial-paper",
+      "pattern": "暖白纸张、轻微纤维质感、整齐的文本块与柔和阴影",
+      "product_mapping": "强调从网页噪声到可读文档的编辑体验"
+    },
+    {
+      "id": "electric-flow",
+      "pattern": "高对比紫蓝动线、内容碎片汇入整齐卡片、强缩略图识别",
+      "product_mapping": "表达快速转换，但必须避免速度保证和虚构界面"
+    }
+  ],
+  "adopted_family": "indigo-technical-clarity"
+}

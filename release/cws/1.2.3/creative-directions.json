@@ -1,0 +1,58 @@
+{
+  "rubric": [
+    "product_clarity",
+    "visual_specificity",
+    "trust_truthfulness",
+    "store_fit",
+    "distinctiveness"
+  ],
+  "directions": [
+    {
+      "id": "clarity-first",
+      "core_metaphor": "网页内容从松散卡片收束成结构化文本块",
+      "composition": "高留白、一个真实产品界面、短标题",
+      "copy_stance": "直接说明输出格式与使用去向",
+      "risk_to_avoid": "过于素净，缩略图中缺乏视觉记忆点",
+      "scores": {
+        "product_clarity": 5,
+        "visual_specificity": 4,
+        "trust_truthfulness": 5,
+        "store_fit": 5,
+        "distinctiveness": 3
+      },
+      "total": 22
+    },
+    {
+      "id": "proof-first",
+      "core_metaphor": "真实网页输入与真实 Markdown、CSV、代码输出形成可验证的转换证据",
+      "composition": "真实 UI 占主画面，品牌色背景与转换轨迹负责聚焦，文案保持两行以内",
+      "copy_stance": "每帧只承诺一个能从当前版本复现的结果",
+      "risk_to_avoid": "输入输出信息过密，640x400 缩略时不可读",
+      "scores": {
+        "product_clarity": 5,
+        "visual_specificity": 5,
+        "trust_truthfulness": 5,
+        "store_fit": 5,
+        "distinctiveness": 4
+      },
+      "total": 24
+    },
+    {
+      "id": "bold-market-first",
+      "core_metaphor": "内容卡片沿紫色能量流快速进入整洁文档",
+      "composition": "高对比、动势强、产品 UI 作为次级焦点",
+      "copy_stance": "更短、更有冲击力的结果话术",
+      "risk_to_avoid": "装饰超过真实产品，产生功能或速度暗示",
+      "scores": {
+        "product_clarity": 3,
+        "visual_specificity": 4,
+        "trust_truthfulness": 3,
+        "store_fit": 4,
+        "distinctiveness": 5
+      },
+      "total": 19
+    }
+  ],
+  "winner": "proof-first",
+  "winner_selection_note": "proof-first 总分最高；它让每张图都由当前版本的真实输入和真实输出构成，在缩略图可读性、产品清晰度与审核可信度之间最平衡。"
+}

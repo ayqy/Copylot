@@ -4,7 +4,7 @@
     "description": "Extension name"
   },
   "appDescription": {
-    "message": "智能提取网页并复制为干净 Markdown/CSV，可用 Prompt 模板一键整理；隐私优先，本地处理。",
+    "message": "一键把网页复制成干净的 Markdown、纯文本或 CSV，直接粘贴到 AI 与文档；隐私优先，全程本地处理。",
     "description": "Extension description"
   },
   "copy": {

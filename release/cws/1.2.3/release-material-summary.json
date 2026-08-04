@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "product": "Copylot",
+  "platform": "Chrome Web Store",
+  "version": "1.2.3",
+  "icon": {
+    "status": "reused",
+    "path": "public/icons/icon-128.png",
+    "width": 128,
+    "height": 128,
+    "sha256": "14c9919ee79f7c530a29d7bf9d034bb2c146a27f219b09009cc8afc53bddb5cd",
+    "reason": "现有 icon 清晰、尺寸有效并与产品品牌一致；管理员明确要求不重新生成。",
+    "dashboard_action": "not_replaced"
+  },
+  "listing_copy": {
+    "source": "release/cws/1.2.3/copy-deck.json",
+    "default_locale": "en",
+    "summary_length": 120,
+    "package_locales_updated": [
+      "_locales/en/messages.json",
+      "_locales/zh/messages.json"
+    ]
+  },
+  "store_images": [
+    {
+      "path": "release/cws/1.2.3/assets/final/01-clean-copy-starts-here.png",
+      "meaning": "真实 1.2.3 Popup 与选区优先、无选区时整理整页的入口",
+      "size": "1280x800"
+    },
+    {
+      "path": "release/cws/1.2.3/assets/final/02-markdown-without-the-mess.png",
+      "meaning": "真实文章输入与实际 Markdown 复制结果",
+      "size": "1280x800"
+    },
+    {
+      "path": "release/cws/1.2.3/assets/final/03-tables-stay-structured.png",
+      "meaning": "真实网页表格与实际 CSV 复制结果",
+      "size": "1280x800"
+    },
+    {
+      "path": "release/cws/1.2.3/assets/final/04-code-keeps-its-shape.png",
+      "meaning": "真实代码块与去除可识别复制噪声后的结果",
+      "size": "1280x800"
+    },
+    {
+      "path": "release/cws/1.2.3/assets/final/05-prompt-shortcuts.png",
+      "meaning": "真实 Prompt 管理界面与三个快捷位",
+      "size": "1280x800"
+    },
+    {
+      "path": "release/cws/1.2.3/assets/final/small-promo-440x280.png",
+      "meaning": "复用现有 icon 的 CWS 小型宣传图",
+      "size": "440x280"
+    }
+  ],
+  "package": {
+    "path": "plugin-1.2.3.zip",
+    "build_source": "clean 1.2.3 source via publish:cws --dry-run",
+    "review_submission_mode": "STAGED_PUBLISH",
+    "automatic_public_release": false
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "product": "Copylot",
+  "version": "1.2.3",
+  "adopted_winner": "v1-indigo-technical-clarity/final",
+  "raw_candidates": [
+    "release/cws/1.2.3/assets/imagegen/raw/v1-indigo-technical-clarity.png",
+    "release/cws/1.2.3/assets/imagegen/raw/v2-warm-editorial-paper.png",
+    "release/cws/1.2.3/assets/imagegen/raw/v3-electric-flow.png"
+  ],
+  "runtime_evidence": [
+    "release/cws/1.2.3/assets/runtime-v2/01-popup.png",
+    "release/cws/1.2.3/assets/runtime-v2/02-article-source.png",
+    "release/cws/1.2.3/assets/runtime-v2/02-markdown-result.md",
+    "release/cws/1.2.3/assets/runtime-v2/03-table-source.png",
+    "release/cws/1.2.3/assets/runtime-v2/03-csv-result.csv",
+    "release/cws/1.2.3/assets/runtime-v2/04-code-source.png",
+    "release/cws/1.2.3/assets/runtime-v2/04-code-result.txt",
+    "release/cws/1.2.3/assets/runtime-v2/05-prompts.png"
+  ],
+  "preserved_rejections": [
+    "release/cws/1.2.3/assets/rejected-v1-layout",
+    "release/cws/1.2.3/assets/rejected-v2-overflow",
+    "release/cws/1.2.3/assets/rejected-v3-label-overlap"
+  ],
+  "normalized_finals": [
+    "release/cws/1.2.3/assets/final/01-clean-copy-starts-here.png",
+    "release/cws/1.2.3/assets/final/02-markdown-without-the-mess.png",
+    "release/cws/1.2.3/assets/final/03-tables-stay-structured.png",
+    "release/cws/1.2.3/assets/final/04-code-keeps-its-shape.png",
+    "release/cws/1.2.3/assets/final/05-prompt-shortcuts.png",
+    "release/cws/1.2.3/assets/final/small-promo-440x280.png"
+  ],
+  "decision_files": [
+    "release/cws/1.2.3/asset-brief.json",
+    "release/cws/1.2.3/community-research.json",
+    "release/cws/1.2.3/creative-directions.json",
+    "release/cws/1.2.3/copy-deck.json",
+    "release/cws/1.2.3/prompts.json",
+    "release/cws/1.2.3/variant-scorecard.json"
+  ]
+}
