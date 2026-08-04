@@ -3,6 +3,8 @@ import './popup.css';
 import {
   FORCE_UI_LANGUAGE,
   getActivePrompts,
+  getCachedSettings,
+  getDefaultSettingsSnapshot,
   getSettings,
   saveSettings,
   type Settings
@@ -82,6 +84,7 @@ interface QuickActionElements {
 let elements: PopupElements;
 let currentSettings: Settings;
 let currentCommandShortcuts = new Map<string, string>();
+let settingsInteractionRevision = 0;
 const isE2EBuild = process.env.BUILD_TARGET === 'e2e';
 
 function getMessage(key: string, substitutions?: string | string[]): string {
@@ -436,11 +439,27 @@ function getSettingsFromUI(): Partial<Settings> {
   };
 }
 
+function applyHydratedSettings(settings: Settings): void {
+  const pendingUiChanges = settingsInteractionRevision > 0 ? getSettingsFromUI() : {};
+  currentSettings = { ...settings, ...pendingUiChanges };
+  updateUIFromSettings(currentSettings);
+}
+
+async function hydrateSettingsFromCacheThenSync(): Promise<void> {
+  const cachedSettings = await getCachedSettings();
+  if (cachedSettings) {
+    applyHydratedSettings(cachedSettings);
+  }
+
+  const syncedSettings = await getSettings();
+  applyHydratedSettings(syncedSettings);
+}
+
 async function saveCurrentSettings(): Promise<void> {
+  const changes = getSettingsFromUI();
+  currentSettings = { ...currentSettings, ...changes };
   try {
-    const changes = getSettingsFromUI();
     await saveSettings(changes);
-    currentSettings = { ...currentSettings, ...changes };
   } catch (error) {
     console.error('Failed to save popup settings:', error);
   }
@@ -511,6 +530,7 @@ function setupSettingsListeners(): void {
     elements.enableClipboardAccumulatorSwitch
   ].forEach((control) => {
     control.addEventListener('change', () => {
+      settingsInteractionRevision += 1;
       void saveCurrentSettings();
     });
   });
@@ -639,7 +659,7 @@ function setupDevelopmentEntry(): void {
   });
 }
 
-async function initialize(): Promise<void> {
+function initialize(): void {
   try {
     elements = getElements();
     localizeUI();
@@ -650,15 +670,14 @@ async function initialize(): Promise<void> {
     elements.versionDisplay.textContent = manifest.version ? `V${manifest.version}` : '';
     setupDevelopmentEntry();
 
-    const [settings] = await Promise.all([
-      getSettings(),
-      loadCommandShortcuts(),
-      loadAppendSession()
-    ]);
-    currentSettings = settings;
-    updateUIFromSettings(settings);
+    currentSettings = getDefaultSettingsSnapshot();
+    updateUIFromSettings(currentSettings);
     setupSettingsListeners();
     setupActionListeners();
+
+    void hydrateSettingsFromCacheThenSync();
+    void loadCommandShortcuts().then(() => updateUIFromSettings(currentSettings));
+    void loadAppendSession();
     void recordTelemetryEvent('popup_opened');
   } catch (error) {
     console.error('Failed to initialize popup:', error);
@@ -674,8 +693,8 @@ document.getElementById('settings-form')?.addEventListener('submit', (event) => 
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
-    void initialize();
+    initialize();
   });
 } else {
-  void initialize();
+  initialize();
 }

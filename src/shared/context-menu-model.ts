@@ -7,6 +7,18 @@ export interface PromptContextMenuItem {
   contexts: chrome.contextMenus.ContextType[];
 }
 
+export function createSerializedContextMenuUpdater(
+  rebuild: () => Promise<void>
+): () => Promise<void> {
+  let queue: Promise<void> = Promise.resolve();
+
+  return () => {
+    const current = queue.then(rebuild, rebuild);
+    queue = current.catch(() => undefined);
+    return current;
+  };
+}
+
 export function buildPromptContextMenuItems(options: {
   prompts: Prompt[];
   parentId?: string;

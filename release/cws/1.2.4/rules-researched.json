@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-08-04",
+  "rules": [
+    {
+      "url": "https://developer.chrome.com/docs/webstore/publish/",
+      "checked_at": "2026-08-04",
+      "topic": "lifecycle",
+      "claim": "包上传、提交审核、审核通过与公开发布是不同状态。",
+      "decision": "本轮只上传 1.2.4 新包并使用 STAGED_PUBLISH 提交审核，不自动公开发布。",
+      "evidence_kind": "direct"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/webstore/images/",
+      "checked_at": "2026-08-04",
+      "topic": "assets",
+      "claim": "CWS 使用 128x128 图标、440x280 小型宣传图，以及至少一张 1280x800 或 640x400 截图。",
+      "decision": "复用 1.2.3 已通过尺寸、RGB/alpha 和持久化验证的同一组素材，不生成或上传新素材。",
+      "evidence_kind": "direct"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/webstore/program-policies/",
+      "checked_at": "2026-08-04",
+      "topic": "policy",
+      "claim": "扩展包、权限、隐私披露、商店文案与宣传素材必须真实一致。",
+      "decision": "1.2.4 权限和核心能力未变，沿用已验证商店字段与素材；仅替换包含本轮修复的生产 ZIP。",
+      "evidence_kind": "direct"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/webstore/api/reference/rest/v2/publishers.items/publish",
+      "checked_at": "2026-08-04",
+      "topic": "automation",
+      "claim": "publish 请求支持 STAGED_PUBLISH 与 skipReview=false。",
+      "decision": "提交适配器保持 STAGED_PUBLISH、skipReview=false，并核验目标版本进入 PENDING_REVIEW 或 STAGED。",
+      "evidence_kind": "direct"
+    }
+  ]
+}

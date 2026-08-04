@@ -41,7 +41,12 @@
             </div>
           </div>
           <div class="header-actions">
-            <button id="sync-status-btn" class="status-btn" title="同步状态">
+            <button
+              id="sync-status-btn"
+              class="status-btn"
+              title="同步状态"
+              data-i18n-title="syncStatusTitle"
+            >
               <svg
                 width="16"
                 height="16"
@@ -199,7 +204,7 @@
               <div class="filter-options">
                 <select id="category-filter">
                   <option value="all" data-i18n="allCategories">全部类型</option>
-                  <option value="summary" data-i18n="categorysummarize">总结</option>
+                  <option value="summary" data-i18n="categorySummarize">总结</option>
                   <option value="translate" data-i18n="categoryTranslate">翻译</option>
                   <option value="coding" data-i18n="categoryCoding">编程</option>
                   <option value="writing" data-i18n="categoryWriting">写作</option>
@@ -407,7 +412,11 @@
             <span class="trust-badge" data-i18n="privacyLocalBadge">本机处理</span>
           </section>
 
-          <section class="trust-grid" aria-label="Copylot data boundaries">
+          <section
+            class="trust-grid"
+            aria-label="Copylot data boundaries"
+            data-i18n-aria-label="privacyDataBoundariesAriaLabel"
+          >
             <article class="trust-item">
               <span class="trust-icon" aria-hidden="true">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -589,7 +598,7 @@
             <label for="prompt-category" data-i18n="promptCategory">类型</label>
             <select id="prompt-category">
               <option value="custom" data-i18n="categoryCustom">自定义</option>
-              <option value="summary" data-i18n="categoryQuick">总结</option>
+              <option value="summary" data-i18n="categorySummarize">总结</option>
               <option value="translate" data-i18n="categoryTranslate">翻译</option>
               <option value="coding" data-i18n="categoryCoding">编程</option>
               <option value="writing" data-i18n="categoryWriting">写作</option>
@@ -598,7 +607,13 @@
 
           <div class="form-group form-group-horizontal">
             <label for="prompt-title" data-i18n="promptTitle">标题</label>
-            <input type="text" id="prompt-title" required placeholder="为您的prompt起个名字" />
+            <input
+              type="text"
+              id="prompt-title"
+              required
+              placeholder="为您的prompt起个名字"
+              data-i18n-placeholder="promptTitlePlaceholder"
+            />
           </div>
 
           <div class="form-row form-row-inline">
@@ -637,6 +652,7 @@
                 rows="8"
                 required
                 placeholder="请输入您的prompt模板，使用 {content} 作为内容占位符&#10;例如：&#10;请总结以下内容的要点：&#10;&#10;{content}&#10;&#10;请用简洁的语言概括核心信息。"
+                data-i18n-placeholder="promptTemplatePlaceholder"
               ></textarea>
               <div class="editor-tools">
                 <button
@@ -644,10 +660,17 @@
                   id="insert-content-placeholder"
                   class="tool-btn"
                   title="插入内容占位符"
+                  data-i18n-title="insertContentPlaceholderTitle"
                 >
                   <span>{content}</span>
                 </button>
-                <button type="button" id="preview-prompt" class="tool-btn" title="预览">
+                <button
+                  type="button"
+                  id="preview-prompt"
+                  class="tool-btn"
+                  title="预览"
+                  data-i18n-title="previewPromptTitle"
+                >
                   <svg
                     width="16"
                     height="16"
@@ -755,9 +778,11 @@
         <div class="preview-content">
           <div class="preview-input">
             <label data-i18n="sampleContent">示例内容：</label>
-            <textarea id="preview-sample" placeholder="输入一些示例内容来预览效果...">
-这是一段示例文本，用来演示prompt的效果。</textarea
-            >
+            <textarea
+              id="preview-sample"
+              placeholder="输入一些示例内容来预览效果..."
+              data-i18n-placeholder="previewSamplePlaceholder"
+            ></textarea>
           </div>
           <div class="preview-output">
             <label data-i18n="outputResult">最终输出：</label>
@@ -792,7 +817,13 @@
 
           <div class="form-group">
             <label for="chat-service-name" data-i18n="serviceName">服务名称</label>
-            <input type="text" id="chat-service-name" required placeholder="输入服务名称" />
+            <input
+              type="text"
+              id="chat-service-name"
+              required
+              placeholder="输入服务名称"
+              data-i18n-placeholder="chatServiceNamePlaceholder"
+            />
           </div>
 
           <div class="form-group">

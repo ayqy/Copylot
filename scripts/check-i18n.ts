@@ -8,6 +8,7 @@ import * as ts from 'typescript';
 import * as fs from 'fs';
 import * as path from 'path';
 import glob from 'glob';
+import { JSDOM } from 'jsdom';
 
 interface UntranslatedLiteral {
   file: string;
@@ -22,7 +23,24 @@ interface ChromeLocaleMessage {
   placeholders?: Record<string, { content?: string }>;
 }
 
+interface HtmlLocalizationError {
+  file: string;
+  detail: string;
+}
+
 const LOCALE_FILES = ['_locales/en/messages.json', '_locales/zh/messages.json'];
+
+const HTML_LOCALIZABLE_ATTRIBUTES = [
+  { attribute: 'placeholder', marker: 'data-i18n-placeholder' },
+  { attribute: 'title', marker: 'data-i18n-title' },
+  { attribute: 'aria-label', marker: 'data-i18n-aria-label' },
+  { attribute: 'alt', marker: 'data-i18n-alt' }
+] as const;
+
+const HTML_I18N_MARKERS = [
+  'data-i18n',
+  ...HTML_LOCALIZABLE_ATTRIBUTES.map(({ marker }) => marker)
+];
 
 const CONSOLE_METHODS = ['log', 'warn', 'error', 'debug', 'info', 'trace'];
 
@@ -175,6 +193,29 @@ function isBuiltInPromptLocaleMapContext(node: ts.Node): boolean {
       return parent.name.text === 'BUILT_IN_SUMMARY_PROMPT_BY_LANGUAGE';
     }
     parent = parent.parent;
+  }
+  return false;
+}
+
+function isExplicitLanguageMessageMapContext(node: ts.Node): boolean {
+  let current: ts.Node | undefined = node;
+  let insideMessagesMap = false;
+  while (current) {
+    if (
+      ts.isVariableDeclaration(current) &&
+      ts.isIdentifier(current.name) &&
+      current.name.text === 'messages'
+    ) {
+      insideMessagesMap = true;
+    }
+    if (
+      insideMessagesMap &&
+      ts.isFunctionDeclaration(current) &&
+      current.name?.text === 'getI18nMessage'
+    ) {
+      return true;
+    }
+    current = current.parent;
   }
   return false;
 }
@@ -511,8 +552,8 @@ function checkStringLiteral(
 ): void {
   const text = node.text;
   
-  // 过滤条件：长度 >= 4
-  if (text.length < 4) {
+  // 英文短 token 通常是技术标识；中文即使只有 1-2 个字也可能直接显示给用户。
+  if (text.length < 4 && !/[\u3400-\u9fff]/.test(text)) {
     return;
   }
 
@@ -572,7 +613,7 @@ function checkStringLiteral(
   // 排除按设置语言切换的内置 Prompt 文案映射。
   // 这些字面量不会直接走 chrome.i18n，因为它们需要脱离浏览器 UI 语言，
   // 按用户设置语言生成默认 Prompt 内容。
-  if (isBuiltInPromptLocaleMapContext(node)) {
+  if (isBuiltInPromptLocaleMapContext(node) || isExplicitLanguageMessageMapContext(node)) {
     return;
   }
 
@@ -651,13 +692,118 @@ function analyzeFile(filePath: string): UntranslatedLiteral[] {
   return results;
 }
 
+function isTechnicalHtmlText(text: string): boolean {
+  const normalized = text.replace(/\s+/g, ' ').trim();
+  if (!normalized || !/[A-Za-z\u3400-\u9fff]/.test(normalized)) return true;
+  if (/^(?:https?:\/\/|chrome(?:-extension)?:\/\/)/i.test(normalized)) return true;
+  if (/^(?:Alt|Option)\+[A-Z0-9]$/i.test(normalized)) return true;
+  if (/^(?:Copylot|Prompt|Pro|DEV|Markdown|CSV|JSON|AI)$/i.test(normalized)) return true;
+  if (/^\{[A-Za-z0-9_-]+\}$/.test(normalized)) return true;
+  return false;
+}
+
+function describeElement(element: Element): string {
+  const id = element.getAttribute('id');
+  if (id) return `${element.tagName.toLowerCase()}#${id}`;
+  const className = element.getAttribute('class')?.trim().split(/\s+/)[0];
+  return className
+    ? `${element.tagName.toLowerCase()}.${className}`
+    : element.tagName.toLowerCase();
+}
+
+function collectHtmlLocalizationErrors(
+  files: string[],
+  localeKeys: Set<string>
+): HtmlLocalizationError[] {
+  const errors: HtmlLocalizationError[] = [];
+
+  for (const filePath of files) {
+    const relativeFile = path.relative(process.cwd(), filePath);
+    if (relativeFile.startsWith(`src${path.sep}e2e${path.sep}`)) continue;
+
+    const dom = new JSDOM(fs.readFileSync(filePath, 'utf-8'));
+    const document = dom.window.document;
+
+    for (const marker of HTML_I18N_MARKERS) {
+      document.querySelectorAll(`[${marker}]`).forEach((element) => {
+        const key = element.getAttribute(marker)?.trim();
+        if (!key) {
+          errors.push({
+            file: relativeFile,
+            detail: `${describeElement(element)} 的 ${marker} 不能为空`
+          });
+          return;
+        }
+        if (!localeKeys.has(key)) {
+          errors.push({
+            file: relativeFile,
+            detail: `${describeElement(element)} 引用了不存在的多语言键 ${key}`
+          });
+        }
+      });
+    }
+
+    for (const { attribute, marker } of HTML_LOCALIZABLE_ATTRIBUTES) {
+      document.querySelectorAll(`[${attribute}]`).forEach((element) => {
+        const value = element.getAttribute(attribute) || '';
+        if (isTechnicalHtmlText(value)) return;
+        if (!element.hasAttribute(marker)) {
+          errors.push({
+            file: relativeFile,
+            detail: `${describeElement(element)} 的 ${attribute}="${value}" 缺少 ${marker}`
+          });
+        }
+      });
+    }
+
+    const root = document.body || document.documentElement;
+    const walker = document.createTreeWalker(root, dom.window.NodeFilter.SHOW_TEXT);
+    let node = walker.nextNode();
+    while (node) {
+      const parent = node.parentElement;
+      const text = node.textContent?.replace(/\s+/g, ' ').trim() || '';
+      if (
+        parent &&
+        !parent.closest('script, style, svg, [data-i18n]') &&
+        !isTechnicalHtmlText(text)
+      ) {
+        errors.push({
+          file: relativeFile,
+          detail: `${describeElement(parent)} 的可见文本 "${text.slice(0, 80)}" 缺少 data-i18n`
+        });
+      }
+      node = walker.nextNode();
+    }
+  }
+
+  return errors;
+}
+
+function loadLocaleCatalog(relativeFile: string): Record<string, ChromeLocaleMessage> {
+  return JSON.parse(fs.readFileSync(path.join(process.cwd(), relativeFile), 'utf-8')) as Record<
+    string,
+    ChromeLocaleMessage
+  >;
+}
+
 function collectLocaleMessageErrors(): string[] {
   const errors: string[] = [];
 
-  for (const relativeFile of LOCALE_FILES) {
-    const filePath = path.join(process.cwd(), relativeFile);
-    const raw = fs.readFileSync(filePath, 'utf-8');
-    const messages = JSON.parse(raw) as Record<string, ChromeLocaleMessage>;
+  const catalogs = LOCALE_FILES.map((relativeFile) => ({
+    relativeFile,
+    messages: loadLocaleCatalog(relativeFile)
+  }));
+
+  const allKeys = new Set(catalogs.flatMap(({ messages }) => Object.keys(messages)));
+  for (const { relativeFile, messages } of catalogs) {
+    for (const key of allKeys) {
+      if (!messages[key]) {
+        errors.push(`${relativeFile}: 缺少多语言键 ${key}`);
+      }
+    }
+  }
+
+  for (const { relativeFile, messages } of catalogs) {
 
     for (const [key, value] of Object.entries(messages)) {
       const message = value.message || '';
@@ -678,7 +824,8 @@ function collectLocaleMessageErrors(): string[] {
 
 async function main() {
   const srcDir = path.join(process.cwd(), 'src');
-  const pattern = path.join(srcDir, '**/*.{ts,tsx}').replace(/\\/g, '/');
+  const pattern = path.join(srcDir, '**/*.{ts,tsx,js}').replace(/\\/g, '/');
+  const htmlPattern = path.join(srcDir, '**/*.html').replace(/\\/g, '/');
   
   try {
     const files = await new Promise<string[]>((resolve, reject) => {
@@ -687,7 +834,13 @@ async function main() {
         else resolve(matches);
       });
     });
-    console.log(`正在检查 ${files.length} 个文件...`);
+    const htmlFiles = await new Promise<string[]>((resolve, reject) => {
+      glob(htmlPattern, (err, matches) => {
+        if (err) reject(err);
+        else resolve(matches);
+      });
+    });
+    console.log(`正在检查 ${files.length} 个脚本文件和 ${htmlFiles.length} 个 HTML 文件...`);
     
     let allResults: UntranslatedLiteral[] = [];
     
@@ -697,8 +850,10 @@ async function main() {
     }
 
     const localeErrors = collectLocaleMessageErrors();
+    const localeKeys = new Set(Object.keys(loadLocaleCatalog(LOCALE_FILES[0])));
+    const htmlErrors = collectHtmlLocalizationErrors(htmlFiles, localeKeys);
 
-    if (allResults.length === 0 && localeErrors.length === 0) {
+    if (allResults.length === 0 && localeErrors.length === 0 && htmlErrors.length === 0) {
       console.log('✅ 未发现未本地化的固定文案');
       process.exit(0);
     }
@@ -730,6 +885,14 @@ async function main() {
       console.log(`\n❌ 发现 ${localeErrors.length} 个 Chrome i18n 占位符错误：\n`);
       for (const error of localeErrors) {
         console.log(`  - ${error}`);
+      }
+      console.log();
+    }
+
+    if (htmlErrors.length > 0) {
+      console.log(`\n❌ 发现 ${htmlErrors.length} 个 HTML 多语言问题：\n`);
+      for (const error of htmlErrors) {
+        console.log(`  - ${error.file}: ${error.detail}`);
       }
       console.log();
     }

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "product": {
+    "name": "Copylot",
+    "platform": "cws",
+    "version": "1.2.4",
+    "root": "/Users/pocket/Documents/project/Copylot"
+  },
+  "dashboard": {
+    "publisher_id": "301e74b1-6567-4278-a30a-74b31afa142c",
+    "item_id": "ehfglnbhoefcdedpkcdnainiifpflbic"
+  },
+  "package": {
+    "path": "plugin-1.2.4.zip"
+  },
+  "dashboard_config_path": "release/cws/1.2.3/dashboard-config.json",
+  "listing_evidence_path": "release/cws/1.2.3/evidence/live/configure/store-listing.json",
+  "listing_reuse": {
+    "source_version": "1.2.3",
+    "materials_unchanged": true,
+    "reason": "管理员明确要求素材不变、只发布新包；1.2.4 仅修复 Prompt CRUD、多语言与 Popup 缓存优先加载，现有商店素材和字段仍准确。"
+  }
+}

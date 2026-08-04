@@ -69,6 +69,7 @@ export interface Settings {
 }
 
 export const SETTINGS_KEY = 'copilot_settings';
+export const SETTINGS_CACHE_KEY = 'copilot_settings_cache';
 
 export const DEFAULT_EDITOR_EXCLUSION_CLASSES: string[] = [
   'CodeMirror',
@@ -144,6 +145,71 @@ function buildDefaultSettings(language: ResolvedSettingsLanguage): Settings {
   };
 }
 
+export function getDefaultSettingsSnapshot(): Settings {
+  return buildDefaultSettings(resolveSettingsLanguage('system'));
+}
+
+function normalizeCachedSettings(value: unknown): Settings | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return null;
+  }
+
+  const storedSettings = value as Partial<Settings>;
+  const language = resolveSettingsLanguage(storedSettings.language);
+  const settings: Settings = {
+    ...buildDefaultSettings(language),
+    ...storedSettings,
+    language
+  };
+
+  if (!Array.isArray(settings.userPrompts) || !Array.isArray(settings.chatServices)) {
+    return null;
+  }
+
+  settings.userPrompts = normalizeQuickPromptAssignments(
+    settings.userPrompts,
+    isPromptActive
+  ).prompts;
+  settings.chatServices = settings.chatServices.map((service) => ({ ...service }));
+  settings.editorExclusionClassNames = Array.isArray(settings.editorExclusionClassNames)
+    ? [...settings.editorExclusionClassNames]
+    : [...DEFAULT_EDITOR_EXCLUSION_CLASSES];
+  settings.editorExclusionAttributeSelectors = Array.isArray(
+    settings.editorExclusionAttributeSelectors
+  )
+    ? [...settings.editorExclusionAttributeSelectors]
+    : [...DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS];
+  settings.popupOnboardingVersion = DEFAULT_SETTINGS.popupOnboardingVersion;
+
+  return settings;
+}
+
+async function cacheSettings(settings: Settings): Promise<void> {
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    return;
+  }
+
+  try {
+    await chrome.storage.local.set({ [SETTINGS_CACHE_KEY]: settings });
+  } catch (error) {
+    console.warn('Failed to cache settings locally:', error);
+  }
+}
+
+export async function getCachedSettings(): Promise<Settings | null> {
+  if (typeof chrome === 'undefined' || !chrome.storage?.local) {
+    return null;
+  }
+
+  try {
+    const result = await chrome.storage.local.get(SETTINGS_CACHE_KEY);
+    return normalizeCachedSettings(result[SETTINGS_CACHE_KEY]);
+  } catch (error) {
+    console.warn('Failed to read locally cached settings:', error);
+    return null;
+  }
+}
+
 // 默认Chat服务配置
 export const DEFAULT_CHAT_SERVICES: ChatService[] = [
   {
@@ -191,7 +257,7 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
   },
   {
     id: 'doubao',
-    name: '豆包',
+    name: getMessage('serviceDoubao'),
     url: 'https://doubao.com',
     enabled: true,
     builtIn: true
@@ -423,15 +489,17 @@ export async function getSettings(): Promise<Settings> {
         await saveSettings(mergedSettings);
       }
 
+      await cacheSettings(mergedSettings);
+
       return mergedSettings;
     }
     // Fallback if chrome.storage is not available
     console.warn('chrome.storage.sync is not available, returning default settings.');
-    return buildDefaultSettings(resolveSettingsLanguage('system'));
+    return (await getCachedSettings()) || buildDefaultSettings(resolveSettingsLanguage('system'));
   } catch (error) {
     console.error('Error getting settings:', error);
-    // Fallback to default settings with system language on error
-    return buildDefaultSettings(resolveSettingsLanguage('system'));
+    // Keep the last known local snapshot usable when Chrome Sync is slow or unavailable.
+    return (await getCachedSettings()) || buildDefaultSettings(resolveSettingsLanguage('system'));
   }
 }
 
@@ -494,9 +562,11 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
         // Try to optimize by removing non-essential data or compressing
         const optimizedSettings = await optimizeSettingsForSync(mergedSettings);
         await chrome.storage.sync.set({ [SETTINGS_KEY]: optimizedSettings });
+        await cacheSettings(optimizedSettings);
         console.debug('Optimized settings saved:', optimizedSettings);
       } else {
         await chrome.storage.sync.set({ [SETTINGS_KEY]: mergedSettings });
+        await cacheSettings(mergedSettings);
         console.debug('Settings saved:', mergedSettings);
       }
     } else {

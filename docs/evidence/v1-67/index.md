@@ -4,13 +4,13 @@
 - 生成脚本：`scripts/build-cws-listing-diff-evidence-pack.ts`
 - packVersion：`v1-67`
 - exportedAt：`2026-03-21T00:00:00.000Z`
-- extensionVersion：`1.2.3`
-- baseline pack：`docs/evidence/v1-66/cws-listing-evidence-pack-1.2.3-2026-03-21-000000.json`
-  - sha256：`913bf1f83b4a7cd18e5ef4fa368c978d9e15548243753b7a90339db186e24a7e`
-- current pack：`docs/evidence/v1-67/cws-listing-evidence-pack-1.2.3-2026-03-21-000000.json`
-  - sha256：`913bf1f83b4a7cd18e5ef4fa368c978d9e15548243753b7a90339db186e24a7e`
-- diff pack：`docs/evidence/v1-67/cws-listing-diff-evidence-pack-1.2.3-2026-03-21-000000.json`
-  - sha256：`02c6b8709b3fcbb7c28b5b433d2849917008e0e31ad30b0bc562985f9c6f1f3e`
+- extensionVersion：`1.2.4`
+- baseline pack：`docs/evidence/v1-66/cws-listing-evidence-pack-1.2.4-2026-03-21-000000.json`
+  - sha256：`c3694895d73ab98baf451c11428f1c418eca0a998f565f7d5dc036ca08090475`
+- current pack：`docs/evidence/v1-67/cws-listing-evidence-pack-1.2.4-2026-03-21-000000.json`
+  - sha256：`c3694895d73ab98baf451c11428f1c418eca0a998f565f7d5dc036ca08090475`
+- diff pack：`docs/evidence/v1-67/cws-listing-diff-evidence-pack-1.2.4-2026-03-21-000000.json`
+  - sha256：`4a3d92983f1788f975344118f53feee9ffe3ebf3895073d438bea38b507f36fb`
 
 ## 关键变更摘要（baseline -> current）
 
@@ -45,6 +45,6 @@
 
 输出文件：
 - `docs/evidence/v1-67/index.md`
-- `docs/evidence/v1-67/cws-listing-evidence-pack-1.2.3-2026-03-21-000000.json`
-- `docs/evidence/v1-67/cws-listing-diff-evidence-pack-1.2.3-2026-03-21-000000.json`
+- `docs/evidence/v1-67/cws-listing-evidence-pack-1.2.4-2026-03-21-000000.json`
+- `docs/evidence/v1-67/cws-listing-diff-evidence-pack-1.2.4-2026-03-21-000000.json`
 

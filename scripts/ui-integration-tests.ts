@@ -4,6 +4,7 @@ import { createChromeMock } from './test-helpers/chrome-mock.ts';
 import { getRequiredElement, loadExtensionPage } from './test-helpers/extension-page-harness.ts';
 
 const SETTINGS_KEY = 'copilot_settings';
+const SETTINGS_CACHE_KEY = 'copilot_settings_cache';
 const TELEMETRY_EVENTS_KEY = 'copilot_telemetry_events';
 const APPEND_SESSION_KEY = 'copilot_append_session';
 
@@ -294,6 +295,81 @@ async function runPopupFailureAssertions(): Promise<void> {
   }
 }
 
+async function runPopupCacheFirstAssertions(): Promise<void> {
+  let releaseSyncGet: (() => void) | undefined;
+  const syncGetGate = new Promise<void>((resolve) => {
+    releaseSyncGet = resolve;
+  });
+  const cachedSettings = buildStoredSettings({
+    userPrompts: [
+      {
+        id: 'cache-first-prompt',
+        title: 'Cached Prompt',
+        template: 'Cached:\n\n{content}',
+        quickAccessSlot: 2,
+        builtIn: false
+      }
+    ]
+  });
+  const syncedSettings = buildStoredSettings({
+    userPrompts: [
+      {
+        id: 'cache-first-prompt',
+        title: 'Fresh Synced Prompt',
+        template: 'Fresh:\n\n{content}',
+        quickAccessSlot: 2,
+        builtIn: false
+      }
+    ]
+  });
+  const chromeMock = createChromeMock({
+    extensionId: 'abcdefghijklmnopabcdefghijklmnop',
+    syncData: { [SETTINGS_KEY]: syncedSettings },
+    localData: { [SETTINGS_CACHE_KEY]: cachedSettings },
+    syncGetGate
+  });
+
+  const page = await loadExtensionPage({
+    htmlPath: 'src/popup/popup.html',
+    builtScriptPath: 'dist/src/popup/popup.js',
+    pageUrl: 'https://example.com/src/popup/popup.html',
+    chrome: chromeMock
+  });
+
+  try {
+    const document = page.dom.window.document;
+    const convertButton = getRequiredElement<HTMLButtonElement>(document, '#convert-button');
+    const cachedPromptTitle = getRequiredElement<HTMLElement>(
+      document,
+      '#quick-prompt-slot-2-title'
+    );
+    assert.equal(convertButton.disabled, false);
+    assert.equal(cachedPromptTitle.textContent, 'Cached Prompt');
+
+    clickElement(convertButton);
+    await page.waitForIdle();
+    assert.equal(
+      chromeMock.logs.sentTabMessages.length,
+      1,
+      'popup actions must work while Chrome Sync is still pending'
+    );
+
+    releaseSyncGet?.();
+    await page.waitForIdle();
+    await page.waitForIdle();
+    assert.equal(cachedPromptTitle.textContent, 'Fresh Synced Prompt');
+    assert.equal(
+      (
+        chromeMock.storage.local.snapshot()[SETTINGS_CACHE_KEY] as Settings
+      ).userPrompts.find((prompt) => prompt.id === 'cache-first-prompt')?.title,
+      'Fresh Synced Prompt'
+    );
+  } finally {
+    releaseSyncGet?.();
+    page.restore();
+  }
+}
+
 async function runOptionsAssertions(): Promise<void> {
   const chromeMock = createChromeMock({
     extensionId: 'abcdefghijklmnopabcdefghijklmnop',
@@ -450,6 +526,7 @@ async function runDevtoolsAssertions(): Promise<void> {
 async function run(): Promise<void> {
   await runPopupAssertions();
   await runPopupFailureAssertions();
+  await runPopupCacheFirstAssertions();
   await runOptionsAssertions();
   await runDevtoolsAssertions();
   console.log('PASS ui-integration-tests');

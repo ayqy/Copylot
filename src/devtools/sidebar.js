@@ -3,6 +3,7 @@ const copyButton = document.getElementById('copy-button');
 
 const originalButtonText = chrome.i18n.getMessage("devtoolsCopyButton");
 copyButton.textContent = originalButtonText;
+const errorPrefix = chrome.i18n.getMessage("devtoolsErrorPrefix");
 
 copyButton.addEventListener('click', () => {
   chrome.runtime.sendMessage({
@@ -121,7 +122,7 @@ function updateSidebar() {
     `(${getElementJson.toString()})($0)`,
     (result, isException) => {
       if (isException) {
-        jsonContainer.value = 'Error: ' + result;
+        jsonContainer.value = `${errorPrefix} ${String(result)}`;
       } else {
         jsonContainer.value = JSON.stringify(result, null, 2);
       }

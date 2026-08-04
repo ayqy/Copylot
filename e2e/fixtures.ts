@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
+import { cpSync, rmSync } from 'node:fs';
 import { test as base } from '@playwright/test';
 import { launchExtension, openDriverPage, resetExtensionState } from './helpers/extension-state';
 import { startFixtureServer } from '../scripts/e2e-fixture-server';
@@ -7,6 +8,8 @@ import { startFixtureServer } from '../scripts/e2e-fixture-server';
 export const test = base.extend<{
   extensionId: string;
   extensionContext: Awaited<ReturnType<typeof launchExtension>>['context'];
+  englishExtensionId: string;
+  englishExtensionContext: Awaited<ReturnType<typeof launchExtension>>['context'];
   extensionUserDataDir: string;
   driverPage: Awaited<ReturnType<typeof openDriverPage>>;
   fixtureOrigin: string;
@@ -33,6 +36,35 @@ export const test = base.extend<{
         ? path.resolve(process.cwd(), '.tmp_e2e/native-ui-user-data')
         : path.resolve(process.cwd(), '.tmp_e2e/chromium-user-data')
     );
+  },
+  englishExtensionContext: async ({}, use) => {
+    const extensionDir = path.resolve(
+      process.cwd(),
+      '.tmp_e2e/locale-builds',
+      `en-${randomUUID()}`
+    );
+    cpSync(path.resolve(process.cwd(), '.tmp_e2e/extension'), extensionDir, {
+      recursive: true
+    });
+    rmSync(path.join(extensionDir, '_locales/zh'), { recursive: true, force: true });
+    const loaded = await launchExtension({
+      extensionDir,
+      headed: process.env.COPYLOT_E2E_HEADED === '1',
+      locale: 'en-US',
+      userDataDir: path.resolve(process.cwd(), '.tmp_e2e/chromium-user-data', `en-${randomUUID()}`)
+    });
+    try {
+      await use(loaded.context);
+    } finally {
+      await loaded.context.close();
+      rmSync(extensionDir, { recursive: true, force: true });
+    }
+  },
+  englishExtensionId: async ({ englishExtensionContext }, use) => {
+    const serviceWorker =
+      englishExtensionContext.serviceWorkers()[0] ||
+      (await englishExtensionContext.waitForEvent('serviceworker'));
+    await use(new URL(serviceWorker.url()).host);
   },
   extensionId: async ({ extensionContext }, use) => {
     let extensionId = '';

@@ -1,5 +1,8 @@
 import { getActivePrompts, getSettings, saveSettings, type Prompt, type ChatService } from './shared/settings-manager';
-import { buildPromptContextMenuItems } from './shared/context-menu-model';
+import {
+  buildPromptContextMenuItems,
+  createSerializedContextMenuUpdater
+} from './shared/context-menu-model';
 import {
   QUICK_CONVERT_COMMAND,
   getQuickPromptBySlot,
@@ -92,56 +95,69 @@ async function getE2EOpenedUrls(): Promise<string[]> {
     : [];
 }
 
+function createContextMenuItem(
+  properties: chrome.contextMenus.CreateProperties
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    chrome.contextMenus.create(properties, () => {
+      const error = chrome.runtime.lastError;
+      if (error) {
+        reject(new Error(error.message || `Failed to create context menu item ${String(properties.id)}`));
+        return;
+      }
+      resolve();
+    });
+  });
+}
+
+async function rebuildContextMenu() {
+  e2eContextMenuSnapshot = [];
+  await chrome.contextMenus.removeAll();
+
+  const convertTitle = chrome.i18n.getMessage('convertPage') || 'Copy to AI';
+  await createContextMenuItem({
+    id: 'convert-page-to-ai-friendly-format',
+    title: convertTitle,
+    contexts: ['page']
+  });
+  e2eContextMenuSnapshot.push({
+    id: 'convert-page-to-ai-friendly-format',
+    title: convertTitle,
+    contexts: ['page']
+  });
+
+  const { userPrompts } = await getSettings();
+  const activePrompts = getActivePrompts(userPrompts);
+
+  for (const item of buildPromptContextMenuItems({ prompts: activePrompts })) {
+    const createProperties: chrome.contextMenus.CreateProperties = {
+      id: item.id,
+      title: item.title,
+      contexts: item.contexts
+    };
+    if (item.parentId) {
+      createProperties.parentId = item.parentId;
+    }
+
+    try {
+      await createContextMenuItem(createProperties);
+      e2eContextMenuSnapshot.push({
+        id: item.id,
+        title: item.title,
+        parentId: item.parentId,
+        contexts: [...item.contexts]
+      });
+    } catch (error) {
+      console.warn(`Failed to create menu item for prompt ${item.id}:`, error);
+    }
+  }
+}
+
+const enqueueContextMenuUpdate = createSerializedContextMenuUpdater(rebuildContextMenu);
+
 async function updateContextMenu() {
   try {
-    e2eContextMenuSnapshot = [];
-    // 完全清除所有菜单项
-    await chrome.contextMenus.removeAll();
-    
-    // 等待一小段时间确保清除完成
-    await new Promise(resolve => setTimeout(resolve, 10));
-
-    // Create the main "Convert Page" item
-    chrome.contextMenus.create({
-      id: 'convert-page-to-ai-friendly-format',
-      title: chrome.i18n.getMessage('convertPage') || 'Copy to AI',
-      contexts: ['page']
-    });
-    e2eContextMenuSnapshot.push({
-      id: 'convert-page-to-ai-friendly-format',
-      title: chrome.i18n.getMessage('convertPage') || 'Copy to AI',
-      contexts: ['page']
-    });
-
-    const { userPrompts } = await getSettings();
-    const activePrompts = getActivePrompts(userPrompts);
-
-    if (activePrompts.length > 0) {
-      buildPromptContextMenuItems({
-        prompts: activePrompts
-      }).forEach((item) => {
-        try {
-          const createProperties: chrome.contextMenus.CreateProperties = {
-            id: item.id,
-            title: item.title,
-            contexts: item.contexts
-          };
-          if (item.parentId) {
-            createProperties.parentId = item.parentId;
-          }
-
-          chrome.contextMenus.create(createProperties);
-          e2eContextMenuSnapshot.push({
-            id: item.id,
-            title: item.title,
-            parentId: item.parentId,
-            contexts: [...item.contexts]
-          });
-        } catch (error) {
-          console.warn(`Failed to create menu item for prompt ${item.id}:`, error);
-        }
-      });
-    }
+    await enqueueContextMenuUpdate();
   } catch (error) {
     console.error('Error updating context menu:', error);
   }
@@ -579,9 +595,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       break;
 
     case 'update-context-menu':
-      updateContextMenu();
-      sendResponse({ success: true });
-      break;
+      (async () => {
+        await updateContextMenu();
+        sendResponse({ success: true });
+      })();
+      return true;
 
     case 'run-quick-action':
       (async () => {
@@ -845,7 +863,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 chrome.storage.onChanged.addListener((changes, namespace) => {
   if (changes.copilot_settings && namespace === 'sync') {
     console.debug('Settings synced from another device, rebuilding context menu...');
-    updateContextMenu();
+    void updateContextMenu();
   }
 });
 

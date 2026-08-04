@@ -24,10 +24,12 @@ export interface ContextMenuSnapshotItem {
 
 const E2E_EXTENSION_DIR = path.resolve(process.cwd(), '.tmp_e2e/extension');
 export async function launchExtension(options?: {
+  extensionDir?: string;
   headed?: boolean;
   userDataDir?: string;
   locale?: string;
 }): Promise<LoadedExtension> {
+  const extensionDir = options?.extensionDir || E2E_EXTENSION_DIR;
   const userDataDir =
     options?.userDataDir || path.resolve(process.cwd(), '.tmp_e2e/chromium-user-data', randomUUID());
   const headed = options?.headed ?? (process.env.COPYLOT_E2E_HEADED === '1');
@@ -38,8 +40,8 @@ export async function launchExtension(options?: {
   const launchOptions = {
     headless: !headed,
     args: [
-      `--disable-extensions-except=${E2E_EXTENSION_DIR}`,
-      `--load-extension=${E2E_EXTENSION_DIR}`,
+      `--disable-extensions-except=${extensionDir}`,
+      `--load-extension=${extensionDir}`,
       ...(options?.locale ? [`--lang=${options.locale}`] : [])
     ],
     ...(options?.locale ? { locale: options.locale } : {})

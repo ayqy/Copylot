@@ -158,7 +158,10 @@ import {
 import { buildWomEvidencePack, buildWomSummary } from '../src/shared/wom-summary.ts';
 import { cleanCodeBlockText } from '../src/shared/code-block-cleaner.ts';
 import { parsePromptSortMode, sortPrompts } from '../src/shared/prompt-sort.ts';
-import { buildPromptContextMenuItems } from '../src/shared/context-menu-model.ts';
+import {
+  buildPromptContextMenuItems,
+  createSerializedContextMenuUpdater
+} from '../src/shared/context-menu-model.ts';
 import { getActivePrompts, isPromptActive } from '../src/shared/settings-manager.ts';
 import {
   assignQuickPromptSlot,
@@ -4773,6 +4776,49 @@ async function run() {
       }
     ]
   );
+
+  {
+    let activeRebuilds = 0;
+    let maxActiveRebuilds = 0;
+    let invocation = 0;
+    let releaseFirstRebuild: (() => void) | undefined;
+    const firstRebuildGate = new Promise<void>((resolve) => {
+      releaseFirstRebuild = resolve;
+    });
+    const lifecycle: string[] = [];
+    const updateContextMenu = createSerializedContextMenuUpdater(async () => {
+      invocation += 1;
+      const currentInvocation = invocation;
+      activeRebuilds += 1;
+      maxActiveRebuilds = Math.max(maxActiveRebuilds, activeRebuilds);
+      lifecycle.push(`start-${currentInvocation}`);
+      if (currentInvocation === 1) {
+        await firstRebuildGate;
+      }
+      lifecycle.push(`end-${currentInvocation}`);
+      activeRebuilds -= 1;
+    });
+
+    const firstUpdate = updateContextMenu();
+    const secondUpdate = updateContextMenu();
+    await Promise.resolve();
+    assert.equal(invocation, 1, 'concurrent context-menu updates must wait behind the active rebuild');
+    releaseFirstRebuild?.();
+    await Promise.all([firstUpdate, secondUpdate]);
+    assert.equal(maxActiveRebuilds, 1, 'context-menu rebuilds must never overlap');
+    assert.deepEqual(lifecycle, ['start-1', 'end-1', 'start-2', 'end-2']);
+  }
+
+  {
+    let attempts = 0;
+    const updateContextMenu = createSerializedContextMenuUpdater(async () => {
+      attempts += 1;
+      if (attempts === 1) throw new Error('expected first rebuild failure');
+    });
+    await assert.rejects(updateContextMenu(), /expected first rebuild failure/);
+    await updateContextMenu();
+    assert.equal(attempts, 2, 'a failed rebuild must not poison later context-menu updates');
+  }
 
   const quickPromptSamples = [
     { id: 'p1', title: 'Prompt 1', template: '{content}', quickAccessSlot: 1 as const },

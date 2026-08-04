@@ -1651,6 +1651,10 @@
   "devtoolsCopyButton": {
     "message": "复制"
   },
+  "devtoolsErrorPrefix": {
+    "message": "错误：",
+    "description": "开发者工具侧边栏无法检查所选元素时显示的前缀"
+  },
   "tableOutputFormat": {
     "message": "表格：",
     "description": "表格输出格式标签"
@@ -2062,6 +2066,42 @@
   "importExport": {
     "message": "导入/导出"
   },
+  "importExportTitle": {
+    "message": "导入/导出 Prompt"
+  },
+  "export": {
+    "message": "导出"
+  },
+  "import": {
+    "message": "导入"
+  },
+  "exportDescription": {
+    "message": "将全部 Prompt 导出为 JSON 文件，用于备份或迁移到其他设备。"
+  },
+  "exportNow": {
+    "message": "立即导出"
+  },
+  "importDescription": {
+    "message": "从 JSON 文件导入 Prompt，并与现有 Prompt 合并。"
+  },
+  "selectFile": {
+    "message": "选择文件"
+  },
+  "importPreview": {
+    "message": "导入预览"
+  },
+  "confirmImport": {
+    "message": "确认导入"
+  },
+  "previewTitle": {
+    "message": "Prompt 预览"
+  },
+  "sampleContent": {
+    "message": "示例内容："
+  },
+  "outputResult": {
+    "message": "最终输出："
+  },
   "promptEditor": {
     "message": "Prompt 编辑器"
   },
@@ -2070,6 +2110,30 @@
   },
   "promptTemplate": {
     "message": "模板"
+  },
+  "promptTitlePlaceholder": {
+    "message": "为您的 Prompt 起个名字"
+  },
+  "promptTemplatePlaceholder": {
+    "message": "请输入 Prompt 模板，并使用 {content} 作为内容占位符。\n例如：\n请总结以下内容的要点：\n\n{content}\n\n请用简洁的语言概括核心信息。"
+  },
+  "previewSamplePlaceholder": {
+    "message": "输入一些示例内容来预览效果..."
+  },
+  "chatServiceNamePlaceholder": {
+    "message": "输入服务名称"
+  },
+  "syncStatusTitle": {
+    "message": "同步状态"
+  },
+  "insertContentPlaceholderTitle": {
+    "message": "插入内容占位符"
+  },
+  "previewPromptTitle": {
+    "message": "预览"
+  },
+  "privacyDataBoundariesAriaLabel": {
+    "message": "Copylot 数据边界"
   },
   "promptTemplateHint": {
     "message": "使用 {content} 作为复制文本的占位符。"
@@ -3313,6 +3377,10 @@
   "serviceTongyi": {
     "message": "通义千问",
     "description": "通义千问服务名称（阿里巴巴AI）"
+  },
+  "serviceDoubao": {
+    "message": "豆包",
+    "description": "豆包服务名称"
   },
   "serviceOpenAIPlayground": {
     "message": "OpenAI Playground",

@@ -297,6 +297,8 @@ function getElements(): OptionsElements {
 function localizeUI() {
   if (FORCE_UI_LANGUAGE) {
     document.documentElement.lang = FORCE_UI_LANGUAGE;
+  } else {
+    document.documentElement.lang = chrome.i18n.getUILanguage?.() || 'en';
   }
 
   const i18nElements = document.querySelectorAll('[data-i18n]');
@@ -310,15 +312,20 @@ function localizeUI() {
     }
   });
 
-  const i18nPlaceholders = document.querySelectorAll('[data-i18n-placeholder]');
-  i18nPlaceholders.forEach((element) => {
-    const key = element.getAttribute('data-i18n-placeholder');
-    if (key) {
+  const localizedAttributes = [
+    ['data-i18n-placeholder', 'placeholder'],
+    ['data-i18n-title', 'title'],
+    ['data-i18n-aria-label', 'aria-label']
+  ] as const;
+  localizedAttributes.forEach(([dataAttribute, targetAttribute]) => {
+    document.querySelectorAll(`[${dataAttribute}]`).forEach((element) => {
+      const key = element.getAttribute(dataAttribute);
+      if (!key) return;
       const message = getMessage(key);
       if (message) {
-        (element as HTMLInputElement).placeholder = message;
+        element.setAttribute(targetAttribute, message);
       }
-    }
+    });
   });
 
   document.title = getMessage('optionsTitle');
@@ -1037,9 +1044,6 @@ async function savePrompts() {
     if (wasEmpty && getActivePrompts(allPrompts).length === 1) {
       showUsageInstructions();
     }
-
-    // 通知background script更新菜单
-    chrome.runtime.sendMessage({ type: 'update-context-menu' });
   } catch (error) {
     console.error('Error saving prompts:', error);
 

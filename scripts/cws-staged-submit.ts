@@ -12,7 +12,7 @@ import {
   resolveCwsProxyEnv
 } from './cws-proxy.ts';
 
-type Command = 'status' | 'submit';
+type Command = 'validate' | 'status' | 'submit';
 
 type SubmitConfig = {
   schema_version: 1;
@@ -31,6 +31,11 @@ type SubmitConfig = {
   };
   dashboard_config_path: string;
   listing_evidence_path: string;
+  listing_reuse?: {
+    source_version: string;
+    materials_unchanged: true;
+    reason: string;
+  };
 };
 
 type DistributionChannel = {
@@ -69,8 +74,8 @@ function parseArgs(argv: string[]): {
   evidenceDir: string;
 } {
   const [commandRaw, configPath, ...rest] = argv;
-  if (commandRaw !== 'status' && commandRaw !== 'submit') {
-    throw new Error('usage: cws-staged-submit.ts <status|submit> <config> --evidence-dir <dir>');
+  if (commandRaw !== 'validate' && commandRaw !== 'status' && commandRaw !== 'submit') {
+    throw new Error('usage: cws-staged-submit.ts <validate|status|submit> <config> --evidence-dir <dir>');
   }
   if (!configPath) throw new Error('config path is required');
   const evidenceIndex = rest.indexOf('--evidence-dir');
@@ -137,6 +142,16 @@ async function verifyPersistedListingEvidence(
   config: SubmitConfig,
   root: string
 ): Promise<Record<string, unknown>> {
+  const listingSourceVersion = config.listing_reuse
+    ? requireText(config.listing_reuse.source_version, 'listing_reuse.source_version')
+    : config.product.version;
+  const reuseReason = config.listing_reuse
+    ? requireText(config.listing_reuse.reason, 'listing_reuse.reason')
+    : null;
+  if (config.listing_reuse && config.listing_reuse.materials_unchanged !== true) {
+    throw new Error('listing_reuse.materials_unchanged must be true when listing reuse is configured');
+  }
+
   const dashboardConfigPath = await resolveRepositoryFile(
     root,
     config.dashboard_config_path,
@@ -151,6 +166,17 @@ async function verifyPersistedListingEvidence(
     JSON.parse(await readFile(dashboardConfigPath, 'utf8')),
     'dashboard config'
   );
+  const dashboardProduct = requireRecord(dashboardConfig.product, 'dashboard config product');
+  const dashboardIdentity: Array<[string, string]> = [
+    ['name', config.product.name],
+    ['platform', config.product.platform],
+    ['version', listingSourceVersion]
+  ];
+  for (const [field, expected] of dashboardIdentity) {
+    if (dashboardProduct[field] !== expected) {
+      throw new Error(`dashboard config product.${field} does not match listing evidence source`);
+    }
+  }
   const listing = requireRecord(dashboardConfig.store_listing, 'dashboard config store_listing');
   const assets = requireArray(listing.assets, 'dashboard config store_listing.assets');
   const evidence = requireRecord(JSON.parse(await readFile(evidencePath, 'utf8')), 'listing evidence');
@@ -160,7 +186,7 @@ async function verifyPersistedListingEvidence(
     ['section', 'store_listing'],
     ['product', config.product.name],
     ['platform', config.product.platform],
-    ['version', config.product.version],
+    ['version', listingSourceVersion],
     ['publisherId', config.dashboard.publisher_id],
     ['itemId', config.dashboard.item_id],
     ['submittedForReview', false],
@@ -213,6 +239,10 @@ async function verifyPersistedListingEvidence(
   return {
     path: path.relative(root, evidencePath),
     dashboardConfig: path.relative(root, dashboardConfigPath),
+    targetVersion: config.product.version,
+    sourceVersion: listingSourceVersion,
+    reusedForNewPackage: listingSourceVersion !== config.product.version,
+    reuseReason,
     generatedAt: evidence.generatedAt,
     persistedAfterReload: true,
     uploadCount: uploads.length,
@@ -428,8 +458,31 @@ async function writeEvidence(evidenceDirRaw: string, filename: string, payload: 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const { config, root, packagePath } = await loadConfig(args.configPath);
-  const proxy = setupProxy();
   if (args.command === 'submit') requireSubmitAuthorization(config);
+  const listingEvidence =
+    args.command === 'validate' || args.command === 'submit'
+      ? await verifyPersistedListingEvidence(config, root)
+      : null;
+
+  if (args.command === 'validate') {
+    const payload = {
+      ok: true,
+      action: 'VALIDATE',
+      externalMutation: false,
+      product: config.product,
+      package: {
+        path: path.relative(config.product.root, packagePath),
+        sha256: await sha256(packagePath)
+      },
+      listingEvidence,
+      checkedAt: new Date().toISOString()
+    };
+    const output = await writeEvidence(args.evidenceDir, 'cws-submit-inputs.json', payload);
+    process.stdout.write(`${JSON.stringify({ ...payload, evidence: output }, null, 2)}\n`);
+    return;
+  }
+
+  const proxy = setupProxy();
   const credentials = requireCredentials(config);
   const accessToken = await fetchAccessToken(credentials);
   const before = await fetchStatus(config, accessToken);
@@ -451,7 +504,6 @@ async function main(): Promise<void> {
     return;
   }
 
-  const listingEvidence = await verifyPersistedListingEvidence(config, root);
   const upload = await uploadPackage(config, packagePath, accessToken);
   const publish = await publishStaged(config, accessToken);
   const after = await pollSubmittedState(config, accessToken);

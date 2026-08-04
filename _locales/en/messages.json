@@ -1651,6 +1651,10 @@
   "devtoolsCopyButton": {
     "message": "Copy"
   },
+  "devtoolsErrorPrefix": {
+    "message": "Error:",
+    "description": "Prefix shown when the DevTools sidebar cannot inspect the selected element"
+  },
   "tableOutputFormat": {
     "message": "Table:",
     "description": "Table output format label"
@@ -2062,6 +2066,42 @@
   "importExport": {
     "message": "Import/Export"
   },
+  "importExportTitle": {
+    "message": "Import/Export Prompts"
+  },
+  "export": {
+    "message": "Export"
+  },
+  "import": {
+    "message": "Import"
+  },
+  "exportDescription": {
+    "message": "Export all your prompts as a JSON file for backup or transfer to another device."
+  },
+  "exportNow": {
+    "message": "Export Now"
+  },
+  "importDescription": {
+    "message": "Import prompts from a JSON file. They will be merged with your existing prompts."
+  },
+  "selectFile": {
+    "message": "Choose File"
+  },
+  "importPreview": {
+    "message": "Import Preview"
+  },
+  "confirmImport": {
+    "message": "Confirm Import"
+  },
+  "previewTitle": {
+    "message": "Prompt Preview"
+  },
+  "sampleContent": {
+    "message": "Sample content:"
+  },
+  "outputResult": {
+    "message": "Final output:"
+  },
   "promptEditor": {
     "message": "Prompt Editor"
   },
@@ -2070,6 +2110,30 @@
   },
   "promptTemplate": {
     "message": "Template"
+  },
+  "promptTitlePlaceholder": {
+    "message": "Name your prompt"
+  },
+  "promptTemplatePlaceholder": {
+    "message": "Enter your prompt template and use {content} as the content placeholder.\nExample:\nSummarize the key points below:\n\n{content}\n\nKeep the summary concise."
+  },
+  "previewSamplePlaceholder": {
+    "message": "Enter sample content to preview the result..."
+  },
+  "chatServiceNamePlaceholder": {
+    "message": "Enter a service name"
+  },
+  "syncStatusTitle": {
+    "message": "Sync status"
+  },
+  "insertContentPlaceholderTitle": {
+    "message": "Insert content placeholder"
+  },
+  "previewPromptTitle": {
+    "message": "Preview"
+  },
+  "privacyDataBoundariesAriaLabel": {
+    "message": "Copylot data boundaries"
   },
   "promptTemplateHint": {
     "message": "Use {content} as a placeholder for the copied text."
@@ -3313,6 +3377,10 @@
   "serviceTongyi": {
     "message": "Tongyi Qianwen",
     "description": "Name of the Tongyi Qianwen service (Alibaba's AI)"
+  },
+  "serviceDoubao": {
+    "message": "Doubao",
+    "description": "Name of the Doubao service"
   },
   "serviceOpenAIPlayground": {
     "message": "OpenAI Playground",

@@ -25,6 +25,7 @@ export interface ChromeMockOptions {
   activeTabId?: number;
   syncData?: Record<string, unknown>;
   localData?: Record<string, unknown>;
+  syncGetGate?: Promise<void>;
   commands?: Array<{ name?: string; shortcut?: string }>;
   uiLanguage?: string;
   tabMessageResponse?: unknown | ((message: unknown) => unknown | Promise<unknown>);
@@ -384,7 +385,10 @@ export function createChromeMock(options: ChromeMockOptions = {}): ChromeMockCon
     },
     storage: {
       sync: {
-        get: sync.get.bind(sync),
+        async get(keys?: string | string[] | Record<string, unknown> | null) {
+          await options.syncGetGate;
+          return sync.get(keys);
+        },
         set: sync.set.bind(sync),
         remove: sync.remove.bind(sync),
         clear: sync.clear.bind(sync)
