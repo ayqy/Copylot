@@ -256,8 +256,14 @@ function clearAssetSlot(tab, asset) {
   for (let attempt = 0; attempt < 20 && state.removeCount > 0; attempt += 1) {
     const before = state.removeCount;
     if (!removeOneAsset(tab, asset)) break;
-    state = slotSnapshot(tab, asset);
-    if (!state.ok || state.removeCount >= before) {
+    let decreased = false;
+    for (let waitAttempt = 0; waitAttempt < 30; waitAttempt += 1) {
+      delay(1);
+      state = slotSnapshot(tab, asset);
+      decreased = state.ok && state.removeCount < before;
+      if (decreased) break;
+    }
+    if (!decreased) {
       throw new Error(`${asset.role}: existing image count did not decrease`);
     }
   }
