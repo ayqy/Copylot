@@ -229,11 +229,23 @@ function removeOneAsset(tab, asset) {
       /^(Remove|Delete|删除|移除)$/i.test((node.innerText || '').trim())
     );
     if (!button) return false;
-    button.click();
+    button.scrollIntoView({ block: 'center', inline: 'center' });
+    button.focus();
+    HTMLButtonElement.prototype.click.call(button);
     return true;
   })()` });
   if (!confirmed) throw new Error(`${asset.role}: image-removal confirmation missing`);
-  delay(0.8);
+  let dialogClosed = false;
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    delay(1);
+    dialogClosed = tab.execute({ javascript: `!Array.from(document.querySelectorAll('[role="dialog"]'))
+      .some((dialog) => {
+        const rect = dialog.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      })` });
+    if (dialogClosed) break;
+  }
+  if (!dialogClosed) throw new Error(`${asset.role}: image-removal confirmation did not close`);
   return true;
 }
 
