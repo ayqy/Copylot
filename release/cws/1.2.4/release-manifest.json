@@ -53,6 +53,13 @@
       "claim": "The full extension experience, including listing copy, permissions, privacy disclosures, and promotional imagery, must accurately represent the submitted product.",
       "topic": "policy",
       "evidence_kind": "direct"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/webstore/api/reference/rest/v2/publishers.items/cancelSubmission",
+      "checked_at": "2026-08-04",
+      "claim": "cancelSubmission cancels the current active submission with an empty request body and returns an empty response on success.",
+      "topic": "lifecycle",
+      "evidence_kind": "direct"
     }
   ],
   "growth": {
@@ -298,23 +305,6 @@
           "read_only": true
         },
         {
-          "label": "Validate unchanged listing evidence for the 1.2.4 package",
-          "argv": [
-            "npm",
-            "run",
-            "submit:cws:staged",
-            "--",
-            "validate",
-            "release/cws/1.2.4/cws-submit-config.json",
-            "--evidence-dir",
-            "{evidence_dir}/listing-reuse"
-          ],
-          "cwd": ".",
-          "required_env": [],
-          "timeout_seconds": 1800,
-          "read_only": true
-        },
-        {
           "label": "Run guarded CWS tests, build, package, and network dry-run",
           "argv": [
             "npm",
@@ -324,6 +314,23 @@
             "--dry-run",
             "--evidence-dir",
             "{evidence_dir}/cws"
+          ],
+          "cwd": ".",
+          "required_env": [],
+          "timeout_seconds": 1800,
+          "read_only": true
+        },
+        {
+          "label": "Validate rebuilt package and unchanged listing evidence for 1.2.4",
+          "argv": [
+            "npm",
+            "run",
+            "submit:cws:staged",
+            "--",
+            "validate",
+            "release/cws/1.2.4/cws-submit-config.json",
+            "--evidence-dir",
+            "{evidence_dir}/listing-reuse"
           ],
           "cwd": ".",
           "required_env": [],
@@ -343,6 +350,27 @@
     },
     "submit": {
       "commands": [
+        {
+          "label": "Cancel the authorized pending 1.2.3 submission and verify CANCELLED",
+          "argv": [
+            "npm",
+            "run",
+            "submit:cws:staged",
+            "--",
+            "cancel",
+            "release/cws/1.2.4/cws-submit-config.json",
+            "--evidence-dir",
+            "{evidence_dir}/cancel"
+          ],
+          "cwd": ".",
+          "required_env": [
+            "CWS_EXTENSION_ID",
+            "CWS_CLIENT_ID",
+            "CWS_CLIENT_SECRET",
+            "CWS_REFRESH_TOKEN"
+          ],
+          "timeout_seconds": 1800
+        },
         {
           "label": "Verify unchanged listing evidence, upload 1.2.4, and submit for staged review",
           "argv": [

@@ -19,5 +19,9 @@
     "source_version": "1.2.3",
     "materials_unchanged": true,
     "reason": "管理员明确要求素材不变、只发布新包；1.2.4 仅修复 Prompt CRUD、多语言与 Popup 缓存优先加载，现有商店素材和字段仍准确。"
+  },
+  "cancel_pending_submission": {
+    "version": "1.2.3",
+    "required_state": "PENDING_REVIEW"
   }
 }

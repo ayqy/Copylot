@@ -179,6 +179,7 @@ import {
   resolveCwsProxyEnv
 } from './cws-proxy.ts';
 import {
+  classifyCwsCancellationState,
   formatCwsItemErrors,
   formatCwsV2UploadFailure,
   sanitizeCwsDraftStatus,
@@ -4941,6 +4942,59 @@ async function run() {
       'uploadState=unknown; FAILED_PRECONDITION: The item cannot be updated while it is pending review.'
     );
   }
+
+  assert.equal(
+    classifyCwsCancellationState(
+      {
+        submittedItemRevisionStatus: {
+          state: 'PENDING_REVIEW',
+          distributionChannels: [{ crxVersion: '1.2.3' }]
+        }
+      },
+      '1.2.3',
+      '1.2.4'
+    ),
+    'cancel_required'
+  );
+  assert.equal(
+    classifyCwsCancellationState(
+      {
+        submittedItemRevisionStatus: {
+          state: 'CANCELLED',
+          distributionChannels: [{ crxVersion: '1.2.3' }]
+        }
+      },
+      '1.2.3',
+      '1.2.4'
+    ),
+    'already_cancelled'
+  );
+  assert.equal(
+    classifyCwsCancellationState(
+      {
+        submittedItemRevisionStatus: {
+          state: 'PENDING_REVIEW',
+          distributionChannels: [{ crxVersion: '1.2.4' }]
+        }
+      },
+      '1.2.3',
+      '1.2.4'
+    ),
+    'target_submitted'
+  );
+  assert.equal(
+    classifyCwsCancellationState(
+      {
+        submittedItemRevisionStatus: {
+          state: 'PENDING_REVIEW',
+          distributionChannels: [{ crxVersion: '1.2.2' }]
+        }
+      },
+      '1.2.3',
+      '1.2.4'
+    ),
+    'unexpected'
+  );
   {
     const resolvedDefault = resolveCwsProxyEnv({} as NodeJS.ProcessEnv);
     assert.equal(resolvedDefault.proxyEnabled, false);

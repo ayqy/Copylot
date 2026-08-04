@@ -12,6 +12,7 @@ import {
   resolveCwsProxyEnv
 } from './cws-proxy.ts';
 import {
+  classifyCwsCancellationState,
   formatCwsItemErrors,
   formatCwsV2UploadFailure,
   sanitizeCwsDraftStatus,
@@ -20,7 +21,7 @@ import {
   type CwsV2UploadStatus
 } from './cws-staged-status.ts';
 
-type Command = 'validate' | 'status' | 'submit';
+type Command = 'validate' | 'status' | 'cancel' | 'submit';
 
 type SubmitConfig = {
   schema_version: 1;
@@ -43,6 +44,10 @@ type SubmitConfig = {
     source_version: string;
     materials_unchanged: true;
     reason: string;
+  };
+  cancel_pending_submission?: {
+    version: string;
+    required_state: 'PENDING_REVIEW';
   };
 };
 
@@ -82,8 +87,13 @@ function parseArgs(argv: string[]): {
   evidenceDir: string;
 } {
   const [commandRaw, configPath, ...rest] = argv;
-  if (commandRaw !== 'validate' && commandRaw !== 'status' && commandRaw !== 'submit') {
-    throw new Error('usage: cws-staged-submit.ts <validate|status|submit> <config> --evidence-dir <dir>');
+  if (
+    commandRaw !== 'validate' &&
+    commandRaw !== 'status' &&
+    commandRaw !== 'cancel' &&
+    commandRaw !== 'submit'
+  ) {
+    throw new Error('usage: cws-staged-submit.ts <validate|status|cancel|submit> <config> --evidence-dir <dir>');
   }
   if (!configPath) throw new Error('config path is required');
   const evidenceIndex = rest.indexOf('--evidence-dir');
@@ -118,6 +128,18 @@ async function loadConfig(configPathRaw: string): Promise<{
   const packagePath = path.resolve(root, packageRelative);
   if (packagePath !== root && !packagePath.startsWith(`${root}${path.sep}`)) {
     throw new Error('package.path must stay inside product.root');
+  }
+  if (config.cancel_pending_submission) {
+    const pendingVersion = requireText(
+      config.cancel_pending_submission.version,
+      'cancel_pending_submission.version'
+    );
+    if (pendingVersion === config.product.version) {
+      throw new Error('cancel_pending_submission.version must differ from product.version');
+    }
+    if (config.cancel_pending_submission.required_state !== 'PENDING_REVIEW') {
+      throw new Error('cancel_pending_submission.required_state must be PENDING_REVIEW');
+    }
   }
   await readFile(packagePath);
   return { config, root, packagePath };
@@ -319,8 +341,76 @@ function itemName(config: SubmitConfig): string {
   return `publishers/${config.dashboard.publisher_id}/items/${config.dashboard.item_id}`;
 }
 
-function v2Url(config: SubmitConfig, action: 'fetchStatus' | 'publish'): string {
+function v2Url(
+  config: SubmitConfig,
+  action: 'fetchStatus' | 'cancelSubmission' | 'publish'
+): string {
   return `https://chromewebstore.googleapis.com/v2/${itemName(config)}:${action}`;
+}
+
+type CancelSubmissionResponse = {
+  httpStatus: number;
+  ok: boolean;
+  responseBodyEmpty: boolean;
+  error: {
+    status: string | null;
+    message: string | null;
+  } | null;
+};
+
+async function cancelSubmission(
+  config: SubmitConfig,
+  accessToken: string
+): Promise<CancelSubmissionResponse> {
+  const response = await fetch(v2Url(config, 'cancelSubmission'), {
+    method: 'POST',
+    headers: { authorization: `Bearer ${accessToken}` }
+  });
+  const body = await response.text();
+  let error: CancelSubmissionResponse['error'] = null;
+  if (body.trim()) {
+    try {
+      const payload = JSON.parse(body) as { error?: { status?: unknown; message?: unknown } };
+      error = payload.error
+        ? {
+            status: typeof payload.error.status === 'string' ? payload.error.status : null,
+            message: typeof payload.error.message === 'string' ? payload.error.message : null
+          }
+        : null;
+    } catch {
+      error = { status: null, message: 'non-JSON response body' };
+    }
+  }
+  return {
+    httpStatus: response.status,
+    ok: response.ok,
+    responseBodyEmpty: body.trim().length === 0,
+    error
+  };
+}
+
+async function pollCancelledState(
+  config: SubmitConfig,
+  accessToken: string,
+  pendingVersion: string,
+  timeoutMs = 120_000
+): Promise<FetchStatusResponse> {
+  const deadline = Date.now() + timeoutMs;
+  let latest = await fetchStatus(config, accessToken);
+  while (
+    classifyCwsCancellationState(latest, pendingVersion, config.product.version) !== 'already_cancelled' &&
+    Date.now() < deadline
+  ) {
+    await new Promise((resolve) => setTimeout(resolve, 5_000));
+    latest = await fetchStatus(config, accessToken);
+  }
+  const decision = classifyCwsCancellationState(latest, pendingVersion, config.product.version);
+  if (decision !== 'already_cancelled') {
+    const state = latest.submittedItemRevisionStatus?.state ?? 'missing';
+    const versions = revisionVersions(latest.submittedItemRevisionStatus).join(',') || 'missing';
+    throw new Error(`cancelled version did not reach CANCELLED: state=${state} versions=${versions}`);
+  }
+  return latest;
 }
 
 function v1DraftUrl(config: SubmitConfig): string {
@@ -487,7 +577,7 @@ async function writeEvidence(evidenceDirRaw: string, filename: string, payload: 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const { config, root, packagePath } = await loadConfig(args.configPath);
-  if (args.command === 'submit') requireSubmitAuthorization(config);
+  if (args.command === 'cancel' || args.command === 'submit') requireSubmitAuthorization(config);
   const listingEvidence =
     args.command === 'validate' || args.command === 'submit'
       ? await verifyPersistedListingEvidence(config, root)
@@ -533,6 +623,103 @@ async function main(): Promise<void> {
     const output = await writeEvidence(args.evidenceDir, 'cws-status.json', payload);
     process.stdout.write(`${JSON.stringify({ ...payload, evidence: output }, null, 2)}\n`);
     return;
+  }
+
+  if (args.command === 'cancel') {
+    const cancellation = config.cancel_pending_submission;
+    if (!cancellation) throw new Error('cancel requires cancel_pending_submission config');
+    const decision = classifyCwsCancellationState(
+      before,
+      cancellation.version,
+      config.product.version
+    );
+    if (decision === 'unexpected') {
+      const state = before.submittedItemRevisionStatus?.state ?? 'missing';
+      const versions = revisionVersions(before.submittedItemRevisionStatus).join(',') || 'missing';
+      throw new Error(`refusing cancellation for unexpected state: state=${state} versions=${versions}`);
+    }
+
+    let request: CancelSubmissionResponse | null = null;
+    let after = before;
+    if (decision === 'cancel_required') {
+      request = await cancelSubmission(config, accessToken);
+      if (!request.ok || !request.responseBodyEmpty) {
+        const failurePayload = {
+          ok: false,
+          action: 'CANCEL_SUBMISSION',
+          externalMutation: true,
+          product: config.product,
+          pendingVersion: cancellation.version,
+          before: sanitizeStatus(before),
+          request,
+          failedAt: new Date().toISOString()
+        };
+        const output = await writeEvidence(args.evidenceDir, 'cws-cancel-failure.json', failurePayload);
+        throw new Error(
+          `CWS cancelSubmission failed: HTTP ${request.httpStatus} ${request.error?.status ?? 'unknown'}; evidence=${output}`
+        );
+      }
+      after = await pollCancelledState(config, accessToken, cancellation.version);
+    }
+
+    const payload = {
+      ok: true,
+      action: 'CANCEL_SUBMISSION',
+      authorizedScope: {
+        product: config.product.name,
+        platform: config.product.platform,
+        pendingVersion: cancellation.version,
+        targetVersion: config.product.version,
+        action: 'cancel_pending_submission'
+      },
+      externalMutation: decision === 'cancel_required',
+      decision,
+      publisherId: config.dashboard.publisher_id,
+      itemId: config.dashboard.item_id,
+      proxy,
+      before: sanitizeStatus(before),
+      request,
+      after: sanitizeStatus(after),
+      publicReleaseTriggered: false,
+      completedAt: new Date().toISOString()
+    };
+    const output = await writeEvidence(args.evidenceDir, 'cws-cancel.json', payload);
+    process.stdout.write(`${JSON.stringify({ ...payload, evidence: output }, null, 2)}\n`);
+    return;
+  }
+
+  if (hasExpectedSubmittedState(config, before)) {
+    const payload = {
+      ok: true,
+      action: 'SUBMIT',
+      externalMutation: false,
+      alreadySubmitted: true,
+      product: config.product,
+      publisherId: config.dashboard.publisher_id,
+      itemId: config.dashboard.item_id,
+      listingEvidence,
+      proxy,
+      before: sanitizeStatus(before),
+      after: sanitizeStatus(before),
+      terminalState: before.submittedItemRevisionStatus?.state,
+      submittedVersion: config.product.version,
+      publicReleaseTriggered: false,
+      completedAt: new Date().toISOString()
+    };
+    const output = await writeEvidence(args.evidenceDir, 'cws-submit.json', payload);
+    process.stdout.write(`${JSON.stringify({ ...payload, evidence: output }, null, 2)}\n`);
+    return;
+  }
+
+  if (config.cancel_pending_submission) {
+    const decision = classifyCwsCancellationState(
+      before,
+      config.cancel_pending_submission.version,
+      config.product.version
+    );
+    if (decision !== 'already_cancelled') {
+      throw new Error(`submit requires the authorized pending submission to be CANCELLED; decision=${decision}`);
+    }
   }
 
   const upload = await uploadPackage(config, packagePath, accessToken);
