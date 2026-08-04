@@ -31,10 +31,21 @@ function findTargetTab(chrome, dashboard) {
   throw new Error('target CWS Dashboard tab not found');
 }
 
-function executeJson(tab, javascript) {
-  const raw = tab.execute({ javascript });
-  if (typeof raw !== 'string') throw new Error('Chrome JavaScript result was not JSON text');
-  return JSON.parse(raw);
+function executeJson(tab, javascript, context = 'browser_execute') {
+  let lastType = 'unknown';
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const raw = tab.execute({ javascript });
+    lastType = typeof raw;
+    if (lastType === 'string') {
+      try {
+        return JSON.parse(raw);
+      } catch (_error) {
+        throw new Error(`${context}: Chrome JavaScript result was not valid JSON`);
+      }
+    }
+    delay(0.25 * (attempt + 1));
+  }
+  throw new Error(`${context}: Chrome JavaScript result type was ${lastType} after 5 attempts`);
 }
 
 function identitySnapshot(tab, config) {
@@ -54,7 +65,7 @@ function identitySnapshot(tab, config) {
       publisherMatches: location.href.includes(expected.publisherId),
       itemMatches: location.href.includes(expected.itemId),
     });
-  })()`);
+  })()`, 'identity_snapshot');
 }
 
 function assertIdentity(state, phase) {
@@ -158,7 +169,7 @@ function slotSnapshot(tab, asset) {
       removeCount: removeButtons.length,
       imageSources: Array.from(resolved.container.querySelectorAll('img')).map((image) => image.src),
     });
-  })()`);
+  })()`, `${asset.role}_slot_snapshot`);
 }
 
 function removeOneAsset(tab, asset) {
@@ -246,7 +257,7 @@ function uploadAssetFile(tab, asset, file) {
     resolved.input.dispatchEvent(new Event('input', { bubbles: true }));
     resolved.input.dispatchEvent(new Event('change', { bubbles: true }));
     return JSON.stringify({ ok: true, name: file.name, size: file.size });
-  })()`);
+  })()`, `${asset.role}_upload_dispatch`);
   if (!dispatch.ok || dispatch.size !== content.bytes) {
     throw new Error(`${asset.role}: file-input dispatch failed`);
   }
@@ -295,7 +306,7 @@ function listingSnapshot(tab, listing) {
         ? document.body.innerText.includes(${JSON.stringify(listing.summary_from_package || '')})
         : true,
     });
-  })()`);
+  })()`, 'listing_snapshot');
   state.assets = listing.assets.map((asset) => ({
     role: asset.role,
     expectedCount: asset.multiple ? asset.resolved_files.length : 1,
@@ -330,7 +341,7 @@ function visibleErrors(tab) {
     })
     .map((node) => (node.innerText || '').trim().replace(/\\s+/g, ' '))
     .filter((text) => /error|failed|invalid|required/i.test(text))
-    .slice(0, 12))`);
+    .slice(0, 12))`, 'visible_errors');
 }
 
 function clickButton(tab, texts) {
@@ -381,7 +392,7 @@ function configureStoreListing(tab, config, evidenceDir) {
     setValue(description, ${JSON.stringify(listing.description)});
     setValue(support, ${JSON.stringify(listing.support_url)});
     return JSON.stringify({ ok: true, descriptionLength: description.value.length, supportUrl: support.value });
-  })()`);
+  })()`, 'listing_update');
   if (!updated.ok) throw new Error(updated.error || 'Store Listing fields missing');
 
   let categoryState = listingSnapshot(tab, { ...listing, assets: [] });
@@ -489,7 +500,7 @@ function privacySnapshot(tab, privacy) {
       certifications,
       privacyUrlMatches: privacyUrl?.value === expected.privacyUrl,
     });
-  })()`);
+  })()`, 'privacy_snapshot');
 }
 
 function assertPrivacySnapshot(state, phase) {
@@ -564,7 +575,7 @@ function configurePrivacy(tab, config, evidenceDir) {
       if (!input.checked) input.click();
     }
     return JSON.stringify({ ok: true, fieldCount: expected.fields.length });
-  })()`);
+  })()`, 'privacy_update');
   if (!update.ok) throw new Error(`Privacy update failed: ${JSON.stringify(update)}`);
   delay(1);
   const beforeSave = privacySnapshot(tab, privacy);
@@ -621,7 +632,7 @@ function testInstructionsSnapshot(tab, test) {
       formLocked: Boolean(username?.disabled && password?.disabled && additional?.disabled),
       editButtonVisible: Array.from(document.querySelectorAll('button')).some((node) => (node.innerText || '').trim() === 'Edit'),
     });
-  })()`);
+  })()`, 'test_instructions_snapshot');
 }
 
 function assertTestInstructionsSnapshot(state, test, phase) {
@@ -679,7 +690,7 @@ function configureTestInstructions(tab, config, evidenceDir) {
       passwordPresent: Boolean(password.value),
       instructionsLength: additional.value.length,
     });
-  })()`);
+  })()`, 'test_instructions_update');
   if (!update.ok || update.instructionsLength !== test.instructions.length) {
     throw new Error(`Test instructions update failed: ${JSON.stringify(update)}`);
   }
