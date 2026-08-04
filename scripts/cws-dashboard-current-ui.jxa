@@ -41,14 +41,33 @@ function findTargetTab(chrome, dashboard) {
 }
 
 function executeJson(tab, javascript, context = 'browser_execute') {
+  const guardedJavascript = `(() => {
+    try {
+      return (${javascript});
+    } catch (error) {
+      return JSON.stringify({
+        __browserError: {
+          name: String(error?.name || 'Error').slice(0, 120),
+          message: String(error?.message || error || 'unknown browser error').slice(0, 500),
+        },
+      });
+    }
+  })()`;
   let lastType = 'unknown';
   for (let attempt = 0; attempt < 5; attempt += 1) {
-    const raw = tab.execute({ javascript });
+    const raw = tab.execute({ javascript: guardedJavascript });
     lastType = typeof raw;
     if (lastType === 'string') {
       try {
-        return JSON.parse(raw);
+        const parsed = JSON.parse(raw);
+        if (parsed?.__browserError) {
+          throw new Error(
+            `${context}: ${parsed.__browserError.name}: ${parsed.__browserError.message}`
+          );
+        }
+        return parsed;
       } catch (_error) {
+        if (_error instanceof Error && _error.message.startsWith(`${context}:`)) throw _error;
         throw new Error(`${context}: Chrome JavaScript result was not valid JSON`);
       }
     }
@@ -165,7 +184,8 @@ function slotSnapshot(tab, asset) {
   };
   return executeJson(tab, `(() => {
     ${slotHelpersSource()}
-    const resolved = resolveSlot(${JSON.stringify(spec)});
+    const spec = ${JSON.stringify(spec)};
+    const resolved = resolveSlot(spec);
     if (resolved.error) return JSON.stringify({ ok: false, ...resolved });
     const removeButtons = Array.from(resolved.container.querySelectorAll('[aria-label^="Remove image"], [aria-label^="删除图片"]'));
     return JSON.stringify({
@@ -778,6 +798,9 @@ function run(rawArgv) {
   const identity = identitySnapshot(tab, config);
   assertIdentity(identity, 'probe');
   if (mode === 'probe') {
+    const listingIdentity = navigate(tab, config, 'store_listing');
+    assertIdentity(listingIdentity, 'probe_store_listing');
+    const listing = listingSnapshot(tab, config.store_listing);
     const evidence = {
       ok: true,
       mode: 'probe',
@@ -787,7 +810,8 @@ function run(rawArgv) {
       publisherId: config.dashboard.publisher_id,
       itemId: config.dashboard.item_id,
       accountHint: config.dashboard.account_hint,
-      identity,
+      identity: listingIdentity,
+      listing,
     };
     writeText(`${evidenceDir}/probe.json`, `${JSON.stringify(evidence, null, 2)}\n`);
     return JSON.stringify(evidence);
