@@ -1,0 +1,422 @@
+{
+  "schema_version": 2,
+  "product": {
+    "name": "Copylot",
+    "platform": "cws",
+    "version": "1.2.5",
+    "root": "/Users/pocket/Documents/project/Copylot"
+  },
+  "source": {
+    "commit": "",
+    "commit_policy": "resolve_at_preflight",
+    "require_clean": true
+  },
+  "platform_config": {
+    "cws": {
+      "publisher_id": "301e74b1-6567-4278-a30a-74b31afa142c",
+      "item_id": "ehfglnbhoefcdedpkcdnainiifpflbic",
+      "primary_locale": "en",
+      "release_method": "automatic_after_review",
+      "publish_type": "DEFAULT_PUBLISH",
+      "skip_review": false,
+      "dashboard_config": "release/cws/1.2.3/dashboard-config.json",
+      "submit_config": "release/cws/1.2.5/cws-submit-config.json"
+    }
+  },
+  "metadata": {
+    "name": "Copylot",
+    "summary": "Copy web pages as clean Markdown, plain text, or CSV for AI and docs. One click, privacy-first, and processed on-device.",
+    "description": "Copylot turns messy web content into clean, paste-ready text for AI and documents. Use the popup or your chosen click or hover shortcut to copy a selection first, or clean up the current page when nothing is selected.\n\nWHAT YOU CAN DO\n\n• Copy article content as Markdown or plain text.\n• Convert web tables to Markdown or CSV.\n• Keep code indentation and blank lines while removing recognizable line-number and Copy-label noise.\n• Hold Shift in Append Mode to collect multiple clips with separators.\n• Save prompt templates and assign three quick slots to combine an instruction with copied content.\n\nPRIVATE BY DESIGN\n\n• Extraction, cleanup, and formatting run on your device.\n• Copylot does not collect, store, or upload the content you copy.\n• Optional anonymous usage data is off by default. If enabled, it records only local events and never sends copied content.\n• Permissions are limited to storage, clipboardWrite, and contextMenus.\n\nSTART IN THREE STEPS\n\n1. Install and pin Copylot.\n2. Open an article, table, or code block.\n3. Copy, then paste into your AI tool, notes, spreadsheet, or document.\n\nHomepage: https://copy.useai.online/\nPrivacy: https://copy.useai.online/privacy\n\nCopylot works in Chrome and compatible Chromium-based browsers.",
+    "language": "en",
+    "privacy_policy_url": "https://copy.useai.online/privacy",
+    "support_url": "https://github.com/ayqy/Copylot/issues",
+    "single_purpose": "Convert selected or full-page web content into clean, paste-ready Markdown, plain text, or CSV and apply user-saved prompt templates locally.",
+    "permission_justification": "storage saves settings, prompt templates, append sessions, and optional local anonymous usage events; clipboardWrite writes the user-requested converted content; contextMenus exposes the user-invoked copy and prompt actions.",
+    "data_use_summary": "Copied page content is extracted, cleaned, formatted, and written to the clipboard on-device. Copylot does not upload copied content. Optional anonymous usage events are disabled by default and remain in extension-local storage when enabled."
+  },
+  "rules_researched": [
+    {
+      "url": "https://developer.chrome.com/docs/webstore/publish/",
+      "checked_at": "2026-08-06",
+      "claim": "Package upload, review submission, approval, and public availability are distinct lifecycle states; an item submitted for automatic publishing becomes public after approval unless publishing is later deferred.",
+      "topic": "lifecycle",
+      "evidence_kind": "direct"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/webstore/images/",
+      "checked_at": "2026-08-06",
+      "claim": "A CWS listing uses a 128x128 icon, a 440x280 small promotional image, and at least one 1280x800 or 640x400 screenshot representative of the extension.",
+      "topic": "assets",
+      "evidence_kind": "direct"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/webstore/program-policies/",
+      "checked_at": "2026-08-06",
+      "claim": "The full extension experience, including listing copy, permissions, privacy disclosures, and promotional imagery, must accurately represent the submitted product.",
+      "topic": "policy",
+      "evidence_kind": "direct"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/webstore/api/reference/rest/v2/publishers.items/publish",
+      "checked_at": "2026-08-06",
+      "claim": "The CWS API v2 publish method accepts publishType=DEFAULT_PUBLISH for publication immediately after approval and skipReview=false to submit the revision for review.",
+      "topic": "lifecycle",
+      "evidence_kind": "direct"
+    }
+  ],
+  "growth": {
+    "keyword_candidates": [
+      {
+        "query": "copy webpage as markdown",
+        "intent": "Turn article or selected web content into Markdown that can be pasted into AI tools or documents.",
+        "relevance": "This is Copylot's primary popup and context-menu workflow.",
+        "proof": "src/popup/popup.ts, src/shared/content-processor.ts, e2e/popup-flow.spec.ts, runtime capture 02",
+        "evidence_kind": "direct",
+        "scores": {
+          "product_relevance": 5,
+          "user_intent": 5,
+          "proof_strength": 5,
+          "differentiation": 4,
+          "policy_safety": 5
+        }
+      },
+      {
+        "query": "copy table to csv",
+        "intent": "Preserve a web table's rows and columns for spreadsheets or downstream analysis.",
+        "relevance": "Copylot supports CSV as a table output and exposes that behavior in the current settings and runtime.",
+        "proof": "src/shared/content-processor.ts, e2e/table-flow.spec.ts, runtime capture 03",
+        "evidence_kind": "direct",
+        "scores": {
+          "product_relevance": 5,
+          "user_intent": 5,
+          "proof_strength": 5,
+          "differentiation": 4,
+          "policy_safety": 5
+        }
+      },
+      {
+        "query": "copy code without line numbers",
+        "intent": "Copy readable code while removing recognizable line-number and Copy-label noise.",
+        "relevance": "The current code-block cleaner preserves indentation and blank lines while removing known copy noise.",
+        "proof": "src/shared/code-block-cleaner.ts, e2e/code-block-flow.spec.ts, runtime capture 04",
+        "evidence_kind": "direct",
+        "scores": {
+          "product_relevance": 5,
+          "user_intent": 4,
+          "proof_strength": 5,
+          "differentiation": 5,
+          "policy_safety": 5
+        }
+      },
+      {
+        "query": "prompt shortcuts for copied text",
+        "intent": "Combine saved instructions with copied web content using quick slots.",
+        "relevance": "Copylot includes prompt management and three quick prompt slots, with edits and deletions propagated immediately in version 1.2.5.",
+        "proof": "src/options/options.html, src/options/options.ts, manifest.json commands, runtime capture 05",
+        "evidence_kind": "direct",
+        "scores": {
+          "product_relevance": 4,
+          "user_intent": 3,
+          "proof_strength": 5,
+          "differentiation": 4,
+          "policy_safety": 5
+        }
+      }
+    ],
+    "claim_evidence": [
+      {
+        "claim": "Copy article content as Markdown or plain text.",
+        "source": "src/shared/content-processor.ts and release/cws/1.2.3/assets/runtime-v2/02-markdown-result.md",
+        "evidence_kind": "direct"
+      },
+      {
+        "claim": "Convert web tables to Markdown or CSV.",
+        "source": "src/shared/content-processor.ts and release/cws/1.2.3/assets/runtime-v2/03-csv-result.csv",
+        "evidence_kind": "direct"
+      },
+      {
+        "claim": "Keep code indentation and blank lines while removing recognizable copy noise.",
+        "source": "src/shared/code-block-cleaner.ts and release/cws/1.2.3/assets/runtime-v2/04-code-result.txt",
+        "evidence_kind": "direct"
+      },
+      {
+        "claim": "Save prompt templates and assign three quick slots.",
+        "source": "src/options/options.ts, manifest.json, and release/cws/1.2.3/assets/runtime-v2/05-prompts.png",
+        "evidence_kind": "direct"
+      },
+      {
+        "claim": "Copied content is processed on-device and is not uploaded.",
+        "source": "manifest.json has no host permissions; src/shared/content-processor.ts, src/shared/telemetry.ts, and runtime package inspection",
+        "evidence_kind": "direct"
+      }
+    ]
+  },
+  "category_assessment": {
+    "selected": "Tools",
+    "alternatives": [
+      "Workflow & Planning",
+      "Developer Tools"
+    ],
+    "rationale": "Copylot's dominant job is a general-purpose browser utility for extracting and formatting web content; developer-only code cleanup is a secondary workflow.",
+    "evidence_kind": "inference"
+  },
+  "qualification_assessment": [
+    {
+      "id": "cws_item_and_api_access",
+      "name": "CWS item ownership and API access",
+      "scope": "app_once",
+      "status": "ready",
+      "blocking": true,
+      "evidence": "Read-only CWS v2 status succeeded on 2026-08-06 for Publisher 301e74b1-6567-4278-a30a-74b31afa142c and item ehfglnbhoefcdedpkcdnainiifpflbic.",
+      "evidence_kind": "direct"
+    },
+    {
+      "id": "public_privacy_and_support_urls",
+      "name": "Public privacy policy, homepage, and support URLs",
+      "scope": "version_each",
+      "status": "ready",
+      "blocking": true,
+      "evidence": "Unauthenticated HTTP checks returned 200 for https://copy.useai.online/privacy, https://copy.useai.online/, and https://github.com/ayqy/Copylot/issues on 2026-08-06.",
+      "evidence_kind": "direct"
+    },
+    {
+      "id": "review_account",
+      "name": "Reviewer account",
+      "scope": "version_each",
+      "status": "not_required",
+      "blocking": false,
+      "evidence": "The unpacked 1.2.5 runtime reaches the core copy, table, code, prompt CRUD, English localization, and cache-first popup flows without an account.",
+      "evidence_kind": "direct"
+    },
+    {
+      "id": "regulated_qualification",
+      "name": "Regulated-domain qualification",
+      "scope": "conditional",
+      "status": "not_required",
+      "blocking": false,
+      "evidence": "Copylot is a local content-formatting browser tool and does not provide regulated health, finance, gambling, or legal services.",
+      "evidence_kind": "inference"
+    }
+  ],
+  "assets": [
+    {
+      "role": "icon_128",
+      "path": "public/icons/icon-128.png",
+      "width": 128,
+      "height": 128
+    },
+    {
+      "role": "small_promo",
+      "path": "release/cws/1.2.3/assets/final/small-promo-440x280.png",
+      "width": 440,
+      "height": 280
+    },
+    {
+      "role": "screenshot",
+      "path": "release/cws/1.2.3/assets/final/01-clean-copy-starts-here.png",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "role": "screenshot",
+      "path": "release/cws/1.2.3/assets/final/02-markdown-without-the-mess.png",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "role": "screenshot",
+      "path": "release/cws/1.2.3/assets/final/03-tables-stay-structured.png",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "role": "screenshot",
+      "path": "release/cws/1.2.3/assets/final/04-code-keeps-its-shape.png",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "role": "screenshot",
+      "path": "release/cws/1.2.3/assets/final/05-prompt-shortcuts.png",
+      "width": 1280,
+      "height": 800
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "extension_zip",
+      "path": "plugin-1.2.5.zip",
+      "status": "ready",
+      "evidence": "Production ZIP rebuilt by the guarded CWS dry-run immediately before submission."
+    }
+  ],
+  "rejection_plan": {
+    "official_rule_map": "release/cws/1.2.5/rules-researched.json",
+    "code_evidence_paths": "manifest.json; src/shared/settings-manager.ts; src/background.ts; src/options/options.ts; src/content/content.ts; src/shared/content-processor.ts; src/shared/code-block-cleaner.ts; src/shared/telemetry.ts; release/cws/1.2.3/assets/runtime-v2/runtime-manifest.json",
+    "communication_position": "Explain the single local content-formatting purpose, reproduce the account-free reviewer flow, and map each permission and listing claim to submitted-version evidence.",
+    "code_change_strategy": "Treat each reviewer finding independently; change code or materials only when the official rule and submitted-version evidence show a concrete mismatch."
+  },
+  "visual_delivery": {
+    "asset_brief": "release/cws/1.2.3/asset-brief.json",
+    "community_research": "release/cws/1.2.3/community-research.json",
+    "creative_directions": "release/cws/1.2.3/creative-directions.json",
+    "prompts": "release/cws/1.2.3/prompts.json",
+    "copy_deck": "release/cws/1.2.3/copy-deck.json",
+    "variant_scorecard": "release/cws/1.2.3/variant-scorecard.json",
+    "review_index": "release/cws/1.2.3/review-index.json",
+    "release_material_summary": "release/cws/1.2.5/reuse-inventory.json"
+  },
+  "automation": {
+    "preflight": {
+      "commands": [
+        {
+          "label": "Validate opaque CWS promotional assets",
+          "argv": [
+            "node",
+            "scripts/finalize-cws-store-assets.mjs",
+            "--check"
+          ],
+          "cwd": ".",
+          "required_env": [],
+          "timeout_seconds": 1800,
+          "read_only": true
+        },
+        {
+          "label": "Type-check release adapter and product source",
+          "argv": [
+            "npm",
+            "run",
+            "type-check"
+          ],
+          "cwd": ".",
+          "required_env": [],
+          "timeout_seconds": 1800,
+          "read_only": true
+        },
+        {
+          "label": "Validate CWS dashboard field map and assets",
+          "argv": [
+            "python3",
+            "{pub_root}/scripts/cws_dashboard.py",
+            "validate",
+            "{root}/release/cws/1.2.3/dashboard-config.json"
+          ],
+          "cwd": ".",
+          "required_env": [],
+          "timeout_seconds": 1800,
+          "read_only": true
+        },
+        {
+          "label": "Run guarded CWS tests, build, package, and network dry-run",
+          "argv": [
+            "npm",
+            "run",
+            "publish:cws",
+            "--",
+            "--dry-run",
+            "--evidence-dir",
+            "{evidence_dir}/cws"
+          ],
+          "cwd": ".",
+          "required_env": [],
+          "timeout_seconds": 1800,
+          "read_only": true
+        },
+        {
+          "label": "Validate rebuilt package and unchanged listing evidence for 1.2.5",
+          "argv": [
+            "npm",
+            "run",
+            "submit:cws",
+            "--",
+            "validate",
+            "release/cws/1.2.5/cws-submit-config.json",
+            "--evidence-dir",
+            "{evidence_dir}/listing-reuse"
+          ],
+          "cwd": ".",
+          "required_env": [],
+          "timeout_seconds": 1800,
+          "read_only": true
+        }
+      ],
+      "covers": []
+    },
+    "configure": {
+      "commands": [],
+      "covers": []
+    },
+    "probe": {
+      "commands": [],
+      "covers": []
+    },
+    "submit": {
+      "commands": [
+        {
+          "label": "Verify unchanged listing evidence, upload 1.2.5, and submit for automatic publication after review",
+          "argv": [
+            "npm",
+            "run",
+            "submit:cws",
+            "--",
+            "submit",
+            "release/cws/1.2.5/cws-submit-config.json",
+            "--evidence-dir",
+            "{evidence_dir}/submit"
+          ],
+          "cwd": ".",
+          "required_env": [
+            "CWS_EXTENSION_ID",
+            "CWS_CLIENT_ID",
+            "CWS_CLIENT_SECRET",
+            "CWS_REFRESH_TOKEN"
+          ],
+          "timeout_seconds": 1800
+        }
+      ],
+      "covers": [
+        "package_upload",
+        "listing_fields",
+        "review_submit",
+        "terminal_status"
+      ]
+    },
+    "release": {
+      "commands": [],
+      "covers": []
+    },
+    "respond": {
+      "commands": [],
+      "covers": []
+    },
+    "status": {
+      "commands": [
+        {
+          "label": "Read versioned CWS submitted and published states",
+          "argv": [
+            "npm",
+            "run",
+            "submit:cws",
+            "--",
+            "status",
+            "release/cws/1.2.5/cws-submit-config.json",
+            "--evidence-dir",
+            "{evidence_dir}/status"
+          ],
+          "cwd": ".",
+          "required_env": [
+            "CWS_EXTENSION_ID",
+            "CWS_CLIENT_ID",
+            "CWS_CLIENT_SECRET",
+            "CWS_REFRESH_TOKEN"
+          ],
+          "timeout_seconds": 1800,
+          "read_only": true
+        }
+      ],
+      "covers": [
+        "terminal_status"
+      ]
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "product": "Copylot",
+  "platform": "cws",
+  "target_version": "1.2.5",
+  "source_release": "1.2.3",
+  "checked_at": "2026-08-06",
+  "reuse_decision": "管理员明确要求素材不变；本版本不生成、不重拍、不重新上传任何商店素材。",
+  "relevance_check": {
+    "status": "passed",
+    "evidence": "1.2.5 修复 Prompt 修改/删除即时生效、跨入口设置写入竞态和失败回滚，将在线 AI 跳转改为 1 秒，并更新内置服务排序与官方入口；核心内容格式化能力、商店定位、权限、主要页面结构与既有素材表达未改变。首张截图仍可见 V1.2.3 徽标，但功能画面与 1.2.5 仍具代表性，且管理员明确要求素材不变。"
+  },
+  "locale_check": {
+    "status": "passed",
+    "evidence": "沿用 1.2.3 已配置素材：外层营销标题为英文，嵌入的真实运行时画面来自中文 Chrome UI；这不代表英文系统运行结果。1.2.5 英文系统弹窗另由全量 i18n 扫描和英文运行时回归验证无中文残留。"
+  },
+  "assets": [
+    {
+      "role": "icon_128",
+      "path": "public/icons/icon-128.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "14c9919ee79f7c530a29d7bf9d034bb2c146a27f219b09009cc8afc53bddb5cd",
+      "validation": "既有 CWS 图标；尺寸有效，保留平台允许的透明留白。"
+    },
+    {
+      "role": "small_promo",
+      "path": "release/cws/1.2.3/assets/final/small-promo-440x280.png",
+      "width": 440,
+      "height": 280,
+      "sha256": "d430c724dcaa98d6a7228e5cdb26f2667fdcc3fab7466d2671ee2fd1ab074275",
+      "validation": "既有 440x280 opaque RGB 素材；结构与视觉验收已通过。"
+    },
+    {
+      "role": "screenshot",
+      "path": "release/cws/1.2.3/assets/final/01-clean-copy-starts-here.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "4f070d707f2e25e53ca50aa381cadd3524f59bf26dff14c740e9b707121f8efa",
+      "validation": "既有 opaque RGB CWS 截图，仍对应当前 Popup 主流程。"
+    },
+    {
+      "role": "screenshot",
+      "path": "release/cws/1.2.3/assets/final/02-markdown-without-the-mess.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "8fabb9c5d0a341ebd87d037ed350c6aaa30e3e3c77c5e5b572d187b28caad85e",
+      "validation": "既有 opaque RGB CWS 截图，仍对应 Markdown 输出能力。"
+    },
+    {
+      "role": "screenshot",
+      "path": "release/cws/1.2.3/assets/final/03-tables-stay-structured.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "516b0e8357a56cb5aaed79a39ae860b9b985b4f8dbac211ba7ebb4fc16192ec3",
+      "validation": "既有 opaque RGB CWS 截图，仍对应表格结构化能力。"
+    },
+    {
+      "role": "screenshot",
+      "path": "release/cws/1.2.3/assets/final/04-code-keeps-its-shape.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "9d04de3286d2b7db53c43631c3b01f4784aad31601d7971d4b9ad4d41ac41099",
+      "validation": "既有 opaque RGB CWS 截图，仍对应代码清理能力。"
+    },
+    {
+      "role": "screenshot",
+      "path": "release/cws/1.2.3/assets/final/05-prompt-shortcuts.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "d8ddf317796e08dbdc2628bce2cfbc3d3c066c73d1b0afe6b5cc9894840775c7",
+      "validation": "既有 opaque RGB CWS 截图，仍对应 Prompt 管理和快捷 Prompt 能力。"
+    }
+  ],
+  "source_evidence": {
+    "dashboard_config": "release/cws/1.2.3/dashboard-config.json",
+    "persisted_listing": "release/cws/1.2.3/evidence/live/configure/store-listing.json",
+    "variant_scorecard": "release/cws/1.2.3/variant-scorecard.json",
+    "review_index": "release/cws/1.2.3/review-index.json",
+    "release_material_summary": "release/cws/1.2.3/release-material-summary.json"
+  }
+}

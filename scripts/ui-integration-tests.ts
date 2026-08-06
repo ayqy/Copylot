@@ -295,6 +295,41 @@ async function runPopupFailureAssertions(): Promise<void> {
   }
 }
 
+async function runPopupPersistenceFailureAssertions(): Promise<void> {
+  const chromeMock = createChromeMock({
+    extensionId: 'abcdefghijklmnopabcdefghijklmnop',
+    syncData: { [SETTINGS_KEY]: buildStoredSettings({ attachTitle: false }) },
+    syncSetError: 'sync write unavailable'
+  });
+
+  const page = await loadExtensionPage({
+    htmlPath: 'src/popup/popup.html',
+    builtScriptPath: 'dist/src/popup/popup.js',
+    pageUrl: 'https://example.com/src/popup/popup.html',
+    chrome: chromeMock
+  });
+
+  try {
+    await page.waitForIdle();
+    const document = page.dom.window.document;
+    const attachTitle = getRequiredElement<HTMLInputElement>(document, '#attach-title');
+    attachTitle.checked = true;
+    attachTitle.dispatchEvent(new window.Event('change', { bubbles: true }));
+    await page.waitForIdle();
+    await page.waitForIdle();
+
+    assert.equal(attachTitle.checked, false, 'failed popup writes must roll the control back');
+    assert.equal(
+      (chromeMock.storage.sync.snapshot()[SETTINGS_KEY] as Settings).attachTitle,
+      false
+    );
+    const status = getRequiredElement<HTMLElement>(document, '#copy-action-status');
+    assert.equal(status.dataset.state, 'error');
+  } finally {
+    page.restore();
+  }
+}
+
 async function runPopupCacheFirstAssertions(): Promise<void> {
   let releaseSyncGet: (() => void) | undefined;
   const syncGetGate = new Promise<void>((resolve) => {
@@ -476,6 +511,81 @@ async function runOptionsAssertions(): Promise<void> {
   }
 }
 
+async function runOptionsPersistenceFailureAssertions(): Promise<void> {
+  const initialSettings = buildStoredSettings();
+  const chromeMock = createChromeMock({
+    extensionId: 'abcdefghijklmnopabcdefghijklmnop',
+    syncData: { [SETTINGS_KEY]: initialSettings },
+    syncSetError: 'QUOTA_BYTES_PER_ITEM exceeded'
+  });
+
+  const page = await loadExtensionPage({
+    htmlPath: 'src/options/options.html',
+    builtScriptPath: 'dist/src/options/options.js',
+    pageUrl: 'https://example.com/src/options/options.html',
+    chrome: chromeMock
+  });
+
+  try {
+    const document = page.dom.window.document;
+    clickElement(getRequiredElement<HTMLButtonElement>(document, '#add-prompt-btn'));
+    getRequiredElement<HTMLInputElement>(document, '#prompt-title').value = 'Must Not Lie';
+    getRequiredElement<HTMLTextAreaElement>(document, '#prompt-template').value =
+      'Persist this:\n\n{content}';
+    getRequiredElement<HTMLFormElement>(document, '#prompt-form').dispatchEvent(
+      new window.Event('submit', { bubbles: true, cancelable: true })
+    );
+    await page.waitForIdle();
+
+    assert.equal(
+      getRequiredElement<HTMLElement>(document, '#prompt-editor-modal').style.display,
+      'flex',
+      'prompt editor must remain open when persistence fails'
+    );
+    assert.equal(
+      (chromeMock.storage.sync.snapshot()[SETTINGS_KEY] as Settings).userPrompts.some(
+        (prompt) => prompt.title === 'Must Not Lie'
+      ),
+      false,
+      'failed prompt writes must not appear persisted'
+    );
+    assert.ok(document.querySelector('.notification-error'));
+    assert.equal(document.querySelector('.notification-success'), null);
+
+    clickElement(getRequiredElement<HTMLButtonElement>(document, '#cancel-btn'));
+    const chatTab = getRequiredElement<HTMLButtonElement>(
+      document,
+      '.tabs-nav .tab-btn[data-tab="chat-services"]'
+    );
+    clickElement(chatTab);
+    clickElement(getRequiredElement<HTMLButtonElement>(document, '#add-custom-chat-btn'));
+    getRequiredElement<HTMLInputElement>(document, '#chat-service-name').value = 'Unsaved Chat';
+    getRequiredElement<HTMLInputElement>(document, '#chat-service-url').value =
+      'https://example.com/unsaved';
+    getRequiredElement<HTMLFormElement>(document, '#chat-service-form').dispatchEvent(
+      new window.Event('submit', { bubbles: true, cancelable: true })
+    );
+    await page.waitForIdle();
+
+    assert.equal(
+      getRequiredElement<HTMLElement>(document, '#chat-service-editor-modal').style.display,
+      'flex',
+      'chat-service editor must remain open when persistence fails'
+    );
+    assert.equal(
+      Array.from(
+        document.querySelectorAll('.chat-service-name') as NodeListOf<HTMLElement>
+      ).some(
+        (element) => element.textContent === 'Unsaved Chat'
+      ),
+      false,
+      'failed chat-service writes must roll the visible state back'
+    );
+  } finally {
+    page.restore();
+  }
+}
+
 async function runDevtoolsAssertions(): Promise<void> {
   const chromeMock = createChromeMock({
     extensionId: 'abcdefghijklmnopabcdefghijklmnop'
@@ -526,8 +636,10 @@ async function runDevtoolsAssertions(): Promise<void> {
 async function run(): Promise<void> {
   await runPopupAssertions();
   await runPopupFailureAssertions();
+  await runPopupPersistenceFailureAssertions();
   await runPopupCacheFirstAssertions();
   await runOptionsAssertions();
+  await runOptionsPersistenceFailureAssertions();
   await runDevtoolsAssertions();
   console.log('PASS ui-integration-tests');
 }

@@ -41,6 +41,49 @@ async function expectPseudoElementSize(
   expect(size.height).toBeCloseTo(expected.height, 1);
 }
 
+test('built-in chat services use China-first order and verified canonical URLs', async ({
+  extensionContext,
+  extensionId
+}) => {
+  const page = await openExtensionPage(extensionContext, extensionId, 'src/options/options.html');
+  try {
+    await openOptionsTab(page, 'chat-services');
+    const services = await page.locator('.chat-service-card').evaluateAll((cards) =>
+      cards.map((card) => ({
+        id: card.getAttribute('data-id'),
+        url: card.querySelector('.chat-service-url')?.textContent?.trim()
+      }))
+    );
+
+    expect(services.slice(0, 6).map((service) => service.id)).toEqual([
+      'deepseek',
+      'kimi',
+      'doubao',
+      'tongyi',
+      'yiyan',
+      'glm'
+    ]);
+    expect(Object.fromEntries(services.map((service) => [service.id, service.url]))).toEqual({
+      deepseek: 'https://chat.deepseek.com/',
+      kimi: 'https://www.kimi.com/',
+      doubao: 'https://www.doubao.com/chat/',
+      tongyi: 'https://chat.qwen.ai/',
+      yiyan: 'https://wenxin.baidu.com/',
+      glm: 'https://chatglm.cn/',
+      chatgpt: 'https://chatgpt.com/',
+      claude: 'https://claude.ai/new',
+      gemini: 'https://aistudio.google.com/',
+      poe: 'https://poe.com/',
+      'openai-playground': 'https://platform.openai.com/playground/',
+      perplexity: 'https://www.perplexity.ai/',
+      grok: 'https://grok.com/',
+      lmarena: 'https://arena.ai/text/direct'
+    });
+  } finally {
+    await page.close();
+  }
+});
+
 test('options can add edit delete custom chat service and set default', async ({
   extensionContext,
   extensionId
@@ -114,6 +157,7 @@ test('prompt with target chat auto-opens configured chat service', async ({
         predicate: (candidate) => candidate.url().startsWith(`${fixtureOrigin}/chat.html?target=fixture`)
       });
 
+      const redirectStartedAt = Date.now();
       await invokeContextMenu(driverPage, {
         tabId: activeTabId!,
         menuItemId: promptId!,
@@ -122,9 +166,12 @@ test('prompt with target chat auto-opens configured chat service', async ({
       });
 
       const chatPage = await chatPagePromise;
+      const redirectElapsedMs = Date.now() - redirectStartedAt;
       await chatPage.waitForLoadState('domcontentloaded');
       await expect(chatPage.locator('#chat-heading')).toBeVisible();
       await expectClipboardTextEventually(/Send this:/, driverPage);
+      expect(redirectElapsedMs).toBeGreaterThanOrEqual(800);
+      expect(redirectElapsedMs).toBeLessThan(1450);
       await chatPage.close();
     } finally {
       await article.close();

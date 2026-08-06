@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "product": "Copylot",
+  "version": "1.2.5",
+  "checked_at": "2026-08-06",
+  "method": "HTTPS GET with redirects enabled, 10 second connect timeout and 25 second total timeout",
+  "interpretation": "HTTP 200 means the destination page loaded through the check client. HTTP 403 means the canonical HTTPS endpoint completed DNS/TLS/HTTP negotiation but rejected the automated client; it is recorded as protected rather than dead.",
+  "services": [
+    {
+      "id": "deepseek",
+      "url": "https://chat.deepseek.com/",
+      "http_status": 403,
+      "final_url": "https://chat.deepseek.com/",
+      "status": "reachable_protected"
+    },
+    {
+      "id": "kimi",
+      "url": "https://www.kimi.com/",
+      "http_status": 200,
+      "final_url": "https://www.kimi.com/",
+      "status": "live"
+    },
+    {
+      "id": "doubao",
+      "url": "https://www.doubao.com/chat/",
+      "http_status": 200,
+      "final_url": "https://www.doubao.com/chat/",
+      "status": "live"
+    },
+    {
+      "id": "tongyi",
+      "url": "https://chat.qwen.ai/",
+      "http_status": 200,
+      "final_url": "https://chat.qwen.ai/",
+      "status": "live"
+    },
+    {
+      "id": "yiyan",
+      "url": "https://wenxin.baidu.com/",
+      "http_status": 200,
+      "final_url": "https://wenxin.baidu.com/",
+      "status": "live"
+    },
+    {
+      "id": "glm",
+      "url": "https://chatglm.cn/",
+      "http_status": 200,
+      "final_url": "https://chatglm.cn/",
+      "status": "live"
+    },
+    {
+      "id": "chatgpt",
+      "url": "https://chatgpt.com/",
+      "http_status": 403,
+      "final_url": "https://chatgpt.com/",
+      "status": "reachable_protected"
+    },
+    {
+      "id": "claude",
+      "url": "https://claude.ai/new",
+      "http_status": 403,
+      "final_url": "https://claude.ai/new",
+      "status": "reachable_protected"
+    },
+    {
+      "id": "gemini",
+      "url": "https://aistudio.google.com/",
+      "http_status": 200,
+      "final_url": "https://aistudio.google.com/welcome",
+      "status": "live_redirect"
+    },
+    {
+      "id": "poe",
+      "url": "https://poe.com/",
+      "http_status": 403,
+      "final_url": "https://poe.com/login?redirect_url=%2F",
+      "status": "reachable_protected_redirect"
+    },
+    {
+      "id": "openai-playground",
+      "url": "https://platform.openai.com/playground/",
+      "http_status": 403,
+      "final_url": "https://platform.openai.com/playground/",
+      "status": "reachable_protected"
+    },
+    {
+      "id": "perplexity",
+      "url": "https://www.perplexity.ai/",
+      "http_status": 403,
+      "final_url": "https://www.perplexity.ai/",
+      "status": "reachable_protected"
+    },
+    {
+      "id": "grok",
+      "url": "https://grok.com/",
+      "http_status": 200,
+      "final_url": "https://grok.com/",
+      "status": "live"
+    },
+    {
+      "id": "lmarena",
+      "url": "https://arena.ai/text/direct",
+      "http_status": 200,
+      "final_url": "https://arena.ai/text/direct",
+      "status": "live"
+    }
+  ],
+  "summary": {
+    "total": 14,
+    "http_200": 8,
+    "http_403_protected": 6,
+    "dead_or_transport_failed": 0
+  }
+}

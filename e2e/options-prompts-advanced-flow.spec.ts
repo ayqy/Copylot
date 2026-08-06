@@ -1,8 +1,12 @@
 import path from 'node:path';
 import { test, expect } from './fixtures';
 import {
+  clearLastCopiedText,
+  getActiveTabId,
   getContextMenuItems,
+  getLastCopiedText,
   getSettingsSnapshot,
+  invokeContextMenu,
   openExtensionPage,
   waitForPromptCardByTitle
 } from './helpers/extension-state';
@@ -67,7 +71,8 @@ test('English options dialogs localize placeholders, labels, tooltips, and sampl
 test('prompt CRUD serializes context-menu rebuilds without duplicate IDs', async ({
   extensionContext,
   extensionId,
-  driverPage
+  driverPage,
+  fixtureOrigin
 }) => {
   const serviceWorker = extensionContext.serviceWorkers()[0] || (await extensionContext.waitForEvent('serviceworker'));
   const duplicateMenuErrors: string[] = [];
@@ -78,6 +83,7 @@ test('prompt CRUD serializes context-menu rebuilds without duplicate IDs', async
   });
 
   const page = await openExtensionPage(extensionContext, extensionId, 'src/options/options.html');
+  const article = await extensionContext.newPage();
   try {
     await createPromptViaModal(page, {
       title: 'CRUD Context Prompt',
@@ -93,6 +99,23 @@ test('prompt CRUD serializes context-menu rebuilds without duplicate IDs', async
       .poll(async () => (await getContextMenuItems(driverPage)).find((item) => item.id === promptId)?.title)
       .toBe('CRUD Context Prompt');
 
+    await article.goto(`${fixtureOrigin}/article.html`);
+    await article.locator('#article-paragraph').selectText();
+    await article.bringToFront();
+    const activeTabId = await getActiveTabId(driverPage);
+    expect(activeTabId).not.toBeNull();
+    const selectionText = (await article.locator('#article-paragraph').textContent()) || '';
+
+    await clearLastCopiedText(driverPage);
+    await invokeContextMenu(driverPage, {
+      tabId: activeTabId!,
+      menuItemId: promptId!,
+      selectionText,
+      pageUrl: article.url()
+    });
+    await expect.poll(() => getLastCopiedText(driverPage)).toContain('Create:');
+
+    await page.bringToFront();
     await editPromptViaCard(page, promptId!, {
       title: 'CRUD Context Prompt Edited',
       template: 'Edit:\n\n{content}'
@@ -101,12 +124,45 @@ test('prompt CRUD serializes context-menu rebuilds without duplicate IDs', async
       .poll(async () => (await getContextMenuItems(driverPage)).find((item) => item.id === promptId)?.title)
       .toBe('CRUD Context Prompt Edited');
 
+    const editedSettings = await getSettingsSnapshot(driverPage);
+    const editedPrompts = (editedSettings.userPrompts as Array<Record<string, unknown>>) || [];
+    expect(editedPrompts.find((prompt) => prompt.id === promptId)?.template).toBe(
+      'Edit:\n\n{content}'
+    );
+
+    await article.bringToFront();
+    await clearLastCopiedText(driverPage);
+    await invokeContextMenu(driverPage, {
+      tabId: activeTabId!,
+      menuItemId: promptId!,
+      selectionText,
+      pageUrl: article.url()
+    });
+    await expect.poll(() => getLastCopiedText(driverPage)).toContain('Edit:');
+    expect(await getLastCopiedText(driverPage)).not.toContain('Create:');
+
+    await page.bringToFront();
     await deletePromptViaCard(page, promptId!);
     await expect
       .poll(async () => (await getContextMenuItems(driverPage)).some((item) => item.id === promptId))
       .toBe(false);
+    const deletedSettings = await getSettingsSnapshot(driverPage);
+    const deletedPrompts = (deletedSettings.userPrompts as Array<Record<string, unknown>>) || [];
+    expect(deletedPrompts.some((prompt) => prompt.id === promptId)).toBe(false);
+
+    const reloadedOptions = await openExtensionPage(
+      extensionContext,
+      extensionId,
+      'src/options/options.html'
+    );
+    try {
+      await expect(reloadedOptions.locator(`.prompt-card[data-id="${promptId}"]`)).toHaveCount(0);
+    } finally {
+      await reloadedOptions.close();
+    }
     expect(duplicateMenuErrors).toEqual([]);
   } finally {
+    await article.close();
     await page.close();
   }
 });
@@ -143,6 +199,71 @@ test('options can edit prompt title template category target chat and auto-open'
     expect(edited?.autoOpenChat).toBe(true);
   } finally {
     await page.close();
+  }
+});
+
+test('concurrent prompt usage and editing preserve both the edit and usage metadata', async ({
+  extensionContext,
+  extensionId,
+  driverPage,
+  fixtureOrigin
+}) => {
+  const optionsPage = await openExtensionPage(
+    extensionContext,
+    extensionId,
+    'src/options/options.html'
+  );
+  const article = await extensionContext.newPage();
+  try {
+    await createPromptViaModal(optionsPage, {
+      title: 'Concurrent Prompt',
+      template: 'Before:\n\n{content}'
+    });
+    const promptId = await optionsPage
+      .locator('.prompt-card')
+      .filter({ hasText: 'Concurrent Prompt' })
+      .getAttribute('data-id');
+    expect(promptId).toBeTruthy();
+
+    await article.goto(`${fixtureOrigin}/article.html`);
+    const selectionText = (await article.locator('#article-paragraph').textContent()) || '';
+    await article.bringToFront();
+    const activeTabId = await getActiveTabId(driverPage);
+    expect(activeTabId).not.toBeNull();
+
+    await optionsPage.bringToFront();
+    await Promise.all([
+      invokeContextMenu(driverPage, {
+        tabId: activeTabId!,
+        menuItemId: promptId!,
+        selectionText,
+        pageUrl: article.url()
+      }),
+      editPromptViaCard(optionsPage, promptId!, {
+        title: 'Concurrent Prompt Edited',
+        template: 'After:\n\n{content}'
+      })
+    ]);
+
+    await expect
+      .poll(async () => {
+        const settings = await getSettingsSnapshot(driverPage);
+        const prompts = (settings.userPrompts as Array<Record<string, unknown>>) || [];
+        const prompt = prompts.find((item) => item.id === promptId);
+        return {
+          title: prompt?.title,
+          template: prompt?.template,
+          usageCount: prompt?.usageCount
+        };
+      })
+      .toEqual({
+        title: 'Concurrent Prompt Edited',
+        template: 'After:\n\n{content}',
+        usageCount: 1
+      });
+  } finally {
+    await article.close();
+    await optionsPage.close();
   }
 });
 

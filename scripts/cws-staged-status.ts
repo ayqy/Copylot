@@ -34,6 +34,18 @@ export type CwsCancelResponseBodyKind =
   | 'empty_object'
   | 'unexpected';
 
+export function buildCwsReviewSubmissionRequest(): {
+  publishType: 'DEFAULT_PUBLISH';
+  skipReview: false;
+  blockOnWarnings: true;
+} {
+  return {
+    publishType: 'DEFAULT_PUBLISH',
+    skipReview: false,
+    blockOnWarnings: true
+  };
+}
+
 type CwsVersionedStatus = {
   submittedItemRevisionStatus?: {
     state?: string;

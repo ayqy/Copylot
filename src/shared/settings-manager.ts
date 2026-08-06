@@ -70,6 +70,24 @@ export interface Settings {
 
 export const SETTINGS_KEY = 'copilot_settings';
 export const SETTINGS_CACHE_KEY = 'copilot_settings_cache';
+export const CHAT_REDIRECT_DELAY_MS = 1000;
+
+export const BUILT_IN_CHAT_SERVICE_ORDER = [
+  'deepseek',
+  'kimi',
+  'doubao',
+  'tongyi',
+  'yiyan',
+  'glm',
+  'chatgpt',
+  'claude',
+  'gemini',
+  'poe',
+  'openai-playground',
+  'perplexity',
+  'grok',
+  'lmarena'
+] as const;
 
 export const DEFAULT_EDITOR_EXCLUSION_CLASSES: string[] = [
   'CodeMirror',
@@ -170,7 +188,9 @@ function normalizeCachedSettings(value: unknown): Settings | null {
     settings.userPrompts,
     isPromptActive
   ).prompts;
-  settings.chatServices = settings.chatServices.map((service) => ({ ...service }));
+  settings.chatServices = normalizeChatServiceOrder(
+    settings.chatServices.map((service) => ({ ...service }))
+  );
   settings.editorExclusionClassNames = Array.isArray(settings.editorExclusionClassNames)
     ? [...settings.editorExclusionClassNames]
     : [...DEFAULT_EDITOR_EXCLUSION_CLASSES];
@@ -213,9 +233,53 @@ export async function getCachedSettings(): Promise<Settings | null> {
 // 默认Chat服务配置
 export const DEFAULT_CHAT_SERVICES: ChatService[] = [
   {
+    id: 'deepseek',
+    name: 'DeepSeek',
+    url: 'https://chat.deepseek.com/',
+    enabled: true,
+    builtIn: true,
+    description: getMessage('statusFreeAfterLogin')
+  },
+  {
+    id: 'kimi',
+    name: 'Kimi',
+    url: 'https://www.kimi.com/',
+    enabled: true,
+    builtIn: true
+  },
+  {
+    id: 'doubao',
+    name: getMessage('serviceDoubao'),
+    url: 'https://www.doubao.com/chat/',
+    enabled: true,
+    builtIn: true
+  },
+  {
+    id: 'tongyi',
+    name: getMessage('serviceTongyi'),
+    url: 'https://chat.qwen.ai/',
+    enabled: true,
+    builtIn: true
+  },
+  {
+    id: 'yiyan',
+    name: getMessage('serviceYiyan'),
+    url: 'https://wenxin.baidu.com/',
+    enabled: true,
+    builtIn: true
+  },
+  {
+    id: 'glm',
+    name: 'GLM',
+    url: 'https://chatglm.cn/',
+    enabled: true,
+    builtIn: true,
+    description: getMessage('statusFreeNoLogin')
+  },
+  {
     id: 'chatgpt',
     name: 'ChatGPT',
-    url: 'https://chat.openai.com',
+    url: 'https://chatgpt.com/',
     enabled: true,
     builtIn: true
   },
@@ -235,42 +299,6 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     description: getMessage('statusCompleteFree')
   },
   {
-    id: 'yiyan',
-    name: getMessage('serviceYiyan'),
-    url: 'https://yiyan.baidu.com',
-    enabled: true,
-    builtIn: true
-  },
-  {
-    id: 'tongyi',
-    name: getMessage('serviceTongyi'),
-    url: 'https://chat.qwen.ai/',
-    enabled: true,
-    builtIn: true
-  },
-  {
-    id: 'kimi',
-    name: 'Kimi',
-    url: 'https://kimi.moonshot.cn',
-    enabled: true,
-    builtIn: true
-  },
-  {
-    id: 'doubao',
-    name: getMessage('serviceDoubao'),
-    url: 'https://doubao.com',
-    enabled: true,
-    builtIn: true
-  },
-  {
-    id: 'deepseek',
-    name: 'DeepSeek',
-    url: 'https://chat.deepseek.com/',
-    enabled: true,
-    builtIn: true,
-    description: getMessage('statusFreeAfterLogin')
-  },
-  {
     id: 'poe',
     name: 'Poe',
     url: 'https://poe.com/',
@@ -279,17 +307,9 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
     description: getMessage('statusDailyQuota')
   },
   {
-    id: 'glm',
-    name: 'GLM',
-    url: 'https://chat.z.ai/',
-    enabled: true,
-    builtIn: true,
-    description: getMessage('statusFreeNoLogin')
-  },
-  {
     id: 'openai-playground',
     name: getMessage('serviceOpenAIPlayground'),
-    url: 'https://platform.openai.com/playground/prompts?models=o3',
+    url: 'https://platform.openai.com/playground/',
     enabled: true,
     builtIn: true,
     description: getMessage('statusDailyQuota')
@@ -311,12 +331,32 @@ export const DEFAULT_CHAT_SERVICES: ChatService[] = [
   {
     id: 'lmarena',
     name: 'LMArena',
-    url: 'https://lmarena.ai/?mode=direct',
+    url: 'https://arena.ai/text/direct',
     enabled: true,
     builtIn: true,
     description: getMessage('statusCompleteFree')
   }
 ];
+
+export function normalizeChatServiceOrder(services: ChatService[]): ChatService[] {
+  const rank = new Map<string, number>(
+    BUILT_IN_CHAT_SERVICE_ORDER.map((id, index) => [id, index])
+  );
+
+  return services
+    .map((service, index) => ({ service, index }))
+    .sort((left, right) => {
+      const leftRank = left.service.builtIn
+        ? (rank.get(left.service.id) ?? BUILT_IN_CHAT_SERVICE_ORDER.length)
+        : Number.POSITIVE_INFINITY;
+      const rightRank = right.service.builtIn
+        ? (rank.get(right.service.id) ?? BUILT_IN_CHAT_SERVICE_ORDER.length)
+        : Number.POSITIVE_INFINITY;
+
+      return leftRank - rightRank || left.index - right.index;
+    })
+    .map(({ service }) => service);
+}
 
 export const DEFAULT_SETTINGS: Settings = {
   isMagicCopyEnabled: true, // Added this line
@@ -478,6 +518,16 @@ export async function getSettings(): Promise<Settings> {
         }
       });
 
+      const chatServiceOrderBefore = mergedSettings.chatServices.map((service) => service.id);
+      mergedSettings.chatServices = normalizeChatServiceOrder(mergedSettings.chatServices);
+      if (
+        mergedSettings.chatServices.some(
+          (service, index) => service.id !== chatServiceOrderBefore[index]
+        )
+      ) {
+        chatServicesChangedByMigration = true;
+      }
+
       const shouldPersistMigrations =
         promptsChangedByMigration ||
         chatServicesChangedByMigration ||
@@ -486,7 +536,11 @@ export async function getSettings(): Promise<Settings> {
         mergedSettings.language !== storedSettings.language;
 
       if (shouldPersistMigrations) {
-        await saveSettings(mergedSettings);
+        try {
+          await saveSettings(mergedSettings);
+        } catch (error) {
+          console.warn('Settings migration could not be persisted yet:', error);
+        }
       }
 
       await cacheSettings(mergedSettings);
@@ -503,7 +557,86 @@ export async function getSettings(): Promise<Settings> {
   }
 }
 
-export async function saveSettings(settings: Partial<Settings>): Promise<void> {
+function cloneSettingsPatch(settings: Partial<Settings>): Partial<Settings> {
+  return {
+    ...settings,
+    ...(settings.userPrompts
+      ? { userPrompts: settings.userPrompts.map((prompt) => ({ ...prompt })) }
+      : {}),
+    ...(settings.chatServices
+      ? { chatServices: settings.chatServices.map((service) => ({ ...service })) }
+      : {}),
+    ...(settings.editorExclusionClassNames
+      ? { editorExclusionClassNames: [...settings.editorExclusionClassNames] }
+      : {}),
+    ...(settings.editorExclusionAttributeSelectors
+      ? { editorExclusionAttributeSelectors: [...settings.editorExclusionAttributeSelectors] }
+      : {})
+  };
+}
+
+let settingsMutationQueue: Promise<void> = Promise.resolve();
+
+function enqueueSettingsMutation<T>(operation: () => Promise<T>): Promise<T> {
+  const mutation = settingsMutationQueue.then(operation, operation);
+  settingsMutationQueue = mutation.then(
+    () => undefined,
+    () => undefined
+  );
+  return mutation;
+}
+
+export function saveSettings(settings: Partial<Settings>): Promise<void> {
+  const settingsSnapshot = cloneSettingsPatch(settings);
+  return enqueueSettingsMutation(() => persistSettings(settingsSnapshot));
+}
+
+async function readSettingsForMutation(): Promise<Settings> {
+  if (typeof chrome === 'undefined' || !chrome.storage?.sync) {
+    throw new Error('chrome.storage.sync is not available; settings were not saved.');
+  }
+
+  const result = await chrome.storage.sync.get(SETTINGS_KEY);
+  const storedSettings = result[SETTINGS_KEY] as Partial<Settings> | undefined;
+  const language = resolveSettingsLanguage(storedSettings?.language);
+  const settings: Settings = {
+    ...buildDefaultSettings(language),
+    ...(storedSettings || {}),
+    language
+  };
+  settings.userPrompts = Array.isArray(settings.userPrompts)
+    ? settings.userPrompts.map((prompt) => ({ ...prompt }))
+    : buildDefaultBuiltInPrompts(language);
+  settings.chatServices = normalizeChatServiceOrder(
+    (Array.isArray(settings.chatServices) ? settings.chatServices : DEFAULT_CHAT_SERVICES).map(
+      (service) => ({ ...service })
+    )
+  );
+  settings.editorExclusionClassNames = Array.isArray(settings.editorExclusionClassNames)
+    ? [...settings.editorExclusionClassNames]
+    : [...DEFAULT_EDITOR_EXCLUSION_CLASSES];
+  settings.editorExclusionAttributeSelectors = Array.isArray(
+    settings.editorExclusionAttributeSelectors
+  )
+    ? [...settings.editorExclusionAttributeSelectors]
+    : [...DEFAULT_EDITOR_EXCLUSION_ATTRIBUTE_SELECTORS];
+  return settings;
+}
+
+export function mutateSettings<T>(
+  mutation: (current: Settings) => { patch?: Partial<Settings>; result: T }
+): Promise<T> {
+  return enqueueSettingsMutation(async () => {
+    const current = await readSettingsForMutation();
+    const mutationResult = mutation(current);
+    if (mutationResult.patch) {
+      await persistSettings(cloneSettingsPatch(mutationResult.patch));
+    }
+    return mutationResult.result;
+  });
+}
+
+async function persistSettings(settings: Partial<Settings>): Promise<void> {
   try {
     if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync) {
       // Get current settings first (but avoid infinite recursion)
@@ -536,6 +669,7 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
         }
         return normalized;
       });
+      mergedSettings.chatServices = normalizeChatServiceOrder(mergedSettings.chatServices);
 
       mergedSettings.language = resolveSettingsLanguage(mergedSettings.language);
 
@@ -570,7 +704,7 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
         console.debug('Settings saved:', mergedSettings);
       }
     } else {
-      console.warn('chrome.storage.sync is not available, settings not saved.');
+      throw new Error('chrome.storage.sync is not available; settings were not saved.');
     }
   } catch (error) {
     console.error('Error saving settings:', error);

@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-08-06",
+  "rules": [
+    {
+      "url": "https://developer.chrome.com/docs/webstore/publish/",
+      "checked_at": "2026-08-06",
+      "topic": "lifecycle",
+      "claim": "上传、提交审核、审核通过和公开可用是不同状态；选择自动发布后，审核通过会自动公开，除非随后主动延期发布。",
+      "decision": "本轮提交 1.2.5 审核并选择审核通过后自动发布；提交成功只按目标版本的审核状态报告，不提前宣称已上线。",
+      "evidence_kind": "direct"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/webstore/api/reference/rest/v2/publishers.items/publish",
+      "checked_at": "2026-08-06",
+      "topic": "automation",
+      "claim": "API v2 publish 支持 DEFAULT_PUBLISH 和 skipReview；DEFAULT_PUBLISH 表示审核通过后立即发布。",
+      "decision": "提交请求显式发送 publishType=DEFAULT_PUBLISH、skipReview=false，并在脱敏证据中保留这两个字段。",
+      "evidence_kind": "direct"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/webstore/images/",
+      "checked_at": "2026-08-06",
+      "topic": "assets",
+      "claim": "CWS 需要 128x128 图标、440x280 小型宣传图和至少一张 1280x800 或 640x400 截图。",
+      "decision": "按管理员要求复用 1.2.3 已完成尺寸、RGB/alpha、视觉与控制台持久化验证的素材，不生成或重新上传图片。",
+      "evidence_kind": "direct"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/webstore/program-policies/",
+      "checked_at": "2026-08-06",
+      "topic": "policy",
+      "claim": "扩展包、权限、隐私披露、商店文案与宣传素材必须真实一致并准确代表产品。",
+      "decision": "1.2.5 未增加权限或改变核心定位；复用字段与素材，只替换包含已验收修复的生产 ZIP。",
+      "evidence_kind": "direct"
+    }
+  ]
+}

@@ -14,6 +14,7 @@ declare function getActivePrompts(prompts: Prompt[]): Prompt[];
 declare function getMessage(key: string): string;
 declare function recordTelemetryEvent(name: string, props?: Record<string, unknown>): Promise<void>;
 declare function showCopyActionFeedback(message: string, kind: 'success' | 'error'): void;
+declare const CHAT_REDIRECT_DELAY_MS: number;
 
 /* INLINE:block-identifier */
 /* INLINE:prompt-shortcuts */
@@ -539,7 +540,7 @@ async function processPromptActionMessage(message: {
       showChatRedirectNotification(message.chatServiceName);
       setTimeout(() => {
         window.open(message.chatServiceUrl!, '_blank');
-      }, 1500);
+      }, CHAT_REDIRECT_DELAY_MS);
     } else {
       showCopyActionFeedback(getMessage('copySuccessPrompt'), 'success');
     }
@@ -1154,7 +1155,7 @@ async function handlePromptClick(promptId: string): Promise<void> {
         // 延迟打开chat服务，让用户看到反馈
         setTimeout(() => {
           window.open(chatService.url, '_blank');
-        }, 1500);
+        }, CHAT_REDIRECT_DELAY_MS);
       }
     }
     

@@ -96,6 +96,27 @@ function getMessage(key: string, substitutions?: string | string[]): string {
   );
 }
 
+async function persistSettingsPatch(settings: Partial<Settings>): Promise<void> {
+  let response: { handled?: boolean; success?: boolean; error?: string } | undefined;
+  try {
+    response = await chrome.runtime.sendMessage({
+      type: 'save-settings-patch',
+      settings
+    });
+  } catch (error) {
+    console.warn('Background settings transaction unavailable; using direct storage:', error);
+  }
+
+  if (response?.handled) {
+    if (!response.success) {
+      throw new Error(response.error || getMessage('savingFailed'));
+    }
+    return;
+  }
+
+  await saveSettings(settings);
+}
+
 function getElements(): PopupElements {
   return {
     versionDisplay: document.getElementById('version-display') as HTMLElement,
@@ -456,12 +477,19 @@ async function hydrateSettingsFromCacheThenSync(): Promise<void> {
 }
 
 async function saveCurrentSettings(): Promise<void> {
+  const revision = settingsInteractionRevision;
   const changes = getSettingsFromUI();
   currentSettings = { ...currentSettings, ...changes };
   try {
-    await saveSettings(changes);
+    await persistSettingsPatch(changes);
   } catch (error) {
     console.error('Failed to save popup settings:', error);
+    if (settingsInteractionRevision === revision) {
+      currentSettings = await getSettings();
+      settingsInteractionRevision = 0;
+      updateUIFromSettings(currentSettings);
+    }
+    setCopyActionStatus('error', getMessage('savingFailed'));
   }
 }
 

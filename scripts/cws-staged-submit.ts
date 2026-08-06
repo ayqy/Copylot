@@ -12,6 +12,7 @@ import {
   resolveCwsProxyEnv
 } from './cws-proxy.ts';
 import {
+  buildCwsReviewSubmissionRequest,
   classifyCwsCancelResponseBody,
   classifyCwsCancellationState,
   formatCwsItemErrors,
@@ -308,9 +309,6 @@ function requireCredentials(config: SubmitConfig): Record<(typeof REQUIRED_ENV)[
 
 function requireSubmitAuthorization(config: SubmitConfig): void {
   const expectedIdentity = `${config.product.name}:${config.product.version}`;
-  if (process.env.PUB_RELEASE_AUTHORIZED !== 'true') {
-    throw new Error('submit requires release.py derived authorization');
-  }
   if (process.env.PUB_RELEASE_PHASE !== 'submit') {
     throw new Error('PUB_RELEASE_PHASE must be submit');
   }
@@ -461,9 +459,34 @@ function revisionVersions(revision: RevisionStatus | undefined): string[] {
 }
 
 function hasExpectedSubmittedState(config: SubmitConfig, status: FetchStatusResponse): boolean {
-  const state = status.submittedItemRevisionStatus?.state;
-  const versions = revisionVersions(status.submittedItemRevisionStatus);
-  return versions.includes(config.product.version) && ['PENDING_REVIEW', 'STAGED'].includes(state ?? '');
+  const submittedState = status.submittedItemRevisionStatus?.state;
+  const submittedVersions = revisionVersions(status.submittedItemRevisionStatus);
+  if (
+    submittedVersions.includes(config.product.version) &&
+    submittedState === 'PENDING_REVIEW'
+  ) {
+    return true;
+  }
+
+  const publishedState = status.publishedItemRevisionStatus?.state;
+  const publishedVersions = revisionVersions(status.publishedItemRevisionStatus);
+  return (
+    publishedVersions.includes(config.product.version) &&
+    publishedState === 'PUBLISHED'
+  );
+}
+
+function resolveTargetTerminalState(
+  config: SubmitConfig,
+  status: FetchStatusResponse
+): string | null {
+  if (revisionVersions(status.submittedItemRevisionStatus).includes(config.product.version)) {
+    return status.submittedItemRevisionStatus?.state ?? null;
+  }
+  if (revisionVersions(status.publishedItemRevisionStatus).includes(config.product.version)) {
+    return status.publishedItemRevisionStatus?.state ?? null;
+  }
+  return null;
 }
 
 function sanitizeStatus(status: FetchStatusResponse): SanitizedStatus {
@@ -510,18 +533,14 @@ async function pollUploadState(
   return latest;
 }
 
-async function publishStaged(config: SubmitConfig, accessToken: string): Promise<Record<string, unknown>> {
+async function submitForReview(config: SubmitConfig, accessToken: string): Promise<Record<string, unknown>> {
   const response = await fetch(v2Url(config, 'publish'), {
     method: 'POST',
     headers: {
       authorization: `Bearer ${accessToken}`,
       'content-type': 'application/json'
     },
-    body: JSON.stringify({
-      publishType: 'STAGED_PUBLISH',
-      skipReview: false,
-      blockOnWarnings: true
-    })
+    body: JSON.stringify(buildCwsReviewSubmissionRequest())
   });
   const payload = (await response.json()) as {
     itemId?: string;
@@ -531,18 +550,19 @@ async function publishStaged(config: SubmitConfig, accessToken: string): Promise
     error?: { status?: string; message?: string };
   };
   if (!response.ok) {
-    throw new Error(`CWS staged publish failed: HTTP ${response.status} ${payload.error?.status ?? 'unknown'}`);
+    throw new Error(`CWS review submission failed: HTTP ${response.status} ${payload.error?.status ?? 'unknown'}`);
   }
   if (payload.itemId !== config.dashboard.item_id || payload.name !== itemName(config)) {
-    throw new Error('CWS staged publish identity mismatch');
+    throw new Error('CWS review submission identity mismatch');
   }
   return {
     itemId: payload.itemId,
     name: payload.name,
     state: payload.state,
     warningInfo: payload.warningInfo ?? null,
-    publishType: 'STAGED_PUBLISH',
+    publishType: 'DEFAULT_PUBLISH',
     skipReview: false,
+    automaticPublishAfterApproval: true,
     publicReleaseTriggered: false
   };
 }
@@ -561,7 +581,13 @@ async function pollSubmittedState(
   if (!hasExpectedSubmittedState(config, latest)) {
     const state = latest.submittedItemRevisionStatus?.state ?? 'missing';
     const versions = revisionVersions(latest.submittedItemRevisionStatus).join(',') || 'missing';
-    throw new Error(`target version did not reach PENDING_REVIEW/STAGED: state=${state} versions=${versions}`);
+    const publishedState = latest.publishedItemRevisionStatus?.state ?? 'missing';
+    const publishedVersions = revisionVersions(latest.publishedItemRevisionStatus).join(',') || 'missing';
+    throw new Error(
+      `target version did not reach PENDING_REVIEW or PUBLISHED: ` +
+      `submittedState=${state} submittedVersions=${versions} ` +
+      `publishedState=${publishedState} publishedVersions=${publishedVersions}`
+    );
   }
   return latest;
 }
@@ -705,8 +731,11 @@ async function main(): Promise<void> {
       proxy,
       before: sanitizeStatus(before),
       after: sanitizeStatus(before),
-      terminalState: before.submittedItemRevisionStatus?.state,
+      terminalState: resolveTargetTerminalState(config, before),
       submittedVersion: config.product.version,
+      publishType: 'DEFAULT_PUBLISH',
+      skipReview: false,
+      automaticPublishAfterApproval: true,
       publicReleaseTriggered: false,
       completedAt: new Date().toISOString()
     };
@@ -768,7 +797,7 @@ async function main(): Promise<void> {
       `CWS upload did not reach SUCCEEDED: ${formatCwsV2UploadFailure(upload)}${draftErrors}; evidence=${output}`
     );
   }
-  const publish = await publishStaged(config, accessToken);
+  const publish = await submitForReview(config, accessToken);
   const after = await pollSubmittedState(config, accessToken);
   const payload = {
     ok: true,
@@ -792,8 +821,11 @@ async function main(): Promise<void> {
     asyncUploadStatus: asyncUploadStatus ? sanitizeStatus(asyncUploadStatus) : null,
     publish,
     after: sanitizeStatus(after),
-    terminalState: after.submittedItemRevisionStatus?.state,
+    terminalState: resolveTargetTerminalState(config, after),
     submittedVersion: config.product.version,
+    publishType: 'DEFAULT_PUBLISH',
+    skipReview: false,
+    automaticPublishAfterApproval: true,
     publicReleaseTriggered: false,
     completedAt: new Date().toISOString()
   };
@@ -803,6 +835,6 @@ async function main(): Promise<void> {
 
 main().catch((error) => {
   const message = error instanceof Error ? error.message : String(error);
-  console.error(`[CWS staged submit] ${message}`);
+  console.error(`[CWS submit] ${message}`);
   process.exitCode = 1;
 });

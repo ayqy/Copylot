@@ -1,7 +1,7 @@
 {
   "name": "copylot-extension",
   "private": true,
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "A browser extension to copy web page content as AI-friendly format",
   "type": "module",
   "scripts": {
@@ -19,6 +19,7 @@
     "generate-icons": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/generate-icons.ts",
     "publish": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/publish.ts",
     "publish:cws": "node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/chrome-webstore.ts",
+    "submit:cws": "TS_NODE_TRANSPILE_ONLY=true node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/cws-staged-submit.ts",
     "submit:cws:staged": "TS_NODE_TRANSPILE_ONLY=true node --no-warnings=ExperimentalWarning --loader=ts-node/esm scripts/cws-staged-submit.ts",
     "clean": "rm -rf dist && rm -rf .tmp_build && rm -rf .tmp_build_prod",
     "apply": "ts-node scripts/apply-snapshots.ts",

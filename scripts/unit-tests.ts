@@ -162,7 +162,14 @@ import {
   buildPromptContextMenuItems,
   createSerializedContextMenuUpdater
 } from '../src/shared/context-menu-model.ts';
-import { getActivePrompts, isPromptActive } from '../src/shared/settings-manager.ts';
+import {
+  BUILT_IN_CHAT_SERVICE_ORDER,
+  CHAT_REDIRECT_DELAY_MS,
+  DEFAULT_CHAT_SERVICES,
+  getActivePrompts,
+  isPromptActive,
+  normalizeChatServiceOrder
+} from '../src/shared/settings-manager.ts';
 import {
   assignQuickPromptSlot,
   getQuickPromptBySlot,
@@ -179,6 +186,7 @@ import {
   resolveCwsProxyEnv
 } from './cws-proxy.ts';
 import {
+  buildCwsReviewSubmissionRequest,
   classifyCwsCancelResponseBody,
   classifyCwsCancellationState,
   formatCwsItemErrors,
@@ -279,6 +287,53 @@ const getMessage: I18nGetMessage = (key, substitutions) => {
 async function run() {
   const extensionId = 'abcdefghijklmnopabcdefghijklmnop';
   const publishedExtensionId = 'ehfglnbhoefcdedpkcdnainiifpflbic';
+
+  assert.equal(CHAT_REDIRECT_DELAY_MS, 1000);
+  assert.deepEqual(buildCwsReviewSubmissionRequest(), {
+    publishType: 'DEFAULT_PUBLISH',
+    skipReview: false,
+    blockOnWarnings: true
+  });
+  assert.deepEqual(
+    DEFAULT_CHAT_SERVICES.map((service) => service.id),
+    [...BUILT_IN_CHAT_SERVICE_ORDER]
+  );
+  assert.deepEqual(
+    DEFAULT_CHAT_SERVICES.slice(0, 6).map((service) => service.id),
+    ['deepseek', 'kimi', 'doubao', 'tongyi', 'yiyan', 'glm']
+  );
+  assert.deepEqual(
+    Object.fromEntries(DEFAULT_CHAT_SERVICES.map((service) => [service.id, service.url])),
+    {
+      deepseek: 'https://chat.deepseek.com/',
+      kimi: 'https://www.kimi.com/',
+      doubao: 'https://www.doubao.com/chat/',
+      tongyi: 'https://chat.qwen.ai/',
+      yiyan: 'https://wenxin.baidu.com/',
+      glm: 'https://chatglm.cn/',
+      chatgpt: 'https://chatgpt.com/',
+      claude: 'https://claude.ai/new',
+      gemini: 'https://aistudio.google.com/',
+      poe: 'https://poe.com/',
+      'openai-playground': 'https://platform.openai.com/playground/',
+      perplexity: 'https://www.perplexity.ai/',
+      grok: 'https://grok.com/',
+      lmarena: 'https://arena.ai/text/direct'
+    }
+  );
+  for (const service of DEFAULT_CHAT_SERVICES) {
+    assert.equal(new URL(service.url).protocol, 'https:');
+  }
+  assert.deepEqual(
+    normalizeChatServiceOrder([
+      { id: 'custom-first', name: 'Custom First', url: 'https://example.com/1', enabled: true, builtIn: false },
+      { ...DEFAULT_CHAT_SERVICES.find((service) => service.id === 'chatgpt')! },
+      { ...DEFAULT_CHAT_SERVICES.find((service) => service.id === 'kimi')! },
+      { id: 'custom-second', name: 'Custom Second', url: 'https://example.com/2', enabled: true, builtIn: false },
+      { ...DEFAULT_CHAT_SERVICES.find((service) => service.id === 'deepseek')! }
+    ]).map((service) => service.id),
+    ['deepseek', 'kimi', 'chatgpt', 'custom-first', 'custom-second']
+  );
 
   const storeUrl = buildChromeWebStoreDetailUrl(extensionId);
   const storeParsed = new URL(storeUrl);

@@ -202,6 +202,59 @@ let currentCommandShortcuts = new Map<string, string>();
 
 const PROMPT_SORT_MODE_STORAGE_KEY = 'copylot_prompt_sort_mode';
 const E2E_OPENED_URLS_KEY = 'copilot_e2e_opened_urls';
+
+function clonePrompts(prompts: Prompt[]): Prompt[] {
+  return prompts.map((prompt) => ({ ...prompt }));
+}
+
+function cloneChatServices(services: ChatService[]): ChatService[] {
+  return services.map((service) => ({ ...service }));
+}
+
+async function persistSettingsPatch(settings: Partial<Settings>): Promise<void> {
+  let response: { handled?: boolean; success?: boolean; error?: string } | undefined;
+  try {
+    response = await chrome.runtime.sendMessage({
+      type: 'save-settings-patch',
+      settings
+    });
+  } catch (error) {
+    console.warn('Background settings transaction unavailable; using direct storage:', error);
+  }
+
+  if (response?.handled) {
+    if (!response.success) {
+      throw new Error(response.error || getMessage('savingFailed'));
+    }
+    return;
+  }
+
+  await saveSettings(settings);
+}
+
+interface ChatSettingsSnapshot {
+  chatServices: ChatService[];
+  defaultChatServiceId?: string;
+  defaultAutoOpenChat: boolean;
+  userPrompts: Prompt[];
+}
+
+function snapshotChatSettings(): ChatSettingsSnapshot {
+  return {
+    chatServices: cloneChatServices(currentSettings.chatServices),
+    defaultChatServiceId: currentSettings.defaultChatServiceId,
+    defaultAutoOpenChat: currentSettings.defaultAutoOpenChat,
+    userPrompts: clonePrompts(allPrompts)
+  };
+}
+
+function restoreChatSettings(snapshot: ChatSettingsSnapshot): void {
+  currentSettings.chatServices = cloneChatServices(snapshot.chatServices);
+  currentSettings.defaultChatServiceId = snapshot.defaultChatServiceId;
+  currentSettings.defaultAutoOpenChat = snapshot.defaultAutoOpenChat;
+  allPrompts = clonePrompts(snapshot.userPrompts);
+  currentSettings.userPrompts = clonePrompts(snapshot.userPrompts);
+}
 /**
  * 获取所有DOM元素
  */
@@ -407,7 +460,7 @@ async function loadSettings() {
   try {
     currentSettings = await getSettings();
     await loadCommandShortcuts();
-    allPrompts = [...currentSettings.userPrompts];
+    allPrompts = clonePrompts(currentSettings.userPrompts);
     if (elements?.anonymousUsageDataSwitch) {
       elements.anonymousUsageDataSwitch.checked = Boolean(
         currentSettings.isAnonymousUsageDataEnabled
@@ -447,8 +500,10 @@ async function manualSync() {
     elements.syncStatusText.textContent = getMessage('syncStatusSyncing');
     elements.syncStatusBtn.dataset.state = 'syncing';
 
-    // 重新保存设置以触发同步
-    await saveSettings({ userPrompts: allPrompts });
+    // 重新保存并等待所有 Prompt 消费入口完成刷新。
+    if (!(await savePrompts())) {
+      return;
+    }
 
     elements.syncStatusText.textContent = getMessage('syncStatusConnected');
     elements.syncStatusBtn.dataset.state = 'connected';
@@ -474,7 +529,7 @@ function renderAnonymousUsageDataStatus(enabled: boolean): void {
 async function setAnonymousUsageDataEnabled(enabled: boolean): Promise<void> {
   const previousValue = Boolean(currentSettings?.isAnonymousUsageDataEnabled);
   try {
-    await saveSettings({ isAnonymousUsageDataEnabled: enabled });
+    await persistSettingsPatch({ isAnonymousUsageDataEnabled: enabled });
     currentSettings = { ...currentSettings, isAnonymousUsageDataEnabled: enabled };
     elements.anonymousUsageDataSwitch.checked = enabled;
 
@@ -874,8 +929,10 @@ async function deleteSelectedPrompts() {
     });
     // 删除非内置的用户prompt
     allPrompts = allPrompts.filter((p) => !(selectedPrompts.has(p.id) && !p.builtIn));
+    if (!(await savePrompts())) {
+      return;
+    }
     selectedPrompts.clear();
-    await savePrompts();
     showNotification(getMessage('deleteSuccessMessage', [count.toString()]), 'success');
   }
 }
@@ -997,7 +1054,9 @@ async function duplicatePrompt(promptId: string) {
     };
 
     allPrompts.push(newPrompt);
-    await savePrompts();
+    if (!(await savePrompts())) {
+      return;
+    }
     showNotification(getMessage('duplicateSuccessMessage'), 'success');
   }
 }
@@ -1015,7 +1074,9 @@ async function deletePrompt(promptId: string) {
       // 对于用户创建的prompt，直接删除
       allPrompts = allPrompts.filter((p) => p.id !== promptId);
     }
-    await savePrompts();
+    if (!(await savePrompts())) {
+      return;
+    }
     showNotification(getMessage('deleteSingleSuccessMessage'), 'success');
   }
 }
@@ -1023,18 +1084,27 @@ async function deletePrompt(promptId: string) {
 /**
  * 保存prompts到设置
  */
-async function savePrompts() {
+async function savePrompts(): Promise<boolean> {
+  const previousPrompts = clonePrompts(currentSettings.userPrompts);
+  let persisted = false;
+
   try {
-    const wasEmpty = getActivePrompts(allPrompts).length === 0;
+    const wasEmpty = getActivePrompts(previousPrompts).length === 0;
 
     // 显示同步中状态
     elements.syncStatusText.textContent = getMessage('syncStatusSyncing');
     elements.syncStatusBtn.dataset.state = 'syncing';
 
-    await saveSettings({ userPrompts: allPrompts });
-    currentSettings.userPrompts = [...allPrompts];
+    await persistSettingsPatch({ userPrompts: clonePrompts(allPrompts) });
+    persisted = true;
+    currentSettings.userPrompts = clonePrompts(allPrompts);
     filterAndRenderPrompts();
     renderShortcutSettingsPanel();
+
+    const updateResponse = await chrome.runtime.sendMessage({ type: 'update-context-menu' });
+    if (updateResponse?.success === false) {
+      throw new Error(updateResponse.error || getMessage('syncStatusFailed'));
+    }
 
     // 同步成功
     elements.syncStatusText.textContent = getMessage('syncStatusConnected');
@@ -1044,14 +1114,23 @@ async function savePrompts() {
     if (wasEmpty && getActivePrompts(allPrompts).length === 1) {
       showUsageInstructions();
     }
+    return true;
   } catch (error) {
     console.error('Error saving prompts:', error);
+
+    if (!persisted) {
+      allPrompts = clonePrompts(previousPrompts);
+      currentSettings.userPrompts = clonePrompts(previousPrompts);
+      filterAndRenderPrompts();
+      renderShortcutSettingsPanel();
+    }
 
     // 同步失败
     elements.syncStatusText.textContent = getMessage('syncStatusFailed');
     elements.syncStatusBtn.dataset.state = 'failed';
     const errorMessage = (error as Error).message;
     showNotification(getMessage('savingFailed', [errorMessage]), 'error');
+    return false;
   }
 }
 
@@ -1108,7 +1187,9 @@ async function savePromptForm(event: Event) {
 
   const isNewPrompt = !editingPromptId;
 
-  await savePrompts();
+  if (!(await savePrompts())) {
+    return;
+  }
   closePromptEditor();
 
   if (isNewPrompt) {
@@ -1232,7 +1313,9 @@ function handleImportPrompts() {
       });
 
       allPrompts.push(...newPrompts);
-      await savePrompts();
+      if (!(await savePrompts())) {
+        return;
+      }
 
       showNotification(
         getMessage('importSuccessMessage', [newPrompts.length.toString()]),
@@ -1522,13 +1605,15 @@ function setupEventListeners() {
 
   // 默认设置事件监听器
   elements.defaultChatService.addEventListener('change', async () => {
+    const previousSettings = snapshotChatSettings();
     currentSettings.defaultChatServiceId = elements.defaultChatService.value || undefined;
-    await saveChatSettings();
+    await saveChatSettings(previousSettings);
   });
 
   elements.defaultAutoOpenChat.addEventListener('change', async () => {
+    const previousSettings = snapshotChatSettings();
     currentSettings.defaultAutoOpenChat = elements.defaultAutoOpenChat.checked;
-    await saveChatSettings();
+    await saveChatSettings(previousSettings);
   });
 
   // Chat服务卡片事件委托
@@ -1843,6 +1928,8 @@ async function saveChatService(event: Event) {
     return;
   }
 
+  const previousSettings = snapshotChatSettings();
+
   if (editingChatServiceId) {
     // 编辑现有服务
     const service = currentSettings.chatServices.find((s) => s.id === editingChatServiceId);
@@ -1862,7 +1949,9 @@ async function saveChatService(event: Event) {
     currentSettings.chatServices.push(newService);
   }
 
-  await saveChatSettings();
+  if (!(await saveChatSettings(previousSettings))) {
+    return;
+  }
   closeChatServiceEditor();
   showNotification(getMessage('saveSuccessMessage'), 'success');
 }
@@ -1872,6 +1961,7 @@ async function saveChatService(event: Event) {
  */
 async function deleteChatService(serviceId: string) {
   if (confirm(getMessage('confirmDeleteService'))) {
+    const previousSettings = snapshotChatSettings();
     currentSettings.chatServices = currentSettings.chatServices.filter((s) => s.id !== serviceId);
 
     // 如果删除的是默认服务，清除默认设置
@@ -1886,7 +1976,9 @@ async function deleteChatService(serviceId: string) {
       }
     });
 
-    await saveChatSettings();
+    if (!(await saveChatSettings(previousSettings))) {
+      return;
+    }
     showNotification(getMessage('deleteSingleSuccessMessage'), 'success');
   }
 }
@@ -1897,6 +1989,7 @@ async function deleteChatService(serviceId: string) {
 async function toggleChatServiceEnabled(serviceId: string, enabled: boolean) {
   const service = currentSettings.chatServices.find((s) => s.id === serviceId);
   if (service) {
+    const previousSettings = snapshotChatSettings();
     service.enabled = enabled;
 
     // 如果禁用的是默认服务，清除默认设置
@@ -1904,26 +1997,34 @@ async function toggleChatServiceEnabled(serviceId: string, enabled: boolean) {
       currentSettings.defaultChatServiceId = undefined;
     }
 
-    await saveChatSettings();
+    await saveChatSettings(previousSettings);
   }
 }
 
 /**
  * 保存chat服务设置
  */
-async function saveChatSettings() {
+async function saveChatSettings(previousSettings: ChatSettingsSnapshot): Promise<boolean> {
   try {
-    await saveSettings({
+    await persistSettingsPatch({
       chatServices: currentSettings.chatServices,
       defaultChatServiceId: currentSettings.defaultChatServiceId,
       defaultAutoOpenChat: currentSettings.defaultAutoOpenChat,
       userPrompts: allPrompts
     });
 
+    currentSettings.chatServices = cloneChatServices(currentSettings.chatServices);
+    currentSettings.userPrompts = clonePrompts(allPrompts);
+
     renderChatServices();
     updateChatServiceOptions();
+    return true;
   } catch (error) {
     console.error('Error saving chat settings:', error);
+    restoreChatSettings(previousSettings);
+    renderChatServices();
+    updateChatServiceOptions();
+    renderShortcutSettingsPanel();
     const errorMessage = error instanceof Error ? error.message : String(error);
     const quotaWarning =
       errorMessage.includes('QUOTA_BYTES') || errorMessage.toLowerCase().includes('quota');
@@ -1931,6 +2032,7 @@ async function saveChatSettings() {
       ? getMessage('storageQuotaExceeded') || 'storageQuotaExceeded'
       : getMessage('savingFailed');
     showNotification(message, 'error');
+    return false;
   }
 }
 

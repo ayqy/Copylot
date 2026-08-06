@@ -1,4 +1,12 @@
-import { getActivePrompts, getSettings, saveSettings, type Prompt, type ChatService } from './shared/settings-manager';
+import {
+  getActivePrompts,
+  getSettings,
+  mutateSettings,
+  saveSettings,
+  type Prompt,
+  type ChatService,
+  type Settings
+} from './shared/settings-manager';
 import {
   buildPromptContextMenuItems,
   createSerializedContextMenuUpdater
@@ -139,28 +147,20 @@ async function rebuildContextMenu() {
       createProperties.parentId = item.parentId;
     }
 
-    try {
-      await createContextMenuItem(createProperties);
-      e2eContextMenuSnapshot.push({
-        id: item.id,
-        title: item.title,
-        parentId: item.parentId,
-        contexts: [...item.contexts]
-      });
-    } catch (error) {
-      console.warn(`Failed to create menu item for prompt ${item.id}:`, error);
-    }
+    await createContextMenuItem(createProperties);
+    e2eContextMenuSnapshot.push({
+      id: item.id,
+      title: item.title,
+      parentId: item.parentId,
+      contexts: [...item.contexts]
+    });
   }
 }
 
 const enqueueContextMenuUpdate = createSerializedContextMenuUpdater(rebuildContextMenu);
 
 async function updateContextMenu() {
-  try {
-    await enqueueContextMenuUpdate();
-  } catch (error) {
-    console.error('Error updating context menu:', error);
-  }
+  await enqueueContextMenuUpdate();
 }
 
 let clipboardStack: string[] = [];
@@ -205,8 +205,8 @@ async function runPromptAction(
   selectionText?: string,
   audit?: { source?: ReuseEntrySource; slot?: ReuseEntrySlot }
 ): Promise<CopyActionResult> {
-  const settings = await getSettings();
-  const prompt = getActivePrompts(settings.userPrompts).find((item: Prompt) => item.id === promptId);
+  let settings = await getSettings();
+  let prompt = getActivePrompts(settings.userPrompts).find((item: Prompt) => item.id === promptId);
   if (!prompt) {
     return createCopyActionFailure(
       'UNKNOWN',
@@ -214,11 +214,33 @@ async function runPromptAction(
     );
   }
 
-  prompt.usageCount = (prompt.usageCount || 0) + 1;
-  prompt.lastUsedAt = Date.now();
-
   try {
-    await saveSettings({ userPrompts: settings.userPrompts });
+    const updated = await mutateSettings<{
+      settings: Settings;
+      prompt: Prompt;
+    } | null>((current) => {
+      const currentPrompt = getActivePrompts(current.userPrompts).find(
+        (item: Prompt) => item.id === promptId
+      );
+      if (!currentPrompt) {
+        return { result: null };
+      }
+
+      currentPrompt.usageCount = (currentPrompt.usageCount || 0) + 1;
+      currentPrompt.lastUsedAt = Date.now();
+      return {
+        patch: { userPrompts: current.userPrompts },
+        result: { settings: current, prompt: { ...currentPrompt } }
+      };
+    });
+    if (!updated) {
+      return createCopyActionFailure(
+        'UNKNOWN',
+        chrome.i18n.getMessage('promptNotFound') || 'Prompt not found'
+      );
+    }
+    settings = updated.settings;
+    prompt = updated.prompt;
     console.debug(`Updated usage count for prompt "${prompt.title}": ${prompt.usageCount}`);
   } catch (error) {
     console.error('Failed to update prompt usage:', error);
@@ -408,7 +430,11 @@ chrome.commands?.onCommand.addListener((command) => {
 // Extension lifecycle events
 chrome.runtime.onInstalled.addListener(async (details) => {
   console.log('AI Copilot extension installed/updated:', details.reason);
-  await updateContextMenu();
+  try {
+    await updateContextMenu();
+  } catch (error) {
+    console.error('Failed to initialize the context menu:', error);
+  }
 
   // Initialize growth stats (local only, auditable, privacy-safe)
   try {
@@ -438,7 +464,11 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 // Handle extension startup
 chrome.runtime.onStartup.addListener(async () => {
   console.log('AI Copilot extension started');
-  await updateContextMenu();
+  try {
+    await updateContextMenu();
+  } catch (error) {
+    console.error('Failed to refresh the context menu on startup:', error);
+  }
 });
 
 // Handle messages from content scripts (for future features)
@@ -596,8 +626,59 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     case 'update-context-menu':
       (async () => {
-        await updateContextMenu();
-        sendResponse({ success: true });
+        try {
+          await updateContextMenu();
+          sendResponse({ success: true });
+        } catch (error) {
+          console.error('Failed to refresh the context menu on request:', error);
+          sendResponse({
+            success: false,
+            error: error instanceof Error ? error.message : String(error)
+          });
+        }
+      })();
+      return true;
+
+    case 'save-settings-patch':
+      (async () => {
+        try {
+          if (!message.settings || typeof message.settings !== 'object' || Array.isArray(message.settings)) {
+            throw new Error(chrome.i18n.getMessage('savingFailed'));
+          }
+
+          const incoming = message.settings as Partial<Settings>;
+          if (Array.isArray(incoming.userPrompts)) {
+            await mutateSettings<void>((current) => {
+              const currentPrompts = new Map(
+                current.userPrompts.map((item) => [item.id, item])
+              );
+              const userPrompts = incoming.userPrompts!.map((item) => {
+                const currentPrompt = currentPrompts.get(item.id);
+                if (!currentPrompt) {
+                  return { ...item };
+                }
+                return {
+                  ...item,
+                  usageCount: Math.max(item.usageCount || 0, currentPrompt.usageCount || 0),
+                  lastUsedAt: Math.max(item.lastUsedAt || 0, currentPrompt.lastUsedAt || 0) || undefined
+                };
+              });
+              return {
+                patch: { ...incoming, userPrompts },
+                result: undefined
+              };
+            });
+          } else {
+            await saveSettings(incoming);
+          }
+          sendResponse({ handled: true, success: true });
+        } catch (error) {
+          sendResponse({
+            handled: true,
+            success: false,
+            error: error instanceof Error ? error.message : String(error)
+          });
+        }
       })();
       return true;
 
@@ -628,14 +709,24 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case 'update-prompt-usage':
       // 处理从content script发来的使用次数更新请求
       (async () => {
-        const { promptId, usageCount, lastUsedAt } = message;
+        const { promptId, lastUsedAt } = message;
         try {
-          const settings = await getSettings();
-          const prompt = getActivePrompts(settings.userPrompts).find((p: Prompt) => p.id === promptId);
-          if (prompt) {
-            prompt.usageCount = usageCount;
-            prompt.lastUsedAt = lastUsedAt;
-            await saveSettings({ userPrompts: settings.userPrompts });
+          const updated = await mutateSettings<boolean>((current) => {
+            const currentPrompt = getActivePrompts(current.userPrompts).find(
+              (item: Prompt) => item.id === promptId
+            );
+            if (!currentPrompt) {
+              return { result: false };
+            }
+
+            currentPrompt.usageCount = (currentPrompt.usageCount || 0) + 1;
+            currentPrompt.lastUsedAt = lastUsedAt;
+            return {
+              patch: { userPrompts: current.userPrompts },
+              result: true
+            };
+          });
+          if (updated) {
             sendResponse({ success: true });
           } else {
             sendResponse({ success: false, error: chrome.i18n.getMessage('promptNotFound') || 'Prompt not found' });
@@ -863,7 +954,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 chrome.storage.onChanged.addListener((changes, namespace) => {
   if (changes.copilot_settings && namespace === 'sync') {
     console.debug('Settings synced from another device, rebuilding context menu...');
-    void updateContextMenu();
+    void updateContextMenu().catch((error) => {
+      console.error('Failed to rebuild the context menu after settings changed:', error);
+    });
   }
 });
 
